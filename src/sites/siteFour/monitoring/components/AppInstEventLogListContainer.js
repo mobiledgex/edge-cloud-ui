@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import {useEffect, useState} from 'react';
+import {Empty} from 'antd';
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {FixedSizeList} from "react-window";
 import {reduceString} from "../dev/PageDevMonitoringService";
@@ -111,111 +112,115 @@ export default function AppInstEventLogListContainer(props) {
                 {/*todo:tableBody*/}
                 {/*todo:tableBody*/}
                 <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
-                {!props.parent.state.loading &&
-                <FixedSizeList
-                    height={185}
-                    itemCount={props.eventLogList.length}
-                    itemSize={itemHeight}
-                    width={'100%'}
-                >
-                    {({index, style}) => {
-                        return (
-                            <tr key={index} className='table0000001'
-                                style={style}
-                            >
-                                <React.Fragment>
-                                    {/*time(date)*/}
-                                    <td padding={'none'} align="center" valign={'center'}
-                                        style={{
-                                            flex: .25,
-                                            color: '#C0C6C8',
-                                            backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                            height: itemHeight,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            flexDirection: 'column',
-                                        }}>
-                                        <div style={{}}>
-                                            <div style={{marginLeft: 2}}>
-                                                {props.eventLogList[index][0].toString().split('T')[0]}
+                {!props.parent.state.loading && props.eventLogList.length > 0 ?
+                    <FixedSizeList
+                        height={185}
+                        itemCount={props.eventLogList.length}
+                        itemSize={itemHeight}
+                        width={'100%'}
+                    >
+                        {({index, style}) => {
+                            return (
+                                <tr key={index} className='table0000001'
+                                    style={style}
+                                >
+                                    <React.Fragment>
+                                        {/*time(date)*/}
+                                        <td padding={'none'} align="center" valign={'center'}
+                                            style={{
+                                                flex: .25,
+                                                color: '#C0C6C8',
+                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                height: itemHeight,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexDirection: 'column',
+                                            }}>
+                                            <div style={{}}>
+                                                <div style={{marginLeft: 2}}>
+                                                    {props.eventLogList[index][0].toString().split('T')[0]}
+                                                </div>
+                                                <div style={{marginLeft: 2}}>
+                                                    {props.eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
+                                                </div>
                                             </div>
-                                            <div style={{marginLeft: 2}}>
-                                                {props.eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    {/*App*/}
-                                    <td padding={'none'} align="center"
-                                        style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
-                                        {windowDimensions.width <= 1440 ?
-                                            <React.Fragment>
-                                                <div>
-                                                    {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{index}*/}
-
-                                                </div>
-                                                <div>
-                                                    {props.eventLogList[index][1].toString().substring(15, props.eventLogList[index][1].toString().length)}
-                                                </div>
-                                                <div>
-                                                    {index.toString()}
-                                                </div>
-                                            </React.Fragment>
-                                            :
-                                            <React.Fragment>
-                                                <div style={{color: 'white'}}>
-                                                    {props.eventLogList[index][1].toString().substring(0, 20)}
-                                                    &nbsp;[{props.eventLogList[index][2]}{/*version*/}]
-
-                                                </div>
-                                                <div>
-                                                    {props.eventLogList[index][1].toString().substring(20, props.eventLogList[index][1].toString().length)}
-                                                </div>
-                                                <div style={{fontSize: 12,}}>
+                                        </td>
+                                        {/*App*/}
+                                        <td padding={'none'} align="center"
+                                            style={{flex: .4, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                            {windowDimensions.width <= 1440 ?
+                                                <React.Fragment>
                                                     <div>
-                                                        {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
+                                                        {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{index}*/}
+
                                                     </div>
                                                     <div>
-                                                        [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
+                                                        {props.eventLogList[index][1].toString().substring(15, props.eventLogList[index][1].toString().length)}
                                                     </div>
-                                                </div>
-                                            </React.Fragment>
-                                        }
-                                    </td>
-                                    {/*event[Status]*/}
-                                    <td padding={'none'} align="center"
-                                        style={{
-                                            flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                            height: itemHeight,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            flexDirection: 'column',
-
-                                        }}>
-                                        <div style={{fontSize: 10}}>
-                                            {props.eventLogList[index][8]}
-                                        </div>
-                                        <div>
-                                            {props.eventLogList[index][9].toLowerCase() === 'up' ?
-                                                <FontAwesomeIcon
-                                                    name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
-                                                />
+                                                    <div>
+                                                        {index.toString()}
+                                                    </div>
+                                                </React.Fragment>
                                                 :
-                                                <FontAwesomeIcon
-                                                    name="arrow-down" style={{fontSize: 15, color: 'red', cursor: 'pointer', marginTop: 2}}
-                                                />
+                                                <React.Fragment>
+                                                    <div style={{color: 'white'}}>
+                                                        {props.eventLogList[index][1].toString().substring(0, 20)}
+                                                        &nbsp;[{props.eventLogList[index][2]}{/*version*/}]
+
+                                                    </div>
+                                                    <div>
+                                                        {props.eventLogList[index][1].toString().substring(20, props.eventLogList[index][1].toString().length)}
+                                                    </div>
+                                                    <div style={{fontSize: 12,}}>
+                                                        <div>
+                                                            {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
+                                                        </div>
+                                                        <div>
+                                                            [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
+                                                        </div>
+                                                    </div>
+                                                </React.Fragment>
                                             }
+                                        </td>
+                                        {/*event[Status]*/}
+                                        <td padding={'none'} align="center"
+                                            style={{
+                                                flex: .35, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                height: itemHeight,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexDirection: 'column',
 
-                                        </div>
-                                    </td>
-                                </React.Fragment>
+                                            }}>
+                                            <div style={{fontSize: 10}}>
+                                                {props.eventLogList[index][8]}
+                                            </div>
+                                            <div>
+                                                {props.eventLogList[index][9].toLowerCase() === 'up' ?
+                                                    <FontAwesomeIcon
+                                                        name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                                                    />
+                                                    :
+                                                    <FontAwesomeIcon
+                                                        name="arrow-down" style={{fontSize: 15, color: 'red', cursor: 'pointer', marginTop: 2}}
+                                                    />
+                                                }
 
-                            </tr>
-                        )
-                    }}
+                                            </div>
+                                        </td>
+                                    </React.Fragment>
 
-                </FixedSizeList>
+                                </tr>
+                            )
+                        }}
+
+                    </FixedSizeList>
+                    :
+                    <div style={{justifyContent: 'center', alignSelf: 'center', alignItems: 'center', fontSize: 15, display: 'flex'}}>
+                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                    </div>
                 }
                 </tbody>
             </table>

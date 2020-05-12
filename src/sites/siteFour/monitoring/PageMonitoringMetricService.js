@@ -162,7 +162,12 @@ export const getAppInstList = async (pRegionList = localStorage.getItem('regions
         let promiseList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         for (let index = 0; index < pRegionList.length; index++) {
-            let requestData = {showSpinner: false, token: store.userToken, method: SHOW_APP_INST, data: {region: pRegionList[index]}}
+            let requestData = {
+                showSpinner: false,
+                token: store.userToken,
+                method: SHOW_APP_INST,
+                data: {region: pRegionList[index]}
+            }
             promiseList.push(sendSyncRequest(this, requestData))
         }
 
@@ -790,7 +795,6 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
             } else {
                 return [];
             }
-
         }).catch(e => {
             // showToast(e.toString())
         })
