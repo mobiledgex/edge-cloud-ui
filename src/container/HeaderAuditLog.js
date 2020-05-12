@@ -344,7 +344,6 @@ class HeaderAuditLog extends React.Component {
                     style={{ width: 150 }}
                 />
                 <div>
-                    <h1>{moment().utc().format("MMM, YYYY")}</h1>
                     <View style={styles.container}>
                         <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
                     </View>

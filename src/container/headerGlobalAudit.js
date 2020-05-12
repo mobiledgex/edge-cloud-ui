@@ -179,7 +179,7 @@ class headerGlobalAudit extends React.Component {
                     inverted
                     trigger={
                         <IconButton color='inherit' onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}>
-                            <AccountCircleOutlinedIcon fontSize='default'/> e: {this.state.errorCount} ue: {this.state.unCheckedErrorCount}
+                            <AccountCircleOutlinedIcon fontSize='default'/>{this.state.errorCount}
                         </IconButton>
                     }
                     content={<HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} />}
