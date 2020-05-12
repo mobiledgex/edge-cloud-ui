@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import HeaderGlobalMini from '../../../container/headerGlobalMini';
+import HeaderGlobalAudit from '../../../container/headerGlobalAudit';
 
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
@@ -80,6 +81,7 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
+                    <HeaderGlobalAudit />
                     <IconButton disabled={true}>
                         {localStorage.selectOrg ?
                             <h5>
