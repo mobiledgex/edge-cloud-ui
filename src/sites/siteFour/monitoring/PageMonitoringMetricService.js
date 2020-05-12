@@ -149,11 +149,9 @@ export const showAppInst = async (serviceBody, store) => {
 }
 
 
-
-
 export const getAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
-    let promiseList = []
     try {
+        let promiseList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         for (let index = 0; index < pRegionList.length; index++) {
             let requestData = {showSpinner: false, token: store.userToken, method: SHOW_APP_INST, data: {region: pRegionList[index]}}
@@ -168,9 +166,7 @@ export const getAppInstList = async (pRegionList = localStorage.getItem('regions
             let mergedList = mergedAppInstanceList.concat(listOne);
             mergedAppInstanceList = mergedList;
         })
-
         return mergedAppInstanceList;
-
     } catch (e) {
         //throw new Error(e)
     }
