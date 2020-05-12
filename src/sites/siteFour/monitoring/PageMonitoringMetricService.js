@@ -131,32 +131,6 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 }
 
-export const showAppInst = async (serviceBody, store) => {
-    return await axios({
-        url: '/api/v1/auth/ctrl/ShowAppInst',
-        method: 'post',
-        data: serviceBody['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        let parseData = JSON.parse(JSON.stringify(response));
-
-        if (parseData.data === '') {
-            return null;
-        } else {
-            let finalizedJSON = formatData(parseData, serviceBody)
-            return finalizedJSON;
-        }
-
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-}
-
-
 export const getAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
     try {
         let promiseList = []
