@@ -22,7 +22,7 @@ import {
 } from "../../../../shared/Constants";
 import PageDevMonitoring from "./PageDevMonitoring";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType, showToast} from "../PageMonitoringCommonService";
-import type {TypeAppInstanceUsage2} from "../../../../shared/Types";
+import type {TypeAppInstance, TypeAppInstanceUsage2} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
@@ -1588,33 +1588,32 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
 /**
  *
  * @param appInstList
- * @param keyName
- * @param valueName
- * @param thirdValue
- * @param fourthValue
  * @returns {[]}
  */
-export const makeDropdownListWithValuePipeForAppInst = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
+export const makeDropdownForAppInst = (appInstList) => {
+    let newArrList = [];
     try {
-        let newArrList = [];
-        if (fourthValue !== '') {
-            for (let i in appInstList) {
-                newArrList.push({
-                    key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    text: appInstList[i][keyName].trim() + " [" + appInstList[i][fourthValue].trim() + "]",
-                })
-            }
-        } else {
-            for (let i in appInstList) {
-                newArrList.push({
-                    key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
-                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
-                    text: appInstList[i][keyName].trim(),
-                })
-            }
-        }
+        appInstList.map((item: TypeAppInstance, index) => {
+            let AppName = item.AppName
+            let Cloudlet = item.Cloudlet
+            let ClusterInst = item.ClusterInst
+            let Version = item.Version
+            let Region = item.Region
+            let HealthCheck = item.HealthCheck
+            let Operator = item.Operator
+            let CloudletLocation = {
+                lat: item.CloudletLocation.latitude,
+                long: item.CloudletLocation.longitude,
+            };
+            let specifiedAppInstOne = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(CloudletLocation);
+            console.log(`specifiedAppInstOne===>`, specifiedAppInstOne);
 
+            newArrList.push({
+                key: specifiedAppInstOne,
+                value: specifiedAppInstOne,
+                text: AppName.trim() + " [" + Version.toString().trim() + "]",
+            })
+        })
         return newArrList;
     } catch (e) {
 

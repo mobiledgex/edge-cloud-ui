@@ -4,21 +4,15 @@ import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../services
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
-import {formatData} from "../../../services/formatter/formatComputeInstance";
 import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
-import {
-    APP_INST_EVENT_LOG_ENDPOINT,
-    APP_INST_METRICS_ENDPOINT,
-    CLOUDLET_EVENT_LOG_ENDPOINT,
-    CLOUDLET_METRICS_ENDPOINT,
-    CLUSTER_EVENT_LOG_ENDPOINT,
-    CLUSTER_METRICS_ENDPOINT,
-    SHOW_APP_INST_CLIENT_ENDPOINT
-} from "./MetricServiceEndPoint";
+import {APP_INST_EVENT_LOG_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLOUDLET_EVENT_LOG_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLUSTER_EVENT_LOG_ENDPOINT, CLUSTER_METRICS_ENDPOINT, SHOW_APP_INST_CLIENT_ENDPOINT} from "./MetricServiceEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
+
+        console.log(`pCurrentAppInst===>`, pCurrentAppInst);
+
         let AppName = pCurrentAppInst.split('|')[0].trim()
         let Cloudlet = pCurrentAppInst.split('|')[1].trim()
         let ClusterInst = pCurrentAppInst.split('|')[2].trim()
