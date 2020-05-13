@@ -33,6 +33,7 @@ class HeaderAuditLog extends React.Component {
         this.state = {
             tabValue: 0,
             expanded: (-1),
+            groupExpanded: (-1),
             devData: [],
             dayData: [],
             groups: [],
@@ -216,6 +217,12 @@ class HeaderAuditLog extends React.Component {
         this.setState({expanded: newExpanded ? index : false});
     };
 
+    handleGroupExpandedChange = (group, index) => (event, newExpanded) => {
+        let dayData = this.state.dayData;
+        this.props.onItemSelected(dayData[index].traceid, index)
+        this.setState({groupExpanded: {expanded : newExpanded ? index : false, group: group}});
+    };
+
     dropDownOnChange = (e, v, data) => {
         let dayData = (data)?data:this.state.dayData;
         let groups = [];
@@ -291,7 +298,8 @@ class HeaderAuditLog extends React.Component {
     }
 
     renderGroupStapper = (data, index, group) => {
-        let count = data.findIndex(d => d.status !== 200)
+        let count = 0;
+        data.map((d) => {(d.status !== 200)?count++:count})
         return (
             (group)?
                 <div>
@@ -300,7 +308,7 @@ class HeaderAuditLog extends React.Component {
                     {
                         data.map((item, itemIndex) => {
                             return (
-                                <ExpansionPanel square expanded={this.state.expanded === itemIndex} onChange={this.handleExpandedChange(itemIndex)}>
+                                <ExpansionPanel square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex)}>
                                     <ExpansionPanelSummary
                                         id="panel1a-header"
                                     >
