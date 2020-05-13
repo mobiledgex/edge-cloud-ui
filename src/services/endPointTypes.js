@@ -1,7 +1,7 @@
-
 import * as FormatComputeCloudlet from './formatter/formatComputeCloudlet';
 import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
+import * as FormatComputeAppInst from './formatter/formatComputeInstance';
 
 
 export const SHOW_ORG = "showOrg";
@@ -64,7 +64,7 @@ export const SHOW_LOGS = "ShowLogs";
 export const SHOW_CONSOLE = "RunConsole";
 export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
-export const DELETE_AUTO_PROV_POLICY= "DeleteAutoProvPolicy";
+export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
 export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
 export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
 export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
@@ -175,6 +175,9 @@ export function formatData(request, response) {
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;
+        case SHOW_APP_INST:
+            data = FormatComputeAppInst.formatData(response, request.data)
+            break;
         case SHOW_ORG_CLOUDLET:
             data = FormatComputeOrgCloudlet.formatData(response, request.data)
             break;
@@ -184,5 +187,5 @@ export function formatData(request, response) {
     if (data) {
         response.data = data;
     }
-    return { request: request, response: response }
+    return {request: request, response: response}
 }
