@@ -80,15 +80,14 @@ const subView = (keys, dataList) => {
 
 const getRow = (id, item, data) => {
 
-    function EmphasizeDeploymentManifestByType(manifestDeploymentData, item) {
+    function renderDeploymentManifestByType(manifestDeploymentData, item) {
         if (item.dataType === constant.TYPE_JSON) {
             return getJson(manifestDeploymentData, item)
         } else {//@DESC:YAML TYPE
             return (
                 <div
                     style={{
-                        backgroundColor: 'grey',
-                        padding: 1,
+                        backgroundColor: 'grey', padding: 1,
                     }}
                 >
                     <SyntaxHighlighter language="yaml" style={allyDark}>
@@ -104,7 +103,7 @@ const getRow = (id, item, data) => {
             <TableCell style={{borderBottom: "none", verticalAlign: 'text-top', width: '20%'}}>{item.label}</TableCell>
             <TableCell style={{borderBottom: "none"}}>
                 {item.dataType === constant.TYPE_JSON || item.dataType === constant.TYPE_YAML ?
-                    EmphasizeDeploymentManifestByType(data, item)
+                    renderDeploymentManifestByType(data, item)
                     :
                     <p style={{wordBreak: 'break-all'}}>{item.customizedData ? item.customizedData(data, true) : data}</p>
                 }
