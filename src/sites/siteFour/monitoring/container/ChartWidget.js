@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
-import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import _ from "lodash";
@@ -12,7 +11,6 @@ import TimeSeries from "../../../../charts/plotly/timeseries";
 import ContainerHealth from "./ContainerHealth";
 import Map from "../../../../libs/simpleMaps/with-react-motion/index_clusters";
 import CounterWidget from "./CounterWidget";
-import { Segment } from "semantic-ui-react";
 import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
 import FilteringComponent from "../components/FilteringComponent";
@@ -37,11 +35,11 @@ class ChartWidget extends React.Component {
         setTimeout(() => {
             if (this.divRef.current)
                 this.divRef.current.setDataToWidget(this.getData());
-        }, 6000);
+        }, 1000);
     }
     componentWillReceiveProps(nextProps, prevProps) {
         console.log(
-            "20200430 receive data in the ChartWidget ....",
+            "20200512 receive data in the ChartWidget ....",
             nextProps.chartType,
             ":",
             nextProps
@@ -82,6 +80,7 @@ class ChartWidget extends React.Component {
                     <Map
                         size={size}
                         type={type}
+                        data={data}
                         locData={this.state.mapData}
                         id={"matricMap"}
                         reg="cloudletAndClusterMap"
@@ -91,6 +90,7 @@ class ChartWidget extends React.Component {
                 ) : chartType === ChartType.COUNTER ? (
                     <CounterWidget
                         size={size}
+                        data={data}
                         ref={this.divRef}
                         clusterCnt={this.state.clusterCnt}
                         title={title.value}
