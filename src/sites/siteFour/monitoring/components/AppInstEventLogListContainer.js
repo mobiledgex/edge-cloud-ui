@@ -125,7 +125,7 @@ export default function AppInstEventLogListContainer(props) {
                 <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
                 {!props.parent.state.loading && props.eventLogList.length > 0 ?
                     <FixedSizeList
-                        height={177}
+                        height={179}
                         itemCount={props.eventLogList.length}
                         itemSize={itemHeight}
                         width={'100%'}
