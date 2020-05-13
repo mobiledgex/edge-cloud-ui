@@ -1,7 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 /*
-$ http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://127.0.0.1:9900/api/v1/auth/metrics/client <<<
-'{"region":"local","appinst":{"app_key":{"organization":"AcmeAppCo","name":"someapplication1","version":"1.0"}},"method":"FindCloudlet","selector":"api","last":1}'
+$ http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/client <<< '{"region":"EU","appinst":{"app_key":{"organization":"TDG","name":"MobiledgeX SDK Demo","version":"2.0"}},"method":"FindCloudlet","selector":"api","last":1}'
 HTTP/1.1 200 OK
 //////////
 {
@@ -27,7 +26,6 @@ const parseData = (response, type) => {
     const methods = [];
     const resData_util = {};
     const resData_ip = {};
-    const resultParse = [];
     if (response && response.response && response.response.data.data) {
         response.response.data.data.map((data, i) => {
             const resSeries_utilize = (data.Series) ? data.Series[0] : null;

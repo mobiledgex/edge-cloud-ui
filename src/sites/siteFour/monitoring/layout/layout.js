@@ -23,7 +23,7 @@ class ToolBox extends React.Component {
     render() {
         return (
             <div className="toolbox">
-                <span className="toolbox__title">Toolbox</span>
+                <span className="toolbox__title" style={{ display: "none" }}>Toolbox</span>
                 <div className="toolbox__items">
                     {this.props.items.map(item => (
                         <ToolBoxItem
@@ -47,14 +47,17 @@ class MonitoringLayout extends React.Component {
         initialLayout: generateLayout()
     };
 
-    state = {
-        currentBreakpoint: "lg",
-        compactType: "vertical",
-        mounted: false,
-        layouts: { lg: this.props.initialLayout },
-        toolbox: { lg: [] },
-        headerSize: 30,
-        padding: 3,
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentBreakpoint: "lg",
+            compactType: "vertical",
+            mounted: false,
+            layouts: { lg: props.initialLayout },
+            toolbox: { lg: [] },
+            headerSize: 30,
+            padding: 3,
+        };
     };
 
     componentDidMount() {
@@ -77,6 +80,7 @@ class MonitoringLayout extends React.Component {
                     }}
                 >
                     <HeaderComponent
+                        style={{ height: this.state.headerSize }}
                         defaultProps={l.i}
                         onPutItem={this.onPutItem}
                         onClick={this.onClickMenu}
@@ -176,23 +180,24 @@ class MonitoringLayout extends React.Component {
     }
 
     render() {
+        const { toolbox, currentBreakpoint, layouts } = this.state;
         return (
             <div>
                 <ToolBox
                     items={
-                        this.state.toolbox[this.state.currentBreakpoint] || []
+                        toolbox[currentBreakpoint] || []
                     }
                     onTakeItem={this.onTakeItem}
                 />
 
                 <ResponsiveReactGridLayout
-                    className={"layout page_monitoring_layout_dev"}
+                    className="layout page_monitoring_layout_dev"
                     {...this.props}
-                    layouts={this.state.layouts}
+                    layouts={layouts}
                     onBreakpointChange={this.onBreakpointChange}
                     onLayoutChange={this.onLayoutChange}
                     // WidthProvider option
-                    measureBeforeMount={true}
+                    measureBeforeMount
                     // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
                     // and set `measureBeforeMount={true}`.
                     useCSSTransforms={this.state.mounted}

@@ -217,9 +217,9 @@ const parseData = (response, type) => {
                     ]
                 }
 
-                resData.push(resultParse)
+                resData.push(resultParse);
             } else {
-                console.log("ERROR ::: ", data)
+                console.log("ERROR ::: ", data);
             }
 
 
@@ -233,7 +233,7 @@ const parseData = (response, type) => {
     return resData;
 };
 const metricFromServer = async (self, data) => {
-    let requestData = {
+    const requestData = {
         token: data.token,
         method: data.method,
         data: {
@@ -245,16 +245,14 @@ const metricFromServer = async (self, data) => {
             last: data.last,
             selector: "*"
         }
-    }
-    let response = await serverData.sendRequest(self, requestData);
+    };
+    const response = await serverData.sendRequest(self, requestData);
     return parseData(response, data.selectOrg + "/" + data.cloudletSelectedOne);
 };
 
-/*******************************************************
+/** *****************************************************
  * START GET LIST
- * 
- 
- *******************************************************/
+ ** **************************************************** */
 export const getCloudletList = (self, param) => {
     if (!_self) _self = self;
     dataFromServer(REGION_ALL, _self, param.method);

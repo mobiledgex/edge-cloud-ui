@@ -13,8 +13,10 @@ import * as Service from "./services";
 import ChartWidget from "./container/ChartWidget";
 import * as serviceMC from "../../../services/model/serviceMC";
 import * as ChartType from "./formatter/chartType";
+import HeaderFiltering from "./hooks/HeaderFiltering";
 
-let doCloudlets = null;
+// doCloudlets = true    데이터 로딩을 잠시 멈춤 : UI 작업을 위하여
+let doCloudlets = true;
 let count = 0;
 let countApp = 0;
 let regionCount = 0;
@@ -143,8 +145,9 @@ class MonitoringAdmin extends React.Component {
                     backgroundColor: "#ababab",
                 }}
             >
-                <div>{containerWidth}</div>
-                <div>{containerHeight}</div>
+                <HeaderFiltering
+                    title="MONITORING"
+                />
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
