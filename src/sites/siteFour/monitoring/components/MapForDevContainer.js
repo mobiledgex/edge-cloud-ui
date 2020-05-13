@@ -429,14 +429,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 {item.uuid}
                                             </div>
                                             <div style={{width: 5,}}/>
-                                            <div>
-                                                [
-                                            </div>
                                             <div style={{color: 'orange'}}>
-                                                {moment(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}
-                                            </div>
-                                            <div>
-                                                ]
+                                                ({moment(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()})
                                             </div>
                                         </div>
 
