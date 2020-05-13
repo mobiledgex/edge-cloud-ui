@@ -164,17 +164,22 @@ export default function AppInstEventLogListContainer(props) {
                                         </td>
                                         {/*App*/}
                                         <td padding={'none'} align="center"
-                                            style={{flex: .5, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C', height: itemHeight}}>
+                                            style={{
+                                                flex: .5,
+                                                color: '#C0C6C8',
+                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                height: itemHeight
+                                            }}>
                                             <React.Fragment>
                                                 <div style={{color: 'white'}}>
                                                     {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{AppInst}*/}
-                                                    &nbsp;[{props.eventLogList[index][2]} {/*version*/}]
+                                                    &nbsp;[{props.eventLogList[index][2]}] {/*version*/}
                                                 </div>
                                                 <div style={{fontSize: 12,}}>
                                                     <div>
                                                         {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
                                                     </div>
-                                                    <div>
+                                                    <div style={{color: 'yellow'}}>
                                                         [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
                                                     </div>
                                                 </div>
@@ -183,7 +188,9 @@ export default function AppInstEventLogListContainer(props) {
                                         {/*event[Status]*/}
                                         <td padding={'none'} align="center"
                                             style={{
-                                                flex: .25, color: '#C0C6C8', backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                flex: .25,
+                                                color: '#C0C6C8',
+                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
                                                 height: itemHeight,
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -197,11 +204,21 @@ export default function AppInstEventLogListContainer(props) {
                                             <div>
                                                 {props.eventLogList[index][9].toLowerCase() === 'up' ?
                                                     <FontAwesomeIcon
-                                                        name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                                                        name="arrow-up" style={{
+                                                        fontSize: 15,
+                                                        color: 'green',
+                                                        cursor: 'pointer',
+                                                        marginTop: 2
+                                                    }}
                                                     />
                                                     :
                                                     <FontAwesomeIcon
-                                                        name="arrow-down" style={{fontSize: 15, color: 'red', cursor: 'pointer', marginTop: 2}}
+                                                        name="arrow-down" style={{
+                                                        fontSize: 15,
+                                                        color: 'red',
+                                                        cursor: 'pointer',
+                                                        marginTop: 2
+                                                    }}
                                                     />
                                                 }
 
@@ -215,7 +232,13 @@ export default function AppInstEventLogListContainer(props) {
 
                     </FixedSizeList>
                     :
-                    <div style={{justifyContent: 'center', alignSelf: 'center', alignItems: 'center', fontSize: 15, display: 'flex'}}>
+                    <div style={{
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        fontSize: 15,
+                        display: 'flex'
+                    }}>
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                     </div>
                 }

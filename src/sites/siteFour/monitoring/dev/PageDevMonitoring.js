@@ -682,9 +682,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async handleClusterDropdownAndReset(selectedClusterOne) {
                 try {
 
-
-                    console.log(`selectedClusterOne====>`, selectedClusterOne);
-
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
@@ -772,6 +769,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: requestShowAppInstClientWS
                     //@desc: ################################
                     if (this.state.showAppInstClient) {
+
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                         })
