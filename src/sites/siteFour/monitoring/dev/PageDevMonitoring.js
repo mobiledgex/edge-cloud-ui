@@ -2008,7 +2008,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         marginLeft: 15,
                                         marginTop: 10,
                                         fontSize: 25,
-                                        fontFamily: 'Roboto',
                                         color: 'rgba(255,255,255,.6)'
                                     }}>No Item</div>
                                     }
@@ -2018,7 +2017,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         marginLeft: 15,
                                         marginTop: 10,
                                         fontSize: 25,
-                                        fontFamily: 'Roboto',
                                         color: 'rgba(255,255,255,.6)'
                                     }}>No Item</div>
                                     }

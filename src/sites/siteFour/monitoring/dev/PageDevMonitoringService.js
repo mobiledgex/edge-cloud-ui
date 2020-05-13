@@ -1000,7 +1000,6 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     boxWidth: 10,
                     fontColor: 'white',
                     fontSize: 12,
-                    fontFamily: 'Roboto',
                     fontWeight: 'bold',
                 },
                 /*onClick: (e, clickedItem) => {

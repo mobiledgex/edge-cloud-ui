@@ -281,7 +281,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         marginTop: 3,
-        fontFamily: 'Roboto'
     },
     gridTableCell2: {
         height: 50,
@@ -291,7 +290,6 @@ export const PageMonitoringStyles = {
         alignItem: 'center',
         marginTop: 25,
         fontWeight: 'bold',
-        fontFamily: 'Roboto'
     },
 
     gridTableCell3Left: {
@@ -301,7 +299,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         fontWeight: 'bold',
-        fontFamily: 'Roboto',
         backgroundColor: '#1e2025',
     },
     gridTableCell3Dash: {
@@ -311,7 +308,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         fontWeight: 'bold',
-        fontFamily: 'Roboto',
         backgroundColor: '#1e2025',
         flexDirection: 'column',
         fontSize: 12,
@@ -324,7 +320,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         fontWeight: 'bold',
-        fontFamily: 'Roboto',
         backgroundColor: '#1e2025',
         flexDirection: 'column',
         fontSize: 12,
@@ -337,7 +332,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         fontWeight: 'bold',
-        fontFamily: 'Roboto',
         backgroundColor: '#1e2025',
         flexDirection: 'column',
         fontSize: 12,
@@ -352,7 +346,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         fontWeight: 'bold',
-        fontFamily: 'Roboto',
         backgroundColor: '#1e2025',
         fontSize: 12,
     },
@@ -364,7 +357,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         fontWeight: 'bold',
-        fontFamily: 'Roboto',
         backgroundColor: '#23252c',
         fontSize: 12,
     },
@@ -372,7 +364,6 @@ export const PageMonitoringStyles = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: 'Roboto'
 
     },
     noData: {
@@ -525,8 +516,8 @@ export const LegendOuterDiv = styled.div`
   border-width: 0.1px;
   border-style: dotted;
   border-color: dimgrey;
-  margin-left: 10px; 
-  display: flex; 
+  margin-left: 10px;
+  display: flex;
   height: 25px;
   width: 98.925%;
   margin-right: 5px;
@@ -584,7 +575,7 @@ export const Center2 = styled.div`
   marginLeft:0px;
   align-items: flex-start;
   margin-top: -2px;
-  
+
 `
 
 

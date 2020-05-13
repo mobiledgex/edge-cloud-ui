@@ -148,7 +148,6 @@ export default class MiniModalGraphContainer extends React.Component<Props, Stat
                             flex: .85,
                             display: 'flex',
                             color: '#FFF',
-                            fontFamily: 'Roboto',
                             fontSize: 18,
                             fontWeight: 'bold',
                             marginLeft: 3,
@@ -159,7 +158,6 @@ export default class MiniModalGraphContainer extends React.Component<Props, Stat
                             style={{
                                 flex: .13,
                                 color: 'white',
-                                fontFamily: 'Roboto',
                                 fontSize: 18,
                                 fontWeight: 'bold',
                                 textAlign: 'right',

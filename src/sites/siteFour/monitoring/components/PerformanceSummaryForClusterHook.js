@@ -61,7 +61,6 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                          style={{
                              flex: .2,
                              marginTop: 5,
-                             fontFamily: 'Roboto',
                              //backgroundColor: 'red'
                          }}
                     >
@@ -75,7 +74,6 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                 component={Paper}
                 style={{
                     height: 'auto',
-                    fontFamily: 'Roboto',
                     backgroundColor: 'blue !important',
                     width: 'auto',
                     overflowX: 'scroll'

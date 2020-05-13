@@ -37,7 +37,6 @@ export default function PerformanceSummaryForAppInstHook(props) {
                      style={{
                          flex: 1,
                          marginTop: 5,
-                         fontFamily: 'Roboto',
                          //backgroundColor:'red'
                      }}
                 >
@@ -48,7 +47,6 @@ export default function PerformanceSummaryForAppInstHook(props) {
                 component={Paper}
                 style={{
                     height: 'auto',
-                    fontFamily: 'Roboto',
                     backgroundColor: 'blue !important',
                     width: 'auto',
                     overflowX: 'scroll'

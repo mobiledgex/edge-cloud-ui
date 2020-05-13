@@ -26,7 +26,6 @@ export default function ClusterEventLogListHook(props) {
                 <div className='page_monitoring_title' style={{
                     flex: .6,
                     marginTop: 15,
-                    fontFamily: 'Roboto'
                 }}>
                     Cluster Event Log
                 </div>
