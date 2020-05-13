@@ -1591,7 +1591,7 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
  * @returns {[]}
  */
 export const makeDropdownForAppInst = (appInstList) => {
-    let newAppInstList = [];
+    let appInstDropdownList = [];
     try {
         appInstList.map((item: TypeAppInstance, index) => {
             let AppName = item.AppName
@@ -1607,14 +1607,13 @@ export const makeDropdownForAppInst = (appInstList) => {
             };
 
             let specifiedAppInstOne = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(CloudletLocation);
-
-            newAppInstList.push({
+            appInstDropdownList.push({
                 key: specifiedAppInstOne,
                 value: specifiedAppInstOne,
                 text: AppName.trim() + " [" + Version.toString().trim() + "]",
             })
         })
-        return newAppInstList;
+        return appInstDropdownList;
     } catch (e) {
 
     }
