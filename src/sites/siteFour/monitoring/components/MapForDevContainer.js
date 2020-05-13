@@ -13,17 +13,12 @@ import {Icon} from "semantic-ui-react";
 import {notification, Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
 import {groupByCloudletLocation, reduceString} from "../dev/PageDevMonitoringService";
-import moment from "moment-timezone";
+import MomentTimezone from "moment-timezone";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -430,7 +425,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             </div>
                                             <div style={{width: 5,}}/>
                                             <div style={{color: 'orange'}}>
-                                                [{moment(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}]
+                                                [{MomentTimezone(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}]
                                             </div>
                                         </div>
 
