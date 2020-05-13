@@ -10,9 +10,6 @@ import {APP_INST_EVENT_LOG_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLOUDLET_EVENT_L
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
-
-        console.log(`pCurrentAppInst===>`, pCurrentAppInst);
-
         let AppName = pCurrentAppInst.split('|')[0].trim()
         let Cloudlet = pCurrentAppInst.split('|')[1].trim()
         let ClusterInst = pCurrentAppInst.split('|')[2].trim()
