@@ -54,3 +54,8 @@
 .ui.selection.dropdown .menu>.item {
     border: none;
 }
+
+.deploymentManifestByTypeDiv {
+    margin-bottom: 0px;
+}
+

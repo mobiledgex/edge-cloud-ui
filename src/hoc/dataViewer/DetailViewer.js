@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactJson from 'react-json-view';
-import {Table, TableHead, TableRow, TableBody, TableCell} from '@material-ui/core';
+import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import * as constant from '../../constant'
 import * as JsonUtils from '../../utils/JsonUtil'
 import {getUserRole} from '../../services/model/format';
@@ -90,7 +90,7 @@ const getRow = (id, item, data) => {
                         backgroundColor: 'grey', padding: 1,
                     }}
                 >
-                    <SyntaxHighlighter language="yaml" style={allyDark}>
+                    <SyntaxHighlighter language="yaml" style={allyDark} className='deploymentManifestByTypeDiv'>
                         {manifestDeploymentData.toString()}
                     </SyntaxHighlighter>
                 </div>
