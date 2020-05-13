@@ -97,12 +97,8 @@ export default function AppInstEventLogListContainer(props) {
                         </div>
                         <div>
                             <div style={{color: ''}}>
-                                Cluster
+                                Cluster[Cloudlet]
                             </div>
-                            <div style={{color: ''}}>
-                                [Cloudlet]
-                            </div>
-
                         </div>
                     </td>
                     <td padding={'none'} align="center"
@@ -129,7 +125,7 @@ export default function AppInstEventLogListContainer(props) {
                 <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
                 {!props.parent.state.loading && props.eventLogList.length > 0 ?
                     <FixedSizeList
-                        height={185}
+                        height={175}
                         itemCount={props.eventLogList.length}
                         itemSize={itemHeight}
                         width={'100%'}
