@@ -418,8 +418,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     }
                                 >
                                     <Popup className='clientPopup'
-                                           style={{fontSize: 11}}>
-                                        <div style={{display: 'flex',}}>
+                                    >
+                                        <div style={{
+                                            display: 'flex',
+                                            fontSize: 13,
+                                            minWidth: '250px !important',
+                                            width: '250px !important',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}>
                                             <div style={{color: 'white',}}>
                                                 {item.uuid}
                                             </div>

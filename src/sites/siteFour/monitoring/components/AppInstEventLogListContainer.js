@@ -40,6 +40,8 @@ export default function AppInstEventLogListContainer(props) {
         if (eventName !== undefined) {
             if (eventName.includes('HEALTH_CHECK')) {
                 return eventName.replace('HEALTH_CHECK', 'HEALTH_CHK')
+            } else if (eventName.includes('UPDATE')) {
+                return eventName.replace('UPDATE', 'UPD')
             } else {
                 return eventName;
             }
