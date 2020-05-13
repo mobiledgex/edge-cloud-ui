@@ -430,12 +430,11 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             </div>
                                             <div style={{width: 5,}}/>
                                             <div>
-                                                [&nbsp;
+                                                [
                                             </div>
                                             <div style={{color: 'orange'}}>
                                                 {moment(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}
                                             </div>
-                                            <div style={{width: 5,}}/>
                                             <div>
                                                 ]
                                             </div>
