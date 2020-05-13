@@ -61,7 +61,6 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                          style={{
                              flex: .2,
                              marginTop: 5,
-                             fontFamily: 'Ubuntu',
                              //backgroundColor: 'red'
                          }}
                     >
@@ -75,7 +74,6 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                 component={Paper}
                 style={{
                     height: 'auto',
-                    fontFamily: 'Ubuntu',
                     backgroundColor: 'blue !important',
                     width: 'auto',
                     overflowX: 'scroll'
@@ -84,7 +82,7 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                 <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll',}}
                        stickyHeader={true}>
 
-                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', fontSize: 20}} fixedHeader={true}>
+                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                             </TableCell>
