@@ -1605,8 +1605,8 @@ export const makeDropdownForAppInst = (appInstList) => {
                 lat: item.CloudletLocation.latitude,
                 long: item.CloudletLocation.longitude,
             };
+
             let specifiedAppInstOne = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(CloudletLocation);
-            console.log(`specifiedAppInstOne===>`, specifiedAppInstOne);
 
             newAppInstList.push({
                 key: specifiedAppInstOne,
