@@ -27,9 +27,6 @@ export default function AppInstEventLogListContainer(props) {
     let itemHeight = 55
 
     useEffect(() => {
-
-        console.log(`eventLogList====>`, props.eventLogList);
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
 
@@ -39,12 +36,12 @@ export default function AppInstEventLogListContainer(props) {
         setWindowDimensions(getWindowDimensions());
     }
 
-    function reduceEvent(title) {
-        if (title !== undefined) {
-            if (title.includes('HEALTH_CHECK')) {
-                return title.replace('HEALTH_CHECK', 'HEALTH_CHK')
+    function reduceEventName(eventName) {
+        if (eventName !== undefined) {
+            if (eventName.includes('HEALTH_CHECK')) {
+                return eventName.replace('HEALTH_CHECK', 'HEALTH_CHK')
             } else {
-                return title;
+                return eventName;
             }
         }
 
@@ -199,7 +196,7 @@ export default function AppInstEventLogListContainer(props) {
 
                                             }}>
                                             <div style={{fontSize: 10}}>
-                                                {reduceEvent(props.eventLogList[index][8])}
+                                                {reduceEventName(props.eventLogList[index][8])}
                                             </div>
                                             <div>
                                                 {props.eventLogList[index][9].toLowerCase() === 'up' ?
