@@ -85,11 +85,7 @@ const getRow = (id, item, data) => {
             return getJson(manifestDeploymentData, item)
         } else {//@DESC:YAML TYPE
             return (
-                <div
-                    style={{
-                        backgroundColor: 'grey', padding: 1,
-                    }}
-                >
+                <div style={{backgroundColor: 'grey', padding: 1,}}>
                     <SyntaxHighlighter language="yaml" style={allyDark} className='deploymentManifestByTypeDiv'>
                         {manifestDeploymentData.toString()}
                     </SyntaxHighlighter>
