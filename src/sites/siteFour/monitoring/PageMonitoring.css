@@ -592,6 +592,18 @@ tr td {
     margin-left: 5px;
 }
 
+.clusterCloudletBoxOne {
+    /*background: #00A0E9;*/
+    padding: 0px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    /*height: 20px;*/
+    margin-left: 5px;
+    width: 500px !important;
+    min-width: 500px !important;
+}
+
 .ant-select-tree-node-content-wrapper .ant-select-tree-node-content-wrapper-normal {
     color: red;
 }

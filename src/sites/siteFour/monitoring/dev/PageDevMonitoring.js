@@ -38,10 +38,22 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
 import {
     getAllAppInstEventLogs,
     getAllClusterEventLogList,
@@ -1840,9 +1852,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     >
                                                     </div>
                                                 </div>
-                                                <div className="clusterCloudletBox">
-                                                    {filteredClusterUsageListLength > 1 ? reduceLegendClusterCloudletName(item, this) : item.cluster + "[" + item.cloudlet + "]"}
-                                                </div>
+                                                {filteredClusterUsageListLength === 1 ?
+                                                    <React.Fragment>
+                                                        <div className='clusterCloudletBoxOne'>
+                                                            {item.cluster + "[" + item.cloudlet + "]"}
+                                                        </div>
+                                                    </React.Fragment>
+                                                    :
+                                                    <React.Fragment>
+                                                        <div className="clusterCloudletBox">
+                                                            {reduceLegendClusterCloudletName(item, this)}
+                                                        </div>
+                                                    </React.Fragment>
+                                                }
                                             </Col>
                                         )
                                     })}
@@ -1869,7 +1891,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         </div>
                                     </div>
                                     <ClusterCluoudletLabel
-                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 2}}>
+                                        style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                         {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
                                     </ClusterCluoudletLabel>
                                 </div>
@@ -1928,7 +1950,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         width: this.state.currentWidth,
                         height: '100%',
                     }}>
-                    {/*    <GlobePopupContainer
+                        {/*    <GlobePopupContainer
                             clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             parent={this}
                             isOpenGlobe={this.state.isOpenGlobe}
@@ -1982,11 +2004,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      }}>
                                     {/*desc: no item message for cluster*/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutForCluster.length === 0 &&
-                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'Roboto', color: 'rgba(255,255,255,.6)'}}>No Item</div>
+                                    <div style={{
+                                        marginLeft: 15,
+                                        marginTop: 10,
+                                        fontSize: 25,
+                                        fontFamily: 'Roboto',
+                                        color: 'rgba(255,255,255,.6)'
+                                    }}>No Item</div>
                                     }
                                     {/*desc: no item message for appInst*/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutForAppInst.length === 0 &&
-                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'Roboto', color: 'rgba(255,255,255,.6)'}}>No Item</div>
+                                    <div style={{
+                                        marginLeft: 15,
+                                        marginTop: 10,
+                                        fontSize: 25,
+                                        fontFamily: 'Roboto',
+                                        color: 'rgba(255,255,255,.6)'
+                                    }}>No Item</div>
                                     }
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                         ? this.renderGridLayoutForCluster()
@@ -2005,7 +2039,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 : null
                             }
                         </div>
-                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => {
+                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen
+                                open={this.state.openTerminal} onClose={() => {
                             this.setState({openTerminal: false})
                         }}>
                             <TerminalViewer data={this.state.terminalData} onClose={() => {
