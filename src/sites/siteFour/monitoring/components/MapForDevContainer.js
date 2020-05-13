@@ -399,7 +399,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
-        makeClusterGroupForClient(objkeyOne, index) {
+        makeClusterGroupAndClient(objkeyOne, index) {
             let groupedClientList = this.state.clientList;
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -433,13 +433,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 [&nbsp;
                                             </div>
                                             <div style={{color: 'orange'}}>
-                                                {moment(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString()}
+                                                {moment(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}
                                             </div>
                                             <div style={{width: 5,}}/>
-                                            {/*   <div style={{color: 'green',}}>
-                                                nanos
-                                                : {moment.unix(item.timestamp.nanos).format("MM/DD/YYYY").toString()}
-                                            </div>*/}
                                             <div>
                                                 ]
                                             </div>
@@ -841,7 +837,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) =>
-                                    this.makeClusterGroupForClient(objkeyOne, index)
+                                    this.makeClusterGroupAndClient(objkeyOne, index)
                                 )}
 
 
