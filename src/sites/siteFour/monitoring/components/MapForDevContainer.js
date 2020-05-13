@@ -265,8 +265,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         newClientList.push(item);
                     })
 
-                    console.log(`newClientList====>`, newClientList);
-
                     let groupedClientList = groupByKey_(newClientList, 'clientLocation')
                     let clientObjKeys = Object.keys(groupedClientList)
                     await this.setState({

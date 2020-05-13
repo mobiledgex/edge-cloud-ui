@@ -751,8 +751,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredAppInstanceList: filteredAppInstList,
                             appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
                             currentAppInst: undefined,
-                        }, () => {
-                            console.log(`currentCluster====>`, this.state.currentCluster);
                         });
 
                     }
