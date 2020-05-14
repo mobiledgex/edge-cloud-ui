@@ -140,8 +140,8 @@ class MexListView extends React.Component {
         serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
     }
 
-    onUpdate = async (action, data) => {
-        if (data[fields.updateAvailable]) {
+    onUpdate = async (action, data, forceRefresh) => {
+        if (forceRefresh || data[fields.updateAvailable]) {
             this.props.handleLoadingSpinner(true)
             serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
         }
@@ -175,9 +175,10 @@ class MexListView extends React.Component {
                 data.map(item => {
                     switch (action.label) {
                         case 'Upgrade':
-                            if (item[fields.updateAvailable]) {
-                                this.onUpdate(action, item)
-                            }
+                            this.onUpdate(action, item)
+                            break;
+                        case 'Refresh':
+                            this.onUpdate(action, item, true)
                             break;
                         case 'Delete':
                             this.onDeleteMultiple(action, item)
@@ -193,6 +194,9 @@ class MexListView extends React.Component {
                         break;
                     case 'Upgrade':
                         this.onUpdate(action, data)
+                        break;
+                    case 'Refresh':
+                        this.onUpdate(action, data, true)
                         break;
                     case 'Power On':
                     case 'Power Off':
@@ -220,6 +224,9 @@ class MexListView extends React.Component {
                 break
             case 'Upgrade':
                 this.onWarning(action, 'upgrade', false, data)
+                break;
+            case 'Refresh':
+                this.onWarning(action, 'refresh', false, data)
                 break;
             case 'Power On':
                 this.onWarning(action, 'power on', false, data)
