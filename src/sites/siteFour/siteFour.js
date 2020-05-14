@@ -1,10 +1,8 @@
 import React from 'react';
-import {Header } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
 import {withRouter} from 'react-router-dom';
-import {Motion} from "react-motion";
-import {Steps, Hints} from 'intro.js-react';
+import {Steps} from 'intro.js-react';
 
 //redux
 import {connect} from 'react-redux';
@@ -12,16 +10,14 @@ import * as actions from '../../actions';
 import {GridLoader} from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
 import * as serviceMC from '../../services/serviceMC';
+import * as serverData from '../../services/model/serverData';
 import {MonitoringTutor} from '../../tutorial';
 import Alert from 'react-s-alert';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 
-let defaultMotion = {left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1}
 let _self = null
-
 const monitoringSteps = MonitoringTutor();
-
 
 class SiteFour extends React.Component {
     constructor(props) {
@@ -35,7 +31,6 @@ class SiteFour extends React.Component {
             email: store ? store.email : 'Administrator',
             role: '',
             userToken: null,
-            setMotion: defaultMotion,
             OrganizationName: '',
             adminShow: false,
             menuClick: false,
@@ -45,6 +40,7 @@ class SiteFour extends React.Component {
             steps: [],
             enable: false,
             hideNext: true,
+            userRole:null,
             selectRole: ''
         };
     }
@@ -104,18 +100,19 @@ class SiteFour extends React.Component {
     }
 
 
-    receiveAdminInfo = (mcRequest) => {
-        console.log('Rahul1234', mcRequest)
+    userRoleInfo = async () => {
+        let mcRequest = await serverData.showUserRoles(this)
         if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                _self.props.handleRoleInfo(response.data)
-                response.data.map((item, i) => {
-                    if (item.role.indexOf('Admin') > -1) {
-                        _self.setState({adminShow: true});
-                        localStorage.setItem('selectRole', item.role)
+            if (mcRequest.response && mcRequest.response.data) {
+                let dataList = mcRequest.response.data;
+                for (var i = 0; i < dataList.length; i++) {
+                    let role = dataList[i].role
+                    if (role.indexOf('Admin') > -1) {
+                        _self.setState({ userRole: role });
+                        localStorage.setItem('selectRole', role)
+                        break;
                     }
-                })
+                }
             }
         }
     }
@@ -156,10 +153,6 @@ class SiteFour extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.selectedOrg) {
-            _self.setState({selectOrg: nextProps.selectedOrg})
-        }
-
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
             let subPath = '';
@@ -252,12 +245,13 @@ class SiteFour extends React.Component {
                             loading={_self.props.loadingSpinner}
                         />
                     </div> : null}
-                <SideNav onOptionClick={_self.handleItemClick} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} gotoUrl={_self.gotoUrl} viewMode={_self.props.ViewMode}/>
-                <Motion defaultStyle={defaultMotion} style={_self.state.setMotion}>
-                    {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
-                </Motion>
+                <SideNav onOptionClick={_self.handleItemClick} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} gotoUrl={_self.gotoUrl} viewMode={_self.props.ViewMode} userRole={this.state.userRole}/>
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.userRoleInfo()
     }
 
     componentWillUnmount() {
@@ -272,7 +266,6 @@ const mapStateToProps = (state) => {
     let formInfo = (state.form) ? state.form : null;
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
     let ViewMode = (state.ViewMode) ? state.ViewMode.mode : null;
     let changeStep = (state.changeStep) ? state.changeStep.step : null;
 
@@ -280,7 +273,6 @@ const mapStateToProps = (state) => {
         isShowHeader: state.HeaderReducer.isShowHeader,
         userToken: (state.userToken) ? state.userToken : null,
         userInfo: state.userInfo ? state.userInfo : null,
-        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
         alertInfo: {
             mode: state.alertInfo.mode,
@@ -291,8 +283,7 @@ const mapStateToProps = (state) => {
         tutorState: tutorState,
         formInfo: formInfo,
         submitInfo: submitInfo,
-        regionInfo: regionInfo,
-        selectedOrg
+        regionInfo: regionInfo
     }
 };
 
@@ -307,14 +298,8 @@ const mapDispatchProps = (dispatch) => {
         handleUserInfo: (data) => {
             dispatch(actions.userInfo(data))
         },
-        handleSelectOrg: (data) => {
-            dispatch(actions.selectOrganiz(data))
-        },
         handleLoadingSpinner: (data) => {
             dispatch(actions.loadingSpinner(data))
-        },
-        handleRoleInfo: (data) => {
-            dispatch(actions.roleInfo(data))
         },
         handleAlertInfo: (mode, msg) => {
             dispatch(actions.alertInfo(mode, msg))
