@@ -1651,9 +1651,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 cloudletList.map(cloudletOne => {
                     let newCloudletOne = {
                         title: (
-                            <div>{cloudletOne}
-                                &nbsp;&nbsp;<Chip color="primary" size="small" label="Cloudlet"
-                                                  style={{color: '#A4A4A8', backgroundColor: '#34373E'}}/>
+
+                            <div>{cloudletOne}&nbsp;&nbsp;
+                                <Chip
+                                    color="primary"
+                                    size="small"
+                                    label="Cloudlet"
+                                    style={{color: 'white', backgroundColor: '#34373E'}}
+                                />
                             </div>
                         ),
                         value: cloudletOne,
