@@ -10,7 +10,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from "antd";
 import '../PageMonitoring.css'
-import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
+import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../dev/PageDevMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../PageMonitoringUtils";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../PageMonitoringCommonService";
@@ -36,7 +36,7 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
     function handleRowClicked(item, hwType) {
         try {
             let clusterAndCloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
-            let lineChartDataSet = makeLineChartDataForCluster(props.parent.state.filteredClusterUsageList, hwType, props.parent)
+            let lineChartDataSet = makeLineChartData(props.parent.state.filteredClusterUsageList, hwType, props.parent)
             clusterAndCloudlet = clusterAndCloudlet.toString().split(" | ")[0] + "|" + clusterAndCloudlet.toString().split(" | ")[1]
             handleLegendAndBubbleClickedEvent(props.parent, clusterAndCloudlet, lineChartDataSet)
         } catch (e) {

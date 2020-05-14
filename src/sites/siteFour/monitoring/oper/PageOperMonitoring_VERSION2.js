@@ -1,3 +1,4 @@
+/*
 import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
@@ -20,7 +21,7 @@ import {
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
-    makeLineChartDataForCluster,
+    makeLineChartData,
     makeSelectBoxListWithKeyValuePipeForCluster,
     reduceLegendClusterCloudletName,
     revertToDefaultLayout,
@@ -261,8 +262,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
                 //@fixme: DELETE THEME COLOR
-                /*reactLocalStorage.remove(themeTitle)
-                reactLocalStorage.remove(themeKey)*/
+                /!*reactLocalStorage.remove(themeTitle)
+                reactLocalStorage.remove(themeKey)*!/
                 this.state = {
                     layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
                     layoutMapperForCluster: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
@@ -673,7 +674,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = []
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    lineChartDataSet = makeLineChartDataForCluster(usageList, this.state.currentHardwareType, this)
+                    lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
                 } else {
                     lineChartDataSet = makeLineChartDataForAppInst(usageList, this.state.currentHardwareType, this)
                 }
@@ -987,7 +988,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let lineChartDataSet = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
                     } else {
                         lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                     }
@@ -1036,9 +1037,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div
                             className='draggable'
                             style={PageMonitoringStyles.gridItemHeader}>
-                            {/*desc:############################*/}
-                            {/*desc:    maximize button         */}
-                            {/*desc:############################*/}
+                            {/!*desc:############################*!/}
+                            {/!*desc:    maximize button         *!/}
+                            {/!*desc:############################*!/}
                             {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
@@ -1051,9 +1052,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                             }
 
-                            {/*desc:############################*/}
-                            {/*desc:    delete btn                */}
-                            {/*desc:############################*/}
+                            {/!*desc:############################*!/}
+                            {/!*desc:    delete btn                *!/}
+                            {/!*desc:############################*!/}
                             <div className="remove page_monitoring_widget_icon"
                                  onClick={() => {
                                      this.removeGridItem(uniqueIndex)
@@ -1066,9 +1067,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
 
 
-                        {/*desc:############################*/}
-                        {/*@desc:__makeGridItem BodyByType  */}
-                        {/*desc:############################*/}
+                        {/!*desc:############################*!/}
+                        {/!*@desc:__makeGridItem BodyByType  *!/}
+                        {/!*desc:############################*!/}
                         <div className='page_monitoring_column_resizable'>
                             {this.__makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
@@ -1080,7 +1081,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        chartDataSets = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         chartDataSets = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
                     }
@@ -1290,9 +1291,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             makeActionMenuListItems = () => {
                 return (
                     <AMenu>
-                        {/*desc:#########################################*/}
-                        {/*desc:Fetch Locally Stored Data                */}
-                        {/*desc:#########################################*/}
+                        {/!*desc:#########################################*!/}
+                        {/!*desc:Fetch Locally Stored Data                *!/}
+                        {/!*desc:#########################################*!/}
                         <AMenu.Item
                             style={{display: 'flex'}}
                             key="1"
@@ -1318,9 +1319,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Add Item
                             </div>
                         </AMenu.Item>
-                        {/*desc:#########################################*/}
-                        {/*desc:Reload                                  */}
-                        {/*desc:#########################################*/}
+                        {/!*desc:#########################################*!/}
+                        {/!*desc:Reload                                  *!/}
+                        {/!*desc:#########################################*!/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={async () => {
@@ -1337,9 +1338,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                         </AMenu.Item>
 
-                        {/*desc: ######################*/}
-                        {/*desc: Revert to default Layout*/}
-                        {/*desc: ######################*/}
+                        {/!*desc: ######################*!/}
+                        {/!*desc: Revert to default Layout*!/}
+                        {/!*desc: ######################*!/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={async () => {
@@ -1352,9 +1353,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                         </AMenu.Item>
 
-                        {/*desc: ######################*/}
-                        {/*desc:Stacked Line Chart     */}
-                        {/*desc: ######################*/}
+                        {/!*desc: ######################*!/}
+                        {/!*desc:Stacked Line Chart     *!/}
+                        {/!*desc: ######################*!/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
@@ -1378,9 +1379,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 />
                             </div>
                         </AMenu.Item>
-                        {/*desc:#########################################*/}
-                        {/*desc:____Menu Changing Graph Theme Color_____ */}
-                        {/*desc:#########################################*/}
+                        {/!*desc:#########################################*!/}
+                        {/!*desc:____Menu Changing Graph Theme Color_____ *!/}
+                        {/!*desc:#########################################*!/}
                         <ASubMenu
                             key="sub3"
                             title={
@@ -1406,9 +1407,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 )
                             })}
                         </ASubMenu>
-                        {/*desc: ######################*/}
-                        {/*desc: ShowAppInstClient             */}
-                        {/*desc: ######################*/}
+                        {/!*desc: ######################*!/}
+                        {/!*desc: ShowAppInstClient             *!/}
+                        {/!*desc: ######################*!/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
@@ -1431,9 +1432,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 />
                             </div>
                         </AMenu.Item>
-                        {/*desc: ######################*/}
-                        {/*desc:  Delete All Grid Item*/}
-                        {/*desc: ######################*/}
+                        {/!*desc: ######################*!/}
+                        {/!*desc:  Delete All Grid Item*!/}
+                        {/!*desc: ######################*!/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={async () => {
@@ -1476,22 +1477,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                                 }
                             </div>
-                            {/*
+                            {/!*
                              desc :####################################
                              desc : options list (right conner)
                              desc :####################################
-                            */}
+                            *!/}
                             <div style={{
                                 display: 'flex',
                                 flex: .3,
                                 justifyContent: 'flex-end',
                                 //backgroundColor: 'yellow'
                             }}>
-                                {/*
+                                {/!*
                                 todo :####################################
                                 todo : Clusterstream toggle button
                                 todo :####################################
-                                */}
+                                *!/}
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                                 <div style={{
                                     alignItems: 'center',
@@ -1505,7 +1506,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     justifyContent: 'center',
                                 }}>
                                     <div style={PageMonitoringStyles.listItemTitle}>
-                                        {/*Cluster*/} Stream
+                                        {/!*Cluster*!/} Stream
                                     </div>
                                     <div style={PageMonitoringStyles.listItemTitle}>
                                         <CustomSwitch
@@ -1529,11 +1530,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                                 }
 
-                                {/*
+                                {/!*
                                 desc :####################################
                                 desc : appInst stream toggle button
                                 desc :####################################
-                                */}
+                                *!/}
                                 {this.state.currentClassification === CLASSIFICATION.APPINST &&
                                 <div style={{
                                     alignItems: 'center',
@@ -1547,7 +1548,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     justifyContent: 'center',
                                 }}>
                                     <div style={PageMonitoringStyles.listItemTitle}>
-                                        {/*App Inst*/} Stream
+                                        {/!*App Inst*!/} Stream
                                     </div>
                                     <div style={PageMonitoringStyles.listItemTitle}>
                                         <CustomSwitch
@@ -1858,9 +1859,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     </ClusterCluoudletLabel>
                                 </div>
                             }
-                            {/*################################*/}
-                            {/* fold/unfoled icons on right    */}
-                            {/*################################*/}
+                            {/!*################################*!/}
+                            {/!* fold/unfoled icons on right    *!/}
+                            {/!*################################*!/}
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                             <div
                                 style={PageMonitoringStyles.expandIconDiv}
@@ -1912,12 +1913,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         width: this.state.currentWidth,
                         height: '100%',
                     }}>
-                        {/*    <GlobePopupContainer
+                        {/!*    <GlobePopupContainer
                             clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             parent={this}
                             isOpenGlobe={this.state.isOpenGlobe}
                             appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                        />*/}
+                        />*!/}
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
@@ -1947,14 +1948,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 width: '100%',
                                 height: '106%',
                             }}>
-                                {/*desc:---------------------------------*/}
-                                {/*desc:Content Header                   */}
-                                {/*desc:---------------------------------*/}
+                                {/!*desc:---------------------------------*!/}
+                                {/!*desc:Content Header                   *!/}
+                                {/!*desc:---------------------------------*!/}
                                 <SemanticToastContainer position={"bottom-center"} color={'red'}/>
                                 {this.renderHeader()}
-                                {/*desc:---------------------------------*/}
-                                {/*desc:Legend                           */}
-                                {/*desc:---------------------------------*/}
+                                {/!*desc:---------------------------------*!/}
+                                {/!*desc:Legend                           *!/}
+                                {/!*desc:---------------------------------*!/}
                                 {this.makeLegend()}
                                 <div className="page_monitoring"
                                      style={{
@@ -1964,7 +1965,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          marginRight: 50,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
-                                    {/*desc: no item message for cluster*/}
+                                    {/!*desc: no item message for cluster*!/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutForCluster.length === 0 &&
                                     <div style={{
                                         marginLeft: 15,
@@ -1973,7 +1974,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         color: 'rgba(255,255,255,.6)'
                                     }}>No Item</div>
                                     }
-                                    {/*desc: no item message for appInst*/}
+                                    {/!*desc: no item message for appInst*!/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutForAppInst.length === 0 &&
                                     <div style={{
                                         marginLeft: 15,
@@ -1988,9 +1989,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }
                                 </div>
                             </div>
-                            {/*desc:---------------------------------*/}
-                            {/*desc:terminal button                   */}
-                            {/*desc:---------------------------------*/}
+                            {/!*desc:---------------------------------*!/}
+                            {/!*desc:terminal button                   *!/}
+                            {/!*desc:---------------------------------*!/}
                             {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
                                 <div className='page_monitoring_terminal_button' style={{marginBottom: 10}}
                                      onClick={() => this.setState({openTerminal: true})}
@@ -2013,3 +2014,4 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
         }
     ))
 )
+*/

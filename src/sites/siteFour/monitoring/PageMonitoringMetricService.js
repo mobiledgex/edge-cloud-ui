@@ -3,10 +3,23 @@ import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../share
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../shared/Constants";
 import {sendSyncRequest} from "../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {
+    isEmpty,
+    makeFormForCloudletLevelMatric,
+    makeFormForClusterLevelMatric,
+    showToast
+} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
 import PageDevMonitoring from "./dev/PageDevMonitoring";
-import {APP_INST_EVENT_LOG_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLOUDLET_EVENT_LOG_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLUSTER_EVENT_LOG_ENDPOINT, CLUSTER_METRICS_ENDPOINT, SHOW_APP_INST_CLIENT_ENDPOINT} from "./MetricServiceEndPoint";
+import {
+    APP_INST_EVENT_LOG_ENDPOINT,
+    APP_INST_METRICS_ENDPOINT,
+    CLOUDLET_EVENT_LOG_ENDPOINT,
+    CLOUDLET_METRICS_ENDPOINT,
+    CLUSTER_EVENT_LOG_ENDPOINT,
+    CLUSTER_METRICS_ENDPOINT,
+    SHOW_APP_INST_CLIENT_ENDPOINT
+} from "./MetricServiceEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
@@ -158,7 +171,12 @@ export const getClusterList = async () => {
         let regionList = localStorage.getItem('regions').split(",");
         let promiseList = []
         for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_CLUSTER_INST, data: {region: regionList[i]}}
+            let requestData = {
+                showSpinner: false,
+                token: token,
+                method: SHOW_CLUSTER_INST,
+                data: {region: regionList[i]}
+            }
             promiseList.push(sendSyncRequest(this, requestData))
         }
 
@@ -414,11 +432,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
                         sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
                         sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                        cpuSeriesValue: cpuSeriesValue,
-                        memSeriesValue: memSeriesValue,
-                        diskSeriesValue: diskSeriesValue,
-                        networkSeriesValue: networkSeriesValue,
-                        connectionsSeriesValue: connectionsSeriesValue,
+                        cpuSeriesList: cpuSeriesValue,
+                        memSeriesList: memSeriesValue,
+                        diskSeriesList: diskSeriesValue,
+                        networkSeriesList: networkSeriesValue,
+                        connectionsSeriesList: connectionsSeriesValue,
 
                     })
 

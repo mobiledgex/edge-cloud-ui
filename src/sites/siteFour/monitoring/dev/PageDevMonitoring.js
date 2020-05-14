@@ -18,9 +18,8 @@ import {
     makeBarChartDataForCluster,
     makeDropdownForAppInst,
     makeid,
-    makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
-    makeLineChartDataForCluster,
+    makeLineChartData,
     makeSelectBoxListWithKeyValuePipeForCluster,
     reduceLegendClusterCloudletName,
     revertToDefaultLayout,
@@ -38,11 +37,32 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -64,7 +84,14 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
 import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
@@ -647,13 +674,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }, 1000 * 7.0)
             }
 
-
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = []
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    lineChartDataSet = makeLineChartDataForCluster(usageList, this.state.currentHardwareType, this)
+                    lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
                 } else {
-                    lineChartDataSet = makeLineChartDataForAppInst(usageList, this.state.currentHardwareType, this)
+                    lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
                 }
 
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
@@ -965,9 +991,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let lineChartDataSet = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
                     } else {
-                        lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                        lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
                     }
 
                     chartDataSets = makeLineChartDataForBigModal(lineChartDataSet, this)
@@ -1058,9 +1084,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        chartDataSets = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                        chartDataSets = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
                     }
 
                     return (
@@ -1626,7 +1652,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let newCloudletOne = {
                         title: (
                             <div>{cloudletOne}
-                                &nbsp;&nbsp;<Chip color="primary" size="small" label="Cloudlet" style={{color: '#A4A4A8', backgroundColor: '#34373E'}}/>
+                                &nbsp;&nbsp;<Chip color="primary" size="small" label="Cloudlet"
+                                                  style={{color: '#A4A4A8', backgroundColor: '#34373E'}}/>
                             </div>
                         ),
                         value: cloudletOne,
