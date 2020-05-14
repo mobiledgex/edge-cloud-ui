@@ -201,7 +201,7 @@ const MexForms = (props) => {
         form.id = { id: index }
         let subForms = form.forms
         return (
-            <Grid style={{width:'100%'}}>
+            <Grid style={{width:'100%'}} key={index}>
                 <Grid.Row className={'formHeader-'+index} columns={2} key={uuid() + '' + index}>
                     <Grid.Column width={15} className='detail_item'>
                         <h2 style={{ color: "white", display: 'inline' }}>{form.label}
@@ -216,7 +216,8 @@ const MexForms = (props) => {
                     {
                         form.tip ?
                             <Grid.Column key={index} width={1}>
-                                {showTip(form)}
+                                {/* @todo temp solution needs to be fixed */}
+                                &nbsp;&nbsp;&nbsp;&nbsp;{showTip(form)}
                             </Grid.Column> :
                             null
                     }
@@ -341,7 +342,8 @@ const MexForms = (props) => {
                                         loadHeader(i, form) :
                                         form.formType === MULTI_FORM ?
                                             form.forms ?
-                                                <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                /* @todo temp solution needs to be fixed the dropdown is not clickable if its outside grid*/
+                                                <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}<Grid.Column width={16}>&nbsp;</Grid.Column><Grid.Column width={16}>&nbsp;</Grid.Column></Grid.Row>
                                                 : null :
                                             loadForms(i, form) :
                                     null
