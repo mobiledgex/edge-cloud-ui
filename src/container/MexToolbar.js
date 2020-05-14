@@ -63,6 +63,7 @@ const MexToolbar = (props) => {
                             <SearchIcon />
                         </InputAdornment>
                     }
+                    value = {props.filterText}
                     placeholder={'Search'} 
                 />
                 {requestInfo.isRegion ?
