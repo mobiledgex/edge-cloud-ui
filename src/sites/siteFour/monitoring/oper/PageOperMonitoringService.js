@@ -2,7 +2,7 @@ import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} f
 import React from "react";
 import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
 import {renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader, renderUsageByType2, sortUsageListByType} from "../PageMonitoringCommonService";
-import PageOperMonitoring from "./OLDVERSION___PageOperMonitoring";
+import PageOperMonitoring from "./PageOperMonitoring";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import {numberWithCommas} from "../PageMonitoringUtils";
