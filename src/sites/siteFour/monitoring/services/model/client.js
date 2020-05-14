@@ -17,37 +17,37 @@ HTTP/1.1 200 OK
   "last": 1
 }
 */
+
+import moment from "moment";
 import * as serverData from "../../../../../services/model/serverData";
 
 let scope = null;
+
 const parseData = (response, type) => {
     const resData = [];
-    const times = [];
+    const columns = [];
     const methods = [];
+    const cloudlets = [];
     const resData_util = {};
     const resData_ip = {};
     if (response && response.response && response.response.data.data) {
         response.response.data.data.map((data, i) => {
-            const resSeries_utilize = (data.Series) ? data.Series[0] : null;
-            const resSeries_ipuse = (data.Series) ? data.Series[1] : null;
-            const columns_utilize = (data.Series) ? data.Series[0].columns : null;
-            const columns_ipus = (data.Series) ? data.Series[1].columns : null;
-
             if (data.Series && data.Series.length > 0) {
+                const resSeries = (data.Series) ? data.Series[0].values : null;
+                const resColumns = (data.Series) ? data.Series[0].columns : null;
+                const cloudletIdx = resColumns.indexOf("cloudlet");
+                const methodIdx = resColumns.indexOf("method");
                 /** metrics of the cloudlets */
-
-                times.push(resSeries_utilize ? createTime(resSeries_utilize.values) : null);
-                methods.push(resSeries_utilize ? createMethods(type, resSeries_utilize.values) : null);
+                resSeries.map((res, l) => {
+                    cloudlets.push(res[cloudletIdx]);
+                    methods.push(res[methodIdx]);
+                });
 
                 const resultParse = {
                     methods,
-                    times,
-                    resData_util: [
-                        resSeries_utilize.values,
-                    ],
-                    resData_ip: [
-                        resSeries_ipuse.values,
-                    ],
+                    cloudlets,
+                    resColumns,
+                    resSeries,
                 };
 
                 resData.push(resultParse);
@@ -60,9 +60,36 @@ const parseData = (response, type) => {
         return resData;
     }
 
-    return resData;
+    return { [type]: resData };
 };
+/*
+1. Get yesterday date with current timing
+
+moment().subtract(1, 'days').toString()
+2. Get yesterday date with start of the day
+
+moment().subtract(1, 'days').startOf('day').toString()
+3. Get yesterday date with end of the day
+
+moment().subtract(1, 'days').endOf('day').toString()
+*/
 const metricFromServer = async (self, data) => {
+    const selectedTimeRange = "today"; // TODO: selected time form toolbar
+    const yesterdayWithCurrent = moment().subtract(1, "days").toString();
+    const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
+    const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
+
+    const makeUTC = time => moment(time).utc();
+    const rangeTime = range => {
+        let time = new Date();
+
+        if (range === "start") {
+            time = makeUTC(yesterdayWithCurrent);
+        } else {
+            time = makeUTC(moment());
+        }
+        return time;
+    };
     const requestData = {
         token: data.token,
         method: data.method,
@@ -75,14 +102,16 @@ const metricFromServer = async (self, data) => {
                     version: data.version,
                 },
             },
-            method: "FindCloudlet",
             selector: "api",
-            last: 1,
+            starttime: rangeTime("start"),
+            endtime: rangeTime("end")
         },
     };
-    console.log("20200513 metricFromServer --- ", requestData);
+
+
     const response = await serverData.sendRequest(self, requestData);
-    return parseData(response, `${data.selectOrg}/${data.cloudletSelectedOne}/${data.appinstSelectedOne}`);
+    console.log("20200513 metricFromServer --- ", response);
+    return parseData(response, `${data.pRegion}/${data.selectOrg}/${data.appinstSelectedOne}`);
 };
 
 
@@ -91,5 +120,4 @@ export const getClientMetrics = async (self, params) => {
     console.log("20200513 getClientMetrics --- ", params);
     const result = await metricFromServer(self, params);
     return result;
-
 };

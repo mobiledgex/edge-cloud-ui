@@ -28,8 +28,14 @@ const HeaderFiltering = props => {
     }, [props]);
 
     return (
-        <div className={classes.root}>
-            <Grid container spacing={3}>
+        <div className={classes.root} style={{ margin: 0 }}>
+            <Grid
+                container
+                direction="row"
+                justify="space-between"
+                alignItems="center"
+                spacing={3}
+            >
                 <Grid item xs>
                     a
                 </Grid>

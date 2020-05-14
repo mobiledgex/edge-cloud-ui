@@ -76,7 +76,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     async onReceiveResult(result, self) {
         try {
-            console.log("20200511 ------->>>>>>>>>>  page  = ", self.state.page);
+            console.log("20200511 ------->>>>>>>>>>  page  = ", self.state.page, ": result ==> ", result);
             // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
             /** filtering data */
             const groupByData = result;

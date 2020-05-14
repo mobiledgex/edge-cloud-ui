@@ -16,7 +16,7 @@ import * as ChartType from "./formatter/chartType";
 import HeaderFiltering from "./hooks/HeaderFiltering";
 
 // doCloudlets = true    데이터 로딩을 잠시 멈춤 : UI 작업을 위하여
-let doCloudlets = true;
+let doCloudlets = false;
 let count = 0;
 let countApp = 0;
 let regionCount = 0;
@@ -90,6 +90,7 @@ class MonitoringAdmin extends React.Component {
             } else if (result && result.AppinstList) {
                 this.hasAppinst = this.hasAppinst.concat(result.AppinstList);
                 countApp--;
+                console.log("20200514 countApp = ", countApp);
             } else {
                 return;
             }
@@ -100,7 +101,7 @@ class MonitoringAdmin extends React.Component {
                 });
                 count = regionCount;
             } else if (countApp <= 0) {
-                console.log("20200513 init appinst .... ", this.hasAppinst);
+                console.log("20200514 init appinst .... ", this.hasAppinst);
                 this.setState({
                     compAppinst: this.hasAppinst,
                 });
@@ -118,7 +119,7 @@ class MonitoringAdmin extends React.Component {
                 const resultMetrics = await Service.getPrepareList(props, self);
                 if (resultMetrics && resultMetrics[0].AppinstList) {
                     count = resultMetrics.length;
-                    resultMetrics.map((mtr) => {
+                    resultMetrics.map(mtr => {
                         this.onReceiveResult(mtr);
                     });
                 }

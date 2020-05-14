@@ -98,7 +98,7 @@ const getMetricsClient = async (self, params) => {
     const requestData = (appinstInfo) => ({
         token,
         pRegion: appinstInfo.region,
-        selectOrg: appinstInfo.operatorName,
+        selectOrg: appinstInfo.organizationName,
         method: serviceMC.getEP().METRICS_CLIENT,
         appinstSelectedOne: appinstInfo.appName,
         version: appinstInfo.version,
@@ -110,7 +110,7 @@ const getMetricsClient = async (self, params) => {
             self,
             requestData(appinst),
         );
-        self.onReceiveResult(response, self);
+        if (response.length > 0) self.onReceiveResult(response, self);
     });
 };
 

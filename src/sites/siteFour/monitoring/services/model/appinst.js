@@ -1,11 +1,11 @@
 import * as AppInstAPI from "../../../../../services/model/appInstance";
 /**
  * AppInstAPI : @Rahul's service model
- * @param {*} self 
- * @param {*} param 
+ * @param {*} self
+ * @param {*} param
  */
-let concatResponse = [];
-let newResponse = [];
+const concatResponse = [];
+const newResponse = [];
 let resCount = 100;
 // const getMethodClient = (self, params) => {
 //     let execrequest = getArgs({
@@ -32,37 +32,32 @@ let resCount = 100;
 // };
 
 
-/*******************************************
+/** *****************************************
  * LIST OF INSTANCE
- ********************************************/
-const parseData = (response, type) => {
-    return {
-        [type]: response
-    }
-}
+ ** ***************************************** */
+const parseData = (response, type) => ({
+    [type]: response
+});
 export const getAppinstanceList = async (self, params) => {
     if (params && params.regions) {
         resCount = params.regions.length;
         return Promise.all(
-            params.regions.map(async (_region) => {
-                return parseData(await AppInstAPI.getAppInstList(self, { region: _region }), "AppinstList");
-            })
+            params.regions.map(async _region => parseData(await AppInstAPI.getAppInstList(self, { region: _region }), "AppinstList"))
         );
     }
 };
 
 
-
-/*******************************************
+/** *****************************************
  * METRICS
  * // return await serviceMC.sendSyncRequest(
         //     self,
         //     getMethodClient(defaultValue.self, defaultValue)
         // );
- ********************************************/
+ ******************************************* */
 
 const metricFromServer = async (self, data) => {
-    let requestData = {
+    const requestData = {
         token: data.token,
         method: data.method,
         data: {
@@ -74,11 +69,8 @@ const metricFromServer = async (self, data) => {
             last: data.last,
             selector: "*"
         }
-    }
-    let response = await serverData.sendRequest(self, requestData);
+    };
+    const response = await serverData.sendRequest(self, requestData);
     return parseData(response, data.selectOrg + "/" + data.cloudletSelectedOne);
 };
-export const getAppinstMetrics = async (self, params) => {
-    return await metricFromServer(self, params);
-};
-
+export const getAppinstMetrics = async (self, params) => await metricFromServer(self, params);

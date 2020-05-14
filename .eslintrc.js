@@ -51,7 +51,7 @@ module.exports = {
         "no-param-reassign": ["error", { "props": false }],
         "react/jsx-filename-extension": 0,
         "react/jsx-indent": 0,
-        "react/jsx-indent-props": 0
-
+        "react/jsx-indent-props": 0,
+        "import/prefer-default-export": 0
     }
 };
