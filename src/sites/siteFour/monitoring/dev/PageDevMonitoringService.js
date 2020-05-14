@@ -33,6 +33,16 @@ import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getCloudletList, getClusterLevelUsageList,
+    getClusterList
+} from "../PageMonitoringMetricService";
+import _ from "lodash";
+import * as reducer from "../../../../utils";
+import Chip from "@material-ui/core/Chip";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -140,10 +150,54 @@ export const CHART_TYPE = {
     COLUMN: 'COLUMN',
 }
 
+export const defaultLayoutForCloudlet = [
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+];
+
+
+export const defaultLayoutMapperForCloudlet = [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+    },
+    {
+        id: '5',
+        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+    },
+    {
+        id: '6',
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+    },
+
+];
+
+
 
 export const defaultLayoutForCluster = [
-
-
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
@@ -185,22 +239,6 @@ export const defaultHwMapperListForCluster = [
         hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
         graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
-
-    /* {
-         id: '7',
-         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-         graphType: CHART_TYPE.COLUMN,
-     },
-     {
-         id: '8',
-         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-         graphType: CHART_TYPE.COLUMN,
-     },*/
-    /*  {
-          id: '9',
-          hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-          graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-      },*/
 
 ];
 
@@ -557,6 +595,139 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 
     }
 };
+
+export const makeClusterTreeDropdown = (cloudletList, clusterList) => {
+    let newCloudletList = []
+    newCloudletList.push({
+        title: 'Reset Filter',
+        value: '',
+        selectable: true,
+        children: []
+    });
+    cloudletList.map(cloudletOne => {
+        let newCloudletOne = {
+            title: (
+
+                <div>{cloudletOne}&nbsp;&nbsp;
+                    <Chip
+                        color="primary"
+                        size="small"
+                        label="Cloudlet"
+                        //style={{color: 'white', backgroundColor: '#34373E'}}
+                    />
+                </div>
+            ),
+            value: cloudletOne,
+            selectable: false,
+            children: []
+        };
+
+        clusterList.map(clusterOne => {
+            if (clusterOne.Cloudlet === cloudletOne) {
+                newCloudletOne.children.push({
+                    title: clusterOne.ClusterName,
+                    value: clusterOne.ClusterName + " | " + cloudletOne,
+                    isParent: false,
+                })
+            }
+        })
+
+        newCloudletList.push(newCloudletOne);
+    })
+
+    return newCloudletList;
+}
+
+export const loadInitDataForDev = async (isInterval: boolean = false, _this: PageDevMonitoring) => {
+    let promiseList = []
+    let promiseList2 = []
+    try {
+        clearInterval(_this.intervalForAppInst)
+        await _this.setState({dropdownRequestLoading: true})
+        //@desc:#############################################
+        //@desc: (cloudletList ,clusterList, appnInstList)
+        //@desc:#############################################
+        promiseList.push(getCloudletList())
+        promiseList.push(getClusterList())
+        promiseList.push(getAppInstList())
+        let newPromiseList = await Promise.all(promiseList);
+        let cloudletList = newPromiseList[0];
+        let clusterList = newPromiseList[1];
+        let appInstList = newPromiseList[2];
+        let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
+
+        //@todo: dropdownClusterListOnCloudlet
+        let cloudletOnClusterList = []
+        clusterList.map(item => (cloudletOnClusterList.push(item.Cloudlet)))
+        let dropdownClusterListOnCloudlet = makeClusterTreeDropdown(_.uniqBy(cloudletOnClusterList), clusterList)
+
+
+        //@desc:#########################################################################
+        //@desc: map Marker
+        //@desc:#########################################################################
+        let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+        await _this.setState({
+            appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+            mapLoading: false,
+        })
+
+        //@desc:#########################################################################
+        //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
+        //@desc:#########################################################################
+        promiseList2.push(getAllClusterEventLogList(clusterList))
+        promiseList2.push(getAllAppInstEventLogs());
+        promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+        promiseList2.push(getClusterLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
+        let newPromiseList2 = await Promise.all(promiseList2);
+        let allClusterEventLogList = newPromiseList2[0];
+        let allAppInstEventLogList = newPromiseList2[1];
+        let allClusterUsageList = newPromiseList2[2];
+        let allCoudletUsageList = newPromiseList2[2];
+
+        let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, _this.state.chartColorList);
+        let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+            return o.sumCpuUsage;
+        }));
+        let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
+            return o.sumMemUsage;
+        }));
+        await _this.setState({
+            legendHeight: (Math.ceil(clusterList.length / 8)) * 25,
+            isNoData: appInstList.length === 0,
+            bubbleChartData: bubbleChartData,
+            allClusterEventLogList: allClusterEventLogList,
+            filteredClusterEventLogList: allClusterEventLogList,
+            allAppInstEventLogs: allAppInstEventLogList,
+            filteredAppInstEventLogs: allAppInstEventLogList,
+            isReady: true,
+            clusterDropdownList: clusterDropdownList,
+            dropDownCludsterListOnCloudlet: dropdownClusterListOnCloudlet,
+            clusterList: clusterList,
+            filteredClusterList: clusterList,
+            isAppInstaceDataReady: true,
+            appInstanceList: appInstList,
+            filteredAppInstanceList: appInstList,
+            dropdownRequestLoading: false,
+            clusterListLoading: false,
+            allClusterUsageList: allClusterUsageList,
+            filteredClusterUsageList: allClusterUsageList,
+            maxCpu: maxCpu,
+            maxMem: maxMem,
+            isRequesting: false,
+            currentCluster: '',
+            ///@desc: ----------cloudletList--------------
+            cloudletList: cloudletList,
+            filteredCloudletList: cloudletList,
+            allCloudletUsageList: allCoudletUsageList,
+
+        },()=>{
+            console.log(`state====>`, _this.state);
+        });
+    } catch (e) {
+        //showToast(e.toString())
+    }
+
+}
 
 
 export const makeGridItemWidth = (graphType) => {
