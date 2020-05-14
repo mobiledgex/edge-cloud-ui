@@ -559,6 +559,25 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 };
 
 
+export const makeGridItemWidth = (graphType) => {
+    if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
+        return 4;
+    } else if (graphType === GRID_ITEM_TYPE.MAP) {
+        return 2;
+    } else {
+        return 1;
+    }
+}
+
+export const makeGridIItemHeight = (graphType) => {
+    if (graphType === GRID_ITEM_TYPE.MAP) {
+        return 2;
+    } else {
+        return 1;
+    }
+}
+
+
 /**
  *
  * @param hardwareUsageList

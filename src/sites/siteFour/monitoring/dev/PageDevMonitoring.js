@@ -22,7 +22,7 @@ import {
     makeLineChartData,
     makeSelectBoxListWithKeyValuePipeForCluster,
     reduceLegendClusterCloudletName,
-    revertToDefaultLayout,
+    revertToDefaultLayout, makeGridIItemHeight, makeGridItemWidth,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -864,24 +864,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            makeGridItemWidth(graphType) {
-                if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
-                    return 4;
-                } else if (graphType === GRID_ITEM_TYPE.MAP) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-            }
-
-            makeGridIItemHeight(graphType) {
-                if (graphType === GRID_ITEM_TYPE.MAP) {
-                    return 2;
-                } else {
-                    return 1;
-                }
-            }
-
 
             async addGridItem(hwType, graphType = 'line') {
                 //@desc: ##########################
@@ -910,8 +892,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             i: uniqueId,
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: this.makeGridItemWidth(graphType),
-                            h: this.makeGridIItemHeight(graphType),
+                            w: makeGridItemWidth(graphType),
+                            h: makeGridIItemHeight(graphType),
                         }),
                         layoutMapperForCluster: mapperList.concat(itemOne),
                     })
