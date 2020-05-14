@@ -630,7 +630,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     let timeOne = splitDateTimeArrayList[0].replace("T", "T");
                     newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
                 }
-
             }
 
             return {

@@ -81,8 +81,8 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
-import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
-import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
+import PerformanceSummaryForCluster from "../components/PerformanceSummaryForCluster";
+import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
 import {
     ColorLinearProgress,
@@ -1146,13 +1146,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     return (
                         this.state.loading ? renderPlaceHolderLoader() :
                             this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                <PerformanceSummaryForClusterHook
+                                <PerformanceSummaryForCluster
                                     parent={this}
                                     filteredUsageList={this.state.filteredClusterUsageList}
                                     chartColorList={this.state.chartColorList}
                                 />
                                 :
-                                <PerformanceSummaryForAppInstHook
+                                <PerformanceSummaryForAppInst
                                     parent={this}
                                     filteredUsageList={this.state.filteredAppInstUsageList}
                                     chartColorList={this.state.chartColorList}

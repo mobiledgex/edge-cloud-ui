@@ -1,47 +1,74 @@
 // @flow
 import * as React from 'react';
 import {useEffect} from 'react';
+import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {Progress} from "antd";
+import {Progress, Tooltip} from "antd";
 import '../PageMonitoring.css'
+import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../dev/PageDevMonitoringService";
+import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../PageMonitoringUtils";
-import {Paper} from "@material-ui/core";
-import {convertByteToMegaGigaByte} from "../PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,
 };
 
-export default function PerformanceSummaryForAppInstHook(props) {
+function getWindowDimensions() {
+    const {innerWidth: width, innerHeight: height} = window;
+    return {
+        width,
+        height
+    };
+}
 
+export default function PerformanceSummaryForCluster(props: Props) {
+    //const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     useEffect(() => {
     }, [props.filteredUsageList]);
+
+
+    function handleRowClicked(item, hwType) {
+        try {
+            let clusterAndCloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
+            let lineChartDataSet = makeLineChartData(props.parent.state.filteredClusterUsageList, hwType, props.parent)
+            clusterAndCloudlet = clusterAndCloudlet.toString().split(" | ")[0] + "|" + clusterAndCloudlet.toString().split(" | ")[1]
+            handleLegendAndBubbleClickedEvent(props.parent, clusterAndCloudlet, lineChartDataSet)
+        } catch (e) {
+        }
+    }
 
 
     return (
         <React.Fragment>
             <div
-                className='.draggable'
+                className='draggable'
                 style={{
                     display: 'flex',
                     width: '100%',
-                    height: 45
+                    height: 45,
+                    //backgroundColor: 'red'
                 }}
             >
-                <div className='page_monitoring_title draggable'
-                     style={{
-                         flex: 1,
-                         marginTop: 5,
-                         //backgroundColor:'red'
-                     }}
-                >
-                    App Inst Performance Summary
-                </div>
+                <Tooltip placement="top" title={'To view a chart of each hardware usage,\n' +
+                'Click the cell.'}>
+                    <div className='page_monitoring_title draggable'
+                         style={{
+                             flex: .2,
+                             marginTop: 5,
+                             //backgroundColor: 'red'
+                         }}
+                    >
+                        {props.parent.state.currentClassification} Performance Summary
+                    </div>
+                    <div style={{flex: .7}} className='draggable'>
+                    </div>
+                </Tooltip>
             </div>
             <TableContainer
                 component={Paper}
@@ -52,7 +79,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                     overflowX: 'scroll'
                 }}
             >
-                <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
+                <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll',}}
                        stickyHeader={true}>
 
                     <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true}>
@@ -60,7 +87,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                             <TableCell padding={'none'} align="center" style={{}}>
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                APP INST
+                                CLUSTER
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
                                 CPU
@@ -78,13 +105,16 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                 NETWORK SENT
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                ACTIVE CONNECTION
+                                TCP CONN
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                HANDLED CONNECTION
+                                TCP RETRANS
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                ACCEPTS CONNECTION
+                                UDP REV
+                            </TableCell>
+                            <TableCell padding={'none'} align="center" style={{}}>
+                                UDP SENT
                             </TableCell>
                         </TableRow>
                     </TableHead>
@@ -99,6 +129,7 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                         height: 30,
                                     }}
                                 >
+
                                     <TableCell padding={'default'} align="center" style={{width: 30, color: '#C0C6C8',}}>
                                         <div style={{
                                             marginBottom: 0,
@@ -127,11 +158,16 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                             <div style={{
                                                 marginBottom: 0, marginTop: 0, marginLeft: 20, display: 'flex', alignItems: 'center', justifyContent: 'center'
                                             }}>
-                                                {item.appName.toString()}
+                                                {item.cluster.toString()}<br/>
+                                                [{item.cloudlet.toString()}]
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+
+                                    {/*@desc:cpu*/}
+                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.CPU)}
+                                    >
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
                                                 {item.sumCpuUsage.toFixed(2) + '%'}
@@ -147,34 +183,73 @@ export default function PerformanceSummaryForAppInstHook(props) {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+
+                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.MEM)}
+                                    >
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {convertByteToMegaGigaByte(item.sumMemUsage)}
+                                                {numberWithCommas(item.sumMemUsage.toFixed(2)) + ' %'}
+                                            </div>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
+                                                          showInfo={false}
+                                                          percent={item.sumMemUsage.toFixed(0)}
+                                                          strokeColor={props.parent.state.chartColorList[index]}
+                                                          status={'normal'}/>
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
+                                    <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.DISK)}
+
+                                    >
                                         <div style={{heiight: 15, padding: 0,}}>
                                             <div>
-                                                {convertByteToMegaGigaByte(item.sumDiskUsage)}
+                                                {numberWithCommas(item.sumDiskUsage.toFixed(2)) + ' %'}
+                                            </div>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'}
+                                                          strokeWidth={10}
+                                                          showInfo={false}
+                                                          percent={item.sumDiskUsage.toFixed(0)}
+                                                          strokeColor={props.parent.state.chartColorList[index]}
+                                                          status={'normal'}/>
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell
+                                        onClick={() => handleRowClicked(item, HARDWARE_TYPE.RECVBYTES)}
+                                        padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
                                         {numberWithCommas(convertByteToMegaGigaByte(item.sumRecvBytes.toFixed(0)))}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.SENDBYTES)}
+                                    >
                                         {numberWithCommas(convertByteToMegaGigaByte(item.sumSendBytes.toFixed(0)))}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(parseInt(item.sumActiveConnection.toFixed(0))) + ' '}
+
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPCONNS)}
+                                    >
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumTcpConns.toFixed(0)))}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(parseInt(item.sumHandledConnection.toFixed(0))) + ' '}
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPRETRANS)}
+                                    >
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumTcpRetrans.toFixed(0)))}
                                     </TableCell>
-                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
-                                        {numberWithCommas(parseInt(item.sumAcceptsConnection.toFixed(0))) + ' '}
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPRECV)}
+                                    >
+
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumUdpRecv.toFixed(0)))}
+                                    </TableCell>
+                                    <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                               onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPSENT)}
+                                    >
+                                        {numberWithCommas(convertToMegaGigaForNumber(item.sumUdpSent.toFixed(0)))}
                                     </TableCell>
                                 </TableRow>
                             )
