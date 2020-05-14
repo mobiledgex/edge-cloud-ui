@@ -153,6 +153,10 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push('9.1')
     }
+    if(!compareObjects(data[fields.authPublicKey], originalData[fields.authPublicKey]))
+    {
+        updateFields.push('12')
+    }
     if(!compareObjects(data[fields.command], originalData[fields.command]))
     {
         updateFields.push('13')
@@ -167,6 +171,12 @@ export const updateApp = async (self, data, originalData) => {
     }
     if(!compareObjects(data[fields.configs], originalData[fields.configs]))
     {
+        if (data[fields.configs] && data[fields.configs].length > 0) {
+            data[fields.configs] = data[fields.configs].map(config => {
+                config[fields.kind] = constant.configType(config[fields.kind])
+                return config
+            })
+        }
         updateFields.push('21', '21.1', '21.2')
     }
     if(!compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster]))
