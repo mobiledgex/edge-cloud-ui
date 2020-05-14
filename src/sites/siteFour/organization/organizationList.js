@@ -135,6 +135,7 @@ class OrganizationList extends React.Component {
         if (mcRequest && mcRequest.response) {
             let userRoles = mcRequest.response.data
             this.props.handleRoleInfo(userRoles)
+            localStorage.setItem('selectRole', null)
             for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
