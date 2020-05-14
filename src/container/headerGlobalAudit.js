@@ -148,20 +148,39 @@ class headerGlobalAudit extends React.Component {
 
     setStorageData = (data) => {
         let traceidList = [];
-        let localStorageName = "selectedTraceid"
-        let storageTraceidList = JSON.parse(localStorage.getItem(localStorageName))
+        let storageTraceidList = this.resetStorageData()
 
         if (storageTraceidList) {
             traceidList = storageTraceidList
             let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
             if(storageTraceidIndex === (-1)){
                 traceidList.push(data)
-                localStorage.setItem(localStorageName, JSON.stringify(traceidList))
+                localStorage.setItem("selectedTraceid", JSON.stringify(traceidList))
             }
         } else {
             traceidList[0] = data
-            localStorage.setItem(localStorageName, JSON.stringify(traceidList))
+            localStorage.setItem("selectedTraceid", JSON.stringify(traceidList))
         }
+    }
+
+    resetStorageData() {
+        let storageTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
+        let devData = this.state.devData
+        let unSelectedStorageTraceid = 0
+
+        if(storageTraceidList){
+            devData.map((data, index) => {
+                let storageTraceidIndex = storageTraceidList.findIndex(s => s === data.traceid)
+                if(storageTraceidIndex !== (-1)){
+                    unSelectedStorageTraceid++
+                }
+            })
+
+            if(unSelectedStorageTraceid === 0){
+                localStorage.removeItem('selectedTraceid')
+            }
+        }
+        return JSON.parse(localStorage.getItem("selectedTraceid"))
     }
 
     onPopupDetail = (rawViewData, requestData, responseData) => {

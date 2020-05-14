@@ -211,15 +211,15 @@ class HeaderAuditLog extends React.Component {
         this.props.close()
     };
 
-    handleExpandedChange = (index) => (event, newExpanded) => {
+    handleExpandedChange = (index, traceid) => (event, newExpanded) => {
         let dayData = this.state.dayData;
-        this.props.onItemSelected(dayData[index].traceid, index)
+        this.props.onItemSelected(traceid)
         this.setState({expanded: newExpanded ? index : false});
     };
 
-    handleGroupExpandedChange = (group, index) => (event, newExpanded) => {
+    handleGroupExpandedChange = (group, index, traceid) => (event, newExpanded) => {
         let dayData = this.state.dayData;
-        this.props.onItemSelected(dayData[index].traceid, index)
+        this.props.onItemSelected(traceid)
         this.setState({groupExpanded: {expanded : newExpanded ? index : false, group: group}});
     };
 
@@ -267,7 +267,7 @@ class HeaderAuditLog extends React.Component {
     renderStapper = (data, index) => {
         return (
             data.operationname ?
-                <ExpansionPanel square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index)}>
+                <ExpansionPanel square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)}>
                     <ExpansionPanelSummary
                         id="panel1a-header"
                     >
@@ -308,7 +308,7 @@ class HeaderAuditLog extends React.Component {
                     {
                         data.map((item, itemIndex) => {
                             return (
-                                <ExpansionPanel square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex)}>
+                                <ExpansionPanel square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
                                     <ExpansionPanelSummary
                                         id="panel1a-header"
                                     >
