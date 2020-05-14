@@ -68,6 +68,7 @@ import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, default
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
+import Chip from "@material-ui/core/Chip";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -452,7 +453,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@todo: dropdownClusterListOnCloudlet
                     let cloudletList = []
                     clusterList.map(item => (cloudletList.push(item.Cloudlet)))
-                    let dropdownClusterListOnCloudlet = this.makeClusterTree(_.uniqBy(cloudletList), clusterList)
+                    let dropdownClusterListOnCloudlet = this.makeClusterTreeDropdown(_.uniqBy(cloudletList), clusterList)
 
 
                     //@desc:#########################################################################
@@ -757,7 +758,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                         this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
                     }
-
 
                     await this.setState({
                         currentAppInst: pCurrentAppInst,
@@ -1614,7 +1614,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            makeClusterTree(cloudletList, clusterList) {
+            makeClusterTreeDropdown(cloudletList, clusterList) {
                 let newCloudletList = []
                 newCloudletList.push({
                     title: 'Reset Filter',
@@ -1623,9 +1623,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     children: []
                 });
                 cloudletList.map(cloudletOne => {
-
                     let newCloudletOne = {
-                        title: cloudletOne,
+                        title: (
+                            <div>{cloudletOne}
+                                &nbsp;&nbsp;<Chip color="primary" size="small" label="Cloudlet" style={{color: '#A4A4A8', backgroundColor: '#34373E'}}/>
+                            </div>
+                        ),
                         value: cloudletOne,
                         selectable: false,
                         children: []
