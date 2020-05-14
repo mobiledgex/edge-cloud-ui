@@ -353,11 +353,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             let sumHandledConnection = 0
             let sumAcceptsConnection = 0
             let columns = []
-            let cpuSeriesValue = []
-            let memSeriesValue = []
-            let diskSeriesValue = []
-            let networkSeriesValue = []
-            let connectionsSeriesValue = []
+            let cpuSeriesList = []
+            let memSeriesList = []
+            let diskSeriesList = []
+            let networkSeriesList = []
+            let connectionsSeriesList = []
 
             if (item.appInstanceHealth !== undefined) {
                 let series = item.appInstanceHealth.data["0"].Series;
@@ -365,7 +365,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["3"] !== undefined) {
                         let cpuSeries = series["3"]
                         columns = cpuSeries.columns;
-                        cpuSeriesValue = cpuSeries.values;
+                        cpuSeriesList = cpuSeries.values;
                         cpuSeries.values.map(item => {
                             let cpuUsage = item[APP_INST_MATRIX_HW_USAGE_INDEX.CPU];//cpuUsage..index
                             sumCpuUsage += cpuUsage;
@@ -376,7 +376,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["1"] !== undefined) {
                         let memSeries = series["1"]
                         columns = memSeries.columns;
-                        memSeriesValue = memSeries.values;
+                        memSeriesList = memSeries.values;
                         memSeries.values.map(item => {
                             let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.MEM];//memUsage..index
                             sumMemUsage += usageOne;
@@ -386,7 +386,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
                     if (series["2"] !== undefined) {
                         let diskSeries = series["2"]
-                        diskSeriesValue = diskSeries.values;
+                        diskSeriesList = diskSeries.values;
                         diskSeries.values.map(item => {
                             let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.DISK];//diskUsage..index
                             sumDiskUsage += usageOne;
@@ -396,7 +396,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["0"] !== undefined) {
                         let networkSeries = series["0"]
                         columns = networkSeries.columns;
-                        networkSeriesValue = networkSeries.values;
+                        networkSeriesList = networkSeries.values;
                         networkSeries.values.map(item => {
                             let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
                             sumSendBytes += sendBytesOne;
@@ -409,7 +409,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     if (series["4"] !== undefined) {
                         let connectionsSeries = series["4"]
                         columns = connectionsSeries.columns;
-                        connectionsSeriesValue = connectionsSeries.values;
+                        connectionsSeriesList = connectionsSeries.values;
                         connectionsSeries.values.map(item => {
                             let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
                             sumActiveConnection += connection1One;
@@ -432,11 +432,11 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
                         sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
                         sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                        cpuSeriesList: cpuSeriesValue,
-                        memSeriesList: memSeriesValue,
-                        diskSeriesList: diskSeriesValue,
-                        networkSeriesList: networkSeriesValue,
-                        connectionsSeriesList: connectionsSeriesValue,
+                        cpuSeriesList,
+                        memSeriesList,
+                        diskSeriesList,
+                        networkSeriesList,
+                        connectionsSeriesList,
 
                     })
 
@@ -697,11 +697,9 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
                         //todo: FLOATIP
                         sumFloatingIpsUsed += item["11"];
                         sumFloatingIpsMax += item["12"];
-
                         //todo: IPV4
                         sumIpv4Used += item["13"];
                         sumIpv4Max += item["14"];
-
 
                     })
 
