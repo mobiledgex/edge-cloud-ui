@@ -463,7 +463,6 @@ const mapStateToProps = (state) => {
     let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
     let ViewMode = (state.ViewMode) ? state.ViewMode.mode : null;
     let changeStep = (state.changeStep) ? state.changeStep.step : null;
-    console.log('2020 mode', ViewMode)
 
     return {
         isShowHeader: state.HeaderReducer.isShowHeader,
