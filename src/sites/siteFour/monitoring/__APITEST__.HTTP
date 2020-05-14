@@ -395,11 +395,11 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0M
 }
 
 
-###
+### FindCloudlet /FindCloudlet/FindCloudletFindCloudlet/FindCloudlet/FindCloudletFindCloudlet/FindCloudlet
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/client
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODE5ODg2NTEsImlhdCI6MTU4MTkwMjI1MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.bm8uSAJCsFMnPYatSKRyGf06AQPtKjX9jLPuP9vw9kNFNn8JiU4ehil2IIJvAZgOSfuFKacw9FHVHDrv77o2VQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODYzMzY5MTUsImlhdCI6MTU4NjI1MDUxNSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.XuVuzLwSO0MmfaddvjmTtkgncSesBoh9a_-1uDAxchFL3wQORVeS-AcdX4oXDiKjP8Ur9sxEDHYvLsGK-FpccQ
 
 {
   "region": "EU",
