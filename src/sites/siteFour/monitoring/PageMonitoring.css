@@ -169,7 +169,6 @@ tbody:hover {
 
 .clientPopup {
     width: auto;
-    font-family: Ubuntu !important;
     font-size: 9pt !important;
 }
 
@@ -575,11 +574,12 @@ tr td {
 }
 
 .ant-select-dropdown-menu-item {
-   /* line-height: 15px !important;*/
+    /* line-height: 15px !important;*/
 }
 
 .gutterRow {
     display: flex;
+    cursor: pointer;
 }
 
 .clusterCloudletBox {
@@ -590,6 +590,18 @@ tr td {
     align-items: center;
     /*height: 20px;*/
     margin-left: 5px;
+}
+
+.clusterCloudletBoxOne {
+    /*background: #00A0E9;*/
+    padding: 0px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    /*height: 20px;*/
+    margin-left: 5px;
+    width: 500px !important;
+    min-width: 500px !important;
 }
 
 .ant-select-tree-node-content-wrapper .ant-select-tree-node-content-wrapper-normal {
@@ -609,7 +621,7 @@ tr td {
 .ant-select-tree {
     background-color: rgba(0, 0, 0, 0.3);
     border-color: #96c8da;
-    box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15);
 }
 
 /*.ant-select-tree-title{

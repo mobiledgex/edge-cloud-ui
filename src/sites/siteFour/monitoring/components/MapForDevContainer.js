@@ -18,6 +18,7 @@ import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../PageMonitoring.css'
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
 import {groupByCloudletLocation, reduceString} from "../dev/PageDevMonitoringService";
+import MomentTimezone from "moment-timezone";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -122,6 +123,7 @@ type State = {
     selectedAppInstIndex: number,
     isEnableZoomIn: boolean,
     isCloudletClustering: boolean,
+    currentTimeZone: string,
 
 };
 
@@ -197,6 +199,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 selectedAppInstIndex: -1,
                 isEnableZoomIn: false,
                 isCloudletClustering: false,
+                currentTimeZone: undefined,
 
             };
 
@@ -206,7 +209,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
         tooltip = createRef();
 
         componentDidMount = async () => {
-
 
             try {
                 let appInstanceListGroupByCloudlet = this.props.markerList
@@ -233,7 +235,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 }
 
                 //@desc : #############################
-                //@desc : hide appInstInfoPopup
+                //@desc:   hide appInstInfoPopup
                 //@desc : #############################
                 if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
                     this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
@@ -356,6 +358,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     style={{width: 70}}
                     showArrow={false}
                     bordered={false}
+                    ref={c => this.themeSelect = c}
                     listHeight={550}
                     onChange={async (value) => {
                         try {
@@ -366,11 +369,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 lineColor = WHITE_LINE_COLOR;
                                 cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
                             }
-
                             this.props.setMapTyleLayer(this.mapTileList[index].url);
                             this.props.setLineColor(lineColor);
                             this.props.setCloudletIconColor(cloudletIconColor);
+                            setTimeout(() => {
+                                this.themeSelect.blur();
+                            }, 250)
+
                         } catch (e) {
+
+                        } finally {
 
                         }
 
@@ -378,15 +386,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 >
                     {this.mapTileList.map((item, index) => {
                         return (
-                            <Option style={{color: 'white'}} defaultChecked={index === 0} value={item.value}>{item.name}</Option>
+                            <Option style={{color: 'white'}} defaultChecked={index === 0}
+                                    value={item.value}>{item.name}</Option>
                         )
                     })}
                 </Select>
             )
         }
 
-        makeClusterGrpForClient(objkeyOne, index) {
+        makeClusterGroupAndClient(objkeyOne, index) {
             let groupedClientList = this.state.clientList;
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+
             return (
                 <MarkerClusterGroup key={index}>
                     {groupedClientList[objkeyOne].map((item, index) => {
@@ -399,10 +411,21 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     }
                                 >
                                     <Popup className='clientPopup'
-                                           style={{fontSize: 11}}>
-                                        <div style={{display: 'flex'}}>
-                                            <div style={{color: 'white', fontFamily: 'ubuntu'}}>
+                                    >
+                                        <div style={{
+                                            display: 'flex',
+                                            fontSize: 13,
+                                            minWidth: '250px !important',
+                                            width: '250px !important',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}>
+                                            <div style={{color: 'white',}}>
                                                 {item.uuid}
+                                            </div>
+                                            <div style={{width: 5,}}/>
+                                            <div style={{color: 'orange'}}>
+                                                [{MomentTimezone(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}]
                                             </div>
                                         </div>
 
@@ -602,7 +625,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         )
 
-
         render() {
 
             return (
@@ -682,6 +704,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@todo: zoom, reset Icons...*/}
                                 {/*@todo:#####################################..*/}
                                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+
                                     <div style={PageMonitoringStyles.mapControlDiv}>
                                         <div
                                             style={{backgroundColor: 'transparent', height: 30}}
@@ -699,7 +722,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         </div>
                                         <div style={{width: 2}}/>
                                         <div
-                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                height: 30,
+                                                width: 30,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignSelf: 'center'
+                                            }}
                                             onClick={() => {
                                                 this.setState({
                                                     zoom: this.state.zoom - 1,
@@ -713,7 +743,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             />
                                         </div>
                                         <div
-                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                height: 30,
+                                                width: 30,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignSelf: 'center'
+                                            }}
                                         >
                                             <Icon
                                                 name='redo'
@@ -722,7 +759,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             />
                                         </div>
                                         <div
-                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                height: 30,
+                                                width: 30,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignSelf: 'center'
+                                            }}
                                         >
                                             <Icon
                                                 name='zoom-in'
@@ -731,12 +775,23 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         isEnableZoomIn: !this.state.isEnableZoomIn
                                                     })
                                                 }}
-                                                style={{fontSize: 20, color: this.state.isEnableZoomIn ? 'white' : 'grey', cursor: 'pointer'}}
+                                                style={{
+                                                    fontSize: 20,
+                                                    color: this.state.isEnableZoomIn ? 'white' : 'grey',
+                                                    cursor: 'pointer'
+                                                }}
                                             />
                                         </div>
 
                                         <div
-                                            style={{backgroundColor: 'transparent', height: 30, width: 30, display: 'flex', justifyContent: 'center', alignSelf: 'center'}}
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                height: 30,
+                                                width: 30,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignSelf: 'center'
+                                            }}
                                         >
                                             <Icon
                                                 name='compress'
@@ -745,11 +800,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                         isCloudletClustering: !this.state.isCloudletClustering
                                                     })
                                                 }}
-                                                style={{fontSize: 20, color: this.state.isCloudletClustering ? 'white' : 'grey', cursor: 'pointer'}}
+                                                style={{
+                                                    fontSize: 20,
+                                                    color: this.state.isCloudletClustering ? 'white' : 'grey',
+                                                    cursor: 'pointer'
+                                                }}
                                             />
                                         </div>
                                     </div>
                                 </Control>
+
                                 {/*@todo:#####################################..*/}
                                 {/*@todo: topRight Dropdown changing MapTyles...*/}
                                 {/*@todo:#####################################..*/}
@@ -765,7 +825,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) =>
-                                    this.makeClusterGrpForClient(objkeyOne, index)
+                                    this.makeClusterGroupAndClient(objkeyOne, index)
                                 )}
 
 

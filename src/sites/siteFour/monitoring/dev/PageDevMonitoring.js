@@ -4,7 +4,7 @@ import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import {CircularProgress, Dialog, Toolbar} from '@material-ui/core'
+import {Dialog, Toolbar} from '@material-ui/core'
 import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 import {
     defaultHwMapperListForCluster,
@@ -16,7 +16,7 @@ import {
     handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
-    makeDropdownListWithValuePipeForAppInst,
+    makeDropdownForAppInst,
     makeid,
     makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
@@ -42,7 +42,7 @@ import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtil
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -66,7 +66,7 @@ import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryFo
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
 import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
-import AppInstEventLogListHookVirtualScroll from "../components/AppInstEventLogListHookVirtualScroll";
+import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
 
 const {Option} = Select;
@@ -440,11 +440,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (cloudletList ,clusterList, appnInstList)
                     //@desc:#############################################
+                    promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
-                    let clusterList = newPromiseList[0];
-                    let appInstList = newPromiseList[1];
+                    //let allCloudletList = newPromiseList[0];
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
                     let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
 
                     //@todo: dropdownClusterListOnCloudlet
@@ -706,7 +708,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
                         })
 
-                        let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppInstList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.VERSION)
+                        let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
                             bubbleChartData: bubbleChartData,
@@ -749,6 +751,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: requestShowAppInstClientWS
                     //@desc: ################################
                     if (this.state.showAppInstClient) {
+
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                         })
@@ -778,7 +781,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
                     this.validateTerminal(filteredAppList)
 
-                    let appInstDropdown = makeDropdownListWithValuePipeForAppInst(filteredAppList, CLASSIFICATION.APPNAME, CLASSIFICATION.CLOUDLET, CLASSIFICATION.CLUSTER_INST, CLASSIFICATION.VERSION)
+                    let appInstDropdown = makeDropdownForAppInst(filteredAppList)
                     await this.setState({
                         appInstDropdown,
                     });
@@ -1139,7 +1142,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderLoader() :
-                        <AppInstEventLogListHookVirtualScroll
+                        <AppInstEventLogListContainer
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
                             handleAppInstDropdown={this.handleAppInstDropdown}
@@ -1452,43 +1455,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                             </div>
                             {/*
-                            desc :####################################
-                            desc :loading Area
-                            desc :####################################
+                             desc :####################################
+                             desc : options list (right conner)
+                             desc :####################################
                             */}
-                            <div>
-
-                                {this.state.webSocketLoading &&
-                                <div>
-                                    <div style={{marginLeft: 15}}>
-                                        <CircularProgress
-                                            style={{
-                                                color: 'green',
-                                            }}
-                                            size={45}
-                                        />
-                                    </div>
-                                </div>
-                                }
-                                {this.props.isLoading &&
-                                <div>
-                                    <div style={{marginLeft: 15}}>
-                                        <CircularProgress
-                                            style={{
-                                                color: 'green',
-                                                fontSize: 10
-                                            }}
-                                            size={20}
-                                        />
-                                    </div>
-                                </div>
-                                }
-                            </div>
-                            {/*
-                        desc :####################################
-                        desc : options list (right conner)
-                        desc :####################################
-                        */}
                             <div style={{
                                 display: 'flex',
                                 flex: .3,
@@ -1706,6 +1676,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
                             treeData={this.state.dropDownCludsterListOnCloudlet}
                             treeDefaultExpandAll={true}
+                            value={this.state.currentCluster}
 
                             onChange={async (value, label, extra) => {
                                 clearInterval(this.intervalForCluster)
@@ -1799,6 +1770,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     {this.state.filteredClusterUsageList.map((item, index) => {
                                         return (
                                             <Col className="gutterRow"
+                                                 onClick={async () => {
+                                                     let clusterOne = item.cluster + " | " + item.cloudlet;
+                                                     await this.handleClusterDropdownAndReset(clusterOne)
+
+                                                 }}
                                                  span={this.state.legendColSize}
                                                  title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                             >
@@ -1813,9 +1789,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     >
                                                     </div>
                                                 </div>
-                                                <div className="clusterCloudletBox">
-                                                    {filteredClusterUsageListLength > 1 ? reduceLegendClusterCloudletName(item, this) : item.cluster + "[" + item.cloudlet + "]"}
-                                                </div>
+                                                {filteredClusterUsageListLength === 1 ?
+                                                    <React.Fragment>
+                                                        <div className='clusterCloudletBoxOne'>
+                                                            {item.cluster + "[" + item.cloudlet + "]"}
+                                                        </div>
+                                                    </React.Fragment>
+                                                    :
+                                                    <React.Fragment>
+                                                        <div className="clusterCloudletBox">
+                                                            {reduceLegendClusterCloudletName(item, this)}
+                                                        </div>
+                                                    </React.Fragment>
+                                                }
                                             </Col>
                                         )
                                     })}
@@ -1842,7 +1828,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         </div>
                                     </div>
                                     <ClusterCluoudletLabel
-                                        style={{marginLeft: 5, marginRight: 15, marginBottom: 2}}>
+                                        style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                         {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
                                     </ClusterCluoudletLabel>
                                 </div>
@@ -1901,7 +1887,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         width: this.state.currentWidth,
                         height: '100%',
                     }}>
-
+                        {/*    <GlobePopupContainer
+                            clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                            parent={this}
+                            isOpenGlobe={this.state.isOpenGlobe}
+                            appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
+                        />*/}
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
@@ -1950,11 +1941,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      }}>
                                     {/*desc: no item message for cluster*/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutForCluster.length === 0 &&
-                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'rgba(255,255,255,.6)'}}>No Item</div>
+                                    <div style={{
+                                        marginLeft: 15,
+                                        marginTop: 10,
+                                        fontSize: 25,
+                                        color: 'rgba(255,255,255,.6)'
+                                    }}>No Item</div>
                                     }
                                     {/*desc: no item message for appInst*/}
                                     {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutForAppInst.length === 0 &&
-                                    <div style={{marginLeft: 15, marginTop: 10, fontSize: 25, fontFamily: 'ubuntu', color: 'rgba(255,255,255,.6)'}}>No Item</div>
+                                    <div style={{
+                                        marginLeft: 15,
+                                        marginTop: 10,
+                                        fontSize: 25,
+                                        color: 'rgba(255,255,255,.6)'
+                                    }}>No Item</div>
                                     }
                                     {this.state.currentClassification === CLASSIFICATION.CLUSTER
                                         ? this.renderGridLayoutForCluster()
@@ -1973,7 +1974,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 : null
                             }
                         </div>
-                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => {
+                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen
+                                open={this.state.openTerminal} onClose={() => {
                             this.setState({openTerminal: false})
                         }}>
                             <TerminalViewer data={this.state.terminalData} onClose={() => {

@@ -263,7 +263,7 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         marginTop: 3,
-        fontFamily: 'Ubuntu'
+        fontFamily: "Roboto"
     },
     tableRow: {
         height: 50, alignSelf: 'center', display: 'flex', justifyContent: 'center', alignItem: 'center'
@@ -281,7 +281,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         marginTop: 3,
-        fontFamily: 'Ubuntu'
     },
     gridTableCell2: {
         height: 50,
@@ -291,7 +290,6 @@ export const PageMonitoringStyles = {
         alignItem: 'center',
         marginTop: 25,
         fontWeight: 'bold',
-        fontFamily: 'Ubuntu'
     },
 
     gridTableCell3Left: {
@@ -301,7 +299,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         fontWeight: 'bold',
-        fontFamily: 'Ubuntu',
         backgroundColor: '#1e2025',
     },
     gridTableCell3Dash: {
@@ -311,7 +308,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         fontWeight: 'bold',
-        fontFamily: 'Ubuntu',
         backgroundColor: '#1e2025',
         flexDirection: 'column',
         fontSize: 12,
@@ -324,7 +320,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         fontWeight: 'bold',
-        fontFamily: 'Ubuntu',
         backgroundColor: '#1e2025',
         flexDirection: 'column',
         fontSize: 12,
@@ -337,7 +332,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'center',
         alignItem: 'center',
         fontWeight: 'bold',
-        fontFamily: 'Ubuntu',
         backgroundColor: '#1e2025',
         flexDirection: 'column',
         fontSize: 12,
@@ -352,7 +346,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         fontWeight: 'bold',
-        fontFamily: 'Ubuntu',
         backgroundColor: '#1e2025',
         fontSize: 12,
     },
@@ -364,7 +357,6 @@ export const PageMonitoringStyles = {
         justifyContent: 'flex-start',
         alignItem: 'flex-start',
         fontWeight: 'bold',
-        fontFamily: 'Ubuntu',
         backgroundColor: '#23252c',
         fontSize: 12,
     },
@@ -372,7 +364,6 @@ export const PageMonitoringStyles = {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: 'Ubuntu'
 
     },
     noData: {
@@ -468,7 +459,7 @@ export const Center = styled.div`
   display : flex;
   align-items: center;
   align-self: center;
-  font-family: Ubuntu;
+  font-family: Roboto;
 `;
 
 export const Center7 = styled.div`
@@ -485,7 +476,7 @@ export const Right = styled.div`
   display : flex;
   align-items: flex-end;
   align-self: center;
-  font-family: Ubuntu;
+  font-family: Roboto;
 `;
 
 export const Left = styled.div`
@@ -494,7 +485,7 @@ export const Left = styled.div`
   display : flex;
   align-items: flex-start;
   align-self: center;
-  font-family: Ubuntu;
+  font-family: Roboto;
 `;
 
 
@@ -525,8 +516,8 @@ export const LegendOuterDiv = styled.div`
   border-width: 0.1px;
   border-style: dotted;
   border-color: dimgrey;
-  margin-left: 10px; 
-  display: flex; 
+  margin-left: 10px;
+  display: flex;
   height: 25px;
   width: 98.925%;
   margin-right: 5px;
@@ -539,7 +530,7 @@ export const ChartIconOuterDiv = styled.div`
   flex-direction: column;
   align-self: center;
   font-size: 13px;
-  font-family: Ubuntu;
+  font-family: Roboto;
   border-width: 0.5px;
   border-style: solid;
   border-color: dimgrey;
@@ -584,7 +575,7 @@ export const Center2 = styled.div`
   marginLeft:0px;
   align-items: flex-start;
   margin-top: -2px;
-  
+
 `
 
 
