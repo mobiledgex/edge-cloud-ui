@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import PageMonitoringForOperator from "./oper/PageOperMonitoring";
+import PageOperMonitoring_VERSION2 from "./oper/PageOperMonitoring_VERSION2";
+import OLDVERSION___PageOperMonitoring from "./oper/OLDVERSION___PageOperMonitoring";
 import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
 import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
 import {Card} from "@material-ui/core";
@@ -15,7 +16,7 @@ export default function PageMonitoringMain() {
                 )
             } else if (userRole.includes('Operator')) {
                 return (
-                    <PageMonitoringForOperator/>
+                    <PageOperMonitoring_VERSION2/>
                 )
             } else {
                 return (

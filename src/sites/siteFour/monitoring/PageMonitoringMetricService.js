@@ -594,6 +594,15 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 }
 
 
+/**
+ *
+ * @param cloudletList
+ * @param pHardwareType
+ * @param recentDataLimitCount
+ * @param pStartTime
+ * @param pEndTime
+ * @returns {Promise<[]>}
+ */
 export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {

@@ -1,4 +1,3 @@
-import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
@@ -8,10 +7,17 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {hot} from "react-hot-loader/root";
 import {Card, DatePicker,} from 'antd';
 import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
-import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import {
+    CLASSIFICATION,
+    HARDWARE_OPTIONS_FOR_CLOUDLET,
+    HARDWARE_TYPE,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS
+} from "../../../../shared/Constants";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
@@ -20,11 +26,21 @@ import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
 import {renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./PageOperMonitoringService";
+import {
+    handleBubbleChartDropDownForCloudlet,
+    makeBarChartDataForCloudlet,
+    makeLineChartForCloudlet,
+    renderBottomGridAreaForCloudlet
+} from "./PageOperMonitoringService";
 import LeafletMap from "../components/MapForOperContainer";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
-import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletLevelUsageList, getCloudletList,} from '../PageMonitoringMetricService'
+import {
+    getAllCloudletEventLogs,
+    getCloudletEventLog,
+    getCloudletLevelUsageList,
+    getCloudletList,
+} from '../PageMonitoringMetricService'
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -146,7 +162,7 @@ type State = {
     direction: string,
 }
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageOperMonitoring extends Component<Props, State> {
         state = {
             date: '',
@@ -312,6 +328,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 let allCloudletUsageList = await getCloudletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
 
+                console.log(`allCloudletUsageList====>`, allCloudletUsageList);
 
                 let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
                 await this.setState({
@@ -921,7 +938,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderLeafletMap() {
             return (
-                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading} handleSelectCloudlet={this.handleSelectCloudlet}/>
+                <LeafletMap cloudletList={this.state.filteredCloudletList} loading={this.state.loading}
+                            handleSelectCloudlet={this.handleSelectCloudlet}/>
             )
         }
 
@@ -982,8 +1000,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*todo: 데이터가 없는경우*/}
                                 {!this.state.cloudletSelectLoading && this.state.filteredCloudletEventLogs.length === 0 &&
                                 <Table.Row className='' style={{backgroundColor: 'transparent', height: '25'}}>
-                                    <Table.Cell style={{width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent'}}>
-                                        <div style={{minHeight: 360, fontSize: 30, fontFamily: 'Encode Sans Condensed'}}>
+                                    <Table.Cell style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        backgroundColor: 'transparent'
+                                    }}>
+                                        <div
+                                            style={{minHeight: 360, fontSize: 30, fontFamily: 'Encode Sans Condensed'}}>
                                             NO DATA
                                         </div>
                                     </Table.Cell>
@@ -1045,10 +1070,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 hoverable
                                 style={{width: '100%', height: '100%'}}
                                 cover={<div style={{marginLeft: 40, marginTop: 5}}>
-                                    <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500} height={250}/>
+                                    <img alt="example" src="/assets/brand/MobiledgeX_Logo_tm_white.svg" width={500}
+                                         height={250}/>
                                 </div>}
                             >
-                                <div style={{fontSize: 45, fontFamily:'Roboto Condensed'}}>
+                                <div style={{fontSize: 45, fontFamily: 'Roboto Condensed'}}>
                                     There is no cloudlet you can access...
                                 </div>
                             </Card>
@@ -1090,7 +1116,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Grid.Column>
                                 <div className="table-no-resized">
 
-                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'} style={{height:this.getHeight()}}>
+                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'}
+                                         style={{height: this.getHeight()}}>
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
@@ -1221,7 +1248,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*todo:---------------------------------*/}
                                             {/*todo: BOTTOM_GRID_AREA_SHOW_UP_AREA   */}
                                             {/*todo:---------------------------------*/}
-                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
+                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section"
+                                                           className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
                                                         /*  this.setState({
@@ -1229,8 +1257,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                           })*/
                                                     }}
                                                 >
-                                                    <div className='page_monitoring_popup_column' style={{zIndex: 999999}}>
-                                                        <div className='page_monitoring_popup_header_row' style={{zIndex: 999999}}
+                                                    <div className='page_monitoring_popup_column'
+                                                         style={{zIndex: 999999}}>
+                                                        <div className='page_monitoring_popup_header_row'
+                                                             style={{zIndex: 999999}}
                                                              onClick={() => {
                                                                  this.setState({
                                                                      isShowBottomGrid: !this.state.isShowBottomGrid,
@@ -1238,10 +1268,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                              }}
                                                         >
-                                                            <div className='page_monitoring_popup_header_title' style={{zIndex: 999999}}>
+                                                            <div className='page_monitoring_popup_header_title'
+                                                                 style={{zIndex: 999999}}>
                                                                 Status of App
                                                             </div>
-                                                            <div className='page_monitoring_popup_header_button' style={{zIndex: 999999}}>
+                                                            <div className='page_monitoring_popup_header_button'
+                                                                 style={{zIndex: 999999}}>
                                                                 <div>
                                                                     HIDE CLOUDLET LIST
                                                                 </div>
@@ -1254,7 +1286,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div className='page_monitoring_popup_table' style={{zIndex: 999999}}>
+                                                        <div className='page_monitoring_popup_table'
+                                                             style={{zIndex: 999999}}>
                                                             {this.state.cloudletList.length && this.state.isReady === 0 ?
                                                                 <div style={PageMonitoringStyles.noData}>
                                                                     NO DATA
@@ -1282,5 +1315,5 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
     }
-))));
+)))
 
