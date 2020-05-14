@@ -265,23 +265,25 @@ export default function MiniDrawer(props) {
     }
 
     const menuList = () => {
-        return options.map((option, i) => (
-            option.divider ?
-                <Divider key={i}/> :
-                option.roles.includes(getRoleInfo(getUserRole())) ?
-                    <div key={i}>
-                        {showOptionForm(i, option)}
-                        {option.subOptions ?
-                            <Collapse in={expand} timeout="auto" unmountOnExit>
-                                <List component="div" disablePadding>
-                                    {option.subOptions.map((subOption, j) => (
-                                        showOptionForm(j, subOption)
-                                    ))}
+        if (getUserRole()) {
+            return options.map((option, i) => (
+                option.divider ?
+                    <Divider key={i} /> :
+                    option.roles.includes(getRoleInfo(getUserRole())) ?
+                        <div key={i}>
+                            {showOptionForm(i, option)}
+                            {option.subOptions ?
+                                <Collapse in={expand} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding>
+                                        {option.subOptions.map((subOption, j) => (
+                                            showOptionForm(j, subOption)
+                                        ))}
 
-                                </List>
-                            </Collapse> : null}
-                    </div> : null
-        ))
+                                    </List>
+                                </Collapse> : null}
+                        </div> : null
+            ))
+        }
     }
 
     const versionInfo = () => (
