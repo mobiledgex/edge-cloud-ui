@@ -397,24 +397,41 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODMyMTg0M
 
 ### FindCloudlet /FindCloudlet/FindCloudletFindCloudlet/FindCloudlet/FindCloudletFindCloudlet/FindCloudlet
 
+#MobiledgeX SDK  [2.0]
+#autoclustermobiledgexsdkdemo
+#[mexplat-stage-hamburg-cloudlet]
+#UPD_COMPLETE
+#MobiledgeX SDK  [2.0]
+#autoclustermobiledgexsdkdemo
+#[mexplat-stage-hamburg-cloudlet]
+#UPD_START
+
+
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/client
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODYzMzY5MTUsImlhdCI6MTU4NjI1MDUxNSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.XuVuzLwSO0MmfaddvjmTtkgncSesBoh9a_-1uDAxchFL3wQORVeS-AcdX4oXDiKjP8Ur9sxEDHYvLsGK-FpccQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODk1MjQ1MDcsImlhdCI6MTU4OTQzODEwNywidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.rG-kKUhgm1wfK_gvqcrNw485qCtDdZ7Peqg1H6JqY-N_9AgtAikLC0fDEBtRdew7goESSWf28a2ptYob4zEPyw
 
 {
   "region": "EU",
   "appinst": {
     "app_key": {
-      "developer_key": {
-        "name": "WonhoOrg1"
+      "organization": "MobiledgeX",
+      "name": "MobiledgeX SDK",
+      "version": "2.0"
+    },
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": "autoclustermobiledgexsdkdemo"
       },
-      "name": "autoclusterbicapp",
-      "version": "1.0"
+      "cloudlet_key": {
+        "organization": ""
+      }
     }
   },
+  "cellid": 1234,
   "method": "FindCloudlet",
-  "selector": "api",
-  "last": 100
+  "last": 10,
+  "selector": "api"
 }
 
 ###
@@ -426,6 +443,28 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyN
   "region": "EU"
 }
 
+###
+
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/client
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODk1MjQ1MDcsImlhdCI6MTU4OTQzODEwNywidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.rG-kKUhgm1wfK_gvqcrNw485qCtDdZ7Peqg1H6JqY-N_9AgtAikLC0fDEBtRdew7goESSWf28a2ptYob4zEPyw
+
+{
+  "region": "EU",
+  "appinst": {
+    "app_key": {
+      "organization": "MobiledgeX",
+      "name": "MobiledgeX SDK Demo",
+      "version": "2.0"
+    }
+  },
+  "selector": "api",
+  "starttime": "2020-05-13T00:00:00Z",
+  "endtime": "2020-05-14T11:00:00Z"
+}
+
+
+###
 
 ###
 POST https://console-stage.mobiledgex.net:443//api/v1/auth/ctrl/ShowAppInst
