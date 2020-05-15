@@ -880,7 +880,7 @@ export const getAllClusterEventLogList = async (clusterList) => {
 
         return completedEventLogList;
     } catch (e) {
-        showToast(e.toString())
+        throw new Error(e)
     }
 }
 

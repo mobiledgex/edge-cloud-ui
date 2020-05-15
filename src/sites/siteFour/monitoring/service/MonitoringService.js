@@ -697,7 +697,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             return _result
         }
     } catch (e) {
-        throw new Error(e)
+        //throw new Error(e)
     }
 
 };

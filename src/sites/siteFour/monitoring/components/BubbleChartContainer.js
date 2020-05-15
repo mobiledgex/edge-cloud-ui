@@ -1,7 +1,11 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/MonitoringService";
+import {
+    handleHardwareTabChanges,
+    handleLegendAndBubbleClickedEvent,
+    makeLineChartData
+} from "../service/MonitoringService";
 import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/MonitoringCommonService";
 import PageDevMonitoring from "../view/MonitoringView";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
@@ -131,7 +135,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             }
                                             <div style={{flex: .1, marginRight: 50, marginTop: 2,}}>
                                                 <Select
-                                                    ref={c=>this.bubbleChartSelect=c}
+                                                    ref={c => this.bubbleChartSelect = c}
                                                     bordered={false}
                                                     size={'small'}
                                                     style={{width: 125}}
@@ -154,7 +158,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                             })
 
                                                         } catch (e) {
-                                                            showToast(e.toString())
+                                                            //showToast(e.toString())
                                                             this.props.parent.setState({
                                                                 bubbleChartLoader: false,
                                                             })

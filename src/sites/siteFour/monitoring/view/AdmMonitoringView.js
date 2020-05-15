@@ -35,13 +35,30 @@ import {
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
 } from "../service/AdminMonitoringService";
-import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APPINSTANCE_INIT_VALUE,
+    CLASSIFICATION,
+    CONNECTIONS_OPTIONS,
+    HARDWARE_OPTIONS,
+    HARDWARE_TYPE,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS,
+    USER_TYPE
+} from "../../../../shared/Constants";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/MonitoringCommonService";
+import {
+    renderGridLoader2,
+    renderLoaderArea,
+    renderPlaceHolderLoader,
+    showToast,
+    showToast2
+} from "../service/MonitoringCommonService";
 import '../common/Monitoring.css'
 import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/MonitoringMetricService";
 
@@ -319,7 +336,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 try {
                     allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime, USER_TYPE.ADMIN);
                 } catch (e) {
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
 
                 //fixme: fakedata
@@ -1056,7 +1073,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------------*/}
                         {this.renderHeader()}
                         <Grid.Row className='site_content_body'>
-                            {this.state.showGridLoader && <div style={{position: 'absolute', top: '37%', left: '48%', zIndex: 999999999999}}>
+                            {this.state.showGridLoader &&
+                            <div style={{position: 'absolute', top: '37%', left: '48%', zIndex: 999999999999}}>
                                 <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
                                     {renderGridLoader2(150, 150)}
                                 </div>
@@ -1064,7 +1082,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Grid.Column>
                                 <div className="table-no-resized">
 
-                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'} style={{height: this.getHeight()}}>
+                                    <div className={isIOS ? 'page_monitoring page_isIOS' : 'page_monitoring'}
+                                         style={{height: this.getHeight()}}>
                                         {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
                                         {/*todo:---------------------------------*/}
@@ -1201,7 +1220,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*todo:---------------------------------*/}
                                             {/*todo: BOTTOM_GRID_AREA_SHOW_UP_AREA   */}
                                             {/*todo:---------------------------------*/}
-                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
+                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section"
+                                                           className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
                                                         /*  this.setState({
