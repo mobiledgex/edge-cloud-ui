@@ -18,12 +18,11 @@ import {
     makeBarChartDataForCluster,
     makeDropdownForAppInst,
     makeid,
-    makeLineChartDataForAppInst,
     makeLineChartDataForBigModal,
-    makeLineChartDataForCluster,
+    makeLineChartData,
     makeSelectBoxListWithKeyValuePipeForCluster,
     reduceLegendClusterCloudletName,
-    revertToDefaultLayout,
+    revertToDefaultLayout, makeClusterTreeDropdown,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -38,11 +37,32 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../PageMonitoringCommonService";
-import {getAllAppInstEventLogs, getAllClusterEventLogList, getAppInstList, getAppLevelUsageList, getCloudletList, getClusterLevelUsageList, getClusterList, requestShowAppInstClientWS} from "../PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../PageMonitoringCommonService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getCloudletList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -61,10 +81,17 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
-import PerformanceSummaryForClusterHook from "../components/PerformanceSummaryForClusterHook";
-import PerformanceSummaryForAppInstHook from "../components/PerformanceSummaryForAppInstHook";
+import PerformanceSummaryForCluster from "../components/PerformanceSummaryForCluster";
+import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "./PageDevMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCluster,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
@@ -281,7 +308,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentRegion: 'ALL',
                     currentCloudLet: '',
-                    currentCluster: '',
+                    currentCluster: undefined,
                     currentAppInst: undefined,
                     isModalOpened: false,
                     appInstanceListTop5: [],
@@ -324,7 +351,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     connectionsTabIndex: 0,
                     tcpTabIndex: 0,
                     udpTabIndex: 0,
-                    dropDownCludsterListOnCloudlet: [],
+                    dropDownCludsterListOnCloudlet: undefined,
                     allUsageList: [],
                     maxCpu: 0,
                     maxMem: 0,
@@ -441,27 +468,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (cloudletList ,clusterList, appnInstList)
                     //@desc:#############################################
-                    promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
-                    //let allCloudletList = newPromiseList[0];
-                    let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
-                    let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
+                    let clusterList = newPromiseList[0];
+                    let appInstList = newPromiseList[1];
+                    let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+                    let cloudletNameList = []
+                    orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
 
-                    //@todo: dropdownClusterListOnCloudlet
-                    let cloudletList = []
-                    clusterList.map(item => (cloudletList.push(item.Cloudlet)))
-                    let dropdownClusterListOnCloudlet = this.makeClusterTreeDropdown(_.uniqBy(cloudletList), clusterList)
+                    let clusterNameList = [];
+                    orgAppInstList.map((item: TypeAppInstance, index) => {
+                        clusterNameList.push({
+                            ClusterInst: item.ClusterInst,
+                            Cloudlet: item.Cloudlet,
+                        })
+                    })
 
-
+                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletNameList), _.uniqWith(clusterNameList, _.isEqual))
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                    let appInstanceListGroupByCloudletForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                     await this.setState({
-                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudletForMap,
                         mapLoading: false,
                     })
 
@@ -493,8 +523,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        clusterDropdownList: clusterDropdownList,
-                        dropDownCludsterListOnCloudlet: dropdownClusterListOnCloudlet,
+                        dropDownCludsterListOnCloudlet: clusterDropdownList,
                         clusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -538,7 +567,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async resetLocalData() {
                 clearInterval(this.intervalForCluster)
                 clearInterval(this.intervalForAppInst)
-
+                let appInstanceListGroupByCloudletForMap = reducer.groupBy(this.state.appInstanceList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
                 await this.setState({
                     currentGridIndex: -1,
                     currentTabIndex: 0,
@@ -548,7 +577,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppInstanceList: this.state.appInstanceList,
                     filteredClusterEventLogList: this.state.allClusterEventLogList,
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                    appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudletForMap,
                 })
                 //desc: reset bubble chart data
                 let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
@@ -647,13 +676,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }, 1000 * 7.0)
             }
 
-
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = []
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    lineChartDataSet = makeLineChartDataForCluster(usageList, this.state.currentHardwareType, this)
+                    lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
                 } else {
-                    lineChartDataSet = makeLineChartDataForAppInst(usageList, this.state.currentHardwareType, this)
+                    lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
                 }
 
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
@@ -965,9 +993,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let lineChartDataSet = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        lineChartDataSet = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
                     } else {
-                        lineChartDataSet = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                        lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
                     }
 
                     chartDataSets = makeLineChartDataForBigModal(lineChartDataSet, this)
@@ -1058,9 +1086,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        chartDataSets = makeLineChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                        chartDataSets = makeLineChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
                     }
 
                     return (
@@ -1120,13 +1148,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     return (
                         this.state.loading ? renderPlaceHolderLoader() :
                             this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                <PerformanceSummaryForClusterHook
+                                <PerformanceSummaryForCluster
                                     parent={this}
                                     filteredUsageList={this.state.filteredClusterUsageList}
                                     chartColorList={this.state.chartColorList}
                                 />
                                 :
-                                <PerformanceSummaryForAppInstHook
+                                <PerformanceSummaryForAppInst
                                     parent={this}
                                     filteredUsageList={this.state.filteredAppInstUsageList}
                                     chartColorList={this.state.chartColorList}
@@ -1614,41 +1642,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            makeClusterTreeDropdown(cloudletList, clusterList) {
-                let newCloudletList = []
-                newCloudletList.push({
-                    title: 'Reset Filter',
-                    value: '',
-                    selectable: true,
-                    children: []
-                });
-                cloudletList.map(cloudletOne => {
-                    let newCloudletOne = {
-                        title: (
-                            <div>{cloudletOne}
-                                &nbsp;&nbsp;<Chip color="primary" size="small" label="Cloudlet" style={{color: '#A4A4A8', backgroundColor: '#34373E'}}/>
-                            </div>
-                        ),
-                        value: cloudletOne,
-                        selectable: false,
-                        children: []
-                    };
-
-                    clusterList.map(clusterOne => {
-                        if (clusterOne.Cloudlet === cloudletOne) {
-                            newCloudletOne.children.push({
-                                title: clusterOne.ClusterName,
-                                value: clusterOne.ClusterName + " | " + cloudletOne,
-                                isParent: false,
-                            })
-                        }
-                    })
-
-                    newCloudletList.push(newCloudletOne);
-                })
-
-                return newCloudletList;
-            }
 
             makeClusterDropdown() {
                 return (
@@ -1675,6 +1668,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 });
                             }}
                             searchValue={this.state.searchClusterValue}
+                            searchPlaceholder={'Enter the cluster name.'}
                             placeholder={'Select Cluster'}
                             dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
                             treeData={this.state.dropDownCludsterListOnCloudlet}
@@ -1890,12 +1884,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         width: this.state.currentWidth,
                         height: '100%',
                     }}>
-                        {/*    <GlobePopupContainer
-                            clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                            parent={this}
-                            isOpenGlobe={this.state.isOpenGlobe}
-                            appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                        />*/}
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}

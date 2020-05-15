@@ -17,7 +17,7 @@ type Props = {
     filteredUsageList: any,
 };
 
-export default function PerformanceSummaryForAppInstHook(props) {
+export default function PerformanceSummaryForAppInst(props) {
 
     useEffect(() => {
     }, [props.filteredUsageList]);
