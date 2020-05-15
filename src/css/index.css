@@ -388,7 +388,6 @@ body, button, input, textarea, optgroup, select, textarea,
 /* console main style */
 .ui.grid {
     background-color: transparent;
-    z-index: 100;
     margin: 0;
     height: 100%;
 }
