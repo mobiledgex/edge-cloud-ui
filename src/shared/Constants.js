@@ -441,6 +441,28 @@ export const HARDWARE_TYPE = {
     NET_RECV: 'NET_RECV',
     FLOATING_IPS: 'FLOATING_IPS',
     IPV4: 'IPV4',
+    /* 0: "time"
+     1: "cloudlet"
+     2: "cloudletorg"
+     3: "netSend"
+     4: "netRecv"
+     5: "vCpuUsed"
+     6: "vCpuMax"
+     7: "memUsed"
+     8: "memMax"
+     9: "diskUsed"
+     10: "diskMax"
+     11: "floatingIpsUsed"
+     12: "floatingIpsMax"
+     13: "ipv4Used"
+     14: "ipv4Max"*/
+    vCpuUsed: 'vCpuUsed',
+    memUsed: 'memUsed',
+    diskUsed: 'diskUsed',
+    floatingIpsUsed: 'floatingIpsUsed',
+    ipv4Used: 'ipv4Used',
+    netSend: 'netSend',
+    netRecv: 'netRecv',
 
     ////////////
     UDP: 'UDP',

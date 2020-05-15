@@ -163,33 +163,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                             Cluster {this.props.popupGraphHWType} Usage
                                             {this.props.intervalLoading &&
-                                            <div style={{backgroundColor: 'transparent', zIndex: 999999999999, marginLeft: 25}}>
+                                            <div style={{
+                                                backgroundColor: 'transparent',
+                                                zIndex: 999999999999,
+                                                marginLeft: 25
+                                            }}>
                                                 {renderWifiLoader(35, 35)}
                                             </div>
                                             }
                                         </div>
-                                        {/*<div>
-                                            <Button
-                                                type={this.state.redraw ? 'primary' : null}
-                                                onClick={() => {
-                                                    this.setState({
-                                                        redraw: !this.state.redraw,
-                                                    })
-                                                }}
-                                            >
-                                                Redraw Graph
-                                            </Button>
-                                        </div>*/}
                                     </div>
-
-                                    : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
+                                    : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ?
                                         <div style={{display: 'flex'}}>
                                             {this.renderPrevBtn()}
-
                                             <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                                 App Instance {this.props.popupGraphHWType} Usage
                                                 {this.props.intervalLoading &&
-                                                <div style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
+                                                <div
+                                                    style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
                                                     {renderWifiLoader(35, 35)}
                                                 </div>
                                                 }
@@ -197,22 +188,42 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                                         </div>
-                                        : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
 
+                                        : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
                                             <div style={{display: 'flex'}}>
                                                 {this.renderPrevBtn()}
-                                                <div className='page_monitoring_popup_title'>
-                                                    Bubble Chart
+
+                                                <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
+                                                    App Instance {this.props.popupGraphHWType} Usage
+                                                    {this.props.intervalLoading &&
+                                                    <div style={{
+                                                        backgroundColor: 'transparent',
+                                                        zIndex: 1,
+                                                        marginLeft: 25
+                                                    }}>
+                                                        {renderWifiLoader(35, 35)}
+                                                    </div>
+                                                    }
                                                 </div>
+
+
                                             </div>
-                                            :
-                                            <div style={{display: 'flex'}}>
-                                                {this.renderPrevBtn()}
-                                                <div className='page_monitoring_popup_title'>
-                                                    Top 5 {this.props.popupGraphHWType} Usage
-                                                    of {this.props.parent.state.currentClassification}
+                                            : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
+
+                                                <div style={{display: 'flex'}}>
+                                                    {this.renderPrevBtn()}
+                                                    <div className='page_monitoring_popup_title'>
+                                                        Bubble Chart
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                :
+                                                <div style={{display: 'flex'}}>
+                                                    {this.renderPrevBtn()}
+                                                    <div className='page_monitoring_popup_title'>
+                                                        Top 5 {this.props.popupGraphHWType} Usage
+                                                        of {this.props.parent.state.currentClassification}
+                                                    </div>
+                                                </div>
 
                             }
                             <div className='page_monitoring_popup_title_divide'/>

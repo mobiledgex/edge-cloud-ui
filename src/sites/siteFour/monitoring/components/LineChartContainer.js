@@ -1,6 +1,10 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../dev/PageDevMonitoringService";
+import {
+    convertToClassification,
+    makeGradientLineChartData,
+    makeLineChartOptions
+} from "../dev/PageDevMonitoringService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
@@ -50,17 +54,21 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
 
     setChartData(lineChartDataSet, hwType, graphType) {
-        let levelTypeNameList = lineChartDataSet.levelTypeNameList;
-        let usageSetList = lineChartDataSet.usageSetList;
-        let newDateTimeList = lineChartDataSet.newDateTimeList;
-        let hardwareType = lineChartDataSet.hardwareType;
+        try {
+            let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+            let usageSetList = lineChartDataSet.usageSetList;
+            let newDateTimeList = lineChartDataSet.newDateTimeList;
+            let hardwareType = lineChartDataSet.hardwareType;
 
-        const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
-        this.setState({
-            chartDataSet: lineChartDataForRendering,
-            pHardwareType: hwType,
-            graphType: graphType,
-        })
+            const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
+            this.setState({
+                chartDataSet: lineChartDataForRendering,
+                pHardwareType: hwType,
+                graphType: graphType,
+            })
+        } catch (e) {
+
+        }
 
     }
 

@@ -38,7 +38,7 @@ import {PageMonitoringStyles} from "../PageMonitoringStyles";
 import {
     getAllCloudletEventLogs,
     getCloudletEventLog,
-    getCloudletLevelUsageList,
+    getCloudletUsageList,
     getCloudletList,
 } from '../PageMonitoringMetricService'
 
@@ -326,7 +326,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 }, () => {
                 })
 
-                let allCloudletUsageList = await getCloudletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+                let allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
 
                 console.log(`allCloudletUsageList====>`, allCloudletUsageList);
 

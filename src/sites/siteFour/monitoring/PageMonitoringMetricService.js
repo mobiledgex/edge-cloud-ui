@@ -208,42 +208,6 @@ export const getClusterList = async () => {
 }
 
 
-export const findCloudlet__TEST = async () => {
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-    let regionList = localStorage.getItem('regions').split(",");
-    console.log('token2===>', token);
-    let result = await axios({
-        url: CLOUDLET_METRICS_ENDPOINT,
-        method: 'post',
-        data: {
-            "region": "EU",
-            "appinst": {
-                "app_key": {
-                    "organization": "MobiledgeX",
-                    "name": "MobiledgeX SDK Demo",
-                    "version": "2.0"
-                }
-            },
-            "selector": "api",
-            "starttime": "2020-05-13T00:00:00Z",
-            "endtime": "2020-05-14T11:00:00Z"
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + pToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-    return result;
-
-}
-
-
 export const getCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -306,7 +270,7 @@ export const getCloudletListAll = async () => {
 }
 
 
-export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
+export const getAppInstUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
 
         let instanceBodyList = []
@@ -476,7 +440,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]|Array>}
  */
-export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getClusterUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
     try {
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -621,7 +585,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]>}
  */
-export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {
         let instanceBodyList = []
@@ -639,23 +603,49 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
+        /*   [
+               "floatingIpsUsed",11
+               "ipv4Used",13
+               "netSend",3
+               "netRecv",4
+               "vCpuUsed",5
+               "memUsed",7
+               "diskUsed",9
 
-        //todo: check undefined element.
-        let newCloutletMetric = []
-        cloudletLevelMatricUsageList.map(item => {
-            if (item !== undefined) {
-                newCloutletMetric.push(item)
-            }
-        })
+           ]*/
 
         let usageList = []
-        newCloutletMetric.map((item, index) => {
+        let netSendSeriesList = [];
+        let netRecvSeriesList = [];
+        let vCpuSeriesList = [];
+        let memSeriesList = [];
+        let diskSeriesList = [];
+        let floatingIpsSeriesList = [];
+        let ipv4UsedSeriesList = [];
+        cloudletLevelMatricUsageList.map((item, index) => {
 
             if (item !== undefined) {
                 let Region = cloudletList[index].Region
-                if (item.data["0"] !== undefined && item.data["0"].Series !== null) {
+                if (item !== undefined && item.data["0"] !== undefined && item.data["0"].Series !== null) {
                     let series = item.data["0"].Series["0"].values
                     let columns = item.data["0"].Series["0"].columns
+                    //////////////////////////////////////////
+                    let netSendSeriesOne = series["0"]["3"]
+                    let netRecvSeriesOne = series["0"]["4"]
+                    let vCpuSeriesOne = series["0"]["5"]
+                    let memSeriesOne = series["0"]["7"]
+                    let diskSeriesOne = series["0"]["9"]
+                    let floatingIpsSeriesOne = series["0"]["11"]
+                    let ipv4UsedSeriesOne = series["0"]["13"]
+
+                    netSendSeriesList.push(netSendSeriesOne)
+                    netRecvSeriesList.push(netRecvSeriesOne)
+                    vCpuSeriesList.push(vCpuSeriesOne)
+                    memSeriesList.push(memSeriesOne)
+                    diskSeriesList.push(diskSeriesOne)
+                    floatingIpsSeriesList.push(floatingIpsSeriesOne)
+                    ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
+
 
                     let sumVirtualCpuUsed = 0;
                     let sumVirtualCpuMax = 0;
@@ -716,12 +706,23 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
                         cloudlet: cloudlet,
                         operator: operator,
                         Region: Region,
+                        netSendSeriesList,
+                        netRecvSeriesList,
+                        vCpuSeriesList,
+                        memSeriesList,
+                        diskSeriesList,
+                        floatingIpsSeriesList,
+                        ipv4UsedSeriesList,
+
 
                     })
-                }
-            }
 
-        })
+                }
+
+            }
+        });
+
+        console.log(`newCloutletMetric====>`, usageList);
 
         return usageList;
     } catch (e) {
@@ -1028,3 +1029,38 @@ export const getAllAppInstEventLogs = async () => {
     }
 }
 
+
+export const findCloudlet__TEST = async () => {
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+    let regionList = localStorage.getItem('regions').split(",");
+    console.log('token2===>', token);
+    let result = await axios({
+        url: CLOUDLET_METRICS_ENDPOINT,
+        method: 'post',
+        data: {
+            "region": "EU",
+            "appinst": {
+                "app_key": {
+                    "organization": "MobiledgeX",
+                    "name": "MobiledgeX SDK Demo",
+                    "version": "2.0"
+                }
+            },
+            "selector": "api",
+            "starttime": "2020-05-13T00:00:00Z",
+            "endtime": "2020-05-14T11:00:00Z"
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + pToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //showToast(e.toString())
+    })
+    return result;
+
+}

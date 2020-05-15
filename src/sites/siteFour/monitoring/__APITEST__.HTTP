@@ -443,7 +443,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODM0NjMyN
   "region": "EU"
 }
 
-###
+### 클라언트에 대한 정보 호출..........
 
 POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/client
 Content-Type: application/json

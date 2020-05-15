@@ -28,21 +28,20 @@ import {
     renderUsageByType,
     showToast
 } from "../PageMonitoringCommonService";
-import type {TypeAppInstance, TypeAppInstanceUsage2} from "../../../../shared/Types";
+import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
-import {
-    getAllAppInstEventLogs,
-    getAllClusterEventLogList,
-    getAppInstList,
-    getCloudletList, getClusterLevelUsageList,
-    getClusterList
-} from "../PageMonitoringMetricService";
 import _ from "lodash";
-import * as reducer from "../../../../utils";
 import Chip from "@material-ui/core/Chip";
+import {
+    APPINST_HW_MAPPER_KEY,
+    APPINST_LAYOUT_KEY, CLOUDLET_HW_MAPPER_KEY,
+    CLOUDLET_LAYOUT_KEY,
+    CLUSTER_HW_MAPPER_KEY,
+    CLUSTER_LAYOUT_KEY
+} from "./PageDevMonitoringProps";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -89,236 +88,135 @@ export const materialUiDarkTheme = createMuiTheme({
 });
 
 
-export const GRID_ITEM_TYPE = {
-    LINE: 'LINE',
-    BAR: 'BAR',
-    COLUMN: 'COLUMN',
-    BUBBLE: 'BUBBLE',
-    MAP: 'MAP',
-    TABLE: 'TABLE',
-    PIE: 'PIE',
-    CLUSTER_LIST: 'CLUSTER_LIST',
-    CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
-    APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
-    PERFORMANCE_SUM: 'PERFORMANCE_SUM'
-}
-export const HARDWARE_TYPE_FOR_GRID = {
-    MAP: 'MAP',
-    PIE: 'PIE',
-    BUBBLE: 'BUBBLE',
-    CLOUDLET_LIST: 'CLOUDLET_LIST',
-    FLAVOR: 'FLAVOR',
-    CPU: 'CPU',
-    VCPU: 'vCPU',
-    NET_SEND: 'NET_SEND',
-    NET_RECV: 'NET_RECV',
-    FLOATING_IPS: 'FLOATING_IPS',
-    IPV4: 'IPV4',
-
-    ////////////
-    UDP: 'UDP',
-    TCP: 'TCP',
-    NETWORK: 'NETWORK',
-    //UDP
-    UDPSENT: 'UDPSENT',
-    UDPRECV: 'UDPRECV',
-    UDPRECVERR: 'UDPRECVERR',
-
-    //TCP
-    TCPCONNS: 'TCPCONNS',
-    TCPRETRANS: 'TCPRETRANS',
-
-    //NETWORK
-    SENDBYTES: 'SEND_BYTES',
-    RECVBYTES: 'RECV_BYTES',
-
-    MEM: 'MEM',
-    MEM2: 'MEM',
-    RECV_BYTES: 'RECV_BYTES',
-    SEND_BYTES: 'SEND_BYTES',
-    DISK: 'DISK',
-    CONNECTIONS: 'CONNECTIONS',
-    ACTIVE_CONNECTION: 'ACTIVE_CONNECTION',//12
-    HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
-    ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
-
-};
-
-export const CHART_TYPE = {
-    LINE: 'LINE',
-    BAR: 'BAR',
-    COLUMN: 'COLUMN',
-}
-
-export const defaultLayoutForCloudlet = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
-    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
-];
-
-
-export const defaultLayoutMapperForCloudlet = [
-    {
-        id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-
-    {
-        id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-    },
-    {
-        id: '5',
-        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-    },
-    {
-        id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-    },
-
-];
-
-
-
-export const defaultLayoutForCluster = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
-    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
-];
-
-
-export const defaultHwMapperListForCluster = [
-    {
-        id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-
-    {
-        id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-    },
-    {
-        id: '5',
-        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-    },
-    {
-        id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-    },
-
-];
-
-
-/*
-desc:#####################################
-desc:defaultLayoutForAppInst
-desc:#######################################
+/**
+ *
+ * @param hardwareUsageList
+ * @param hardwareType
+ * @param _this
+ * @returns {{levelTypeNameList: [], hardwareType: string, usageSetList: [], newDateTimeList: []}|*}
  */
-export const defaultLayoutForAppInst = [
-
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
-    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
-];
-
-
-export const defaultLayoutMapperForAppInst = [
-    {
-        id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-
-    {
-        id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '5',
-        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-    },
-    {
-        id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-    },
-];
-
-
-export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
+export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
-        reactLocalStorage.remove(getUserId() + "_layout")
-        reactLocalStorage.remove(getUserId() + "_layout2")
-        reactLocalStorage.remove(getUserId() + "_layout_mapper")
-        reactLocalStorage.remove(getUserId() + "_layout2_mapper")
-        await _this.setState({
-            layoutForCluster: [],
-            layoutMapperForCluster: [],
-            layoutForAppInst: [],
-        });
 
-        await _this.setState({
-            layoutForCluster: defaultLayoutForCluster,
-            layoutMapperForCluster: defaultHwMapperListForCluster,
-            layoutForAppInst: defaultLayoutForAppInst,
-            layoutMapperForAppInst: defaultLayoutMapperForAppInst,
-        })
+        console.log(`hardwareUsageList===${hardwareType}=>`, hardwareUsageList);
+
+        if (hardwareUsageList.length === 0) {
+            return (
+                <div style={PageMonitoringStyles.noData}>
+                    NO DATA
+                </div>
+            )
+        } else {
+            let classificationName = '';
+            let levelTypeNameList = [];
+            let usageSetList = [];
+            let dateTimeList = [];
+            let series = [];
+
+            hardwareUsageList.map((item, index) => {
+                let usageColumnList = item.columns;
+                let hardWareUsageIndex;
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    series = item.cpuSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    series = item.memSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    series = item.diskSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
+                    series = item.tcpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+                    series = item.tcpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                    series = item.udpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+                    series = item.udpSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    series = item.networkSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                    series = item.networkSeriesList
+                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                    series = item.connectionsSeriesList
+                }
+                    //////todo:cloudllet
+                    //////todo:cloudllet
+                    //////todo:cloudllet
+
+                /*"floatingIpsUsed",11
+                "ipv4Used",13
+                "netSend",3
+                "netRecv",4*/
+                else if (hardwareType === HARDWARE_TYPE.netSend) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.netRecv) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.memUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.diskUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.vCpuUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.floatingIpsUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.ipv4Used) {
+                    series = item.series
+                }
+
+                console.log(`series==${hardwareType}==>`, series);
+
+                console.log(`series====usageColumnList>`, usageColumnList)
+
+                hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
 
+                console.log(`hardWareUsageIndex====>`, hardWareUsageIndex);
+                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    classificationName = item.cluster + "\n[" + item.cloudlet + "]";
+                } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    classificationName = item.cloudlet
+                } else {//@desc: APPINST
+                    classificationName = item.instance.AppName
+                }
+
+
+                let usageList = [];
+                for (let j in series) {
+                    let usageOne = series[j][hardWareUsageIndex];
+                    usageList.push(usageOne);
+                    let dateOne = series[j]["0"];
+                    dateOne = dateOne.toString().split("T");
+                    dateTimeList.push(dateOne[1]);
+                }
+
+                levelTypeNameList.push(classificationName);
+                usageSetList.push(usageList);
+            });
+
+            //@desc: cut List with RECENT_DATA_LIMIT_COUNT
+            let newDateTimeList = [];
+            for (let i in dateTimeList) {
+                if (i < RECENT_DATA_LIMIT_COUNT) {
+                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+                }
+            }
+
+            let _result = {
+                levelTypeNameList,
+                usageSetList,
+                newDateTimeList,
+                hardwareType,
+            }
+
+            console.log(`_result====>`, _result);
+
+            return _result
+        }
     } catch (e) {
-        showToast(e.toString())
+
     }
 
-}
+};
 
 
 export const makeid = (length) => {
@@ -638,97 +536,6 @@ export const makeClusterTreeDropdown = (cloudletList, clusterList) => {
     return newCloudletList;
 }
 
-export const loadInitDataForDev = async (isInterval: boolean = false, _this: PageDevMonitoring) => {
-    let promiseList = []
-    let promiseList2 = []
-    try {
-        clearInterval(_this.intervalForAppInst)
-        await _this.setState({dropdownRequestLoading: true})
-        //@desc:#############################################
-        //@desc: (cloudletList ,clusterList, appnInstList)
-        //@desc:#############################################
-        promiseList.push(getCloudletList())
-        promiseList.push(getClusterList())
-        promiseList.push(getAppInstList())
-        let newPromiseList = await Promise.all(promiseList);
-        let cloudletList = newPromiseList[0];
-        let clusterList = newPromiseList[1];
-        let appInstList = newPromiseList[2];
-        let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
-
-        //@todo: dropdownClusterListOnCloudlet
-        let cloudletOnClusterList = []
-        clusterList.map(item => (cloudletOnClusterList.push(item.Cloudlet)))
-        let dropdownClusterListOnCloudlet = makeClusterTreeDropdown(_.uniqBy(cloudletOnClusterList), clusterList)
-
-
-        //@desc:#########################################################################
-        //@desc: map Marker
-        //@desc:#########################################################################
-        let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-        await _this.setState({
-            appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
-            mapLoading: false,
-        })
-
-        //@desc:#########################################################################
-        //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
-        //@desc:#########################################################################
-        promiseList2.push(getAllClusterEventLogList(clusterList))
-        promiseList2.push(getAllAppInstEventLogs());
-        promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-        promiseList2.push(getClusterLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
-        let newPromiseList2 = await Promise.all(promiseList2);
-        let allClusterEventLogList = newPromiseList2[0];
-        let allAppInstEventLogList = newPromiseList2[1];
-        let allClusterUsageList = newPromiseList2[2];
-        let allCoudletUsageList = newPromiseList2[2];
-
-        let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, _this.state.chartColorList);
-        let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-            return o.sumCpuUsage;
-        }));
-        let maxMem = Math.max.apply(Math, allClusterUsageList.map(function (o) {
-            return o.sumMemUsage;
-        }));
-        await _this.setState({
-            legendHeight: (Math.ceil(clusterList.length / 8)) * 25,
-            isNoData: appInstList.length === 0,
-            bubbleChartData: bubbleChartData,
-            allClusterEventLogList: allClusterEventLogList,
-            filteredClusterEventLogList: allClusterEventLogList,
-            allAppInstEventLogs: allAppInstEventLogList,
-            filteredAppInstEventLogs: allAppInstEventLogList,
-            isReady: true,
-            clusterDropdownList: clusterDropdownList,
-            dropDownCludsterListOnCloudlet: dropdownClusterListOnCloudlet,
-            clusterList: clusterList,
-            filteredClusterList: clusterList,
-            isAppInstaceDataReady: true,
-            appInstanceList: appInstList,
-            filteredAppInstanceList: appInstList,
-            dropdownRequestLoading: false,
-            clusterListLoading: false,
-            allClusterUsageList: allClusterUsageList,
-            filteredClusterUsageList: allClusterUsageList,
-            maxCpu: maxCpu,
-            maxMem: maxMem,
-            isRequesting: false,
-            currentCluster: '',
-            ///@desc: ----------cloudletList--------------
-            cloudletList: cloudletList,
-            filteredCloudletList: cloudletList,
-            allCloudletUsageList: allCoudletUsageList,
-
-        },()=>{
-            console.log(`state====>`, _this.state);
-        });
-    } catch (e) {
-        //showToast(e.toString())
-    }
-
-}
-
 
 export const makeGridItemWidth = (graphType) => {
     if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
@@ -747,93 +554,6 @@ export const makeGridIItemHeight = (graphType) => {
         return 1;
     }
 }
-
-
-/**
- *
- * @param hardwareUsageList
- * @param hardwareType
- * @param _this
- * @returns {{levelTypeNameList: [], hardwareType: string, usageSetList: [], newDateTimeList: []}|*}
- */
-export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
-    try {
-        if (hardwareUsageList.length === 0) {
-            return (
-                <div style={PageMonitoringStyles.noData}>
-                    NO DATA
-                </div>
-            )
-        } else {
-            let classificationName = '';
-            let levelTypeNameList = [];
-            let usageSetList = [];
-            let dateTimeList = [];
-            let series = [];
-
-            hardwareUsageList.map((item, index) => {
-                let usageColumnList = item.columns;
-                let hardWareUsageIndex;
-                if (hardwareType === HARDWARE_TYPE.CPU) {
-                    series = item.cpuSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                    series = item.memSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                    series = item.diskSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-                    series = item.tcpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
-                    series = item.tcpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-                    series = item.udpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-                    series = item.udpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    series = item.networkSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                    series = item.networkSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                    series = item.connectionsSeriesList
-                }
-
-
-                hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
-                classificationName = item.cluster + "\n[" + item.cloudlet + "]";
-                let usageList = [];
-                for (let j in series) {
-                    let usageOne = series[j][hardWareUsageIndex];
-                    usageList.push(usageOne);
-                    let dateOne = series[j]["0"];
-                    dateOne = dateOne.toString().split("T");
-                    dateTimeList.push(dateOne[1]);
-                }
-
-                levelTypeNameList.push(classificationName);
-                usageSetList.push(usageList);
-            });
-
-            //@desc: cut List with RECENT_DATA_LIMIT_COUNT
-            let newDateTimeList = [];
-            for (let i in dateTimeList) {
-                if (i < RECENT_DATA_LIMIT_COUNT) {
-                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
-                }
-            }
-
-            return {
-                levelTypeNameList,
-                usageSetList,
-                newDateTimeList,
-                hardwareType,
-            }
-        }
-    } catch (e) {
-
-    }
-
-};
 
 
 /**
@@ -1138,7 +858,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                 gridLines: {
                     color: "#fff",
                 },
-                //desc: options for 멀티라인차트
+                //desc: options for multiline Charts
                 yAxes: [{
                     id: 'A',
                     type: 'linear',
@@ -1706,7 +1426,7 @@ export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, val
  * @returns {[]}
  */
 export const makeDropdownForAppInst = (appInstList) => {
-    let appInstDropdownList = [];
+    let dropdownList = [];
     try {
         appInstList.map((item: TypeAppInstance, index) => {
             let AppName = item.AppName
@@ -1722,13 +1442,33 @@ export const makeDropdownForAppInst = (appInstList) => {
             };
 
             let specifiedAppInstOne = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(CloudletLocation);
-            appInstDropdownList.push({
+            dropdownList.push({
                 key: specifiedAppInstOne,
                 value: specifiedAppInstOne,
                 text: AppName.trim() + " [" + Version.toString().trim() + "]",
             })
         })
-        return appInstDropdownList;
+        return dropdownList;
+    } catch (e) {
+
+    }
+};
+
+export const makeDropdownForCloudlet = (cloudletList) => {
+    let dropdownList = [];
+    try {
+        cloudletList.map((item: TypeCloudlet, index) => {
+            let CloudletName = item.CloudletName
+
+
+            let specifiedCloudletName = CloudletName
+            dropdownList.push({
+                key: specifiedCloudletName,
+                value: specifiedCloudletName,
+                text: CloudletName.trim(),
+            })
+        })
+        return dropdownList;
     } catch (e) {
 
     }

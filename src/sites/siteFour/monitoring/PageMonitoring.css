@@ -643,3 +643,7 @@ tr td {
     list-style: none;
     outline: 0;
 }*/
+
+.ant-select-dropdown-menu {
+    max-height: 512px !important;
+}
