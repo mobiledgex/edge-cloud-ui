@@ -327,9 +327,6 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 })
 
                 let allCloudletUsageList = await getCloudletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-
-                console.log(`allCloudletUsageList====>`, allCloudletUsageList);
-
                 let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
                 await this.setState({
                     bubbleChartData: bubbleChartData,
