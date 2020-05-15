@@ -473,12 +473,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let newPromiseList = await Promise.all(promiseList);
                     let clusterList = newPromiseList[0];
                     let appInstList = newPromiseList[1];
+
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let cloudletNameList = []
                     orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
-
-                    let dropdownClusterListOnCloudlet = this.makeClusterTreeDropdown(cloudletNameList, clusterList)
-
+                    let clusterDropdownList = this.makeClusterTreeDropdown(_.uniqBy(cloudletNameList), orgAppInstList)
 
                     //@desc:#########################################################################
                     //@desc: map Marker
@@ -517,8 +516,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        //clusterDropdownList: clusterDropdownList,
-                        dropDownCludsterListOnCloudlet: dropdownClusterListOnCloudlet,
+                        dropDownCludsterListOnCloudlet: clusterDropdownList,
                         clusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -1637,7 +1635,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            makeClusterTreeDropdown(cloudletList, clusterList) {
+            makeClusterTreeDropdown(cloudletList, appInstList) {
                 let newCloudletList = []
                 newCloudletList.push({
                     title: 'Reset Filter',
@@ -1663,11 +1661,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         children: []
                     };
 
-                    clusterList.map(clusterOne => {
+                    appInstList.map(clusterOne => {
                         if (clusterOne.Cloudlet === cloudletOne) {
                             newCloudletOne.children.push({
-                                title: clusterOne.ClusterName,
-                                value: clusterOne.ClusterName + " | " + cloudletOne,
+                                title: clusterOne.ClusterInst,
+                                value: clusterOne.ClusterInst + " | " + cloudletOne,
                                 isParent: false,
                             })
                         }

@@ -184,13 +184,16 @@ export const getClusterList = async () => {
         let mergedClusterList = [];
         showClusterList.map(item => {
             //@todo : null check
-            if (item && item.response && item.response.data && item.response.data.length !== 0) {
+            if (!isEmpty(item.response.data)) {
                 let clusterList = item.response.data;
                 clusterList.map(item => {
                     mergedClusterList.push(item);
                 })
             }
         })
+
+
+
 
         //todo: Filter to fetch only those belonging to the current organization
         let orgClusterList = []
@@ -200,7 +203,7 @@ export const getClusterList = async () => {
             }
         })
 
-
+        console.log(`orgClusterList====>`, orgClusterList);
         return orgClusterList;
     } catch (e) {
 
