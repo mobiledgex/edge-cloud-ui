@@ -1177,7 +1177,6 @@ body, button, input, textarea, optgroup, select, textarea,
 .gnb_header .ui.menu .ui.dropdown .menu>.item,
 .round_panel .ui.dropdown .menu>.item,
 .round_panel .ui.menu .ui.dropdown .menu>.item {
-    background: rgba(29,31,35,.75) !important;
 }
 .round_panel .ui.search.selection.dropdown>input.search {
     padding: .5em 2.1em .5em 0.7em;
