@@ -5,7 +5,7 @@ import {Dropdown} from "semantic-ui-react";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
-import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {Center, ChartIconOuterDiv, MonitoringStyles} from "../common/MonitoringStyles";
 import Button from "@material-ui/core/Button";
 
 const FA = require('react-fontawesome')
@@ -199,7 +199,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Line.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
+                                                          style={MonitoringStyles.chartIcon}
                                                           loading={() => (<Center><CircularProgress/></Center>)}/>
                                             </Center>
                                         </div>
@@ -223,7 +223,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Bar.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
+                                                          style={MonitoringStyles.chartIcon}
                                                           loading={() => (<Center><CircularProgress/></Center>)}/>
                                             </Center>
                                         </div>
@@ -248,7 +248,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Column.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
+                                                          style={MonitoringStyles.chartIcon}
                                                           loading={() => (<Center><CircularProgress/></Center>)}/>
                                             </Center>
                                         </div>
@@ -272,7 +272,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Grid.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
+                                                          style={MonitoringStyles.chartIcon}
                                                           loading={() => (<Center><CircularProgress/></Center>)}/>
                                             </Center>
                                         </div>
@@ -295,7 +295,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Map.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
+                                                          style={MonitoringStyles.chartIcon}
                                                           loading={() => (<Center><CircularProgress/></Center>)}/>
                                             </Center>
                                         </div>
@@ -319,7 +319,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         >
                                             <Center>
                                                 <ReactSVG src={require('../images/chart/Bubble.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
+                                                          style={MonitoringStyles.chartIcon}
                                                           loading={() => (<Center><CircularProgress/></Center>)}/>
                                             </Center>
                                         </div>
@@ -369,7 +369,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
                             <div className='page_monitoring_form_column_right'>
                                 <Dropdown
-                                    style={PageMonitoringStyles.dropDownForClusterCloudlet3}
+                                    style={MonitoringStyles.dropDownForClusterCloudlet3}
                                     selectOnBlur={false}
                                     placeholder="Select Item"
                                     selection

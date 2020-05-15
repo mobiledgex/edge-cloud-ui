@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 
-export const PageMonitoringStyles = {
+export const MonitoringStyles = {
     topRightMenu: {
         alignItems: 'center',
         display: 'flex',

@@ -34,16 +34,16 @@ import {
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
-} from "../service/PageAdminMonitoringService";
+} from "../service/AdminMonitoringService";
 import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/PageMonitoringCommonService";
-import '../common/PageMonitoring.css'
-import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/MonitoringCommonService";
+import '../common/Monitoring.css'
+import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/MonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1236,7 +1236,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/* <div className=''>
                                                             {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
-                                                                <div style={PageMonitoringStyles.noData}>
+                                                                <div style={MonitoringStyles.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : renderBottomGridArea(this)}

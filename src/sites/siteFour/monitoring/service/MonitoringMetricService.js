@@ -8,9 +8,9 @@ import {
     makeFormForCloudletLevelMatric,
     makeFormForClusterLevelMatric,
     showToast
-} from "./PageMonitoringCommonService";
-import {makeFormForAppLevelUsageList} from "./PageAdminMonitoringService";
-import PageDevMonitoring from "../view/PageDevOperMonitoring";
+} from "./MonitoringCommonService";
+import {makeFormForAppLevelUsageList} from "./AdminMonitoringService";
+import PageDevMonitoring from "../view/MonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -19,7 +19,7 @@ import {
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
     SHOW_APP_INST_CLIENT_ENDPOINT
-} from "../common/MetricServiceEndPoint";
+} from "../common/MonitoringMetricEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
@@ -608,25 +608,42 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
 
-        //todo: check undefined element.
-        let newCloutletMetric = []
-        cloudletLevelMatricUsageList.map(item => {
-            if (item !== undefined) {
-                newCloutletMetric.push(item)
-            }
-        })
-
         let usageList = []
-        newCloutletMetric.map((item, index) => {
+        let netSendSeriesList = [];
+        let netRecvSeriesList = [];
+        let vCpuSeriesList = [];
+        let memSeriesList = [];
+        let diskSeriesList = [];
+        let floatingIpsSeriesList = [];
+        let ipv4UsedSeriesList = [];
+        cloudletLevelMatricUsageList.map((item, index) => {
 
             if (item !== undefined) {
                 let Region = cloudletList[index].Region
-                if (item.data["0"] !== undefined && item.data["0"].Series !== null) {
+                if (item !== undefined && item.data["0"] !== undefined && item.data["0"].Series !== null) {
+
+
                     let series = item.data["0"].Series["0"].values
                     let columns = item.data["0"].Series["0"].columns
+                    //////////////////////////////////////////
+                    let netSendSeriesOne = series["0"]["3"]
+                    let netRecvSeriesOne = series["0"]["4"]
+                    let vCpuSeriesOne = series["0"]["5"]
+                    let memSeriesOne = series["0"]["7"]
+                    let diskSeriesOne = series["0"]["9"]
+                    let floatingIpsSeriesOne = series["0"]["11"]
+                    let ipv4UsedSeriesOne = series["0"]["13"]
+
+                    netSendSeriesList.push(netSendSeriesOne)
+                    netRecvSeriesList.push(netRecvSeriesOne)
+                    vCpuSeriesList.push(vCpuSeriesOne)
+                    memSeriesList.push(memSeriesOne)
+                    diskSeriesList.push(diskSeriesOne)
+                    floatingIpsSeriesList.push(floatingIpsSeriesOne)
+                    ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
 
                     let sumVirtualCpuUsed = 0;
-                    let sumVirtualCpuMax = 0;
+                    let sumvCpuMax = 0;
                     let sumMemUsed = 0;
                     let sumMemMax = 0;
                     let sumDiskUsed = 0;
@@ -648,7 +665,7 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
                         let vCpuUsed = item["5"];
                         let vCpuMax = item["6"];
                         sumVirtualCpuUsed += vCpuUsed;
-                        sumVirtualCpuMax += vCpuMax;
+                        sumvCpuMax += vCpuMax;
 
                         //todo: MEM
                         sumMemUsed += item["7"];
@@ -672,28 +689,37 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
                     })
 
                     usageList.push({
-                        sumVCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-                        sumSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-                        sumFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+                        usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+                        usedSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+                        usedFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+                        maxVCpuCount: sumvCpuMax / RECENT_DATA_LIMIT_COUNT,
+                        maxMemUsage: sumMemMax / RECENT_DATA_LIMIT_COUNT,
+                        maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
                         columns: columns,
                         series: series,
                         cloudlet: cloudlet,
                         operator: operator,
                         Region: Region,
+                        netSendSeriesList,
+                        netRecvSeriesList,
+                        vCpuSeriesList,
+                        memSeriesList,
+                        diskSeriesList,
+                        floatingIpsSeriesList,
+                        ipv4UsedSeriesList,
+
 
                     })
                 }
             }
 
-        })
-
+        });
         return usageList;
     } catch (e) {
-        //throw new Error(e)
     }
 
 }

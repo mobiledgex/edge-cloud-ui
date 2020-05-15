@@ -1,4 +1,4 @@
-import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/service/PageMonitoringCommonService";
+import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/service/MonitoringCommonService";
 import randomColor from 'randomcolor'
 
 let moreColors = randomColor({
@@ -467,7 +467,7 @@ export const HARDWARE_TYPE = {
     HANDLED_CONNECTION: 'HANDLED',//13
     ACCEPTS_CONNECTION: 'ACCEPTS',//14 (index)
     //For Cloudlet
-    VCPUUSED: 'vCpuUsed',
+    VCPU_USED: 'vCpuUsed',
     MEM_USED: 'memUsed',
     DISK_USED: 'diskUsed',
     FLOATING_IP_USED: 'floatingIpsUsed',

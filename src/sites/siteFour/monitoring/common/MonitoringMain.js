@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import PageMonitoringForDeveloper from "../view/PageDevOperMonitoring";
-import PageMonitoringForAdmin from "../view/PageAdminMonitoring";
+import PageMonitoringForDeveloper from "../view/MonitoringView";
+import PageMonitoringForAdmin from "../view/AdmMonitoringView";
 import {Card} from "@material-ui/core";
 
-export default function PageMonitoringMain() {
+export default function MonitoringMain() {
     const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
 
     const renderMainPage = () => {

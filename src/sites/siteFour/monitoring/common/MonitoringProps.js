@@ -2,7 +2,7 @@ import * as actions from "../../../../actions";
 import {LinearProgress, withStyles} from "@material-ui/core";
 import Switch from "@material-ui/core/Switch";
 
-export type PageDevMonitoringProps = {
+export type MonitoringProps = {
     handleLoadingSpinner: Function,
     toggleLoading: Function,
     history: any,

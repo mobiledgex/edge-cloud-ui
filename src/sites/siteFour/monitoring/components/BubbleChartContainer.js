@@ -1,11 +1,11 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
-import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
-import PageDevMonitoring from "../view/PageDevOperMonitoring";
+import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/MonitoringService";
+import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/MonitoringCommonService";
+import PageDevMonitoring from "../view/MonitoringView";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {MonitoringStyles} from "../common/MonitoringStyles";
 import {Select} from "antd";
 
 const {Option} = Select;
@@ -64,7 +64,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
         if (pBubbleChartData.length === 0 && this.props.parent.state.loading === false) {
             return (
-                <div style={PageMonitoringStyles.noData}>
+                <div style={MonitoringStyles.noData}>
                     NO DATA
                 </div>
             )

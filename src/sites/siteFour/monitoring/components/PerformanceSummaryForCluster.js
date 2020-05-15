@@ -9,11 +9,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from "antd";
-import '../common/PageMonitoring.css'
-import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
+import '../common/Monitoring.css'
+import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/MonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../service/PageMonitoringCommonService";
+import {numberWithCommas} from "../common/MonitoringUtils";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../service/MonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,

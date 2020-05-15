@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import '../common/PageMonitoring.css'
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {renderPlaceHolderLoader} from "../service/MonitoringCommonService";
+import '../common/Monitoring.css'
+import {MonitoringStyles} from "../common/MonitoringStyles";
 
 
 export default function ClusterEventLogListHook(props) {
@@ -36,14 +36,14 @@ export default function ClusterEventLogListHook(props) {
             <Table basic='very' sortable striped celled fixed collapsing styles={{zIndex: 999999999999}}>
 
                 <div>
-                    <Table.Row style={PageMonitoringStyles.tableHeaderRow2}>
+                    <Table.Row style={MonitoringStyles.tableHeaderRow2}>
                         <Table.HeaderCell style={{flex: .3, padding: 0}}>
-                            <div style={PageMonitoringStyles.gridHeaderSmallCenter}>
+                            <div style={MonitoringStyles.gridHeaderSmallCenter}>
                                 TIME
                             </div>
                         </Table.HeaderCell>
                         <Table.HeaderCell style={{flex: .4, padding: 0}}>
-                            <div style={PageMonitoringStyles.gridHeaderSmall}>
+                            <div style={MonitoringStyles.gridHeaderSmall}>
                                 <div>
                                     CLUSTER
                                 </div>
@@ -53,7 +53,7 @@ export default function ClusterEventLogListHook(props) {
                             </div>
                         </Table.HeaderCell>
                         <Table.HeaderCell style={{flex: .3, padding: 0}}>
-                            <div style={PageMonitoringStyles.gridHeaderSmallCenter}>
+                            <div style={MonitoringStyles.gridHeaderSmallCenter}>
                                 <div>
                                     EVENT
                                 </div>
@@ -79,9 +79,9 @@ export default function ClusterEventLogListHook(props) {
                     {!props.parent.state.loading ?
                         eventLogList.map((item, index) => {
                             return (
-                                <Table.Row style={PageMonitoringStyles.tableRowFat} className='gridTableCell'>
+                                <Table.Row style={MonitoringStyles.tableRowFat} className='gridTableCell'>
                                     <Table.Cell style={{flex: .3, padding: 0, alignSelf: 'center'}}>
-                                        <div style={PageMonitoringStyles.gridTableCell3Dash2}>
+                                        <div style={MonitoringStyles.gridTableCell3Dash2}>
                                             {item[0].toString().split('T')[0]}
                                             {`\n\n`}
                                             {item[0].toString().split('T')[1].substring(0, 8)}
@@ -89,7 +89,7 @@ export default function ClusterEventLogListHook(props) {
                                     </Table.Cell>
 
                                     <Table.Cell style={{flex: .4, padding: 0}}>
-                                        <div style={PageMonitoringStyles.gridTableCell3Dash}>
+                                        <div style={MonitoringStyles.gridTableCell3Dash}>
                                             <div>
                                                 {item[1]}
                                             </div>
@@ -99,7 +99,7 @@ export default function ClusterEventLogListHook(props) {
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell style={{flex: .3, padding: 0}}>
-                                        <div className={''} style={PageMonitoringStyles.gridTableCell3Dash1}>
+                                        <div className={''} style={MonitoringStyles.gridTableCell3Dash1}>
                                             <div>
                                                 {item[10]}
                                             </div>

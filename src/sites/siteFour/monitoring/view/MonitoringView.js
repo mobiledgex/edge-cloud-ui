@@ -1,4 +1,4 @@
-import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+import {ClusterCluoudletLabel, LegendOuterDiv, MonitoringStyles} from '../common/MonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -24,7 +24,7 @@ import {
     makeLineChartDataForBigModal,
     reduceLegendClusterCloudletName,
     revertToDefaultLayout,
-} from "../service/PageDevOperMonitoringService";
+} from "../service/MonitoringService";
 import {
     ADD_ITEM_LIST,
     APP_INST_MATRIX_HW_USAGE_INDEX,
@@ -53,7 +53,7 @@ import {
     renderPlaceHolderLoader,
     renderWifiLoader,
     showToast
-} from "../service/PageMonitoringCommonService";
+} from "../service/MonitoringCommonService";
 import {
     getAllAppInstEventLogs,
     getAllClusterEventLogList,
@@ -64,7 +64,7 @@ import {
     getClusterLevelUsageList,
     getClusterList,
     requestShowAppInstClientWS
-} from "../service/PageMonitoringMetricService";
+} from "../service/MonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -78,7 +78,7 @@ import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import ClusterEventLogListHook from "../components/ClusterEventLogListHook";
 import MaterialIcon from "material-icons-react";
-import '../common/PageMonitoring.css'
+import '../common/Monitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import {THEME_TYPE} from "../../../../themeStyle";
@@ -88,13 +88,13 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
-import type {PageDevMonitoringProps} from "../common/PageDevMonitoringProps";
+import type {MonitoringProps} from "../common/MonitoringProps";
 import {
     ColorLinearProgress,
     CustomSwitch,
     PageDevMonitoringMapDispatchToProps,
     PageDevMonitoringMapStateToProps
-} from "../common/PageDevMonitoringProps";
+} from "../common/MonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -106,7 +106,7 @@ import {
     defaultLayoutMapperForCloudlet,
     defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster
-} from "../common/PageMonitoringGridLayoutProps";
+} from "../common/MonitoringGridLayoutProps";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -277,7 +277,7 @@ type PageDevMonitoringState = {
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
-        class PageDevMonitoring extends Component<PageDevMonitoringProps, PageDevMonitoringState> {
+        class PageDevMonitoring extends Component<MonitoringProps, PageDevMonitoringState> {
             intervalForAppInst = null;
             intervalForCluster = null;
             webSocketInst: WebSocket = null;
@@ -462,7 +462,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 };
             }
 
-            async componentWillReceiveProps(nextProps: PageDevMonitoringProps, nextContext: any): void {
+            async componentWillReceiveProps(nextProps: MonitoringProps, nextContext: any): void {
                 if (this.props.size.width !== nextProps.size.width) {
                     window.dispatchEvent(new Event('resize'))
                 }
@@ -512,7 +512,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         mapLoading: false,
                     })
 
-
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
@@ -536,6 +535,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }));
 
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
+
+                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
 
                     await this.setState({
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 25,
@@ -1115,7 +1116,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         <div
                             className='draggable'
-                            style={PageMonitoringStyles.gridItemHeader}>
+                            style={MonitoringStyles.gridItemHeader}>
                             {/*desc:############################*/}
                             {/*desc:    maximize button         */}
                             {/*desc:############################*/}
@@ -1433,7 +1434,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                         >
                             <MaterialIcon icon={'history'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 Fetch Locally Stored Data
                             </div>
                         </AMenu.Item>
@@ -1446,7 +1447,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                         >
                             <MaterialIcon icon={'add'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 Add Item
                             </div>
                         </AMenu.Item>
@@ -1464,7 +1465,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                         >
                             <MaterialIcon icon={'refresh'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 Reload
                             </div>
                         </AMenu.Item>
@@ -1479,7 +1480,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                         >
                             <MaterialIcon icon={'grid_on'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 Revert To The Default Layout
                             </div>
                         </AMenu.Item>
@@ -1498,10 +1499,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                         >
                             <MaterialIcon icon={'show_chart'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 Stacked Line Chart
                             </div>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 <CustomSwitch
                                     size="small"
                                     checked={this.state.isStackedLineChart}
@@ -1518,7 +1519,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             title={
                                 <div style={{display: 'flex'}}>
                                     <MaterialIcon icon={'invert_colors'} color={'white'}/>
-                                    <div style={PageMonitoringStyles.listItemTitle}>Change The Graph Theme</div>
+                                    <div style={MonitoringStyles.listItemTitle}>Change The Graph Theme</div>
                                 </div>
                             }
                         >
@@ -1552,10 +1553,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                         >
                             <MaterialIcon icon={'stay_current_portrait'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 Show Client Attached to App Instance
                             </div>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 <CustomSwitch
                                     size="small"
                                     checked={this.state.showAppInstClient}
@@ -1574,7 +1575,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                         >
                             <MaterialIcon icon={'delete'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
+                            <div style={MonitoringStyles.listItemTitle}>
                                 Delete All Grid Items
                             </div>
                         </AMenu.Item>
@@ -1636,10 +1637,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignSelf: 'center',
                                     justifyContent: 'center',
                                 }}>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         {/*Cluster*/} Stream
                                     </div>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         <CustomSwitch
                                             size="small"
                                             checked={this.state.isStream}
@@ -1678,10 +1679,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignSelf: 'center',
                                     justifyContent: 'center',
                                 }}>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         {/*App Inst*/} Stream
                                     </div>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         <CustomSwitch
                                             size="small"
                                             checked={this.state.isStream}
@@ -2061,7 +2062,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*################################*/}
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
                             <div
-                                style={PageMonitoringStyles.expandIconDiv}
+                                style={MonitoringStyles.expandIconDiv}
                                 onClick={() => {
                                     if (this.state.isLegendExpanded === false) {
                                         this.setState({
@@ -2150,10 +2151,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignSelf: 'center',
                                     justifyContent: 'center',
                                 }}>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         {/*Cluster*/} Stream
                                     </div>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         <CustomSwitch
                                             size="small"
                                             checked={this.state.isStream}
@@ -2192,10 +2193,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignSelf: 'center',
                                     justifyContent: 'center',
                                 }}>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         {/*App Inst*/} Stream
                                     </div>
-                                    <div style={PageMonitoringStyles.listItemTitle}>
+                                    <div style={MonitoringStyles.listItemTitle}>
                                         <CustomSwitch
                                             size="small"
                                             checked={this.state.isStream}

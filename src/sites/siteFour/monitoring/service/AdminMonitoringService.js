@@ -1,5 +1,5 @@
 import React from 'react';
-import '../common/PageMonitoring.css';
+import '../common/Monitoring.css';
 import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_LIST,
@@ -17,12 +17,12 @@ import {
     renderLineChartCore,
     renderUsageByType2,
     showToast
-} from "./PageMonitoringCommonService";
+} from "./MonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
-import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {numberWithCommas} from "../common/MonitoringUtils";
+import {MonitoringStyles} from "../common/MonitoringStyles";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -386,7 +386,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={PageMonitoringStyles.noData}>
+            <div style={MonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -517,7 +517,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 
     if (pBubbleChartData.length === 0) {
         return (
-            <div style={PageMonitoringStyles.noData}>
+            <div style={MonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -605,7 +605,7 @@ export const renderBubbleChart = (_this: PageAdminMonitoring, hardwareType: stri
 export const renderBubbleChartForCloudlet = (_this: PageAdminMonitoring, hardwareType: string, pBubbleChartData: any) => {
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
-            <div style={PageMonitoringStyles.noData}>
+            <div style={MonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -697,7 +697,7 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
     try {
         if (hardwareUsageList.length === 0) {
             return (
-                <div style={PageMonitoringStyles.noData}>
+                <div style={MonitoringStyles.noData}>
                     NO DATA
                 </div>
             )
@@ -1125,7 +1125,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
         return (
-            <div style={PageMonitoringStyles.noData}>
+            <div style={MonitoringStyles.noData}>
                 NO DATA
             </div>
         )

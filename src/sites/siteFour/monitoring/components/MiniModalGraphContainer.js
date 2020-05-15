@@ -2,10 +2,10 @@
 import * as React from 'react';
 import {Modal as AModal} from "antd";
 import {Line} from 'react-chartjs-2';
-import PageDevMonitoring from "../view/PageDevOperMonitoring";
+import PageDevMonitoring from "../view/MonitoringView";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {lineGraphOptions} from "../../../../shared/Constants";
-import {makeGradientColorList} from "../service/PageDevOperMonitoringService";
+import {makeGradientColorList} from "../service/MonitoringService";
 
 type Props = {
     modalIsOpen: boolean,

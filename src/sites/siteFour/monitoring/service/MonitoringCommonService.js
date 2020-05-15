@@ -1,6 +1,6 @@
 import React from 'react';
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
-import '../common/PageMonitoring.css';
+import '../common/Monitoring.css';
 import {toast} from "react-semantic-toasts";
 import Lottie from "react-lottie";
 import {Chart} from "react-google-charts";
@@ -9,14 +9,14 @@ import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import {notification} from "antd";
-import {makeGradientColor} from "../service/PageDevOperMonitoringService";
+import {makeGradientColor} from "./MonitoringService";
 import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
-import {makeCompleteDateTime} from "../service/PageAdminMonitoringService";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
+import {makeCompleteDateTime} from "./AdminMonitoringService";
+import {MonitoringStyles} from "../common/MonitoringStyles";
+import {barChartOption, columnChartOption} from "../common/MonitoringUtils";
 
 export const noDataArea = () => (
-    <div style={PageMonitoringStyles.center3}>
+    <div style={MonitoringStyles.center3}>
         There is no data to represent.
     </div>
 )

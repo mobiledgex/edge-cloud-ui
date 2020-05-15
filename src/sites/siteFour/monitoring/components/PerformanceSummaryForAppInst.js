@@ -8,10 +8,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress} from "antd";
-import '../common/PageMonitoring.css'
-import {numberWithCommas} from "../common/PageMonitoringUtils";
+import '../common/Monitoring.css'
+import {numberWithCommas} from "../common/MonitoringUtils";
 import {Paper} from "@material-ui/core";
-import {convertByteToMegaGigaByte} from "../service/PageMonitoringCommonService";
+import {convertByteToMegaGigaByte} from "../service/MonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,

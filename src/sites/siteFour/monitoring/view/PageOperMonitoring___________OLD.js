@@ -8,7 +8,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Card, DatePicker,} from 'antd';
-import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../service/PageAdminMonitoringService";
+import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../service/AdminMonitoringService";
 import {
     CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
@@ -23,7 +23,7 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import '../common/PageMonitoring.css'
+import '../common/Monitoring.css'
 import {renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {
@@ -34,7 +34,7 @@ import {
 } from "./service/PageOperMonitoringService";
 import LeafletMap from "../components/MapForOperContainer";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "./service/PageDevMonitoringService";
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {PageMonitoringStyles} from "../MonitoringStyles";
 import {
     getAllCloudletEventLogs,
     getCloudletEventLog,

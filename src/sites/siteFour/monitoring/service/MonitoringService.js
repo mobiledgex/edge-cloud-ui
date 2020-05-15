@@ -1,5 +1,5 @@
 import React from 'react';
-import '../common/PageMonitoring.css';
+import '../common/Monitoring.css';
 import {
     CHART_COLOR_APPLE,
     CHART_COLOR_BERRIES_GALORE,
@@ -24,18 +24,25 @@ import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
-import PageDevMonitoring from "../view/PageDevOperMonitoring";
+import PageDevMonitoring from "../view/MonitoringView";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
     makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader,
     renderUsageByType, renderUsageByType2, sortUsageListByType
-} from "./PageMonitoringCommonService";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import {renderUsageLabelByType} from "./PageAdminMonitoringService";
+} from "./MonitoringCommonService";
+import {MonitoringStyles} from "../common/MonitoringStyles";
+import {findUsageIndexByKey, numberWithCommas} from "../common/MonitoringUtils";
+import {renderUsageLabelByType} from "./AdminMonitoringService";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
+import {
+    APPINST_HW_MAPPER_KEY,
+    APPINST_LAYOUT_KEY,
+    CLOUDLET_HW_MAPPER_KEY,
+    CLOUDLET_LAYOUT_KEY, CLUSTER_HW_MAPPER_KEY,
+    CLUSTER_LAYOUT_KEY, defaultLayoutForCloudlet, defaultLayoutMapperForCloudlet
+} from "../common/MonitoringGridLayoutProps";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -261,10 +268,13 @@ export const defaultLayoutMapperForAppInst = [
 
 export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
     try {
-        reactLocalStorage.remove(getUserId() + "_layout")
-        reactLocalStorage.remove(getUserId() + "_layout2")
-        reactLocalStorage.remove(getUserId() + "_layout_mapper")
-        reactLocalStorage.remove(getUserId() + "_layout2_mapper")
+        reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
+        reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
+        reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
+        reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
+        reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
+        reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
+
         await _this.setState({
             layoutForCluster: [],
             layoutMapperForCluster: [],
@@ -276,6 +286,8 @@ export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
             layoutMapperForCluster: defaultHwMapperListForCluster,
             layoutForAppInst: defaultLayoutForAppInst,
             layoutMapperForAppInst: defaultLayoutMapperForAppInst,
+            layoutForCloudlet: defaultLayoutForCloudlet,
+            layoutMapperForCloudlet: defaultLayoutMapperForCloudlet,
         })
 
 
@@ -596,7 +608,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
 
         if (hardwareUsageList.length === 0) {
             return (
-                <div style={PageMonitoringStyles.noData}>
+                <div style={MonitoringStyles.noData}>
                     NO DATA
                 </div>
             )
@@ -631,30 +643,27 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                //////todo:cloudllet
-                else if (hardwareType === HARDWARE_TYPE.NETSEND) {
-                    series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.NETRECV) {
-                    series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-                    series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-                    series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.VCPUUSED) {
-                    series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED) {
-                    series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+                    //////todo:cloudllet/////////
+                    //////todo:cloudllet/////////
+                //////todo:cloudllet/////////
+                else if (
+                    hardwareType === HARDWARE_TYPE.NETSEND
+                    || hardwareType === HARDWARE_TYPE.NETRECV
+                    || hardwareType === HARDWARE_TYPE.MEM_USED
+                    || hardwareType === HARDWARE_TYPE.DISK_USED
+                    || hardwareType === HARDWARE_TYPE.VCPU_USED
+                    || hardwareType === HARDWARE_TYPE.FLOATING_IP_USED
+                    || hardwareType === HARDWARE_TYPE.IPV4_USED
+                ) {
                     series = item.series
                 }
-
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
                 if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
                 } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     classificationName = item.cloudlet
-                } else {//@desc: APPINST
+                } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
                     classificationName = item.instance.AppName
                 }
 
@@ -1887,7 +1896,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={PageMonitoringStyles.noData}>
+            <div style={MonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -2062,7 +2071,7 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
 
     if (pUsageList.length === 0) {
         return (
-            <div style={PageMonitoringStyles.noData}>
+            <div style={MonitoringStyles.noData}>
                 NO DATA
             </div>
         )

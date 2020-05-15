@@ -128,7 +128,6 @@ export const defaultLayoutMapperForCloudlet = [
         hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
         graphType: CHART_TYPE.LINE,
     },
-
 ];
 
 
