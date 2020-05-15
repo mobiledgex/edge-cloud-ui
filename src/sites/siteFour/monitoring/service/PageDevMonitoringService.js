@@ -32,7 +32,7 @@ import {
     renderUsageByType
 } from "../common/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {findUsageIndexByKey} from "../common/PageMonitoringUtils";
+import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
