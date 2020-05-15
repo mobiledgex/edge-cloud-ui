@@ -508,13 +508,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: map Marker
                     //@desc:#########################################################################
                     let markerListForMap = []
-                    if (localStorage.getItem('selectRole').toString().toLowerCase().includes('dev')) {
-                        markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-                    } else if (userType.toString().toLowerCase().includes('oper')) {
-
-                        markerListForMap = cloudletList;
-
-                    }
+                    markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
 
                     await this.setState({
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
