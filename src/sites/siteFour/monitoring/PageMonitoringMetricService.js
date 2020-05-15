@@ -157,6 +157,9 @@ export const getAppInstList = async (pRegionList = localStorage.getItem('regions
             let mergedList = mergedAppInstanceList.concat(listOne);
             mergedAppInstanceList = mergedList;
         })
+
+        console.log(`mergedAppInstanceList====>`, mergedAppInstanceList);
+
         return mergedAppInstanceList;
     } catch (e) {
         //throw new Error(e)
