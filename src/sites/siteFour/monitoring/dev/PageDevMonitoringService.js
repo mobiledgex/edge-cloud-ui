@@ -502,11 +502,11 @@ export const makeClusterTreeDropdown = (cloudletList, clusterList) => {
         selectable: true,
         children: []
     });
-    cloudletList.map(cloudletOne => {
+    cloudletList.map(itemOne => {
         let newCloudletOne = {
             title: (
 
-                <div>{cloudletOne}&nbsp;&nbsp;
+                <div>{itemOne}&nbsp;&nbsp;
                     <Chip
                         color="primary"
                         size="small"
@@ -515,16 +515,16 @@ export const makeClusterTreeDropdown = (cloudletList, clusterList) => {
                     />
                 </div>
             ),
-            value: cloudletOne,
+            value: itemOne,
             selectable: false,
             children: []
         };
 
         clusterList.map(clusterOne => {
-            if (clusterOne.Cloudlet === cloudletOne) {
+            if (clusterOne.Cloudlet === itemOne) {
                 newCloudletOne.children.push({
                     title: clusterOne.ClusterName,
-                    value: clusterOne.ClusterName + " | " + cloudletOne,
+                    value: clusterOne.ClusterName + " | " + itemOne,
                     isParent: false,
                 })
             }
