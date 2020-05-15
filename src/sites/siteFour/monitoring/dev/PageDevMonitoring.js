@@ -308,7 +308,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentRegion: 'ALL',
                     currentCloudLet: '',
-                    currentCluster: '',
+                    currentCluster: undefined,
                     currentAppInst: undefined,
                     isModalOpened: false,
                     appInstanceListTop5: [],
@@ -351,7 +351,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     connectionsTabIndex: 0,
                     tcpTabIndex: 0,
                     udpTabIndex: 0,
-                    dropDownCludsterListOnCloudlet: [],
+                    dropDownCludsterListOnCloudlet: undefined,
                     allUsageList: [],
                     maxCpu: 0,
                     maxMem: 0,
@@ -1668,6 +1668,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 });
                             }}
                             searchValue={this.state.searchClusterValue}
+                            searchPlaceholder={'Enter the cluster name.'}
                             placeholder={'Select Cluster'}
                             dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
                             treeData={this.state.dropDownCludsterListOnCloudlet}
@@ -1883,12 +1884,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         width: this.state.currentWidth,
                         height: '100%',
                     }}>
-                        {/*    <GlobePopupContainer
-                            clientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                            parent={this}
-                            isOpenGlobe={this.state.isOpenGlobe}
-                            appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                        />*/}
                         <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
