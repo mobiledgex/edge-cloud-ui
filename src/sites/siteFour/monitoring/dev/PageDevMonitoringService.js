@@ -33,6 +33,7 @@ import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import Chip from "@material-ui/core/Chip";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -1446,6 +1447,48 @@ export const tempClusterList = [
     },
 
 ]
+
+export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
+    let newCloudletList = []
+    newCloudletList.push({
+        title: 'Reset Filter',
+        value: '',
+        selectable: true,
+        children: []
+    });
+    cloudletList.map(cloudletOne => {
+        let newCloudletOne = {
+            title: (
+
+                <div>{cloudletOne}&nbsp;&nbsp;
+                    <Chip
+                        color="primary"
+                        size="small"
+                        label="Cloudlet"
+                        //style={{color: 'white', backgroundColor: '#34373E'}}
+                    />
+                </div>
+            ),
+            value: cloudletOne,
+            selectable: false,
+            children: []
+        };
+
+        appInstList.map(clusterOne => {
+            if (clusterOne.Cloudlet === cloudletOne) {
+                newCloudletOne.children.push({
+                    title: clusterOne.ClusterInst,
+                    value: clusterOne.ClusterInst + " | " + cloudletOne,
+                    isParent: false,
+                })
+            }
+        })
+
+        newCloudletList.push(newCloudletOne);
+    })
+
+    return newCloudletList;
+}
 
 
 export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, valueName) => {

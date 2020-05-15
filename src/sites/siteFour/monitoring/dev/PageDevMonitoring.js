@@ -22,7 +22,7 @@ import {
     makeLineChartData,
     makeSelectBoxListWithKeyValuePipeForCluster,
     reduceLegendClusterCloudletName,
-    revertToDefaultLayout,
+    revertToDefaultLayout, makeClusterTreeDropdown,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -477,7 +477,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let cloudletNameList = []
                     orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
-                    let clusterDropdownList = this.makeClusterTreeDropdown(_.uniqBy(cloudletNameList), orgAppInstList)
+                    let clusterNameList = [];
+                    orgAppInstList.map((item: TypeAppInstance, index) => {
+                        clusterNameList.push({
+                            ClusterInst: item.ClusterInst,
+                            Cloudlet: item.Cloudlet,
+                        })
+                    })
+
+                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletNameList), _.uniqWith(clusterNameList, _.isEqual))
 
                     //@desc:#########################################################################
                     //@desc: map Marker
@@ -1635,47 +1643,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            makeClusterTreeDropdown(cloudletList, appInstList) {
-                let newCloudletList = []
-                newCloudletList.push({
-                    title: 'Reset Filter',
-                    value: '',
-                    selectable: true,
-                    children: []
-                });
-                cloudletList.map(cloudletOne => {
-                    let newCloudletOne = {
-                        title: (
-
-                            <div>{cloudletOne}&nbsp;&nbsp;
-                                <Chip
-                                    color="primary"
-                                    size="small"
-                                    label="Cloudlet"
-                                    //style={{color: 'white', backgroundColor: '#34373E'}}
-                                />
-                            </div>
-                        ),
-                        value: cloudletOne,
-                        selectable: false,
-                        children: []
-                    };
-
-                    appInstList.map(clusterOne => {
-                        if (clusterOne.Cloudlet === cloudletOne) {
-                            newCloudletOne.children.push({
-                                title: clusterOne.ClusterInst,
-                                value: clusterOne.ClusterInst + " | " + cloudletOne,
-                                isParent: false,
-                            })
-                        }
-                    })
-
-                    newCloudletList.push(newCloudletOne);
-                })
-
-                return newCloudletList;
-            }
 
             makeClusterDropdown() {
                 return (
