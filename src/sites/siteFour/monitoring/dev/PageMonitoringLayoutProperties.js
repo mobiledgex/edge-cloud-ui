@@ -150,6 +150,7 @@ export const defaultLayoutForCluster = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
 ];
 
 

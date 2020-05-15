@@ -508,10 +508,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
                     //@todo: dropdownClusterListOnCloudlet
-                    let cloudletOnClusterList = []
-                    clusterList.map(item => (cloudletOnClusterList.push(item.Cloudlet)))
-                    let dropdownClusterListOnCloudlet = makeClusterTreeDropdown(_.uniqBy(cloudletOnClusterList), clusterList)
-
+                    let onlyCloudletNameList = []
+                    clusterList.map(item => (onlyCloudletNameList.push(item.Cloudlet)))
+                    let dropdownClusterListOnCloudlet = makeClusterTreeDropdown(_.uniqBy(onlyCloudletNameList), clusterList)
 
                     //@desc:#########################################################################
                     //@desc: map Marker
