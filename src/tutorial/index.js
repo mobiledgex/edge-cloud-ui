@@ -977,39 +977,39 @@ export const MonitoringTutor = () => {
             stepsMonitoring: [
                 {
                     element: '.none',
-                    intro: 'This is monitoring page'
+                    intro: 'Use this page to review valuable metrics about your application deployment. The data can help you scale up your deployments based on user activity. This page also provides analytics to help you improve your application’s usage and performance. Data and metrics rendered are specific to organizations rather than by application or cluster-specific instances.'
                 },
                 {
                     element: '.page_monitoring_select_area',
-                    intro: 'Use these option to filter data.'
+                    intro: 'Filter by cluster only or select a cluster along with the application instance(s) running on that cluster. You can drill further down to each application instance associated to that cluster to view individual performances of each application instance.'
                 }
             ],
             stepsMonitoringDev: [
                 {
                     element: '.createAppInst0',
-                    intro: 'This is monitoring page'
+                    intro: 'Use this page to review valuable metrics about your application deployment. The data can help you scale up your deployments based on user activity. This page also provides analytics to help you improve your application’s usage and performance. Data and metrics rendered are specific to organizations rather than by application or cluster-specific instances.'
                 },
                 {
                     element: '.page_monitoring_select_area',
-                    intro: 'Use these option to filter data.'
+                    intro: 'Filter by cluster only or select a cluster along with the application instance(s) running on that cluster. You can drill further down to each application instance associated to that cluster to view individual performances of each application instance.'
                 },
                 {
                     element: '.ant-dropdown-trigger',
-                    intro: 'Click this button to use more function.'
+                    intro: 'Additional filters are available to customize your view.'
                 },
                 {
                     element: '.draggable',
-                    intro: 'You can looked the widget full Screen, edit widget, or delete widget.'
+                    intro: `Select the expansion icon to display a full view of each tile or click the trash icon to remove the tile from view. To re-add tiles, under the additional filter menu, click Add Item. `
                 }
             ],
             stepsMonitoringOper: [
                 {
                     element: '.cloudletReg0',
-                    intro: 'This is monitoring page'
+                    intro: 'Use this page to review valuable metrics about your application deployment. The data can help you scale up your deployments based on user activity. This page also provides analytics to help you improve your application’s usage and performance. Data and metrics rendered are specific to organizations rather than by application or cluster-specific instances.'
                 },
                 {
                     element: '.page_monitoring_select_area',
-                    intro: 'Use these option to filter data.'
+                    intro: 'Filter by cluster only or select a cluster along with the application instance(s) running on that cluster. You can drill further down to each application instance associated to that cluster to view individual performances of each application instance.'
                 },
             ],
         }
