@@ -608,19 +608,19 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.connectionsSeriesList
                 }
                 //////todo:cloudllet
-                else if (hardwareType === HARDWARE_TYPE.netSend) {
+                else if (hardwareType === HARDWARE_TYPE.NETSEND) {
                     series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.netRecv) {
+                } else if (hardwareType === HARDWARE_TYPE.NETRECV) {
                     series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.memUsed) {
+                } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
                     series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.diskUsed) {
+                } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
                     series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.vCpuUsed) {
+                } else if (hardwareType === HARDWARE_TYPE.VCPUUSED) {
                     series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.floatingIpsUsed) {
+                } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED) {
                     series = item.series
-                } else if (hardwareType === HARDWARE_TYPE.ipv4Used) {
+                } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
                     series = item.series
                 }
 

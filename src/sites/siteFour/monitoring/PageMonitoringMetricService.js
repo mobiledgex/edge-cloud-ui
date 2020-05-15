@@ -211,7 +211,7 @@ export const getClusterList = async () => {
 }
 
 
-export const findCloudlet__TEST = async () => {
+/*export const findCloudlet__TEST = async () => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     let regionList = localStorage.getItem('regions').split(",");
@@ -244,7 +244,7 @@ export const findCloudlet__TEST = async () => {
     })
     return result;
 
-}
+}*/
 
 
 export const getCloudletList = async () => {

@@ -466,15 +466,14 @@ export const HARDWARE_TYPE = {
     ACTIVE_CONNECTION: 'ACTIVE',//12
     HANDLED_CONNECTION: 'HANDLED',//13
     ACCEPTS_CONNECTION: 'ACCEPTS',//14 (index)
-
     //For Cloudlet
-    vCpuUsed: 'vCpuUsed',
-    memUsed: 'memUsed',
-    diskUsed: 'diskUsed',
-    floatingIpsUsed: 'floatingIpsUsed',
-    ipv4Used: 'ipv4Used',
-    netSend: 'netSend',
-    netRecv: 'netRecv',
+    VCPUUSED: 'vCpuUsed',
+    MEM_USED: 'memUsed',
+    DISK_USED: 'diskUsed',
+    FLOATING_IP_USED: 'floatingIpsUsed',
+    IPV4_USED: 'ipv4Used',
+    NETSEND: 'netSend',
+    NETRECV: 'netRecv',
 
 }
 export const CONNECTIONS_OPTIONS = [
