@@ -292,7 +292,7 @@ export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
 
 
     } catch (e) {
-        showToast(e.toString())
+        //showToast(e.toString())
     }
 
 }
@@ -643,7 +643,9 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                /*//////desc:For Cloudlet/////////*/
+                    //////todo:cloudllet/////////
+                    //////todo:cloudllet/////////
+                //////todo:cloudllet/////////
                 else if (
                     hardwareType === HARDWARE_TYPE.NETSEND
                     || hardwareType === HARDWARE_TYPE.NETRECV
@@ -697,7 +699,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             return _result
         }
     } catch (e) {
-        //throw new Error(e)
+        throw new Error(e)
     }
 
 };

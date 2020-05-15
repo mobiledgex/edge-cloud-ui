@@ -514,7 +514,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         mapLoading: false,
                     })
 
-
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
@@ -742,6 +741,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async handleClusterDropdown(selectedClusterOne) {
                 try {
+
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
@@ -1668,7 +1668,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForAppInst)
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
-                                                    await this.handleClusterDropdownAndReset(this.state.currentCluster)
+                                                    await this.handleClusterDropdown(this.state.currentCluster)
                                                 }
                                             }}
 
@@ -2188,6 +2188,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
                                                     await this.handleClusterDropdown(this.state.currentCluster)
+
                                                 }
                                             }}
 
