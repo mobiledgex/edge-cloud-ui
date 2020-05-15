@@ -648,7 +648,7 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
 
 
                     let sumVirtualCpuUsed = 0;
-                    let sumVirtualCpuMax = 0;
+                    let sumvCpuMax = 0;
                     let sumMemUsed = 0;
                     let sumMemMax = 0;
                     let sumDiskUsed = 0;
@@ -670,7 +670,7 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
                         let vCpuUsed = item["5"];
                         let vCpuMax = item["6"];
                         sumVirtualCpuUsed += vCpuUsed;
-                        sumVirtualCpuMax += vCpuMax;
+                        sumvCpuMax += vCpuMax;
 
                         //todo: MEM
                         sumMemUsed += item["7"];
@@ -694,13 +694,17 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
                     })
 
                     usageList.push({
-                        sumVCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-                        sumSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-                        sumFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+                       usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+                        usedSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+                        usedFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+                        maxVCpuCount: sumvCpuMax / RECENT_DATA_LIMIT_COUNT,
+                        maxMemUsage: sumMemMax / RECENT_DATA_LIMIT_COUNT,
+                        maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
+
                         columns: columns,
                         series: series,
                         cloudlet: cloudlet,

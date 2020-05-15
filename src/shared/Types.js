@@ -142,22 +142,28 @@ export type TypeAppInstanceUsage2 = {
 }
 
 export type TypeCloudletUsageList = {
-    avgVCpuUsed: number,
-    avgVCpuMax: number,
-    avgMemUsed: number,
-    avgMemMax: number,
-    avgDiskUsed: number,
-    avgDiskMax: number,
-    avgNetSend: number,
-    avgNetRecv: number,
-    avgFloatingIpsUsed: number,
-    avgFloatingIpsMax: number,
-    avgIpv4Used: number,
-    avgIpv4Max: number,
-    columns: Array,
-    series: Array,
+    Region: string,
     cloudlet: string,
+    columns: [],
+    diskSeriesList: [],
+    floatingIpsSeriesList: [],
+    ipv4UsedSeriesList: [],
+    memSeriesList: [],
+    netRecvSeriesList: [],
+    netSendSeriesList: [],
     operator: string,
+    series: [],
+
+    usedDiskUsage: number,
+    usedFloatingIpsUsage: number,
+    usedIpv4Usage: number,
+    usedMemUsage: number,
+    usedRecvBytes: number,
+    usedSendBytes: number,
+    usedVCpuCount: number,
+    maxDiskUsage: number,
+    maxMemUsage: number,
+    maxVCpuCount: number,
 }
 
 export type TypeClusterUsageList = {
