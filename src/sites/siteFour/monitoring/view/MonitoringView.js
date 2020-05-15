@@ -378,7 +378,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     intervalLoading: false,
                     isRequesting: false,
                     clusterDropdownList: [],
-                    currentClassification: CLASSIFICATION.CLOUDLET,//desc:currentClassification
+                    currentClassification: CLASSIFICATION.CLUSTER,//desc:currentClassification
                     selectOrg: '',
                     filteredAppInstanceList: [],
                     appInstDropdown: [],
@@ -509,7 +509,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
                     let markerListForMap = []
                     markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-
                     await this.setState({
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
                         mapLoading: false,
@@ -1616,7 +1615,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     {this.renderClusterDropdown()}
                                 </div>
                                 <div style={{marginLeft: 15}}>
-                                    {this.makeAppInstDropdown()}
+                                    {this.renderAppInstDropdown()}
                                 </div>
                                 {this.state.intervalLoading &&
                                 <div>
@@ -2117,6 +2116,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Monitoring
                                 <div style={{color: 'yellow', fontSize: 14}}>
                                     [{this.state.currentClassification}]
+
+                                </div>
+                                <div style={{color: 'green', fontSize: 14}}>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectRole.toString()}
                                 </div>
                             </label>
                             <div className='page_monitoring_select_area'

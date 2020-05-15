@@ -214,14 +214,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
         tooltip = createRef();
 
         componentDidMount = async () => {
-
             try {
                 let markerList = this.props.markerList
-                if (localStorage.getItem('selectRole').toString().toLowerCase().includes('dev')) {
-                    this.setCloudletLocation(markerList, true)
-                } else {
-                    this.setCloudletLocationForOper(markerList)
-                }
+                this.setCloudletLocation(markerList, true)
 
             } catch (e) {
 
@@ -241,13 +236,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                 if (this.props.markerList !== nextProps.markerList) {
                     let markerList = nextProps.markerList;
-                    if (localStorage.getItem('selectRole').toString().toLowerCase().includes('dev')) {
-                        this.setCloudletLocation(markerList)
-                    } else {
-                        this.setCloudletLocationForOper(markerList)
-                    }
-
-
+                    this.setCloudletLocation(markerList)
                 }
 
                 //@desc : #############################
@@ -290,14 +279,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         }
 
-        setCloudletLocationForOper(cloudletList, isMapCenter = false) {
-            try {
-                console.log(`cloudletList==33==>`, cloudletList);
-            } catch (e) {
-
-            }
-
-        }
 
 
         setCloudletLocation(pAppInstanceListGroupByCloudlet, isMapCenter = false) {
