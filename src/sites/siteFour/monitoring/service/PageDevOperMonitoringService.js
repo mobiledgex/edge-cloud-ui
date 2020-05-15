@@ -30,7 +30,7 @@ import {
     convertToMegaGigaForNumber,
     makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader,
     renderUsageByType, renderUsageByType2, sortUsageListByType
-} from "../common/PageMonitoringCommonService";
+} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import {renderUsageLabelByType} from "./PageAdminMonitoringService";

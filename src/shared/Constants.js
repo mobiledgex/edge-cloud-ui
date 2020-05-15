@@ -1,4 +1,4 @@
-import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/common/PageMonitoringCommonService";
+import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/service/PageMonitoringCommonService";
 import randomColor from 'randomcolor'
 
 let moreColors = randomColor({

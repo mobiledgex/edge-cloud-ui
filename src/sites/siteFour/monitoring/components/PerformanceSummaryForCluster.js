@@ -13,7 +13,7 @@ import '../common/PageMonitoring.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../common/PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../service/PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,

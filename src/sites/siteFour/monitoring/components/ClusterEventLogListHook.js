@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
-import {renderPlaceHolderLoader} from "../common/PageMonitoringCommonService";
+import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import '../common/PageMonitoring.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 

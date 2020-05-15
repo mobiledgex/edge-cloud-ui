@@ -9,7 +9,7 @@ import {
     makeFormForClusterLevelMatric,
     showToast
 } from "./PageMonitoringCommonService";
-import {makeFormForAppLevelUsageList} from "../service/PageAdminMonitoringService";
+import {makeFormForAppLevelUsageList} from "./PageAdminMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoring";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -19,7 +19,7 @@ import {
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
     SHOW_APP_INST_CLIENT_ENDPOINT
-} from "./MetricServiceEndPoint";
+} from "../common/MetricServiceEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {

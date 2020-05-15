@@ -53,7 +53,7 @@ import {
     renderPlaceHolderLoader,
     renderWifiLoader,
     showToast
-} from "../common/PageMonitoringCommonService";
+} from "../service/PageMonitoringCommonService";
 import {
     getAllAppInstEventLogs,
     getAllClusterEventLogList,
@@ -64,7 +64,7 @@ import {
     getClusterLevelUsageList,
     getClusterList,
     requestShowAppInstClientWS
-} from "../common/PageMonitoringMetricService";
+} from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";

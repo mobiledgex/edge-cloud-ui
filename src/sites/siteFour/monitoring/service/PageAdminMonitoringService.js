@@ -17,7 +17,7 @@ import {
     renderLineChartCore,
     renderUsageByType2,
     showToast
-} from "../common/PageMonitoringCommonService";
+} from "./PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";

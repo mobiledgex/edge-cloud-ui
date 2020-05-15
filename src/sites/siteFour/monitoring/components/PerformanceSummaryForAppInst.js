@@ -11,7 +11,7 @@ import {Progress} from "antd";
 import '../common/PageMonitoring.css'
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {Paper} from "@material-ui/core";
-import {convertByteToMegaGigaByte} from "../common/PageMonitoringCommonService";
+import {convertByteToMegaGigaByte} from "../service/PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,

@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {renderPlaceHolderLoader} from "../common/PageMonitoringCommonService";
+import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import PageDevMonitoring from "../view/PageDevOperMonitoring";
 import {Chart} from "react-google-charts";
 import {GRID_ITEM_TYPE} from "../../../../shared/Constants";

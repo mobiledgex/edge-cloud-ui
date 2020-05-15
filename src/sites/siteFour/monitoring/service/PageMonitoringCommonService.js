@@ -1,6 +1,6 @@
 import React from 'react';
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
-import './PageMonitoring.css';
+import '../common/PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
 import Lottie from "react-lottie";
 import {Chart} from "react-google-charts";
@@ -8,12 +8,12 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
-import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
 import {notification} from "antd";
-import {PageMonitoringStyles} from "./PageMonitoringStyles";
 import {makeGradientColor} from "../service/PageDevOperMonitoringService";
-import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
+import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "../service/PageAdminMonitoringService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
