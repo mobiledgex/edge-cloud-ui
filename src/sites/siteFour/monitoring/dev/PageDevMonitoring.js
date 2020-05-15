@@ -16,13 +16,13 @@ import {
     handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
+    makeClusterTreeDropdown,
     makeDropdownForAppInst,
     makeid,
-    makeLineChartDataForBigModal,
     makeLineChartData,
-    makeSelectBoxListWithKeyValuePipeForCluster,
+    makeLineChartDataForBigModal,
     reduceLegendClusterCloudletName,
-    revertToDefaultLayout, makeClusterTreeDropdown,
+    revertToDefaultLayout,
 } from "./PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -58,7 +58,6 @@ import {
     getAllClusterEventLogList,
     getAppInstList,
     getAppLevelUsageList,
-    getCloudletList,
     getClusterLevelUsageList,
     getClusterList,
     requestShowAppInstClientWS
@@ -85,6 +84,10 @@ import PerformanceSummaryForCluster from "../components/PerformanceSummaryForClu
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
 import {
+    APPINST_HW_MAPPER_KEY,
+    APPINST_LAYOUT_KEY, CLOUDLET_LAYOUT_KEY,
+    CLUSTER_HW_MAPPER_KEY,
+    CLUSTER_LAYOUT_KEY,
     ColorLinearProgress,
     CustomSwitch,
     defaultLayoutXYPosForAppInst,
@@ -95,7 +98,6 @@ import {
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
-import Chip from "@material-ui/core/Chip";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
