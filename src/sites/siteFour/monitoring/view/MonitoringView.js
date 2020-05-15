@@ -459,6 +459,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredCloudletList: [],
                     allCloudletUsageList: [],
                     filteredCloudletUsageList: [],
+                    cloudletDropdownList: [],
                 };
             }
 
@@ -536,7 +537,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
-                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
+                    console.log(`cloudletDropdownList====>`, cloudletDropdownList);
 
                     await this.setState({
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 25,
@@ -547,8 +548,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        clusterDropdownList: clusterDropdownList,
-                        dropDownCludsterListOnCloudlet: dropdownClusterListOnCloudlet,
+                        clusterDropdownList: clusterDropdownList,//@fixme
+                        dropDownCludsterListOnCloudlet: clusterDropdownList,//@fixme
                         clusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -567,11 +568,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredCloudletList: cloudletList,
                         allCloudletUsageList: allCloudletUsageList,
                         filteredCloudletUsageList: allCloudletUsageList,
-                        cloudletDropdownList,
+                        cloudletDropdownList: cloudletDropdownList,
 
                     });
                 } catch (e) {
-                    //showToast(e.toString())
+                    showToast(e.toString())
                 }
 
             }
@@ -717,11 +718,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            handleCloudletDropdown = async (paramCloudletOne) => {
-
-                console.log(`paramCloudletOne====>`, paramCloudletOne);
-
-
+            handleCloudletDropdown = async (pCloudletOne) => {
+                alert(pCloudletOne)
             }
 
             async handleClusterDropdown(selectedClusterOne) {
@@ -1151,13 +1149,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this.__makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this._______________makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
-            __makeGridItemOneBody(hwType, graphType) {
+            _______________makeGridItemOneBody(hwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
@@ -1827,22 +1825,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             Cloudlet
                         </div>
                         <Select
-                            ref={c => this.appInstSelect = c}
                             dropdownStyle={{}}
                             style={{width: 250, maxHeight: 512}}
                             listHeight={512}
-                            //disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentCluster === undefined}
+                            //disabled={isEmpty(this.state.cloudletDropdownList)}
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onChange={async (value) => {
                                 this.handleCloudletDropdown(value)
                             }}
                         >
-                            {/*  {this.state.cloudletDropdownList.map(item => {
+                            {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map(item => {
                                 return (
                                     <Option value={item.value}>{item.text}</Option>
                                 )
-                            })}*/}
+                            })}
                         </Select>
                     </div>
                 )
@@ -2106,9 +2103,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      width: 'fit-content',
                                      flex: .7,
                                  }}>
-                                {/*  <div style={{marginLeft: 15}}>
+                                <div style={{marginLeft: 15}}>
                                     {this.renderCloudletDropdown()}
-                                </div>*/}
+                                </div>
                                 <div>
                                     {this.renderClusterDropdown()}
                                 </div>
