@@ -8,7 +8,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Card, DatePicker,} from 'antd';
-import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../admin/PageAdminMonitoringService";
+import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../service/PageAdminMonitoringService";
 import {
     CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
@@ -23,7 +23,7 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import '../PageMonitoring.css'
+import '../common/PageMonitoring.css'
 import {renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {
@@ -31,14 +31,14 @@ import {
     makeBarChartDataForCloudlet,
     makeLineChartForCloudlet,
     renderBottomGridAreaForCloudlet
-} from "./PageOperMonitoringService";
+} from "./service/PageOperMonitoringService";
 import LeafletMap from "../components/MapForOperContainer";
-import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "../dev/PageDevMonitoringService";
+import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "./service/PageDevMonitoringService";
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
 import {
     getAllCloudletEventLogs,
     getCloudletEventLog,
-    getCloudletLevelUsageList,
+    getCloudletUsageList,
     getCloudletList,
 } from '../PageMonitoringMetricService'
 
@@ -326,7 +326,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 }, () => {
                 })
 
-                let allCloudletUsageList = await getCloudletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+                let allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
                 let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allCloudletUsageList);
                 await this.setState({
                     bubbleChartData: bubbleChartData,

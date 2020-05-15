@@ -193,10 +193,10 @@ let appInstLayoutKey = getUserId() + "_layout2"
 let appInstHwMapperKey = getUserId() + "_layout2_mapper"
 let cloudletLayoutKey = getUserId() + "_layout_cloudlet"
 let cloudletHwMapperKey = getUserId() + "_layout_mapper_cloudlet"*/
-
+export const CLOUDLET_LAYOUT_KEY = "_layout_cloudlet";
+export const CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_cloudlet";
 export const CLUSTER_LAYOUT_KEY = "_layout";
 export const CLUSTER_HW_MAPPER_KEY = "_layout_mapper";
 export const APPINST_LAYOUT_KEY = "_layout2";
 export const APPINST_HW_MAPPER_KEY = "_layout2_mapper";
-export const CLOUDLET_LAYOUT_KEY = "_layout_cloudlet";
-export const CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_cloudlet";
+

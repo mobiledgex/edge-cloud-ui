@@ -1,9 +1,9 @@
 // @flow
 import * as React from 'react';
-import PageDevMonitoring from "../dev/PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevMonitoring";
 import {Bar, HorizontalBar} from "react-chartjs-2";
 import 'chartjs-plugin-labels'
-import {barChartOptions2, GradientBarChartOptions1} from "../dev/PageDevMonitoringService";
+import {barChartOptions2, GradientBarChartOptions1} from "../service/PageDevMonitoringService";
 
 
 type Props = {

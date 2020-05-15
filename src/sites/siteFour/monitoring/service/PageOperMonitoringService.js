@@ -1,12 +1,12 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
-import {renderUsageLabelByType} from "../admin/PageAdminMonitoringService";
-import {renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader, renderUsageByType2, sortUsageListByType} from "../PageMonitoringCommonService";
-import PageOperMonitoring from "./PageOperMonitoring";
+import {renderUsageLabelByType} from "./PageAdminMonitoringService";
+import {renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader, renderUsageByType2, sortUsageListByType} from "../common/PageMonitoringCommonService";
+import PageOperMonitoring from "../view/PageOperMonitoring";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
-import {numberWithCommas} from "../PageMonitoringUtils";
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {numberWithCommas} from "../common/PageMonitoringUtils";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
     usageList = sortUsageListByType(usageList, hardwareType)

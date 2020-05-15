@@ -1,16 +1,16 @@
 import axios from "axios";
-import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../shared/Types";
-import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../shared/Constants";
-import {sendSyncRequest} from "../../../services/serviceMC";
+import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
+import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import {sendSyncRequest} from "../../../../services/serviceMC";
 import {
     isEmpty,
     makeFormForCloudletLevelMatric,
     makeFormForClusterLevelMatric,
     showToast
 } from "./PageMonitoringCommonService";
-import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
-import PageDevMonitoring from "./dev/PageDevMonitoring";
+import {makeFormForAppLevelUsageList} from "../service/PageAdminMonitoringService";
+import PageDevMonitoring from "../view/PageDevMonitoring";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -584,7 +584,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]>}
  */
-export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {
         let instanceBodyList = []

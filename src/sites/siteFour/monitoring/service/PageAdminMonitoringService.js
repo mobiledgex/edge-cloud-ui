@@ -1,17 +1,28 @@
 import React from 'react';
-import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
+import '../common/PageMonitoring.css';
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_LIST,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGION
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChartCore from "../components/BubbleChartCore";
 import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
-import PageAdminMonitoring from "./PageAdminMonitoring";
-import {renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
+import {
+    renderBarChartCore,
+    renderLineChartCore,
+    renderUsageByType2,
+    showToast
+} from "../common/PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
-import {numberWithCommas} from "../PageMonitoringUtils";
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {numberWithCommas} from "../common/PageMonitoringUtils";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];

@@ -34,16 +34,16 @@ import {
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
-} from "./PageAdminMonitoringService";
+} from "../service/PageAdminMonitoringService";
 import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
 import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../PageMonitoringCommonService";
-import '../PageMonitoring.css'
-import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../common/PageMonitoringCommonService";
+import '../common/PageMonitoring.css'
+import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../common/PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;

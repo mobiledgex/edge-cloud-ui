@@ -4,10 +4,10 @@ import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
-import PageDevMonitoring from "../dev/PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates} from "../PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates} from "../common/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {notification, Select} from 'antd'
@@ -15,9 +15,9 @@ import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import '../PageMonitoring.css'
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
-import {groupByCloudletLocation, reduceString} from "../dev/PageDevMonitoringService";
+import '../common/PageMonitoring.css'
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {groupByCloudletLocation, reduceString} from "../service/PageDevMonitoringService";
 import MomentTimezone from "moment-timezone";
 
 const FontAwesomeIcon = require('react-fontawesome')

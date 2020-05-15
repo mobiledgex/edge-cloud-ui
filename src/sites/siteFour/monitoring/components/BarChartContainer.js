@@ -1,11 +1,11 @@
 // @flow
 import * as React from 'react';
-import {renderPlaceHolderLoader} from "../PageMonitoringCommonService";
-import PageDevMonitoring from "../dev/PageDevMonitoring";
+import {renderPlaceHolderLoader} from "../common/PageMonitoringCommonService";
+import PageDevMonitoring from "../view/PageDevMonitoring";
 import {Chart} from "react-google-charts";
 import {GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
+import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 
 type Props = {
     parent: PageDevMonitoring,

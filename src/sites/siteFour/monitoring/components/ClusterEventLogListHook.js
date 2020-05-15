@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
-import {renderPlaceHolderLoader} from "../PageMonitoringCommonService";
-import '../PageMonitoring.css'
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {renderPlaceHolderLoader} from "../common/PageMonitoringCommonService";
+import '../common/PageMonitoring.css'
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 
 
 export default function ClusterEventLogListHook(props) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../PageMonitoring.css';
+import '../common/PageMonitoring.css';
 import {
     CHART_COLOR_APPLE,
     CHART_COLOR_BERRIES_GALORE,
@@ -20,20 +20,19 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import PageDevMonitoring from "./PageDevMonitoring";
+import type {TypeAppInstance} from "../../../../shared/Types";
+import {createMuiTheme} from "@material-ui/core";
+import {reactLocalStorage} from "reactjs-localstorage";
+import Chip from "@material-ui/core/Chip";
+import PageDevMonitoring from "../view/PageDevMonitoring";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
     makeBubbleChartDataForCluster,
-    renderUsageByType,
-    showToast
-} from "../PageMonitoringCommonService";
-import type {TypeAppInstance, TypeAppInstanceUsage2} from "../../../../shared/Types";
-import {createMuiTheme} from "@material-ui/core";
-import {reactLocalStorage} from "reactjs-localstorage";
-import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
-import Chip from "@material-ui/core/Chip";
+    renderUsageByType
+} from "../common/PageMonitoringCommonService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {findUsageIndexByKey} from "../common/PageMonitoringUtils";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -851,7 +850,6 @@ export const handleThemeChanges = async (themeTitle, _this) => {
     })
 
 }
-
 
 /**
  *

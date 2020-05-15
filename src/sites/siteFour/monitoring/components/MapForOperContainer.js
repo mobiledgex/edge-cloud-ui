@@ -2,9 +2,9 @@ import 'react-hot-loader'
 import React from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
-import "../PageMonitoring.css";
+import "../common/PageMonitoring.css";
 import {hot} from "react-hot-loader/root";
-import {renderPlaceHolderLottiePinJump2} from "../PageMonitoringCommonService";
+import {renderPlaceHolderLottiePinJump2} from "../common/PageMonitoringCommonService";
 
 
 const DEFAULT_VIEWPORT = {

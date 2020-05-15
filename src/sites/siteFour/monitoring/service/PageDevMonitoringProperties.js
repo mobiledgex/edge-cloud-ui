@@ -1,4 +1,4 @@
-import PageDevMonitoring from "./PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevMonitoring";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {
     APPINST_HW_MAPPER_KEY,
@@ -7,7 +7,7 @@ import {
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY
 } from "./PageDevMonitoringProps";
-import {showToast} from "../PageMonitoringCommonService";
+import {showToast} from "../common/PageMonitoringCommonService";
 import {getUserId} from "./PageDevMonitoringService";
 
 export const GRID_ITEM_TYPE = {

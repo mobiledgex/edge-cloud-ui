@@ -1,4 +1,4 @@
-import {HARDWARE_TYPE} from "../../../shared/Constants";
+import {HARDWARE_TYPE} from "../../../../shared/Constants";
 
 
 export const numberWithCommas = (x) => {

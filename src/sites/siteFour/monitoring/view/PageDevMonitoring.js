@@ -1,4 +1,4 @@
-import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../PageMonitoringStyles'
+import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -23,7 +23,7 @@ import {
     makeLineChartDataForBigModal,
     reduceLegendClusterCloudletName,
     revertToDefaultLayout,
-} from "./PageDevMonitoringService";
+} from "../service/PageDevMonitoringService";
 import {
     ADD_ITEM_LIST,
     APP_INST_MATRIX_HW_USAGE_INDEX,
@@ -52,7 +52,7 @@ import {
     renderPlaceHolderLoader,
     renderWifiLoader,
     showToast
-} from "../PageMonitoringCommonService";
+} from "../common/PageMonitoringCommonService";
 import {
     getAllAppInstEventLogs,
     getAllClusterEventLogList,
@@ -61,7 +61,7 @@ import {
     getClusterLevelUsageList,
     getClusterList,
     requestShowAppInstClientWS
-} from "../PageMonitoringMetricService";
+} from "../common/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -75,29 +75,23 @@ import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import ClusterEventLogListHook from "../components/ClusterEventLogListHook";
 import MaterialIcon from "material-icons-react";
-import '../PageMonitoring.css'
+import '../common/PageMonitoring.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForCluster from "../components/PerformanceSummaryForCluster";
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
-import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
-import {
-    APPINST_HW_MAPPER_KEY,
-    APPINST_LAYOUT_KEY, CLOUDLET_HW_MAPPER_KEY, CLOUDLET_LAYOUT_KEY,
-    CLUSTER_HW_MAPPER_KEY,
-    CLUSTER_LAYOUT_KEY,
-    ColorLinearProgress,
-    CustomSwitch,
-    defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCluster,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "./PageDevMonitoringProps";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
+import {
+    APPINST_HW_MAPPER_KEY,
+    APPINST_LAYOUT_KEY, CLUSTER_HW_MAPPER_KEY, CLUSTER_LAYOUT_KEY,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../service/PageDevMonitoringProps";
+import type {PageDevMonitoringProps} from "../service/PageDevMonitoringProps";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;

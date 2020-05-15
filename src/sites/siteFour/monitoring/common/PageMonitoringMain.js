@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import PageMonitoringForOperator from "./oper/PageOperMonitoring";
-import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
-import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
+import PageMonitoringForOperator from "../view/PageOperMonitoring";
+import PageMonitoringForDeveloper from "../view/PageDevMonitoring";
+import PageMonitoringForAdmin from "../view/PageAdminMonitoring";
 import {Card} from "@material-ui/core";
 import {notification} from "antd";
 

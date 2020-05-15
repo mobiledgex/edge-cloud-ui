@@ -5,7 +5,7 @@ import {Dropdown} from "semantic-ui-react";
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
-import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../PageMonitoringStyles";
+import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import Button from "@material-ui/core/Button";
 
 const FA = require('react-fontawesome')

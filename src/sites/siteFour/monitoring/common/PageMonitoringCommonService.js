@@ -2,18 +2,18 @@ import React from 'react';
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
-import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
-import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
 import {notification} from "antd";
 import {PageMonitoringStyles} from "./PageMonitoringStyles";
+import {makeGradientColor} from "../service/PageDevMonitoringService";
+import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
+import {makeCompleteDateTime} from "../service/PageAdminMonitoringService";
 
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
@@ -140,7 +140,7 @@ export const renderWifiLoader = (width = 25, height = 25, margin = 3) => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/wifi-signal'),
+                    animationData: require('../../../../lotties/wifi-signal'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -177,7 +177,7 @@ export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/6698-location-pin22222'),
+                    animationData: require('../../../../lotties/6698-location-pin22222'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -201,7 +201,7 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/pinjump'),
+                    animationData: require('../../../../lotties/pinjump'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -612,18 +612,6 @@ export const getOneYearStartEndDatetime = () => {
     return arrDateTime;
 }
 
-export const getOneYearStartEndDatetime2 = () => {
-
-    let arrDateTime = []
-    let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm:ss'));
-    let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm:ss'));
-
-    arrDateTime.push(startTime)
-    arrDateTime.push(endTime)
-
-    return arrDateTime;
-}
-
 
 export const showToast = (title: string, time = 3) => {
     notification.success({
@@ -642,33 +630,6 @@ export const showToast2 = (title: string, time = 2) => {
     });
 }
 
-/**
- *
- * @param title
- * @param time
- * @param color
- */
-export const showToast3 = (title: string, time = 2, color = 'green') => {
-    toast({
-        type: 'success',
-        title: title,
-        animation: 'swing right',
-        time: time * 1000,
-        color: color,
-        //size: 'tiny',
-    });
-}
-
-
-function removeDups(names) {
-    let unique = {};
-    names.forEach(function (i) {
-        if (!unique[i]) {
-            unique[i] = true;
-        }
-    });
-    return Object.keys(unique);
-}
 
 export const hardwareTypeToUsageKey = (hwType: string) => {
     if (hwType === HARDWARE_TYPE.CPU.toUpperCase()) {
