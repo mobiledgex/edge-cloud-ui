@@ -742,7 +742,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async handleClusterDropdown(selectedClusterOne) {
                 try {
-
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
@@ -1829,7 +1828,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 } else {
                                     await this.filterClusterList(value)
                                 }
-                                await this.handleClusterDropdownAndReset(value.trim())
+                                await this.handleClusterDropdown(value.trim())
                             }}
                         />
                     </div>
