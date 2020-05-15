@@ -85,7 +85,7 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import type {PageDevMonitoringProps} from "./PageDevMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
-    APPINST_LAYOUT_KEY, CLOUDLET_LAYOUT_KEY,
+    APPINST_LAYOUT_KEY, CLOUDLET_HW_MAPPER_KEY, CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
     ColorLinearProgress,
@@ -278,8 +278,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let clusterHwMapperKey = getUserId() + CLUSTER_HW_MAPPER_KEY
                 let appInstLayoutKey = getUserId() + APPINST_LAYOUT_KEY
                 let appInstHwMapperKey = getUserId() + APPINST_HW_MAPPER_KEY
-                let cloudletLayoutKey = getUserId() + CLOUDLET_LAYOUT_KEY
-                let cloudletHwMapperKey = getUserId() + CLOUDLET_HW_MAPPER_KEY
 
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
@@ -291,8 +289,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     layoutMapperForCluster: isEmpty(reactLocalStorage.get(clusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterHwMapperKey),
                     layoutForAppInst: isEmpty(reactLocalStorage.get(appInstLayoutKey)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayoutKey),
                     layoutMapperForAppInst: isEmpty(reactLocalStorage.get(appInstHwMapperKey)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstHwMapperKey),
-                    layoutForCloudlet: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayoutKey),
-                    layoutMapperForCloudlet: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletHwMapperKey),
                     date: '',
                     time: '',
                     dateTime: '',
