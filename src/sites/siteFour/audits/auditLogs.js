@@ -39,27 +39,6 @@ class SiteFourPageAudits extends React.Component {
         this._cloudletDummy = [];
     }
 
-    //go to
-    gotoPreview(site) {
-        //브라우져 입력창에 주소 기록
-        let mainPath = site;
-        let subPath = 'pg=0';
-        _self.props.history.push({
-            pathname: mainPath,
-            search: subPath,
-            state: {some: 'state'}
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
-
-    }
-
-    handleItemClick = (e, {name}) => this.setState({activeItem: name})
-
-    onHandleRegistry() {
-        this.props.handleInjectDeveloper('userInfo');
-    }
-
     readyToData(subPaths) {
         let subPath = '';
         let subParam = null;
@@ -213,7 +192,6 @@ class SiteFourPageAudits extends React.Component {
             serviceMC.sendRequest(_self, {token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult)
         }
     }
-    
 
     selectedAudit = (selectedAudit) => {
         // if get same item find from storage should remove it.
@@ -242,10 +220,7 @@ class SiteFourPageAudits extends React.Component {
 
 
         }
-        //console.log('20191022 filtering audit checked ...', newData, ":", newData.length)
         localStorage.setItem('auditChecked', JSON.stringify(newCheckData))
-
-        //refresh number badge of Audit Log button
         let allCnt = JSON.parse(savedData).length;
         let selectedCnt = newCheckData.length;
         if (newData && newData.length) _self.props.handleAuditCheckCount(allCnt - selectedCnt)
@@ -275,7 +250,6 @@ const mapStateToProps = (state) => {
         detailData = state.changeViewMode.mode.data;
     }
     return {
-        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
         changeRegion: state.changeRegion.region ? state.changeRegion.region : null,
         viewMode: viewMode, detailData: detailData,
         isLoading: state.LoadingReducer.isLoading,
@@ -283,26 +257,14 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => {
-            dispatch(actions.changeSite(data))
-        },
-        handleInjectData: (data) => {
-            dispatch(actions.injectData(data))
-        },
         handleInjectDeveloper: (data) => {
             dispatch(actions.registDeveloper(data))
-        },
-        handleComputeRefresh: (data) => {
-            dispatch(actions.computeRefresh(data))
         },
         handleLoadingSpinner: (data) => {
             dispatch(actions.loadingSpinner(data))
         },
         handleAlertInfo: (mode, msg) => {
             dispatch(actions.alertInfo(mode, msg))
-        },
-        handleDetail: (data) => {
-            dispatch(actions.changeDetail(data))
         },
         handleAuditCheckCount: (data) => {
             dispatch(actions.setCheckedAudit(data))
