@@ -378,7 +378,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     intervalLoading: false,
                     isRequesting: false,
                     clusterDropdownList: [],
-                    currentClassification: CLASSIFICATION.CLUSTER,//desc:currentClassification
+                    currentClassification: localStorage.getItem('selectRole').toString().toLowerCase().includes("dev") ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLOUDLET,
                     selectOrg: '',
                     filteredAppInstanceList: [],
                     appInstDropdown: [],
