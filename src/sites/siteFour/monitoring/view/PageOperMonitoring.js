@@ -84,7 +84,7 @@ import {
     CLOUDLET_HW_MAPPER_KEY,
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
-    CLUSTER_LAYOUT_KEY
+    CLUSTER_LAYOUT_KEY, ColorLinearProgress, CustomSwitch
 } from "../service/PageDevMonitoringProps";
 import type {PageDevMonitoringProps} from "../service/PageDevMonitoringProps";
 
