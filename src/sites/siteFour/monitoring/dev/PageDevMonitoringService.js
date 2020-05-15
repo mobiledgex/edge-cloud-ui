@@ -568,6 +568,7 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
  */
 export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
+
         if (hardwareUsageList.length === 0) {
             return (
                 <div style={PageMonitoringStyles.noData}>
@@ -605,10 +606,33 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-
+                //////todo:cloudllet
+                else if (hardwareType === HARDWARE_TYPE.netSend) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.netRecv) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.memUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.diskUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.vCpuUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.floatingIpsUsed) {
+                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.ipv4Used) {
+                    series = item.series
+                }
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
-                classificationName = item.cluster + "\n[" + item.cloudlet + "]";
+
+                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    classificationName = item.cluster + "\n[" + item.cloudlet + "]";
+                } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    classificationName = item.cloudlet
+                } else {//@desc: APPINST
+                    classificationName = item.instance.AppName
+                }
+
                 let usageList = [];
                 for (let j in series) {
                     let usageOne = series[j][hardWareUsageIndex];
@@ -617,7 +641,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     dateOne = dateOne.toString().split("T");
                     dateTimeList.push(dateOne[1]);
                 }
-
                 levelTypeNameList.push(classificationName);
                 usageSetList.push(usageList);
             });
@@ -632,19 +655,20 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 }
             }
 
-            return {
+            let _result = {
                 levelTypeNameList,
                 usageSetList,
                 newDateTimeList,
                 hardwareType,
             }
+
+            return _result
         }
     } catch (e) {
 
     }
 
 };
-
 
 /**
  *
