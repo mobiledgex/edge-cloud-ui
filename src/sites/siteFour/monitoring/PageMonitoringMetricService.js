@@ -207,42 +207,6 @@ export const getClusterList = async () => {
 }
 
 
-/*export const findCloudlet__TEST = async () => {
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-    let regionList = localStorage.getItem('regions').split(",");
-    console.log('token2===>', token);
-    let result = await axios({
-        url: CLOUDLET_METRICS_ENDPOINT,
-        method: 'post',
-        data: {
-            "region": "EU",
-            "appinst": {
-                "app_key": {
-                    "organization": "MobiledgeX",
-                    "name": "MobiledgeX SDK Demo",
-                    "version": "2.0"
-                }
-            },
-            "selector": "api",
-            "starttime": "2020-05-13T00:00:00Z",
-            "endtime": "2020-05-14T11:00:00Z"
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + pToken
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        //showToast(e.toString())
-    })
-    return result;
-
-}*/
-
-
 export const getCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
