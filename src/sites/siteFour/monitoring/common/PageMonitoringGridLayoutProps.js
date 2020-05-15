@@ -1,15 +1,3 @@
-import PageDevMonitoring from "../view/PageDevMonitoring";
-import {reactLocalStorage} from "reactjs-localstorage";
-import {
-    APPINST_HW_MAPPER_KEY,
-    APPINST_LAYOUT_KEY, CLOUDLET_HW_MAPPER_KEY,
-    CLOUDLET_LAYOUT_KEY,
-    CLUSTER_HW_MAPPER_KEY,
-    CLUSTER_LAYOUT_KEY
-} from "./PageDevMonitoringProps";
-import {showToast} from "../common/PageMonitoringCommonService";
-import {getUserId} from "./PageDevMonitoringService";
-
 export const GRID_ITEM_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
@@ -239,36 +227,129 @@ export const defaultLayoutMapperForAppInst = [
     },
 ];
 
-export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
-    try {
-        reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
-        reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
-        reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
 
-        await _this.setState({
-            layoutForCluster: [],
-            layoutMapperForCluster: [],
-            layoutForCloudlet: [],
-            layoutMapperForCloudlet: [],
-            layoutForAppInst: [],
-            layoutMapperForAppInst: [],
-        });
+export const defaultLayoutXYPosForCloudlet = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+    //////////// 4,5,6 row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
 
-        await _this.setState({
-            layoutForCluster: defaultLayoutForCluster,
-            layoutMapperForCluster: defaultHwMapperListForCluster,
-            layoutForCloudlet: defaultLayoutForCloudlet,
-            layoutMapperForCloudlet: defaultLayoutMapperForCloudlet,
-            layoutForAppInst: defaultLayoutForAppInst,
-            layoutMapperForAppInst: defaultLayoutMapperForAppInst,
-        })
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
+    /////////// 7,8,9rd row
+    {x: 0, y: 6},
+    {x: 1, y: 6},
+    {x: 2, y: 6},
+    {x: 3, y: 6},
+
+    {x: 0, y: 7},
+    {x: 1, y: 7},
+    {x: 2, y: 7},
+    {x: 3, y: 7},
+
+    {x: 0, y: 8},
+    {x: 1, y: 8},
+    {x: 2, y: 8},
+    {x: 3, y: 8},
+]
+
+export const defaultLayoutXYPosForCluster = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+    //////////// 4,5,6 row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
+    /////////// 7,8,9rd row
+    {x: 0, y: 6},
+    {x: 1, y: 6},
+    {x: 2, y: 6},
+    {x: 3, y: 6},
+
+    {x: 0, y: 7},
+    {x: 1, y: 7},
+    {x: 2, y: 7},
+    {x: 3, y: 7},
+
+    {x: 0, y: 8},
+    {x: 1, y: 8},
+    {x: 2, y: 8},
+    {x: 3, y: 8},
+]
+
+export const defaultLayoutXYPosForAppInst = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+    //////////// 4,5,6 row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
+    /////////// 7,8,9rd row
+    {x: 0, y: 6},
+    {x: 1, y: 6},
+    {x: 2, y: 6},
+    {x: 3, y: 6},
+
+    {x: 0, y: 7},
+    {x: 1, y: 7},
+    {x: 2, y: 7},
+    {x: 3, y: 7},
+
+    {x: 0, y: 8},
+    {x: 1, y: 8},
+    {x: 2, y: 8},
+    {x: 3, y: 8},
+]
+
+export const CLOUDLET_LAYOUT_KEY = "_layout_cloudlet";
+export const CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_cloudlet";
+export const CLUSTER_LAYOUT_KEY = "_layout";
+export const CLUSTER_HW_MAPPER_KEY = "_layout_mapper";
+export const APPINST_LAYOUT_KEY = "_layout2";
+export const APPINST_HW_MAPPER_KEY = "_layout2_mapper";
 
 
-    } catch (e) {
-        showToast(e.toString())
-    }
-
-}

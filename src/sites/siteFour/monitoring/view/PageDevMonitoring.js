@@ -85,18 +85,19 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
-import type {PageDevMonitoringProps} from "../service/PageDevMonitoringProps";
+import type {PageDevMonitoringProps} from "../common/PageDevMonitoringProps";
 import {
-    APPINST_HW_MAPPER_KEY,
-    APPINST_LAYOUT_KEY,
-    CLUSTER_HW_MAPPER_KEY,
-    CLUSTER_LAYOUT_KEY,
     ColorLinearProgress,
-    CustomSwitch, defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCluster,
+    CustomSwitch,
     PageDevMonitoringMapDispatchToProps,
     PageDevMonitoringMapStateToProps
-} from "../service/PageDevMonitoringProps";
+} from "../common/PageDevMonitoringProps";
+import {
+    APPINST_HW_MAPPER_KEY,
+    APPINST_LAYOUT_KEY, CLOUDLET_LAYOUT_KEY,
+    CLUSTER_HW_MAPPER_KEY,
+    CLUSTER_LAYOUT_KEY, defaultLayoutXYPosForAppInst
+} from "../common/PageMonitoringGridLayoutProps";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -774,7 +775,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-
             handleAppInstDropdown = async (pCurrentAppInst) => {
                 try {
                     clearInterval(this.intervalForAppInst)
@@ -1110,7 +1110,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 chartDataSet={chartDataSets}
                             />
                     )
-
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
 
                     let barChartDataSet: TypeBarChartData = [];
@@ -1806,6 +1805,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                             {reduceLegendClusterCloudletName(item, this)}
                                                         </div>
                                                     </React.Fragment>
+
                                                 }
                                             </Col>
                                         )

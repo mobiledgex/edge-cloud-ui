@@ -79,20 +79,14 @@ import PerformanceSummaryForCluster from "../components/PerformanceSummaryForClu
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
-import {defaultLayoutForCloudlet, defaultLayoutMapperForCloudlet} from "../service/PageDevMonitoringProperties";
-import type {PageDevMonitoringProps} from "../service/PageDevMonitoringProps";
+import {defaultLayoutForCloudlet, defaultLayoutMapperForCloudlet} from "../common/PageMonitoringGridLayoutProps";
+import type {PageDevMonitoringProps} from "../common/PageDevMonitoringProps";
 import {
-    APPINST_LAYOUT_KEY,
-    CLOUDLET_HW_MAPPER_KEY,
-    CLOUDLET_LAYOUT_KEY,
-    CLUSTER_HW_MAPPER_KEY,
-    CLUSTER_LAYOUT_KEY,
     ColorLinearProgress,
-    CustomSwitch, defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCluster,
+    CustomSwitch,
     PageDevMonitoringMapDispatchToProps,
     PageDevMonitoringMapStateToProps
-} from "../service/PageDevMonitoringProps";
+} from "../common/PageDevMonitoringProps";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
