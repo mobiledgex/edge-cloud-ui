@@ -537,7 +537,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
-                    console.log(`cloudletDropdownList====>`, cloudletDropdownList);
+                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
 
                     await this.setState({
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 25,

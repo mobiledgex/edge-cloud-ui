@@ -1551,7 +1551,7 @@ export const makeDropdownForCloudlet = (pList) => {
         pList.map((item: TypeCloudlet, index) => {
             let Cloudlet = item.CloudletName
             let CloudletLocation = JSON.stringify(item.CloudletLocation)
-            let cloudletFullOne = Cloudlet;
+            let cloudletFullOne = Cloudlet + " | " + CloudletLocation
             newArrayList.push({
                 key: cloudletFullOne,
                 value: cloudletFullOne,
