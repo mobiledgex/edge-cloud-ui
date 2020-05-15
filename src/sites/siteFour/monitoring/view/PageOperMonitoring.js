@@ -85,7 +85,7 @@ import {
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
     defaultLayoutForCloudlet,
-    defaultLayoutMapperForCloudlet
+    defaultLayoutMapperForCloudlet, defaultLayoutXYPosForCluster
 } from "../common/PageMonitoringGridLayoutProps";
 import type {PageDevMonitoringProps} from "../common/PageDevMonitoringProps";
 import {
@@ -1152,7 +1152,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {...this.props}
                     >
                         {this.state.layoutForCluster.map((item, loopIndex) => {
-
                             const uniqueIndex = item.i;
                             let hwType = HARDWARE_TYPE.CPU
                             let graphType = GRID_ITEM_TYPE.LINE;

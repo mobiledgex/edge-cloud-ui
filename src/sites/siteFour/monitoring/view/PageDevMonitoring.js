@@ -96,7 +96,7 @@ import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY, CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
-    CLUSTER_LAYOUT_KEY, defaultLayoutXYPosForAppInst
+    CLUSTER_LAYOUT_KEY, defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCluster
 } from "../common/PageMonitoringGridLayoutProps";
 
 const {Option} = Select;
