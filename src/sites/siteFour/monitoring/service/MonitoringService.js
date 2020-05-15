@@ -1546,8 +1546,14 @@ export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, va
 
 
 export const makeDropdownForCloudlet = (pList) => {
-    let newArrayList = [];
+
     try {
+        let newArrayList = [];
+        newArrayList.push({
+            key: undefined,
+            value: undefined,
+            text: 'Reset Filter',
+        })
         pList.map((item: TypeCloudlet, index) => {
             let Cloudlet = item.CloudletName
             let CloudletLocation = JSON.stringify(item.CloudletLocation)

@@ -39,7 +39,7 @@ import {
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
 import type {
-    TypeBarChartData, TypeCloudlet,
+    TypeBarChartData, TypeCloudlet, TypeCloudletUsageList,
     TypeGridInstanceList,
     TypeLineChartData,
     TypeUtilization
@@ -719,7 +719,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             handleCloudletDropdown = async (pCloudletOne) => {
-                alert(pCloudletOne)
+
+                if (pCloudletOne !== undefined) {
+                    let cloudletPrefix = pCloudletOne.split(" | ")[0].trim();
+                    let filteredCloudletUsageList = this.state.allCloudletUsageList.filter((item: TypeCloudletUsageList, index) => {
+                        return item.cloudlet === cloudletPrefix
+                    })
+
+                    this.setState({
+                        currentCloudLet: pCloudletOne,
+                        filteredCloudletUsageList: filteredCloudletUsageList,
+                    })
+                } else {
+                    this.setState({
+                        currentCloudLet: undefined,
+                        filteredCloudletUsageList: this.state.allCloudletUsageList,
+                    })
+                }
             }
 
             async handleClusterDropdown(selectedClusterOne) {
@@ -1828,7 +1844,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{}}
                             style={{width: 250, maxHeight: 512}}
                             listHeight={512}
-                            //disabled={isEmpty(this.state.cloudletDropdownList)}
+                            disabled={isEmpty(this.state.cloudletDropdownList)}
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onChange={async (value) => {
