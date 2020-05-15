@@ -516,8 +516,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
-                    let appInstanceListGroupByCloudletForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                    //let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+                    let appInstanceListGroupByCloudletForMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
 
                     await this.setState({
                         appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudletForMap,
@@ -609,7 +609,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 clearInterval(this.intervalForCluster)
                 clearInterval(this.intervalForAppInst)
 
-                let appInstanceListGroupByCloudletForMap = reducer.groupBy(this.state.appInstanceList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
+                //let appInstanceListGroupByCloudletForMap = reducer.groupBy(this.state.appInstanceList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
 
                 await this.setState({
                     currentGridIndex: -1,
@@ -620,7 +620,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppInstanceList: this.state.appInstanceList,
                     filteredClusterEventLogList: this.state.allClusterEventLogList,
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudletForMap,
+                    appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
                 })
                 //desc: reset bubble chart data
                 let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
