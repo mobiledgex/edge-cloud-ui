@@ -28,7 +28,7 @@ import {
     renderUsageByType,
     showToast
 } from "../PageMonitoringCommonService";
-import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
+import type {TypeAppInstance, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import {findUsageIndexByKey, numberWithCommas} from "../PageMonitoringUtils";
@@ -494,6 +494,13 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
     }
 };
 
+
+/**
+ *
+ * @param cloudletList
+ * @param clusterList
+ * @returns {[]}
+ */
 export const makeClusterTreeDropdown = (cloudletList, clusterList) => {
     let newCloudletList = []
     newCloudletList.push({
@@ -1448,6 +1455,28 @@ export const makeDropdownForAppInst = (appInstList) => {
                 text: AppName.trim() + " [" + Version.toString().trim() + "]",
             })
         })
+        return dropdownList;
+    } catch (e) {
+
+    }
+};
+
+
+export const makeDropdownForCluster = (paramList) => {
+    let dropdownList = [];
+    try {
+        paramList.map((item: TypeCluster, index) => {
+            let Cloudlet = item.Cloudlet
+            let ClusterInst = item.ClusterName
+
+            let specifiedAppInstOne = Cloudlet + " | " + ClusterInst;
+            dropdownList.push({
+                key: specifiedAppInstOne,
+                value: specifiedAppInstOne,
+                text: ClusterName,
+            })
+        })
+
         return dropdownList;
     } catch (e) {
 

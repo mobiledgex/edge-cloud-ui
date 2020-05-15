@@ -16,7 +16,7 @@ export default function PageMonitoringMain() {
                 )
             } else if (userRole.includes('Operator')) {
                 return (
-                    <PageMonitoringForOperator/>
+                    <PageMonitoringForDeveloper/>
                 )
             } else {
                 return (

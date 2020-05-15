@@ -235,7 +235,12 @@ export const getCloudletList = async () => {
             }
         })
 
-        return mergedCloudletList;
+        let rsltList = mergedCloudletList.filter((item: TypeCloudlet, index) => {
+            return item.Operator === localStorage.getItem('selectOrg')
+        })
+
+        return rsltList
+
     } catch (e) {
         //showToast( e.toString())
     }
@@ -697,7 +702,7 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
                     })
 
                     usageList.push({
-                       usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+                        usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
                         usedMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
                         usedDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
                         usedRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,

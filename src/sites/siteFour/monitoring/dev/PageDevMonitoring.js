@@ -12,9 +12,8 @@ import {
     handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
-    makeClusterTreeDropdown,
     makeDropdownForAppInst,
-    makeDropdownForCloudlet,
+    makeDropdownForCloudlet, makeDropdownForCluster,
     makeGridIItemHeight,
     makeGridItemWidth,
     makeid,
@@ -38,7 +37,7 @@ import {
 } from "../../../../shared/Constants";
 import type {
     TypeBarChartData,
-    TypeCloudlet,
+    TypeCloudlet, TypeClusterUsageOne,
     TypeGridInstanceList,
     TypeLineChartData,
     TypeUtilization
@@ -331,7 +330,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     clusterSelectBoxPlaceholder: 'Select Cluster',
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentRegion: 'ALL',
-                    currentCloudLet: '',
+                    currentCloudLet: undefined,
                     currentCluster: '',
                     currentAppInst: undefined,
                     isModalOpened: false,
@@ -510,7 +509,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@todo: dropdownClusterListOnCloudlet
                     let onlyCloudletNameList = []
                     clusterList.map(item => (onlyCloudletNameList.push(item.Cloudlet)))
-                    let dropdownClusterListOnCloudlet = makeClusterTreeDropdown(_.uniqBy(onlyCloudletNameList), clusterList)
+                    let dropdownClusterListOnCloudlet = this.renderClusterDropdown(_.uniqBy(onlyCloudletNameList), clusterList)
 
                     //@desc:#########################################################################
                     //@desc: map Marker
@@ -728,8 +727,26 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
+            handleCloudletDropdown = async (paramCloudletOne) => {
 
-            async handleClusterDropdownAndReset(selectedClusterOne) {
+                console.log(`paramCloudletOne====>`, paramCloudletOne);
+
+
+                console.log(`paramCloudletOne===clusterList=>`, this.state.filteredClusterUsageList);
+
+
+                /*console.log(`_dropdownList====>`, _dropdownList);
+
+                this.setState({
+                    filteredClusterList: filteredClusterList,
+                    currentCloudLet: paramCloudletOne,
+                    clusterDropdownList: _dropdownList
+                });*/
+
+            }
+
+
+            async handleClusterDropdown(selectedClusterOne) {
                 try {
 
                     //desc: When selected all Cluster options
@@ -817,7 +834,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: requestShowAppInstClientWS
                     //@desc: ################################
                     if (this.state.showAppInstClient) {
-
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                         })
@@ -905,9 +921,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async addGridItem(hwType, graphType = 'line') {
-                //@desc: ##########################
-                //@desc: CLUSTER
-                //@desc: ##########################
+
+                /*Cloudlet*/
+                /*Cloudlet*/
+                /*Cloudlet*/
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
                     let currentItems = this.state.layoutForCluster;
@@ -937,9 +954,44 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         layoutMapperForCluster: mapperList.concat(itemOne),
                     })
 
-                    reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
-                    reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.layoutMapperForCluster)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutForCluster)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperForCluster)
 
+                }
+                    //@desc: ##########################
+                    //@desc: CLUSTER
+                //@desc: ##########################
+                else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+
+                    let currentItems = this.state.layoutForCluster;
+                    let maxY = -1;
+                    if (!isEmpty(currentItems)) {
+                        maxY = _.maxBy(currentItems, 'y').y
+                    }
+                    let uniqueId = makeid(5)
+                    let mapperList = this.state.layoutMapperForCluster
+
+                    let itemOne = {
+                        id: uniqueId,
+                        hwType: hwType,
+                        graphType: graphType,
+                    }
+                    //@desc: ######################################
+                    //@desc:  calculate empty space in gridLayout
+                    //@desc: ######################################
+                    await this.setState({
+                        layoutForCluster: this.state.layoutForCluster.concat({
+                            i: uniqueId,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
+                            w: makeGridItemWidth(graphType),
+                            h: makeGridIItemHeight(graphType),
+                        }),
+                        layoutMapperForCluster: mapperList.concat(itemOne),
+                    })
+
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutForCluster)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperForCluster)
 
                 } else {
                     //@desc: ##########################
@@ -969,21 +1021,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }),
                         layoutMapperForAppInst: mapperList.concat(itemOne),
                     });
-                    reactLocalStorage.setObject(getUserId() + "_layout2", this.state.layoutForAppInst)
-                    reactLocalStorage.setObject(getUserId() + "_layout2_mapper", this.state.layoutMapperForAppInst)
+                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, this.state.layoutForAppInst)
+                    reactLocalStorage.setObject(getUserId() + APPINST_HW_MAPPER_KEY, this.state.layoutMapperForAppInst)
                 }
             }
 
             removeGridItem(i) {
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
-                    reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutForCluster: removedLayout,
                     });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    let removedLayout = _.reject(this.state.layoutForCloudlet, {i: i});
+                    reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
+                    this.setState({
+                        layoutForCloudlet: removedLayout,
+                    });
                 } else {//@desc: AppInst Level
                     let removedLayout = _.reject(this.state.layoutForAppInst, {i: i});
-                    reactLocalStorage.setObject(getUserId() + "_layout2", removedLayout)
+                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutForAppInst: removedLayout,
                     });
@@ -1273,9 +1331,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderGridLayoutForCloudlet() {
-
-                console.log(`renderGridLayoutForCloudlet====>`, this.state.layoutForCluster);
-
                 return (
                     <ResponsiveReactGridLayout
                         isResizable={true}
@@ -1379,7 +1434,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             style={{display: 'flex'}}
                             key="1"
                             onClick={async () => {
-                                await this.handleClusterDropdownAndReset('')
+                                await this.handleClusterDropdown('')
                             }}
                         >
                             <MaterialIcon icon={'history'} color={'white'}/>
@@ -1592,7 +1647,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            makeClusterTreeDropdown() {
+            renderClusterDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div
@@ -1603,27 +1658,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                             Cluster
                         </div>
-                        <TreeSelect
-                            disabled={this.state.loading}
-                            size={'middle'}
-                            showSearch={true}
-                            switcherIcon={<FontAwesomeIcon
-                                name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
-                            />}
-                            style={{width: '300px'}}
-                            onSearch={(value) => {
-                                this.setState({
-                                    searchClusterValue: value,
-                                });
-                            }}
-                            searchValue={this.state.searchClusterValue}
-                            placeholder={'Select Cluster'}
-                            dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
-                            treeData={this.state.dropDownCludsterListOnCloudlet}
-                            treeDefaultExpandAll={true}
+                        <Select
+                            dropdownStyle={{}}
+                            style={{width: 250, maxHeight: 512}}
+                            listHeight={512}
+                            //disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentCluster === undefined}
                             value={this.state.currentCluster}
-
-                            onChange={async (value, label, extra) => {
+                            placeholder={'Select Cloudlet'}
+                            onChange={async (value) => {
                                 clearInterval(this.intervalForCluster)
                                 clearInterval(this.intervalForAppInst)
                                 //@desc: If you are choosing the whole cluster ...
@@ -1634,14 +1676,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 } else {
                                     await this.filterClusterList(value)
                                 }
-                                await this.handleClusterDropdownAndReset(value.trim())
+                                await this.handleClusterDropdown(value.trim())
                             }}
-                        />
+                        >
+                            {this.state.clusterDropdownList.map(item => {
+                                return (
+                                    <Option value={item.value}>{item.text}</Option>
+                                )
+                            })}
+                        </Select>
                     </div>
                 )
             }
 
-            makeCloudletDropdown() {
+            renderCloudletDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label">
@@ -1653,10 +1701,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             style={{width: 250, maxHeight: 512}}
                             listHeight={512}
                             //disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentCluster === undefined}
-                            value={this.state.currentAppInst}
+                            value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onChange={async (value) => {
-                                alert(value)
+                                this.handleCloudletDropdown(value)
                             }}
                         >
                             {this.state.cloudletDropdownList.map(item => {
@@ -1670,7 +1718,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            makeAppInstDropdown() {
+            renderAppInstDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label">
@@ -1717,7 +1765,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                         let clusterOne = item.cluster + " | " + item.cloudlet;
-                                        await this.handleClusterDropdownAndReset(clusterOne)
+                                        await this.handleClusterDropdown(clusterOne)
 
                                     }}
                                     span={this.state.legendColSize}
@@ -1770,7 +1818,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                          }}
                     >
 
-                        {this.state.filteredCloudletList.map((item: TypeCloudlet, index) => {
+                        {this.state.filteredCloudletList.lenght > 0 && this.state.filteredCloudletList.map((item: TypeCloudlet, index) => {
                             return (
                                 <Col
                                     key={index}
@@ -1792,7 +1840,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         </div>
                                     </div>
                                     <div>
-                                        {item.CloudletName.substr(0, 15)}
+                                        {item.CloudletName.substring(0, 15)}
                                     </div>
                                     <div style={{marginRight: 15,}}>
 
@@ -1928,13 +1976,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      flex: .7,
                                  }}>
                                 <div style={{marginLeft: 15}}>
-                                    {this.makeCloudletDropdown()}
+                                    {this.renderCloudletDropdown()}
                                 </div>
                                 <div>
-                                    {this.makeClusterTreeDropdown()}
+                                    {this.renderClusterDropdown()}
                                 </div>
                                 <div style={{marginLeft: 15}}>
-                                    {this.makeAppInstDropdown()}
+                                    {this.renderAppInstDropdown()}
                                 </div>
                                 {this.state.intervalLoading &&
                                 <div>
@@ -1988,7 +2036,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForAppInst)
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
-                                                    await this.handleClusterDropdownAndReset(this.state.currentCluster)
+                                                    await this.handleClusterDropdown(this.state.currentCluster)
                                                 }
                                             }}
 

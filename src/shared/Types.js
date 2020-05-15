@@ -166,7 +166,7 @@ export type TypeCloudletUsageList = {
     maxVCpuCount: number,
 }
 
-export type TypeClusterUsageList = {
+export type TypeClusterUsageOne = {
     uuid: string,
     Region: string,
     cluster: string,
