@@ -643,9 +643,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                    //////todo:cloudllet/////////
-                    //////todo:cloudllet/////////
-                //////todo:cloudllet/////////
+                /*//////desc:For Cloudlet/////////*/
                 else if (
                     hardwareType === HARDWARE_TYPE.NETSEND
                     || hardwareType === HARDWARE_TYPE.NETRECV
@@ -699,8 +697,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             return _result
         }
     } catch (e) {
-
-        showToast(e.toString())
+        throw new Error(e)
     }
 
 };
