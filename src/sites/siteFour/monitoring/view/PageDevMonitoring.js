@@ -87,7 +87,7 @@ import AppInstEventLogListContainer from "../components/AppInstEventLogListConta
 import {fields} from '../../../../services/model/format'
 import {
     APPINST_HW_MAPPER_KEY,
-    APPINST_LAYOUT_KEY, CLUSTER_HW_MAPPER_KEY, CLUSTER_LAYOUT_KEY, CustomSwitch,
+    APPINST_LAYOUT_KEY, CLUSTER_HW_MAPPER_KEY, CLUSTER_LAYOUT_KEY, ColorLinearProgress, CustomSwitch,
     PageDevMonitoringMapDispatchToProps,
     PageDevMonitoringMapStateToProps
 } from "../service/PageDevMonitoringProps";
