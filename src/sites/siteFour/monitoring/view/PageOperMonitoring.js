@@ -79,7 +79,14 @@ import PerformanceSummaryForCluster from "../components/PerformanceSummaryForClu
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
-import {defaultLayoutForCloudlet, defaultLayoutMapperForCloudlet} from "../common/PageMonitoringGridLayoutProps";
+import {
+    CLOUDLET_HW_MAPPER_KEY,
+    CLOUDLET_LAYOUT_KEY,
+    CLUSTER_HW_MAPPER_KEY,
+    CLUSTER_LAYOUT_KEY,
+    defaultLayoutForCloudlet,
+    defaultLayoutMapperForCloudlet
+} from "../common/PageMonitoringGridLayoutProps";
 import type {PageDevMonitoringProps} from "../common/PageDevMonitoringProps";
 import {
     ColorLinearProgress,
