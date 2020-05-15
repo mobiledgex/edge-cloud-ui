@@ -468,25 +468,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (cloudletList ,clusterList, appnInstList)
                     //@desc:#############################################
-                    promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
-                    //let allCloudletList = newPromiseList[0];
-                    let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
-                    let clusterDropdownList = makeSelectBoxListWithKeyValuePipeForCluster(clusterList, 'ClusterName', 'Cloudlet')
+                    let clusterList = newPromiseList[0];
+                    let appInstList = newPromiseList[1];
+                    let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+                    let cloudletNameList = []
+                    orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
 
-                    //@todo: dropdownClusterListOnCloudlet
-                    let cloudletList = []
-                    clusterList.map(item => (cloudletList.push(item.Cloudlet)))
-                    let dropdownClusterListOnCloudlet = this.makeClusterTreeDropdown(_.uniqBy(cloudletList), clusterList)
+                    let dropdownClusterListOnCloudlet = this.makeClusterTreeDropdown(cloudletNameList, clusterList)
 
 
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let appInstanceListGroupByCloudletForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                     await this.setState({
                         appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudletForMap,
@@ -521,7 +517,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        clusterDropdownList: clusterDropdownList,
+                        //clusterDropdownList: clusterDropdownList,
                         dropDownCludsterListOnCloudlet: dropdownClusterListOnCloudlet,
                         clusterList: clusterList,
                         filteredClusterList: clusterList,
