@@ -607,7 +607,6 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
-
         let usageList = []
         let netSendSeriesList = [];
         let netRecvSeriesList = [];
@@ -618,10 +617,9 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
         let ipv4UsedSeriesList = [];
         cloudletLevelMatricUsageList.map((item, index) => {
 
-            if (item !== undefined) {
+            if (!isEmpty(item)) {
                 let Region = cloudletList[index].Region
-                if (item !== undefined && item.data["0"] !== undefined && item.data["0"].Series !== null) {
-
+                if (!isEmpty(item.data["0"].Series)) {
 
                     let series = item.data["0"].Series["0"].values
                     let columns = item.data["0"].Series["0"].columns

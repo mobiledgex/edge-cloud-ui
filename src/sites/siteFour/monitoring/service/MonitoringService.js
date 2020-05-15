@@ -29,7 +29,7 @@ import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
     makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader,
-    renderUsageByType, renderUsageByType2, sortUsageListByType
+    renderUsageByType, renderUsageByType2, showToast, sortUsageListByType
 } from "./MonitoringCommonService";
 import {MonitoringStyles} from "../common/MonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/MonitoringUtils";
@@ -700,6 +700,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
         }
     } catch (e) {
 
+        showToast(e.toString())
     }
 
 };

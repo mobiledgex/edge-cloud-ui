@@ -13,7 +13,12 @@ import {Icon} from "semantic-ui-react";
 import {notification, Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/Monitoring.css'
 import {MonitoringStyles} from "../common/MonitoringStyles";
@@ -211,8 +216,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
         componentDidMount = async () => {
 
             try {
-                let appInstanceListGroupByCloudlet = this.props.markerList
-                await this.setCloudletLocation(appInstanceListGroupByCloudlet, true)
+                let markerList = this.props.markerList
+                if (localStorage.getItem('selectRole').toString().toLowerCase().includes('dev')) {
+                    this.setCloudletLocation(markerList, true)
+                } else {
+                    this.setCloudletLocationForOper(markerList)
+                }
+
             } catch (e) {
 
             }
@@ -230,8 +240,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 }
 
                 if (this.props.markerList !== nextProps.markerList) {
-                    let appInstanceListGroupByCloudlet = nextProps.markerList;
-                    this.setCloudletLocation(appInstanceListGroupByCloudlet)
+                    let markerList = nextProps.markerList;
+                    if (localStorage.getItem('selectRole').toString().toLowerCase().includes('dev')) {
+                        this.setCloudletLocation(markerList)
+                    } else {
+                        this.setCloudletLocationForOper(markerList)
+                    }
+
+
                 }
 
                 //@desc : #############################
@@ -273,6 +289,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
 
         }
+
+        setCloudletLocationForOper(cloudletList, isMapCenter = false) {
+            try {
+                console.log(`cloudletList==33==>`, cloudletList);
+            } catch (e) {
+
+            }
+
+        }
+
 
         setCloudletLocation(pAppInstanceListGroupByCloudlet, isMapCenter = false) {
             try {

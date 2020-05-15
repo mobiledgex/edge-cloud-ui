@@ -477,7 +477,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     mapLoading: true,
 
                 })
-                await this.loadInitDataForDevMon();
+                await this.loadInitData();
                 this.setState({
                     loading: false,
                     bubbleChartLoader: false,
@@ -485,7 +485,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             };
 
 
-            async loadInitDataForDevMon(isInterval: boolean = false) {
+            async loadInitData(isInterval: boolean = false) {
                 let promiseList = []
                 let promiseList2 = []
                 try {
@@ -507,11 +507,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let appInstanceListGroupByCloudletForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                    let markerListForMap = []
+                    if (localStorage.getItem('selectRole').toString().toLowerCase().includes('dev')) {
+                        markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                    } else if (userType.toString().toLowerCase().includes('oper')) {
+
+                        markerListForMap = cloudletList;
+
+                    }
+
                     await this.setState({
-                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudletForMap,
+                        appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
                         mapLoading: false,
                     })
+
 
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
@@ -572,7 +581,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     });
                 } catch (e) {
-                    showToast(e.toString())
+                    //  showToast(e.toString())
                 }
 
             }
@@ -599,7 +608,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async resetLocalData() {
                 clearInterval(this.intervalForCluster)
                 clearInterval(this.intervalForAppInst)
-                let appInstanceListGroupByCloudletForMap = reducer.groupBy(this.state.appInstanceList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
+                let markerListForMap = reducer.groupBy(this.state.appInstanceList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
                 await this.setState({
                     currentGridIndex: -1,
                     currentTabIndex: 0,
@@ -609,7 +618,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppInstanceList: this.state.appInstanceList,
                     filteredClusterEventLogList: this.state.allClusterEventLogList,
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudletForMap,
+                    appInstanceListGroupByCloudlet: markerListForMap,
                 })
                 //desc: reset bubble chart data
                 let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
@@ -638,7 +647,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     loading: true,
                     dropdownRequestLoading: true
                 })
-                await this.loadInitDataForDevMon();
+                await this.loadInitData();
                 this.setState({
                     loading: false,
                 })
@@ -1865,7 +1874,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderAppInstDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label">
+                        <div className="page_monitoring_dropdown_label" style={{width: 50,}}>
                             App Inst
                         </div>
                         <Select
@@ -1891,7 +1900,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            makeClusterLegend() {
+            renderClusterLegend() {
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
 
                 return (
@@ -1949,7 +1958,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            makeCloudletLegend() {
+            renderCloudletLegend() {
                 return (
                     <Row gutter={16}
                          style={{
@@ -1983,7 +1992,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         >
                                         </div>
                                     </div>
-                                    <div>
+                                    <div onClick={() => {
+                                        this.handleCloudletDropdown(item.CloudletName)
+                                    }}>
                                         {item.CloudletName.substring(0, 15)}
                                     </div>
                                     <div style={{marginRight: 15,}}>
@@ -1997,7 +2008,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            makeAppLegend() {
+            renderAppLegend() {
                 return (
                     <div style={{
                         display: 'flex',
@@ -2061,13 +2072,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <LegendOuterDiv
                             style={{height: this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLOUDLET && legendElementLength > 1 ? this.state.legendHeight : 70,}}>
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER ?//@desc: When Cluster Level Legend
-                                this.makeClusterLegend()
+                                this.renderClusterLegend()
                                 ://@desc: When Cloudlet Level Legend
                                 this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
-                                    this.makeCloudletLegend()
+                                    this.renderCloudletLegend()
                                     //@desc: When AppLevel Legend
                                     : this.state.currentClassification === CLASSIFICATION.APPINST &&
-                                    this.makeAppLegend()
+                                    this.renderAppLegend()
 
                             }
                             {/*################################*/}
@@ -2119,18 +2130,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      width: 'fit-content',
                                      flex: .7,
                                  }}>
-                                <div style={{marginLeft: 15}}>
+                                <div style={{marginLeft: 25}}>
                                     {this.renderCloudletDropdown()}
                                 </div>
                                 <div>
                                     {this.renderClusterDropdown()}
                                 </div>
-                                <div style={{marginLeft: 15}}>
+                                <div style={{marginLeft: 25}}>
                                     {this.renderAppInstDropdown()}
                                 </div>
                                 {this.state.intervalLoading &&
                                 <div>
-                                    <div style={{marginLeft: 10, marginRight: 1,}}>
+                                    <div style={{marginLeft: 25, marginRight: 1,}}>
                                         {renderWifiLoader()}
                                     </div>
                                 </div>
