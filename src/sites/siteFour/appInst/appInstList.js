@@ -87,7 +87,8 @@ class AppInstList extends React.Component {
     actionMenu = () => {
         return [
             { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
-            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst },
+            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
+            { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
             { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
@@ -99,7 +100,8 @@ class AppInstList extends React.Component {
     groupActionMenu = () => {
         return [
             { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader }
+            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
+            { label: 'Refresh', onClick: refreshAppInst, icon: 'refresh', warning: 'refresh all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
         ]
     }
 

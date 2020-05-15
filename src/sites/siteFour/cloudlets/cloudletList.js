@@ -4,14 +4,13 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields, getUserRole } from '../../../services/model/format';
+import { fields, getUserRole, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
 import * as constant from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
-import * as actions from "../../../actions";
 import {CloudletTutor} from "../../../tutorial";
 
 const cloudletSteps = CloudletTutor();
@@ -57,7 +56,6 @@ class CloudletList extends React.Component {
 
     requestInfo = () => {
         let mode = (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer')? cloudletSteps.stepsCloudletDev : cloudletSteps.stepsCloudlet
-
         return ({
             id: 'Cloudlets',
             headerLabel: 'Cloudlets',
@@ -120,7 +118,7 @@ class CloudletList extends React.Component {
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
-            if (key.field === fields.cloudletStatus) {
+            if (key.field === fields.cloudletStatus && isAdmin()) {
                 key.customizedData = this.getCloudletInfoState
             }
             else if (key.field === fields.state) {
@@ -140,7 +138,7 @@ class CloudletList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={isAdmin() ? multiDataRequest : undefined} />
         )
     }
 };

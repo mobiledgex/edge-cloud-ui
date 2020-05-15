@@ -40,7 +40,6 @@ class ClusterInstReg extends React.Component {
         this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
         this.originalData = undefined
         this.expandAdvanceMenu = false
-        //To avoid refetching data from server
     }
 
     validatePortRange = (form) => {
@@ -211,12 +210,21 @@ class ClusterInstReg extends React.Component {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
                 return form
             }
-            else if (form.label === 'Configs' || form.label === 'Annotations') {
+            else if (form.label === 'Configs') {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
                 this.configOptions = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
                 return form
             }
-            else if (form.field === fields.configs || form.field === fields.annotations) {
+            else if (form.label === 'Annotations') {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                return form
+            }
+            else if (form.field === fields.annotations) {
+                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM) {
+                    return form
+                }
+            }
+            else if (form.field === fields.configs) {
                 if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                     return form
                 }
@@ -259,7 +267,6 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < childForms.length; i++) {
             let form = childForms[i]
             if (form.field === fields.tls) {
-                form.value = currentForm.value === 'tcp'
                 form.visible = currentForm.value === 'tcp'
             }
         }

@@ -81,10 +81,14 @@ export default function Header(props) {
                 <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
                     <IconButton disabled={true}  className="orgName">
-                        <h5>
-                            <strong>Organization: </strong>
-                            {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg ? localStorage.selectOrg : 'no selected organization'}
-                        </h5>
+                        {
+                            localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
+                            <h5>
+                                <strong>Organization: </strong> 
+                                {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg}
+                            </h5> : 
+                            null
+                        }
                     </IconButton>
                     <IconButton aria-label="show 17 new notifications" color="inherit"
                                 onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
