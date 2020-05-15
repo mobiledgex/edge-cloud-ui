@@ -2,9 +2,9 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Empty} from 'antd';
-import PageDevMonitoring from "../view/PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevOperMonitoring";
 import {FixedSizeList} from "react-window";
-import {reduceString} from "../service/PageDevMonitoringService";
+import {reduceString} from "../service/PageDevOperMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {

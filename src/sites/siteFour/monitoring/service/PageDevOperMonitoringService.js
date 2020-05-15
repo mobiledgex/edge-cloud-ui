@@ -18,21 +18,24 @@ import {
     CLASSIFICATION,
     HARDWARE_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS
+    THEME_OPTIONS, USAGE_INDEX
 } from "../../../../shared/Constants";
-import type {TypeAppInstance} from "../../../../shared/Types";
+import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
-import PageDevMonitoring from "../view/PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevOperMonitoring";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderUsageByType
+    makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader,
+    renderUsageByType, renderUsageByType2, sortUsageListByType
 } from "../common/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
+import {renderUsageLabelByType} from "./PageAdminMonitoringService";
+import {Table} from "semantic-ui-react";
+import {Progress} from "antd";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -473,6 +476,28 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
 
 };
 
+
+/**
+ *
+ * @param orgAppInstList
+ * @returns {{cloudletNameList: [], clusterNameList: []}}
+ */
+export function getCloudletClusterNameList(orgAppInstList) {
+    let cloudletNameList = []
+    orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
+    let clusterNameList = [];
+    orgAppInstList.map((item: TypeAppInstance, index) => {
+        clusterNameList.push({
+            ClusterInst: item.ClusterInst,
+            Cloudlet: item.Cloudlet,
+        })
+    })
+
+    return {
+        cloudletNameList,
+        clusterNameList
+    }
+}
 
 /**
  *
@@ -1510,70 +1535,25 @@ export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, va
     }
 };
 
-export const makeCloudletDropdown = (arrList) => {
+
+export const makeDropdownForCloudlet = (pList) => {
+    let newArrayList = [];
     try {
-        let newArrList = [];
-        newArrList.push({
-            key: '',
-            value: '',
-            text: 'All Cloudlet',
+        pList.map((item: TypeCloudlet, index) => {
+            let Cloudlet = item.CloudletName
+            let CloudletLocation = JSON.stringify(item.CloudletLocation)
+            let cloudletFullOne = Cloudlet + " | " + CloudletLocation
+            newArrayList.push({
+                key: cloudletFullOne,
+                value: cloudletFullOne,
+                text: Cloudlet,
+            })
         })
-        for (let i in arrList) {
-            newArrList.push({
-                key: arrList[i],
-                value: arrList[i],
-                text: arrList[i],
-            })
-        }
-        return newArrList;
+        return newArrayList;
     } catch (e) {
 
     }
 };
-
-
-export const makeSelectBoxListWithKey = (arrList, keyName) => {
-    try {
-        let newArrList = [];
-        for (let i in arrList) {
-            newArrList.push({
-                key: arrList[i][keyName].trim(),
-                value: arrList[i][keyName].trim(),
-                text: arrList[i][keyName].trim(),
-            })
-        }
-        return newArrList;
-    } catch (e) {
-    }
-};
-
-export const makeSelectBoxListWithValuePipe = (appInstList, keyName: string, valueName: string, thirdValue: string, fourthValue: string = '') => {
-    try {
-        let newArrList = [];
-        if (fourthValue !== '') {
-            for (let i in appInstList) {
-                newArrList.push({
-                    key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                    text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim() + " | " + appInstList[i][fourthValue].trim(),
-                })
-            }
-        } else {
-            for (let i in appInstList) {
-                newArrList.push({
-                    key: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
-                    value: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
-                    text: appInstList[i][keyName].trim() + " | " + appInstList[i][valueName].trim() + " | " + appInstList[i][thirdValue].trim(),
-                })
-            }
-        }
-
-        return newArrList;
-    } catch (e) {
-
-    }
-};
-
 
 /**
  *
@@ -1609,20 +1589,6 @@ export const makeDropdownForAppInst = (appInstList) => {
     }
 };
 
-
-export const removeDuplication = (originalArray, prop) => {
-    let newArray = [];
-    let lookupObject = {};
-
-    for (let i in originalArray) {
-        lookupObject[originalArray[i][prop]] = originalArray[i];
-    }
-
-    for (let i in lookupObject) {
-        newArray.push(lookupObject[i]);
-    }
-    return newArray;
-};
 
 export const GradientBarChartOptions1 = {
     animation: {
@@ -1914,6 +1880,243 @@ export const barChartOptions2 = {
     }
 
 }
+
+
+export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
+    usageList = sortUsageListByType(usageList, hardwareType)
+
+    if (usageList.length === 0) {
+        return (
+            <div style={PageMonitoringStyles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+        let chartDataList = [];
+        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+        for (let index = 0; index < usageList.length; index++) {
+            if (index < 5) {
+                let barDataOne = [
+                    usageList[index].cloudlet.toString(),
+                    renderUsageByType2(usageList[index], hardwareType),
+                    CHART_COLOR_LIST[index],
+                    renderUsageLabelByType(usageList[index], hardwareType)
+                ]
+                chartDataList.push(barDataOne);
+            }
+        }
+
+        return renderBarChartCore(chartDataList, hardwareType)
+    }
+}
+
+export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOperMonitoring) => {
+
+    let hwTypeKey = '';
+    if (hwType === 'vCPU') {
+        hwTypeKey = 'sumVCpuUsage'
+    } else if (hwType === HARDWARE_TYPE.MEM) {
+        hwTypeKey = 'sumMemUsage'
+    } else if (hwType === HARDWARE_TYPE.DISK) {
+        hwTypeKey = 'sumDiskUsage'
+    } else if (hwType === HARDWARE_TYPE.RECVBYTES) {
+        hwTypeKey = 'sumRecvBytes'
+    } else if (hwType === HARDWARE_TYPE.SENDBYTES) {
+        hwTypeKey = 'sumSendBytes'
+    } else if (hwType === HARDWARE_TYPE.FLOATING_IPS) {
+        hwTypeKey = 'sumFloatingIpsUsage'
+    } else if (hwType === HARDWARE_TYPE.IPV4) {
+        hwTypeKey = 'sumIpv4Usage'
+    }
+
+    let bubbleChartData = [];
+    let allUsageList = _this.state.filteredCloudletUsageList;
+    allUsageList.map((item, index) => {
+        bubbleChartData.push({
+            index: index,
+            label: item.cloudlet.toString().substring(0, 10) + "...",
+            value: item[hwTypeKey],
+            favor: item[hwTypeKey],
+            fullLabel: item.cloudlet,
+        })
+    })
+
+
+    _this.setState({
+        bubbleChartData: bubbleChartData,
+    });
+}
+
+export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
+    return (
+        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+            <Table.Header className="viewListTableHeader">
+                <Table.Row>
+                    <Table.HeaderCell>
+                        CLOUDLET
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        vCPU(%)
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        MEM
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        DISK
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        RECV BYTES
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        SEND BYTES
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        FLOATING IPS
+                    </Table.HeaderCell>
+                    <Table.HeaderCell>
+                        IPV4
+                    </Table.HeaderCell>
+
+                </Table.Row>
+            </Table.Header>
+            <Table.Body className="tbBodyList" style={{zIndex: 99999999999999}}>
+                {/*-----------------------*/}
+                {/*todo:ROW HEADER        */}
+                {/*-----------------------*/}
+                {_this.state.loading &&
+                <Table.Row className='page_monitoring_popup_table_empty'>
+                    <Table.Cell>
+                        {renderPlaceHolderLoader()}
+                    </Table.Cell>
+                </Table.Row>}
+                {!_this.state.loading && _this.state.filteredCloudletUsageList.map((item, index) => {
+                    return (
+                        <Table.Row className='page_monitoring_popup_table_row' style={{zIndex: 99999999999999}}>
+
+                            <Table.Cell>
+                                {item.cloudlet}
+                            </Table.Cell>
+
+                            {/*return numberWithCommas(usageOne.sumVCpuUsage) + ""
+                            return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " MByte"
+                            return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
+                            return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
+                            return numberWithCommas(usageOne.sumSendBytes) + " Byte";
+                            return usageOne.sumActiveConnection
+                            return usageOne.sumHandledConnection
+                            return usageOne.sumAcceptsConnection*/}
+
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {item.sumVCpuUsage.toFixed(0)}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                  showInfo={false}
+                                                  percent={(item.sumVCpuUsage / _this.state.maxCpu * 100)}
+                                            //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <div>
+                                    <div>
+                                        {numberWithCommas(item.sumMemUsage) + ' Byte'}
+                                    </div>
+                                    <div>
+                                        <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10}
+                                                  showInfo={false}
+                                                  percent={(item.sumMemUsage / _this.state.maxMem * 100)}
+                                                  strokeColor={'#29a1ff'} status={'normal'}/>
+                                    </div>
+                                </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumDiskUsage) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumRecvBytes) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {numberWithCommas(item.sumSendBytes) + ' Byte'}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.sumFloatingIpsUsage}
+                            </Table.Cell>
+                            <Table.Cell>
+                                {item.sumIpv4Usage}
+                            </Table.Cell>
+                        </Table.Row>
+
+                    )
+                })}
+            </Table.Body>
+        </Table>
+    )
+}
+
+
+export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: Array, hardwareType: string) => {
+
+    if (pUsageList.length === 0) {
+        return (
+            <div style={PageMonitoringStyles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+        let cloudletName = ''
+        let instanceNameList = [];
+        let usageSetList = []
+        let dateTimeList = []
+        for (let i in pUsageList) {
+            let series = pUsageList[i].series
+
+            cloudletName = pUsageList[i].cloudlet
+            let usageList = [];
+
+            for (let j in series) {
+
+                let usageOne = 0;
+                if (hardwareType === HARDWARE_TYPE.VCPU) {
+                    usageOne = series[j][USAGE_INDEX.VCPUUSED];
+                } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+                    usageOne = series[j][USAGE_INDEX.MEMUSED];
+                } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+                    usageOne = series[j][USAGE_INDEX.DISKUSED];
+                } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
+                    usageOne = series[j][USAGE_INDEX.FLOATINGIPSUSED];
+                } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+                    usageOne = series[j][USAGE_INDEX.IPV4USED];
+                }
+
+                usageList.push(usageOne);
+                let dateOne = series[j]["0"];
+                dateOne = dateOne.toString().split("T")
+                dateTimeList.push(dateOne[1]);
+            }
+
+            instanceNameList.push(cloudletName)
+            usageSetList.push(usageList);
+        }
+        //@todo: CUT LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = []
+        for (let i in dateTimeList) {
+            if (i < RECENT_DATA_LIMIT_COUNT) {
+                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+            }
+
+        }
+        return renderLineChartCore(instanceNameList, usageSetList, newDateTimeList, hardwareType)
+    }
+}
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CLASSIFICATION, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {
     isEmpty,
@@ -10,7 +10,7 @@ import {
     showToast
 } from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "../service/PageAdminMonitoringService";
-import PageDevMonitoring from "../view/PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevOperMonitoring";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -192,15 +192,20 @@ export const getClusterList = async () => {
             }
         })
 
-        //todo: Filter to fetch only those belonging to the current organization
-        let orgClusterList = []
-        mergedClusterList.map(item => {
-            if (item.OrganizationName === localStorage.selectOrg) {
-                orgClusterList.push(item)
-            }
-        })
+        console.log(`mergedClusterList====>`, mergedClusterList);
 
-        return orgClusterList;
+        let result = []
+        if (localStorage.getItem('selectRole').includes('Oper')) {
+            result = mergedClusterList;
+        } else {
+            //todo: Filter to fetch only those belonging to the current organization
+            mergedClusterList.map(item => {
+                if (item.OrganizationName === localStorage.selectOrg) {
+                    result.push(item)
+                }
+            })
+        }
+        return result;
     } catch (e) {
 
     }

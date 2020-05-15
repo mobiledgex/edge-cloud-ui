@@ -11,7 +11,7 @@ import {GridLoader, PulseLoader} from "react-spinners";
 import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
 import {notification} from "antd";
 import {PageMonitoringStyles} from "./PageMonitoringStyles";
-import {makeGradientColor} from "../service/PageDevMonitoringService";
+import {makeGradientColor} from "../service/PageDevOperMonitoringService";
 import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "../service/PageAdminMonitoringService";
 

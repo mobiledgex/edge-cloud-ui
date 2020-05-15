@@ -4,7 +4,7 @@ import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
-import PageDevMonitoring from "../view/PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevOperMonitoring";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../common/PageMonitoringCommonService";
@@ -17,7 +17,7 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoring.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {groupByCloudletLocation, reduceString} from "../service/PageDevMonitoringService";
+import {groupByCloudletLocation, reduceString} from "../service/PageDevOperMonitoringService";
 import MomentTimezone from "moment-timezone";
 
 const FontAwesomeIcon = require('react-fontawesome')

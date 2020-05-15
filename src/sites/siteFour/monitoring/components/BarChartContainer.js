@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {renderPlaceHolderLoader} from "../common/PageMonitoringCommonService";
-import PageDevMonitoring from "../view/PageDevMonitoring";
+import PageDevMonitoring from "../view/PageDevOperMonitoring";
 import {Chart} from "react-google-charts";
 import {GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import CircularProgress from "@material-ui/core/CircularProgress";
