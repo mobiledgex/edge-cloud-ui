@@ -9,7 +9,7 @@ import {
     makeFormForClusterLevelMatric,
     showToast
 } from "./MonitoringCommonService";
-import {makeFormForAppLevelUsageList} from "./AdminMonitoringService";
+import {makeFormForAppLevelUsageList} from "./AdmMonitoringService";
 import PageDevMonitoring from "../view/MonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,

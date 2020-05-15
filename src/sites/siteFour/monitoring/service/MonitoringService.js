@@ -33,7 +33,7 @@ import {
 } from "./MonitoringCommonService";
 import {MonitoringStyles} from "../common/MonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/MonitoringUtils";
-import {renderUsageLabelByType} from "./AdminMonitoringService";
+import {renderUsageLabelByType} from "./AdmMonitoringService";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import {

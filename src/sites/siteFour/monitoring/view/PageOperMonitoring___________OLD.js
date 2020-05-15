@@ -8,7 +8,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Card, DatePicker,} from 'antd';
-import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../service/AdminMonitoringService";
+import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../service/AdmMonitoringService";
 import {
     CLASSIFICATION,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
