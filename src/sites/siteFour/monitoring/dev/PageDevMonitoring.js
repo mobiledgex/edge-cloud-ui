@@ -473,10 +473,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let newPromiseList = await Promise.all(promiseList);
                     let clusterList = newPromiseList[0];
                     let appInstList = newPromiseList[1];
-
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let cloudletNameList = []
                     orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
+
                     let clusterNameList = [];
                     orgAppInstList.map((item: TypeAppInstance, index) => {
                         clusterNameList.push({
@@ -486,7 +486,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
 
                     let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletNameList), _.uniqWith(clusterNameList, _.isEqual))
-
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
