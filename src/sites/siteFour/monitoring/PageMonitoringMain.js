@@ -24,11 +24,11 @@ export default function PageMonitoringMain() {
                 )
             }
         } catch (e) {
-            notification.success({
+          /*  notification.success({
                 placement: 'bottomLeft',
                 duration: 3,
                 message: e.toString(),
-            });
+            });*/
         }
     }
 
