@@ -68,6 +68,8 @@ export const HARDWARE_TYPE_FOR_GRID = {
     diskUsed: 'diskUsed',
     floatingIpsUsed: 'floatingIpsUsed',
     ipv4Used: 'ipv4Used',
+    netSend: 'netSend',
+    netRecv: 'netRecv',
 
 };
 
@@ -118,13 +120,13 @@ export const defaultLayoutMapperForCloudlet = [
     ////////////////////////////
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.NET_RECV,
+        hwType: HARDWARE_TYPE_FOR_GRID.netSend,
         graphType: CHART_TYPE.LINE,
     },
 
     {
         id: '6',
-        hwType: HARDWARE_TYPE_FOR_GRID.NET_SEND,
+        hwType: HARDWARE_TYPE_FOR_GRID.netRecv,
         graphType: CHART_TYPE.LINE,
     },
 
@@ -133,7 +135,6 @@ export const defaultLayoutMapperForCloudlet = [
         hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
         graphType: CHART_TYPE.LINE,
     },
-
     {
         id: '8',
         hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
