@@ -271,10 +271,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             constructor(props) {
                 super(props);
-                let clusterLayoutKey = getUserId() + "_layout"
-                let ClusterHwMapperKey = getUserId() + "_layout_mapper"
-                let appInstLayoutKey = getUserId() + "_layout2"
-                let layoutMapperAppInstKey = getUserId() + "_layout2_mapper"
+
+                let clusterLayoutKey = getUserId() + CLUSTER_LAYOUT_KEY
+                let clusterHwMapperKey = getUserId() + CLUSTER_HW_MAPPER_KEY
+                let appInstLayoutKey = getUserId() + APPINST_LAYOUT_KEY
+                let appInstHwMapperKey = getUserId() + APPINST_HW_MAPPER_KEY
+                let cloudletLayoutKey = getUserId() + CLOUDLET_LAYOUT_KEY
+                let cloudletHwMapperKey = getUserId() + CLOUDLET_HW_MAPPER_KEY
+
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
                 //@fixme: DELETE THEME COLOR
@@ -282,9 +286,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 reactLocalStorage.remove(themeKey)*/
                 this.state = {
                     layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
-                    layoutMapperForCluster: isEmpty(reactLocalStorage.get(ClusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(ClusterHwMapperKey),
+                    layoutMapperForCluster: isEmpty(reactLocalStorage.get(clusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterHwMapperKey),
                     layoutForAppInst: isEmpty(reactLocalStorage.get(appInstLayoutKey)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayoutKey),
-                    layoutMapperForAppInst: isEmpty(reactLocalStorage.get(layoutMapperAppInstKey)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(layoutMapperAppInstKey),
+                    layoutMapperForAppInst: isEmpty(reactLocalStorage.get(appInstHwMapperKey)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstHwMapperKey),
+                    layoutForCloudlet: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayoutKey),
+                    layoutMapperForCloudlet: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletHwMapperKey),
                     date: '',
                     time: '',
                     dateTime: '',
@@ -307,7 +313,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     clusterSelectBoxPlaceholder: 'Select Cluster',
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentRegion: 'ALL',
-                    currentCloudLet: '',
+                    currentCloudLet: undefined,
                     currentCluster: undefined,
                     currentAppInst: undefined,
                     isModalOpened: false,
@@ -358,7 +364,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     intervalLoading: false,
                     isRequesting: false,
                     clusterDropdownList: [],
-                    currentClassification: 'Cluster',
+                    currentClassification: CLASSIFICATION.CLUSTER,//desc:currentClassification
                     selectOrg: '',
                     filteredAppInstanceList: [],
                     appInstDropdown: [],
@@ -466,7 +472,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     clearInterval(this.intervalForAppInst)
                     await this.setState({dropdownRequestLoading: true})
                     //@desc:#############################################
-                    //@desc: (cloudletList ,clusterList, appnInstList)
+                    //@desc: (clusterList, appnInstList)
                     //@desc:#############################################
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
@@ -918,9 +924,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         layoutMapperForCluster: mapperList.concat(itemOne),
                     })
 
-                    reactLocalStorage.setObject(getUserId() + "_layout", this.state.layoutForCluster)
-                    reactLocalStorage.setObject(getUserId() + "_layout_mapper", this.state.layoutMapperForCluster)
-
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutForCluster)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperForCluster)
 
                 } else {
                     //@desc: ##########################
@@ -950,21 +955,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }),
                         layoutMapperForAppInst: mapperList.concat(itemOne),
                     });
-                    reactLocalStorage.setObject(getUserId() + "_layout2", this.state.layoutForAppInst)
-                    reactLocalStorage.setObject(getUserId() + "_layout2_mapper", this.state.layoutMapperForAppInst)
+                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, this.state.layoutForAppInst)
+                    reactLocalStorage.setObject(getUserId() + APPINST_HW_MAPPER_KEY, this.state.layoutMapperForAppInst)
                 }
             }
 
             removeGridItem(i) {
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
-                    reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutForCluster: removedLayout,
                     });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    let removedLayout = _.reject(this.state.layoutForCloudlet, {i: i});
+                    reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
+                    this.setState({
+                        layoutForCloudlet: removedLayout,
+                    });
                 } else {//@desc: AppInst Level
                     let removedLayout = _.reject(this.state.layoutForAppInst, {i: i});
-                    reactLocalStorage.setObject(getUserId() + "_layout2", removedLayout)
+                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutForAppInst: removedLayout,
                     });
@@ -1225,7 +1236,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 layoutForCluster: layout,
                             }, async () => {
                                 await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
-                                reactLocalStorage.setObject(getUserId() + "_layout", layout)
+                                reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, layout)
                             });
 
                         }}
@@ -1269,7 +1280,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 layoutForAppInst: layout
                             }, async () => {
                                 await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAppInst);
-                                let layoutUniqueId = getUserId() + "_layout2"
+                                let layoutUniqueId = getUserId() + APPINST_LAYOUT_KEY;
                                 reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
                             });
 
