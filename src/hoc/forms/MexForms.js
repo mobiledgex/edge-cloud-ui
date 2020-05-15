@@ -342,8 +342,7 @@ const MexForms = (props) => {
                                         loadHeader(i, form) :
                                         form.formType === MULTI_FORM ?
                                             form.forms ?
-                                                /* @todo temp solution needs to be fixed the dropdown is not clickable if its outside grid*/
-                                                <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}<Grid.Column width={16}>&nbsp;</Grid.Column><Grid.Column width={16}>&nbsp;</Grid.Column></Grid.Row>
+                                                <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                 : null :
                                             loadForms(i, form) :
                                     null

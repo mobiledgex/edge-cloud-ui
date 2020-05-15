@@ -267,7 +267,6 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < childForms.length; i++) {
             let form = childForms[i]
             if (form.field === fields.tls) {
-                form.value = currentForm.value === 'tcp'
                 form.visible = currentForm.value === 'tcp'
             }
         }
