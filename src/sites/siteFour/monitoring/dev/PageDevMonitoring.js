@@ -486,9 +486,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let appInstanceListGroupByCloudlet = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                    let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+                    let appInstanceListGroupByCloudletForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                     await this.setState({
-                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudlet,
+                        appInstanceListGroupByCloudlet: !isInterval && appInstanceListGroupByCloudletForMap,
                         mapLoading: false,
                     })
 
@@ -565,7 +566,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async resetLocalData() {
                 clearInterval(this.intervalForCluster)
                 clearInterval(this.intervalForAppInst)
-
+                let appInstanceListGroupByCloudletForMap = reducer.groupBy(this.state.appInstanceList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
                 await this.setState({
                     currentGridIndex: -1,
                     currentTabIndex: 0,
@@ -575,7 +576,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppInstanceList: this.state.appInstanceList,
                     filteredClusterEventLogList: this.state.allClusterEventLogList,
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                    appInstanceListGroupByCloudlet: reducer.groupBy(this.state.appInstanceList, CLASSIFICATION.CLOUDLET),
+                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudletForMap,
                 })
                 //desc: reset bubble chart data
                 let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
@@ -1657,7 +1658,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     color="primary"
                                     size="small"
                                     label="Cloudlet"
-                                    style={{color: 'white', backgroundColor: '#34373E'}}
+                                    //style={{color: 'white', backgroundColor: '#34373E'}}
                                 />
                             </div>
                         ),
