@@ -4,7 +4,6 @@ import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
 import type {TypeCloudlet} from "../../../../shared/Types";
 import {listGroupByKey} from "../service/MonitoringService";
-import "../common/OperMapStyle.css";
 import Control from "react-leaflet-control";
 import {MonitoringStyles} from "../common/MonitoringStyles";
 import {Icon} from "semantic-ui-react";
@@ -16,7 +15,6 @@ let cloudGreenIcon = L.icon({
     iconAnchor: [20, 21],
     shadowSize: [41, 41]
 });
-
 export const mapIconStyle = {
     backgroundColor: 'transparent',
     height: 30,
@@ -35,7 +33,7 @@ export default function MapForOper(props) {
     const [locList, setLocList] = useState([]);
     const [newCloudletList, setCloudletList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
-    const [zoom, setZoom] = useState(3)
+    const [zoom, setZoom] = useState(1)
     const [currentCluodlet, setCurrentCluodlet] = useState(undefined)
 
     useEffect(() => {
