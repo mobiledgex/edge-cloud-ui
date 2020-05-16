@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
-import {renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
+import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
 import type {TypeCloudlet} from "../../../../shared/Types";
 import {listGroupByKey} from "../service/MonitoringService";
 import "../common/OperMapStyle.css";
@@ -38,7 +38,7 @@ export default function MapForOper(props) {
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet, setCurrentCluodlet] = useState(undefined)
 
-    useEffect(() => {
+    useEffect(async () => {
         setCloudletLocation()
     }, [props.cloudletList])
 
@@ -71,7 +71,11 @@ export default function MapForOper(props) {
         let cloudletLocList = Object.keys(cloudletObjs)
         setLocList(cloudletLocList)
         setCloudletObjects(cloudletObjs)
-
+        if (!isEmpty(cloudletLocList)) {
+            props.parent.setState({
+                mapLoading: false,
+            })
+        }
     }
 
 
@@ -183,12 +187,12 @@ export default function MapForOper(props) {
                             position={
                                 [CloudletLocation.latitude, CloudletLocation.longitude,]
                             }
-                            onMouseOver={(e) => {
-                                e.target.openPopup();
+                          /*  onMouseOver={(e) => {
+                                // e.target.openPopup();
                             }}
                             onMouseOut={(e) => {
                                 //e.target.closePopup();
-                            }}
+                            }}*/
                             onClick={() => {
                             }}
                         >

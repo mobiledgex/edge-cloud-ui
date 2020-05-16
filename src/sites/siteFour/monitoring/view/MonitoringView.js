@@ -499,7 +499,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let promiseList2 = []
                 try {
                     clearInterval(this.intervalForAppInst)
-                    await this.setState({dropdownRequestLoading: true, mapLoading:true})
+                    await this.setState({dropdownRequestLoading: true, mapLoading: true})
                     //@desc:#############################################
                     //@desc: (clusterList, appnInstList, cloudletList)
                     //@desc:#############################################
@@ -522,8 +522,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletList: cloudletList,
                         filteredCloudletList: cloudletList,
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
-                        mapLoading: false,
-                    })
+                    });
 
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
