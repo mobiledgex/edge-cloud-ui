@@ -33,10 +33,9 @@ export const worldMapCenter = [
 export default function MapForOper(props) {
     const [cloudletObjects, setCloudletObjects] = useState([]);
     const [locList, setLocList] = useState([]);
-    const [newCloudletList, setCloudletList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
-    const [currentCluodlet, setCurrentCluodlet] = useState(undefined)
+    const [curCloudlet, setCurCloudlet] = useState(undefined)
 
     useEffect(async () => {
         setCloudletLocation()
@@ -113,7 +112,7 @@ export default function MapForOper(props) {
                     //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     minZoom={1}
                 />
-                {currentCluodlet !== undefined &&
+                {curCloudlet !== undefined &&
                 <div style={{
                     position: 'absolute',
                     bottom: 0,
@@ -126,7 +125,7 @@ export default function MapForOper(props) {
                     padding: 20,
 
                 }}>
-                    {currentCluodlet.toString()}
+                    {curCloudlet.toString()}
                 </div>
                 }
 
@@ -136,7 +135,7 @@ export default function MapForOper(props) {
                         <div
                             style={mapIconStyle}
                             onClick={async () => {
-                                setCurrentCluodlet(undefined)
+                                setCurCloudlet(undefined)
                                 await props.parent.handleCloudletDropdown(undefined)
                                 setTimeout(() => {
                                     setZoom(1)
@@ -187,12 +186,12 @@ export default function MapForOper(props) {
                             position={
                                 [CloudletLocation.latitude, CloudletLocation.longitude,]
                             }
-                          /*  onMouseOver={(e) => {
-                                // e.target.openPopup();
-                            }}
-                            onMouseOut={(e) => {
-                                //e.target.closePopup();
-                            }}*/
+                            /*  onMouseOver={(e) => {
+                                  // e.target.openPopup();
+                              }}
+                              onMouseOut={(e) => {
+                                  //e.target.closePopup();
+                              }}*/
                             onClick={() => {
                             }}
                         >
@@ -208,8 +207,8 @@ export default function MapForOper(props) {
                                             <div
                                                 className='oper_popup_div'
                                                 onClick={() => {
-                                                    setCurrentCluodlet(undefined)
-                                                    setCurrentCluodlet(JSON.stringify(cloudLetOne))
+                                                    setCurCloudlet(undefined)
+                                                    setCurCloudlet(JSON.stringify(cloudLetOne))
 
                                                 }}
                                             >
