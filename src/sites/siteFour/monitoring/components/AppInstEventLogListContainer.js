@@ -2,9 +2,9 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Empty} from 'antd';
-import PageDevMonitoring from "../view/MonitoringView";
+import PageDevMonitoring from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
-import {reduceString} from "../service/MonitoringService";
+import {reduceString} from "../service/PageMonitoringService";
 import '../common/MonitoringStyles.css'
 
 const FontAwesomeIcon = require('react-fontawesome')

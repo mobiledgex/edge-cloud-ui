@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
+import type {TypeAppInstance, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CLASSIFICATION, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import {sendSyncRequest} from "../../../../services/serviceMC";
@@ -8,9 +8,9 @@ import {
     makeFormForCloudletLevelMatric,
     makeFormForClusterLevelMatric,
     showToast
-} from "./MonitoringCommonService";
+} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./AdmMonitoringService";
-import PageDevMonitoring from "../view/MonitoringView";
+import PageDevMonitoring from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -18,7 +18,7 @@ import {
     CLOUDLET_METRICS_ENDPOINT,
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
-    SHOW_APP_INST_CLIENT_ENDPOINT
+    SHOW_APP_INST_CLIENT_ENDPOINT, SHOW_METRICS_CLIENT_STATUS
 } from "../common/MonitoringMetricEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
@@ -746,6 +746,59 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
     } catch (e) {
     }
 
+}
+
+export const getClientStateOne = async (appInst: TypeAppInstance) => {
+
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+
+    console.log(`token2====>`, token)
+
+    return await axios({
+        url: '/api/v1/auth/metrics/client',
+        method: 'post',
+        data: {
+            "region": appInst.Region,
+            "appinst": {
+                "app_key": {
+                    "organization": appInst.OrganizationName,
+                    "name": appInst.AppName,
+                    "version": appInst.Version,
+                }
+            },
+            "selector": "api",
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    })
+}
+
+
+export const getClientStatusList = async (appInstList) => {
+    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
+    let promiseList = []
+    appInstList.map((appInstOne: TypeCloudlet, index) => {
+        promiseList.push(getClientStateOne(appInstOne))
+    })
+
+    let newPromiseList = await Promise.all(promiseList);
+    let clientStateList = []
+    clientStateList = clientStateList.concat(column);
+    newPromiseList.map((item, index) => {
+        if (item.data["0"].Series !== null) {
+            let series = item.data["0"].Series
+            clientStateList = clientStateList.concat(series["0"].values);
+
+        }
+    })
+
+    return clientStateList;
 }
 
 

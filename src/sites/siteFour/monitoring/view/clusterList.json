@@ -1,6 +1,6 @@
 [
     {
-        "uuid": "d7a209b0-7deb-402c-9541-70edc5c4d789",
+        "uuid": "3104db6e-7038-43ed-b965-d7c508392b9e",
         "Region": "EU",
         "ClusterName": "wonho-cluster",
         "OrganizationName": "MobiledgeX",
@@ -28,7 +28,7 @@
         ]
     },
     {
-        "uuid": "6fa2c26a-19f1-42b9-8588-34c6627629d9",
+        "uuid": "1704e72e-06a5-441b-91bb-3a23580358cc",
         "Region": "EU",
         "ClusterName": "autoclustermobiledgexsdkdemo",
         "OrganizationName": "MobiledgeX",
@@ -56,7 +56,7 @@
         ]
     },
     {
-        "uuid": "fbf2fdef-39fe-4222-b9b3-eecc0b1bc5ca",
+        "uuid": "6e377f6b-d61b-477b-a0d9-c980f9be4143",
         "Region": "EU",
         "ClusterName": "hackathon-venky-clust",
         "OrganizationName": "MobiledgeX",
@@ -84,7 +84,7 @@
         ]
     },
     {
-        "uuid": "27613fed-b9ab-4791-a92d-d9abab7ad9c8",
+        "uuid": "e316d649-675a-4b96-9866-92ab0027432e",
         "Region": "US",
         "ClusterName": "testcluster",
         "OrganizationName": "MobiledgeX",

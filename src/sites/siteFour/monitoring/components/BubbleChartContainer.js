@@ -5,9 +5,9 @@ import {
     handleHardwareTabChanges,
     handleLegendAndBubbleClickedEvent,
     makeLineChartData
-} from "../service/MonitoringService";
-import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/MonitoringCommonService";
-import PageDevMonitoring from "../view/MonitoringView";
+} from "../service/PageMonitoringService";
+import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
+import PageDevMonitoring from "../view/PageMonitoringView";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
 import {MonitoringStyles} from "../common/MonitoringStyles";
 import {Select} from "antd";

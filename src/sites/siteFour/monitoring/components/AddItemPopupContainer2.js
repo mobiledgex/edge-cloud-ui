@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Modal as AModal, Tabs} from "antd";
 import {CHART_COLOR_LIST} from "../../../../shared/Constants";
-import {demoLineChartData, materialUiDarkTheme, simpleGraphOptions} from "../service/MonitoringService";
+import {demoLineChartData, materialUiDarkTheme, simpleGraphOptions} from "../service/PageMonitoringService";
 import {Bar, HorizontalBar, Line} from "react-chartjs-2";
 import {Center2, ClusterCluoudletLabel} from "../common/MonitoringStyles";
 import Select from "@material-ui/core/Select";

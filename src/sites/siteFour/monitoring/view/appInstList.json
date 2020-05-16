@@ -1,6 +1,6 @@
 [
     {
-        "uuid": "2da150b6-e024-4105-adc0-8c104b34f2d7",
+        "uuid": "79ec0370-bb0d-4667-ba76-81c3d4b0229a",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MEXPrometheusAppName",
@@ -43,7 +43,7 @@
         "Revision": "2020-05-16T050643"
     },
     {
-        "uuid": "51b8b03c-488f-402d-911e-027b93f016be",
+        "uuid": "44c7a636-a959-4aa9-8c41-e1c13ccee847",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MobiledgeX SDK Demo",

@@ -1,6 +1,6 @@
 [
     {
-        "uuid": "1e449665-b7a4-47b6-a2fd-3636deacef4f",
+        "uuid": "3469a51d-e5f9-4703-b940-e604cf9019e6",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "chef-berlin-docker",
@@ -26,7 +26,7 @@
         ]
     },
     {
-        "uuid": "72e12a3a-94fe-4454-bb4a-fe92fabe691d",
+        "uuid": "c793a374-694f-4126-973c-0f87da235ea0",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "jaytest",
@@ -53,7 +53,7 @@
         ]
     },
     {
-        "uuid": "a08aae34-32ba-4e58-a8be-290f7df7dc25",
+        "uuid": "3e683096-0f35-4f7e-98c1-b3e837bfb332",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "mexplat-stage-hamburg-cloudlet",
@@ -79,7 +79,7 @@
         ]
     },
     {
-        "uuid": "d5a492d3-3cfd-49fc-8423-4e19e6490e95",
+        "uuid": "eb44d3ce-bdb0-4a79-8c88-0fc327eba593",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "mexplat-stage-berlin-cloudlet",
@@ -105,7 +105,7 @@
         ]
     },
     {
-        "uuid": "dd71db97-a475-4dfa-94fd-ed55e5c0ff92",
+        "uuid": "14af7cb4-2134-450a-acf9-583606bd7697",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "mexplat-stage-frankfurt-cloudlet",
@@ -131,7 +131,7 @@
         ]
     },
     {
-        "uuid": "f9710f5a-d5e2-4e3b-861e-1fb755e525e9",
+        "uuid": "1262aa25-f531-4574-84e4-b850e82bf7c6",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "hackathon-mxuserone",
@@ -157,7 +157,7 @@
         ]
     },
     {
-        "uuid": "b3b831af-c834-46b5-86ab-cdc5b9b4d1c7",
+        "uuid": "ee1299f6-14e0-44f8-92a4-a484363ed07d",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "hackathon-venky",
@@ -183,7 +183,7 @@
         ]
     },
     {
-        "uuid": "749d81c3-150f-4341-bb36-2a876cbd8e89",
+        "uuid": "e2e93091-ea8c-4836-a11f-663685af8df0",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "hackathon-anandgupta",
@@ -209,7 +209,7 @@
         ]
     },
     {
-        "uuid": "5d0fa4a9-d26b-4e80-936a-9ba90c7f81fe",
+        "uuid": "0a1ff415-0325-4f05-82c9-7416d7c034bf",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "berlin-test",
@@ -236,7 +236,7 @@
         ]
     },
     {
-        "uuid": "2ddeb8fa-0a7c-420f-a66f-ec4bfe58b0a6",
+        "uuid": "f947006c-bd30-4091-a077-526044f5cb8b",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "chef-berlin",
@@ -262,7 +262,7 @@
         ]
     },
     {
-        "uuid": "e3fa93ee-2c2e-4524-ae70-b47e3d4adf39",
+        "uuid": "52f307c5-0386-4dec-9203-8285be5748b4",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "chef-berlin-k8s",
@@ -288,7 +288,7 @@
         ]
     },
     {
-        "uuid": "4f11ddee-17b2-4e83-9df9-2a640387430e",
+        "uuid": "1a24e999-3c61-46ed-8d84-bea84644c5cf",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "hackathon-wonhopark",
@@ -314,7 +314,7 @@
         ]
     },
     {
-        "uuid": "ce4b85ec-1d65-4f4f-92e4-0614624b46f5",
+        "uuid": "5a41df22-c711-4387-ac25-8861daf1c362",
         "CloudletInfoState": 4,
         "Region": "EU",
         "CloudletName": "wonho",
@@ -340,7 +340,7 @@
         ]
     },
     {
-        "uuid": "26f9135a-30dd-4c4f-b750-1321132f2592",
+        "uuid": "9e148329-4c5c-48ed-9bbf-679034f19572",
         "CloudletInfoState": 4,
         "Region": "US",
         "CloudletName": "hackathon-jimmorris",
@@ -366,7 +366,7 @@
         ]
     },
     {
-        "uuid": "064ac829-1763-4eeb-860a-d321a89b9e08",
+        "uuid": "0c5af817-5290-44b5-9116-f926e191ee80",
         "CloudletInfoState": 4,
         "Region": "US",
         "CloudletName": "hackathon-michalskiba",

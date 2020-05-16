@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/MonitoringService";
-import PageDevMonitoring from "../view/MonitoringView";
+import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageMonitoringService";
+import PageDevMonitoring from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 

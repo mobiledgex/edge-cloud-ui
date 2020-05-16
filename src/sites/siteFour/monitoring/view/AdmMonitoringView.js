@@ -41,9 +41,9 @@ import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/MonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/PageMonitoringCommonService";
 import '../common/MonitoringStyles.css'
-import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/MonitoringMetricService";
+import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;

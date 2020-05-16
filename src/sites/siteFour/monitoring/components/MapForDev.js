@@ -4,10 +4,10 @@ import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
-import PageDevMonitoring from "../view/MonitoringView";
+import PageDevMonitoring from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates} from "../service/MonitoringCommonService";
+import {groupByKey_, removeDuplicates} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {notification, Select} from 'antd'
@@ -22,7 +22,7 @@ import {
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/MonitoringStyles.css'
 import {MonitoringStyles} from "../common/MonitoringStyles";
-import {listGroupByKey, reduceString} from "../service/MonitoringService";
+import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 
 const FontAwesomeIcon = require('react-fontawesome')

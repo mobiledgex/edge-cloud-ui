@@ -24,13 +24,13 @@ import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
-import PageDevMonitoring from "../view/MonitoringView";
+import PageDevMonitoring from "../view/PageMonitoringView";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
     makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader,
     renderUsageByType, renderUsageByType2, showToast, sortUsageListByType
-} from "./MonitoringCommonService";
+} from "./PageMonitoringCommonService";
 import {MonitoringStyles} from "../common/MonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/MonitoringUtils";
 import {renderUsageLabelByType} from "./AdmMonitoringService";
