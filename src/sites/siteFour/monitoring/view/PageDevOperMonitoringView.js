@@ -38,7 +38,7 @@ import {
     HARDWARE_TYPE,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS_LIST
+    THEME_OPTIONS_LIST, USER_TYPE
 } from "../../../../shared/Constants";
 import type {
     TypeBarChartData,
@@ -293,6 +293,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             webSocketInst: WebSocket = null;
             gridItemHeight = 255;
 
+            componentWillMount(): void {
+                this.setState({
+                    userType: localStorage.getItem('selectRole').toString().toLowerCase(),
+                })
+            }
+
             constructor(props) {
                 super(props);
 
@@ -481,11 +487,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            componentWillMount(): void {
-                this.setState({
-                    userType: localStorage.getItem('selectRole').toString().toLowerCase(),
-                })
-            }
 
             componentDidMount = async () => {
                 this.setState({
@@ -514,20 +515,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    promiseList.push(getCloudletList())
-                    promiseList.push(getClusterList())
-                    promiseList.push(getAppInstList())
-                    let newPromiseList = await Promise.all(promiseList);
-                    let cloudletList = newPromiseList[0];
-                    let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
+                    /*    promiseList.push(getCloudletList())
+                        promiseList.push(getClusterList())
+                        promiseList.push(getAppInstList())
+                        let newPromiseList = await Promise.all(promiseList);
+                        let cloudletList = newPromiseList[0];
+                        let clusterList = newPromiseList[1];
+                        let appInstList = newPromiseList[2];*/
 
-                    console.log(`sdlkflskdfkl====>`, cloudletList);
 
                     //todo:fakedata
-                    /*    let cloudletList = require('./cloudletList')
-                        let clusterList = require('./clusterList')
-                        let appInstList = require('./appInstList')*/
+                    let cloudletList = require('./cloudletList')
+                    let clusterList = require('./clusterList')
+                    let appInstList = require('./appInstList')
 
                     let clientStatusList = await getClientStatusList(appInstList)
 
@@ -1778,7 +1778,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderClusterDropdown() {
+            renderClusterDropdownForOperator() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label">
@@ -1806,7 +1806,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderClusterTreeDropdown() {
+            renderClusterTreeDropdownForDeveloper() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div
@@ -2166,14 +2166,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      width: 'fit-content',
                                      flex: .7,
                                  }}>
+                                {this.state.userType.includes(USER_TYPE.OPERATOR) &&
                                 <div style={{marginLeft: 25}}>
                                     {this.renderCloudletDropdown()}
                                 </div>
-                                <div>
-                                    {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderClusterDropdown() : this.renderClusterTreeDropdown()}
+                                }
+                                <div style={{marginLeft: 25}}>
+                                    {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderClusterDropdownForOperator() : this.renderClusterTreeDropdownForDeveloper()}
                                 </div>
                                 <div style={{marginLeft: 25}}>
-                                    {this.renderAppInstDropdown()}
+                                    {this.state.userType.includes(USER_TYPE.DEVELOPER) && this.renderAppInstDropdown()}
                                 </div>
                                 {this.state.intervalLoading &&
                                 <div>

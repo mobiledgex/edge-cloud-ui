@@ -326,6 +326,12 @@ export const USAGE_INDEX_FOR_CLUSTER = {
     UDPRECVERR: 14,
 }
 
+export const USER_TYPE = {
+    OPERATOR: 'operator',
+    DEVELOPER: 'developer',
+    AMDIN: 'admin',
+
+}
 
 export const NETWORK_TYPE = {
     RECV_BYTES: 'RECV_BYTES',
@@ -506,12 +512,6 @@ export const USER_ROLE = {
     ADMIN_MANAGER: 'AdminManager',
     OPERATOR_MANAGER: 'OperatorManager',
     //ADMIN_MANAGER : 'AdminManager',
-}
-
-export const USER_TYPE = {
-    DEV: 'dev',
-    OPER: 'oper',
-    ADMIN: 'admin'
 }
 
 export const APPINSTANCE_INIT_VALUE = {

@@ -235,13 +235,15 @@ export const getCloudletList = async () => {
             }
         })
 
-        let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
-            return item.Operator === localStorage.getItem('selectOrg').toString().trim()
-        })
+        if ( localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")){
+            return  mergedCloudletList.filter((item: TypeCloudlet, index) => {
+                return item.Operator === localStorage.getItem('selectOrg').toString().trim()
+            })
+        }else{
+            return mergedCloudletList;
+        }
 
-        console.log(`result====>`, result);
 
-        return result;
     } catch (e) {
         //showToast( e.toString())
     }
