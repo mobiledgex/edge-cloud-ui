@@ -18,6 +18,9 @@ export default function DonutChartHooks(props) {
         }
 
     }, [props.filteredCloudletUsageList]);
+
+    const height=150;
+
     return (
         <div>
             <div style={{
@@ -38,7 +41,7 @@ export default function DonutChartHooks(props) {
             </div>
             <div style={{backgroundColor: 'transparent', height: '100%'}}>
                 {cloudletCount === 1 ?
-                    <Center style={{height: 250,}}>
+                    <Center style={{height: height,}}>
                         <div>
                             <Progress
                                 strokeColor={'red'}
@@ -98,7 +101,7 @@ export default function DonutChartHooks(props) {
                     <Center style={{
                         fontSize: 22,
                         backgroundColor: 'rgba(157,255,255,.02)',
-                        height: 250
+                        height: height
                     }}>
                         no available
                     </Center>

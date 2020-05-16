@@ -40,7 +40,7 @@ export default function ClientSummaryHooks(props) {
                          //backgroundColor:'red'
                      }}
                 >
-                    Client Status Summary
+                    Client status For App Inst
                 </div>
             </div>
             <TableContainer
@@ -59,36 +59,30 @@ export default function ClientSummaryHooks(props) {
                     <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                APP INST
+                                App Inst
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                apporg
+                                App Org.
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                cellID
+                                Cloudlet
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                cloudlet
+                                Cloudlet Org.
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                cloudletorg
+                                RegisterClient Count
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                ver
+                                FindCloudlet Count
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                RegisterClientCount
-                            </TableCell>
-                            <TableCell padding={'none'} align="center" style={{}}>
-                                FindCloudletCount
-                            </TableCell>
-                            <TableCell padding={'none'} align="center" style={{}}>
-                                VerifyLocationCount
+                                VerifyLocation Count
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody padding={'none'} style={{width: 'auto', overflowX: 'scroll'}}>
-                        {props.clientStatusList !== undefined && props.filteredUsageList.map((item: TypeClientStatus, index) => {
+                        {props.clientStatusList !== undefined && props.clientStatusList.map((item: TypeClientStatus, index) => {
                             return (
                                 <TableRow
                                     key={index}
@@ -123,12 +117,6 @@ export default function ClientSummaryHooks(props) {
                                                style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
                                         <div style={{heiight: 15, padding: 0,}}>
                                             {item.apporg}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell padding={'default'} align="center"
-                                               style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}>
-                                        <div style={{heiight: 15, padding: 0,}}>
-                                            {item.cellID}
                                         </div>
                                     </TableCell>
                                     <TableCell padding={'default'} align="center"
