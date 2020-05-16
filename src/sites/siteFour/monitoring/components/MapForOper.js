@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
@@ -29,6 +29,7 @@ export const worldMapCenter = [
 ]
 
 export default function MapForOper(props) {
+    const mapRef = useRef(null);
     const [cloudletObjects, setCloudletObjects] = useState([]);
     const [locList, setLocList] = useState([]);
     const [newCloudletList, setCloudletList] = useState([]);
@@ -98,6 +99,7 @@ export default function MapForOper(props) {
     return (
         <div style={{height: '100%', width: '100%'}}>
             <Map
+                ref={mapRef}
                 center={mapCenter}
                 zoom={zoom}
                 duration={0.7}
@@ -136,6 +138,7 @@ export default function MapForOper(props) {
                         <div
                             style={mapIconStyle}
                             onClick={async () => {
+                                mapRef.current.leafletElement.closePopup();
                                 setCurrentCluodlet(undefined)
                                 await props.parent.handleCloudletDropdown(undefined)
                                 setTimeout(() => {
@@ -187,11 +190,11 @@ export default function MapForOper(props) {
                             position={
                                 [CloudletLocation.latitude, CloudletLocation.longitude,]
                             }
-                            onMouseOver={(e) => {
+                            /*onMouseOver={(e) => {
                                 e.target.openPopup();
-                            }}
-                           /* onMouseOut={(e) => {
-                                //e.target.closePopup();
+                            }}*/
+                            /* onMouseOut={(e) => {
+                                 //e.target.closePopup();
                             }}*/
                             onClick={() => {
                             }}
