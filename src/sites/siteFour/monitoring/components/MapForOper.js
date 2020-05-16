@@ -42,6 +42,10 @@ export default function MapForOper(props) {
         setCloudletLocation()
     }, [props.cloudletList])
 
+    useEffect(() => {
+        setZoom(1)
+    }, [props.operZoom])
+
 
     function setCloudletLocation() {
         let newCloudletList = []
@@ -128,6 +132,7 @@ export default function MapForOper(props) {
                         <div
                             style={mapIconStyle}
                             onClick={async () => {
+                                setCurrentCluodlet(undefined)
                                 await props.parent.handleCloudletDropdown(undefined)
                                 setTimeout(() => {
                                     setZoom(1)
@@ -155,7 +160,9 @@ export default function MapForOper(props) {
                         <div
                             style={mapIconStyle}
                             onClick={() => {
-                                setZoom(zoom - 1)
+                                if (zoom > 1) {
+                                    setZoom(zoom - 1)
+                                }
                             }}
                         >
                             <Icon
@@ -197,7 +204,7 @@ export default function MapForOper(props) {
                                             <div
                                                 className='oper_popup_div'
                                                 onClick={() => {
-                                                    setCurrentCluodlet([])
+                                                    setCurrentCluodlet(undefined)
                                                     setCurrentCluodlet(JSON.stringify(cloudLetOne))
 
                                                 }}
@@ -213,7 +220,7 @@ export default function MapForOper(props) {
                     )
 
                 })}
-                {props.loading && renderPlaceHolderLottiePinJump2()}
+                {props.parent.state.mapLoading && renderPlaceHolderLottiePinJump2()}
             </Map>
 
         </div>

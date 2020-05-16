@@ -275,6 +275,7 @@ type PageDevMonitoringState = {
     filteredCloudletList: any,
     allCloudletUsageList: any,
     filteredCloudletUsageList: any,
+    toggleZoom: boolean,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -461,6 +462,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     allCloudletUsageList: [],
                     filteredCloudletUsageList: [],
                     cloudletDropdownList: [],
+                    toggleZoom: false,
                 };
             }
 
@@ -497,7 +499,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let promiseList2 = []
                 try {
                     clearInterval(this.intervalForAppInst)
-                    await this.setState({dropdownRequestLoading: true})
+                    await this.setState({dropdownRequestLoading: true, mapLoading:true})
                     //@desc:#############################################
                     //@desc: (clusterList, appnInstList, cloudletList)
                     //@desc:#############################################
@@ -517,6 +519,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let markerListForMap = []
                     markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                     await this.setState({
+                        cloudletList: cloudletList,
+                        filteredCloudletList: cloudletList,
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
                         mapLoading: false,
                     })
@@ -574,8 +578,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isRequesting: false,
                         currentCluster: '',
                         ///@desc: ----------cloudletList--------------
-                        cloudletList: cloudletList,
-                        filteredCloudletList: cloudletList,
                         allCloudletUsageList: allCloudletUsageList,
                         filteredCloudletUsageList: allCloudletUsageList,
                         cloudletDropdownList: cloudletDropdownList,
@@ -750,6 +752,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentCloudLet: undefined,
                         filteredCloudletUsageList: this.state.allCloudletUsageList,
                         filteredCloudletList: this.state.cloudletList,
+                        toggleZoom: !this.state.toggleZoom,
                     })
                 }
             }
@@ -1258,7 +1261,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <MapForOper
                                 parent={this}
                                 cloudletList={this.state.filteredCloudletList}
-                                zoom={1}
+                                operZoom={this.state.toggleZoom}
                             />
                         )
                     }

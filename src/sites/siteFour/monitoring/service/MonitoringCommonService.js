@@ -183,8 +183,8 @@ export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
                     }
                 }}
                 speed={2.9}
-                height={350}
-                width={350}
+                height={220}
+                width={220}
                 isStopped={false}
                 isPaused={false}
             />
