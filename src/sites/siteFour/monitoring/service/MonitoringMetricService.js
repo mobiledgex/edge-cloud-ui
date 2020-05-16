@@ -589,7 +589,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]>}
  */
-export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {
         let instanceBodyList = []
@@ -607,7 +607,9 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
-        let usageList = []
+        console.log(`cloudletLevelMatricUsageList====>`, cloudletLevelMatricUsageList);
+
+
         let netSendSeriesList = [];
         let netRecvSeriesList = [];
         let vCpuSeriesList = [];
@@ -615,141 +617,141 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
         let diskSeriesList = [];
         let floatingIpsSeriesList = [];
         let ipv4UsedSeriesList = [];
+
+        let cloudlet = "";
+        let operator = "";
+        let Region = '';
+
+        let usageList = []
         cloudletLevelMatricUsageList.map((item, index) => {
+            if (!isEmpty(item) && !isEmpty(item.data["0"].Series)) {
+                Region = cloudletList[index].Region
+                let series = item.data["0"].Series["0"].values
+                let columns = item.data["0"].Series["0"].columns
+                //////////////////////////////////////////
+                let netSendSeriesOne = series["0"]["3"]
+                let netRecvSeriesOne = series["0"]["4"]
+                let vCpuSeriesOne = series["0"]["5"]
+                let memSeriesOne = series["0"]["7"]
+                let diskSeriesOne = series["0"]["9"]
+                let floatingIpsSeriesOne = series["0"]["11"]
+                let ipv4UsedSeriesOne = series["0"]["13"]
 
-            if (!isEmpty(item)) {
-                let Region = cloudletList[index].Region
-                if (!isEmpty(item.data["0"].Series)) {
+                netSendSeriesList.push(netSendSeriesOne)
+                netRecvSeriesList.push(netRecvSeriesOne)
+                vCpuSeriesList.push(vCpuSeriesOne)
+                memSeriesList.push(memSeriesOne)
+                diskSeriesList.push(diskSeriesOne)
+                floatingIpsSeriesList.push(floatingIpsSeriesOne)
+                ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
 
-                    let series = item.data["0"].Series["0"].values
-                    let columns = item.data["0"].Series["0"].columns
-                    //////////////////////////////////////////
-                    let netSendSeriesOne = series["0"]["3"]
-                    let netRecvSeriesOne = series["0"]["4"]
-                    let vCpuSeriesOne = series["0"]["5"]
-                    let memSeriesOne = series["0"]["7"]
-                    let diskSeriesOne = series["0"]["9"]
-                    let floatingIpsSeriesOne = series["0"]["11"]
-                    let ipv4UsedSeriesOne = series["0"]["13"]
+                let sumVirtualCpuUsed = 0;
+                let sumvCpuMax = 0;
+                let sumMemUsed = 0;
+                let sumMemMax = 0;
+                let sumDiskUsed = 0;
+                let sumDiskMax = 0;
+                let sumNetSend = 0;
+                let sumNetRecv = 0;
+                let sumFloatingIpsUsed = 0;
+                let sumFloatingIpsMax = 0
+                let sumIpv4Used = 0;
+                let sumIpv4Max = 0;
 
-                    netSendSeriesList.push(netSendSeriesOne)
-                    netRecvSeriesList.push(netRecvSeriesOne)
-                    vCpuSeriesList.push(vCpuSeriesOne)
-                    memSeriesList.push(memSeriesOne)
-                    diskSeriesList.push(diskSeriesOne)
-                    floatingIpsSeriesList.push(floatingIpsSeriesOne)
-                    ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
+                series.map(item => {
+                    cloudlet = item[1]
+                    operator = item[2]
 
-                    let sumVirtualCpuUsed = 0;
-                    let sumvCpuMax = 0;
-                    let sumMemUsed = 0;
-                    let sumMemMax = 0;
-                    let sumDiskUsed = 0;
-                    let sumDiskMax = 0;
-                    let sumNetSend = 0;
-                    let sumNetRecv = 0;
-                    let sumFloatingIpsUsed = 0;
-                    let sumFloatingIpsMax = 0
-                    let sumIpv4Used = 0;
-                    let sumIpv4Max = 0;
+                    //todo: CPU
+                    let vCpuUsed = item["5"];
+                    let vCpuMax = item["6"];
+                    sumVirtualCpuUsed += vCpuUsed;
+                    sumvCpuMax += vCpuMax;
 
-                    let cloudlet = "";
-                    let operator = "";
-                    series.map(item => {
-                        cloudlet = item[1]
-                        operator = item[2]
+                    //todo: MEM
+                    sumMemUsed += item["7"];
+                    sumMemMax += item["8"];
 
-                        //todo: CPU
-                        let vCpuUsed = item["5"];
-                        let vCpuMax = item["6"];
-                        sumVirtualCpuUsed += vCpuUsed;
-                        sumvCpuMax += vCpuMax;
+                    //todo: DISK
+                    sumDiskUsed += item["9"];
+                    sumDiskMax += item["10"];
 
-                        //todo: MEM
-                        sumMemUsed += item["7"];
-                        sumMemMax += item["8"];
+                    //todo: NETWORK(RECV,SEND)
+                    sumNetSend += item["3"];
+                    sumNetRecv += item["4"];
 
-                        //todo: DISK
-                        sumDiskUsed += item["9"];
-                        sumDiskMax += item["10"];
+                    //todo: FLOATIP
+                    sumFloatingIpsUsed += item["11"];
+                    sumFloatingIpsMax += item["12"];
+                    //todo: IPV4
+                    sumIpv4Used += item["13"];
+                    sumIpv4Max += item["14"];
 
-                        //todo: NETWORK(RECV,SEND)
-                        sumNetSend += item["3"];
-                        sumNetRecv += item["4"];
+                })
 
-                        //todo: FLOATIP
-                        sumFloatingIpsUsed += item["11"];
-                        sumFloatingIpsMax += item["12"];
-                        //todo: IPV4
-                        sumIpv4Used += item["13"];
-                        sumIpv4Max += item["14"];
-
-                    })
-
-                    usageList.push({
-                        usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-                        usedMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-                        usedDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-                        usedRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-                        usedSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-                        usedFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-                        usedIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
-                        maxVCpuCount: sumvCpuMax / RECENT_DATA_LIMIT_COUNT,
-                        maxMemUsage: sumMemMax / RECENT_DATA_LIMIT_COUNT,
-                        maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
-                        columns: columns,
-                        series: series,
-                        cloudlet: cloudlet,
-                        operator: operator,
-                        Region: Region,
-                        netSendSeriesList,
-                        netRecvSeriesList,
-                        vCpuSeriesList,
-                        memSeriesList,
-                        diskSeriesList,
-                        floatingIpsSeriesList,
-                        ipv4UsedSeriesList,
-
-
-                    })
-                } else {//Seires is null
-                    usageList.push({
-                        usedVCpuCount: 0,
-                        usedMemUsage: 0,
-                        usedDiskUsage: 0,
-                        usedRecvBytes: 0,
-                        usedSendBytes: 0,
-                        usedFloatingIpsUsage: 0,
-                        usedIpv4Usage: 0,
-                        maxVCpuCount: 0,
-                        maxMemUsage: 0,
-                        maxDiskUsage: 0,
-                        columns: [],
-                        series: [],
-                        cloudlet: cloudlet,
-                        operator: operator,
-                        Region: Region,
-                        netSendSeriesList: [],
-                        netRecvSeriesList: [],
-                        vCpuSeriesList: [],
-                        memSeriesList: [],
-                        diskSeriesList: [],
-                        floatingIpsSeriesList: [],
-                        ipv4UsedSeriesList: [],
-                    })
-                }
+                usageList.push({
+                    usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+                    usedSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+                    usedFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+                    maxVCpuCount: sumvCpuMax / RECENT_DATA_LIMIT_COUNT,
+                    maxMemUsage: sumMemMax / RECENT_DATA_LIMIT_COUNT,
+                    maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
+                    columns: columns,
+                    series: series,
+                    cloudlet: cloudlet,
+                    operator: operator,
+                    Region: Region,
+                    netSendSeriesList,
+                    netRecvSeriesList,
+                    vCpuSeriesList,
+                    memSeriesList,
+                    diskSeriesList,
+                    floatingIpsSeriesList,
+                    ipv4UsedSeriesList,
+                })
+            } else {//Seires is null
+                usageList.push({
+                    usedVCpuCount: 0,
+                    usedMemUsage: 0,
+                    usedDiskUsage: 0,
+                    usedRecvBytes: 0,
+                    usedSendBytes: 0,
+                    usedFloatingIpsUsage: 0,
+                    usedIpv4Usage: 0,
+                    maxVCpuCount: 0,
+                    maxMemUsage: 0,
+                    maxDiskUsage: 0,
+                    columns: [],
+                    series: [],
+                    cloudlet: cloudletList[index].CloudletName,
+                    operator: cloudletList[index].Operator,
+                    Region: cloudletList[index].Region,
+                    netSendSeriesList: [],
+                    netRecvSeriesList: [],
+                    vCpuSeriesList: [],
+                    memSeriesList: [],
+                    diskSeriesList: [],
+                    floatingIpsSeriesList: [],
+                    ipv4UsedSeriesList: [],
+                })
             }
 
         });
+        console.log(`usageList333====>`, usageList);
         return usageList;
     } catch (e) {
     }
 
 }
 
+
 export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
-    let result = await axios({
+    console.log('token===>', pToken);
+    return await axios({
         url: CLOUDLET_METRICS_ENDPOINT,
         method: 'post',
         data: serviceBody['params'],
@@ -761,9 +763,9 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
     }).then(async response => {
         return response.data;
     }).catch(e => {
-        //showToast(e.toString())
+        let tempArray = []
+        return tempArray;
     })
-    return result;
 }
 
 export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
