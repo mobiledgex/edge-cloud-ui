@@ -65,6 +65,7 @@ export const CHART_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
     COLUMN: 'COLUMN',
+    PIE: 'PIE'
 }
 
 export const defaultLayoutForCloudlet = [
@@ -72,8 +73,6 @@ export const defaultLayoutForCloudlet = [
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//Disk
-
-
     {i: '5', x: 0, y: 2, w: 1, h: 1, "add": false},//ipv4Used
     {i: '6', x: 1, y: 2, w: 1, h: 1, "add": false},//1
     {i: '7', x: 2, y: 2, w: 1, h: 1, "add": false},//2
@@ -125,8 +124,8 @@ export const defaultLayoutMapperForCloudlet = [
     },
     {
         id: '8',
-        hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
-        graphType: CHART_TYPE.LINE,
+        hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
+        graphType: CHART_TYPE.PIE,
     },
 ];
 

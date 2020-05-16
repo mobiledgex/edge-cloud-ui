@@ -1,0 +1,96 @@
+[
+    {
+        "uuid": "2da150b6-e024-4105-adc0-8c104b34f2d7",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MEXPrometheusAppName",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "autoclustermobiledgexsdkdemo",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "autoclustermobiledgexsdkdemo.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 9090,
+                "public_port": 9090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1588494188",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "2020-05-16T050643"
+    },
+    {
+        "uuid": "51b8b03c-488f-402d-911e-027b93f016be",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MobiledgeX SDK Demo",
+        "Version": "2.0",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "autoclustermobiledgexsdkdemo",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "autoclustermobiledgexsdkdemo.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 8011,
+                "public_port": 8011,
+                "fqdn_prefix": "mobiledgexsdkdemo-tcp."
+            },
+            {
+                "proto": 1,
+                "internal_port": 8008,
+                "public_port": 8008,
+                "fqdn_prefix": "mobiledgexsdkdemo-tcp."
+            }
+        ],
+        "Flavor": "m4.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1588494080",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "2020-05-12T194812",
+        "HealthCheck": 3
+    }
+]

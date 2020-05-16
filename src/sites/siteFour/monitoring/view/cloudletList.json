@@ -1,0 +1,394 @@
+[
+    {
+        "uuid": "1e449665-b7a4-47b6-a2fd-3636deacef4f",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "chef-berlin-docker",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 32,
+            "longitude": -122
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 12,
+        "Physical_name": "berlin",
+        "Platform_type": 2,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "72e12a3a-94fe-4454-bb4a-fe92fabe691d",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "jaytest",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 10,
+            "longitude": 10,
+            "timestamp": {}
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 10,
+        "Physical_name": "hamburg",
+        "Platform_type": 2,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "a08aae34-32ba-4e58-a8be-290f7df7dc25",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "mexplat-stage-hamburg-cloudlet",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 10,
+        "Physical_name": "mexplat-stage-hamburg-cloudlet",
+        "Platform_type": "-",
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "d5a492d3-3cfd-49fc-8423-4e19e6490e95",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "mexplat-stage-berlin-cloudlet",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 52.52,
+            "longitude": 13.405
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 10,
+        "Physical_name": "mexplat-stage-berlin-cloudlet",
+        "Platform_type": "-",
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "dd71db97-a475-4dfa-94fd-ed55e5c0ff92",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "mexplat-stage-frankfurt-cloudlet",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 50.1109,
+            "longitude": 8.6821
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 10,
+        "Physical_name": "mexplat-stage-frankfurt-cloudlet",
+        "Platform_type": "-",
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "f9710f5a-d5e2-4e3b-861e-1fb755e525e9",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "hackathon-mxuserone",
+        "Operator": "alextest",
+        "CloudletLocation": {
+            "latitude": 47.6062,
+            "longitude": -122.3321
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 254,
+        "Physical_name": "hackathon-mxuserone",
+        "Platform_type": 5,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "b3b831af-c834-46b5-86ab-cdc5b9b4d1c7",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "hackathon-venky",
+        "Operator": "mex",
+        "CloudletLocation": {
+            "latitude": 12.9719,
+            "longitude": 77.5937
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 254,
+        "Physical_name": "hackathon-venky",
+        "Platform_type": 5,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "749d81c3-150f-4341-bb36-2a876cbd8e89",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "hackathon-anandgupta",
+        "Operator": "AnandOprOrg",
+        "CloudletLocation": {
+            "latitude": 33.0532,
+            "longitude": -96.9999
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 254,
+        "Physical_name": "hackathon-anandgupta",
+        "Platform_type": 5,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "5d0fa4a9-d26b-4e80-936a-9ba90c7f81fe",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "berlin-test",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 12,
+            "longitude": 12,
+            "timestamp": {}
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 10,
+        "Physical_name": "berlin",
+        "Platform_type": 2,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "2ddeb8fa-0a7c-420f-a66f-ec4bfe58b0a6",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "chef-berlin",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 32,
+            "longitude": -122
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 12,
+        "Physical_name": "berlin",
+        "Platform_type": 2,
+        "State": 13,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "e3fa93ee-2c2e-4524-ae70-b47e3d4adf39",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "chef-berlin-k8s",
+        "Operator": "TDG",
+        "CloudletLocation": {
+            "latitude": 32,
+            "longitude": -122
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 12,
+        "Physical_name": "berlin",
+        "Platform_type": 2,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "4f11ddee-17b2-4e83-9df9-2a640387430e",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "hackathon-wonhopark",
+        "Operator": "mex",
+        "CloudletLocation": {
+            "latitude": 37.386,
+            "longitude": -122.0838
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 254,
+        "Physical_name": "hackathon-wonhopark",
+        "Platform_type": 5,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "ce4b85ec-1d65-4f4f-92e4-0614624b46f5",
+        "CloudletInfoState": 4,
+        "Region": "EU",
+        "CloudletName": "wonho",
+        "Operator": "mex",
+        "CloudletLocation": {
+            "latitude": 37.386,
+            "longitude": -122.0838
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 254,
+        "Physical_name": "wonho",
+        "Platform_type": 5,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "26f9135a-30dd-4c4f-b750-1321132f2592",
+        "CloudletInfoState": 4,
+        "Region": "US",
+        "CloudletName": "hackathon-jimmorris",
+        "Operator": "mex",
+        "CloudletLocation": {
+            "latitude": 33.0151,
+            "longitude": -96.5389
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 254,
+        "Physical_name": "hackathon-jimmorris",
+        "Platform_type": 5,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    },
+    {
+        "uuid": "064ac829-1763-4eeb-860a-d321a89b9e08",
+        "CloudletInfoState": 4,
+        "Region": "US",
+        "CloudletName": "hackathon-michalskiba",
+        "Operator": "mex",
+        "CloudletLocation": {
+            "latitude": 37.3394,
+            "longitude": -121.895
+        },
+        "Ip_support": 2,
+        "Num_dynamic_ips": 254,
+        "Physical_name": "hackathon-michalskiba",
+        "Platform_type": 5,
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Edit": [
+            "Region",
+            "CloudletName",
+            "OperatorName",
+            "CloudletLocation",
+            "Ip_support",
+            "Num_dynamic_ips"
+        ]
+    }
+]

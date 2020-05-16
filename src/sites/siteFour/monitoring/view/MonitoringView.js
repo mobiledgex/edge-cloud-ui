@@ -1,6 +1,5 @@
 import {ClusterCluoudletLabel, LegendOuterDiv, MonitoringStyles} from '../common/MonitoringStyles'
 import Ripple from "react-ripples";
-import  TouchRipple  from '@material-ui/core/ButtonBase/TouchRipple.js';
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -114,6 +113,7 @@ import {
     defaultLayoutXYPosForCluster
 } from "../common/MonitoringGridLayoutProps";
 import MapForOper from "../components/MapForOper";
+import PIeChartHooks from "../components/PIeChartHooks";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -509,13 +509,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (clusterList, appnInstList, cloudletList)
                     //@desc:#############################################
-                    promiseList.push(getCloudletList())
+
+                    //todo:realdata
+                    /*promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
                     let cloudletList = newPromiseList[0];
                     let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
+                    let appInstList = newPromiseList[2];*/
+
+                    //todo:fakedata
+                    let cloudletList = require('./cloudletList')
+                    let clusterList = require('./clusterList')
+                    let appInstList = require('./appInstList')
+
+
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let nameList = getCloudletClusterNameList(orgAppInstList)
                     let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(nameList.cloudletNameList), _.uniqWith(nameList.clusterNameList, _.isEqual))
@@ -533,7 +542,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
-                    promiseList2.push(getAllClusterEventLogList(clusterList))
+
+                    //todo: realdata
+                    /*promiseList2.push(getAllClusterEventLogList(clusterList))
                     promiseList2.push(getAllAppInstEventLogs());
                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                     promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
@@ -541,8 +552,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let allClusterEventLogList = newPromiseList2[0];
                     let allAppInstEventLogList = newPromiseList2[1];
                     let allClusterUsageList = newPromiseList2[2];
-                    let allCloudletUsageList = newPromiseList2[3];
+                    let allCloudletUsageList = newPromiseList2[3];*/
 
+
+                    //todo: fakedata
+                    let allClusterEventLogList = []
+                    let allAppInstEventLogList = []
+                    let allClusterUsageList = require('./clusterUSageList')
+                    let allCloudletUsageList = require('./cloudletUsageList')
+
+
+                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
+                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
+                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
+                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
@@ -746,6 +769,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
                         return item.CloudletName === cloudletName
                     })
+
+                    console.log(`filteredCloudletUsageList====>`, filteredCloudletUsageList);
 
                     this.setState({
                         currentCloudLet: pCloudletOne,
@@ -1286,10 +1311,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     chartColorList={this.state.chartColorList}
                                 />
                     )
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
-                    return (
-                        <PieChartContainer/>
-                    )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                     return (
                         <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
@@ -1301,6 +1322,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             parent={this}
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
+                        />
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
+                    return this.state.loading ? renderPlaceHolderLoader() :
+                        <PIeChartHooks
+
                         />
                 }
             }
