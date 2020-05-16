@@ -100,11 +100,10 @@ export const defaultLayoutMapperForCloudlet = [
         hwType: HARDWARE_TYPE_FOR_GRID.diskUsed,
         graphType: CHART_TYPE.LINE,
     },
-    ////////////////////////////
     {
         id: '5',
         hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
-        graphType: CHART_TYPE.PIE,
+        graphType: CHART_TYPE.DONUTS,
     },
     {
         id: '6',
