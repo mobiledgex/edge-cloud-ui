@@ -42,7 +42,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/MonitoringCommonService";
-import '../common/Monitoring.css'
+import '../common/MonitoringStyles.css'
 import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/MonitoringMetricService";
 
 const FA = require('react-fontawesome')

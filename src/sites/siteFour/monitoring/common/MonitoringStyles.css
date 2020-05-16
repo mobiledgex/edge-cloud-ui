@@ -643,3 +643,19 @@ tr td {
     list-style: none;
     outline: 0;
 }*/
+
+.tooltipForOperMarker .leaflet-popup-content-wrapper {
+    width: 120px;
+    border-radius: 0px;
+}
+
+
+.ant-select-dropdown-menu {
+    max-height: 512px;
+    margin-bottom: 0;
+    padding: 4px 0;
+    padding-left: 0;
+    overflow: auto;
+    list-style: none;
+    outline: none;
+}

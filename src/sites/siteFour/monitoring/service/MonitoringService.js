@@ -1,5 +1,5 @@
 import React from 'react';
-import '../common/Monitoring.css';
+import '../common/MonitoringStyles.css';
 import {
     CHART_COLOR_APPLE,
     CHART_COLOR_BERRIES_GALORE,
@@ -944,7 +944,25 @@ export const addUnitNameForUsage = (value, hardwareType, _this) => {
     }
 };
 
-export const groupByCloudletLocation = (items, key) => items.reduce(
+
+/**
+ *
+ * @param items
+ * @param key
+ * @returns {*}
+ */
+export const listGroupByKey = (items, key) => items.reduce(
+    (result, item) => ({
+        ...result,
+        [item[key]]: [
+            ...(result[item[key]] || []),
+            item,
+        ],
+    }),
+    {},
+);
+
+export const listGroupByKey222 = (items, key) => items.reduce(
     (result, item) => ({
         ...result,
         [item[key]]: [

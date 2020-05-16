@@ -20,9 +20,9 @@ import {
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import '../common/Monitoring.css'
+import '../common/MonitoringStyles.css'
 import {MonitoringStyles} from "../common/MonitoringStyles";
-import {groupByCloudletLocation, reduceString} from "../service/MonitoringService";
+import {listGroupByKey, reduceString} from "../service/MonitoringService";
 import MomentTimezone from "moment-timezone";
 
 const FontAwesomeIcon = require('react-fontawesome')
@@ -40,13 +40,6 @@ let cellphoneIcon2 = L.icon({
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
-let iconPlus = L.icon({
-    iconUrl: 'https://cdn0.iconfinder.com/data/icons/simplie-essential-action/22/action_021-add-new-plus-increase-512.png',
-    iconSize: [40, 21],
-    iconAnchor: [20, 21],
     shadowSize: [41, 41]
 });
 
@@ -280,7 +273,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
 
-
         setCloudletLocation(pAppInstanceListGroupByCloudlet, isMapCenter = false) {
             try {
                 let cloudletKeys = Object.keys(pAppInstanceListGroupByCloudlet)
@@ -314,7 +306,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                 })
 
-                let groupByCloudletLocationObject = groupByCloudletLocation(newCloudLetLocationList, 'strCloudletLocation')
+                let groupByCloudletLocationObject = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
                 let keysForCloudlet = Object.keys(groupByCloudletLocationObject);
                 let locationGroupedCloudletList = []
                 keysForCloudlet.map((item, index) => {
@@ -678,28 +670,30 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     </div>
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
-                            <Map center={this.state.mapCenter}
-                                 duration={0.9}
-                                 zoom={this.state.zoom}
-                                 onZoomEnd={(e) => {
-                                     this.setState({
-                                         zoom: e.target._zoom,
-                                     })
-                                 }}
-                                 style={{width: '100%', height: '100%', zIndex: 1,}}
-                                 easeLinearity={1}
-                                 useFlyTo={true}
-                                 dragging={true}
-                                 boundsOptions={{padding: [50, 50]}}
-                                 maxZoom={14}
-                                 zoomControl={false}
-                                 onResize={() => {
+                            <Map
+                                center={this.state.mapCenter}
+                                zoom={this.state.zoom}
+                                duration={0.9}
 
-                                 }}
+                                onZoomEnd={(e) => {
+                                    this.setState({
+                                        zoom: e.target._zoom,
+                                    })
+                                }}
+                                style={{width: '100%', height: '100%', zIndex: 1,}}
+                                easeLinearity={1}
+                                useFlyTo={true}
+                                dragging={true}
+                                boundsOptions={{padding: [50, 50]}}
+                                maxZoom={14}
+                                zoomControl={false}
+                                onResize={() => {
 
-                                 ref={(ref) => {
-                                     this.map = ref;
-                                 }}
+                                }}
+
+                                ref={(ref) => {
+                                    this.map = ref;
+                                }}
                             >
                                 {/*{this.props.parent.state.loading && renderPlaceHolderLottiePinJump3()}*/}
                                 <TileLayer

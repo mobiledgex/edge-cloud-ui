@@ -1,5 +1,5 @@
 import React from 'react';
-import '../common/Monitoring.css';
+import '../common/MonitoringStyles.css';
 import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_LIST,

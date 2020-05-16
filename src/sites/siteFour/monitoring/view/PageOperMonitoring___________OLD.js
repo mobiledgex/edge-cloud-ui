@@ -23,7 +23,7 @@ import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import '../common/Monitoring.css'
+import '../common/MonitoringStyles.css'
 import {renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import {

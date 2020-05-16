@@ -9,7 +9,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {Button, ThemeProvider} from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
-import '../common/Monitoring.css'
+import '../common/MonitoringStyles.css'
 
 const {TabPane} = Tabs;
 const FA = require('react-fontawesome')

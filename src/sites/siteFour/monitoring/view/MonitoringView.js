@@ -78,7 +78,7 @@ import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
 import ClusterEventLogListHook from "../components/ClusterEventLogListHook";
 import MaterialIcon from "material-icons-react";
-import '../common/Monitoring.css'
+import '../common/MonitoringStyles.css'
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import {THEME_TYPE} from "../../../../themeStyle";
@@ -107,6 +107,7 @@ import {
     defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster
 } from "../common/MonitoringGridLayoutProps";
+import MapForOperContainer from "../components/MapForOperContainer";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -469,6 +470,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
+            componentWillMount(): void {
+                this.setState({
+                    userType: localStorage.getItem('selectRole').toString().toLowerCase(),
+                })
+            }
+
             componentDidMount = async () => {
                 this.setState({
                     loading: true,
@@ -492,7 +499,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     clearInterval(this.intervalForAppInst)
                     await this.setState({dropdownRequestLoading: true})
                     //@desc:#############################################
-                    //@desc: (clusterList, appnInstList)
+                    //@desc: (clusterList, appnInstList, cloudletList)
                     //@desc:#############################################
                     promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
@@ -538,7 +545,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
-                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
+                    console.log(`loadInitData....cloudletList====>`, cloudletList);
+
+                    console.log(`loadInitData..allCloudletUsageList====>`, allCloudletUsageList);
 
                     await this.setState({
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 25,
@@ -722,19 +731,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             handleCloudletDropdown = async (pCloudletOne) => {
 
                 if (pCloudletOne !== undefined) {
-                    let cloudletPrefix = pCloudletOne.split(" | ")[0].trim();
+                    let cloudletName = pCloudletOne.split(" | ")[0].trim();
                     let filteredCloudletUsageList = this.state.allCloudletUsageList.filter((item: TypeCloudletUsageList, index) => {
-                        return item.cloudlet === cloudletPrefix
+                        return item.cloudlet === cloudletName
+                    })
+
+                    let filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
+                        return item.CloudletName === cloudletName
                     })
 
                     this.setState({
                         currentCloudLet: pCloudletOne,
                         filteredCloudletUsageList: filteredCloudletUsageList,
+                        filteredCloudletList: filteredCloudletList,
                     })
                 } else {
                     this.setState({
                         currentCloudLet: undefined,
                         filteredCloudletUsageList: this.state.allCloudletUsageList,
+                        filteredCloudletList: this.state.cloudletList,
                     })
                 }
             }
@@ -1220,22 +1235,34 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             themeTitle={this.state.themeTitle}/>
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
-                    return (
-                        <MapForDevContainer
-                            markerList={this.state.appInstanceListGroupByCloudlet}
-                            currentWidgetWidth={this.state.currentWidgetWidth}
-                            isMapUpdate={this.state.isMapUpdate}
-                            selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                            mapPopUploading={this.state.mapPopUploading}
-                            parent={this}
-                            isDraggable={this.state.isDraggable}
-                            handleAppInstDropdown={this.handleAppInstDropdown}
-                            isFullScreenMap={false}
-                            isShowAppInstPopup={this.state.isShowAppInstPopup}
-                            selectedAppInstIndex={this.state.selectedAppInstIndex}
-                            isEnableZoomIn={!this.state.isEnableZoomIn}
-                        />
-                    )
+
+                    if (this.state.userType.includes('dev')) {
+                        return (
+                            <MapForDevContainer
+                                markerList={this.state.appInstanceListGroupByCloudlet}
+                                currentWidgetWidth={this.state.currentWidgetWidth}
+                                isMapUpdate={this.state.isMapUpdate}
+                                selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                                mapPopUploading={this.state.mapPopUploading}
+                                parent={this}
+                                isDraggable={this.state.isDraggable}
+                                handleAppInstDropdown={this.handleAppInstDropdown}
+                                isFullScreenMap={false}
+                                isShowAppInstPopup={this.state.isShowAppInstPopup}
+                                selectedAppInstIndex={this.state.selectedAppInstIndex}
+                                isEnableZoomIn={!this.state.isEnableZoomIn}
+                            />
+                        )
+                    } else {
+                        return (
+                            <MapForOperContainer
+                                parent={this}
+                                cloudletList={this.state.filteredCloudletList}
+                                zoom={1}
+                            />
+                        )
+                    }
+
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                     return (
                         this.state.loading ? renderPlaceHolderLoader() :
@@ -1598,134 +1625,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-
-            renderHeader = () => {
-                return (
-                    <>
-                        <Toolbar className='monitoring_title' style={{marginTop: -5}}>
-                            <label className='content_title_label' style={{marginBottom: 1}}>Monitoring</label>
-                            <div className='page_monitoring_select_area'
-                                 style={{
-                                     width: 'fit-content',
-                                     flex: .7,
-                                     //backgroundColor: 'red',
-                                 }}>
-                                <div>
-                                    {this.renderClusterDropdown()}
-                                </div>
-                                <div style={{marginLeft: 15}}>
-                                    {this.renderAppInstDropdown()}
-                                </div>
-                                {this.state.intervalLoading &&
-                                <div>
-                                    <div style={{marginLeft: 10, marginRight: 1,}}>
-                                        {renderWifiLoader()}
-                                    </div>
-                                </div>
-                                }
-                            </div>
-                            {/*
-                             desc :####################################
-                             desc : options list (right conner)
-                             desc :####################################
-                            */}
-                            <div style={{
-                                display: 'flex',
-                                flex: .3,
-                                justifyContent: 'flex-end',
-                                //backgroundColor: 'yellow'
-                            }}>
-                                {/*
-                                todo :####################################
-                                todo : Clusterstream toggle button
-                                todo :####################################
-                                */}
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                <div style={{
-                                    alignItems: 'center',
-                                    display: 'flex',
-                                    cursor: 'pointer',
-                                    //backgroundColor: 'red',
-                                    height: 30,
-                                    width: 150,
-                                    marginRight: 20,
-                                    alignSelf: 'center',
-                                    justifyContent: 'center',
-                                }}>
-                                    <div style={MonitoringStyles.listItemTitle}>
-                                        {/*Cluster*/} Stream
-                                    </div>
-                                    <div style={MonitoringStyles.listItemTitle}>
-                                        <CustomSwitch
-                                            size="small"
-                                            checked={this.state.isStream}
-                                            color="primary"
-                                            onChange={async () => {
-                                                await this.setState({
-                                                    isStream: !this.state.isStream,
-                                                });
-                                                if (!this.state.isStream) {
-                                                    clearInterval(this.intervalForAppInst)
-                                                    clearInterval(this.intervalForCluster)
-                                                } else {
-                                                    await this.handleClusterDropdown(this.state.currentCluster)
-                                                }
-                                            }}
-
-                                        />
-                                    </div>
-                                </div>
-                                }
-
-                                {/*
-                                desc :####################################
-                                desc : appInst stream toggle button
-                                desc :####################################
-                                */}
-                                {this.state.currentClassification === CLASSIFICATION.APPINST &&
-                                <div style={{
-                                    alignItems: 'center',
-                                    display: 'flex',
-                                    cursor: 'pointer',
-                                    //backgroundColor: 'red',
-                                    height: 30,
-                                    width: 170,
-                                    marginRight: 20,
-                                    alignSelf: 'center',
-                                    justifyContent: 'center',
-                                }}>
-                                    <div style={MonitoringStyles.listItemTitle}>
-                                        {/*App Inst*/} Stream
-                                    </div>
-                                    <div style={MonitoringStyles.listItemTitle}>
-                                        <CustomSwitch
-                                            size="small"
-                                            checked={this.state.isStream}
-                                            color="primary"
-                                            onChange={async () => {
-                                                await this.setState({
-                                                    isStream: !this.state.isStream,
-                                                });
-
-                                                if (!this.state.isStream) {
-                                                    clearInterval(this.intervalForAppInst)
-                                                } else {
-                                                    await this.handleAppInstDropdown(this.state.currentAppInst, true)
-                                                }
-                                            }}
-
-                                        />
-                                    </div>
-                                </div>
-                                }
-                                {this.makeTopRightMenuActionButton()}
-                            </div>
-                        </Toolbar>
-                    </>
-
-                )
-            }
-
             makeTopRightMenuActionButton() {
                 return (
                     <div style={{
@@ -1843,8 +1742,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
                         <Select
                             dropdownStyle={{}}
-                            style={{width: 250, maxHeight: 512}}
                             listHeight={512}
+                            style={{width: 250, maxHeight: '512px !important'}}
                             disabled={isEmpty(this.state.cloudletDropdownList)}
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}

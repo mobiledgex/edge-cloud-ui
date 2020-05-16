@@ -1,6 +1,6 @@
 import React from 'react';
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
-import '../common/Monitoring.css';
+import '../common/MonitoringStyles.css';
 import {toast} from "react-semantic-toasts";
 import Lottie from "react-lottie";
 import {Chart} from "react-google-charts";

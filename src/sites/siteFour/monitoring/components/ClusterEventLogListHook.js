@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
 import {renderPlaceHolderLoader} from "../service/MonitoringCommonService";
-import '../common/Monitoring.css'
+import '../common/MonitoringStyles.css'
 import {MonitoringStyles} from "../common/MonitoringStyles";
 
 

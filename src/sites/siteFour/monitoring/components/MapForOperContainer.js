@@ -1,143 +1,195 @@
-import 'react-hot-loader'
-import React from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import React, {useEffect, useState} from "react";
+import {Map, Marker, Popup, TileLayer, Tooltip, Rectangle, Pane, Circle, FeatureGroup, LayerGroup} from "react-leaflet";
 import * as L from 'leaflet';
-import "../common/Monitoring.css";
-import {hot} from "react-hot-loader/root";
-import {renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
+import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
+import type {TypeCloudlet} from "../../../../shared/Types";
+import {listGroupByKey} from "../service/MonitoringService";
+import "../common/OperMapStyle.css";
+import Control from "react-leaflet-control";
+import {MonitoringStyles} from "../common/MonitoringStyles";
+import {Icon} from "semantic-ui-react";
 
-
-const DEFAULT_VIEWPORT = {
-    center: [51.505, -0.09],
-    zoom: 13,
-}
-
-let greenIcon = new L.Icon({
-    iconUrl: require('../../../../assets/leaflet_markers/marker-icon-2x-green.png'),
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
+let cloudGreenIcon = L.icon({
+    iconUrl: require('../images/cloud_green.png'),
+    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+    iconSize: [40, 21],
+    iconAnchor: [20, 21],
     shadowSize: [41, 41]
 });
 
+export const mapIconStyle = {
+    backgroundColor: 'transparent',
+    height: 30,
+    width: 30,
+    display: 'flex',
+    justifyContent: 'center',
+    alignSelf: 'center'
+}
 
-export default hot(
-    class MapForOperContainer extends React.Component {
-        state = {
-            viewport: DEFAULT_VIEWPORT,
-            markers: [
-                {key: 'marker1', position: [51.5, -0.1], content: 'My first popup'},
-                {key: 'marker2', position: [51.51, -0.1], content: 'My second popup'},
-                {key: 'marker3', position: [51.49, -0.05], content: 'My third popup'},
-            ],
-        }
+export const worldMapCenter = [
+    6.315299, -4.683301
+]
 
-        /*  async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-              if (this.props.cloudletList !== nextProps.cloudletList) {
-                  await this.setState({
-                      cloudletList: nextProps.cloudletList,
-                  });
+export default function MapForOperContainer(props) {
+    const [cloudletObjects, setCloudletObjects] = useState([]);
+    const [locList, setLocList] = useState([]);
+    const [newCloudletList, setCloudletList] = useState([]);
+    const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
+    const [zoom, setZoom] = useState(1)
 
-                  //this.state.cloudletList["0"].CloudletLocation.latitude
-                  //this.state.cloudletList["0"].CloudletLocation.longitude
-                  //this.state.cloudletList["0"].CloudletName
-                  console.log('componentWillReceiveProps_cloudletList===>', this.state.cloudletList);
-              }
-          }*/
-
-        renderPopup() {
-            return (
-                <Popup
-                    //position={[100.110924, 8.682127]}
-                    offset={[0, 0]}
-                    opacity={0.7}
-                    className="tooltip1"
-                >
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <div style={{fontSize: 20, fontFamily: 'Acme'}}>
-                            [KR , SEONGNAM]
-                        </div>
-                        <button style={{backgroundColor: 'green', color: "white"}} onClick={() => {
-                            alert('eundew')
-                        }}>eundew
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('GO')
-                        }}>GO
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('Rahul')
-                        }}>
-                        </button>
-                        <div style={{height: 5}}/>
-                        <button onClick={() => {
-                            alert('redstar')
-                        }}>redstar
-                        </button>
-                    </div>
-                </Popup>
-            )
-        }
-
-        renderMarkerOne(item) {
-
-            return (
-                <Marker
-                    ref={c => this.marker1 = c}
-                    icon={greenIcon}
-                    className='marker1'
-                    position={
-                        [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]
-                    }
-                    onClick={() => {
-
-                        let itemCloudlet_Region = item.CloudletName + "|" + item.Region
-
-                        this.props.handleSelectCloudlet(itemCloudlet_Region)
-                    }}
-                >
-                    <Tooltip direction='right' offset={[0, 0]} opacity={0.5} permanent>
-                        <span>{item.CloudletName}</span>
-                    </Tooltip>
-                </Marker>
-            )
-        }
+    useEffect(() => {
+        setCloudletLocation()
+    }, [props.cloudletList])
 
 
-        render() {
+    function setCloudletLocation() {
+        let newCloudletList = []
+        props.cloudletList.map((item: TypeCloudlet, index) => {
+            let cloudletLocationStr = JSON.stringify(item.CloudletLocation)
+
+            if (props.cloudletList.length === 1) {
+                if (index === 0) {
+                    setMapCenter([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
+                }
+                setZoom(2)
+            } else {
+                setMapCenter([6.315299, -4.683301])
+                setZoom(1)
+            }
 
 
-            return (
-                <div style={{height: '100%', width: '100%'}}>
-                    <Map center={[45.4, 51.7]}
-                         duration={0.9}
-                         zoom={1.0}
-                         style={{width: '100%', height: '100%'}}
-                         easeLinearity={1}
-                         useFlyTo={true}
-                         dragging={true}
-                         boundsOptions={{padding: [50, 50]}}
-                    >
-                        <TileLayer
-                            url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-                            //url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'}
-                            minZoom={2}
-                            //maxZoom={15}
-                        />
-                        {this.props.cloudletList.map(item => {
+            item.cloudletLocationStr = cloudletLocationStr;
+            newCloudletList.push(item);
+        })
 
-                            return this.renderMarkerOne(item)
-                        })}
-                        {this.props.loading && renderPlaceHolderLottiePinJump2()}
-                    </Map>
-
-                </div>
-            );
-        }
-
+        let cloudletObjs = listGroupByKey(newCloudletList, 'cloudletLocationStr')
+        let cloudletLocList = Object.keys(cloudletObjs)
+        setLocList(cloudletLocList)
+        setCloudletObjects(cloudletObjs)
 
     }
-)
+
+
+    function renderTooltip(cloudletOne: TypeCloudlet) {
+        return (
+            <Tooltip
+                direction='right'
+                offset={[14, -10]}//x,y
+                opacity={0.8}
+                permanent
+                style={{cursor: 'pointer', pointerEvents: 'auto'}}
+
+            >
+                <span>{cloudletOne.CloudletName}</span>
+            </Tooltip>
+        )
+    }
+
+
+    return (
+        <div style={{height: '100%', width: '100%'}}>
+            <Map
+                center={mapCenter}
+                zoom={zoom}
+                duration={1.0}
+                style={{width: '100%', height: '100%'}}
+                easeLinearity={1}
+                useFlyTo={true}
+                dragging={true}
+                zoomControl={false}
+                boundsOptions={{padding: [50, 50]}}
+            >
+                <TileLayer
+                    url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+                    //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    minZoom={1}
+                />
+
+                <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+
+                    <div style={MonitoringStyles.mapControlDiv}>
+                        <div
+                            style={mapIconStyle}
+                            onClick={async () => {
+                                await props.parent.handleCloudletDropdown(undefined)
+                                setTimeout(() => {
+                                    setZoom(1)
+                                }, 250)
+                            }}
+                        >
+                            <Icon
+
+                                name='redo'
+                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                            />
+                        </div>
+                        <div
+                            style={mapIconStyle}
+                            onClick={() => {
+                                setZoom(zoom + 1)
+                            }}
+                        >
+                            <Icon
+                                name='add'
+                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                            />
+                        </div>
+                        <div style={{width: 2}}/>
+                        <div
+                            style={mapIconStyle}
+                            onClick={() => {
+                                setZoom(zoom - 1)
+                            }}
+                        >
+                            <Icon
+                                name='minus'
+                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                            />
+                        </div>
+
+                    </div>
+                </Control>
+                {locList.map((locOne, index) => {
+
+                    let CloudletLocation = JSON.parse(locOne)
+                    return (
+                        <Marker
+                            icon={cloudGreenIcon}
+                            className='marker1'
+                            position={
+                                [CloudletLocation.latitude, CloudletLocation.longitude,]
+                            }
+                            onClick={() => {
+                            }}
+                        >
+                            <Popup
+                                offset={[0, 0]}
+                                opacity={0.7}
+                            >
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, index) => {
+                                        return (
+                                            <span
+                                                className='oper_popup_div'
+                                                onClick={() => {
+                                                    alert(cloudLetOne.CloudletName)
+                                                }}
+                                            >
+                                              {cloudLetOne.CloudletName}
+                                            </span>
+                                        )
+                                    })}
+                                </div>
+                            </Popup>
+
+                        </Marker>
+                    )
+
+                })}
+                {props.loading && renderPlaceHolderLottiePinJump2()}
+            </Map>
+
+        </div>
+    )
+
+}
