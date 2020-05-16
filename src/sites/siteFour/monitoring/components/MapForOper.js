@@ -33,12 +33,22 @@ export const worldMapCenter = [
 export default function MapForOper(props) {
     const [cloudletObjects, setCloudletObjects] = useState([]);
     const [locList, setLocList] = useState([]);
+    const [newCloudletList, setCloudletList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
-    const [zoom, setZoom] = useState(1)
-    const [curCloudlet, setCurCloudlet] = useState(undefined)
+    const [zoom, setZoom] = useState(3)
+    const [currentCluodlet, setCurrentCluodlet] = useState(undefined)
 
-    useEffect(async () => {
-        setCloudletLocation()
+    useEffect(() => {
+        async function loadContent() {
+            await setCloudletLocation()
+            if (!isEmpty(props.cloudletList)) {
+                props.parent.setState({
+                    mapLoading: false,
+                })
+            }
+        }
+
+        loadContent()
     }, [props.cloudletList])
 
     useEffect(() => {
@@ -46,7 +56,7 @@ export default function MapForOper(props) {
     }, [props.operZoom])
 
 
-    function setCloudletLocation() {
+    async function setCloudletLocation() {
         let newCloudletList = []
         props.cloudletList.map((item: TypeCloudlet, index) => {
             let cloudletLocationStr = JSON.stringify(item.CloudletLocation)
@@ -60,8 +70,6 @@ export default function MapForOper(props) {
                 setMapCenter([6.315299, -4.683301])
                 setZoom(1)
             }
-
-
             item.cloudletLocationStr = cloudletLocationStr;
             newCloudletList.push(item);
         })
@@ -70,11 +78,6 @@ export default function MapForOper(props) {
         let cloudletLocList = Object.keys(cloudletObjs)
         setLocList(cloudletLocList)
         setCloudletObjects(cloudletObjs)
-        if (!isEmpty(cloudletLocList)) {
-            props.parent.setState({
-                mapLoading: false,
-            })
-        }
     }
 
 
@@ -112,7 +115,7 @@ export default function MapForOper(props) {
                     //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     minZoom={1}
                 />
-                {curCloudlet !== undefined &&
+                {currentCluodlet !== undefined &&
                 <div style={{
                     position: 'absolute',
                     bottom: 0,
@@ -125,7 +128,7 @@ export default function MapForOper(props) {
                     padding: 20,
 
                 }}>
-                    {curCloudlet.toString()}
+                    {currentCluodlet.toString()}
                 </div>
                 }
 
@@ -135,7 +138,7 @@ export default function MapForOper(props) {
                         <div
                             style={mapIconStyle}
                             onClick={async () => {
-                                setCurCloudlet(undefined)
+                                setCurrentCluodlet(undefined)
                                 await props.parent.handleCloudletDropdown(undefined)
                                 setTimeout(() => {
                                     setZoom(1)
@@ -186,12 +189,12 @@ export default function MapForOper(props) {
                             position={
                                 [CloudletLocation.latitude, CloudletLocation.longitude,]
                             }
-                            /*  onMouseOver={(e) => {
-                                  // e.target.openPopup();
-                              }}
-                              onMouseOut={(e) => {
-                                  //e.target.closePopup();
-                              }}*/
+                            onMouseOver={(e) => {
+                                e.target.openPopup();
+                            }}
+                           /* onMouseOut={(e) => {
+                                //e.target.closePopup();
+                            }}*/
                             onClick={() => {
                             }}
                         >
@@ -207,8 +210,8 @@ export default function MapForOper(props) {
                                             <div
                                                 className='oper_popup_div'
                                                 onClick={() => {
-                                                    setCurCloudlet(undefined)
-                                                    setCurCloudlet(JSON.stringify(cloudLetOne))
+                                                    setCurrentCluodlet(undefined)
+                                                    setCurrentCluodlet(JSON.stringify(cloudLetOne))
 
                                                 }}
                                             >

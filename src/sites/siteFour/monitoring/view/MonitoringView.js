@@ -18,7 +18,8 @@ import {
     makeBarChartDataForAppInst,
     makeBarChartDataForCluster,
     makeClusterTreeDropdown,
-    makeDropdownForAppInst, makeDropdownForCloudlet,
+    makeDropdownForAppInst,
+    makeDropdownForCloudlet,
     makeid,
     makeLineChartData,
     makeLineChartDataForBigModal,
@@ -39,7 +40,9 @@ import {
     THEME_OPTIONS_LIST
 } from "../../../../shared/Constants";
 import type {
-    TypeBarChartData, TypeCloudlet, TypeCloudletUsageList,
+    TypeBarChartData,
+    TypeCloudlet,
+    TypeCloudletUsageList,
     TypeGridInstanceList,
     TypeLineChartData,
     TypeUtilization
@@ -104,7 +107,8 @@ import {
     CLUSTER_LAYOUT_KEY,
     defaultLayoutForCloudlet,
     defaultLayoutMapperForCloudlet,
-    defaultLayoutXYPosForAppInst, defaultLayoutXYPosForCloudlet,
+    defaultLayoutXYPosForAppInst,
+    defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster
 } from "../common/MonitoringGridLayoutProps";
 import MapForOper from "../components/MapForOper";
@@ -484,6 +488,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     bubbleChartLoader: true,
                     selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
                     mapLoading: true,
+                    dropdownRequestLoading: true
 
                 })
                 await this.loadInitData();
@@ -499,7 +504,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let promiseList2 = []
                 try {
                     clearInterval(this.intervalForAppInst)
-                    await this.setState({dropdownRequestLoading: true, mapLoading: true})
                     //@desc:#############################################
                     //@desc: (clusterList, appnInstList, cloudletList)
                     //@desc:#############################################
@@ -1145,7 +1149,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             });
                         }}
                     >
-
                         <div
                             className='draggable'
                             style={MonitoringStyles.gridItemHeader}>
