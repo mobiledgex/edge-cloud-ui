@@ -810,6 +810,9 @@ export function makeClientMatricSumDataOne(seriesValues) {
     let ver = ''
 
     //fixme : covert to constants
+    //fixme : covert to constants
+    //fixme : covert to constants
+    //fixme : covert to constants
     seriesValues.map(item => {
         let methodType = item[17];
         if (methodType === "RegisterClient") {
