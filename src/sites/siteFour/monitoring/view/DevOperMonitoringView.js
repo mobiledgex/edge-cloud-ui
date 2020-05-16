@@ -1339,7 +1339,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleAppInstDropdown={this.handleAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.DONUTS) {
                     return this.state.loading ? renderPlaceHolderLoader() :
                         <DonutChartHooks
                             filteredCloudletUsageList={this.state.filteredCloudletUsageList}

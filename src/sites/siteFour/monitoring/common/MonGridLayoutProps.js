@@ -5,7 +5,7 @@ export const GRID_ITEM_TYPE = {
     BUBBLE: 'BUBBLE',
     MAP: 'MAP',
     TABLE: 'TABLE',
-    PIE: 'PIE',
+    DONUTS: 'DONUTS',
     CLUSTER_LIST: 'CLUSTER_LIST',
     CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
     APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
@@ -13,7 +13,7 @@ export const GRID_ITEM_TYPE = {
 }
 export const HARDWARE_TYPE_FOR_GRID = {
     MAP: 'MAP',
-    PIE: 'PIE',
+    DONUTS: 'DONUTS',
     BUBBLE: 'BUBBLE',
     CLOUDLET_LIST: 'CLOUDLET_LIST',
     FLAVOR: 'FLAVOR',
@@ -65,7 +65,7 @@ export const CHART_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
     COLUMN: 'COLUMN',
-    PIE: 'PIE'
+    DONUTS: 'DONUTS'
 }
 
 export const defaultLayoutForCloudlet = [
@@ -73,7 +73,7 @@ export const defaultLayoutForCloudlet = [
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//PIE
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//DONUTS
     {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
 ];
 
