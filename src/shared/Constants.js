@@ -21,7 +21,7 @@ export const CHART_COLOR_JAZZ_NIGHT = ['#C59CDB', '#DFD0F1', '#A67B04', '#F3EED6
 export const CHART_COLOR_BLUE_MOUNTAIN_PEAKS_AND_CLOUDS = ['#A4A4BF', '#16235A', '#2A3457', '#888C46', '#F2EAED', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 export const CHART_COLOR_BRIGHT_AND_FRUITY = ['#D9DCD8', '#9BA747', '#F29D4B', '#D57030', '#8B281F', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 
-export const DARK_LINE_COLOR = 'yellow'
+export const DARK_LINE_COLOR = '#fffc51'
 export const DARK_CLOUTLET_ICON_COLOR = 'green'
 export const WHITE_LINE_COLOR = 'black'
 export const WHITE_CLOUTLET_ICON_COLOR = 'blue'

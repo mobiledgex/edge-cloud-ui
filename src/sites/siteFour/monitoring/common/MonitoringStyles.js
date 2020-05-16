@@ -4,6 +4,14 @@ import styled from 'styled-components';
 
 
 export const MonitoringStyles = {
+    legendDiv:{
+        flex: .97,
+        marginLeft: 10,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        height: 50,
+    },
     topRightMenu: {
         alignItems: 'center',
         display: 'flex',

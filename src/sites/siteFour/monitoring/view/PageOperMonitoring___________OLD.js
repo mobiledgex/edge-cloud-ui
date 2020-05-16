@@ -32,7 +32,7 @@ import {
     makeLineChartForCloudlet,
     renderBottomGridAreaForCloudlet
 } from "./service/PageOperMonitoringService";
-import LeafletMap from "../components/MapForOperContainer";
+import LeafletMap from "../components/MapForOper";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "./service/PageDevMonitoringService";
 import {PageMonitoringStyles} from "../MonitoringStyles";
 import {

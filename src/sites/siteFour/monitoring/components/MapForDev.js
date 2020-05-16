@@ -393,7 +393,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
-        makeClusterGroupAndClient(objkeyOne, index) {
+        makeCloudletAndClient(objkeyOne, index) {
             let groupedClientList = this.state.clientList;
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -432,9 +432,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <Polyline
                                     //dashArray={['30,1,30']}
                                     id={index}
+                                    smoothFactor={2.0}
+
                                     positions={[
                                         [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
                                     ]}
+
                                     color={this.props.lineColor}
                                 />
 
@@ -550,7 +553,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                                 alignSelf: 'center',
                                                 alignItem: 'center,',
                                                 display: 'flex',
-                                                //backgroundColor: innerIndex === this.state.selectedAppInstIndex ? 'rgba(192, 192, 192,.2)' : null,
                                             }}
                                             >
                                                 <Ripples
@@ -822,7 +824,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
                                 {/*@desc:#####################################..*/}
                                 {this.state.clientObjKeys.map((objkeyOne, index) =>
-                                    this.makeClusterGroupAndClient(objkeyOne, index)
+                                    this.makeCloudletAndClient(objkeyOne, index)
                                 )}
 
 

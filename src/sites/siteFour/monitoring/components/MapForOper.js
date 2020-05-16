@@ -30,7 +30,7 @@ export const worldMapCenter = [
     6.315299, -4.683301
 ]
 
-export default function MapForOperContainer(props) {
+export default function MapForOper(props) {
     const [cloudletObjects, setCloudletObjects] = useState([]);
     const [locList, setLocList] = useState([]);
     const [newCloudletList, setCloudletList] = useState([]);
