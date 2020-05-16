@@ -1,6 +1,6 @@
 import axios from "axios";
 import type {TypeAppInstance, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
-import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
+import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CLASSIFICATION, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {
@@ -223,7 +223,6 @@ export const getCloudletList = async () => {
             let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
             promiseList.push(sendSyncRequest(this, requestData))
         }
-
         let orgCloudletList = await Promise.all(promiseList);
         let mergedCloudletList = [];
         orgCloudletList.map(item => {
@@ -236,7 +235,13 @@ export const getCloudletList = async () => {
             }
         })
 
-        return mergedCloudletList;
+        let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
+            return item.Operator === localStorage.getItem('selectOrg').toString().trim()
+        })
+
+        console.log(`result====>`, result);
+
+        return result;
     } catch (e) {
         //showToast( e.toString())
     }
@@ -254,9 +259,9 @@ export const getCloudletListAll = async () => {
             let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
             promiseList.push(sendSyncRequest(this, requestData))
         }
-        let orgCloudletList = await Promise.all(promiseList);
+        let cloudletList = await Promise.all(promiseList);
         let mergedCloudletList = [];
-        orgCloudletList.map(item => {
+        cloudletList.map(item => {
             //@todo : null check
             if (item.response.data["0"].Region !== '') {
                 let cloudletList = item.response.data;
@@ -266,6 +271,7 @@ export const getCloudletListAll = async () => {
             }
         })
 
+        console.log(`cloudletList====>`, cloudletList);
 
         return mergedCloudletList;
     } catch (e) {
@@ -857,15 +863,15 @@ export const getClientStatusList = async (appInstList) => {
     })
     let newPromiseList = await Promise.all(promiseList);
 
-     let mergedClientStatusList = []
-     newPromiseList.map((item, index) => {
-         if (item !== undefined) {
-             mergedClientStatusList.push(item)
-         }
-     })
-     console.log(`mergedClientStatusList====>`, mergedClientStatusList);
+    let mergedClientStatusList = []
+    newPromiseList.map((item, index) => {
+        if (item !== undefined) {
+            mergedClientStatusList.push(item)
+        }
+    })
+    console.log(`mergedClientStatusList====>`, mergedClientStatusList);
 
-     return mergedClientStatusList;
+    return mergedClientStatusList;
 
 }
 

@@ -514,17 +514,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    /* promiseList.push(getCloudletList())
-                     promiseList.push(getClusterList())
-                     promiseList.push(getAppInstList())
-                     let newPromiseList = await Promise.all(promiseList);
-                     let cloudletList = newPromiseList[0];
-                     let clusterList = newPromiseList[1];
-                     let appInstList = newPromiseList[2];*/
+                    promiseList.push(getCloudletList())
+                    promiseList.push(getClusterList())
+                    promiseList.push(getAppInstList())
+                    let newPromiseList = await Promise.all(promiseList);
+                    let cloudletList = newPromiseList[0];
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
+
+                    console.log(`sdlkflskdfkl====>`, cloudletList);
+
                     //todo:fakedata
-                    let cloudletList = require('./cloudletList')
-                    let clusterList = require('./clusterList')
-                    let appInstList = require('./appInstList')
+                    /*    let cloudletList = require('./cloudletList')
+                        let clusterList = require('./clusterList')
+                        let appInstList = require('./appInstList')*/
 
                     let clientStatusList = await getClientStatusList(appInstList)
 
