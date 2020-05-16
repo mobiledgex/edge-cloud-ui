@@ -9,10 +9,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from "antd";
-import '../common/MonitoringStyles.css'
+import '../common/PageMonitoringStyles.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {numberWithCommas} from "../common/MonitoringUtils";
+import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../service/PageMonitoringCommonService";
 
 type Props = {

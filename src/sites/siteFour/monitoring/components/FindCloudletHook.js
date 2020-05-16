@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Table} from "semantic-ui-react";
-import '../common/MonitoringStyles.css'
+import '../common/PageMonitoringStyles.css'
 
 
 export default function FindCloudletHook(props) {

@@ -597,7 +597,7 @@ tr td {
     min-width: 500px !important;
 }
 
-.ant-select-tree-node-content-wrapper .ant-select-tree-node-content-wrapper-normal {
+/*.ant-select-tree-node-content-wrapper .ant-select-tree-node-content-wrapper-normal {
     color: red;
 }
 
@@ -609,7 +609,7 @@ tr td {
     border-radius: 4px;
     outline: none;
     background-color: rgba(0, 0, 0, 0.6);
-}
+}*/
 
 .ant-select-tree {
     background-color: rgba(0, 0, 0, 0.3);

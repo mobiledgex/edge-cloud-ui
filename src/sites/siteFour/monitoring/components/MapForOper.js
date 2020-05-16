@@ -7,7 +7,7 @@ import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitorin
 import type {TypeCloudlet} from "../../../../shared/Types";
 import {listGroupByKey} from "../service/PageMonitoringService";
 import Control from "react-leaflet-control";
-import {MonitoringStyles} from "../common/MonitoringStyles";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";
 
 let cloudGreenIcon = L.icon({
@@ -141,7 +141,7 @@ export default function MapForOper(props) {
 
                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
-                    <div style={MonitoringStyles.mapControlDiv}>
+                    <div style={PageMonitoringStyles.mapControlDiv}>
                         <div
                             style={mapIconStyle}
                             onClick={async () => {

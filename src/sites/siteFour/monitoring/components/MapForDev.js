@@ -20,8 +20,8 @@ import {
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import '../common/MonitoringStyles.css'
-import {MonitoringStyles} from "../common/MonitoringStyles";
+import '../common/PageMonitoringStyles.css'
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 
@@ -704,7 +704,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@todo:#####################################..*/}
                                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
-                                    <div style={MonitoringStyles.mapControlDiv}>
+                                    <div style={PageMonitoringStyles.mapControlDiv}>
                                         <div
                                             style={{
                                                 backgroundColor: 'transparent',

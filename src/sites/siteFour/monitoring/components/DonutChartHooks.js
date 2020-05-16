@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import '../common/MonitoringStyles.css'
+import '../common/PageMonitoringStyles.css'
 import "./CarbonChart.css";
 import {Progress} from "antd";
-import {Center, Center0001} from "../common/MonitoringStyles";
+import {Center, Center0001} from "../common/PageMonitoringStyles";
 import type {TypeCloudletUsage} from "../../../../shared/Types";
 
 export default function DonutChartHooks(props) {

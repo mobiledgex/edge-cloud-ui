@@ -43,7 +43,7 @@ import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
 import SiteFourPageAudits from '../audits/auditLogs';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
-import MonitoringMain from '../monitoring/common/MonitoringMain'
+import PageMonitoringMain from '../monitoring/common/PageMonitoringMain'
 
 import {Collapse, Tooltip} from '@material-ui/core';
 import {Image} from 'semantic-ui-react';
@@ -116,7 +116,7 @@ const options = [
             {label: 'Privacy Policy', icon: <AdjustOutlinedIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
         ]
     },
-    {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <MonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
+    {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
     {label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon/>, pg: 'audits', page: <SiteFourPageAudits/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']}
 ]
 

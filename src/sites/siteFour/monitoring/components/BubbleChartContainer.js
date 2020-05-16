@@ -9,7 +9,7 @@ import {
 import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {MonitoringStyles} from "../common/MonitoringStyles";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Select} from "antd";
 
 const {Option} = Select;
@@ -68,7 +68,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
         if (pBubbleChartData.length === 0 && this.props.parent.state.loading === false) {
             return (
-                <div style={MonitoringStyles.noData}>
+                <div style={PageMonitoringStyles.noData}>
                     NO DATA
                 </div>
             )

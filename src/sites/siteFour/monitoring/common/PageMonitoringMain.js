@@ -3,7 +3,7 @@ import PageMonitoringForDeveloper from "../view/PageDevOperMonitoringView";
 import PageMonitoringForAdmin from "../view/AdmMonitoringView";
 import {Card} from "@material-ui/core";
 
-export default function MonitoringMain() {
+export default function PageMonitoringMain() {
     const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
 
     const renderMainPage = () => {

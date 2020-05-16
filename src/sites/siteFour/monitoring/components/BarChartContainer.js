@@ -5,7 +5,7 @@ import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {Chart} from "react-google-charts";
 import {GRID_ITEM_TYPE} from "../../../../shared/Constants";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {barChartOption, columnChartOption} from "../common/MonitoringUtils";
+import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 
 type Props = {
     parent: PageDevMonitoring,

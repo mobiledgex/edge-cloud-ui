@@ -4,12 +4,12 @@ import {Modal as AModal, Tabs} from "antd";
 import {CHART_COLOR_LIST} from "../../../../shared/Constants";
 import {demoLineChartData, materialUiDarkTheme, simpleGraphOptions} from "../service/PageMonitoringService";
 import {Bar, HorizontalBar, Line} from "react-chartjs-2";
-import {Center2, ClusterCluoudletLabel} from "../common/MonitoringStyles";
+import {Center2, ClusterCluoudletLabel} from "../common/PageMonitoringStyles";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import {Button, ThemeProvider} from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
-import '../common/MonitoringStyles.css'
+import '../common/PageMonitoringStyles.css'
 
 const {TabPane} = Tabs;
 const FA = require('react-fontawesome')

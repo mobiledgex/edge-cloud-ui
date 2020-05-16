@@ -1,5 +1,5 @@
 import React from 'react';
-import '../common/MonitoringStyles.css';
+import '../common/PageMonitoringStyles.css';
 import {
     CHART_COLOR_APPLE,
     CHART_COLOR_BERRIES_GALORE,
@@ -31,9 +31,9 @@ import {
     makeBubbleChartDataForCluster, renderBarChartCore, renderLineChartCore, renderPlaceHolderLoader,
     renderUsageByType, renderUsageByType2, showToast, sortUsageListByType
 } from "./PageMonitoringCommonService";
-import {MonitoringStyles} from "../common/MonitoringStyles";
-import {findUsageIndexByKey, numberWithCommas} from "../common/MonitoringUtils";
-import {renderUsageLabelByType} from "./AdmMonitoringService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
+import {renderUsageLabelByType} from "./PageAdmMonitoringService";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import {
@@ -42,7 +42,7 @@ import {
     CLOUDLET_HW_MAPPER_KEY,
     CLOUDLET_LAYOUT_KEY, CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY, defaultLayoutForCloudlet, defaultLayoutMapperForCloudlet
-} from "../common/MonGridLayoutProps";
+} from "../common/PageMonitoringLayoutProps";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {
@@ -536,7 +536,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
 
         if (hardwareUsageList.length === 0) {
             return (
-                <div style={MonitoringStyles.noData}>
+                <div style={PageMonitoringStyles.noData}>
                     NO DATA
                 </div>
             )
@@ -1860,7 +1860,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={MonitoringStyles.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
@@ -2026,7 +2026,7 @@ export const makeLineChartForCloudlet = (_this: PageOperMonitoring, pUsageList: 
 
     if (pUsageList.length === 0) {
         return (
-            <div style={MonitoringStyles.noData}>
+            <div style={PageMonitoringStyles.noData}>
                 NO DATA
             </div>
         )
