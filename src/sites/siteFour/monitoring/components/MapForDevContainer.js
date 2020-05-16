@@ -414,10 +414,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         <div style={{
                                             display: 'flex',
                                             fontSize: 13,
-                                            minWidth: '250px !important',
-                                            width: '250px !important',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
                                         }}>
                                             <div style={{color: 'white',}}>
                                                 {item.uuid}
@@ -524,7 +520,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*desc:################################*/}
                                 {/*desc:appInstPopup                    */}
                                 {/*desc:################################*/}
-                                <Popup permanent className='popup1' ref={this.appInstPopup}>
+                                <Popup permanent className='cloudlet_popup' ref={this.appInstPopup}>
                                     {listAppName.map((AppFullName, innerIndex) => {
                                         let AppName = AppFullName.trim().split(" | ")[0].trim()
                                         let ClusterInst = AppFullName.trim().split(" | ")[1].trim()

@@ -163,20 +163,22 @@ export default function MapForOperContainer(props) {
                             }}
                         >
                             <Popup
+                                className='popup_oper_cloudlet'
                                 offset={[0, 0]}
                                 opacity={0.7}
+                                style={{width: '200px !important'}}
                             >
                                 <div style={{display: 'flex', flexDirection: 'column'}}>
                                     {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, index) => {
                                         return (
-                                            <span
+                                            <div
                                                 className='oper_popup_div'
                                                 onClick={() => {
                                                     alert(cloudLetOne.CloudletName)
                                                 }}
                                             >
                                               {cloudLetOne.CloudletName}
-                                            </span>
+                                            </div>
                                         )
                                     })}
                                 </div>

@@ -112,10 +112,7 @@ tbody:hover {
     z-index: 100;
 }
 
-.popup1 {
-    background-color: black;
-    opacity: 0.7;
-}
+
 
 .leaflet-container {
     width: 100%;
@@ -167,10 +164,7 @@ tbody:hover {
     max-width: auto;
 }
 
-.clientPopup {
-    width: auto;
-    font-size: 9pt !important;
-}
+
 
 .leaflet-popup-content {
     font-size: 10pt !important;
@@ -658,4 +652,33 @@ tr td {
     overflow: auto;
     list-style: none;
     outline: none;
+}
+
+.popup_oper_cloudlet .leaflet-popup-content-wrapper{
+    border-radius: 0px;
+    width: 250px !important;
+    border-color: #00A2FF;
+    border-style: groove;
+}
+
+.oper_popup_div{
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.clientPopup .leaflet-popup-content-wrapper{
+    border-radius: 0px;
+    width: 360px !important;
+    border-color: #00A2FF;
+    border-style: groove;
+    background-color: black;
+}
+
+
+.cloudlet_popup .leaflet-popup-content-wrapper{
+    border-radius: 0px;
+    width: 450px !important;
+    border-color: #43c02a;
+    background-color: black;
+    border-style: groove;
 }
