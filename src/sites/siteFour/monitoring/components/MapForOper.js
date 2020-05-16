@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip, Rectangle, Pane, Circle, FeatureGroup, LayerGroup} from "react-leaflet";
+import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
-import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
+import {renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
 import type {TypeCloudlet} from "../../../../shared/Types";
 import {listGroupByKey} from "../service/MonitoringService";
 import "../common/OperMapStyle.css";
@@ -36,6 +36,7 @@ export default function MapForOper(props) {
     const [newCloudletList, setCloudletList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
+    const [currentCluodlet, setCurrentCluodlet] = useState(undefined)
 
     useEffect(() => {
         setCloudletLocation()
@@ -91,7 +92,7 @@ export default function MapForOper(props) {
             <Map
                 center={mapCenter}
                 zoom={zoom}
-                duration={1.0}
+                duration={0.7}
                 style={{width: '100%', height: '100%'}}
                 easeLinearity={1}
                 useFlyTo={true}
@@ -104,6 +105,22 @@ export default function MapForOper(props) {
                     //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     minZoom={1}
                 />
+                {currentCluodlet !== undefined &&
+                <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    width: '100%',
+                    height: 150,
+                    zIndex: 99999,
+                    opacity: 0.5,
+                    color: 'yellow',
+                    padding: 20,
+
+                }}>
+                    {currentCluodlet.toString()}
+                </div>
+                }
 
                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
@@ -159,6 +176,12 @@ export default function MapForOper(props) {
                             position={
                                 [CloudletLocation.latitude, CloudletLocation.longitude,]
                             }
+                            onMouseOver={(e) => {
+                                e.target.openPopup();
+                            }}
+                            onMouseOut={(e) => {
+                                //e.target.closePopup();
+                            }}
                             onClick={() => {
                             }}
                         >
@@ -174,10 +197,12 @@ export default function MapForOper(props) {
                                             <div
                                                 className='oper_popup_div'
                                                 onClick={() => {
-                                                    alert(cloudLetOne.CloudletName)
+                                                    setCurrentCluodlet([])
+                                                    setCurrentCluodlet(JSON.stringify(cloudLetOne))
+
                                                 }}
                                             >
-                                              {cloudLetOne.CloudletName}
+                                                {cloudLetOne.CloudletName}
                                             </div>
                                         )
                                     })}

@@ -654,12 +654,6 @@ tr td {
     outline: none;
 }
 
-.popup_oper_cloudlet .leaflet-popup-content-wrapper{
-    border-radius: 0px;
-    width: 250px !important;
-    border-color: #00A2FF;
-    border-style: groove;
-}
 
 .oper_popup_div{
     margin-top: 3px;
@@ -682,3 +676,11 @@ tr td {
     background-color: black;
     border-style: groove;
 }
+
+.popup_oper_cloudlet .leaflet-popup-content-wrapper{
+    border-radius: 0px;
+    width: 250px !important;
+    border-color: #00A2FF;
+    border-style: groove;
+}
+
