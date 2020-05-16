@@ -43,7 +43,7 @@ export default function DonutChartHooks(props) {
                                     return cloudletUsageOne.usedVCpuCount + "/" + cloudletUsageOne.maxVCpuCount;
                                 }}
                             />
-                            <div>
+                            <div style={{marginTop: 5}}>
                                 vCPU
                             </div>
                         </div>
@@ -57,7 +57,7 @@ export default function DonutChartHooks(props) {
                                 percent={Math.ceil(cloudletUsageOne.usedMemUsage / cloudletUsageOne.maxMemUsage * 100)}
                                 strokeWidth={10}
                             />
-                            <div>
+                            <div style={{marginTop: 5}}>
                                 MEM
                             </div>
                         </div>
@@ -77,7 +77,7 @@ export default function DonutChartHooks(props) {
                                     return cloudletUsageOne.usedDiskUsage + "/" + cloudletUsageOne.maxDiskUsage;
                                 }}
                             />
-                            <div>
+                            <div style={{marginTop: 5}}>
                                 DISK
                             </div>
                         </div>
