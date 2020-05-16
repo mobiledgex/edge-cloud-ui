@@ -60,7 +60,6 @@ const FilteringComponent = (props) => {
 
     React.useEffect(() => {
         if (props.data && props.data.length > 0) {
-            console.log("20200509 data in filtering comp ... ", props);
             setData(props.data)
         }
         if (props.filterInfo) {
@@ -80,7 +79,6 @@ const FilteringComponent = (props) => {
         let utilsKeys = [];
         let ipsKeys = [];
         let allKeys = [];
-        console.log("20200509 filter comp ... ", items[0]);
         if (filter.method === serviceMC.getEP().METRICS_CLOUDLET) {
             utilsKeys = Object.keys(items[0]["resData_util"][0]);
             ipsKeys = Object.keys(items[0]["resData_ip"][0]);

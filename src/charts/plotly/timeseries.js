@@ -9,17 +9,17 @@ import * as actions from "../../actions";
 import serviceMC from "../../sites/siteFour/monitoring/formatter/chartType";
 
 
-//https://plot.ly/python/#layout-options
-//https://plot.ly/javascript/axes/#tick-placement-color-and-style
-//https://plot.ly/javascript/streaming/
+// https://plot.ly/python/#layout-options
+// https://plot.ly/javascript/axes/#tick-placement-color-and-style
+// https://plot.ly/javascript/streaming/
 
 const trace1 = {
     x: [1, 2, 3, 4, 5],
     y: [1, 3, 2, 3, 1],
-    mode: 'lines',
-    name: 'Solid',
+    mode: "lines",
+    name: "Solid",
     line: {
-        dash: 'solid',
+        dash: "solid",
         width: 4
     }
 };
@@ -27,10 +27,10 @@ const trace1 = {
 const trace2 = {
     x: [1, 2, 3, 4, 5],
     y: [6, 8, 7, 8, 6],
-    mode: 'lines',
-    name: 'dashdot',
+    mode: "lines",
+    name: "dashdot",
     line: {
-        dash: 'dashdot',
+        dash: "dashdot",
         width: 4
     }
 };
@@ -38,10 +38,10 @@ const trace2 = {
 const trace3 = {
     x: [1, 2, 3, 4, 5],
     y: [11, 13, 12, 13, 11],
-    mode: 'lines',
-    name: 'Solid',
+    mode: "lines",
+    name: "Solid",
     line: {
-        dash: 'solid',
+        dash: "solid",
         width: 4
     }
 };
@@ -49,10 +49,10 @@ const trace3 = {
 const trace4 = {
     x: [1, 2, 3, 4, 5],
     y: [16, 18, 17, 18, 16],
-    mode: 'lines',
-    name: 'dot',
+    mode: "lines",
+    name: "dot",
     line: {
-        dash: 'dot',
+        dash: "dot",
         width: 4
     }
 };
@@ -71,7 +71,7 @@ class TimeSeries extends React.Component {
             layout: {
                 datarevision: 0
             },
-            name: 'Solid',
+            name: "Solid",
             currentKey: "",
             revision: 10,
             mode: "line+markers",
@@ -87,61 +87,17 @@ class TimeSeries extends React.Component {
         this.maxDataCount = 20;
         this.currentPage = 0;
     }
-    componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20200511 ------ receive data in timeseries--', nextProps)
-        if (nextProps.data && nextProps.data.length > 0) {
 
-            // TODO : select box의 선택에 따른 데이터 교체
-            let selectedItem = ""
-            if (nextProps.method === "") {
-                selectedItem = "diskUsed"
-            }
-            let times = nextProps.data[0].times[0];
-            let datas = nextProps.data[0].resData_util[0].diskUsed.y;
-            let methods = nextProps.data[0].methods[0];
-            this.reloadChart(
-                datas,
-                times,
-                methods
-            );
-            this.stackAllData.push(Object.assign(nextProps.data))
-
-        }
-        console.log("20200511 ------ page info ... ", nextProps.step)
-        if (this.currentPage !== nextProps.step) {
-            this.currentPage = nextProps.step;
-            this.stackData = [];
-            this.loadedCount = 0;
-            this.stackAllData.map((data) => {
-                let times = data[0].times[0];
-                let datas = data[0].resData_util[0].diskUsed.y;
-                let methods = data[0].methods[0];
-                this.reloadChart(
-                    datas,
-                    times,
-                    methods
-                );
-            })
-        }
-
-        if (nextProps.size) {
-            this.setState({
-                vWidth: nextProps.size.width,
-                vHeight: nextProps.size.height
-            });
-        }
-    }
     componentDidMount() {
         if (this.props.size) {
             setTimeout(
-                () =>
-                    this.setState({
-                        vWidth: this.props.size.width,
-                        vHeight: this.props.size.height
-                    }),
+                () => this.setState({
+                    vWidth: this.props.size.width,
+                    vHeight: this.props.size.height
+                }),
                 1000
             );
-            let cloneData = _.cloneDeep(this.state.chartData);
+            const cloneData = _.cloneDeep(this.state.chartData);
             cloneData[0].type = this.props.type;
             this.setState({ chartData: cloneData || "scatter" });
         }
@@ -155,15 +111,58 @@ class TimeSeries extends React.Component {
             this.hGab = 0;
         }
         if (this.props.divide) this.maxDataCount = this.props.divide;
+        console.log("20200515 .. props in did mount == ", this.props);
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if ((prevProps.data !== this.props.data) && prevProps.data.length > 0) {
+            // TODO : select box의 선택에 따른 데이터 교체
+            let selectedItem = "";
+            if (prevProps.method === "") {
+                selectedItem = "diskUsed";
+            }
+            const times = prevProps.data[0].times[0];
+            const datas = prevProps.data[0].resData_util[0].diskUsed.y;
+            const methods = prevProps.data[0].methods[0];
+            this.reloadChart(
+                datas,
+                times,
+                methods
+            );
+            this.stackAllData.push(Object.assign(prevProps.data));
+        }
+        if (this.currentPage !== prevProps.step) {
+            this.currentPage = prevProps.step;
+            this.stackData = [];
+            this.loadedCount = 0;
+            this.stackAllData.map(data => {
+                const times = data[0].times[0];
+                const datas = data[0].resData_util[0].diskUsed.y;
+                const methods = data[0].methods[0];
+                this.reloadChart(
+                    datas,
+                    times,
+                    methods
+                );
+            });
+        }
+
+        if (prevProps.size !== this.props.size) {
+            console.log("20200515 props size == ", prevProps.size, ":", this.props.size);
+            // this.setState({
+            //     vWidth: prevProps.size.width,
+            //     vHeight: prevProps.size.height
+            // });
+        }
+    }
+
     reloadChart(data, times, names) {
         let seriesData = null;
         // let series = times.map((time) => (
         //     d3.TimeSeries()
         // ))
 
-        seriesData =
-        {
+        seriesData = {
             mode: "line",
             x: times,
             y: data,
@@ -171,19 +170,19 @@ class TimeSeries extends React.Component {
             text: names,
             name: names[0],
             line: {
-                dash: 'solid',
+                dash: "solid",
                 width: 1
             },
             marker: { size: 4 },
-            hovertemplate: '<i>Used</i>: %{y:.2f}GBs' +
-                '<br><b>Time</b>: %{x}<br>' +
-                '<b> %{text} </b>' +
-                '<extra></extra>'
-        }
+            hovertemplate: "<i>Used</i>: %{y:.2f}GBs"
+                + "<br><b>Time</b>: %{x}<br>"
+                + "<b> %{text} </b>"
+                + "<extra></extra>"
+        };
 
         if (this.stackData.length < this.maxDataCount) {
             if (Math.floor(this.loadedCount / this.maxDataCount) === this.currentPage) {
-                this.stackData.push(seriesData)
+                this.stackData.push(seriesData);
             }
             this.loadedCount++;
         }
@@ -193,72 +192,15 @@ class TimeSeries extends React.Component {
         });
 
         this.setState({ revision: this.state.revision + 1 });
-
     }
+
     resetData() {
         this.setState({ chartData: [] });
     }
 
-    reloadChartOld(data, series, names, dataId, dataType) {
-        let xaxis = series;
-
-        let _data = dataId ? data[parseInt(dataId)] : data;
-
-        let seriesData = null;
-
-        if (!dataId) {
-            seriesData = data.map((item, i) => ({
-                type: this.state.type,
-                mode: this.state.mode,
-                x: series,
-                y: item,
-                yaxis: i === 0 ? "y" : i === 1 ? "y2" : i === 2 ? "y3" : "y",
-                name: names && names.length > 0 ? names[i] : "",
-                line: {
-                    color: this.props.error
-                        ? this.colorsErr[i]
-                        : this.colors[i],
-                    width: 1
-                },
-                marker: { size: 5 }
-            }));
-        } else {
-            let sData = [];
-
-            _data.map(dt => {
-                sData.push(Number(dataType !== "MEM" ? dt : dt * 0.001));
-            });
-            seriesData = [
-                {
-                    type: this.state.type,
-                    mode: this.state.mode,
-                    x: series,
-                    y: sData,
-                    yaxis: "y",
-                    name:
-                        names && names.length > 0
-                            ? names[parseInt(dataId)]
-                            : "",
-                    line: {
-                        color: this.props.error
-                            ? this.colorsErr[parseInt(dataId)]
-                            : this.colors[parseInt(dataId)],
-                        width: 1
-                    },
-                    marker: { size: 5 }
-                }
-            ];
-        }
-
-        this.setState({
-            chartData: seriesData
-        });
-
-        this.setState({ revision: this.state.revision + 1 });
-    }
-
     render() {
-        let { error } = this.props;
+        const { error } = this.props;
+        console.log("20200515 props size == == == ", this.state.vWidth, ":", this.state.vHeight);
         return (
             <div
                 className="plotContainer"
@@ -269,7 +211,7 @@ class TimeSeries extends React.Component {
                 }}
             >
                 <Plot
-                    className={"plotly-chart"}
+                    className="plotly-chart"
                     style={{
                         backgroundColor: "transparent",
                         overflow: "hidden"
@@ -287,14 +229,14 @@ class TimeSeries extends React.Component {
                             orientation: "h",
                             x: 0,
                             y: 1,
-                            xanchor: 'bottom',
+                            xanchor: "bottom",
                             font: {
-                                family: 'Roboto',
+                                family: "Roboto",
                                 size: 10,
-                                color: 'rgb(54, 54, 54)'
+                                color: "rgb(54, 54, 54)"
                             },
-                            bgcolor: '#212121',
-                            bordercolor: '#454545',
+                            bgcolor: "#212121",
+                            bordercolor: "#454545",
                             borderwidth: 1
                         },
                         showlegend: this.props.showLegend,
@@ -326,7 +268,7 @@ class TimeSeries extends React.Component {
                             linecolor: "rgba(255,255,255,.2)",
                             linewidth: 1,
                             color: "rgba(255,255,255,.4)"
-                            //rangemode: 'tozero'
+                            // rangemode: 'tozero'
                         },
                         yaxis2: {
                             showgrid: true,
@@ -346,7 +288,7 @@ class TimeSeries extends React.Component {
                             side: "right",
                             position: this.props.y2Position,
                             range: this.props.y2Range
-                            //rangemode: 'tozero'
+                            // rangemode: 'tozero'
                         },
                         yaxis3: {
                             showgrid: true,
@@ -401,17 +343,13 @@ TimeSeries.defaultProps = {
 };
 
 //
-const mapStateToProps = (state, ownProps) => {
-    return {
-        currentKey: state.cityChanger.city
-    };
-};
-const mapDispatchProps = dispatch => {
-    return {
-        handleChangeCity: data => {
-            dispatch(actions.changeCity(data));
-        }
-    };
-};
+const mapStateToProps = (state, ownProps) => ({
+    currentKey: state.cityChanger.city
+});
+const mapDispatchProps = dispatch => ({
+    handleChangeCity: data => {
+        dispatch(actions.changeCity(data));
+    }
+});
 
 export default connect(mapStateToProps, mapDispatchProps)(TimeSeries);

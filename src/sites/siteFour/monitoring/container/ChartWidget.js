@@ -13,7 +13,9 @@ import Map from "../../../../libs/simpleMaps/with-react-motion/index_clusters";
 import CounterWidget from "./CounterWidget";
 import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
+import * as DataType from "../formatter/dataType";
 import FilteringComponent from "../components/FilteringComponent";
+import * as DataFormats from "../formatter/dataFormats";
 
 class ChartWidget extends React.Component {
     constructor(props) {
@@ -22,17 +24,50 @@ class ChartWidget extends React.Component {
             mapData: [],
             clusterCnt: [0],
             size: { width: 10, height: 10 },
-            activeStep: 0
+            activeStep: 0,
+            data: [],
+            dataRaw: []
         };
     }
 
-
     componentDidMount() {
-        this.divRef = React.createRef();
-        setTimeout(() => {
-            if (this.divRef.current) this.divRef.current.setDataToWidget(this.getData());
-        }, 1000);
+        // this.divRef = React.createRef();
+        // setTimeout(() => {
+        //     if (this.divRef.current) this.divRef.current.setDataToWidget(this.getData());
+        // }, 1000);
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.data !== this.state.dataRaw) {
+            console.log("20200516 compare method ==  : chart type = ", this.props.chartType, ": id = ", prevProps.id, ": data = ", prevProps.data);
+            if (prevProps.id === DataType.REGIST_CLIENT) {
+                if (prevProps.data && prevProps.data.values) {
+                    if (prevProps.data.values.length > 0) this.updateData(prevProps.data.values);
+                }
+            } else {
+                // this.setState({ data: prevProps.data });
+            }
+            this.setState({ dataRaw: prevProps.data });
+        }
+    }
+
+    updateData = async uData => {
+        console.log("20200516 compare ....... dataFormatRateRegistregist ... ", uData);
+        const updatedata = await DataFormats.dataFormatRateRegist(uData);
+        console.log("20200516 update data .. ", updatedata);
+    }
+
+    // componentWillReceiveProps(prevProps, prevState) {
+    //     if (prevProps.data !== this.props.data) {
+    //         console.log("20200515 method ==  : chart type = ", this.props.chartType, ": id = ", prevProps.id, ": data type = ", DataType.REGIST_CLIENT);
+    //         if (prevProps.id === DataType.REGIST_CLIENT) {
+    //             console.log("20200515 ....... dataFormatRateRegistregist ... ", prevProps);
+    //             if (prevProps && prevProps.data && prevProps.data.values) this.setState({ data: DataFormats.dataFormatRateRegist(prevProps.data) });
+    //         } else {
+    //             this.setState({ data: prevProps.data });
+    //         }
+    //     }
+    // }
 
     getData = () => [100, 3, 0, 6, 4, 5, 8, 6, 0, 1];
 
@@ -47,8 +82,12 @@ class ChartWidget extends React.Component {
     }
 
     render() {
-        const { data, chartType, type, size, title, legendShow, filter, method, page, itemCount } = this.props;
-        console.log("20200509 data --- ", this.props);
+        const {
+            chartType, type, size, title, legendShow, filter, method, page
+        } = this.props;
+        const {
+            activeStep, mapData, clusterCnt, data
+        } = this.state;
         // const { size } = this.state;
         return (
             <div
@@ -64,32 +103,53 @@ class ChartWidget extends React.Component {
                     </div>
                 ) : null}
                 {chartType === ChartType.GRAPH ? (
-                    <TimeSeries size={size} type={type} data={data} title={title.value} showLegend={legendShow} method={method} filterInfo={filter} divide={4} step={this.state.activeStep} />
+                    <TimeSeries
+                        size={size}
+                        type={type}
+                        chartType={chartType}
+                        data={data}
+                        title={title.value}
+                        showLegend={legendShow}
+                        method={method}
+                        filterInfo={filter}
+                        divide={4}
+                        step={activeStep}
+                    />
                 ) : chartType === ChartType.GAUGE ? (
-                    <ContainerHealth size={size} type={type} title={title.value} />
+                    <ContainerHealth
+                        size={size}
+                        type={type}
+                        chartType={chartType}
+                        title={title.value}
+                        method={method}
+                    />
                 ) : chartType === ChartType.MAP ? (
                     <Map
                         size={size}
                         type={type}
+                        chartType={chartType}
                         data={data}
-                        locData={this.state.mapData}
+                        locData={mapData}
                         id="matricMap"
                         reg="cloudletAndClusterMap"
                         zoomControl={{ center: [0, 0], zoom: 1.5 }}
                         title={title.value}
+                        method={method}
                     />
                 ) : chartType === ChartType.COUNTER ? (
                     <CounterWidget
                         size={size}
+                        type={type}
+                        chartType={chartType}
                         data={data}
                         ref={this.divRef}
-                        clusterCnt={this.state.clusterCnt}
+                        clusterCnt={clusterCnt}
                         title={title.value}
+                        method={method}
                     />
                 ) : (
-                                    <DataGrid size={size} data={data} title={title.value} />
+                                    <DataGrid size={size} type={type} chartType={chartType} data={data} title={title.value} method={method} />
                                 )}
-
                 {page === "multi"
                     ? (
                         <div style={{ height: 10 }}>
@@ -101,6 +161,9 @@ class ChartWidget extends React.Component {
         );
     }
 }
+ChartWidget.defaultProps = {
+    method: "not"
+};
 
 export default ContainerWrapper()(ChartWidget);
 

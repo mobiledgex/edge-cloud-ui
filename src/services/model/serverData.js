@@ -15,7 +15,6 @@ const getToken = (self) => {
 };
 
 export const sendRequest = async (self, requestData) => {
-    console.log("20200513 send request ... ", requestData)
     const token = getToken(self);
     if (token) {
         requestData.token = token;

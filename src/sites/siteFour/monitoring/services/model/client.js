@@ -60,7 +60,7 @@ const parseData = (response, type) => {
         return resData;
     }
 
-    return { [type]: resData };
+    return { path: [type], values: resData };
 };
 /*
 1. Get yesterday date with current timing
@@ -75,7 +75,7 @@ moment().subtract(1, 'days').endOf('day').toString()
 */
 const metricFromServer = async (self, data) => {
     const selectedTimeRange = "today"; // TODO: selected time form toolbar
-    const yesterdayWithCurrent = moment().subtract(1, "days").toString();
+    const yesterdayWithCurrent = moment().subtract(2, "days").toString();
     const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
     const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
 
@@ -110,14 +110,12 @@ const metricFromServer = async (self, data) => {
 
 
     const response = await serverData.sendRequest(self, requestData);
-    console.log("20200513 metricFromServer --- ", response);
     return parseData(response, `${data.pRegion}/${data.selectOrg}/${data.appinstSelectedOne}`);
 };
 
 
 export const getClientMetrics = async (self, params) => {
     if (!scope) scope = self;
-    console.log("20200513 getClientMetrics --- ", params);
     const result = await metricFromServer(self, params);
     return result;
 };

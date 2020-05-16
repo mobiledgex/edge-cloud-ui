@@ -12,7 +12,8 @@ import * as actions from "../../../actions";
 import * as Service from "./services";
 import ChartWidget from "./container/ChartWidget";
 import * as serviceMC from "../../../services/model/serviceMC";
-import * as ChartType from "./formatter/chartType";
+import * as chartType from "./formatter/chartType";
+import * as dataType from "./formatter/dataType";
 import HeaderFiltering from "./hooks/HeaderFiltering";
 
 // doCloudlets = true    데이터 로딩을 잠시 멈춤 : UI 작업을 위하여
@@ -90,7 +91,6 @@ class MonitoringAdmin extends React.Component {
             } else if (result && result.AppinstList) {
                 this.hasAppinst = this.hasAppinst.concat(result.AppinstList);
                 countApp--;
-                console.log("20200514 countApp = ", countApp);
             } else {
                 return;
             }
@@ -101,7 +101,6 @@ class MonitoringAdmin extends React.Component {
                 });
                 count = regionCount;
             } else if (countApp <= 0) {
-                console.log("20200514 init appinst .... ", this.hasAppinst);
                 this.setState({
                     compAppinst: this.hasAppinst,
                 });
@@ -123,9 +122,7 @@ class MonitoringAdmin extends React.Component {
                         this.onReceiveResult(mtr);
                     });
                 }
-                console.log("20200513 init result of init ---- ", resultMetrics);
             } else if (props.method === serviceMC.getEP().SHOW_CLOUDLET) {
-                console.log("20200513 init show cloudlet  ---- ");
                 await Service.getPrepareList(props, self);
             }
         } catch (e) {
@@ -226,6 +223,7 @@ const generatWidget = (info) => (
         itemCount={info.itemCount}
     />
 );
+
 const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
     const defaultProp = {
         sizeInfo: infos.size,
@@ -235,10 +233,10 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
     };
     return [
         generatWidget({
-            id: "countCluster",
+            id: dataType.COUNT_CLUSTER,
             method: null,
-            chartType: ChartType.COUNTER,
-            type: "",
+            chartType: chartType.COUNTER,
+            type: "counter",
             title: { value: "Count of Clusters", align: "left" },
             filter: null,
             page: "multi",
@@ -246,9 +244,9 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generatWidget({
-            id: "networkCloudlet",
+            id: dataType.NETWORK_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLOUDLET,
-            chartType: ChartType.GRAPH,
+            chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
@@ -257,9 +255,9 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generatWidget({
-            id: "findCloudlet",
-            method: serviceMC.getEP().METRICS_CLIENT,
-            chartType: ChartType.MAP,
+            id: dataType.FIND_CLOUDLET,
+            method: null,
+            chartType: chartType.MAP,
             type: "scatter",
             title: { value: "Find Cloudlets", align: "left" },
             filter: null,
@@ -267,9 +265,9 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generatWidget({
-            id: "registClient",
-            method: null,
-            chartType: ChartType.GRAPH,
+            id: dataType.REGIST_CLIENT,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Rate of Regist Client", align: "left" },
             filter: null,
@@ -277,9 +275,9 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generatWidget({
-            id: "clientMethod",
+            id: dataType.METHOD_CLIENT,
             method: serviceMC.getEP().METHOD_CLIENT,
-            chartType: ChartType.GRAPH,
+            chartType: chartType.GRAPH,
             type: "bar",
             title: { value: "Rate of Find Cloudlet", align: "left" },
             filter: null,
@@ -287,9 +285,9 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generatWidget({
-            id: "eventCloudlet",
+            id: dataType.EVENT_CLOUDLET,
             method: serviceMC.getEP().EVENT_CLOUDLET,
-            chartType: ChartType.TABLE,
+            chartType: chartType.TABLE,
             type: "alarm",
             title: { value: "Events of Cloudlet", align: "center" },
             filter: null,

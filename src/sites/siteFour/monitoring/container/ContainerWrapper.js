@@ -43,13 +43,11 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     componentDidMount() {
-        console.log("20200511 did mount == ", this.props);
         this.setState({ chartType: this.props.chartType, title: this.props.title, page: this.props.page });
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.panelInfo) {
-            console.log("20200509 did recevie props from redux --- ", JSON.stringify(nextProps.panelInfo.title.value), ` == : == ${this.state.title.value}`);
             if (nextProps.panelInfo.title.value === this.state.title.value) {
                 this.setState({ legendShow: !this.state.legendShow });
             }
@@ -62,7 +60,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
              ******************************************** */
         // this.firstProps = _.cloneDeep(nextProps.id);
         if (nextProps.id === this.firstProps) return;
-        console.log("20200513 receive props... ---....----....");
         if (nextProps.cloudlets && nextProps.cloudlets.length > 0 && nextProps.method) {
             this.setState({ method: nextProps.method });
             this.initialize(nextProps, this);
@@ -76,7 +73,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     async onReceiveResult(result, self) {
         try {
-            console.log("20200511 ------->>>>>>>>>>  page  = ", self.state.page, ": result ==> ", result);
             // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
             /** filtering data */
             const groupByData = result;
@@ -88,19 +84,12 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     async initialize(props: MetricsParmaType, self: any) {
         try {
-            // TODO :
-            console.log(
-                "20200430 initial props ... method..",
-                props.method,
-            );
-
             if (props.method) {
                 this.setState({ chartMethod: props.method });
                 const result = await Service.MetricsService(props, self);
                 /**
                  * completing service, go to onReceiveResult below lines
                  */
-                console.log("20200507 result == ", result);
             }
         } catch (e) {
             console.log(e);

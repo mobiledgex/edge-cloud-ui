@@ -66,7 +66,6 @@ export default function MonitoringListViewer(props) {
             setSizeH(parentSize.height - 50);
         }
         if (props.data && props.data.length > 0) {
-            console.log("20200507 data in monitroing viewer ... ", props.data);
             setColumns(makeColumn(props.data[0]));
             setRows(props.data);
         }

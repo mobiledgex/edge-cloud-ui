@@ -1,6 +1,6 @@
 import * as serviceMC from "../../../../services/model/serviceMC";
 
-const setRemote = result => {};
+const setRemote = result => { };
 const getArgs = info => {
     return {
         region: info.pRegion,
@@ -47,10 +47,6 @@ const MetricsCloudlet = (defaultValue: any) => {
             method: serviceMC.getEP().EVENT_CLOUDLET,
             data: execrequest
         };
-        console.log(
-            "20200414 metricsCloudlet send params == == == == == ",
-            requestData
-        );
         //this.props.handleLoadingSpinner(true);
         return serviceMC.sendSyncRequest(_self, requestData);
     }

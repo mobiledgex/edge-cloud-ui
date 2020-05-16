@@ -3,7 +3,7 @@ import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { connect } from "react-redux";
 import HeaderComponent from "../hooks/header";
-import * as actions from "../../../../actions"
+import * as actions from "../../../../actions";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -42,8 +42,10 @@ class MonitoringLayout extends React.Component {
     static defaultProps = {
         className: "layout",
         rowHeight: 30,
-        onLayoutChange: function () { },
-        cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
+        onLayoutChange() { },
+        cols: {
+            lg: 12, md: 10, sm: 6, xs: 4, xxs: 2
+        },
         initialLayout: generateLayout()
     };
 
@@ -58,48 +60,13 @@ class MonitoringLayout extends React.Component {
             headerSize: 30,
             padding: 3,
         };
-    };
+    }
 
     componentDidMount() {
         this.setState({ mounted: true });
     }
 
-    generateDOM(items) {
-        return this.state.layouts[this.state.currentBreakpoint].map(
-            (l, idx) => (
-                <div
-                    key={l.i}
-                    className={l.static ? "static" : "cancelDrageBar"}
-                    style={{
-                        display: "grid",
-                        gridTemplateRows: "30px auto",
-                        borderWidth: 1,
-                        borderColor: "#333333",
-                        backgroundColor: "#222",
-                        padding: "3px"
-                    }}
-                >
-                    <HeaderComponent
-                        style={{ height: this.state.headerSize }}
-                        defaultProps={l.i}
-                        onPutItem={this.onPutItem}
-                        onClick={this.onClickMenu}
-                        idx={l}
-                        panelInfo={items[idx].props}
-                    ></HeaderComponent>
-                    <div
-                        style={{
-                            borderRadius: "10px",
-                            padding: "10px",
-                            border: "1px solid #696969"
-                        }}
-                    >
-                        {items[idx]}
-                    </div>
-                </div>
-            )
-        );
-    }
+
 
     onBreakpointChange = breakpoint => {
         this.setState(prevState => ({
@@ -107,21 +74,20 @@ class MonitoringLayout extends React.Component {
             toolbox: {
                 ...prevState.toolbox,
                 [breakpoint]:
-                    prevState.toolbox[breakpoint] ||
-                    prevState.toolbox[prevState.currentBreakpoint] ||
-                    []
+                    prevState.toolbox[breakpoint]
+                    || prevState.toolbox[prevState.currentBreakpoint]
+                    || []
             }
         }));
     };
 
     onCompactTypeChange = () => {
         const { compactType: oldCompactType } = this.state;
-        const compactType =
-            oldCompactType === "horizontal"
-                ? "vertical"
-                : oldCompactType === "vertical"
-                    ? null
-                    : "horizontal";
+        const compactType = oldCompactType === "horizontal"
+            ? "vertical"
+            : oldCompactType === "vertical"
+                ? null
+                : "horizontal";
         this.setState({ compactType });
     };
 
@@ -144,24 +110,22 @@ class MonitoringLayout extends React.Component {
     };
 
     onPutItem = item => {
-        this.setState(prevState => {
-            return {
-                toolbox: {
-                    ...prevState.toolbox,
-                    [prevState.currentBreakpoint]: [
-                        ...(prevState.toolbox[prevState.currentBreakpoint] ||
-                            []),
-                        item
-                    ]
-                },
-                layouts: {
-                    ...prevState.layouts,
-                    [prevState.currentBreakpoint]: prevState.layouts[
-                        prevState.currentBreakpoint
-                    ].filter(({ i }) => i !== item.i)
-                }
-            };
-        });
+        this.setState(prevState => ({
+            toolbox: {
+                ...prevState.toolbox,
+                [prevState.currentBreakpoint]: [
+                    ...(prevState.toolbox[prevState.currentBreakpoint]
+                        || []),
+                    item
+                ]
+            },
+            layouts: {
+                ...prevState.layouts,
+                [prevState.currentBreakpoint]: prevState.layouts[
+                    prevState.currentBreakpoint
+                ].filter(({ i }) => i !== item.i)
+            }
+        }));
     };
 
     onLayoutChange = (layout, layouts) => {
@@ -174,9 +138,47 @@ class MonitoringLayout extends React.Component {
             layouts: { lg: generateLayout() }
         });
     };
+
     onClickMenu = (info, title) => {
-        console.log('20200507 on click menu == ', info, ":", title)
-        this.props.handleClickPanelInfo({ info, title })
+        this.props.handleClickPanelInfo({ info, title });
+    }
+
+    generateDOM(items) {
+        return this.state.layouts[this.state.currentBreakpoint].map(
+            (l, idx) => (
+                <div
+                    key={l.i}
+                    className={l.static ? "static" : "cancelDrageBar"}
+                    style={{
+                        display: "grid",
+                        gridTemplateRows: "30px auto",
+                        borderWidth: 1,
+                        borderColor: "#333333",
+                        backgroundColor: "#222",
+                        padding: "3px"
+                    }}
+                >
+                    {/* progress bar in here */}
+                    <HeaderComponent
+                        style={{ height: this.state.headerSize }}
+                        defaultProps={l.i}
+                        onPutItem={this.onPutItem}
+                        onClick={this.onClickMenu}
+                        idx={l}
+                        panelInfo={items[idx].props}
+                    />
+                    <div
+                        style={{
+                            borderRadius: "10px",
+                            padding: "10px",
+                            border: "1px solid #696969"
+                        }}
+                    >
+                        {items[idx]}
+                    </div>
+                </div>
+            )
+        );
     }
 
     render() {
@@ -203,9 +205,11 @@ class MonitoringLayout extends React.Component {
                     useCSSTransforms={this.state.mounted}
                     compactType={this.state.compactType}
                     preventCollision={!this.state.compactType}
-                    autoSize={true}
+                    autoSize
                     // cols : If size of width reduced then compact the sizing and arange items in vertical
-                    cols={{ lg: 12, md: 3, sm: 3, xs: 3, xxs: 2 }}
+                    cols={{
+                        lg: 12, md: 3, sm: 3, xs: 3, xxs: 2
+                    }}
                     rowHeight={this.props.sizeInfo.height / 3 - 26} // TODO : value 70 is maby height of header
                     draggableHandle=".react-grid-dragHandleExample"
                 >
@@ -217,25 +221,21 @@ class MonitoringLayout extends React.Component {
 }
 
 //
-const mapStateToProps = (state, ownProps) => {
-    return {
-        not: null
-    };
-};
-const mapDispatchProps = dispatch => {
-    return {
-        handleClickPanelInfo: data => {
-            dispatch(actions.clickInfoPanel(data));
-        }
-    };
-};
+const mapStateToProps = (state, ownProps) => ({
+    not: null
+});
+const mapDispatchProps = dispatch => ({
+    handleClickPanelInfo: data => {
+        dispatch(actions.clickInfoPanel(data));
+    }
+});
 
 export default connect(mapStateToProps, mapDispatchProps)(MonitoringLayout);
 
 
 function generateLayout() {
     return _.map(_.range(0, 25), function (item, i) {
-        var y = Math.ceil(Math.random() * 4) + 1;
+        const y = Math.ceil(Math.random() * 4) + 1;
         return {
             x: (_.random(0, 5) * 2) % 12,
             y: Math.floor(i / 6) * y,
@@ -247,7 +247,7 @@ function generateLayout() {
     });
 }
 
-/****
+/** **
  * // layout is an array of objects, see the demo for more complete usage
     const layout = [
       {i: 'a', x: 0, y: 0, w: 1, h: 2, static: true},

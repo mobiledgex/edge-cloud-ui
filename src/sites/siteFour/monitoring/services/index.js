@@ -94,8 +94,7 @@ const getMetricsCloudlet = async (self, params) => {
  *********************************** */
 const getMetricsClient = async (self, params) => {
     /* Continue, get events of cloudlets */
-    console.log("20200513 getMetricsClient ... #1 ... ", params);
-    const requestData = (appinstInfo) => ({
+    const requestData = appinstInfo => ({
         token,
         pRegion: appinstInfo.region,
         selectOrg: appinstInfo.organizationName,
@@ -105,12 +104,12 @@ const getMetricsClient = async (self, params) => {
         last: 10,
     });
 
-    params.appinsts.map(async (appinst) => {
+    params.appinsts.map(async appinst => {
         const response = await Client.getClientMetrics(
             self,
             requestData(appinst),
         );
-        if (response.length > 0) self.onReceiveResult(response, self);
+        if (response && response.values.length > 0) self.onReceiveResult(response, self);
     });
 };
 
@@ -160,13 +159,15 @@ export const getPrepareList = async (defaultValue: MetricsParmaType, self: any) 
 export const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
     if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
         // this.props.handleLoadingSpinner(true);
-        getEventCloudlet(defaultValue.self, defaultValue).then(async (data) => {
-            self.onReceiveResult(data, self);
-        });
+        // 잠시 막음
+        // getEventCloudlet(defaultValue.self, defaultValue).then(async (data) => {
+        //     self.onReceiveResult(data, self);
+        // });
     }
     if (defaultValue.method === serviceMC.getEP().METRICS_CLOUDLET) {
-        const result = await getMetricsCloudlet(self, defaultValue);
-        return result;
+        // 잠시 막음
+        // const result = await getMetricsCloudlet(self, defaultValue);
+        // return result;
     }
 
     if (defaultValue.method === serviceMC.getEP().METRICS_CLIENT) {

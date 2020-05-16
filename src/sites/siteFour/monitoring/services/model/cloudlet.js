@@ -182,8 +182,8 @@ const parseData = (response, type) => {
     let resData = [];
     let times = [];
     let methods = [];
-    let resData_util = {}
-    let resData_ip = {}
+    let resData_util = {};
+    let resData_ip = {};
     let resultParse = [];
     if (response && response.response && response.response.data.data) {
         response.response.data.data.map((data, i) => {
