@@ -88,7 +88,7 @@ export default function ClientSummaryHooks(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody padding={'none'} style={{width: 'auto', overflowX: 'scroll'}}>
-                        {props.filteredUsageList !== undefined && props.filteredUsageList.map((item: TypeClientStatus, index) => {
+                        {props.clientStatusList !== undefined && props.filteredUsageList.map((item: TypeClientStatus, index) => {
                             return (
                                 <TableRow
                                     key={index}
