@@ -24,7 +24,7 @@ import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
-import PageDevMonitoring from "../view/DevOperMonitoringView";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,

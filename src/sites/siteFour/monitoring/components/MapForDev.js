@@ -4,7 +4,7 @@ import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
-import PageDevMonitoring from "../view/DevOperMonitoringView";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../service/PageMonitoringCommonService";

@@ -283,7 +283,7 @@ type PageDevMonitoringState = {
     allCloudletUsageList: any,
     filteredCloudletUsageList: any,
     toggleOperMapZoom: boolean,
-    clientStatusList:any,
+    clientStatusList: any,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -471,7 +471,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredCloudletUsageList: [],
                     cloudletDropdownList: [],
                     toggleOperMapZoom: false,
-                    clientStatusList:[],
+                    clientStatusList: [],
                 };
             }
 
@@ -544,7 +544,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletList: cloudletList,
                         filteredCloudletList: cloudletList,
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
-                        clientStatusList:clientStatusList,
+                        clientStatusList: clientStatusList,
                     });
 
                     //@desc:#########################################################################
@@ -675,7 +675,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async reloadDataFromRemote() {
                 clearInterval(this.intervalForAppInst)
                 await this.setState({
-                    currentClassification: CLASSIFICATION.CLUSTER,
+                    currentClassification: this.state.userType.toString().includes("dev") ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLOUDLET,
                     placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
                     placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
                 })

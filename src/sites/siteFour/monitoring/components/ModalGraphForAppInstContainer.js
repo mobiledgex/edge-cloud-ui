@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Modal as AModal} from "antd";
 import {Line} from 'react-chartjs-2';
-import PageDevMonitoring from "../view/DevOperMonitoringView";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../service/PageMonitoringCommonService";
 import {makeGradientColorOne} from "../service/PageMonitoringService";

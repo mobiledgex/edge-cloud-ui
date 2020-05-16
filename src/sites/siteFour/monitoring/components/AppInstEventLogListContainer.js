@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {Empty} from 'antd';
-import PageDevMonitoring from "../view/DevOperMonitoringView";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {FixedSizeList} from "react-window";
 import {reduceString} from "../service/PageMonitoringService";
 import '../common/MonitoringStyles.css'

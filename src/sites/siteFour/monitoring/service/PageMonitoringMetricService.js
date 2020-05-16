@@ -10,7 +10,7 @@ import {
     showToast
 } from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./AdmMonitoringService";
-import PageDevMonitoring from "../view/DevOperMonitoringView";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
