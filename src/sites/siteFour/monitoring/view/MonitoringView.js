@@ -43,7 +43,7 @@ import {
 import type {
     TypeBarChartData,
     TypeCloudlet,
-    TypeCloudletUsageList,
+    TypeCloudletUsage,
     TypeGridInstanceList,
     TypeLineChartData,
     TypeUtilization
@@ -113,7 +113,7 @@ import {
     defaultLayoutXYPosForCluster
 } from "../common/MonitoringGridLayoutProps";
 import MapForOper from "../components/MapForOper";
-import PIeChartHooks from "../components/PIeChartHooks";
+import DonutChartHooks from "../components/DonutChartHooks";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -762,7 +762,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 if (pCloudletOne !== undefined) {
                     let cloudletName = pCloudletOne.split(" | ")[0].trim();
-                    let filteredCloudletUsageList = this.state.allCloudletUsageList.filter((item: TypeCloudletUsageList, index) => {
+                    let filteredCloudletUsageList = this.state.allCloudletUsageList.filter((item: TypeCloudletUsage, index) => {
                         return item.cloudlet === cloudletName
                     })
 
@@ -1325,8 +1325,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         />
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PIE) {
                     return this.state.loading ? renderPlaceHolderLoader() :
-                        <PIeChartHooks
-
+                        <DonutChartHooks
+                            filteredCloudletUsageList={this.state.filteredCloudletUsageList}
                         />
                 }
             }

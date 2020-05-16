@@ -308,48 +308,6 @@ export const makeid = (length) => {
     return result;
 };
 
-export const console_log = (msg, color = 'green') => {
-    color = color || "black";
-    let bgc = "White";
-    switch (color) {
-        case "success":
-            color = "Green";
-            bgc = "LimeGreen";
-            break;
-        case "info":
-            color = "DodgerBlue";
-            bgc = "Turquoise";
-            break;
-        case "error":
-            color = "Red";
-            bgc = "Black";
-            break;
-        case "start":
-            color = "OliveDrab";
-            bgc = "PaleGreen";
-            break;
-        case "warning":
-            color = "Tomato";
-            bgc = "Black";
-            break;
-        case "end":
-            color = "Orchid";
-            bgc = "MediumVioletRed";
-            break;
-        default:
-            color = color;
-    }
-
-    if (typeof msg == "object") {
-        console.log(msg);
-    } else if (typeof color == "object") {
-        console.log("%c" + msg, "color: PowderBlue;font-weight:bold; background-color: RoyalBlue;");
-        console.log(color);
-    } else {
-        console.log("%c" + msg, "color:" + color + ";font-weight:bold;font-size:14pt; background-color:black;");
-    }
-};
-
 
 export const getUserId = () => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
@@ -424,36 +382,6 @@ export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userTyp
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return convertByteToMegaGigaByte(usageOne.sumRecvBytes)
     }
-};
-
-
-export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
-    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-        usageList.sort((a, b) => b.sumTcpConns - a.sumTcpConns);
-    } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
-        usageList.sort((a, b) => b.sumTcpRetrans - a.sumTcpRetrans);
-    } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        usageList.sort((a, b) => b.sumUdpSent - a.sumUdpSent);
-    } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
-        usageList.sort((a, b) => b.sumUdpRecv - a.sumUdpRecv);
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
-    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
-    }
-
-    return usageList;
-};
-
-export const sortByKey = (arrList, key) => {
-    arrList.sort((a, b) => b[key] - a[key]);
-    return arrList;
 };
 
 
@@ -920,12 +848,14 @@ export const covertUnits = (value, hardwareType, _this) => {
         if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
             if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
                 return value;
-            } else if (hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED) {
+            } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+                return convertByteToMegaGigaByte(value);
+            } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
                 return value + " %";
             } else if (hardwareType === HARDWARE_TYPE.NET_SEND || hardwareType === HARDWARE_TYPE.NET_RECV) {
-                return value;
+                return convertToMegaGigaForNumber(value);
             } else {
-                return value;
+                return convertToMegaGigaForNumber(value);
             }
         } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
             if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
@@ -2039,15 +1969,6 @@ export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {
                             <Table.Cell>
                                 {item.cloudlet}
                             </Table.Cell>
-
-                            {/*return numberWithCommas(usageOne.sumVCpuUsage) + ""
-                            return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " MByte"
-                            return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
-                            return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
-                            return numberWithCommas(usageOne.sumSendBytes) + " Byte";
-                            return usageOne.sumActiveConnection
-                            return usageOne.sumHandledConnection
-                            return usageOne.sumAcceptsConnection*/}
 
                             <Table.Cell>
                                 <div>

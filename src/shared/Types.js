@@ -141,23 +141,30 @@ export type TypeAppInstanceUsage2 = {
     connectionsSeriesValue: any,
 }
 
-export type TypeCloudletUsageList = {
-    avgVCpuUsed: number,
-    avgVCpuMax: number,
-    avgMemUsed: number,
-    avgMemMax: number,
-    avgDiskUsed: number,
-    avgDiskMax: number,
-    avgNetSend: number,
-    avgNetRecv: number,
-    avgFloatingIpsUsed: number,
-    avgFloatingIpsMax: number,
-    avgIpv4Used: number,
-    avgIpv4Max: number,
-    columns: Array,
-    series: Array,
+export type TypeCloudletUsage = {
+    Region: string,
     cloudlet: string,
+    columns: any,
+    diskSeriesList: any,
+    floatingIpsSeriesList: any,
+    ipv4UsedSeriesList: any,
+    memSeriesList: any,
+    netRecvSeriesList: any,
+    netSendSeriesList: any,
     operator: string,
+    series: any,
+    usedFloatingIpsUsage: number,
+    usedIpv4Usage: number,
+    usedRecvBytes: number,
+    usedSendBytes: number,
+
+    usedVCpuCount: number,
+    usedMemUsage: number,
+    usedDiskUsage: number,
+
+    maxDiskUsage: number,
+    maxMemUsage: number,
+    maxVCpuCount: number,
 }
 
 export type TypeClusterUsageList = {

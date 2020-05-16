@@ -199,12 +199,7 @@ export default function MapForOper(props) {
                             position={
                                 [CloudletLocation.latitude, CloudletLocation.longitude,]
                             }
-                            /*onMouseOver={(e) => {
-                                e.target.openPopup();
-                            }}*/
-                            /* onMouseOut={(e) => {
-                                 //e.target.closePopup();
-                            }}*/
+                            /*onMouseOver={(e) => {                                e.target.openPopup();                            }}*/ /* onMouseOut={(e) => {                                 //e.target.closePopup();                            }}*/
                             onClick={() => {
                             }}
                         >
@@ -224,6 +219,8 @@ export default function MapForOper(props) {
                                                 onClick={() => {
                                                     setCurrentCluodlet(undefined)
                                                     setCurrentCluodlet(JSON.stringify(cloudLetOne))
+
+                                                    props.parent.handleCloudletDropdown(cloudLetOne.CloudletName)
 
                                                 }}
                                             >
