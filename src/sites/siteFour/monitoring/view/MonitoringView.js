@@ -24,7 +24,7 @@ import {
     makeid,
     makeLineChartData,
     makeLineChartDataForBigModal,
-    reduceLegendClusterCloudletName,
+    reduceLegendClusterCloudletName, reduceString,
     revertToDefaultLayout,
 } from "../service/MonitoringService";
 import {
@@ -520,9 +520,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstList = newPromiseList[2];
 
                     //todo:fakedata
-                  /*  let cloudletList = require('./cloudletList')
-                    let clusterList = require('./clusterList')
-                    let appInstList = require('./appInstList')*/
+                    /*  let cloudletList = require('./cloudletList')
+                      let clusterList = require('./clusterList')
+                      let appInstList = require('./appInstList')*/
 
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
@@ -1955,9 +1955,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.renderDot(index)}
                                         <div
                                             style={{marginTop: 0, marginLeft: 3,}}
-
                                         >
-                                            {item.CloudletName.substring(0, 15)}
+                                            {reduceString(item.CloudletName, 25)}
                                         </div>
                                         <div style={{marginRight: 5,}}>
                                         </div>
