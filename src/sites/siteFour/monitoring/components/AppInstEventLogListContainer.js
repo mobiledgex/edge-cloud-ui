@@ -5,6 +5,7 @@ import {Empty} from 'antd';
 import PageDevMonitoring from "../view/MonitoringView";
 import {FixedSizeList} from "react-window";
 import {reduceString} from "../service/MonitoringService";
+import '../common/MonitoringStyles.css'
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -61,6 +62,7 @@ export default function AppInstEventLogListContainer(props) {
                      style={{
                          flex: 1,
                          marginTop: 10,
+                         color: 'white'
                      }}
                 >
                     App Inst Event Log

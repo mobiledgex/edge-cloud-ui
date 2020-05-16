@@ -561,8 +561,9 @@ tr td {
     background-color: black !important;
 }*/
 
-.draggable {
+.draggable .page_monitoring_title {
     cursor: pointer;
+    color: white !important;
 }
 
 .ant-select-dropdown-menu-item {
