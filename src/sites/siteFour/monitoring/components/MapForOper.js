@@ -38,6 +38,17 @@ export default function MapForOper(props) {
     const [currentCluodlet, setCurrentCluodlet] = useState(undefined)
 
     useEffect(() => {
+        if (zoom !== 1) {
+            setZoom(1)
+        } else {
+            setZoom(2)
+            setTimeout(() => {
+                setZoom(1)
+            }, 10)
+        }
+    }, [props.toggleOperMapZoom])
+
+    useEffect(() => {
         async function loadContent() {
             await setCloudletLocation()
             if (!isEmpty(props.cloudletList)) {
@@ -49,10 +60,6 @@ export default function MapForOper(props) {
 
         loadContent()
     }, [props.cloudletList])
-
-    useEffect(() => {
-        setZoom(1)
-    }, [props.operZoom])
 
 
     async function setCloudletLocation() {
@@ -138,12 +145,14 @@ export default function MapForOper(props) {
                         <div
                             style={mapIconStyle}
                             onClick={async () => {
-                                mapRef.current.leafletElement.closePopup();
                                 setCurrentCluodlet(undefined)
-                                await props.parent.handleCloudletDropdown(undefined)
-                                setTimeout(() => {
-                                    setZoom(1)
-                                }, 250)
+                                props.parent.handleCloudletDropdown(undefined).then(() => {
+                                    props.parent.setState({
+                                        toggleZoom: !props.parent.state.toggleZoom
+                                    });
+                                    mapRef.current.leafletElement.closePopup();
+                                })
+
                             }}
                         >
                             <Icon

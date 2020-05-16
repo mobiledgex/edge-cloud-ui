@@ -279,7 +279,7 @@ type PageDevMonitoringState = {
     filteredCloudletList: any,
     allCloudletUsageList: any,
     filteredCloudletUsageList: any,
-    toggleZoom: boolean,
+    toggleOperMapZoom: boolean,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -466,7 +466,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     allCloudletUsageList: [],
                     filteredCloudletUsageList: [],
                     cloudletDropdownList: [],
-                    toggleZoom: false,
+                    toggleOperMapZoom: false,
                 };
             }
 
@@ -755,7 +755,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentCloudLet: undefined,
                         filteredCloudletUsageList: this.state.allCloudletUsageList,
                         filteredCloudletList: this.state.cloudletList,
-                        toggleZoom: !this.state.toggleZoom,
+                        toggleOperMapZoom: !this.state.toggleOperMapZoom,
                     })
                 }
             }
@@ -1263,7 +1263,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <MapForOper
                                 parent={this}
                                 cloudletList={this.state.filteredCloudletList}
-                                operZoom={this.state.toggleZoom}
+                                toggleOperMapZoom={!this.state.toggleOperMapZoom}
                             />
                         )
                     }
@@ -1689,6 +1689,34 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            renderCloudletDropdown() {
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label">
+                            Cloudlet
+                        </div>
+                        <Select
+                            dropdownStyle={{}}
+                            listHeight={512}
+                            style={{width: 250, maxHeight: '512px !important'}}
+                            disabled={isEmpty(this.state.cloudletDropdownList)}
+                            value={this.state.currentCloudLet}
+                            placeholder={'Select Cloudlet'}
+                            onChange={async (value) => {
+                                this.handleCloudletDropdown(value)
+                            }}
+                        >
+                            {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map(item => {
+                                return (
+                                    <Option value={item.value}>{item.text}</Option>
+                                )
+                            })}
+                        </Select>
+                    </div>
+                )
+            }
+
+
             renderClusterDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -1735,33 +1763,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 await this.handleClusterDropdown(value.trim())
                             }}
                         />
-                    </div>
-                )
-            }
-
-            renderCloudletDropdown() {
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label">
-                            Cloudlet
-                        </div>
-                        <Select
-                            dropdownStyle={{}}
-                            listHeight={512}
-                            style={{width: 250, maxHeight: '512px !important'}}
-                            disabled={isEmpty(this.state.cloudletDropdownList)}
-                            value={this.state.currentCloudLet}
-                            placeholder={'Select Cloudlet'}
-                            onChange={async (value) => {
-                                this.handleCloudletDropdown(value)
-                            }}
-                        >
-                            {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map(item => {
-                                return (
-                                    <Option value={item.value}>{item.text}</Option>
-                                )
-                            })}
-                        </Select>
                     </div>
                 )
             }
