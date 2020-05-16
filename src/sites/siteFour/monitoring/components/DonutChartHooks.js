@@ -10,10 +10,6 @@ export default function DonutChartHooks(props) {
     const [cloudletUsageOne: TypeCloudletUsage, setCloudletUsageOne] = useState(-1);
 
     useEffect(() => {
-        console.log(`filteredCloudletUsageList====>`, props.filteredCloudletUsageList);
-
-        console.log(`filteredCloudletUsageList====length>`, props.filteredCloudletUsageList.length);
-
         if (props.filteredCloudletUsageList !== undefined && props.filteredCloudletUsageList.length === 1) {
             setCloudletCount(props.filteredCloudletUsageList.length)
             setCloudletUsageOne(props.filteredCloudletUsageList[0])
