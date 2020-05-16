@@ -451,7 +451,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 </MarkerClusterGroup>
             )
         }
-
         handleRefresh = async () => {
             try {
                 await this.setState({
@@ -465,7 +464,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     });
                 })
 
-                await this.props.parent.handleClusterDropdownAndReset('');
+                await this.props.parent.handleClusterDropdown('');
             } catch (e) {
 
             }
@@ -707,6 +706,22 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                                     <div style={MonitoringStyles.mapControlDiv}>
                                         <div
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                height: 30,
+                                                width: 30,
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignSelf: 'center'
+                                            }}
+                                        >
+                                            <Icon
+                                                name='redo'
+                                                onClick={this.handleRefresh}
+                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                            />
+                                        </div>
+                                        <div
                                             style={{backgroundColor: 'transparent', height: 30}}
                                             onClick={() => {
                                                 this.setState({
@@ -739,22 +754,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             <Icon
                                                 name='minus'
 
-                                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                                            />
-                                        </div>
-                                        <div
-                                            style={{
-                                                backgroundColor: 'transparent',
-                                                height: 30,
-                                                width: 30,
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignSelf: 'center'
-                                            }}
-                                        >
-                                            <Icon
-                                                name='redo'
-                                                onClick={this.handleRefresh}
                                                 style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
                                             />
                                         </div>

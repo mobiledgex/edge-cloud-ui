@@ -1956,7 +1956,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div
                                             style={{marginTop: 0, marginLeft: 3,}}
                                         >
-                                            {reduceString(item.CloudletName, 25)}
+                                            {reduceString(item.CloudletName, 21)}
                                         </div>
                                         <div style={{marginRight: 5,}}>
                                         </div>
