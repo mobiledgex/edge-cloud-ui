@@ -1,15 +1,12 @@
-
 import ReactHighcharts from 'react-highcharts';
 import HighchartsMore from 'highcharts-more';
+
 HighchartsMore(ReactHighcharts.Highcharts);
 
 export default {
     chart: {
         type: 'solidgauge'
     },
-    credits: {
-                enabled: false
-            },
     title: null,
 
     pane: {
@@ -61,7 +58,6 @@ export default {
     },
 
 
-
     credits: {
         enabled: false
     },
@@ -71,7 +67,7 @@ export default {
         dataLabels: {
             format: '<div style="text-align:center"><span style="font-size:25px;color:' +
                 ('black') + '">{y:.1f}</span><br/>' +
-                   '<span style="font-size:12px;color:silver">* 1000 / min</span></div>'
+                '<span style="font-size:12px;color:silver">* 1000 / min</span></div>'
         },
         tooltip: {
             valueSuffix: ' revolutions/min'
