@@ -511,18 +511,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    /*promiseList.push(getCloudletList())
+                    promiseList.push(getCloudletList())
                     promiseList.push(getClusterList())
                     promiseList.push(getAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
                     let cloudletList = newPromiseList[0];
                     let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];*/
+                    let appInstList = newPromiseList[2];
 
                     //todo:fakedata
-                    let cloudletList = require('./cloudletList')
+                  /*  let cloudletList = require('./cloudletList')
                     let clusterList = require('./clusterList')
-                    let appInstList = require('./appInstList')
+                    let appInstList = require('./appInstList')*/
 
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
@@ -544,7 +544,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
 
                     //todo: realdata
-                    /*promiseList2.push(getAllClusterEventLogList(clusterList))
+                    promiseList2.push(getAllClusterEventLogList(clusterList))
                     promiseList2.push(getAllAppInstEventLogs());
                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                     promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
@@ -552,14 +552,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let allClusterEventLogList = newPromiseList2[0];
                     let allAppInstEventLogList = newPromiseList2[1];
                     let allClusterUsageList = newPromiseList2[2];
-                    let allCloudletUsageList = newPromiseList2[3];*/
+                    let allCloudletUsageList = newPromiseList2[3];
 
 
                     //todo: fakedata
-                    let allClusterEventLogList = []
+                    /*let allClusterEventLogList = []
                     let allAppInstEventLogList = []
                     let allClusterUsageList = require('./clusterUSageList')
-                    let allCloudletUsageList = require('./cloudletUsageList')
+                    let allCloudletUsageList = require('./cloudletUsageList')*/
 
 
                     console.log(`allCloudletUsageList====>`, allCloudletUsageList);

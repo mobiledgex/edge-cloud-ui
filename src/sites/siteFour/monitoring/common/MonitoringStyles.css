@@ -686,7 +686,7 @@ tr td {
 }
 
 .react-ripples {
-    width: 220px;
+    width: auto;
 }
 
 .ant-progress-circle .ant-progress-text {

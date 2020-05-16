@@ -24,10 +24,9 @@ export default function DonutChartHooks(props) {
     }, [props.filteredCloudletUsageList]);
     return (
         <>
-            <div style={{backgroundColor: 'transparent'}}>
+            <div style={{backgroundColor: 'transparent', height: '100%'}}>
                 {cloudletCount === 1 ?
                     <Center style={{height: 250,}}>
-
                         <div>
                             <Progress
                                 strokeColor={'red'}
@@ -69,8 +68,14 @@ export default function DonutChartHooks(props) {
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
-                                percent={Math.ceil(cloudletUsageOne.usedDiskUsage / cloudletUsageOne.maxDiskUsage * 100)}
+                                percent={Math.ceil((cloudletUsageOne.usedDiskUsage / cloudletUsageOne.maxDiskUsage) * 100)}
                                 strokeWidth={10}
+                                format={(percent, successPercent) => {
+
+                                    console.log(`format==1==>`, percent);
+                                    console.log(`format==2==>`, successPercent);
+                                    return cloudletUsageOne.usedDiskUsage + "/" + cloudletUsageOne.maxDiskUsage;
+                                }}
                             />
                             <div>
                                 DISK
@@ -78,7 +83,11 @@ export default function DonutChartHooks(props) {
                         </div>
                     </Center>
                     :
-                    <Center style={{marginTop: 50, fontSize: 22}}>
+                    <Center style={{
+                        fontSize: 22,
+                        backgroundColor: 'rgba(157,255,255,.02)',
+                        height: 250
+                    }}>
                         no available
                     </Center>
                 }

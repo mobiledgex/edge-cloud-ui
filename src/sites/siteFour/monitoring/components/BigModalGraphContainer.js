@@ -163,7 +163,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                             Cluster {this.props.popupGraphHWType} Usage
                                             {this.props.intervalLoading &&
-                                            <div style={{backgroundColor: 'transparent', zIndex: 999999999999, marginLeft: 25}}>
+                                            <div style={{
+                                                backgroundColor: 'transparent',
+                                                zIndex: 999999999999,
+                                                marginLeft: 25
+                                            }}>
                                                 {renderWifiLoader(35, 35)}
                                             </div>
                                             }
@@ -189,7 +193,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
                                                 App Instance {this.props.popupGraphHWType} Usage
                                                 {this.props.intervalLoading &&
-                                                <div style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
+                                                <div
+                                                    style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
                                                     {renderWifiLoader(35, 35)}
                                                 </div>
                                                 }
@@ -209,7 +214,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <div style={{display: 'flex'}}>
                                                 {this.renderPrevBtn()}
                                                 <div className='page_monitoring_popup_title'>
-                                                    Top 5 {this.props.popupGraphHWType} Usage
+                                                    {this.props.popupGraphHWType} Usage
                                                     of {this.props.parent.state.currentClassification}
                                                 </div>
                                             </div>

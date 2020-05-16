@@ -712,6 +712,31 @@ export const getCloudletUsageList = async (cloudletList, pHardwareType, recentDa
 
 
                     })
+                } else {//Seires is null
+                    usageList.push({
+                        usedVCpuCount: 0,
+                        usedMemUsage: 0,
+                        usedDiskUsage: 0,
+                        usedRecvBytes: 0,
+                        usedSendBytes: 0,
+                        usedFloatingIpsUsage: 0,
+                        usedIpv4Usage: 0,
+                        maxVCpuCount: 0,
+                        maxMemUsage: 0,
+                        maxDiskUsage: 0,
+                        columns: [],
+                        series: [],
+                        cloudlet: cloudlet,
+                        operator: operator,
+                        Region: Region,
+                        netSendSeriesList: [],
+                        netRecvSeriesList: [],
+                        vCpuSeriesList: [],
+                        memSeriesList: [],
+                        diskSeriesList: [],
+                        floatingIpsSeriesList: [],
+                        ipv4UsedSeriesList: [],
+                    })
                 }
             }
 

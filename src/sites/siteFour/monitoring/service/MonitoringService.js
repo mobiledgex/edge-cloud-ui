@@ -851,7 +851,7 @@ export const covertUnits = (value, hardwareType, _this) => {
             } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
                 return convertByteToMegaGigaByte(value);
             } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-                return value + " %";
+                return convertByteToMegaGigaByte(value);
             } else if (hardwareType === HARDWARE_TYPE.NET_SEND || hardwareType === HARDWARE_TYPE.NET_RECV) {
                 return convertToMegaGigaForNumber(value);
             } else {
