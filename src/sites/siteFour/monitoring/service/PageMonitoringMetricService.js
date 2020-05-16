@@ -809,6 +809,7 @@ export function makeClientMatricSumDataOne(seriesValues) {
     let cloudletorg = '';
     let ver = ''
 
+    //fixme : covert to constants
     seriesValues.map(item => {
         let methodType = item[17];
         if (methodType === "RegisterClient") {
