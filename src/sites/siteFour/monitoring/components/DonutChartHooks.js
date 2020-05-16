@@ -19,7 +19,7 @@ export default function DonutChartHooks(props) {
 
     }, [props.filteredCloudletUsageList]);
 
-    const height=150;
+    const height=200;
 
     return (
         <div>
