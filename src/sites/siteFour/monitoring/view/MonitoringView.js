@@ -1,4 +1,6 @@
 import {ClusterCluoudletLabel, LegendOuterDiv, MonitoringStyles} from '../common/MonitoringStyles'
+import Ripple from "react-ripples";
+import  TouchRipple  from '@material-ui/core/ButtonBase/TouchRipple.js';
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -1796,12 +1798,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderDot(index) {
+            renderDot(index, isAll = false) {
                 return (
                     <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                         <div
                             style={{
-                                backgroundColor: this.state.chartColorList[index],
+                                backgroundColor: isAll ? 'white' : this.state.chartColorList[index],
                                 width: 15,
                                 height: 15,
                                 borderRadius: 50,
@@ -1860,6 +1862,40 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            makeAllDotLabel() {
+                return (
+                    <Col
+                        className="gutterRow"
+                        onClick={async () => {
+                        }}
+                        span={3}
+                        style={{marginTop: 3, marginBottom: 3}}
+                    >
+                        <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                            <div
+                                style={{
+                                    backgroundColor: 'white',
+                                    width: 15,
+                                    height: 15,
+                                    borderRadius: 50,
+                                }}
+                            >
+                            </div>
+                        </div>
+                        <div
+                            style={{marginTop: 0, marginLeft: 3,}}
+                            onClick={async () => {
+                                await this.handleCloudletDropdown(undefined)
+                            }}
+                        >
+                            all
+                        </div>
+                        <div style={{marginRight: 5,}}>
+                        </div>
+                    </Col>
+                )
+            }
+
             renderCloudletLegend() {
                 return (
                     <Row gutter={16}
@@ -1873,6 +1909,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                          }}
                     >
                         {this.state.filteredCloudletList.map((item: TypeCloudlet, index) => {
+
                             return (
                                 <Col
                                     key={index}
@@ -1882,17 +1919,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     span={3}
                                     style={{marginTop: 3, marginBottom: 3}}
                                 >
-                                    {this.renderDot(index)}
-                                    <div
-                                        style={{marginTop: 0, marginLeft: 3,}}
+                                    <Ripple
+                                        style={{marginLeft: 0,}}
+                                        color='#1cecff' during={100}
                                         onClick={async () => {
                                             await this.handleCloudletDropdown(item.CloudletName)
                                         }}
                                     >
-                                        {item.CloudletName.substring(0, 15)}
-                                    </div>
-                                    <div style={{marginRight: 5,}}>
-                                    </div>
+                                        {this.renderDot(index)}
+                                        <div
+                                            style={{marginTop: 0, marginLeft: 3,}}
+
+                                        >
+                                            {item.CloudletName.substring(0, 15)}
+                                        </div>
+                                        <div style={{marginRight: 5,}}>
+                                        </div>
+                                    </Ripple>
                                 </Col>
                             )
                         })}

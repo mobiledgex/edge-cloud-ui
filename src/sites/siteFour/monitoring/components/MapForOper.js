@@ -1,5 +1,7 @@
 import React, {useEffect, useState, useRef} from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import Ripple from "react-ripples";
+import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple.js';
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/MonitoringCommonService";
 import type {TypeCloudlet} from "../../../../shared/Types";
@@ -41,11 +43,9 @@ export default function MapForOper(props) {
         if (zoom !== 1) {
             setZoom(1)
         } else {
-            setZoom(2)
-            setTimeout(() => {
-                setZoom(1)
-            }, 10)
+            setZoom(1.2)
         }
+        setMapCenter(worldMapCenter);
     }, [props.toggleOperMapZoom])
 
     useEffect(() => {
@@ -217,16 +217,23 @@ export default function MapForOper(props) {
                                 <div style={{display: 'flex', flexDirection: 'column'}}>
                                     {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, index) => {
                                         return (
-                                            <div
-                                                className='oper_popup_div'
+                                            <Ripple
+                                                className='popup_oper_cloudlet'
+                                                during={250}
+                                                color='#1cecff'
                                                 onClick={() => {
                                                     setCurrentCluodlet(undefined)
                                                     setCurrentCluodlet(JSON.stringify(cloudLetOne))
 
                                                 }}
                                             >
-                                                {cloudLetOne.CloudletName}
-                                            </div>
+                                                <div
+                                                    className='oper_popup_div'
+
+                                                >
+                                                    {cloudLetOne.CloudletName}
+                                                </div>
+                                            </Ripple>
                                         )
                                     })}
                                 </div>

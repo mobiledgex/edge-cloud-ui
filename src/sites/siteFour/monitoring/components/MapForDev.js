@@ -557,7 +557,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             >
                                                 <Ripples
                                                     style={{marginLeft: 5,}}
-                                                    color='#1cecff' during={500}
+                                                    color='#1cecff'
+                                                    during={500}
                                                     onClick={async () => {
                                                         try {
                                                             this.setState({
