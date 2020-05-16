@@ -113,7 +113,6 @@ tbody:hover {
 }
 
 
-
 .leaflet-container {
     width: 100%;
     height: 100%;
@@ -163,7 +162,6 @@ tbody:hover {
     min-width: auto;
     max-width: auto;
 }
-
 
 
 .leaflet-popup-content {
@@ -658,12 +656,12 @@ tr td {
 }
 
 
-.oper_popup_div{
+.oper_popup_div {
     margin-top: 3px;
     margin-bottom: 3px;
 }
 
-.clientPopup .leaflet-popup-content-wrapper{
+.clientPopup .leaflet-popup-content-wrapper {
     border-radius: 0px;
     width: 360px !important;
     border-color: #00A2FF;
@@ -672,7 +670,7 @@ tr td {
 }
 
 
-.cloudlet_popup .leaflet-popup-content-wrapper{
+.cloudlet_popup .leaflet-popup-content-wrapper {
     border-radius: 0px;
     width: 450px !important;
     border-color: #43c02a;
@@ -680,10 +678,15 @@ tr td {
     border-style: groove;
 }
 
-.popup_oper_cloudlet .leaflet-popup-content-wrapper{
+.popup_oper_cloudlet .leaflet-popup-content-wrapper {
     border-radius: 0px;
     width: 250px !important;
     border-color: #00A2FF;
     border-style: groove;
 }
+
+.react-ripples {
+    width: 220px;
+}
+
 

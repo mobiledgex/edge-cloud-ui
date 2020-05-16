@@ -915,9 +915,19 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
     }
 };
 
-export const addUnitNameForUsage = (value, hardwareType, _this) => {
+export const covertUnits = (value, hardwareType, _this) => {
     try {
-        if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+            if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
+                return value;
+            } else if (hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED) {
+                return value + " %";
+            } else if (hardwareType === HARDWARE_TYPE.NET_SEND || hardwareType === HARDWARE_TYPE.NET_RECV) {
+                return value;
+            } else {
+                return value;
+            }
+        } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
             if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
                 return value + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
@@ -1017,7 +1027,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
-                        return addUnitNameForUsage(value, hardwareType, _this,)
+                        return covertUnits(value, hardwareType, _this,)
                     },
                 },
                 gridLines: {
@@ -1031,7 +1041,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     ticks: {
                         fontColor: "#CCC", // this here
                         callback(value, index, label) {
-                            return addUnitNameForUsage(value, hardwareType, _this,)
+                            return covertUnits(value, hardwareType, _this,)
 
                         },
                     },
