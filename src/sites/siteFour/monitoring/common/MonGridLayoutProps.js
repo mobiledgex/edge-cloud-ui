@@ -69,16 +69,12 @@ export const CHART_TYPE = {
 }
 
 export const defaultLayoutForCloudlet = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//vCPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//Disk
-    {i: '5', x: 0, y: 2, w: 1, h: 1, "add": false},//ipv4Used
-    {i: '6', x: 1, y: 2, w: 1, h: 1, "add": false},//1
-    {i: '7', x: 2, y: 2, w: 1, h: 1, "add": false},//2
-    {i: '8', x: 3, y: 2, w: 1, h: 1, "add": false},//3
-
-
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//PIE
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
 ];
 
 
@@ -107,26 +103,15 @@ export const defaultLayoutMapperForCloudlet = [
     ////////////////////////////
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.netSend,
-        graphType: CHART_TYPE.LINE,
-    },
-
-    {
-        id: '6',
-        hwType: HARDWARE_TYPE_FOR_GRID.netRecv,
-        graphType: CHART_TYPE.LINE,
-    },
-
-    {
-        id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '8',
         hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
         graphType: CHART_TYPE.PIE,
     },
+    {
+        id: '6',
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+    },
+
 ];
 
 

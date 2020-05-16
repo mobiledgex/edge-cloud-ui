@@ -88,6 +88,18 @@ export type TypeClientLocation = {
     }
 }
 
+export type TypeClientStatus ={
+    FindCloudletCount: number,
+    RegisterClientCount: number,
+    VerifyLocationCount: number,
+    app: string,
+    apporg: string,
+    cellID: string,
+    cloudlet: string,
+    cloudletorg: string,
+    ver: string,
+}
+
 
 export type TypeCloudlet = {
     uuid: string,

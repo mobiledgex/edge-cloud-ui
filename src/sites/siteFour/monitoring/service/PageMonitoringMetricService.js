@@ -10,7 +10,7 @@ import {
     showToast
 } from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./AdmMonitoringService";
-import PageDevMonitoring from "../view/PageMonitoringView";
+import PageDevMonitoring from "../view/DevOperMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -768,6 +768,7 @@ export const getClientStateOne = async (appInst: TypeAppInstance) => {
                 }
             },
             "selector": "api",
+            'last': 100
         },
         headers: {
             'Content-Type': 'application/json',
@@ -775,30 +776,93 @@ export const getClientStateOne = async (appInst: TypeAppInstance) => {
         },
         timeout: 15 * 1000
     }).then(async response => {
-        return response.data;
+
+        console.log(`response====>`, response.data);
+
+        console.log(`response===2=>`, response.data.data[0].Series);
+
+        if (response.data.data[0].Series !== null) {
+
+            let seriesValues = response.data.data[0].Series[0].values
+            console.log(`response===3====>`, seriesValues);
+
+            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
+
+
+            return clientMatricSumDataOne;
+        } else {
+            return undefined
+        }
+
     })
+}
+
+export function makeClientMatricSumDataOne(seriesValues) {
+    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
+    let RegisterClientCount = 0;
+    let FindCloudletCount = 0;
+    let VerifyLocationCount = 0
+    let app = '';
+    let apporg = '';
+    let cellID = '';
+    let cloudlet = '';
+    let cloudletorg = '';
+    let ver = ''
+
+    seriesValues.map(item => {
+        let methodType = item[17];
+        if (methodType === "RegisterClient") {
+            RegisterClientCount++;
+        }
+        if (methodType === "FindCloudlet") {
+            FindCloudletCount++;
+        }
+        if (methodType === "VerifyLocation") {
+            FindCloudletCount++;
+        }
+
+        app = item[6]//app
+        apporg = item[7]//apporg
+        cellID = item[8]//cellID
+        cloudlet = item[9]//cloudlet
+        cloudletorg = item[10]//cloudletorg
+        ver = item[20]//ver
+    })
+
+    let metricSumDataOne = {
+        RegisterClientCount,
+        FindCloudletCount,
+        VerifyLocationCount,
+        app,
+        apporg,
+        cellID,
+        cloudlet,
+        cloudletorg,
+        ver,
+    }
+
+    return metricSumDataOne;
+
 }
 
 
 export const getClientStatusList = async (appInstList) => {
-    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
     let promiseList = []
     appInstList.map((appInstOne: TypeCloudlet, index) => {
         promiseList.push(getClientStateOne(appInstOne))
     })
-
     let newPromiseList = await Promise.all(promiseList);
-    let clientStateList = []
-    clientStateList = clientStateList.concat(column);
-    newPromiseList.map((item, index) => {
-        if (item.data["0"].Series !== null) {
-            let series = item.data["0"].Series
-            clientStateList = clientStateList.concat(series["0"].values);
 
-        }
-    })
+     let mergedClientStatusList = []
+     newPromiseList.map((item, index) => {
+         if (item !== undefined) {
+             mergedClientStatusList.push(item)
+         }
+     })
+     console.log(`mergedClientStatusList====>`, mergedClientStatusList);
 
-    return clientStateList;
+     return mergedClientStatusList;
+
 }
 
 

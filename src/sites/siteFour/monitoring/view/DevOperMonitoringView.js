@@ -111,9 +111,10 @@ import {
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster
-} from "../common/MonitoringGridLayoutProps";
+} from "../common/MonGridLayoutProps";
 import MapForOper from "../components/MapForOper";
 import DonutChartHooks from "../components/DonutChartHooks";
+import ClientSummaryHooks from "../components/ClientSummaryHooks";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -282,6 +283,7 @@ type PageDevMonitoringState = {
     allCloudletUsageList: any,
     filteredCloudletUsageList: any,
     toggleOperMapZoom: boolean,
+    clientStatusList:any,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -469,6 +471,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredCloudletUsageList: [],
                     cloudletDropdownList: [],
                     toggleOperMapZoom: false,
+                    clientStatusList:[],
                 };
             }
 
@@ -541,6 +544,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletList: cloudletList,
                         filteredCloudletList: cloudletList,
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
+                        clientStatusList:clientStatusList,
                     });
 
                     //@desc:#########################################################################
@@ -1302,18 +1306,26 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                     return (
                         this.state.loading ? renderPlaceHolderLoader() :
-                            this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                <PerformanceSummaryForCluster
+                            this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
+                                <ClientSummaryHooks
                                     parent={this}
-                                    filteredUsageList={this.state.filteredClusterUsageList}
+                                    clientStatusList={this.state.clientStatusList}
                                     chartColorList={this.state.chartColorList}
                                 />
                                 :
-                                <PerformanceSummaryForAppInst
-                                    parent={this}
-                                    filteredUsageList={this.state.filteredAppInstUsageList}
-                                    chartColorList={this.state.chartColorList}
-                                />
+                                this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                    <PerformanceSummaryForCluster
+                                        parent={this}
+                                        filteredUsageList={this.state.filteredClusterUsageList}
+                                        chartColorList={this.state.chartColorList}
+                                    />
+                                    :
+                                    <PerformanceSummaryForAppInst
+                                        parent={this}
+                                        filteredUsageList={this.state.filteredAppInstUsageList}
+                                        chartColorList={this.state.chartColorList}
+                                    />
+
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
                     return (

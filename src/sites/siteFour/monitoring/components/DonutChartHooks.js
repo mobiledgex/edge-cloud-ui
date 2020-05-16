@@ -19,7 +19,23 @@ export default function DonutChartHooks(props) {
 
     }, [props.filteredCloudletUsageList]);
     return (
-        <>
+        <div>
+            <div style={{
+                display: 'flex',
+                width: '100%',
+                height: 45
+            }}>
+                <div className='page_monitoring_title draggable'
+                     style={{
+                         flex: 1,
+                         marginTop: 10,
+                         color: 'white'
+                     }}
+                >
+                   Resource of Cloudlet
+                </div>
+
+            </div>
             <div style={{backgroundColor: 'transparent', height: '100%'}}>
                 {cloudletCount === 1 ?
                     <Center style={{height: 250,}}>
@@ -90,7 +106,7 @@ export default function DonutChartHooks(props) {
 
 
             </div>
-        </>
+        </div>
     )
 
 }

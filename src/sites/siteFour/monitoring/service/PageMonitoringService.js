@@ -24,7 +24,7 @@ import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
 import {createMuiTheme} from "@material-ui/core";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
-import PageDevMonitoring from "../view/PageMonitoringView";
+import PageDevMonitoring from "../view/DevOperMonitoringView";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
@@ -42,7 +42,7 @@ import {
     CLOUDLET_HW_MAPPER_KEY,
     CLOUDLET_LAYOUT_KEY, CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY, defaultLayoutForCloudlet, defaultLayoutMapperForCloudlet
-} from "../common/MonitoringGridLayoutProps";
+} from "../common/MonGridLayoutProps";
 
 export const materialUiDarkTheme = createMuiTheme({
     palette: {

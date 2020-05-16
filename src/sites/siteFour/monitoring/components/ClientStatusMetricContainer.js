@@ -23,7 +23,7 @@ function getWindowDimensions() {
 }
 
 
-export default function AppInstEventLogListContainer(props) {
+export default function ClientStatusMetricContainer(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
 
@@ -52,7 +52,7 @@ export default function AppInstEventLogListContainer(props) {
 
 
     return (
-        <div>
+        <div style={{fontFamily: 'Roboto'}}>
             <div style={{
                 display: 'flex',
                 width: '100%',

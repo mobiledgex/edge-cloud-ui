@@ -7,7 +7,7 @@ import {
     makeLineChartData
 } from "../service/PageMonitoringService";
 import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
-import PageDevMonitoring from "../view/PageMonitoringView";
+import PageDevMonitoring from "../view/DevOperMonitoringView";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
 import {MonitoringStyles} from "../common/MonitoringStyles";
 import {Select} from "antd";

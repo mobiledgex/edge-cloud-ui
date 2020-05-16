@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import PageMonitoringForDeveloper from "../view/PageMonitoringView";
+import PageMonitoringForDeveloper from "../view/DevOperMonitoringView";
 import PageMonitoringForAdmin from "../view/AdmMonitoringView";
 import {Card} from "@material-ui/core";
 
