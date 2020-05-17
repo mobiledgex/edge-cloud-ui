@@ -187,14 +187,16 @@ export const getCloudletList = async () => {
             }
         })
 
-        if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
+        /*if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
             return mergedCloudletList.filter((item: TypeCloudlet, index) => {
                 return item.Operator === localStorage.getItem('selectOrg').toString().trim()
             })
         } else {
-            return mergedCloudletList;
-        }
 
+        }*/
+
+
+        return mergedCloudletList;
 
     } catch (e) {
         //showToast( e.toString())

@@ -1758,6 +1758,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             Cloudlet
                         </div>
                         <Select
+                            showSearch={true}
                             dropdownStyle={{}}
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
