@@ -529,12 +529,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                        let clusterList = require('./clusterList')
                        let appInstList = require('./appInstList')*/
 
-                    let clientStatusList = await getClientStatusList(appInstList)
+                    if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
+                        let clientStatusList = await getClientStatusList(appInstList)
 
-                    console.log(`clientStatusList====>`, clientStatusList);
-                    console.log(`clusterList====>`, clusterList);
+                        console.log(`clientStatusList====>`, clientStatusList);
 
-
+                        await this.setState({
+                            clientStatusList: clientStatusList,
+                        })
+                    }
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let nameList = getCloudletClusterNameList(orgAppInstList)
                     let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(nameList.cloudletNameList), _.uniqWith(nameList.clusterNameList, _.isEqual))
@@ -547,7 +550,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletList: cloudletList,
                         filteredCloudletList: cloudletList,
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
-                        clientStatusList: clientStatusList,
                     });
 
                     //@desc:#########################################################################
