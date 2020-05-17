@@ -65,6 +65,7 @@ class TimeSeries extends React.Component {
             vWidth: 300,
             vHeight: 170,
             data: [],
+            dataRaw: [],
             chartData: [
                 trace1, trace2, trace3, trace4
             ],
@@ -76,6 +77,7 @@ class TimeSeries extends React.Component {
             revision: 10,
             mode: "line+markers",
             type: "scatter",
+            size: {}
         };
         this.wGab = 10;
         this.hGab = 38;
@@ -115,48 +117,79 @@ class TimeSeries extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if ((prevProps.data !== this.props.data) && prevProps.data.length > 0) {
+        if (prevProps.data !== this.state.dataRaw) {
             // TODO : select box의 선택에 따른 데이터 교체
-            let selectedItem = "";
-            if (prevProps.method === "") {
-                selectedItem = "diskUsed";
+
+            /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
+            // if (prevProps.data.length > 0) {
+            //     let selectedItem = "";
+            //     if (prevProps.method === "") {
+            //         selectedItem = "diskUsed";
+            //     }
+            //     const times = prevProps.data[0].times[0];
+            //     const datas = prevProps.data[0].resData_util[0].diskUsed.y;
+            //     const methods = prevProps.data[0].methods[0];
+            //     this.reloadChart(
+            //         datas,
+            //         times,
+            //         methods
+            //     );
+            //     this.stackAllData.push(Object.assign(prevProps.data));
+            // }
+
+            // metics of clients
+            const selectedMethodName = "RegisterClient";
+            if ((prevProps.data.length > 0) && (_.isEqual(prevProps.data, this.state.dataRaw) === false)) {
+                const { times } = prevProps.data[0];
+                const { methods } = prevProps.data[0];
+                const { cloudlets } = prevProps.data[0];
+                const { names } = prevProps.data[0];
+                const datas = prevProps.data[0][selectedMethodName][0][cloudlets];
+                console.log("20200517 timeseries data == ", datas);
+                this.reloadChart(
+                    datas,
+                    times,
+                    methods,
+                    names
+                );
+                //this.stackAllData.push(Object.assign(prevProps.data));
             }
-            const times = prevProps.data[0].times[0];
-            const datas = prevProps.data[0].resData_util[0].diskUsed.y;
-            const methods = prevProps.data[0].methods[0];
-            this.reloadChart(
-                datas,
-                times,
-                methods
-            );
-            this.stackAllData.push(Object.assign(prevProps.data));
+
+            this.setState({ dataRaw: prevProps.data });
         }
+        /**
+        * sliding page
+        * * */
         if (this.currentPage !== prevProps.step) {
             this.currentPage = prevProps.step;
             this.stackData = [];
             this.loadedCount = 0;
             this.stackAllData.map(data => {
-                const times = data[0].times[0];
-                const datas = data[0].resData_util[0].diskUsed.y;
-                const methods = data[0].methods[0];
+                const { times } = prevProps.data[0];
+                const { methods } = prevProps.data[0];
+                const { cloudlets } = prevProps.data[0];
+                const datas = prevProps.data[0][selectedMethodName][0][cloudlets];
                 this.reloadChart(
                     datas,
                     times,
-                    methods
+                    methods,
+                    names
                 );
             });
         }
 
-        if (prevProps.size !== this.props.size) {
-            console.log("20200515 props size == ", prevProps.size, ":", this.props.size);
+        if (prevProps.size !== this.state.size) {
+            console.log("20200515 props size == ", prevProps.size);
             // this.setState({
             //     vWidth: prevProps.size.width,
             //     vHeight: prevProps.size.height
             // });
+            this.setState({ size: prevProps.size });
         }
     }
 
-    reloadChart(data, times, names) {
+    /** nemes = ["RegisterClient", "FindCloudlet", "VerifyLocation"] */
+    reloadChart(data, times, methods, names) {
         let seriesData = null;
         // let series = times.map((time) => (
         //     d3.TimeSeries()
@@ -168,13 +201,13 @@ class TimeSeries extends React.Component {
             y: data,
             yaxis: "y",
             text: names,
-            name: names[0],
+            name: names,
             line: {
                 dash: "solid",
                 width: 1
             },
             marker: { size: 4 },
-            hovertemplate: "<i>Used</i>: %{y:.2f}GBs"
+            hovertemplate: "<i>Count</i>: %{y:.2f}"
                 + "<br><b>Time</b>: %{x}<br>"
                 + "<b> %{text} </b>"
                 + "<extra></extra>"

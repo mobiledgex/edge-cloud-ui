@@ -2,34 +2,27 @@
 * setdataPart
 * Format drawing for plotly.js chart
 */
-const setdataPart = (data, name, columns) => {
+const setdataPart = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
     const setted = {};
     const seriesX = [];
     const seriesY = [];
+    const time = 0;
     data.map((item, i) => {
-        seriesX.push(item[0]);
-        seriesY.push(item[columns.indexOf(name)]);
-    });
-    const array = {
-        x: seriesX,
-        y: seriesY,
-        max: [],
-        mode: "lines",
-        name: "Solid",
-        line: {
-            dash: "solid",
-            width: 1
+        if (item[cloudletIdx] === cloudlet && item[methodIdx] === method) {
+            seriesX.push(item[time]);
+            seriesY.push(item[req]);
         }
-    };
-    return setted[data[0][1] + "_" + data[0][2]] = array;
+    });
+
+    return seriesY;
 };
 
-const createTime = (resSeries, idx) => {
-    const times = [];
+const createSeries = (resSeries, idx) => {
+    const series = [];
     resSeries.map(value => {
-        times.push(value[idx]);
+        series.push(value[idx]);
     });
-    return times;
+    return series;
 };
 
 const createObjects = (resSeries, idx) => {
@@ -43,6 +36,7 @@ const createObjects = (resSeries, idx) => {
 export const dataFormatRateRegist = response => {
     const resData = [];
     let times = [];
+    let names = [];
     let methods = [];
     let cloudlets = [];
     const resultParse = {};
@@ -50,17 +44,23 @@ export const dataFormatRateRegist = response => {
     if (response && response.values && response.values.length > 0) {
         console.log("20200516 format rate of regist .. ", response.values.length, ":", response.values);
         response.values.map(value => {
-            const timeIdx = value.indexOf("time");
-            const methodIdx = value.indexOf("method");
-            const cloudletIdx = value.indexOf("cloudlet");
-            const orgIdx = value.indexOf("org");
-            times = createTime(value.resSeries, timeIdx);
+            const timeIdx = value.resColumns.indexOf("time");
+            const methodIdx = value.resColumns.indexOf("method");
+            const cloudletIdx = value.resColumns.indexOf("cloudlet");
+            const orgIdx = value.resColumns.indexOf("apporg");
+            const reqCount = value.resColumns.indexOf("reqs");
+            times = createSeries(value.resSeries, timeIdx);
+            names = createSeries(value.resSeries, cloudletIdx);
             methods = createObjects(value.resSeries, methodIdx);
             cloudlets = createObjects(value.resSeries, cloudletIdx);
-
+            resultParse.times = times;
+            resultParse.names = names;
+            resultParse.methods = methods;
+            resultParse.cloudlets = cloudlets;
             methods.map((method, i) => {
+                resultParse[method] = [];
                 cloudlets.map((cloudlet, j) => {
-                    resultParse[method][j] = { [cloudlet]: setdataPart(value, cloudlet, times) };
+                    resultParse[method][j] = { [cloudlet]: setdataPart(value.resSeries, reqCount, cloudlet, cloudletIdx, method, methodIdx) };
                 });
             });
 

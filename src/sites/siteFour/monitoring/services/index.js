@@ -63,8 +63,10 @@ const getListAppinst = async (self, params) =>
 
 /** *********************************
  * METRICS CLOUDLET
+ * store : will be change to @Rahul's framwork
+ * token : 
  *********************************** */
-const store = JSON.parse(localStorage.PROJECT_INIT);
+const store = (localStorage && localStorage.PROJECT_INIT) ? JSON.parse(localStorage.PROJECT_INIT) : null;
 let token = store ? store.userToken : "null";
 const getMetricsCloudlet = async (self, params) => {
     /* Continue, get events of cloudlets */
@@ -109,7 +111,8 @@ const getMetricsClient = async (self, params) => {
             self,
             requestData(appinst),
         );
-        if (response && response.values.length > 0) self.onReceiveResult(response, self);
+        console.log("20200516 reponse get mt cl ==== ", response);
+        if (response && response.values) self.onReceiveResult(response, self);
     });
 };
 

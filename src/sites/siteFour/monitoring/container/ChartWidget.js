@@ -42,7 +42,7 @@ class ChartWidget extends React.Component {
             console.log("20200516 compare method ==  : chart type = ", this.props.chartType, ": id = ", prevProps.id, ": data = ", prevProps.data);
             if (prevProps.id === DataType.REGIST_CLIENT) {
                 if (prevProps.data && prevProps.data.values) {
-                    if (prevProps.data.values.length > 0) this.updateData(prevProps.data.values);
+                    if (prevProps.data.values.length > 0) this.updateData(prevProps.data);
                 }
             } else {
                 // this.setState({ data: prevProps.data });
@@ -55,6 +55,7 @@ class ChartWidget extends React.Component {
         console.log("20200516 compare ....... dataFormatRateRegistregist ... ", uData);
         const updatedata = await DataFormats.dataFormatRateRegist(uData);
         console.log("20200516 update data .. ", updatedata);
+        this.setState({ data: updatedata });
     }
 
     // componentWillReceiveProps(prevProps, prevState) {
