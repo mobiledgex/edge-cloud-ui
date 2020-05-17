@@ -164,6 +164,45 @@ export const getAppInstList = async (pRegionList = localStorage.getItem('regions
 }
 
 
+export const getCloudletList = async () => {
+    try {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        let regionList = localStorage.getItem('regions').split(",");
+
+        let promiseList = []
+        for (let i in regionList) {
+            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
+            promiseList.push(sendSyncRequest(this, requestData))
+        }
+        let orgCloudletList = await Promise.all(promiseList);
+        let mergedCloudletList = [];
+        orgCloudletList.map(item => {
+            //@todo : null check
+            if (item.response.data.length > 0) {
+                let cloudletList = item.response.data;
+                cloudletList.map(item => {
+                    mergedCloudletList.push(item);
+                })
+            }
+        })
+
+      /*  if ( localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")){
+            return  mergedCloudletList.filter((item: TypeCloudlet, index) => {
+                return item.Operator === localStorage.getItem('selectOrg').toString().trim()
+            })
+        }else{
+
+        }*/
+
+        return mergedCloudletList;
+
+    } catch (e) {
+        //showToast( e.toString())
+    }
+}
+
+
 export const getClusterList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -212,42 +251,6 @@ export const getClusterList = async () => {
 }
 
 
-export const getCloudletList = async () => {
-    try {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        let regionList = localStorage.getItem('regions').split(",");
-
-        let promiseList = []
-        for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
-            promiseList.push(sendSyncRequest(this, requestData))
-        }
-        let orgCloudletList = await Promise.all(promiseList);
-        let mergedCloudletList = [];
-        orgCloudletList.map(item => {
-            //@todo : null check
-            if (item.response.data.length > 0) {
-                let cloudletList = item.response.data;
-                cloudletList.map(item => {
-                    mergedCloudletList.push(item);
-                })
-            }
-        })
-
-        if ( localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")){
-            return  mergedCloudletList.filter((item: TypeCloudlet, index) => {
-                return item.Operator === localStorage.getItem('selectOrg').toString().trim()
-            })
-        }else{
-            return mergedCloudletList;
-        }
-
-
-    } catch (e) {
-        //showToast( e.toString())
-    }
-}
 
 export const getCloudletListAll = async () => {
     try {
@@ -786,17 +789,13 @@ export const getClientStateOne = async (appInst: TypeAppInstance) => {
     }).then(async response => {
 
         console.log(`response====>`, response.data);
-
         console.log(`response===2=>`, response.data.data[0].Series);
 
         if (response.data.data[0].Series !== null) {
 
             let seriesValues = response.data.data[0].Series[0].values
             console.log(`response===3====>`, seriesValues);
-
             let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
-
-
             return clientMatricSumDataOne;
         } else {
             return undefined
