@@ -530,9 +530,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                        let appInstList = require('./appInstList')*/
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
-                        await this.setState({
-                            clientStatusList: await getClientStatusList(appInstList),
-                        })
+                        this.setState({clientStatusList: await getClientStatusList(appInstList)})
                     }
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
