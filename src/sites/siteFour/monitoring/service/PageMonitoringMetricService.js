@@ -187,15 +187,14 @@ export const getCloudletList = async () => {
             }
         })
 
-      /*  if ( localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")){
-            return  mergedCloudletList.filter((item: TypeCloudlet, index) => {
+        if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
+            return mergedCloudletList.filter((item: TypeCloudlet, index) => {
                 return item.Operator === localStorage.getItem('selectOrg').toString().trim()
             })
-        }else{
+        } else {
+            return mergedCloudletList;
+        }
 
-        }*/
-
-        return mergedCloudletList;
 
     } catch (e) {
         //showToast( e.toString())
@@ -249,7 +248,6 @@ export const getClusterList = async () => {
 
     }
 }
-
 
 
 export const getCloudletListAll = async () => {
