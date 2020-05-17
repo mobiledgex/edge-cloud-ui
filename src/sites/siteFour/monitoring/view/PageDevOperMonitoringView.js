@@ -529,10 +529,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                        let clusterList = require('./clusterList')
                        let appInstList = require('./appInstList')*/
 
-                    this.state.userType.includes(USER_TYPE.OPERATOR) && this.setState({clientStatusList: await getClientStatusList(appInstList)})
-
-
-
+                    if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
+                        await this.setState({clientStatusList: await getClientStatusList(appInstList)})
+                    }
                     let orgAppInstList = appInstList.filter((item: TypeAppInstance, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let nameList = getCloudletClusterNameList(orgAppInstList)
                     let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(nameList.cloudletNameList), _.uniqWith(nameList.clusterNameList, _.isEqual))
