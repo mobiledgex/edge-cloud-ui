@@ -24,7 +24,8 @@ import {
     makeid,
     makeLineChartData,
     makeLineChartDataForBigModal,
-    reduceLegendClusterCloudletName, reduceString,
+    reduceLegendClusterCloudletName,
+    reduceString,
     revertToDefaultLayout,
 } from "../service/PageMonitoringService";
 import {
@@ -38,35 +39,23 @@ import {
     HARDWARE_TYPE,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS_LIST, USER_TYPE
+    THEME_OPTIONS_LIST,
+    USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletUsage, TypeCluster, TypeClusterUsageList,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, TypeClusterUsageList, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     getAllAppInstEventLogs,
     getAllClusterEventLogList,
     getAppInstList,
     getAppLevelUsageList,
+    getClientStatusList,
     getCloudletList,
     getCloudletUsageList,
     getClusterLevelUsageList,
-    getClusterList, getClientStatusList,
+    getClusterList,
     requestShowAppInstClientWS
 } from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
@@ -76,7 +65,6 @@ import {reactLocalStorage} from "reactjs-localstorage";
 import MapForDevContainer from "../components/MapForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
-import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
@@ -93,12 +81,7 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -643,7 +626,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-
             async resetLocalData() {
                 clearInterval(this.intervalForCluster)
                 clearInterval(this.intervalForAppInst)
@@ -810,9 +792,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            async handleClusterDropdown(selectedClusterOne) {
+            async handleClusterTreeDropdown(selectedClusterOne) {
                 try {
-
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
                         await this.setState({
@@ -820,6 +801,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                         await this.resetLocalData();
                     } else {
+
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                             dropdownRequestLoading: true,
@@ -1040,8 +1022,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperForCluster)
 
                 }
-                    //@desc: ##########################
-                    //@desc: CLUSTER
+                //@desc: ##########################
+                //@desc: CLUSTER
                 //@desc: ##########################
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
@@ -1536,7 +1518,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             style={{display: 'flex'}}
                             key="1"
                             onClick={async () => {
-                                await this.handleClusterDropdown('')
+                                await this.handleClusterTreeDropdown('')
                             }}
                         >
                             <MaterialIcon icon={'history'} color={'white'}/>
@@ -1791,7 +1773,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCluster}
                             placeholder={'Select Cluster'}
                             onChange={async (value) => {
-                                this.handleClusterDropdown(value)
+                                this.handleClusterTreeDropdown(value)
                             }}
                         >
                             {this.state.filteredClusterList.map((item: TypeCluster, index) => {
@@ -1848,7 +1830,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 } else {
                                     await this.filterClusterList(value)
                                 }
-                                await this.handleClusterDropdown(value.trim())
+                                await this.handleClusterTreeDropdown(value.trim())
                             }}
                         />
                     </div>
@@ -1920,7 +1902,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                         let clusterOne = item.cluster + " | " + item.cloudlet;
-                                        await this.handleClusterDropdown(clusterOne)
+                                        await this.handleClusterTreeDropdown(clusterOne)
 
                                     }}
                                     span={this.state.legendColSize}
@@ -2150,7 +2132,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return (
                     <>
                         <Toolbar className='monitoring_title' style={{marginTop: -5}}>
-                            <label className='content_title_label' style={{marginBottom: 1}}>
+                            <label className='content_title_label' style={{marginBottom: 1}}
+                                   onClick={() => {
+                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdown(undefined) : this.handleClusterTreeDropdown('')
+                                   }}
+                            >
                                 Monitoring
                                 <div style={{color: 'yellow', fontSize: 14}}>
                                     [{this.state.currentClassification}]
@@ -2228,7 +2214,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForAppInst)
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
-                                                    await this.handleClusterDropdown(this.state.currentCluster)
+                                                    await this.handleClusterTreeDropdown(this.state.currentCluster)
 
                                                 }
                                             }}
