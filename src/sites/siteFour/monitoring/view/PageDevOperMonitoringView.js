@@ -74,12 +74,16 @@ import {
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
+    CLUSTER_OPER_HW_MAPPER_KEY,
+    CLUSTER_OPER_LAYOUT_KEY,
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
     defaultLayoutForCluster,
+    defaultLayoutForClusterOper,
     defaultLayoutMapperForAppInst,
     defaultLayoutMapperForCloudlet,
+    defaultLayoutMapperForClusterOper,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster
@@ -261,6 +265,8 @@ type PageDevMonitoringState = {
     filteredAppInstList: any,
     allClientStatusList: any,
     filteredClientStatusList: any,
+    layoutForClusterOper: any,
+    layoutMapperForClusterOper: any,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -283,11 +289,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let clusterHwMapperKey = getUserId() + CLUSTER_HW_MAPPER_KEY
                 let appInstLayoutKey = getUserId() + APPINST_LAYOUT_KEY
                 let appInstHwMapperKey = getUserId() + APPINST_HW_MAPPER_KEY
+
                 let cloudletLayoutKey = getUserId() + CLOUDLET_LAYOUT_KEY
                 let cloudletHwMapperKey = getUserId() + CLOUDLET_HW_MAPPER_KEY
 
+                let clusterOperLayoutKey = getUserId() + CLUSTER_OPER_LAYOUT_KEY
+                let clusterOperHwMapperKey = getUserId() + CLUSTER_OPER_HW_MAPPER_KEY
+
+
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
+
                 //@fixme: DELETE THEME COLOR
                 /*reactLocalStorage.remove(themeTitle)
                 reactLocalStorage.remove(themeKey)*/
@@ -298,6 +310,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     layoutMapperForAppInst: isEmpty(reactLocalStorage.get(appInstHwMapperKey)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstHwMapperKey),
                     layoutForCloudlet: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayoutKey),
                     layoutMapperForCloudlet: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletHwMapperKey),
+                    layoutForClusterOper: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForClusterOper : reactLocalStorage.getObject(clusterOperLayoutKey),
+                    layoutMapperForClusterOper: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForClusterOper : reactLocalStorage.getObject(clusterOperHwMapperKey),
                     date: '',
                     time: '',
                     dateTime: '',
@@ -1793,16 +1807,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderNoClusterMsg() {
                 return (
-                    <div style={{display: 'flex'}}>
-                        <div style={{marginTop: 1,}}>
-                            <MaterialIcon
-                                size={18}
-                                color={'orange'}
-                                icon="info"
-                            />
-                        </div>
-                        <div style={{color: 'orange', marginLeft: 5}}>No Cluster</div>
-                    </div>
+                    <div style={{color: 'orange', marginLeft: 5}}>No Cluster</div>
                 )
             }
 

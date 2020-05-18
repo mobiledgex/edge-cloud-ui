@@ -71,6 +71,53 @@ export const CHART_TYPE = {
     METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
 }
 
+
+export const defaultLayoutForClusterOper = [
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+];
+
+
+export const defaultLayoutMapperForClusterOper= [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+    },
+    {
+        id: '5',
+        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+    },
+    {
+        id: '6',
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+    },
+
+];
+
+
 export const defaultLayoutForCloudlet = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//vCPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
@@ -125,7 +172,6 @@ export const defaultLayoutMapperForCloudlet = [
         hwType: HARDWARE_TYPE_FOR_GRID.netSend,
         graphType: CHART_TYPE.LINE,
     },
-
 
 ];
 
@@ -345,6 +391,10 @@ export const defaultLayoutXYPosForAppInst = [
 
 export const CLOUDLET_LAYOUT_KEY = "_layout_cloudlet";
 export const CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_cloudlet";
+export const CLUSTER_OPER_LAYOUT_KEY = "_layout_cluster_oper";
+export const CLUSTER_OPER_HW_MAPPER_KEY = "_layout_mapper_cluster_oper";
+
+
 export const CLUSTER_LAYOUT_KEY = "_layout";
 export const CLUSTER_HW_MAPPER_KEY = "_layout_mapper";
 export const APPINST_LAYOUT_KEY = "_layout2";
