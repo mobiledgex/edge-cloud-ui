@@ -214,6 +214,9 @@ export default function MapForOper(props) {
                                     <div style={Styles.lable001}>
                                         <b>Reservable</b>: {item.Reservable}
                                     </div>
+                                    <div style={Styles.lable001}>
+                                        <b>IpAccess</b>: {item.IpAccess}
+                                    </div>
                                 </div>
                             )
                         })}

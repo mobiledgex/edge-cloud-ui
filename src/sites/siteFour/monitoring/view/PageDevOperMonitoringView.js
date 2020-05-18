@@ -86,7 +86,8 @@ import {
     defaultLayoutMapperForClusterOper,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
-    defaultLayoutXYPosForCluster
+    defaultLayoutXYPosForCluster,
+    defaultLayoutXYPosForClusterForOper
 } from "../common/PageMonitoringLayoutProps";
 import MapForOper from "../components/MapForOper";
 import DonutChartHooks from "../components/DonutChartHooks";
@@ -808,9 +809,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let selectedCluster = selectData[0].trim();
                 let selectedCloudlet = selectData[1].trim();
 
-                /*this.setState({
+                this.setState({
                     currentClassification: CLASSIFICATION.CLUSTER_FOR_OPER
-                })*/
+                })
                 showToast(selectedCluster + "-->" + selectedCloudlet)
             }
 
@@ -1447,6 +1448,57 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderGridLayoutForClusterForOper() {
+                return (
+                    <ResponsiveReactGridLayout
+                        isResizable={true}
+                        draggableHandle=".draggable"
+                        verticalCompact={true}
+                        compactType={'vertical'}
+                        preventCollision={true}
+                        isDraggable={true}
+                        autoSize={true}
+                        style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
+                        className='layout page_monitoring_layout_dev'
+                        cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
+                        layout={this.state.layoutMapperForClusterOper}
+                        rowHeight={this.gridItemHeight}
+                        onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                            let width = newItem.w;
+                            this.setState({
+                                isResizeComplete: !this.state.isResizeComplete,
+                                currentWidgetWidth: width,
+                            })
+                        }}
+                        onLayoutChange={async (layout) => {
+                            this.setState({
+                                layoutForCluster: layout,
+                            }, async () => {
+                                await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterForOper);
+                                reactLocalStorage.setObject(getUserId() + CLUSTER_OPER_LAYOUT_KEY, layout)
+                            });
+
+                        }}
+                        {...this.props}
+                    >
+                        {this.state.layoutForClusterOper.map((item, loopIndex) => {
+
+                            const uniqueIndex = item.i;
+                            let hwType = HARDWARE_TYPE.CPU
+                            let graphType = GRID_ITEM_TYPE.LINE;
+                            if (!isEmpty(this.state.layoutForClusterOper.find(x => x.id === uniqueIndex))) {
+                                hwType = this.state.layoutForClusterOper.find(x => x.id === uniqueIndex).hwType
+                                graphType = this.state.layoutForClusterOper.find(x => x.id === uniqueIndex).graphType
+                                graphType = graphType.toUpperCase()
+                            }
+                            return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                        })}
+
+                    </ResponsiveReactGridLayout>
+
+                )
+            }
+
             renderGridLayoutForCloudletForOper() {
                 return (
                     <ResponsiveReactGridLayout
@@ -1805,12 +1857,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderNoClusterMsg() {
-                return (
-                    <div style={{color: 'orange', marginLeft: 5}}>No Cluster</div>
-                )
-            }
-
 
             renderClusterDropdownForOperator() {
                 return (
@@ -1821,7 +1867,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Select
                             showSearch={true}
                             dropdownStyle={{}}
-                            notFoundContent={this.renderNoClusterMsg()}
+                            notFoundContent={<div style={{color: 'orange', marginLeft: 5}}>No Cluster</div>}
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
                             disabled={isEmpty(this.state.clusterDropdownList) || this.state.currentCloudLet === undefined}
@@ -2404,7 +2450,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         marginLeft: 15,
                                         marginTop: 10,
                                         fontSize: 25,
-                                        color: 'rgba(255,255,255,.6)'
+                                        color: 'orange'
                                     }}>No Item</div>
                                     }
                                     {/*desc: no item message for appInst*/}
@@ -2417,8 +2463,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}>No Item</div>
                                     }
                                     {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderGridLayoutForCloudletForOper()
-                                        : this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderGridLayoutForClusterForDev()
-                                            : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderGridLayoutForAppInstForDev()
+                                        : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ? this.renderGridLayoutForClusterForOper()
+                                            : this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderGridLayoutForClusterForDev()
+                                                : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderGridLayoutForAppInstForDev()
                                     }
                                 </div>
                             </div>
