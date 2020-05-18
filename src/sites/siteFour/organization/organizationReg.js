@@ -13,6 +13,9 @@ import { fields } from '../../../services/model/format';
 import { keys, createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { } from '../../../services/model/cloudlet';
+import {organizationTutor} from "../../../tutorial";
+
+const orgaSteps = organizationTutor();
 
 const stepData = [
     {
@@ -40,8 +43,8 @@ const roles =
             'Apps': 'Manage',
             'App Instances': 'Manage',
             'Policies': 'Manage',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -51,8 +54,8 @@ const roles =
             'Apps': 'Manage',
             'App Instances': 'Manage',
             'Policies': 'Manage',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -62,8 +65,8 @@ const roles =
             'Apps': 'View',
             'App Instances': 'View',
             'Policies': 'Manage',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         }
     ],
     Operator: [
@@ -75,8 +78,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -86,8 +89,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
         {
             'Users & Roles': 'View',
@@ -97,8 +100,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'Manage',
-            'Audit Logs' : 'Manage'
+            'Monitoring' : 'View',
+            'Audit Logs' : 'View'
         },
     ]
 }
@@ -184,7 +187,8 @@ class OrganizationReg extends React.Component {
             this.props.onClose()
         }
         else {
-            this.setState({ step: 2 })
+            this.setState({ step: 2 });
+            this.props.handleViewMode( orgaSteps.stepsNewOrg3 );
         }
     }
 
@@ -221,6 +225,7 @@ class OrganizationReg extends React.Component {
             step: 1,
             forms: forms
         })
+        this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
     }
 
 
@@ -272,7 +277,7 @@ class OrganizationReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+                <div className="grid_table" >
 
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
@@ -355,7 +360,17 @@ class OrganizationReg extends React.Component {
         }
     }
 
+    validatePhone= (form) => {
+        if (!/^\+?(?:[0-9] ?){6,14}[0-9]$/.test(form.value)) {
+            form.error = 'Phone should only contain "+" and 7~15 digits.'
+            return false;
+        }
+        else {
+            form.error = undefined
+            return true;
+        }
 
+    }
 
     step2 = (data) => {
         return [
@@ -373,7 +388,7 @@ class OrganizationReg extends React.Component {
             { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, },
+            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, dataValidateFunc: this.validatePhone},
             { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value:false }
         ]
     }
@@ -390,6 +405,7 @@ class OrganizationReg extends React.Component {
             this.organizationInfo = data
             this.addUserForm(data)
             this.setState({ step: 1 })
+            this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
         }
         else {
 
@@ -417,7 +433,9 @@ class OrganizationReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( orgaSteps.stepsNewOrg )
     }
+
 };
 
 const mapStateToProps = (state) => {
@@ -428,7 +446,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
     };
 };
 

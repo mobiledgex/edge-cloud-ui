@@ -58,7 +58,6 @@ export const multiDataRequest = (keys, mcRequestList) => {
             cloudletInfoList = mcRequest.response.data
         }
     }
-
     if (cloudletList && cloudletList.length > 0) {
         for (let i = 0; i < cloudletList.length; i++) {
             let cloudlet = cloudletList[i]
@@ -71,6 +70,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
             }
         }
     }
+
     return cloudletList;
 }
 
@@ -125,7 +125,7 @@ export const streamCloudlet = (data) => {
 
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
@@ -137,16 +137,16 @@ export const keys = () => ([
     { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
     { field: fields.openRCData, serverField: 'accessvars#OS#OPENRC_DATA', label: 'Open RC Data' },
     { field: fields.caCertdata, serverField: 'accessvars#OS#CACERT_DATA', label: 'CA Cert Data' },
-    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
+    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: formatter.isAdmin() },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
-    { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON  },
+    { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
 const customData = (value) => {
-    value[fields.cloudletStatus] = 4
+    value[fields.cloudletStatus] = formatter.isAdmin() ? 4 : undefined
     value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
 }

@@ -1,4 +1,5 @@
 export const CHANGE_SITE = "CHANGE_SITE";
+export const VIEW_MODE = "VIEW_MODE";
 export const CHANGE_TAB = "CHANGE_TAB";
 export const INJECT_DATA = "INJECT_DATA";
 export const CLEAR_DATA = "CLEAR_DATA";

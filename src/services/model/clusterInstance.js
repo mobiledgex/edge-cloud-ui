@@ -15,6 +15,7 @@ export const keys = () => ([
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true },
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true },
     { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, filter: true },
+    { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', sortable: true, filter: true },
     { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
     { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },

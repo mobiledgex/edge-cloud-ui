@@ -10,7 +10,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from "antd";
 import '../PageMonitoring.css'
-import {handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
+import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../dev/PageDevMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../PageMonitoringUtils";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../PageMonitoringCommonService";
@@ -27,7 +27,7 @@ function getWindowDimensions() {
     };
 }
 
-export default function PerformanceSummaryForClusterHook(props: Props) {
+export default function PerformanceSummaryForCluster(props: Props) {
     //const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     useEffect(() => {
     }, [props.filteredUsageList]);
@@ -36,7 +36,7 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
     function handleRowClicked(item, hwType) {
         try {
             let clusterAndCloudlet = item.cluster.toString() + ' | ' + item.cloudlet.toString()
-            let lineChartDataSet = makeLineChartDataForCluster(props.parent.state.filteredClusterUsageList, hwType, props.parent)
+            let lineChartDataSet = makeLineChartData(props.parent.state.filteredClusterUsageList, hwType, props.parent)
             clusterAndCloudlet = clusterAndCloudlet.toString().split(" | ")[0] + "|" + clusterAndCloudlet.toString().split(" | ")[1]
             handleLegendAndBubbleClickedEvent(props.parent, clusterAndCloudlet, lineChartDataSet)
         } catch (e) {
@@ -61,7 +61,6 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                          style={{
                              flex: .2,
                              marginTop: 5,
-                             fontFamily: 'Ubuntu',
                              //backgroundColor: 'red'
                          }}
                     >
@@ -75,7 +74,6 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                 component={Paper}
                 style={{
                     height: 'auto',
-                    fontFamily: 'Ubuntu',
                     backgroundColor: 'blue !important',
                     width: 'auto',
                     overflowX: 'scroll'
@@ -84,7 +82,7 @@ export default function PerformanceSummaryForClusterHook(props: Props) {
                 <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll',}}
                        stickyHeader={true}>
 
-                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Ubuntu', fontSize: 20}} fixedHeader={true}>
+                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                             </TableCell>

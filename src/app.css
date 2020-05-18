@@ -54,3 +54,8 @@
 .ui.selection.dropdown .menu>.item {
     border: none;
 }
+
+.yamlDiv {
+    margin-bottom: 0px;
+}
+

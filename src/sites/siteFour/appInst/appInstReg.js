@@ -17,6 +17,9 @@ import { getAppList } from '../../../services/model/app';
 import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
+import {appInstTutor} from "../../../tutorial";
+
+const appInstSteps = appInstTutor();
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -618,7 +621,7 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" style={{ height: constant.getHeight(), overflow: 'auto' }}>
+                <div className="grid_table" >
                     <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms}  isUpdate={this.isUpdate}/>
                 </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
@@ -628,7 +631,9 @@ class ClusterInstReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
+        this.props.handleViewMode( appInstSteps.stepsCreateAppInst )
     }
+
 };
 
 const mapStateToProps = (state) => {
@@ -653,7 +658,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 
