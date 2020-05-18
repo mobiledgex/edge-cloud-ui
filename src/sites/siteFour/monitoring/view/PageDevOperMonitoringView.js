@@ -2196,12 +2196,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </LegendOuterDiv>
                     )
                 } else {
-                    let legendElementLength = this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.filteredClusterUsageList.length : this.state.filteredCloudletList
+                    let legendItemCount = this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.state.filteredClusterUsageList.length : this.state.filteredCloudletList
 
                     return (
                         <LegendOuterDiv
                             style={{
-                                height: this.state.currentClassification === CLASSIFICATION.CLUSTER && legendElementLength > 1 ?
+                                height: this.state.currentClassification === CLASSIFICATION.CLUSTER && legendItemCount > 1 ?
                                     this.state.legendHeight : this.state.currentClassification === CLASSIFICATION.APPINST ? 30 :
                                         this.state.currentClassification === CLASSIFICATION.CLOUDLET ? 60 : this.state.legendHeight
                             }}>
@@ -2225,13 +2225,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (this.state.isLegendExpanded === false) {
                                         this.setState({
                                             isLegendExpanded: true,
-                                            legendHeight: (Math.ceil(legendElementLength / 4)) * 25,
+                                            legendHeight: (Math.ceil(legendItemCount / 4)) * 25,
                                             legendColSize: 6,
                                         })
                                     } else {//when expanded
                                         this.setState({
                                             isLegendExpanded: false,
-                                            legendHeight: (Math.ceil(legendElementLength / 8)) * 25,
+                                            legendHeight: (Math.ceil(legendItemCount / 8)) * 25,
                                             legendColSize: 3,
                                         })
                                     }
