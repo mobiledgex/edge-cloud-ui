@@ -474,7 +474,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         setVerticalOffset(lat, cloudletIndex) {
-            return lat + (cloudletIndex * 0.005)
+            return lat + (cloudletIndex * 0.01)
         }
 
         renderCloudletMarkers = () => (

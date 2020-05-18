@@ -65,6 +65,11 @@
     margin-right: 10px;
 }
 
+.page_audit_history_option_period .ui.selection.dropdown {
+    z-index: 1001; /* it need to be higher than the timeline header's zIndex(= 1000) */
+    width: 150px;
+}
+
 .page_audit_history_timeline {
     display: flex;
     height: 120px;
@@ -335,8 +340,10 @@
     display: block;
     overflow: hidden;
     white-space: nowrap;
+    min-height: calc(100% - 36px);
     max-height: calc(100% - 36px);
-    overflow-y: scroll;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .react-calendar-timeline .rct-sidebar {
@@ -384,14 +391,16 @@
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-even,
 .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
     border-top: 2px solid #292c33;
-    border-bottom: 2px solid #292c33;
-    background: rgba(0, 0, 0, 0.1);
+    border-bottom: none;
+    min-font-size: 5000px;
+    /*background: rgba(0, 0, 0, 0.1);*/
 }
 
 .react-calendar-timeline .rct-scroll {
     border-left: 2px solid #292c33;
     border-right: 2px solid #292c33;
     overflow-x: hidden;
+    min-height: 100%;
 }
 
 .rct-item {
@@ -405,13 +414,32 @@
 }
 
 .timeline_item_box {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
     height: 100%;
+    width:100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     border-radius: 5px;
     padding: 5px;
     border: 1px solid #000;
+}
+
+.timeline_item_text {
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timeline_item_text > div {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .timeline_item_button button{
@@ -550,9 +578,14 @@
 
 }
 
-.page_audit_error_button .material-icons {
-    font-size: 18px;
-    margin-top: 4px;
+.page_audit_error_button .MuiSvgIcon-fontSizeSmall {
+    margin-top: 5px;
+    color:rgba(255,255,255,.7);
+}
+
+.page_audit_error_button .MuiSvgIcon-fontSizeSmall:hover {
+    color:rgba(255,255,255,.9);
+
 }
 
 .page_audit_history_option_period .button_off,
@@ -605,8 +638,10 @@
 }
 
 .timeline_item_dot {
-    width:20px;
-    height:20px;
+    width:10px;
+    height:10px;
+    border-width: 1px;
+    border-style: solid;
     border-radius: 50%;
     display: flex;
     justify-content: center;

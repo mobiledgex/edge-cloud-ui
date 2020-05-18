@@ -17,6 +17,7 @@ import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
+import { roundOff } from '../utils/math_util';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -28,8 +29,8 @@ class MexListView extends React.Component {
             currentView: null,
             isDetail: false,
             stepsArray: [],
-            multiStepsArray:[],
-            selected:[],
+            multiStepsArray: [],
+            selected: [],
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
@@ -43,16 +44,16 @@ class MexListView extends React.Component {
         this.selectedRegion = REGION_ALL
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.mapDetails = undefined
     }
 
-    setSelected = (dataList)=>
-    {
-        this.setState({selected:dataList})
+    setSelected = (dataList) => {
+        this.setState({ selected: dataList })
     }
 
     detailView = (data) => {
         let additionalDetail = this.props.requestInfo.additionalDetail
-        this.props.handleViewMode( null )
+        this.props.handleViewMode(null)
         return (
             <Card style={{ height: '95%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
@@ -109,19 +110,17 @@ class MexListView extends React.Component {
                     this.props.handleAlertInfo('success', `${mcRequest.request.success}`)
                     filterList.splice(filterList.indexOf(data), 1)
                     dataList.splice(dataList.indexOf(data), 1)
-                    this.setState({ dataList:dataList, filterList: filterList})
+                    this.setState({ dataList: dataList, filterList: filterList })
                     valid = true;
                 }
-                if(action.onFinish)
-                {
+                if (action.onFinish) {
                     action.onFinish(data, valid)
                 }
             }
         }
     }
 
-    onMultiResponse = (mcRequest)=>
-    {
+    onMultiResponse = (mcRequest) => {
         let orgData = mcRequest.request.orgData
         let data = orgData.data
         let action = orgData.action
@@ -133,28 +132,24 @@ class MexListView extends React.Component {
             }
             let labels = action.multiStepperHeader
             this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mcRequest.wsObj) })
-        } 
+        }
     }
 
     onDeleteMultiple = (action, data) => {
         this.props.handleLoadingSpinner(true)
-        serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, {action:action, data : data})
+        serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
     }
-    
-    onUpdate = async (action, data) =>
-    { 
-        if(data[fields.updateAvailable])
-        {
+
+    onUpdate = async (action, data, forceRefresh) => {
+        if (forceRefresh || data[fields.updateAvailable]) {
             this.props.handleLoadingSpinner(true)
-            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, {action:action, data : data})
+            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
         }
     }
 
-    onPowerState = (action, data) =>
-    {
+    onPowerState = (action, data) => {
         let powerState = constant.PowerState(constant.POWER_STATE_POWER_STATE_UNKNOWN)
-        switch(action.label)
-        {
+        switch (action.label) {
             case 'Power On':
                 powerState = constant.PowerState(constant.POWER_STATE_POWER_ON)
                 break;
@@ -180,10 +175,10 @@ class MexListView extends React.Component {
                 data.map(item => {
                     switch (action.label) {
                         case 'Upgrade':
-                            if(item[fields.updateAvailable])
-                            {
-                                this.onUpdate(action, item)
-                            }
+                            this.onUpdate(action, item)
+                            break;
+                        case 'Refresh':
+                            this.onUpdate(action, item, true)
                             break;
                         case 'Delete':
                             this.onDeleteMultiple(action, item)
@@ -200,6 +195,9 @@ class MexListView extends React.Component {
                     case 'Upgrade':
                         this.onUpdate(action, data)
                         break;
+                    case 'Refresh':
+                        this.onUpdate(action, data, true)
+                        break;
                     case 'Power On':
                     case 'Power Off':
                     case 'Reboot':
@@ -212,7 +210,7 @@ class MexListView extends React.Component {
 
     onWarning = async (action, actionLabel, isMultiple, data) => {
         let message = action.dialogMessage ? action.dialogMessage(action, data) : undefined
-        this.setState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple:isMultiple, data:data } });
+        this.setState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple: isMultiple, data: data } });
     }
 
     /***Action Block */
@@ -226,6 +224,9 @@ class MexListView extends React.Component {
                 break
             case 'Upgrade':
                 this.onWarning(action, 'upgrade', false, data)
+                break;
+            case 'Refresh':
+                this.onWarning(action, 'refresh', false, data)
                 break;
             case 'Power On':
                 this.onWarning(action, 'power on', false, data)
@@ -241,6 +242,21 @@ class MexListView extends React.Component {
         }
     }
 
+    onMapClick = (mapDataList) => {
+        let filterList = this.onFilterValue()
+        if (mapDataList) {
+            this.mapDetails = mapDataList
+            let coordinates = mapDataList.coordinates
+            filterList = filterList.filter(data => {
+                let cloudletLocation = data[fields.cloudletLocation]
+                let lat = roundOff(cloudletLocation[fields.latitude])
+                let lon = roundOff(cloudletLocation[fields.longitude])
+                return mapDataList.name.includes(data[this.props.requestInfo.nameField]) && coordinates[0] === lon && coordinates[1] === lat
+            })
+        }
+        this.setState({ filterList: filterList })
+    }
+
     groupActionClose = (action, dataList) => {
         this.onWarning(action, action.warning, true, dataList)
     }
@@ -251,15 +267,15 @@ class MexListView extends React.Component {
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 300 }}>
-                        <Map dataList={this.state.filterList} id={this.props.requestInfo.id} />
+                        <Map dataList={this.state.filterList} id={this.props.requestInfo.id} onClick={this.onMapClick} mapDetails={this.mapDetails} />
                     </div> : null}
-                <MexListViewer keys={this.keys} dataList={this.state.filterList} 
-                    selected = {this.state.selected}
-                    setSelected = {this.setSelected}
-                    actionMenu={this.props.actionMenu} 
-                    cellClick={this.getCellClick} 
-                    actionClose={this.onActionClose} 
-                    isMap={isMap} requestInfo={this.props.requestInfo} 
+                <MexListViewer keys={this.keys} dataList={this.state.filterList}
+                    selected={this.state.selected}
+                    setSelected={this.setSelected}
+                    actionMenu={this.props.actionMenu}
+                    cellClick={this.getCellClick}
+                    actionClose={this.onActionClose}
+                    isMap={isMap} requestInfo={this.props.requestInfo}
                     groupActionMenu={this.props.groupActionMenu}
                     groupActionClose={this.groupActionClose} />
             </div>)
@@ -275,8 +291,7 @@ class MexListView extends React.Component {
             if (data.code === 200) {
                 type = 'success'
             }
-            if(data.message !== `Key doesn't exist`)
-            {
+            if (data.message !== `Key doesn't exist`) {
                 this.props.handleAlertInfo(type, data.message)
             }
         }
@@ -308,8 +323,7 @@ class MexListView extends React.Component {
                     valid = true
                 }
             }
-            if(valid)
-            {
+            if (valid) {
                 serverData.sendWSRequest(this, stream(data), this.requestResponse)
             }
         }
@@ -379,7 +393,7 @@ class MexListView extends React.Component {
     }
 
     multiStepperClose = () => {
-        this.state.multiStepsArray.map(item=>{
+        this.state.multiStepsArray.map(item => {
             item.wsObj.close()
         })
         this.setState({
@@ -404,22 +418,25 @@ class MexListView extends React.Component {
       Todo: Move to separate file
       */
 
-     onFilterValue = (e) => {
+    onFilterValue = (e) => {
+        this.mapDetails = null
         this.filterText = e ? e.target.value.toLowerCase() : this.filterText
         let dataList = this.state.dataList
         let filterCount = 0
-        let filterList = dataList.filter(data=>{
-            let valid = this.keys.map(key=>{
-                if(key.filter)
-                {   
-                    filterCount =+ 1
+        let filterList = dataList.filter(data => {
+            let valid = this.keys.map(key => {
+                if (key.filter) {
+                    filterCount = + 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    return tempData.toLowerCase().includes(this.filterText) 
+                    return tempData.toLowerCase().includes(this.filterText)
                 }
             })
             return filterCount === 0 || valid.includes(true)
         })
-        this.setState({filterList:filterList})
+        if (e) {
+            this.setState({ filterList: filterList })
+        }
+        return filterList
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -435,7 +452,7 @@ class MexListView extends React.Component {
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue} regions = {this.regions}/>
+                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue} regions={this.regions} filterText={this.filterText} />
                 {this.state.currentView ? this.state.currentView : this.listView()}
             </Card>
         );
@@ -459,7 +476,7 @@ class MexListView extends React.Component {
                 break;
             case ACTION_CLOSE:
                 this.setState({ isDetail: false, currentView: null })
-                this.props.handleViewMode( this.props.requestInfo.viewMode )
+                this.props.handleViewMode(this.props.requestInfo.viewMode)
                 break;
             default:
 
@@ -511,30 +528,28 @@ class MexListView extends React.Component {
         let dataList = this.state.dataList
         if (mcRequestList && mcRequestList.length > 0 && dataList.length > 0) {
             let requestData = mcRequestList[0].request.data
-            if(requestData.region)
-            {
-                dataList = dataList.filter(function( obj ) {
+            if (requestData.region) {
+                dataList = dataList.filter(function (obj) {
                     return obj[fields.region] !== requestData.region;
                 });
             }
         }
 
-        if(newDataList.length > 0)
-        {
+        if (newDataList.length > 0) {
             newDataList = _.orderBy(newDataList, requestInfo.sortBy)
             this.streamProgress(newDataList)
             dataList = [...dataList, ...newDataList]
         }
-        
+
         this.setState({
             dataList: Object.assign([], dataList)
         })
-        this.onFilterValue()
-        this.props.handleViewMode( this.props.requestInfo.viewMode );
+        this.setState({ filterList: this.onFilterValue() })
+        this.props.handleViewMode(this.props.requestInfo.viewMode);
     }
 
     dataFromServer = (region) => {
-        this.setState({ dataList: [], filterList:[], selected:[] })
+        this.setState({ dataList: [], filterList: [], selected: [] })
         let requestInfo = this.props.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)
@@ -555,7 +570,7 @@ class MexListView extends React.Component {
 
     componentDidMount() {
         this.dataFromServer(REGION_ALL)
-        this.props.handleViewMode( null )
+        this.props.handleViewMode(null)
     }
 }
 

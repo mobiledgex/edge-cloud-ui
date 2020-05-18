@@ -28,8 +28,7 @@ import './styles.css';
 import CountryCode from '../../../libs/country-codes-lat-long-alpha3';
 import { fields } from '../../../services/model/format'
 
-const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022',
-    '#66CCFF', '#FF78A5', '#fffba7']
+const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022', '#66CCFF', '#FF78A5', '#fffba7']
 const zoomControls = { center: [30, 40], zoom: 3 }
 
 const cityScale = scaleLinear()
@@ -67,15 +66,12 @@ class ClustersMap extends Component {
             unselectCity: '',
             clickCities: [],
             saveMarker: [],
-            //blink
             keyName: ''
-            //-blink
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
         this.handleCityClick = this.handleCityClick.bind(this)
         this.handleReset = this.handleReset.bind(this)
-        this.fetchCities = this.fetchCities.bind(this)
         this.handleLeave = this.handleLeave.bind(this)
         this.dir = 1;
         this.interval = null;
@@ -98,16 +94,14 @@ class ClustersMap extends Component {
             zoom: 3,
             detailMode: false
         })
+        if(this.props.onClick)
+        {
+            this.props.onClick()
+        }
     }
 
     // Todo: Need to reimplement
-    handleCityClick(city) {
-        this.setState({
-            zoom: 4,
-            center: city.coordinates,
-            detailMode: true
-        })
-
+    handleCityClick = (city) =>{
         if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
             d3.selectAll('.rsm-markers').selectAll(".levelFive")
                 .transition()
@@ -121,9 +115,15 @@ class ClustersMap extends Component {
             })
         }
         this.setState({
-            clickCities: clickMarker,
-            saveMarker: clickMarker
+            zoom: 4,
+            center: city.coordinates,
+            detailMode: true,
+            clickCities: clickMarker
         })
+        if(this.props.onClick)
+        {
+            this.props.onClick(city)
+        }
     }
 
     // map marker text click
@@ -146,123 +146,11 @@ class ClustersMap extends Component {
         _self.setState({ oldCountry: country.name })
     }
 
-    /** ************************************************
-     * fetchCities
-     * display marker and alarm-counter on the worldmap
-     * 지도위에 마커포시하고 숫자표현
-     ** ************************************************/
-    fetchCities() {
-        request
-            .get("/data-maps/world-most-populous-cities.json")
-            .then(res => {
-                this.setState({
-                    cities: res.data,
-                })
-            })
-    }
-    fetchCountry() {
-        request
-            .get("/data-maps/country-capitals.json")
-            .then(res => {
-                this.setState({
-                    countries: res.data
-                })
-                let _self = this;
-                setTimeout(_self.fetchMWCZone(), 1000)
-            })
-    }
-    fetchConnectivity() {
-        let indents = [0, 0]
-        let _countries = [{ name: 'Berlin' }, { name: 'Paris' }, { name: 'Kyiv' }, { name: 'Vienna' }, { name: 'Budapest' }]
-        let _Country = []
-        _countries.map((data, i) => {
-            _self.state.countries.map((cnt) => {
-                if (data.name === cnt.CapitalName) {
-                    _Country.push({ name: cnt.CapitalName, coordinates: [parseInt(cnt.CapitalLongitude) + indents[0], parseInt(cnt.CapitalLatitude) + indents[1]] })
-                }
-            })
-
-        })
-
-        this.setState({
-            citiesSecond: _Country
-        })
-    }
-    fetchMWCZone() {
-        //Longitude, Latitude
-        let _Country = []
-        let _countries = [
-            { "name": "Barcelona", "coordinates": [2.1734, 41.3851], "population": 1, "cost": 1, "offsets": [10, 15] },
-            // { "name": "Sant Montjuic", "coordinates": [0.170459, 41.018247], "population": 1, "cost":1, "offsets": [-10,15] },
-            // { "name": "Sant Gervasi", "coordinates": [1.005055, 42.493365], "population": 1, "cost":1, "offsets": [10,-15] },
-            { "name": "frankfurt", "coordinates": [8.6821, 50.1109], "population": 1, "cost": 1, "offsets": [0, 15] },
-            { "name": "hamburg", "coordinates": [9.9937, 53.5511], "population": 1, "cost": 1, "offsets": [0, 15] },
-        ]
-
-        this.setState({
-            citiesSecond: _countries
-        })
-    }
-
-    //마커의 깜박거림 크기
-    blinkAnimationMarker(id, dir) {
-        let radius = 0;
-        let alpha = 1;
-        let durate = 900;
-        if (dir === 1) {
-            radius = 32;
-            alpha = 0;
-            durate = 900;
-        } else {
-            radius = 16;
-            alpha = 1;
-            durate = 300;
-        }
-        if (d3.selectAll('.' + id).selectAll(".levelFive")) {
-            d3.selectAll('.' + id).selectAll(".levelFive")
-                .transition()
-                .duration(durate)
-                .ease(d3.easeBack)
-                .attr("r", radius)
-                .style("opacity", alpha)
-        }
-
-        // if(d3.selectAll('.'+id).selectAll(".toronto-cloudlet")) {
-        //     d3.selectAll('.'+id).selectAll(".toronto-cloudlet")
-        //         .transition()
-        //         .duration(durate)
-        //         .ease(d3.easeBack)
-        //         .attr("r", radius)
-        //         .style("opacity",alpha)
-        // }
-
-        //blink
-        if (d3.selectAll('.' + id).selectAll((this.state.keyName !== '') ? '.' + this.state.keyName : null)) {
-            d3.selectAll('.' + id).selectAll((this.state.keyName !== '') ? '.' + this.state.keyName : null)
-                .transition()
-                .duration(durate)
-                .ease(d3.easeBack)
-                .attr("r", radius)
-                .style("opacity", alpha)
-        }
-        //-blink
-
-        if (d3.selectAll('.detailMarker_' + _self.state.selectedCity)) {
-            d3.selectAll('.detailMarker_' + _self.state.selectedCity)
-                .transition()
-                .duration(durate)
-                .ease(d3.easeBack)
-                .attr("r", (dir === 1) ? markerSize[0] : markerSize[1])
-                .style("opacity", alpha)
-        }
-
-    }
-
     //tooltip
     handleLeave = () => {
-        //this.props.dispatch(hide())
         ReactTooltip.hide(this.tooltipref)
     }
+
     handleMoveMk = (marker, evt) => {
 
         const x = evt.clientX
@@ -280,6 +168,7 @@ class ClustersMap extends Component {
 
         _self.moveMouse = true;
     }
+
     handleLeaveMk = () => {
         //this.props.dispatch(hide())
         ReactTooltip.hide(this.tooltipref)
@@ -321,30 +210,16 @@ class ClustersMap extends Component {
         }
 
         let _self = this;
-        this.interval = setInterval(function () {
-            if (_self.dir === 1) {
-                _self.dir = -1
-            } else {
-                _self.dir = 1;
-            }
-            _self.blinkAnimationMarker('rsm-markers', _self.dir)
-        }, 900)
-
-        if (_self.props.tabIdx === 'pg=1') {
-            _self.handleCityClick({ "name": this.state.selectedCity, "coordinates": [2.1734, 41.3851], "population": 37843000, "cost": 3 });
-        }
         _self.setState({ oldCountry: this.state.selectedCity })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-
         let initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         let data = nextProps.locData ? initialData : initialData.filter((item) => item[fields.state] == 5);
 
         function reduceUp(value) {
             return Math.round(value)
         }
-        
         const mapName = (item) => {
             let id = nextProps.id
             if (id === "Cloudlets") {
@@ -398,8 +273,30 @@ class ClustersMap extends Component {
         Object.keys(groupbyClData).map((key) => {
             cloudletData.push({ "name": key, "coordinates": [groupbyClData[key][0]['LON'], groupbyClData[key][0]['LAT']], "population": 17843000, "cost": groupbyClData[key].length })
         })
+
+        
         if (!_.isEqual(locationData, prevState.cities)) {
-            return { cities: locationData, center: nextProps.locData ? prevState.center : zoomControls.center,zoom: nextProps.locData ? prevState.zoom : 3};
+
+            let clickMarker = [];
+            let zoom = nextProps.locData ? prevState.zoom : 3
+            let center = nextProps.locData ? prevState.center : zoomControls.center
+
+            if (nextProps.mapDetails) {
+                if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
+                    d3.selectAll('.rsm-markers').selectAll(".levelFive")
+                        .transition()
+                        .ease(d3.easeBack)
+                        .attr("r", markerSize[0])
+                }
+
+                nextProps.mapDetails.name.map((item, i) => {
+                    clickMarker.push({ "name": item, "coordinates": nextProps.mapDetails.coordinates, "population": 17843000, "cost": 1 })
+                })
+
+                zoom = 4
+                center = nextProps.mapDetails.coordinates
+            }
+            return { cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false, clickCities: clickMarker };
         }
         return null;
     }
@@ -437,9 +334,6 @@ class ClustersMap extends Component {
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[4]} endColor={grdColors[4]} idCSS="levelFour" rotation={0} />
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[3]} endColor={grdColors[3]} idCSS="levelThree" rotation={0} />
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[2]} endColor={grdColors[2]} idCSS="levelTwo" rotation={0} />
-                {/*<RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[6]} endColor={grdColors[6]} idCSS="levelSkyblue" rotation={0}/>*/}
-                {/*<RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[7]} endColor={grdColors[7]} idCSS="levelPuurple" rotation={0}/>*/}
-                {/*<RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[8]} endColor={grdColors[8]} idCSS="levelGold" rotation={0}/>*/}
                 <RadialGradientSVG startColor={'#394251'} middleColor={'#394251'} endColor={'#394251'} idCSS="levelBg" rotation={0} />
                 <ReactTooltip id='happyFace' className='customToolTip' type='dark' effect='float' style={{ left: '-100px' }}>
                     <span>{this.state.tooltipMsg}</span>
@@ -567,7 +461,6 @@ const mapStateToProps = (state, ownProps) => {
     let deleteReset = state.deleteReset.reset;
     return {
         data: state.receiveDataReduce.data,
-        tabIdx: state.siteChanger.site.subPath,
         itemLabel: state.computeItem.item,
         deleteReset,
     };

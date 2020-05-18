@@ -17,7 +17,7 @@ import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningP
 import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import {appTutor} from "../../../tutorial";
+import { appTutor } from "../../../tutorial";
 
 
 const appSteps = appTutor();
@@ -40,7 +40,6 @@ class ClusterInstReg extends React.Component {
         this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
         this.originalData = undefined
         this.expandAdvanceMenu = false
-        //To avoid refetching data from server
     }
 
     validatePortRange = (form) => {
@@ -82,8 +81,7 @@ class ClusterInstReg extends React.Component {
                     };
                     reader.readAsText(file)
                 }
-                else
-                {
+                else {
                     this.props.handleAlertInfo('error', 'File size cannot be >1MB')
                 }
             }
@@ -101,7 +99,8 @@ class ClusterInstReg extends React.Component {
 
     portForm = () => ([
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true, update: true, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: true },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1},
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm, update: true }
     ])
 
@@ -123,7 +122,8 @@ class ClusterInstReg extends React.Component {
         { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: true, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: true },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1 },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm, update: true }
     ])
 
@@ -132,8 +132,8 @@ class ClusterInstReg extends React.Component {
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true, update:true },
-        { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 4, visible: true, options: this.configOptions, update:true },
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true, update: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 4, visible: true, options: this.configOptions, update: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
 
@@ -210,12 +210,21 @@ class ClusterInstReg extends React.Component {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
                 return form
             }
-            else if (form.label === 'Configs' || form.label === 'Annotations') {
+            else if (form.label === 'Configs') {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
                 this.configOptions = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
                 return form
             }
-            else if (form.field === fields.configs || form.field === fields.annotations) {
+            else if (form.label === 'Annotations') {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                return form
+            }
+            else if (form.field === fields.annotations) {
+                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM) {
+                    return form
+                }
+            }
+            else if (form.field === fields.configs) {
                 if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                     return form
                 }
@@ -251,6 +260,19 @@ class ClusterInstReg extends React.Component {
         }
         this.updateUI(form)
         this.setState({ forms: forms })
+    }
+
+    protcolValueChange = (currentForm, forms, isInit) => {
+        let childForms = currentForm.parent.form.forms
+        for (let i = 0; i < childForms.length; i++) {
+            let form = childForms[i]
+            if (form.field === fields.tls) {
+                form.visible = currentForm.value === 'tcp'
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
     }
 
     regionValueChange = (currentForm, forms, isInit) => {
@@ -313,6 +335,9 @@ class ClusterInstReg extends React.Component {
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
         }
+        else if (form.field === fields.protocol) {
+            this.protcolValueChange(form, forms, isInit)
+        }
     }
 
     /**Required */
@@ -364,10 +389,12 @@ class ClusterInstReg extends React.Component {
                         if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
                             ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
+                            ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
                         }
                         else if (multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
                             ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                            ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
                         }
                         else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
                             data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()
@@ -377,7 +404,6 @@ class ClusterInstReg extends React.Component {
                             annotations = annotations + `${multiFormData[fields.key]}=${multiFormData[fields.value]}`
                         }
                         else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
-                            multiFormData[fields.kind] = constant.configType(multiFormData[fields.kind])
                             configs.push(multiFormData)
                         }
                     }
@@ -482,8 +508,7 @@ class ClusterInstReg extends React.Component {
             this.flavorList = await getFlavorList(this, { region: data[fields.region] })
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
             this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
-            if(data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES)
-            {
+            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                 this.configOptions = [constant.CONFIG_ENV_VAR]
             }
             let multiFormCount = 0
@@ -491,8 +516,13 @@ class ClusterInstReg extends React.Component {
                 let portArray = data[fields.accessPorts].split(',')
                 for (let i = 0; i < portArray.length; i++) {
                     let portInfo = portArray[i].split(':')
-                    let protocol = portInfo[0];
+                    let protocol = portInfo[0].toLowerCase();
                     let portMaxNo = portInfo[1];
+                    let tls = false
+                    if(portInfo.length === 3 && portInfo[2] === 'tls')
+                    {
+                        tls = true
+                    }
                     let portMinNo = undefined
 
                     let portForms = this.portForm()
@@ -507,13 +537,17 @@ class ClusterInstReg extends React.Component {
                     for (let j = 0; j < portForms.length; j++) {
                         let portForm = portForms[j];
                         if (portForm.field === fields.protocol) {
-                            portForm.value = protocol.toLowerCase()
+                            portForm.value = protocol
                         }
                         else if (portForm.field === fields.portRangeMax) {
                             portForm.value = portMaxNo
                         }
                         else if (portForm.field === fields.portRangeMin) {
                             portForm.value = portMinNo
+                        }
+                        else if (portForm.field === fields.tls) {
+                            portForm.visible = protocol === 'tcp'
+                            portForm.value = tls
                         }
                     }
                     forms.splice(13 + multiFormCount, 0, this.getPortForm(portForms))
@@ -650,7 +684,7 @@ class ClusterInstReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( appSteps.stepsCreateApp )
+        this.props.handleViewMode(appSteps.stepsCreateApp)
     }
 
 };

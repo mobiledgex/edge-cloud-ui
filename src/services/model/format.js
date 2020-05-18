@@ -114,7 +114,8 @@ export const fields = {
     upgrade:'upgrade',
     refreshAppInst:'refreshAppInst',
     restagmap:'restagmap',
-    powerState:'powerState'
+    powerState:'powerState',
+    tls:'tls'
 }
 
 export const getUserRole = () => {

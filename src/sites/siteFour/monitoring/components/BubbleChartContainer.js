@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartDataForCluster} from "../dev/PageDevMonitoringService";
+import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../dev/PageDevMonitoringService";
 import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import PageDevMonitoring from "../dev/PageDevMonitoring";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
@@ -210,7 +210,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                         }}
                                         bubbleClickFun={async (cluster_cloudlet, index) => {
                                             try {
-                                                let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                                                let lineChartDataSet = makeLineChartData(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
                                                 cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
                                                 handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
                                             } catch (e) {
@@ -220,7 +220,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                         }}
                                         legendClickFun={async (cluster_cloudlet, index) => {
                                             /*   try {
-                                                   let lineChartDataSet = makeLineChartDataForCluster(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                                                   let lineChartDataSet = makeLineChartData(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
                                                    cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
                                                    handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
                                                } catch (e) {

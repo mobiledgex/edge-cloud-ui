@@ -497,51 +497,31 @@ export const renderUsageByType = (usageOne, hardwareType, _this) => {
 
     if (hardwareType === HARDWARE_TYPE.CPU) {
         return usageOne.sumCpuUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.MEM) {
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
         return usageOne.sumMemUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.DISK) {
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
         return usageOne.sumDiskUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
+    } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
         return usageOne.sumTcpConns;
-    }
-    if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+    } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
         return usageOne.sumTcpRetrans;
-    }
-    if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+    } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         return usageOne.sumUdpRecv;
-    }
-    if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+    } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
         return usageOne.sumUdpSent;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_SEND) {
+    } else if (hardwareType === HARDWARE_TYPE.NET_SEND) {
         return usageOne.avgNetSend;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.NET_RECV) {
+    } else if (hardwareType === HARDWARE_TYPE.NET_RECV) {
         return usageOne.avgNetRecv;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return usageOne.sumRecvBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return usageOne.sumSendBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
         return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         return usageOne.sumAcceptsConnection
     }
 }
