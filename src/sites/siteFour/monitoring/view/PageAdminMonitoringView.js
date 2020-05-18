@@ -43,7 +43,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/PageMonitoringCommonService";
 import '../common/PageMonitoringStyles.css'
-import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
+import {fetchAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -279,7 +279,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cloudletList: allCloudletList,
                 })
 
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList(localStorage.getItem('regions').split(","), USER_TYPE.ADMIN);
+                let appInstanceList: Array<TypeAppInstance> = await fetchAppInstList(localStorage.getItem('regions').split(","), USER_TYPE.ADMIN);
 
                 appInstanceList.map(async (item: TypeAppInstance, index) => {
                     if (index === 0) {

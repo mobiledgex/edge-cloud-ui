@@ -130,7 +130,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 }
 
-export const getAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
+export const fetchAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
     try {
         let promiseList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -159,7 +159,7 @@ export const getAppInstList = async (pRegionList = localStorage.getItem('regions
 }
 
 
-export const getCloudletList = async () => {
+export const fetchCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
@@ -182,25 +182,26 @@ export const getCloudletList = async () => {
             }
         })
 
-        /*if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
-            return mergedCloudletList.filter((item: TypeCloudlet, index) => {
+        //@todo: when oper role
+        if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
+            let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
                 return item.Operator === localStorage.getItem('selectOrg').toString().trim()
             })
+            result.sort((a: TypeCloudlet, b: TypeCloudlet) => {
+                if (a.CloudletName < b.CloudletName) {
+                    return -1;
+                }
+                if (a.CloudletName > b.CloudletName) {
+                    return 1;
+                }
+                return 0;
+            })
+            return result;
+
         } else {
+            return mergedCloudletList;
+        }
 
-        }*/
-
-        mergedCloudletList.sort((a: TypeCloudlet, b: TypeCloudlet)=>{
-            if (a.CloudletName < b.CloudletName) {
-                return -1;
-            }
-            if (a.CloudletName > b.CloudletName) {
-                return 1;
-            }
-            return 0;
-        })
-
-        return mergedCloudletList;
 
     } catch (e) {
         //showToast( e.toString())
@@ -208,7 +209,7 @@ export const getCloudletList = async () => {
 }
 
 
-export const getClusterList = async () => {
+export const fetchClusterList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';

@@ -78,6 +78,8 @@ export const defaultLayoutForCloudlet = [
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//DONUTS
     {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+    {i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},//DONUTS
+    {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},//performance Grid
 ];
 
 
@@ -113,6 +115,17 @@ export const defaultLayoutMapperForCloudlet = [
         hwType: undefined,
         graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
+    {
+        id: '7',
+        hwType: HARDWARE_TYPE_FOR_GRID.netRecv,
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '8',
+        hwType: HARDWARE_TYPE_FOR_GRID.netSend,
+        graphType: CHART_TYPE.LINE,
+    },
+
 
 ];
 

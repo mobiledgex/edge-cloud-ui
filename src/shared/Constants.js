@@ -543,7 +543,7 @@ export const APPINSTANCE_INIT_VALUE = {
 }
 
 
-export const CLOUDLET_STATE = {
+export const CLOUDLET_CLUSTER_STATE = {
     0:  'UNKNOWN STATE',
     1:  'NOT_PRESENT',
     2:  'CREATE_REQUESTED',

@@ -46,7 +46,7 @@ import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, Typ
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
-import {getAppLevelUsageList, getClientStatusList, getClusterLevelUsageList, requestShowAppInstClientWS} from "../service/PageMonitoringMetricService";
+import {fetchAppInstList, fetchCloudletList, fetchClusterList, getAppLevelUsageList, getClientStatusList, getClusterLevelUsageList, requestShowAppInstClientWS} from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -493,18 +493,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    /*   promiseList.push(getCloudletList())
-                       promiseList.push(getClusterList())
-                       promiseList.push(getAppInstList())
-                       let newPromiseList = await Promise.all(promiseList);
-                       let cloudletList = newPromiseList[0];
-                       let clusterList = newPromiseList[1];
-                       let appInstList = newPromiseList[2];*/
+                    promiseList.push(fetchCloudletList())
+                    promiseList.push(fetchClusterList())
+                    promiseList.push(fetchAppInstList())
+                    let newPromiseList = await Promise.all(promiseList);
+                    let cloudletList = newPromiseList[0];
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
 
                     //todo:fakedata
-                    let cloudletList = require('../temp/cloudletList')
-                    let clusterList = require('../temp/clusterList')
-                    let appInstList = require('../temp/appInstList')
+                    /*   let cloudletList = require('../temp/cloudletList')
+                       let clusterList = require('../temp/clusterList')
+                       let appInstList = require('../temp/appInstList')*/
 
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {

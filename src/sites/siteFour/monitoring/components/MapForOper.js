@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import {Map, Marker, Popup, TileLayer} from "react-leaflet";
 import Ripple from "react-ripples";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
@@ -8,7 +8,7 @@ import {listGroupByKey} from "../service/PageMonitoringService";
 import Control from "react-leaflet-control";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";
-import {CLOUDLET_STATE} from "../../../../shared/Constants";
+import {CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
 
 let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),
@@ -115,21 +115,6 @@ export default function MapForOper(props) {
     }
 
 
-    function renderTooltip(cloudletOne: TypeCloudlet) {
-        return (
-            <Tooltip
-                direction='right'
-                offset={[14, -10]}//x,y
-                opacity={0.8}
-                permanent
-                style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
-            >
-                <span>{cloudletOne.CloudletName}</span>
-            </Tooltip>
-        )
-    }
-
     async function handleMarkerClicked(cloudLetOne) {
         setCurrentCloudlet(undefined)
         setCurrentCloudlet(JSON.parse(JSON.stringify(cloudLetOne)))
@@ -167,11 +152,11 @@ export default function MapForOper(props) {
                         bottom: 0,
                         background: 'rgba(0, 0, 0, 0.5)',
                         width: '100%',
-                        height: 180,
+                        height: 190,
                         zIndex: 99999,
                         //opacity: 0.5,
-                        paddingTop: 10,
-                        paddingLeft: 15,
+                        padding: 10,
+                        marginLeft: 0,
                         display: 'flex'
 
                     }}
@@ -182,7 +167,7 @@ export default function MapForOper(props) {
                     {/*todo:##################################*/}
                     {/*todo:Cloudlet bottom info              */}
                     {/*todo:##################################*/}
-                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10}}>
+                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10, borderRadius: 10, marginLeft: 5}}>
                         <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
                             <Icon name='cloud'/> {currentCluodlet.CloudletName}
                         </div>
@@ -197,7 +182,7 @@ export default function MapForOper(props) {
                             <b>Num_dynamic_ips</b>:{currentCluodlet.Num_dynamic_ips}
                         </div>
                         <div style={Styles.lable001}>
-                            <b>State</b>: {CLOUDLET_STATE[currentCluodlet.State]}
+                            <b>State</b>: {CLOUDLET_CLUSTER_STATE[currentCluodlet.State]}
                         </div>
                         <div style={Styles.lable001}>
                             <b>CloudletInfoState</b>: {currentCluodlet.CloudletInfoState}
@@ -208,7 +193,7 @@ export default function MapForOper(props) {
                     {/*todo:##################################*/}
                     {/*todo:cluster bottom info               */}
                     {/*todo:##################################*/}
-                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10, overflowY: 'auto'}}>
+                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10, overflowY: 'auto', marginLeft: 15, marginRight: 5, borderRadius: 10,}}>
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
                             return (
@@ -224,13 +209,16 @@ export default function MapForOper(props) {
                                         <b>Flavor</b>: {item.Flavor}
                                     </div>
                                     <div style={Styles.lable001}>
-                                        <b>uuid</b>: {item.uuid}
+                                        <b>State</b>: {CLOUDLET_CLUSTER_STATE[item.State]}
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Reservable</b>: {item.Reservable}
                                     </div>
                                 </div>
                             )
                         })}
                         {filteredClusterList.length === 0 &&
-                        <Center style={{fontSize: 20, color: 'orange'}}>
+                        <Center style={{fontSize: 20, color: 'orange', alignSelf: 'center', height: 135}}>
                             No Cluster
                         </Center>
                         }
