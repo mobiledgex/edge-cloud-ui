@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Dropdown, Icon, Popup} from 'semantic-ui-react';
+import {Dropdown, Icon, Image, Popup} from 'semantic-ui-react';
 import {ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
 import {withRouter} from 'react-router-dom';
 //redux
@@ -8,13 +8,15 @@ import * as actions from '../actions';
 import * as serviceMC from '../services/serviceMC';
 import PopProfileViewer from '../container/popProfileViewer';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import {CircularProgress, IconButton, Step, StepLabel, Stepper} from '@material-ui/core';
+import {CircularProgress, IconButton, Step, StepLabel, Stepper, Button} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import Calendar from '../components/horizontal_calendar/Calendar';
 import moment from "moment";
 import type Moment from "moment";
 import {green, red} from "@material-ui/core/colors";
 import ReactJson from "react-json-view";
 import OfflinePinIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import CheckIcon from '@material-ui/icons/Check';
 import {
     StyleSheet,
     View,
@@ -157,14 +159,13 @@ class HeaderAuditLog extends React.Component {
 
         return (
             <div>
-                <div style={{
-                    backgroundColor: (data.status === 200)?green[500]:red[500],
-                    borderRadius: '50%',
-                    width: 20,
-                    height: 20,
-                    fontSize: 10
-                    }}>
-                    {(storageSelectedTraceidIndex !== (-1))?"VV":null}
+                <div className='audit_timeline_Step'
+                     style={{backgroundColor: (data.status === 200)?'#388e3c':'#b71c1c'}}
+                >
+                    {(storageSelectedTraceidIndex !== (-1))?
+                        <CheckIcon />
+                        :null
+                    }
                 </div>
             </div>
         )
@@ -266,30 +267,55 @@ class HeaderAuditLog extends React.Component {
 
     renderStapper = (data, index) => {
         return (
+
             data.operationname ?
                 <ExpansionPanel square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)}>
                     <ExpansionPanelSummary
                         id="panel1a-header"
                     >
                         <Step key={index}>
-                            <p style={{"float": "left"}}>{moment(this.makeUTC(data.starttime)).format("HH:mm:ss")}</p>
+                            <div className='audit_timeline_time'>
+                                {moment(this.makeUTC(data.starttime)).format("hh:mm:ss")}<br/>
+                                {moment(this.makeUTC(data.starttime)).format("A")}
+                            </div>
                             <StepLabel StepIconComponent={(stepperProps) => {
                                 return this.getStepLabel(data, stepperProps)
-                            }}><p>{this.makeOper(data.operationname)}</p></StepLabel>
+                            }}>
+                                <div className='audit_timeline_title'>{this.makeOper(data.operationname)}</div>
+                                <div className='audit_timeline_traceID'>Trace ID : <span>{data.traceid}</span></div>
+                            </StepLabel>
                         </Step>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
-                        <div >
-                            start time : {moment(this.makeUTC(data.starttime)).format("YYYY-MM-DDTHH:mm:ss")}<br />
-                            trace id : {data.traceid}<br />
-                            client ip : {data.clientip}<br />
-                            duration : {data.duration}<br />
-                            operator name : {this.makeOper(data.operationname)}<br />
-                            status : {data.status}
+                        <div className='audit_timeline_detail_row'>
+                            <div className='audit_timeline_detail_left'>Start Time</div>
+                            <div className='audit_timeline_detail_right'>{moment(this.makeUTC(data.starttime)).format("YYYY-MM-DDTHH:mm:ss")}</div>
                         </div>
-                        <button onClick={() => this.onClickViewDetail(index)}>
-                            view detail
-                        </button>
+                        <div className='audit_timeline_detail_row'>
+                            <div className='audit_timeline_detail_left'>Trace ID</div>
+                            <div className='audit_timeline_detail_right'>{data.traceid}</div>
+                        </div>
+                        <div className='audit_timeline_detail_row'>
+                            <div className='audit_timeline_detail_left'>Client IP</div>
+                            <div className='audit_timeline_detail_right'>{data.clientip}</div>
+                        </div>
+                        <div className='audit_timeline_detail_row'>
+                            <div className='audit_timeline_detail_left'>Duration</div>
+                            <div className='audit_timeline_detail_right'>{data.duration}</div>
+                        </div>
+                        <div className='audit_timeline_detail_row'>
+                            <div className='audit_timeline_detail_left'>Operation Name</div>
+                            <div className='audit_timeline_detail_right'>{this.makeOper(data.operationname)}</div>
+                        </div>
+                        <div className='audit_timeline_detail_row'>
+                            <div className='audit_timeline_detail_left'>Status</div>
+                            <div className='audit_timeline_detail_right' style={{color:data.status === 200? '#4caf50' : '#E53935' }}>{data.status}</div>
+                        </div>
+                        <div className='audit_timeline_detail_button'>
+                            <Button onClick={() => this.onClickViewDetail(index)}>
+                                VIEW DETAIL
+                            </Button>
+                        </div>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 :
@@ -302,40 +328,67 @@ class HeaderAuditLog extends React.Component {
         data.map((d) => {(d.status !== 200)?count++:count})
         return (
             (group)?
-                <div>
-                    <p>{group.title} </p>
-                    <p>{(count > (-1)?count : 0)}</p>
-                    {
-                        data.map((item, itemIndex) => {
-                            return (
-                                <ExpansionPanel square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
-                                    <ExpansionPanelSummary
-                                        id="panel1a-header"
-                                    >
-                                        <Step key={itemIndex}>
-                                            <p style={{"float": "left"}}>{moment(this.makeUTC(item.starttime)).format("HH:mm:ss")}</p>
-                                            <StepLabel StepIconComponent={(stepperProps) => {
-                                                return this.getStepLabel(item, stepperProps)
-                                            }}><p>{this.makeOper(item.operationname)}</p></StepLabel>
-                                        </Step>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                        <div >
-                                            start time : {moment(this.makeUTC(item.starttime)).format("YYYY-MM-DDTHH:mm:ss")}<br />
-                                            trace id : {item.traceid}<br />
-                                            client ip : {item.clientip}<br />
-                                            duration : {item.duration}<br />
-                                            operation name : {this.makeOper(item.operationname)}<br />
-                                            status : {item.status}
-                                        </div>
-                                        <button onClick={() => this.onClickViewDetail(itemIndex)}>
-                                            view detail
-                                        </button>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
-                                )
-                        })
-                    }
+                <div className='audit_timeline_group'>
+                    <div className='audit_timeline_group_header'>
+                        <div>{group.title}<span className='audit_timeline_group_bedge'>{(count > (-1)?count : 0)}</span></div>
+                    </div>
+                    <Stepper className='audit_timeline_container' activeStep={data.length} orientation="vertical">
+                        {
+                            data.map((item, itemIndex) => {
+                                return (
+                                    <ExpansionPanel square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
+                                        <ExpansionPanelSummary
+                                            id="panel1a-header"
+                                        >
+                                            <Step key={itemIndex}>
+                                                <div className='audit_timeline_time'>
+                                                    {moment(this.makeUTC(item.starttime)).format("hh:mm:ss")}<br/>
+                                                    {moment(this.makeUTC(item.starttime)).format("A")}
+                                                </div>
+                                                <StepLabel StepIconComponent={(stepperProps) => {
+                                                    return this.getStepLabel(item, stepperProps)
+                                                }}>
+                                                    <div className='audit_timeline_title'>{this.makeOper(item.operationname)}</div>
+                                                    <div className='audit_timeline_traceID'>Trace ID : <span>{item.traceid}</span></div>
+                                                </StepLabel>
+                                            </Step>
+                                        </ExpansionPanelSummary>
+                                        <ExpansionPanelDetails>
+                                            <div className='audit_timeline_detail_row'>
+                                                <div className='audit_timeline_detail_left'>Start Time</div>
+                                                <div className='audit_timeline_detail_right'>{moment(this.makeUTC(item.starttime)).format("YYYY-MM-DDTHH:mm:ss")}</div>
+                                            </div>
+                                            <div className='audit_timeline_detail_row'>
+                                                <div className='audit_timeline_detail_left'>Trace ID</div>
+                                                <div className='audit_timeline_detail_right'>{item.traceid}</div>
+                                            </div>
+                                            <div className='audit_timeline_detail_row'>
+                                                <div className='audit_timeline_detail_left'>Client IP</div>
+                                                <div className='audit_timeline_detail_right'>{item.clientip}</div>
+                                            </div>
+                                            <div className='audit_timeline_detail_row'>
+                                                <div className='audit_timeline_detail_left'>Duration</div>
+                                                <div className='audit_timeline_detail_right'>{item.duration}</div>
+                                            </div>
+                                            <div className='audit_timeline_detail_row'>
+                                                <div className='audit_timeline_detail_left'>Operation Name</div>
+                                                <div className='audit_timeline_detail_right'>{this.makeOper(item.operationname)}</div>
+                                            </div>
+                                            <div className='audit_timeline_detail_row'>
+                                                <div className='audit_timeline_detail_left'>Status</div>
+                                                <div className='audit_timeline_detail_right' style={{color:item.status === 200? '#4caf50' : '#E53935' }}>{item.status}</div>
+                                            </div>
+                                            <div className='audit_timeline_detail_button'>
+                                                <Button onClick={() => this.onClickViewDetail(itemIndex)}>
+                                                    VIEW DETAIL
+                                                </Button>
+                                            </div>
+                                        </ExpansionPanelDetails>
+                                    </ExpansionPanel>
+                                    )
+                            })
+                        }
+                    </Stepper>
                 </div>
                 :null
         )
@@ -344,50 +397,48 @@ class HeaderAuditLog extends React.Component {
     render() {
         const {dayData, groups} = this.state
         return (
-            <div style={{"backgroundColor":"black", "width":"500px", "height":"1000px", "overflow":"scroll"}}>
-                <strong>Audit Log</strong><button onClick={this.onClickClose}>X</button>
-                <Dropdown
-                    placeholder='indivisual'
-                    fluid
-                    search
-                    selection
-                    options={options}
-                    onChange={this.dropDownOnChange}
-                    style={{ width: 150 }}
-                />
-                <div>
-                    <View style={styles.container}>
-                        <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
-                    </View>
-                    <Stepper activeStep={dayData.length} orientation="vertical">
-                        {
-                            (groups.length > 0) ?
-                                groups.map((group, gIndex) => {
-                                    return (
-                                        this.renderGroupStapper(group.data, gIndex, group)
-                                    )
-                                })
-                            : dayData.map((data, index) => {
+            <div className='audit_container' style={{height:window.innerHeight - 48}}>
+                <div className='audit_title'>
+                    <div class="audit_title_label">Audit Logs</div>
+                    <div className='audit_filter'>
+                        <Dropdown
+                            placeholder='indivisual'
+                            fluid
+                            search
+                            selection
+                            options={options}
+                            onChange={this.dropDownOnChange}
+                            style={{ width: 150 }}
+                        />
+                    </div>
+                    <IconButton onClick={this.onClickClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+                <div className='audit_calendar'>
+                    <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
+                </div>
+
+                    {
+                        (groups.length > 0) ?
+                            groups.map((group, gIndex) => {
                                 return (
-                                    this.renderStapper(data, index)
+                                    this.renderGroupStapper(group.data, gIndex, group)
                                 )
                             })
-                        }
-                    </Stepper>
-                </div>
+                            :
+                            <Stepper className='audit_timeline_container' activeStep={dayData.length} orientation="vertical">
+                                {dayData.map((data, index) => {
+                                    return (
+                                        this.renderStapper(data, index)
+                                    )
+                                })}
+                            </Stepper>
+                    }
             </div>
         )
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#3F53B1',
-        paddingTop: 20,
-        width:500, maxWidth:500
-    },
-});
 
 function mapStateToProps(state) {
     return {

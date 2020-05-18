@@ -8,6 +8,8 @@ import {
 import moment from 'moment';
 import type Moment from 'moment';
 import Dates from './Dates';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 const { width: screenWidth } = window.screen
 const formatMonth = (date: Moment): string => date.format('MMMM');
@@ -41,6 +43,8 @@ type State = {
     // Store current scroll position
     scrollPositionX: number,
 };
+
+const scrollWidth = 370
 
 export default class Calendar extends PureComponent {
 
@@ -116,7 +120,7 @@ export default class Calendar extends PureComponent {
             }
 
             if (lastVisibleDateIndex === undefined                      // not set yet
-                && datePositionX >= scrollPositionX + 500  // first date not visible behind the right edge
+                && datePositionX >= scrollPositionX + scrollWidth  // first date not visible behind the right edge
             ) {
                 lastVisibleDateIndex = index;
             }
@@ -215,8 +219,8 @@ export default class Calendar extends PureComponent {
         // Minimal possible X position value to prevent scrolling before the first day
         const minX = 0;
         // Maximum possible X position value to prevent scrolling after the last day
-        const maxX = allDaysWidth > 500
-            ? allDaysWidth - 500
+        const maxX = allDaysWidth > scrollWidth
+            ? allDaysWidth - scrollWidth
             : 0; // no scrolling if there's nowhere to scroll
 
         let scrollToX;
@@ -227,7 +231,7 @@ export default class Calendar extends PureComponent {
                 // and calculate the total width
                 .reduce((total, width) => width + total, 0)
             // Subtract half of the screen width so the target day is centered
-            - 500 / 2 - currentDayWidth / 2;
+            - scrollWidth / 2 - currentDayWidth / 2;
 
         // Do not scroll over the left edge
         if (scrollToX < minX) {
@@ -305,40 +309,50 @@ export default class Calendar extends PureComponent {
         const visibleMonthAndYear = this.getVisibleMonthAndYear();
         return (
             <div>
-                <button onClick={this.onClickCurrentButton}>투데이</button>
-                <button onClick={() => this.onClickPrevButton(currentDateIndex)}>전</button>
                 <View>
-                    <Text style={styles.visibleMonthAndYear}>
+                    <div className='audit_calendar_month'>
                         {visibleMonthAndYear}
-                    </Text>
-                    <ScrollView
-                        ref={scrollView => { this._scrollView = scrollView; }}
-                        horizontal={true}                         // Enable horizontal scrolling
-                        showsHorizontalScrollIndicator={false}    // Hide horizontal scroll indicators
-                        automaticallyAdjustContentInsets={false}  // Do not adjust content automatically
-                        scrollEventThrottle={100}
-                        onScroll={this.onScroll}
-                    >
-                        <Dates
-                            dates={dates}
-                            currentDateIndex={currentDateIndex}
-                            onSelectDay={this.onSelectDay}
-                            onRenderDay={this.onRenderDay}
-                        />
-                    </ScrollView>
+                        <button className='audit_calendar_button_today' onClick={this.onClickCurrentButton}>Current</button>
+                    </div>
+                    <div>
+                        <div className='audit_calendar_days'  style={{display:'flex', flexDirection:'row'}}>
+                            <button className='audit_calendar_button_prev' onClick={() => this.onClickPrevButton(currentDateIndex)}>
+                                <ArrowBackIosIcon/>
+                            </button>
+                            <div className='audit_calendar_scroll' style={{width:scrollWidth}}>
+                                <ScrollView
+                                    ref={scrollView => { this._scrollView = scrollView; }}
+                                    horizontal={true}                         // Enable horizontal scrolling
+                                    showsHorizontalScrollIndicator={false}    // Hide horizontal scroll indicators
+                                    automaticallyAdjustContentInsets={false}  // Do not adjust content automatically
+                                    scrollEventThrottle={100}
+                                    onScroll={this.onScroll}
+                                >
+                                    <Dates
+                                        dates={dates}
+                                        currentDateIndex={currentDateIndex}
+                                        onSelectDay={this.onSelectDay}
+                                        onRenderDay={this.onRenderDay}
+                                    />
+                                </ScrollView>
+                            </div>
+                            <button className='audit_calendar_button_next' onClick={() => this.onClickNextButton(currentDateIndex)}>
+                                <ArrowForwardIosIcon/>
+                            </button>
+                        </div>
+                    </div>
                 </View>
-                <button onClick={() => this.onClickNextButton(currentDateIndex)}>후</button>
             </div>
         );
     }
 
 }
 
-const styles = StyleSheet.create({
-    visibleMonthAndYear: {
-        color: 'rgba(255, 255, 255, 0.5)',
-        paddingHorizontal: 15,
-        textAlign: 'left',
-        width:500, maxWidth:500
-    },
-});
+// const styles = StyleSheet.create({
+//     visibleMonthAndYear: {
+//         color: 'rgba(255, 255, 255, 0.5)',
+//         paddingHorizontal: 15,
+//         textAlign: 'left',
+//         width:460, maxWidth:460
+//     },
+// });

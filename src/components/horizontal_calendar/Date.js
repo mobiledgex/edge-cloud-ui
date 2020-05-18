@@ -76,23 +76,29 @@ const styles = {
     container: {
         borderBottomColor: 'transparent',
         borderBottomWidth: 2,
-        paddingHorizontal: 15,
-        paddingVertical: 10,
+        paddingVertical: 7,
+        width: 53,
+        height: 49,
     },
     containerActive: {
-        borderBottomColor: '#FFFFFF',
+        borderBottomColor: '#92df18',
     },
     day: {
         fontSize: 12,
+        letterSpacing: 0.24,
+        color: '#b5b9c1'
     },
     date: {
-        fontSize: 22,
+        fontSize: 16,
+        letterSpacing: 0.32,
+        color: '#ffffff',
     },
     text: {
         color: 'rgba(255, 255, 255, 0.5)',
         textAlign: 'center',
+        fontWeight: 500,
     },
     textActive: {
-        color: '#FFFFFF',
+        color: '#92df18',
     },
 };

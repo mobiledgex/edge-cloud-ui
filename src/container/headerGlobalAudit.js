@@ -9,7 +9,7 @@ import * as actions from '../actions';
 import * as serviceMC from '../services/serviceMC';
 import PopDetailViewer from '../container/popDetailViewer';
 import PopSecondDetailViewer from '../container/popSecondDetailViewer';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
 import {CircularProgress, IconButton, Step, StepLabel, Stepper} from '@material-ui/core';
 import {CODE_FAILED, CODE_FAILED_403, CODE_FINISH} from "../hoc/stepper/mexMessageMultiStream";
 import moment from "moment";
@@ -225,12 +225,14 @@ class headerGlobalAudit extends React.Component {
                     inverted
                     trigger={
                         <IconButton color='inherit' onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}>
-                            <AccountCircleOutlinedIcon fontSize='default'/>{this.state.errorCount}
+                            <ShowChartIcon fontSize='default'/>
+                            <div className='audit_bedge' >{this.state.errorCount}</div>
                         </IconButton>
                     }
                     content={<HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} />}
                     on='click'
                     position='bottom center'
+                    style={{right:'0 !important', left: 'auto !important'}}
                     className="table_actions_popup gnb_profile"
                     basic
                     open={this.state.isOpen}
