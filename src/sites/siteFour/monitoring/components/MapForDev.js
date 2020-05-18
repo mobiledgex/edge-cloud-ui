@@ -459,7 +459,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     });
                 })
 
-                await this.props.parent.handleClusterDropdown('');
+                await this.props.parent.handleOnChangeClusterDropdown('');
             } catch (e) {
 
             }

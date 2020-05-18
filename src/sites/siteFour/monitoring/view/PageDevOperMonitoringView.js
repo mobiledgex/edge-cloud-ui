@@ -759,7 +759,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            handleCloudletDropdownForOper = async (pCloudletOne) => {
+            handleOnChangeCloudletDropdown = async (pCloudletOne) => {
                 if (pCloudletOne !== undefined) {
                     await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletOne)})
                     let currentCloudletOne = this.state.currentCloudLet
@@ -794,6 +794,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstList: filteredAppInstList,
                         filteredClientStatusList: filteredClientStatusList,
                         currentClassification: CLASSIFICATION.CLOUDLET,
+                        currentCluster: undefined,
                     });
                 } else {//todo: When allCloudlet
                     this.setState({
@@ -809,7 +810,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            async handleClusterDropdown(selectedClusterOne) {
+            async handleOnChangeClusterDropdown(selectedClusterOne) {
                 try {
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '' || selectedClusterOne === undefined) {
@@ -888,7 +889,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            handleAppInstDropdown = async (pCurrentAppInst) => {
+            handleOnChangeAppInstDropdown = async (pCurrentAppInst) => {
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
@@ -1318,7 +1319,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 mapPopUploading={this.state.mapPopUploading}
                                 parent={this}
                                 isDraggable={this.state.isDraggable}
-                                handleAppInstDropdown={this.handleAppInstDropdown}
+                                handleAppInstDropdown={this.handleOnChangeAppInstDropdown}
                                 isFullScreenMap={false}
                                 isShowAppInstPopup={this.state.isShowAppInstPopup}
                                 selectedAppInstIndex={this.state.selectedAppInstIndex}
@@ -1370,7 +1371,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <AppInstEventLogListContainer
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
-                            handleAppInstDropdown={this.handleAppInstDropdown}
+                            handleAppInstDropdown={this.handleOnChangeAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.DONUTS) {
@@ -1620,9 +1621,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             onClick={async () => {
                                 {
                                     this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                        await this.handleClusterDropdown(undefined)
+                                        await this.handleOnChangeClusterDropdown(undefined)
                                         :
-                                        await this.handleCloudletDropdownForOper(undefined)
+                                        await this.handleOnChangeCloudletDropdown(undefined)
                                 }
                             }}
                         >
@@ -1853,7 +1854,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onChange={async (value) => {
-                                this.handleCloudletDropdownForOper(value)
+                                this.handleOnChangeCloudletDropdown(value)
                             }}
                         >
                             {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
@@ -1919,12 +1920,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     } else {
                                         await this.filterClusterList(value)
                                     }
-                                    await this.handleClusterDropdown(value.trim())
+                                    await this.handleOnChangeClusterDropdown(value.trim())
                                 }}
                             />
                         </div>
                     )
-                } else {//@todo: When Oper
+                } else {//@todo: When Operator
                     return (
                         <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                             <div className="page_monitoring_dropdown_label">
@@ -1936,12 +1937,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 notFoundContent={<div style={{color: 'orange', marginLeft: 5, fontWeight: 'bold', fontStyle: 'italic'}}>No Cluster</div>}
                                 listHeight={512}
                                 style={{width: 250, maxHeight: '512px !important'}}
-                                disabled={isEmpty(this.state.clusterDropdownList) || this.state.currentCloudLet === undefined}
+                                disabled={this.state.currentCloudLet === undefined || this.state.filteredClusterList.length === 0}
                                 value={this.state.currentCluster}
                                 placeholder={'Select Cluster'}
                                 onChange={async (value) => {
 
-                                    this.handleClusterDropdown(value)
+                                    this.handleOnChangeClusterDropdown(value)
                                 }}
                             >
                                 {this.state.filteredClusterList.map((item: TypeCluster, index) => {
@@ -1972,7 +1973,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentAppInst}
                             placeholder={this.state.appInstSelectBoxPlaceholder}
                             onChange={async (value) => {
-                                await this.handleAppInstDropdown(value.trim())
+                                await this.handleOnChangeAppInstDropdown(value.trim())
                                 this.appInstSelect.blur();
                             }}
                         >
@@ -2022,7 +2023,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                         let clusterOne = item.cluster + " | " + item.cloudlet;
-                                        await this.handleClusterDropdown(clusterOne)
+                                        await this.handleOnChangeClusterDropdown(clusterOne)
 
                                     }}
                                     span={this.state.legendColSize}
@@ -2073,7 +2074,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div
                             style={{marginTop: 0, marginLeft: 3,}}
                             onClick={async () => {
-                                await this.handleCloudletDropdownForOper(undefined)
+                                await this.handleOnChangeCloudletDropdown(undefined)
                             }}
                         >
                             all
@@ -2111,7 +2112,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         style={{marginLeft: 0,}}
                                         color='#1cecff' during={100}
                                         onClick={async () => {
-                                            await this.handleCloudletDropdownForOper(item.CloudletName)
+                                            await this.handleOnChangeCloudletDropdown(item.CloudletName)
                                         }}
                                     >
                                         {this.renderDot(index)}
@@ -2224,13 +2225,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (this.state.isLegendExpanded === false) {
                                         this.setState({
                                             isLegendExpanded: true,
-                                            legendHeight: (Math.ceil(filteredClusterUsageListLength / 4)) * 25,
+                                            legendHeight: (Math.ceil(legendElementLength / 4)) * 25,
                                             legendColSize: 6,
                                         })
                                     } else {//when expanded
                                         this.setState({
                                             isLegendExpanded: false,
-                                            legendHeight: (Math.ceil(filteredClusterUsageListLength / 8)) * 25,
+                                            legendHeight: (Math.ceil(legendElementLength / 8)) * 25,
                                             legendColSize: 3,
                                         })
                                     }
@@ -2254,7 +2255,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Toolbar className='monitoring_title' style={{marginTop: -5}}>
                             <label className='content_title_label' style={{marginBottom: 1}}
                                    onClick={() => {
-                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdownForOper(undefined) : this.handleClusterDropdown('')
+                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleOnChangeCloudletDropdown(undefined) : this.handleOnChangeClusterDropdown('')
                                    }}
                             >
                                 Monitoring
@@ -2342,7 +2343,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForAppInst)
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
-                                                    await this.handleClusterDropdown(this.state.currentCluster)
+                                                    await this.handleOnChangeClusterDropdown(this.state.currentCluster)
 
                                                 }
                                             }}
@@ -2385,7 +2386,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 if (!this.state.isStream) {
                                                     clearInterval(this.intervalForAppInst)
                                                 } else {
-                                                    await this.handleAppInstDropdown(this.state.currentAppInst, true)
+                                                    await this.handleOnChangeAppInstDropdown(this.state.currentAppInst, true)
                                                 }
                                             }}
 
