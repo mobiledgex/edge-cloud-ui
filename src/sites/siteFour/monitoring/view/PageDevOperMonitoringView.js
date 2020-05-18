@@ -1421,7 +1421,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            renderGridLayoutForClusterDevOper() {
+            _____renderGridLayoutForClusterDevOper() {
 
                 if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                     return (
@@ -1474,8 +1474,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else {//todo; operator
 
-                    alert(this.state.layoutForClusterForOper.toString())
-
                     return (
                         <ResponsiveReactGridLayout
                             isResizable={true}
@@ -1512,9 +1510,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 const uniqueIndex = item.i;
                                 let hwType = HARDWARE_TYPE.CPU
                                 let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutForClusterForOper.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutForClusterForOper.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutForClusterForOper.find(x => x.id === uniqueIndex).graphType
+                                if (!isEmpty(this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex))) {
+                                    hwType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).hwType
+                                    graphType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).graphType
                                     graphType = graphType.toUpperCase()
                                 }
 
@@ -2502,8 +2500,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}>No Item</div>
                                     }
                                     {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderGridLayoutForCloudletForOper()
-                                        : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ? this.renderGridLayoutForClusterDevOper()
-                                            : this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderGridLayoutForClusterDevOper()
+                                        : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ? this._____renderGridLayoutForClusterDevOper()
+                                            : this.state.currentClassification === CLASSIFICATION.CLUSTER ? this._____renderGridLayoutForClusterDevOper()
                                                 : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderGridLayoutForAppInstForDev()
                                     }
                                 </div>
