@@ -305,9 +305,10 @@ export default function MapForOper(props) {
                                 style={{width: '200px !important'}}
                             >
                                 <div style={{display: 'flex', flexDirection: 'column'}}>
-                                    {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, index) => {
+                                    {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
                                         return (
                                             <Ripple
+                                                key={innerIndex}
                                                 className='popup_oper_cloudlet'
                                                 during={250}
                                                 color='#1cecff'
