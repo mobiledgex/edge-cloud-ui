@@ -85,6 +85,9 @@ export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
         //showToast(e.toString())
     }
 }
+export function getOnlyCloudletName(cloudletOne) {
+    return cloudletOne.toString().split(" | ")[0].trim();
+}
 
 
 export const makeid = (length) => {

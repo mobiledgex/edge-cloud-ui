@@ -10,6 +10,7 @@ import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from
 import {
     filterByClassification,
     getCloudletClusterNameList,
+    getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
     makeBarChartDataForAppInst,
@@ -751,22 +752,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             setChartDataForBigModal(usageList) {
-                let lineChartDataSet = []
-                lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
+                let lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
-
                 this.setState({
                     chartDataForBigModal: chartDataForBigModal,
                 })
             }
 
-            getOnlyCloudletName(cloudletOne) {
-                return cloudletOne.toString().split(" | ")[0].trim();
-            }
-
             handleCloudletDropdownForOper = async (pCloudletOne) => {
                 if (pCloudletOne !== undefined) {
-                    await this.setState({currentCloudLet: this.getOnlyCloudletName(pCloudletOne)})
+                    await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletOne)})
                     let currentCloudletOne = this.state.currentCloudLet
                     let filteredClusterList = this.state.clusterList.filter((clusterOne: TypeCluster, index) => {
                         return clusterOne.Cloudlet === currentCloudletOne
@@ -813,19 +808,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            /* handleClusterDropdownForOper(clusterCloudlet) {
-                 let selectData = clusterCloudlet.split("|")
-                 let selectCluster = selectData[0].trim();
-                 let selectCloudlet = selectData[1].trim();
-                 //alert(clusterCloudlet)
-                 this.setState({
-                     currentClassification: CLASSIFICATION.CLUSTER_FOR_OPER
-                 })
 
-             }*/
-
-
-            async handleClusterDropdownForDev(selectedClusterOne) {
+            async handleClusterDropdown(selectedClusterOne) {
                 try {
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '' || selectedClusterOne === undefined) {
@@ -1636,7 +1620,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             onClick={async () => {
                                 {
                                     this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                        await this.handleClusterDropdownForDev('')
+                                        await this.handleClusterDropdown(undefined)
                                         :
                                         await this.handleCloudletDropdownForOper(undefined)
                                 }
@@ -1889,86 +1873,88 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderClusterDropdownForOperator() {
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label">
-                            Cluster
+            renderClusterDropdown() {
+
+                if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    return (
+                        <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                            <div
+                                className="page_monitoring_dropdown_label"
+                                style={{
+                                    marginLeft: this.state.isShowFilter ? 0 : 10
+                                }}
+                            >
+                                Cluster
+                            </div>
+                            <TreeSelect
+                                disabled={this.state.loading}
+                                size={'middle'}
+                                showSearch={true}
+                                switcherIcon={<FontAwesomeIcon
+                                    name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                                />}
+                                style={{width: '300px'}}
+                                onSearch={(value) => {
+                                    this.setState({
+                                        searchClusterValue: value,
+                                    });
+                                }}
+
+                                searchValue={this.state.searchClusterValue}
+                                searchPlaceholder={'Enter the cluster name.'}
+                                placeholder={'Select Cluster'}
+                                dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
+                                treeData={this.state.dropDownCludsterListOnCloudlet}
+                                treeDefaultExpandAll={true}
+                                value={this.state.currentCluster}
+
+                                onChange={async (value, label, extra) => {
+                                    clearInterval(this.intervalForCluster)
+                                    clearInterval(this.intervalForAppInst)
+                                    //@desc: When whole cluster ...
+                                    if (value === '') {
+                                        await this.setState({
+                                            filteredClusterList: this.state.clusterList,
+                                        })
+                                    } else {
+                                        await this.filterClusterList(value)
+                                    }
+                                    await this.handleClusterDropdown(value.trim())
+                                }}
+                            />
                         </div>
-                        <Select
-                            showSearch={true}
-                            dropdownStyle={{}}
-                            notFoundContent={<div style={{color: 'orange', marginLeft: 5, fontWeight: 'bold', fontStyle: 'italic'}}>No Cluster</div>}
-                            listHeight={512}
-                            style={{width: 250, maxHeight: '512px !important'}}
-                            disabled={isEmpty(this.state.clusterDropdownList) || this.state.currentCloudLet === undefined}
-                            value={this.state.currentCluster}
-                            placeholder={'Select Cluster'}
-                            onChange={async (value) => {
+                    )
+                } else {//@todo: When Oper
+                    return (
+                        <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                            <div className="page_monitoring_dropdown_label">
+                                Cluster
+                            </div>
+                            <Select
+                                showSearch={true}
+                                dropdownStyle={{}}
+                                notFoundContent={<div style={{color: 'orange', marginLeft: 5, fontWeight: 'bold', fontStyle: 'italic'}}>No Cluster</div>}
+                                listHeight={512}
+                                style={{width: 250, maxHeight: '512px !important'}}
+                                disabled={isEmpty(this.state.clusterDropdownList) || this.state.currentCloudLet === undefined}
+                                value={this.state.currentCluster}
+                                placeholder={'Select Cluster'}
+                                onChange={async (value) => {
 
-                                this.handleClusterDropdownForDev(value)
-                            }}
-                        >
-                            {this.state.filteredClusterList.map((item: TypeCluster, index) => {
-                                return (
-                                    <Option key={index} value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
-                                )
-                            })}
-                        </Select>
-                    </div>
-                )
-            }
-
-
-            renderClusterTreeDropdownForDeveloper() {
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div
-                            className="page_monitoring_dropdown_label"
-                            style={{
-                                marginLeft: this.state.isShowFilter ? 0 : 10
-                            }}
-                        >
-                            Cluster
+                                    this.handleClusterDropdown(value)
+                                }}
+                            >
+                                {this.state.filteredClusterList.map((item: TypeCluster, index) => {
+                                    return (
+                                        <Option key={index} value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
+                                    )
+                                })}
+                            </Select>
                         </div>
-                        <TreeSelect
-                            disabled={this.state.loading}
-                            size={'middle'}
-                            showSearch={true}
-                            switcherIcon={<FontAwesomeIcon
-                                name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
-                            />}
-                            style={{width: '300px'}}
-                            onSearch={(value) => {
-                                this.setState({
-                                    searchClusterValue: value,
-                                });
-                            }}
+                    )
+                }
 
-                            searchValue={this.state.searchClusterValue}
-                            searchPlaceholder={'Enter the cluster name.'}
-                            placeholder={'Select Cluster'}
-                            dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
-                            treeData={this.state.dropDownCludsterListOnCloudlet}
-                            treeDefaultExpandAll={true}
-                            value={this.state.currentCluster}
 
-                            onChange={async (value, label, extra) => {
-                                clearInterval(this.intervalForCluster)
-                                clearInterval(this.intervalForAppInst)
-                                //@desc: When whole cluster ...
-                                if (value === '') {
-                                    await this.setState({
-                                        filteredClusterList: this.state.clusterList,
-                                    })
-                                } else {
-                                    await this.filterClusterList(value)
-                                }
-                                await this.handleClusterDropdownForDev(value.trim())
-                            }}
-                        />
-                    </div>
-                )
             }
 
 
@@ -2036,7 +2022,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                         let clusterOne = item.cluster + " | " + item.cloudlet;
-                                        await this.handleClusterDropdownForDev(clusterOne)
+                                        await this.handleClusterDropdown(clusterOne)
 
                                     }}
                                     span={this.state.legendColSize}
@@ -2268,7 +2254,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Toolbar className='monitoring_title' style={{marginTop: -5}}>
                             <label className='content_title_label' style={{marginBottom: 1}}
                                    onClick={() => {
-                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdownForOper(undefined) : this.handleClusterDropdownForDev('')
+                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdownForOper(undefined) : this.handleClusterDropdown('')
                                    }}
                             >
                                 Monitoring
@@ -2291,13 +2277,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             {this.renderCloudletDropdown()}
                                         </div>
                                         <div style={{marginLeft: 25}}>
-                                            {this.renderClusterDropdownForOperator()}
+                                            {this.renderClusterDropdown()}
                                         </div>
                                     </React.Fragment>
                                     :
                                     <React.Fragment>
                                         <div style={{marginLeft: 25}}>
-                                            {this.renderClusterTreeDropdownForDeveloper()}
+                                            {this.renderClusterDropdown()}
                                         </div>
                                         <div style={{marginLeft: 25}}>
                                             {this.renderAppInstDropdown()}
@@ -2356,7 +2342,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForAppInst)
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
-                                                    await this.handleClusterDropdownForDev(this.state.currentCluster)
+                                                    await this.handleClusterDropdown(this.state.currentCluster)
 
                                                 }
                                             }}
