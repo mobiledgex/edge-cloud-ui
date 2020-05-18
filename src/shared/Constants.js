@@ -157,6 +157,7 @@ export const USAGE_TYPE = {
 }
 
 export const CLASSIFICATION = {
+    CLUSTER_FOR_OPER: 'ClusterForOper',
     CLOUDLET: 'Cloudlet',
     CloudletName: 'CloudletName',
     cloudlet: 'cloudlet',

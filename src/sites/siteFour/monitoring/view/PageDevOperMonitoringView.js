@@ -793,6 +793,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let selectData = clusterCloudlet.split("|")
                 let selectedCluster = selectData[0].trim();
                 let selectedCloudlet = selectData[1].trim();
+
+                /*this.setState({
+                    currentClassification: CLASSIFICATION.CLUSTER_FOR_OPER
+                })*/
                 showToast(selectedCluster + "-->" + selectedCloudlet)
             }
 
@@ -1281,7 +1285,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
 
-                    if (this.state.userType.includes('dev')) {
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         return (
                             <MapForDevContainer
                                 markerList={this.state.appInstanceListGroupByCloudlet}
@@ -1378,7 +1382,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            renderGridLayoutForCluster() {
+            renderGridLayoutForClusterForDev() {
                 return (
                     <ResponsiveReactGridLayout
                         isResizable={true}
@@ -1429,7 +1433,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderGridLayoutForCloudlet() {
+            renderGridLayoutForCloudletForOper() {
                 return (
                     <ResponsiveReactGridLayout
                         isResizable={true}
@@ -1480,7 +1484,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderGridLayoutForAppInst = () => {
+            renderGridLayoutForAppInstForDev = () => {
                 return (
                     <ResponsiveReactGridLayout
                         verticalCompact={true}
@@ -2389,9 +2393,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         color: 'rgba(255,255,255,.6)'
                                     }}>No Item</div>
                                     }
-                                    {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderGridLayoutForCloudlet()
-                                        : this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderGridLayoutForCluster()
-                                            : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderGridLayoutForAppInst()
+                                    {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderGridLayoutForCloudletForOper()
+                                        : this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderGridLayoutForClusterForDev()
+                                            : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderGridLayoutForAppInstForDev()
                                     }
                                 </div>
                             </div>

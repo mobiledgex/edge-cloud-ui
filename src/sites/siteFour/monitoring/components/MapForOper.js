@@ -43,7 +43,7 @@ export default function MapForOper(props) {
     const mapRef = useRef(null);
     const [cloudletObjects, setCloudletObjects] = useState([]);
     const [locList, setLocList] = useState([]);
-    const [newCloudletList, setCloudletList] = useState([]);
+    //const [newCloudletList, setCloudletList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
@@ -179,9 +179,9 @@ export default function MapForOper(props) {
                     }}
 
                 >
-                    {/*todo:Cloudlet bottom info*/}
-                    {/*todo:Cloudlet bottom info*/}
-                    {/*todo:Cloudlet bottom info*/}
+                    {/*todo:##################################*/}
+                    {/*todo:Cloudlet bottom info              */}
+                    {/*todo:##################################*/}
                     <div style={{flex: .5, border: '0.5px solid grey', padding: 10}}>
                         <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
                             <Icon name='cloud'/> {currentCluodlet.CloudletName}
@@ -205,9 +205,9 @@ export default function MapForOper(props) {
                     </div>
 
 
-                    {/*todo:cluster bottom info*/}
-                    {/*todo:cluster bottom info*/}
-                    {/*todo:cluster bottom info*/}
+                    {/*todo:##################################*/}
+                    {/*todo:cluster bottom info               */}
+                    {/*todo:##################################*/}
                     <div style={{flex: .5, border: '0.5px solid grey', padding: 10, overflowY: 'auto'}}>
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
