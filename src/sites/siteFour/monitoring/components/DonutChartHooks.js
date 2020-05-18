@@ -100,9 +100,19 @@ export default function DonutChartHooks(props) {
                     <Center style={{
                         fontSize: 22,
                         backgroundColor: 'rgba(157,255,255,.02)',
-                        height: height
+                        height: height,
+                        flexDirection: 'column'
                     }}>
-                        no available
+                        <div>
+                            <div>
+                                No Available
+                            </div>
+                            <div style={{fontSize: 12}}>
+                                (It is shown only in one specific cloudlet)
+                            </div>
+                        </div>
+
+
                     </Center>
                 }
 

@@ -1,23 +1,11 @@
 import React from 'react';
 import '../common/PageMonitoringStyles.css';
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CHART_COLOR_LIST,
-    HARDWARE_TYPE,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGION
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChartCore from "../components/BubbleChartCore";
-import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeAppInstanceUsage2, TypeClientStatus, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
-import {
-    renderBarChartCore,
-    renderLineChartCore,
-    renderUsageByType2,
-    showToast
-} from "./PageMonitoringCommonService";
+import {renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "./PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
@@ -32,6 +20,31 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
         }
     }
     return newArrayList;
+}
+
+
+/**
+ *
+ * @param filteredAppInstList
+ * @param allClientStatusList
+ */
+export function filteredClientStatusListByAppName(filteredAppInstList, allClientStatusList) {
+
+    let appNames = []
+    filteredAppInstList.map((item: TypeAppInstance, index) => {
+        appNames.push(item.AppName)
+    })
+
+    return allClientStatusList.filter((item: TypeClientStatus, index) => {
+        let count = 0;
+        appNames.map(appNameOne => {
+            if (appNameOne === item.app) {
+                count++;
+            }
+        })
+
+        return count > 0;
+    })
 }
 
 export const makeSelectBoxListByClassification = (arrList, keyName) => {
@@ -808,7 +821,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
             currentHardwareType: value,
         });
 
-        let appInstanceList = _this.state.appInstanceList;
+        let appInstanceList = _this.state.appInstList;
         let allUsageList = _this.state.allAppInstUsageList;
 
         let chartData = [];

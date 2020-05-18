@@ -1063,8 +1063,11 @@ export const getAllAppInstEventLogs = async () => {
 }
 
 
-
-
+/**
+ * @desc : Inquire the status of the client attached to AppInstOne
+ * @param appInst
+ * @returns {Promise<AxiosResponse<any>>}
+ */
 export const getClientStateOne = async (appInst: TypeAppInstance) => {
 
     let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -1085,7 +1088,7 @@ export const getClientStateOne = async (appInst: TypeAppInstance) => {
                 }
             },
             "selector": "api",
-            'last': 100
+            //'last': 100
         },
         headers: {
             'Content-Type': 'application/json',

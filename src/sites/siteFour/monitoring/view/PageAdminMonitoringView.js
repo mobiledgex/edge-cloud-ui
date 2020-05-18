@@ -295,7 +295,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 await this.setState({
                     //newCloudletList:newCloudletList,
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                    appInstanceList: appInstanceList,
+                    appInstList: appInstanceList,
                     allAppInstanceList: appInstanceList,
                     isAppInstaceDataReady: true,
                 })
@@ -555,7 +555,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     filteredGridInstanceList: filteredGridInstanceList,
                     gridInstanceListMemMax: gridInstanceListMemMax,
                     gridInstanceListCpuMax: gridInstanceListCpuMax,
-                    appInstanceList: appInstanceList,
+                    appInstList: appInstanceList,
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     loading0: false,
                     dropDownCludsterListOnCloudlet: cloudletSelectBoxList,

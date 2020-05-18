@@ -542,3 +542,21 @@ export const APPINSTANCE_INIT_VALUE = {
 }
 
 
+export const CLOUDLET_STATE = {
+    0:  'UNKNOWN STATE',
+    1:  'NOT_PRESENT',
+    2:  'CREATE_REQUESTED',
+    3:  'CREATING',
+    4:  'CREATE_ERROR',
+    5:  'READY',
+    6:  'UPDATE_REQUESTED',
+    7:  'UPDATING',
+    8:  'UPDATE_ERROR',
+    9:  'DELETE_REQUESTED',
+    10: 'DELETING',
+    11: 'DELETE_ERROR',
+    12: 'DELETE_PREPARE',
+    13: 'CRM_INITOK',
+    14: 'CREATING_DEPENDENCIES',
+}
+

@@ -7,15 +7,12 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {Progress} from "antd";
 import '../common/PageMonitoringStyles.css'
-import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {Paper} from "@material-ui/core";
-import {convertByteToMegaGigaByte} from "../service/PageMonitoringCommonService";
 import type {TypeClientStatus} from "../../../../shared/Types";
 
 type Props = {
-    filteredUsageList: any,
+    clientStatusList: any,
 };
 
 export default function ClientSummaryHooks(props) {

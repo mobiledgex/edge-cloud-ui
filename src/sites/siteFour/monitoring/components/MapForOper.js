@@ -8,6 +8,7 @@ import {listGroupByKey} from "../service/PageMonitoringService";
 import Control from "react-leaflet-control";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";
+import {CLOUDLET_STATE} from "../../../../shared/Constants";
 
 let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),
@@ -29,6 +30,10 @@ export const worldMapCenter = [
     6.315299, -4.683301
 ]
 
+const Styles = {
+    lable001: {marginTop: 5, fontSize: 14, marginLeft: 25, fontStyle: 'italic'}
+}
+
 export default function MapForOper(props) {
     const mapRef = useRef(null);
     const [cloudletObjects, setCloudletObjects] = useState([]);
@@ -36,7 +41,7 @@ export default function MapForOper(props) {
     const [newCloudletList, setCloudletList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
-    const [currentCluodlet, setCurrentCluodlet] = useState(undefined)
+    const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
 
     useEffect(() => {
         if (zoom !== 1) {
@@ -46,6 +51,11 @@ export default function MapForOper(props) {
         }
         setMapCenter(worldMapCenter);
     }, [props.toggleOperMapZoom])
+
+
+    useEffect(() => {
+        console.log(`appInstList===>`, props.appInstList);
+    }, [props.appInstList])
 
     useEffect(() => {
         async function loadContent() {
@@ -57,7 +67,7 @@ export default function MapForOper(props) {
             }
         }
 
-        loadContent()
+        loadContent();
     }, [props.cloudletList])
 
 
@@ -83,6 +93,13 @@ export default function MapForOper(props) {
         let cloudletLocList = Object.keys(cloudletObjs)
         setLocList(cloudletLocList)
         setCloudletObjects(cloudletObjs)
+
+        if (cloudletLocList.length === 1) {
+            let selectCloudletOne = cloudletObjs[cloudletLocList[0]]
+            setCurrentCloudlet(selectCloudletOne[0])
+        } else {
+            setCurrentCloudlet(undefined)
+        }
     }
 
 
@@ -99,6 +116,12 @@ export default function MapForOper(props) {
                 <span>{cloudletOne.CloudletName}</span>
             </Tooltip>
         )
+    }
+
+    async function handleMarkerClicked(cloudLetOne) {
+        setCurrentCloudlet(undefined)
+        setCurrentCloudlet(JSON.parse(JSON.stringify(cloudLetOne)))
+        await props.parent.handleCloudletDropdown(cloudLetOne.CloudletName)
     }
 
 
@@ -121,6 +144,10 @@ export default function MapForOper(props) {
                     //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     minZoom={1}
                 />
+
+                {/*@todo:bottom info*/}
+                {/*@todo:bottom info*/}
+                {/*@todo:bottom info*/}
                 {currentCluodlet !== undefined &&
                 <div
                     style={{
@@ -128,19 +155,50 @@ export default function MapForOper(props) {
                         bottom: 0,
                         background: 'rgba(0, 0, 0, 0.5)',
                         width: '100%',
-                        height: 150,
+                        height: 170,
                         zIndex: 99999,
-                        opacity: 0.5,
-                        color: 'yellow',
-                        padding: 20,
+                        //opacity: 0.5,
+                        paddingTop: 10,
+                        paddingLeft: 15,
 
                     }}
-                    onClick={()=>{
-                        alert('sdlfklsdflkfkl____')
+                    onClick={() => {
                     }}
 
                 >
-                    {currentCluodlet.toString()}
+                    <div>
+                        <div style={{fontSize: 17, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                            <Icon name='cloud'/> {currentCluodlet.CloudletName}
+                        </div>
+                        <div style={Styles.lable001}>
+                            <b>Operator</b>: {currentCluodlet.Operator}
+                        </div>
+                        <div style={Styles.lable001}>
+                            <b>Ip_support</b>: {currentCluodlet.Ip_support}
+                        </div>
+
+                        <div style={Styles.lable001}>
+                            <b>Num_dynamic_ips</b>:{currentCluodlet.Num_dynamic_ips}
+                        </div>
+                        <div style={Styles.lable001}>
+                            <b>State</b>: {CLOUDLET_STATE[currentCluodlet.State]}
+                        </div>
+                        <div style={Styles.lable001}>
+                            <b>CloudletInfoState</b>: {currentCluodlet.CloudletInfoState}
+                        </div>
+                    </div>
+                    {/* <div style={{marginTop: 10}}>
+                        {props.appInstList.map((item: TypeAppInstance, index) => {
+                            return (
+                                <div>
+                                    <div style={{color: 'orange', marginTop: 3, fontSize: 14}}>
+                                        {item.AppName}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>*/}
+
                 </div>
                 }
 
@@ -150,7 +208,7 @@ export default function MapForOper(props) {
                         <div
                             style={mapIconStyle}
                             onClick={async () => {
-                                setCurrentCluodlet(undefined)
+                                setCurrentCloudlet(undefined)
                                 props.parent.handleCloudletDropdown(undefined).then(() => {
                                     props.parent.setState({
                                         toggleZoom: !props.parent.state.toggleZoom
@@ -199,13 +257,15 @@ export default function MapForOper(props) {
                     let CloudletLocation = JSON.parse(locOne)
                     return (
                         <Marker
+                            key={index}
                             icon={cloudGreenIcon}
                             className='marker1'
                             position={
                                 [CloudletLocation.latitude, CloudletLocation.longitude,]
                             }
                             /*onMouseOver={(e) => {                                e.target.openPopup();                            }}*/ /* onMouseOut={(e) => {                                 //e.target.closePopup();                            }}*/
-                            onClick={() => {
+                            onClick={async () => {
+
                             }}
                         >
                             <Popup
@@ -221,12 +281,8 @@ export default function MapForOper(props) {
                                                 className='popup_oper_cloudlet'
                                                 during={250}
                                                 color='#1cecff'
-                                                onClick={() => {
-                                                    setCurrentCluodlet(undefined)
-                                                    setCurrentCluodlet(JSON.stringify(cloudLetOne))
-
-                                                    props.parent.handleCloudletDropdown(cloudLetOne.CloudletName)
-
+                                                onClick={async () => {
+                                                    await handleMarkerClicked(cloudLetOne)
                                                 }}
                                             >
                                                 <div
