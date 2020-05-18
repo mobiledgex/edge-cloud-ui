@@ -1864,12 +1864,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                             {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
                                 if (index === 0) {
-                                    return <Option value={item.value} style={{}}>
+                                    return <Option key={index} value={item.value} style={{}}>
                                         <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
                                     </Option>
                                 } else {
                                     return (
-                                        <Option value={item.value}>{item.text}</Option>
+                                        <Option key={index} value={item.value}>{item.text}</Option>
                                     )
                                 }
                             })}
@@ -1903,7 +1903,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                             {this.state.filteredClusterList.map((item: TypeCluster, index) => {
                                 return (
-                                    <Option value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
+                                    <Option key={index} value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
                                 )
                             })}
                         </Select>
