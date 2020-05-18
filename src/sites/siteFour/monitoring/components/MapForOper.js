@@ -219,7 +219,9 @@ export default function MapForOper(props) {
                         })}
                         {filteredClusterList.length === 0 &&
                         <Center style={{fontSize: 20, color: 'orange', alignSelf: 'center', height: 135}}>
-                            No Cluster
+                            <div style={{marginTop: 15}}>
+                                No Cluster
+                            </div>
                         </Center>
                         }
 

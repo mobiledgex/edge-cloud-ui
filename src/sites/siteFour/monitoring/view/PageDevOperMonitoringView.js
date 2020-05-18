@@ -1791,6 +1791,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderNoClusterMsg() {
+                return (
+                    <div style={{display: 'flex'}}>
+                        <div style={{marginTop: 1,}}>
+                            <MaterialIcon
+                                size={20}
+                                color={'orange'}
+                                icon="info"
+                            />
+                        </div>
+                        <div style={{color: 'orange', marginLeft: 3}}>No Cluster</div>
+                    </div>
+                )
+            }
+
 
             renderClusterDropdownForOperator() {
                 return (
@@ -1799,10 +1814,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             Cluster
                         </div>
                         <Select
+                            showSearch={true}
                             dropdownStyle={{}}
+                            notFoundContent={this.renderNoClusterMsg()}
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
-                            disabled={isEmpty(this.state.clusterDropdownList)}
+                            disabled={isEmpty(this.state.clusterDropdownList) || this.state.currentCloudLet === undefined}
                             value={this.state.currentCluster}
                             placeholder={'Select Cluster'}
                             onChange={async (value) => {
@@ -1847,6 +1864,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     searchClusterValue: value,
                                 });
                             }}
+
                             searchValue={this.state.searchClusterValue}
                             searchPlaceholder={'Enter the cluster name.'}
                             placeholder={'Select Cluster'}
