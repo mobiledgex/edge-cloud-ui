@@ -54,7 +54,7 @@ export default function ClientSummaryHooks(props) {
                        stickyHeader={true}>
 
 
-                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true}>
+                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                                 App Inst
