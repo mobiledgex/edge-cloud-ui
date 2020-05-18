@@ -814,9 +814,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let selectData = clusterCloudlet.split("|")
                 let selectCluster = selectData[0].trim();
                 let selectCloudlet = selectData[1].trim();
-                this.setState({
-                    currentClassification: CLASSIFICATION.CLUSTER_FOR_OPER
-                })
+
+                alert(clusterCloudlet)
+                /*  this.setState({
+                      currentClassification: CLASSIFICATION.CLUSTER_FOR_OPER
+                  })*/
 
             }
 
@@ -2254,7 +2256,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            renderHeader = () => {
+            renderAllDropDown__Header = () => {
                 return (
                     <>
                         <Toolbar className='monitoring_title' style={{marginTop: -5}}>
@@ -2277,17 +2279,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      width: 'fit-content',
                                      flex: .7,
                                  }}>
-                                {this.state.userType.includes(USER_TYPE.OPERATOR) &&
-                                <div style={{marginLeft: 25}}>
-                                    {this.renderCloudletDropdown()}
-                                </div>
+                                {this.state.userType.includes(USER_TYPE.OPERATOR) ?
+                                    <React.Fragment>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderCloudletDropdown()}
+                                        </div>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderClusterDropdownForOperator()}
+                                        </div>
+                                    </React.Fragment>
+                                    :
+                                    <React.Fragment>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderClusterTreeDropdownForDeveloper()}
+                                        </div>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderAppInstDropdown()}
+                                        </div>
+                                    </React.Fragment>
                                 }
-                                <div style={{marginLeft: 25}}>
-                                    {this.state.userType.includes(USER_TYPE.OPERATOR) ? this.renderClusterDropdownForOperator() : this.renderClusterTreeDropdownForDeveloper()}
-                                </div>
-                                <div style={{marginLeft: 25}}>
-                                    {this.state.userType.includes(USER_TYPE.DEVELOPER) && this.renderAppInstDropdown()}
-                                </div>
                                 {this.state.intervalLoading &&
                                 <div>
                                     <div style={{marginLeft: 25, marginRight: 1,}}>
@@ -2404,7 +2414,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (this.state.isNoData) {
                     return (
                         <div style={{width: '100%', height: '100%',}}>
-                            {this.renderHeader()}
+                            {this.renderAllDropDown__Header()}
                             <div style={{marginTop: 25, marginLeft: 25, background: 'none'}}>
                                 <div style={{fontSize: 25, color: 'rgba(255,255,255,.6)'}}>
                                     There is no app instance you can access..
@@ -2452,7 +2462,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {/*desc:Content Header                   */}
                                 {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"bottom-center"} color={'red'}/>
-                                {this.renderHeader()}
+                                {this.renderAllDropDown__Header()}
                                 {/*desc:---------------------------------*/}
                                 {/*desc:Legend                           */}
                                 {/*desc:---------------------------------*/}
