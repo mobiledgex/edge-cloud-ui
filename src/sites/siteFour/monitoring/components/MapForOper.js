@@ -3,7 +3,7 @@ import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import Ripple from "react-ripples";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
-import type {TypeCloudlet} from "../../../../shared/Types";
+import type {TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {listGroupByKey} from "../service/PageMonitoringService";
 import Control from "react-leaflet-control";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -31,7 +31,12 @@ export const worldMapCenter = [
 ]
 
 const Styles = {
-    lable001: {marginTop: 5, fontSize: 14, marginLeft: 25, fontStyle: 'italic'}
+    lable001: {
+        marginTop: 5,
+        fontSize: 13,
+        marginLeft: 10,
+        fontStyle: 'italic'
+    }
 }
 
 export default function MapForOper(props) {
@@ -42,6 +47,7 @@ export default function MapForOper(props) {
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
+    const [filteredClusterList, setFilteredClusterList] = useState([])
 
     useEffect(() => {
         if (zoom !== 1) {
@@ -94,9 +100,15 @@ export default function MapForOper(props) {
         setLocList(cloudletLocList)
         setCloudletObjects(cloudletObjs)
 
+
+        //todo: 클러스터가 핸개인 경우...
         if (cloudletLocList.length === 1) {
             let selectCloudletOne = cloudletObjs[cloudletLocList[0]]
             setCurrentCloudlet(selectCloudletOne[0])
+
+            console.log(`filteredClusterList===>`, props.filteredClusterList);
+            setFilteredClusterList(props.filteredClusterList)
+
         } else {
             setCurrentCloudlet(undefined)
         }
@@ -145,9 +157,9 @@ export default function MapForOper(props) {
                     minZoom={1}
                 />
 
-                {/*@todo:bottom info*/}
-                {/*@todo:bottom info*/}
-                {/*@todo:bottom info*/}
+                {/*@todo:##########################################*/}
+                {/*@todo:cloudlet/cluster info                     */}
+                {/*@todo:##########################################*/}
                 {currentCluodlet !== undefined &&
                 <div
                     style={{
@@ -155,19 +167,20 @@ export default function MapForOper(props) {
                         bottom: 0,
                         background: 'rgba(0, 0, 0, 0.5)',
                         width: '100%',
-                        height: 170,
+                        height: 180,
                         zIndex: 99999,
                         //opacity: 0.5,
                         paddingTop: 10,
                         paddingLeft: 15,
+                        display: 'flex'
 
                     }}
                     onClick={() => {
                     }}
 
                 >
-                    <div>
-                        <div style={{fontSize: 17, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10}}>
+                        <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
                             <Icon name='cloud'/> {currentCluodlet.CloudletName}
                         </div>
                         <div style={Styles.lable001}>
@@ -187,17 +200,79 @@ export default function MapForOper(props) {
                             <b>CloudletInfoState</b>: {currentCluodlet.CloudletInfoState}
                         </div>
                     </div>
-                    {/* <div style={{marginTop: 10}}>
-                        {props.appInstList.map((item: TypeAppInstance, index) => {
+                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10, overflowY: 'auto'}}>
+
+                        {filteredClusterList.map((item: TypeCluster, index) => {
                             return (
-                                <div>
-                                    <div style={{color: 'orange', marginTop: 3, fontSize: 14}}>
-                                        {item.AppName}
+
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                                        <Icon name='th'/> {item.ClusterName}
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Deployment</b>:{item.Deployment}
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Flavor</b>: {item.Flavor}
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>uuid</b>: {item.uuid}
                                     </div>
                                 </div>
                             )
                         })}
-                    </div>*/}
+                        {filteredClusterList.length > 0 ?
+                            <React.Fragment>
+                                <div style={{display: 'flex', flexDirection: 'column', marginTop: 7}}>
+                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                                        <Icon name='th'/> kyungjoon_cluster001
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Deployment</b>:Docker
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Flavor</b>: kyungjoon_f;avor
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>uuid</b>: adasdasdasdsad
+                                    </div>
+                                </div>
+                                <div style={{display: 'flex', flexDirection: 'column', marginTop: 7}}>
+                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                                        <Icon name='th'/> kyungjoon_cluster002
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Deployment</b>:쿠버네이트
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Flavor</b>: kyungjoon_f;avor
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>uuid</b>: adasdasdasdsad
+                                    </div>
+                                </div>
+                                <div style={{display: 'flex', flexDirection: 'column', marginTop: 7}}>
+                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                                        <Icon name='th'/> kyungjoon_cluster003
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Deployment</b>:Docker
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>Flavor</b>: kyungjoon_f;avor
+                                    </div>
+                                    <div style={Styles.lable001}>
+                                        <b>uuid</b>: adasdasdasdsad123123
+                                    </div>
+                                </div>
+                            </React.Fragment>
+                            :
+                            <div style={{fontSize: 25, color: 'orange'}}>
+                                No Cluster
+                            </div>
+                        }
+
+                    </div>
 
                 </div>
                 }

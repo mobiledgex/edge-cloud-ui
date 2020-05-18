@@ -507,6 +507,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let clusterList = require('../temp/clusterList')
                     let appInstList = require('../temp/appInstList')
 
+
+                    console.log(`clusterList===>`, clusterList);
+
                     console.log(`appInstList===>`, appInstList);
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
@@ -555,6 +558,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let allAppInstEventLogList = []
                     let allClusterUsageList = require('../temp/clusterUSageList')
                     let allCloudletUsageList = require('../temp/cloudletUsageList')
+
+
+                    console.log(`clusterList==allClusterUsageList=>`, allClusterUsageList);
 
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
@@ -783,11 +789,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredClusterUsageList: filteredClusterUsageList,
                         filteredAppInstList: filteredAppInstList,
                         filteredClientStatusList: filteredClientStatusList,
-                    }, () => {
-
-                        console.log(`filteredClusterList====>`, this.state.filteredClusterList);
-                        console.log(`filteredClusterList===usage=>`, this.state.filteredClusterUsageList);
-                    })
+                    });
                 } else {//todo: When allCloudlet
                     this.setState({
                         currentCloudLet: undefined,
@@ -799,7 +801,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            async handleClusterTreeDropdown(selectedClusterOne) {
+            handleClusterDropdownForOper(value) {
+                showToast(value)
+            }
+
+
+            async handleClusterTreeDropdownForDev(selectedClusterOne) {
                 try {
                     //desc: When selected all Cluster options
                     if (selectedClusterOne === '') {
@@ -1305,6 +1312,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 cloudletList={this.state.filteredCloudletList}
                                 appInstList={this.state.filteredAppInstList}
                                 toggleOperMapZoom={!this.state.toggleOperMapZoom}
+                                filteredClusterList={this.state.filteredClusterList}
                             />
                         )
                     }
@@ -1534,7 +1542,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             onClick={async () => {
                                 {
                                     this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                        await this.handleClusterTreeDropdown('')
+                                        await this.handleClusterTreeDropdownForDev('')
                                         :
                                         await this.handleCloudletDropdown(undefined)
                                 }
@@ -1800,8 +1808,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCluster}
                             placeholder={'Select Cluster'}
                             onChange={async (value) => {
-                                this.handleClusterTreeDropdown(value)
+                                this.handleClusterDropdownForOper(value)
                             }}
+
+
                         >
                             {this.state.filteredClusterList.map((item: TypeCluster, index) => {
                                 return (
@@ -1857,7 +1867,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 } else {
                                     await this.filterClusterList(value)
                                 }
-                                await this.handleClusterTreeDropdown(value.trim())
+                                await this.handleClusterTreeDropdownForDev(value.trim())
                             }}
                         />
                     </div>
@@ -1929,7 +1939,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                         let clusterOne = item.cluster + " | " + item.cloudlet;
-                                        await this.handleClusterTreeDropdown(clusterOne)
+                                        await this.handleClusterTreeDropdownForDev(clusterOne)
 
                                     }}
                                     span={this.state.legendColSize}
@@ -2161,7 +2171,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Toolbar className='monitoring_title' style={{marginTop: -5}}>
                             <label className='content_title_label' style={{marginBottom: 1}}
                                    onClick={() => {
-                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdown(undefined) : this.handleClusterTreeDropdown('')
+                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdown(undefined) : this.handleClusterTreeDropdownForDev('')
                                    }}
                             >
                                 Monitoring
@@ -2241,7 +2251,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     clearInterval(this.intervalForAppInst)
                                                     clearInterval(this.intervalForCluster)
                                                 } else {
-                                                    await this.handleClusterTreeDropdown(this.state.currentCluster)
+                                                    await this.handleClusterTreeDropdownForDev(this.state.currentCluster)
 
                                                 }
                                             }}

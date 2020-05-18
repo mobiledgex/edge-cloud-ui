@@ -5,7 +5,7 @@ import type {TypeClientStatus} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
 
 const height = 200;
-const outerDiv = {flex: .33, border: '0.5px solid grey', height: height, backgroundColor: '#262626', margin: 2}
+const outerDiv = {flex: .33, border: '0.5px solid grey', height: height, backgroundColor: 'rgba(0,0,0,.3)', margin: 2}
 
 export default function MethodUsageCount(props) {
     const [countReady, setCountReady] = useState(false);
