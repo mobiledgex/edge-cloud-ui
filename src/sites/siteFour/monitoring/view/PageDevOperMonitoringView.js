@@ -808,6 +808,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         toggleOperMapZoom: !this.state.toggleOperMapZoom,
                         filteredClientStatusList: this.state.allClientStatusList,
                         currentClassification: CLASSIFICATION.CLOUDLET,
+                        currentCluster: undefined,
                     })
                 }
             }
@@ -816,7 +817,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                  let selectData = clusterCloudlet.split("|")
                  let selectCluster = selectData[0].trim();
                  let selectCloudlet = selectData[1].trim();
-
                  //alert(clusterCloudlet)
                  this.setState({
                      currentClassification: CLASSIFICATION.CLUSTER_FOR_OPER
