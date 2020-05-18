@@ -46,18 +46,7 @@ import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, Typ
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
-import {
-    getAllAppInstEventLogs,
-    getAllClusterEventLogList,
-    getAppInstList,
-    getAppLevelUsageList,
-    getClientStatusList,
-    getCloudletList,
-    getCloudletUsageList,
-    getClusterLevelUsageList,
-    getClusterList,
-    requestShowAppInstClientWS
-} from "../service/PageMonitoringMetricService";
+import {getAppLevelUsageList, getClientStatusList, getClusterLevelUsageList, requestShowAppInstClientWS} from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -504,18 +493,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    promiseList.push(getCloudletList())
-                    promiseList.push(getClusterList())
-                    promiseList.push(getAppInstList())
-                    let newPromiseList = await Promise.all(promiseList);
-                    let cloudletList = newPromiseList[0];
-                    let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
+                    /*   promiseList.push(getCloudletList())
+                       promiseList.push(getClusterList())
+                       promiseList.push(getAppInstList())
+                       let newPromiseList = await Promise.all(promiseList);
+                       let cloudletList = newPromiseList[0];
+                       let clusterList = newPromiseList[1];
+                       let appInstList = newPromiseList[2];*/
 
                     //todo:fakedata
-                    /*let cloudletList = require('../temp/cloudletList')
+                    let cloudletList = require('../temp/cloudletList')
                     let clusterList = require('../temp/clusterList')
-                    let appInstList = require('../temp/appInstList')*/
+                    let appInstList = require('../temp/appInstList')
 
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
@@ -545,7 +534,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
 
                     //todo: realdata
-                    promiseList2.push(getAllClusterEventLogList(clusterList))
+                    /*promiseList2.push(getAllClusterEventLogList(clusterList))
                     promiseList2.push(getAllAppInstEventLogs());
                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                     promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
@@ -553,14 +542,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let allClusterEventLogList = newPromiseList2[0];
                     let allAppInstEventLogList = newPromiseList2[1];
                     let allClusterUsageList = newPromiseList2[2];
-                    let allCloudletUsageList = newPromiseList2[3];
+                    let allCloudletUsageList = newPromiseList2[3];*/
 
                     //fixme: fakedata
                     //fixme: fakedata
-                    /*let allClusterEventLogList = []
+                    let allClusterEventLogList = []
                     let allAppInstEventLogList = []
                     let allClusterUsageList = require('../temp/clusterUSageList')
-                    let allCloudletUsageList = require('../temp/cloudletUsageList')*/
+                    let allCloudletUsageList = require('../temp/cloudletUsageList')
 
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
@@ -800,15 +789,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            handleClusterDropdownForOper(value) {
-                showToast(value)
+            handleClusterDropdownForOper(clusterCloudlet) {
+                let selectData = clusterCloudlet.split("|")
+                let selectedCluster = selectData[0].trim();
+                let selectedCloudlet = selectData[1].trim();
+                showToast(selectedCluster + "-->" + selectedCloudlet)
             }
 
 
             async handleClusterTreeDropdownForDev(selectedClusterOne) {
                 try {
                     //desc: When selected all Cluster options
-                    if (selectedClusterOne === '') {
+                    if (selectedClusterOne === '' || selectedClusterOne === undefined) {
                         await this.setState({
                             filteredClusterList: this.state.clusterList,
                         })
@@ -824,6 +816,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let selectData = selectedClusterOne.split("|")
                         let selectedCluster = selectData[0].trim();
                         let selectedCloudlet = selectData[1].trim();
+
+                        alert(selectedCluster)
 
                         //desc: filter  ClusterUsageList
                         let allClusterUsageList = this.state.allClusterUsageList;
@@ -1808,6 +1802,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCluster}
                             placeholder={'Select Cluster'}
                             onChange={async (value) => {
+
                                 this.handleClusterDropdownForOper(value)
                             }}
 
@@ -1815,7 +1810,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                             {this.state.filteredClusterList.map((item: TypeCluster, index) => {
                                 return (
-                                    <Option value={item.ClusterName}>{item.ClusterName}</Option>
+                                    <Option value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
                                 )
                             })}
                         </Select>
