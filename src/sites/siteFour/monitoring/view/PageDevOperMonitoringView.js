@@ -8,10 +8,6 @@ import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
 import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 import {
-    defaultHwMapperListForCluster,
-    defaultLayoutForAppInst,
-    defaultLayoutForCluster,
-    defaultLayoutMapperForAppInst,
     filterByClassification,
     getCloudletClusterNameList,
     getUserId,
@@ -78,7 +74,11 @@ import {
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
+    defaultHwMapperListForCluster,
+    defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
+    defaultLayoutForCluster,
+    defaultLayoutMapperForAppInst,
     defaultLayoutMapperForCloudlet,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
