@@ -1796,12 +1796,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     <div style={{display: 'flex'}}>
                         <div style={{marginTop: 1,}}>
                             <MaterialIcon
-                                size={20}
+                                size={18}
                                 color={'orange'}
                                 icon="info"
                             />
                         </div>
-                        <div style={{color: 'orange', marginLeft: 3}}>No Cluster</div>
+                        <div style={{color: 'orange', marginLeft: 5}}>No Cluster</div>
                     </div>
                 )
             }
