@@ -83,6 +83,7 @@ export default class PopDetailViewer extends React.Component {
                 onClose={this.handleClose}
                 PaperComponent={this.paperComponent}
                 aria-labelledby="draggable-dialog-title"
+                style={{zIndex: 1901}} // It should be higher than Audit Timeline Popup(= z-index:1900)
             >
                 <DialogTitle className="audit_popup_title" style={{ cursor: 'move' }} id="draggable-dialog-title">
                     Detail
