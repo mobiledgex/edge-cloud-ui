@@ -108,48 +108,6 @@ export default class PopDetailViewer extends React.Component {
                     </Button>
                 </DialogActions>
             </Dialog>
-            // <Modal size={'small'} open={this.state.open} allowMultiple={true}>
-            //     <Modal.Header>Detail</Modal.Header>
-            //     <Modal.Content>
-            //         <ExpansionPanel square expanded={this.state.expanded === 0} onChange={this.handleExpandedChange(0)}>
-            //             <ExpansionPanelSummary
-            //                 id="panel1a-header"
-            //             >
-            //                 RAW Viewer
-            //             </ExpansionPanelSummary>
-            //             <ExpansionPanelDetails>
-            //                 {(this.props.rawViewData) ? jsonView(this.props.rawViewData, this) : null}
-            //             </ExpansionPanelDetails>
-            //         </ExpansionPanel>
-            //
-            //         <ExpansionPanel square expanded={this.state.expanded === 1} onChange={this.handleExpandedChange(1)}>
-            //             <ExpansionPanelSummary
-            //                 id="panel1a-header"
-            //             >
-            //                 Request
-            //             </ExpansionPanelSummary>
-            //             <ExpansionPanelDetails>
-            //                 {(this.props.requestData) ? jsonView(this.props.requestData, this) : null}
-            //             </ExpansionPanelDetails>
-            //         </ExpansionPanel>
-            //
-            //         <ExpansionPanel square expanded={this.state.expanded === 2} onChange={this.handleExpandedChange(2)}>
-            //             <ExpansionPanelSummary
-            //                 id="panel1a-header"
-            //             >
-            //                 Response
-            //             </ExpansionPanelSummary>
-            //             <ExpansionPanelDetails>
-            //                 {(this.props.responseData) ? jsonView(this.props.responseData, this) : null}
-            //             </ExpansionPanelDetails>
-            //         </ExpansionPanel>
-            //     </Modal.Content>
-            //     <Modal.Actions>
-            //         <Button onClick={() => this.close()}>
-            //             Close
-            //         </Button>
-            //     </Modal.Actions>
-            // </Modal>
         )
     }
 }
