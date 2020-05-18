@@ -171,12 +171,10 @@ class HeaderAuditLog extends React.Component {
         )
     }
 
-    onClickViewDetail = (index) => {
-        let dayData = this.state.dayData;
-
-        let rawViewData = (dayData[index])?this.setAllView(dayData[index], index):{};
-        let requestData = (dayData[index])?this.setRequestView(dayData[index], index):{};
-        let responseData = (dayData[index])?this.setResponseView(dayData[index], index):{};
+    onClickViewDetail = (data) => {
+        let rawViewData = (data)?this.setAllView(data):{};
+        let requestData = (data)?this.setRequestView(data):{};
+        let responseData = (data)?this.setResponseView(data):{};
 
         this.props.detailView(rawViewData, requestData, responseData)
     }
@@ -312,7 +310,7 @@ class HeaderAuditLog extends React.Component {
                             <div className='audit_timeline_detail_right' style={{color:data.status === 200? '#4caf50' : '#E53935' }}>{data.status}</div>
                         </div>
                         <div className='audit_timeline_detail_button'>
-                            <Button onClick={() => this.onClickViewDetail(index)}>
+                            <Button onClick={() => this.onClickViewDetail(data)}>
                                 VIEW DETAIL
                             </Button>
                         </div>
@@ -379,7 +377,7 @@ class HeaderAuditLog extends React.Component {
                                                 <div className='audit_timeline_detail_right' style={{color:item.status === 200? '#4caf50' : '#E53935' }}>{item.status}</div>
                                             </div>
                                             <div className='audit_timeline_detail_button'>
-                                                <Button onClick={() => this.onClickViewDetail(itemIndex)}>
+                                                <Button onClick={() => this.onClickViewDetail(item)}>
                                                     VIEW DETAIL
                                                 </Button>
                                             </div>
