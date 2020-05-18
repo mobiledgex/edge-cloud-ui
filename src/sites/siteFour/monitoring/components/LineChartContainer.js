@@ -27,7 +27,10 @@ export default class LineChartContainer extends React.Component<Props, State> {
         this.state = {
             currentClassification: [],
             themeTitle: '',
-            chartDataSet: [],
+            chartDataSet: {
+                datasets: [],
+                labels: []
+            },
             graphType: '',
         }
     }
