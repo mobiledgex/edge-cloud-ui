@@ -286,11 +286,6 @@ export default function MiniDrawer(props) {
         }
     }
 
-    const versionInfo = () => (
-        <div style={{position: 'absolute', bottom: 5, marginLeft: 4, color: '#B1B2B4'}}>
-            {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
-        </div>
-    )
     /**
      * Legend Block
      * * */
@@ -330,7 +325,6 @@ export default function MiniDrawer(props) {
                 <List style={{backgroundColor: '#292c33', height: '100%'}}>
                     {roleInfo()}
                     {menuList()}
-                    {versionInfo()}
                 </List>
             </Drawer>
             <main className={classes.content}>
