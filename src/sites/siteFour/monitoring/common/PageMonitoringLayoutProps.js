@@ -72,7 +72,7 @@ export const CHART_TYPE = {
 }
 
 
-export const defaultLayoutForClusterOper = [
+export const defaultLayoutForClusterForOper = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
@@ -82,7 +82,7 @@ export const defaultLayoutForClusterOper = [
 ];
 
 
-export const defaultLayoutMapperForClusterOper= [
+export const defaultLayoutMapperForClusterForOper= [
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,

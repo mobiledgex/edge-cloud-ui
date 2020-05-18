@@ -80,10 +80,10 @@ import {
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
     defaultLayoutForCluster,
-    defaultLayoutForClusterOper,
+    defaultLayoutForClusterForOper,
     defaultLayoutMapperForAppInst,
     defaultLayoutMapperForCloudlet,
-    defaultLayoutMapperForClusterOper,
+    defaultLayoutMapperForClusterForOper,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster,
@@ -264,10 +264,9 @@ type PageDevMonitoringState = {
     filteredAppInstList: any,
     allClientStatusList: any,
     filteredClientStatusList: any,
-    layoutForClusterOper: any,
-    layoutMapperForClusterOper: any,
+    layoutMapperForClusterForOper: any,
     layoutForCloudlet: any,
-    layoutForClusterOper: any,
+    layoutForClusterForOper: any,
     layoutForCluster: any,
     layoutForAppInst: any,
 }
@@ -296,9 +295,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let cloudletLayoutKey = getUserId() + CLOUDLET_LAYOUT_KEY
                 let cloudletHwMapperKey = getUserId() + CLOUDLET_HW_MAPPER_KEY
 
-                let clusterOperLayoutKey = getUserId() + CLUSTER_OPER_LAYOUT_KEY
-                let clusterOperHwMapperKey = getUserId() + CLUSTER_OPER_HW_MAPPER_KEY
-
+                let clusterForOperLayoutKey = getUserId() + CLUSTER_OPER_LAYOUT_KEY
+                let clusterForOperHwMapperKey = getUserId() + CLUSTER_OPER_HW_MAPPER_KEY
 
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
@@ -307,14 +305,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 /*reactLocalStorage.remove(themeTitle)
                 reactLocalStorage.remove(themeKey)*/
                 this.state = {
+
+                    //todo:oper layout
+                    layoutForCloudlet: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayoutKey),
+                    layoutMapperForCloudlet: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletHwMapperKey),
+                    layoutForClusterForOper: isEmpty(reactLocalStorage.get(clusterForOperLayoutKey)) ? defaultLayoutForClusterForOper : reactLocalStorage.getObject(clusterForOperLayoutKey),
+                    layoutMapperForClusterForOper: isEmpty(reactLocalStorage.get(clusterForOperHwMapperKey)) ? defaultLayoutMapperForClusterForOper : reactLocalStorage.getObject(clusterForOperHwMapperKey),
+
+                    //todo:dev layout
                     layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
                     layoutMapperForCluster: isEmpty(reactLocalStorage.get(clusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterHwMapperKey),
                     layoutForAppInst: isEmpty(reactLocalStorage.get(appInstLayoutKey)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayoutKey),
                     layoutMapperForAppInst: isEmpty(reactLocalStorage.get(appInstHwMapperKey)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstHwMapperKey),
-                    layoutForCloudlet: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayoutKey),
-                    layoutMapperForCloudlet: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletHwMapperKey),
-                    layoutForClusterOper: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForClusterOper : reactLocalStorage.getObject(clusterOperLayoutKey),
-                    layoutMapperForClusterOper: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForClusterOper : reactLocalStorage.getObject(clusterOperHwMapperKey),
+
+
                     date: '',
                     time: '',
                     dateTime: '',
@@ -760,7 +764,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return cloudletOne.toString().split(" | ")[0].trim();
             }
 
-            handleCloudletDropdown = async (pCloudletOne) => {
+            handleCloudletDropdownForOper = async (pCloudletOne) => {
                 if (pCloudletOne !== undefined) {
                     await this.setState({currentCloudLet: this.getOnlyCloudletName(pCloudletOne)})
                     let currentCloudletOne = this.state.currentCloudLet
@@ -808,13 +812,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleClusterDropdownForOper(clusterCloudlet) {
                 let selectData = clusterCloudlet.split("|")
-                let selectedCluster = selectData[0].trim();
-                let selectedCloudlet = selectData[1].trim();
-
+                let selectCluster = selectData[0].trim();
+                let selectCloudlet = selectData[1].trim();
                 this.setState({
                     currentClassification: CLASSIFICATION.CLUSTER_FOR_OPER
                 })
-                showToast(selectedCluster + "-->" + selectedCloudlet)
+
             }
 
 
@@ -1127,10 +1130,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     });
 
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                    let removedLayout = _.reject(this.state.layoutForClusterOper, {i: i});
+                    let removedLayout = _.reject(this.state.layoutForClusterForOper, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLUSTER_OPER_LAYOUT_KEY, removedLayout)
                     this.setState({
-                        layoutForClusterOper: removedLayout,
+                        layoutForClusterForOper: removedLayout,
                     });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     let removedLayout = _.reject(this.state.layoutForCloudlet, {i: i});
@@ -1154,13 +1157,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({
                         layoutForCloudlet: [],
                     });
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, [])
-                    this.setState({
-                        layoutForCluster: [],
-                    });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
                     reactLocalStorage.setObject(getUserId() + CLUSTER_OPER_LAYOUT_KEY, [])
+                    this.setState({
+                        layoutForClusterForOper: [],
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, [])
                     this.setState({
                         layoutForCluster: [],
                     });
@@ -1427,7 +1430,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isDraggable={true}
                         autoSize={true}
                         style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
-                        className='layout page_monitoring_layout_dev'
+                        className='layout page_monitoring_layout_dev_oper'
                         cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
                         layout={this.state.layoutForCluster}
                         rowHeight={this.gridItemHeight}
@@ -1478,9 +1481,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isDraggable={true}
                         autoSize={true}
                         style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
-                        className='layout page_monitoring_layout_dev'
+                        className='layout page_monitoring_layout_dev_oper'
                         cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                        layout={this.state.layoutMapperForClusterOper}
+                        layout={this.state.layoutForClusterForOper}
                         rowHeight={this.gridItemHeight}
                         onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
                             let width = newItem.w;
@@ -1500,14 +1503,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }}
                         {...this.props}
                     >
-                        {this.state.layoutForClusterOper.map((item, loopIndex) => {
-
+                        {this.state.layoutForClusterForOper.map((item, loopIndex) => {
                             const uniqueIndex = item.i;
                             let hwType = HARDWARE_TYPE.CPU
                             let graphType = GRID_ITEM_TYPE.LINE;
-                            if (!isEmpty(this.state.layoutForClusterOper.find(x => x.id === uniqueIndex))) {
-                                hwType = this.state.layoutForClusterOper.find(x => x.id === uniqueIndex).hwType
-                                graphType = this.state.layoutForClusterOper.find(x => x.id === uniqueIndex).graphType
+                            if (!isEmpty(this.state.layoutForClusterForOper.find(x => x.id === uniqueIndex))) {
+                                hwType = this.state.layoutForClusterForOper.find(x => x.id === uniqueIndex).hwType
+                                graphType = this.state.layoutForClusterForOper.find(x => x.id === uniqueIndex).graphType
                                 graphType = graphType.toUpperCase()
                             }
                             return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
@@ -1528,7 +1530,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         preventCollision={true}
                         isDraggable={true}
                         autoSize={true}
-                        className='layout page_monitoring_layout_dev'
+                        className='layout page_monitoring_layout_dev_oper'
                         cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
                         layout={this.state.layoutForCloudlet}
                         rowHeight={this.gridItemHeight}
@@ -1626,7 +1628,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                         await this.handleClusterTreeDropdownForDev('')
                                         :
-                                        await this.handleCloudletDropdown(undefined)
+                                        await this.handleCloudletDropdownForOper(undefined)
                                 }
                             }}
                         >
@@ -1857,7 +1859,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onChange={async (value) => {
-                                this.handleCloudletDropdown(value)
+                                this.handleCloudletDropdownForOper(value)
                             }}
                         >
                             {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
@@ -2077,7 +2079,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div
                             style={{marginTop: 0, marginLeft: 3,}}
                             onClick={async () => {
-                                await this.handleCloudletDropdown(undefined)
+                                await this.handleCloudletDropdownForOper(undefined)
                             }}
                         >
                             all
@@ -2115,7 +2117,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         style={{marginLeft: 0,}}
                                         color='#1cecff' during={100}
                                         onClick={async () => {
-                                            await this.handleCloudletDropdown(item.CloudletName)
+                                            await this.handleCloudletDropdownForOper(item.CloudletName)
                                         }}
                                     >
                                         {this.renderDot(index)}
@@ -2258,7 +2260,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Toolbar className='monitoring_title' style={{marginTop: -5}}>
                             <label className='content_title_label' style={{marginBottom: 1}}
                                    onClick={() => {
-                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdown(undefined) : this.handleClusterTreeDropdownForDev('')
+                                       this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleCloudletDropdownForOper(undefined) : this.handleClusterTreeDropdownForDev('')
                                    }}
                             >
                                 Monitoring
@@ -2281,7 +2283,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                                 }
                                 <div style={{marginLeft: 25}}>
-                                    {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderClusterDropdownForOperator() : this.renderClusterTreeDropdownForDeveloper()}
+                                    {this.state.userType.includes(USER_TYPE.OPERATOR) ? this.renderClusterDropdownForOperator() : this.renderClusterTreeDropdownForDeveloper()}
                                 </div>
                                 <div style={{marginLeft: 25}}>
                                     {this.state.userType.includes(USER_TYPE.DEVELOPER) && this.renderAppInstDropdown()}
