@@ -100,8 +100,6 @@ const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const FontAwesomeIcon = require('react-fontawesome')
 type PageDevMonitoringState = {
-    layoutForCluster: any,
-    layoutForAppInst: any,
     date: string,
     time: string,
     dateTime: string,
@@ -268,6 +266,10 @@ type PageDevMonitoringState = {
     filteredClientStatusList: any,
     layoutForClusterOper: any,
     layoutMapperForClusterOper: any,
+    layoutForCloudlet: any,
+    layoutForClusterOper: any,
+    layoutForCluster: any,
+    layoutForAppInst: any,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -1123,6 +1125,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({
                         layoutForCluster: removedLayout,
                     });
+
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                    let removedLayout = _.reject(this.state.layoutForClusterOper, {i: i});
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_OPER_LAYOUT_KEY, removedLayout)
+                    this.setState({
+                        layoutForClusterOper: removedLayout,
+                    });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     let removedLayout = _.reject(this.state.layoutForCloudlet, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
@@ -1140,13 +1149,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             removeGridAllItem() {
-                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    reactLocalStorage.setObject(getUserId() + "_layout", [])
+                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, [])
+                    this.setState({
+                        layoutForCloudlet: [],
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, [])
+                    this.setState({
+                        layoutForCluster: [],
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_OPER_LAYOUT_KEY, [])
                     this.setState({
                         layoutForCluster: [],
                     });
                 } else {//@desc: AppInst Level
-                    reactLocalStorage.setObject(getUserId() + "_layout2", [])
+                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, [])
                     this.setState({
                         layoutForAppInst: [],
                     });
