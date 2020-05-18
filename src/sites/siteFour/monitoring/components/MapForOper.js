@@ -1,7 +1,6 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import Ripple from "react-ripples";
-import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple.js';
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
 import type {TypeCloudlet} from "../../../../shared/Types";
@@ -123,18 +122,24 @@ export default function MapForOper(props) {
                     minZoom={1}
                 />
                 {currentCluodlet !== undefined &&
-                <div style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.5)',
-                    width: '100%',
-                    height: 150,
-                    zIndex: 99999,
-                    opacity: 0.5,
-                    color: 'yellow',
-                    padding: 20,
+                <div
+                    style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        background: 'rgba(0, 0, 0, 0.5)',
+                        width: '100%',
+                        height: 150,
+                        zIndex: 99999,
+                        opacity: 0.5,
+                        color: 'yellow',
+                        padding: 20,
 
-                }}>
+                    }}
+                    onClick={()=>{
+                        alert('sdlfklsdflkfkl____')
+                    }}
+
+                >
                     {currentCluodlet.toString()}
                 </div>
                 }

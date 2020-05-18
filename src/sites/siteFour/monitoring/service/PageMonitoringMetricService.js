@@ -1,14 +1,9 @@
 import axios from "axios";
 import type {TypeAppInstance, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
-import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLASSIFICATION, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import {sendSyncRequest} from "../../../../services/serviceMC";
-import {
-    isEmpty,
-    makeFormForCloudletLevelMatric,
-    makeFormForClusterLevelMatric,
-    showToast
-} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
@@ -18,7 +13,7 @@ import {
     CLOUDLET_METRICS_ENDPOINT,
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
-    SHOW_APP_INST_CLIENT_ENDPOINT, SHOW_METRICS_CLIENT_STATUS
+    SHOW_APP_INST_CLIENT_ENDPOINT
 } from "../common/PageMonitoringMetricEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
@@ -195,6 +190,15 @@ export const getCloudletList = async () => {
 
         }*/
 
+        mergedCloudletList.sort((a: TypeCloudlet, b: TypeCloudlet)=>{
+            if (a.CloudletName < b.CloudletName) {
+                return -1;
+            }
+            if (a.CloudletName > b.CloudletName) {
+                return 1;
+            }
+            return 0;
+        })
 
         return mergedCloudletList;
 
@@ -759,123 +763,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
 }
 
-export const getClientStateOne = async (appInst: TypeAppInstance) => {
-
-    let store = JSON.parse(localStorage.PROJECT_INIT);
-    let token = store ? store.userToken : 'null';
-
-    console.log(`token2====>`, token)
-
-    return await axios({
-        url: '/api/v1/auth/metrics/client',
-        method: 'post',
-        data: {
-            "region": appInst.Region,
-            "appinst": {
-                "app_key": {
-                    "organization": appInst.OrganizationName,
-                    "name": appInst.AppName,
-                    "version": appInst.Version,
-                }
-            },
-            "selector": "api",
-            'last': 100
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-
-        console.log(`response====>`, response.data);
-        console.log(`response===2=>`, response.data.data[0].Series);
-
-        if (response.data.data[0].Series !== null) {
-
-            let seriesValues = response.data.data[0].Series[0].values
-            console.log(`response===3====>`, seriesValues);
-            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
-            return clientMatricSumDataOne;
-        } else {
-            return undefined
-        }
-
-    })
-}
-
-export function makeClientMatricSumDataOne(seriesValues) {
-    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
-    let RegisterClientCount = 0;
-    let FindCloudletCount = 0;
-    let VerifyLocationCount = 0
-    let app = '';
-    let apporg = '';
-    let cellID = '';
-    let cloudlet = '';
-    let cloudletorg = '';
-    let ver = ''
-
-    //fixme : covert to constants
-    //fixme : covert to constants
-    //fixme : covert to constants
-    //fixme : covert to constants
-    seriesValues.map(item => {
-        let methodType = item[17];
-        if (methodType === "RegisterClient") {
-            RegisterClientCount++;
-        }
-        if (methodType === "FindCloudlet") {
-            FindCloudletCount++;
-        }
-        if (methodType === "VerifyLocation") {
-            FindCloudletCount++;
-        }
-
-        app = item[6]//app
-        apporg = item[7]//apporg
-        cellID = item[8]//cellID
-        cloudlet = item[9]//cloudlet
-        cloudletorg = item[10]//cloudletorg
-        ver = item[20]//ver
-    })
-
-    let metricSumDataOne = {
-        RegisterClientCount,
-        FindCloudletCount,
-        VerifyLocationCount,
-        app,
-        apporg,
-        cellID,
-        cloudlet,
-        cloudletorg,
-        ver,
-    }
-
-    return metricSumDataOne;
-
-}
-
-
-export const getClientStatusList = async (appInstList) => {
-    let promiseList = []
-    appInstList.map((appInstOne: TypeCloudlet, index) => {
-        promiseList.push(getClientStateOne(appInstOne))
-    })
-    let newPromiseList = await Promise.all(promiseList);
-
-    let mergedClientStatusList = []
-    newPromiseList.map((item, index) => {
-        if (item !== undefined) {
-            mergedClientStatusList.push(item)
-        }
-    })
-    console.log(`mergedClientStatusList====>`, mergedClientStatusList);
-
-    return mergedClientStatusList;
-
-}
-
 
 export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
     console.log('token===>', pToken);
@@ -1175,3 +1062,118 @@ export const getAllAppInstEventLogs = async () => {
     }
 }
 
+
+
+
+export const getClientStateOne = async (appInst: TypeAppInstance) => {
+
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+
+    console.log(`token2====>`, token)
+
+    return await axios({
+        url: '/api/v1/auth/metrics/client',
+        method: 'post',
+        data: {
+            "region": appInst.Region,
+            "appinst": {
+                "app_key": {
+                    "organization": appInst.OrganizationName,
+                    "name": appInst.AppName,
+                    "version": appInst.Version,
+                }
+            },
+            "selector": "api",
+            'last': 100
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+
+        console.log(`response====>`, response.data);
+        console.log(`response===2=>`, response.data.data[0].Series);
+
+        if (response.data.data[0].Series !== null) {
+
+            let seriesValues = response.data.data[0].Series[0].values
+            console.log(`response===3====>`, seriesValues);
+            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
+            return clientMatricSumDataOne;
+        } else {
+            return undefined
+        }
+
+    })
+}
+
+export function makeClientMatricSumDataOne(seriesValues) {
+    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
+    let RegisterClientCount = 0;
+    let FindCloudletCount = 0;
+    let VerifyLocationCount = 0
+    let app = '';
+    let apporg = '';
+    let cellID = '';
+    let cloudlet = '';
+    let cloudletorg = '';
+    let ver = ''
+
+    seriesValues.map(item => {
+        let methodType = item[17];
+        if (methodType === "RegisterClient") {
+            RegisterClientCount++;
+        }
+        if (methodType === "FindCloudlet") {
+            FindCloudletCount++;
+        }
+        if (methodType === "VerifyLocation") {
+            FindCloudletCount++;
+        }
+
+        app = item[6]//app
+        apporg = item[7]//apporg
+        cellID = item[8]//cellID
+        cloudlet = item[9]//cloudlet
+        cloudletorg = item[10]//cloudletorg
+        ver = item[20]//ver
+    })
+
+    let metricSumDataOne = {
+        RegisterClientCount,
+        FindCloudletCount,
+        VerifyLocationCount,
+        app,
+        apporg,
+        cellID,
+        cloudlet,
+        cloudletorg,
+        ver,
+    }
+
+    return metricSumDataOne;
+
+}
+
+
+export const getClientStatusList = async (appInstList) => {
+    let promiseList = []
+    appInstList.map((appInstOne: TypeCloudlet, index) => {
+        promiseList.push(getClientStateOne(appInstOne))
+    })
+    let newPromiseList = await Promise.all(promiseList);
+
+    let mergedClientStatusList = []
+    newPromiseList.map((item, index) => {
+        if (item !== undefined) {
+            mergedClientStatusList.push(item)
+        }
+    })
+    console.log(`mergedClientStatusList====>`, mergedClientStatusList);
+
+    return mergedClientStatusList;
+
+}

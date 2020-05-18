@@ -12,6 +12,7 @@ export const GRID_ITEM_TYPE = {
     PERFORMANCE_SUM: 'PERFORMANCE_SUM'
 }
 export const HARDWARE_TYPE_FOR_GRID = {
+    ETC: 'ETC',
     MAP: 'MAP',
     DONUTS: 'DONUTS',
     BUBBLE: 'BUBBLE',
@@ -58,6 +59,7 @@ export const HARDWARE_TYPE_FOR_GRID = {
     ipv4Used: 'ipv4Used',
     netSend: 'netSend',
     netRecv: 'netRecv',
+    methodUsageCount: 'methodUsageCount',
 
 };
 
@@ -65,7 +67,8 @@ export const CHART_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
     COLUMN: 'COLUMN',
-    DONUTS: 'DONUTS'
+    DONUTS: 'DONUTS',
+    METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
 }
 
 export const defaultLayoutForCloudlet = [
@@ -97,17 +100,17 @@ export const defaultLayoutMapperForCloudlet = [
     },
     {
         id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.diskUsed,
-        graphType: CHART_TYPE.LINE,
+        hwType: undefined,
+        graphType: CHART_TYPE.METHOD_USAGE_COUNT,
     },
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
+        hwType: undefined,
         graphType: CHART_TYPE.DONUTS,
     },
     {
         id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        hwType: undefined,
         graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
 

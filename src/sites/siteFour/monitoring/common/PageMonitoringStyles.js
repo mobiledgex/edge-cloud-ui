@@ -470,6 +470,26 @@ export const Center = styled.div`
   font-family: Roboto;
 `;
 
+export const CenterMethodCount = styled.div`
+  justify-content: center;
+  text-align: center;
+  display : flex;
+  align-items: center;
+  align-self: center;
+  font-family: Roboto;
+  //background-color: red;
+`;
+
+export const CountDivOne = styled.div`
+  justify-content: center;
+  text-align: center;
+  display : flex;
+  align-items: center;
+  align-self: center;
+  font-family: Roboto;
+  //background-color: red;
+`;
+
 export const Center7 = styled.div`
   justify-content: center;
   text-align: center;

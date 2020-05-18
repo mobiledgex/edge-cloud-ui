@@ -46,18 +46,7 @@ import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, Typ
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
-import {
-    getAllAppInstEventLogs,
-    getAllClusterEventLogList,
-    getAppInstList,
-    getAppLevelUsageList,
-    getClientStatusList,
-    getCloudletList,
-    getCloudletUsageList,
-    getClusterLevelUsageList,
-    getClusterList,
-    requestShowAppInstClientWS
-} from "../service/PageMonitoringMetricService";
+import {getAppLevelUsageList, getClientStatusList, getClusterLevelUsageList, requestShowAppInstClientWS} from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -98,6 +87,7 @@ import {
 import MapForOper from "../components/MapForOper";
 import DonutChartHooks from "../components/DonutChartHooks";
 import ClientSummaryHooks from "../components/ClientSummaryHooks";
+import MethodUsageCount from "../components/MethodUsageCount";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -267,6 +257,7 @@ type PageDevMonitoringState = {
     filteredCloudletUsageList: any,
     toggleOperMapZoom: boolean,
     clientStatusList: any,
+    cloudletDropdownList: any,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -498,19 +489,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    promiseList.push(getCloudletList())
-                    promiseList.push(getClusterList())
-                    promiseList.push(getAppInstList())
-                    let newPromiseList = await Promise.all(promiseList);
-                    let cloudletList = newPromiseList[0];
-                    let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
-
+                    /*   promiseList.push(getCloudletList())
+                       promiseList.push(getClusterList())
+                       promiseList.push(getAppInstList())
+                       let newPromiseList = await Promise.all(promiseList);
+                       let cloudletList = newPromiseList[0];
+                       let clusterList = newPromiseList[1];
+                       let appInstList = newPromiseList[2];
+   */
 
                     //todo:fakedata
-                    /*   let cloudletList = require('./cloudletList')
-                       let clusterList = require('./clusterList')
-                       let appInstList = require('./appInstList')*/
+                    let cloudletList = require('../temp/cloudletList')
+                    let clusterList = require('../temp/clusterList')
+                    let appInstList = require('../temp/appInstList')
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
                         await this.setState({clientStatusList: await getClientStatusList(appInstList)})
@@ -535,29 +526,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
 
                     //todo: realdata
-                    promiseList2.push(getAllClusterEventLogList(clusterList))
-                    promiseList2.push(getAllAppInstEventLogs());
-                    promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                    promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
-                    let newPromiseList2 = await Promise.all(promiseList2);
-                    let allClusterEventLogList = newPromiseList2[0];
-                    let allAppInstEventLogList = newPromiseList2[1];
-                    let allClusterUsageList = newPromiseList2[2];
-                    let allCloudletUsageList = newPromiseList2[3];
+                    /* promiseList2.push(getAllClusterEventLogList(clusterList))
+                     promiseList2.push(getAllAppInstEventLogs());
+                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                     promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
+                     let newPromiseList2 = await Promise.all(promiseList2);
+                     let allClusterEventLogList = newPromiseList2[0];
+                     let allAppInstEventLogList = newPromiseList2[1];
+                     let allClusterUsageList = newPromiseList2[2];
+                     let allCloudletUsageList = newPromiseList2[3];*/
 
 
                     //fixme: fakedata
                     //fixme: fakedata
-                    /*   let allClusterEventLogList = []
+                    let allClusterEventLogList = []
                     let allAppInstEventLogList = []
-                    let allClusterUsageList = require('./clusterUSageList')
-                    let allCloudletUsageList = require('./cloudletUsageList')*/
+                    let allClusterUsageList = require('../temp/clusterUSageList')
+                    let allCloudletUsageList = require('../temp/cloudletUsageList')
 
-
-                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
-                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
-                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
-                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
@@ -570,7 +556,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
                     console.log(`loadInitData....cloudletList====>`, cloudletList);
-
                     console.log(`loadInitData..allCloudletUsageList====>`, allCloudletUsageList);
 
                     await this.setState({
@@ -1191,9 +1176,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST
-                            &&
-                            <div className="maxize page_monitoring_widget_icon"
-                                 onClick={this.showBigModal.bind(this, hwType, graphType)}
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.METHOD_USAGE_COUNT
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.DONUTS
+                            && <div className="maxize page_monitoring_widget_icon"
+                                    onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
                                 <MaterialIcon size={'tiny'} icon='aspect_ratio' color={'white'}/>
                             </div>
@@ -1340,6 +1326,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     return this.state.loading ? renderPlaceHolderLoader() :
                         <DonutChartHooks
                             filteredCloudletUsageList={this.state.filteredCloudletUsageList}
+                        />
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.METHOD_USAGE_COUNT) {
+                    return this.state.loading ? renderPlaceHolderLoader() :
+                        <MethodUsageCount
+                            clientStatusList={this.state.clientStatusList}
                         />
                 }
             }
@@ -1518,7 +1509,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             style={{display: 'flex'}}
                             key="1"
                             onClick={async () => {
-                                await this.handleClusterTreeDropdown('')
+                                {
+                                    this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                        await this.handleClusterTreeDropdown('')
+                                        :
+                                        await this.handleCloudletDropdown(undefined)
+                                }
                             }}
                         >
                             <MaterialIcon icon={'history'} color={'white'}/>
@@ -1526,6 +1522,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Fetch Locally Stored Data
                             </div>
                         </AMenu.Item>
+                        {this.state.currentClassification !== CLASSIFICATION.CLOUDLET &&
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
@@ -1539,6 +1536,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Add Item
                             </div>
                         </AMenu.Item>
+                        }
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
                         {/*desc:#########################################*/}
@@ -1748,10 +1746,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 this.handleCloudletDropdown(value)
                             }}
                         >
-                            {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map(item => {
-                                return (
-                                    <Option value={item.value}>{item.text}</Option>
-                                )
+                            {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
+                                if (index === 0) {
+                                    return <Option value={item.value} style={{}}>
+                                        <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
+                                    </Option>
+                                } else {
+                                    return (
+                                        <Option value={item.value}>{item.text}</Option>
+                                    )
+                                }
                             })}
                         </Select>
                     </div>
