@@ -764,7 +764,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             handleCloudletDropdownForOper = async (pCloudletOne) => {
-
                 if (pCloudletOne !== undefined) {
                     await this.setState({currentCloudLet: this.getOnlyCloudletName(pCloudletOne)})
                     let currentCloudletOne = this.state.currentCloudLet

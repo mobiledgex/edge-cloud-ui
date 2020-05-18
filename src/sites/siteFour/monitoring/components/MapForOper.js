@@ -240,7 +240,7 @@ export default function MapForOper(props) {
                             style={mapIconStyle}
                             onClick={async () => {
                                 setCurrentCloudlet(undefined)
-                                props.parent.handleCloudletDropdown(undefined).then(() => {
+                                props.parent.handleCloudletDropdownForOper(undefined).then(() => {
                                     props.parent.setState({
                                         toggleZoom: !props.parent.state.toggleZoom
                                     });
