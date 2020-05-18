@@ -6,7 +6,7 @@ import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitorin
 import type {TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {listGroupByKey} from "../service/PageMonitoringService";
 import Control from "react-leaflet-control";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";
 import {CLOUDLET_STATE} from "../../../../shared/Constants";
 
@@ -179,6 +179,9 @@ export default function MapForOper(props) {
                     }}
 
                 >
+                    {/*todo:Cloudlet bottom info*/}
+                    {/*todo:Cloudlet bottom info*/}
+                    {/*todo:Cloudlet bottom info*/}
                     <div style={{flex: .5, border: '0.5px solid grey', padding: 10}}>
                         <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
                             <Icon name='cloud'/> {currentCluodlet.CloudletName}
@@ -200,6 +203,11 @@ export default function MapForOper(props) {
                             <b>CloudletInfoState</b>: {currentCluodlet.CloudletInfoState}
                         </div>
                     </div>
+
+
+                    {/*todo:cluster bottom info*/}
+                    {/*todo:cluster bottom info*/}
+                    {/*todo:cluster bottom info*/}
                     <div style={{flex: .5, border: '0.5px solid grey', padding: 10, overflowY: 'auto'}}>
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
@@ -221,55 +229,10 @@ export default function MapForOper(props) {
                                 </div>
                             )
                         })}
-                        {filteredClusterList.length > 0 ?
-                            <React.Fragment>
-                                <div style={{display: 'flex', flexDirection: 'column', marginTop: 7}}>
-                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
-                                        <Icon name='th'/> kyungjoon_cluster001
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Deployment</b>:Docker
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Flavor</b>: kyungjoon_f;avor
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>uuid</b>: adasdasdasdsad
-                                    </div>
-                                </div>
-                                <div style={{display: 'flex', flexDirection: 'column', marginTop: 7}}>
-                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
-                                        <Icon name='th'/> kyungjoon_cluster002
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Deployment</b>:쿠버네이트
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Flavor</b>: kyungjoon_f;avor
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>uuid</b>: adasdasdasdsad
-                                    </div>
-                                </div>
-                                <div style={{display: 'flex', flexDirection: 'column', marginTop: 7}}>
-                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
-                                        <Icon name='th'/> kyungjoon_cluster003
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Deployment</b>:Docker
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Flavor</b>: kyungjoon_f;avor
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>uuid</b>: adasdasdasdsad123123
-                                    </div>
-                                </div>
-                            </React.Fragment>
-                            :
-                            <div style={{fontSize: 25, color: 'orange'}}>
-                                No Cluster
-                            </div>
+                        {filteredClusterList.length === 0 &&
+                        <Center style={{fontSize: 20, color: 'orange'}}>
+                            No Cluster
+                        </Center>
                         }
 
                     </div>
@@ -340,7 +303,6 @@ export default function MapForOper(props) {
                             }
                             /*onMouseOver={(e) => {                                e.target.openPopup();                            }}*/ /* onMouseOut={(e) => {                                 //e.target.closePopup();                            }}*/
                             onClick={async () => {
-
                             }}
                         >
                             <Popup

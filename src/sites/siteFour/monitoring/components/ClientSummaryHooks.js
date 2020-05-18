@@ -10,6 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
+import {Empty} from "antd";
 
 type Props = {
     clientStatusList: any,
@@ -149,6 +150,18 @@ export default function ClientSummaryHooks(props) {
                                 </TableRow>
                             )
                         })}
+                        {props.clientStatusList.length === 0 &&
+                        <TableRow
+                            style={{
+                                backgroundColor: '#1e2025',
+                                color: 'grey',
+                                height: 30,
+                            }}
+                        >
+                            <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
+                                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                            </TableCell>
+                        </TableRow>}
                     </TableBody>
 
                 </Table>

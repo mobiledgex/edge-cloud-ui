@@ -46,7 +46,18 @@ import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, Typ
 import {TypeAppInstance} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
-import {getAppLevelUsageList, getClientStatusList, getClusterLevelUsageList, requestShowAppInstClientWS} from "../service/PageMonitoringMetricService";
+import {
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppInstList,
+    getAppLevelUsageList,
+    getClientStatusList,
+    getCloudletList,
+    getCloudletUsageList,
+    getClusterLevelUsageList,
+    getClusterList,
+    requestShowAppInstClientWS
+} from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -493,29 +504,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    /*   promiseList.push(getCloudletList())
-                       promiseList.push(getClusterList())
-                       promiseList.push(getAppInstList())
-                       let newPromiseList = await Promise.all(promiseList);
-                       let cloudletList = newPromiseList[0];
-                       let clusterList = newPromiseList[1];
-                       let appInstList = newPromiseList[2];
-   */
+                    promiseList.push(getCloudletList())
+                    promiseList.push(getClusterList())
+                    promiseList.push(getAppInstList())
+                    let newPromiseList = await Promise.all(promiseList);
+                    let cloudletList = newPromiseList[0];
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
 
                     //todo:fakedata
-                    let cloudletList = require('../temp/cloudletList')
+                    /*let cloudletList = require('../temp/cloudletList')
                     let clusterList = require('../temp/clusterList')
-                    let appInstList = require('../temp/appInstList')
+                    let appInstList = require('../temp/appInstList')*/
 
-
-                    console.log(`clusterList===>`, clusterList);
-
-                    console.log(`appInstList===>`, appInstList);
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
-
                         let clientStatusList = await getClientStatusList(appInstList);
-
                         await this.setState({
                             allClientStatusList: clientStatusList,
                             filteredClientStatusList: clientStatusList,
@@ -541,26 +545,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
 
                     //todo: realdata
-                    /* promiseList2.push(getAllClusterEventLogList(clusterList))
-                     promiseList2.push(getAllAppInstEventLogs());
-                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                     promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
-                     let newPromiseList2 = await Promise.all(promiseList2);
-                     let allClusterEventLogList = newPromiseList2[0];
-                     let allAppInstEventLogList = newPromiseList2[1];
-                     let allClusterUsageList = newPromiseList2[2];
-                     let allCloudletUsageList = newPromiseList2[3];*/
-
+                    promiseList2.push(getAllClusterEventLogList(clusterList))
+                    promiseList2.push(getAllAppInstEventLogs());
+                    promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                    promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
+                    let newPromiseList2 = await Promise.all(promiseList2);
+                    let allClusterEventLogList = newPromiseList2[0];
+                    let allAppInstEventLogList = newPromiseList2[1];
+                    let allClusterUsageList = newPromiseList2[2];
+                    let allCloudletUsageList = newPromiseList2[3];
 
                     //fixme: fakedata
                     //fixme: fakedata
-                    let allClusterEventLogList = []
+                    /*let allClusterEventLogList = []
                     let allAppInstEventLogList = []
                     let allClusterUsageList = require('../temp/clusterUSageList')
-                    let allCloudletUsageList = require('../temp/cloudletUsageList')
-
-
-                    console.log(`clusterList==allClusterUsageList=>`, allClusterUsageList);
+                    let allCloudletUsageList = require('../temp/cloudletUsageList')*/
 
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
@@ -573,8 +573,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
-                    console.log(`loadInitData....cloudletList====>`, cloudletList);
-                    console.log(`loadInitData..allCloudletUsageList====>`, allCloudletUsageList);
 
                     await this.setState({
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 30,
@@ -606,7 +604,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     });
                 } catch (e) {
-                    //  showToast(e.toString())
+                    //showToast(e.toString())
+
                 }
 
             }
@@ -1553,7 +1552,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Fetch Locally Stored Data
                             </div>
                         </AMenu.Item>
-                        {this.state.currentClassification !== CLASSIFICATION.CLOUDLET &&
+                        {/*{this.state.currentClassification !== CLASSIFICATION.CLOUDLET &&
+                        }*/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
@@ -1567,7 +1567,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Add Item
                             </div>
                         </AMenu.Item>
-                        }
+
                         {/*desc:#########################################*/}
                         {/*desc:Reload                                  */}
                         {/*desc:#########################################*/}

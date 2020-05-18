@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 
 export const PageMonitoringStyles = {
-    legendDiv:{
+    legendDiv: {
         flex: .97,
         marginLeft: 10,
         backgroundColor: 'transparent',
@@ -468,6 +468,15 @@ export const Center = styled.div`
   align-items: center;
   align-self: center;
   font-family: Roboto;
+`;
+export const CenterFullWidth = styled.div`
+  justify-content: center;
+  text-align: center;
+  display : flex;
+  align-items: center;
+  align-self: center;
+  font-family: Roboto;
+  width:100%;
 `;
 
 export const CenterMethodCount = styled.div`
