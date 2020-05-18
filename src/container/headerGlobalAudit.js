@@ -184,21 +184,23 @@ class headerGlobalAudit extends React.Component {
     }
 
     onPopupDetail = (rawViewData, requestData, responseData) => {
-        if(this.state.openDetail){
-            this.setState({
-                secondRawViewData:rawViewData,
-                secondRequestData:requestData,
-                secondResponseData:responseData,
-                secondOpenDetail:true
-            })
-        } else {
+        // *********** multi window next version ******************
+
+        // if(this.state.openDetail){
+        //     this.setState({
+        //         secondRawViewData:rawViewData,
+        //         secondRequestData:requestData,
+        //         secondResponseData:responseData,
+        //         secondOpenDetail:true
+        //     })
+        // } else {
             this.setState({
                 rawViewData:rawViewData,
                 requestData:requestData,
                 responseData:responseData,
                 openDetail:true
             })
-        }
+        // }
     }
 
     closeDetail = () => {
@@ -246,14 +248,14 @@ class headerGlobalAudit extends React.Component {
                     open={this.state.openDetail}
                     close={this.closeDetail}
                 />
-                <PopDetailViewer
-                    rawViewData={this.state.secondRawViewData}
-                    requestData={this.state.secondRequestData}
-                    responseData={this.state.secondResponseData}
-                    dimmer={false}
-                    open={this.state.secondOpenDetail}
-                    close={this.secondCloseDetail}
-                />
+                {/*<PopDetailViewer // ********* multi window next version ************/}
+                {/*    rawViewData={this.state.secondRawViewData}*/}
+                {/*    requestData={this.state.secondRequestData}*/}
+                {/*    responseData={this.state.secondResponseData}*/}
+                {/*    dimmer={false}*/}
+                {/*    open={this.state.secondOpenDetail}*/}
+                {/*    close={this.secondCloseDetail}*/}
+                {/*/>*/}
             </div >
         )
     }
