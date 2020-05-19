@@ -5,7 +5,7 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {lineGraphOptions} from "../../../../shared/Constants";
-import {makeGradientColorList} from "../service/PageMonitoringService";
+import {makeGradientColorList} from "../service/PageDevOperMonitoringService";
 
 type Props = {
     modalIsOpen: boolean,

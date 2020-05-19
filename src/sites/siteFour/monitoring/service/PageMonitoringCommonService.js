@@ -9,7 +9,7 @@ import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import {notification} from "antd";
-import {makeGradientColor} from "./PageMonitoringService";
+import {makeGradientColor} from "./PageDevOperMonitoringService";
 import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "./PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";

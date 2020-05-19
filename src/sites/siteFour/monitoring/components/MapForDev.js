@@ -17,7 +17,7 @@ import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WH
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
+import {listGroupByKey, reduceString} from "../service/PageDevOperMonitoringService";
 import MomentTimezone from "moment-timezone";
 
 const FontAwesomeIcon = require('react-fontawesome')

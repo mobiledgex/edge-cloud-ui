@@ -5,7 +5,7 @@ import {Line} from 'react-chartjs-2';
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../service/PageMonitoringCommonService";
-import {makeGradientColorOne} from "../service/PageMonitoringService";
+import {makeGradientColorOne} from "../service/PageDevOperMonitoringService";
 import {Dropdown} from "semantic-ui-react";
 import {HARDWARE_OPTIONS_FOR_APPINST} from "../../../../shared/Constants";
 

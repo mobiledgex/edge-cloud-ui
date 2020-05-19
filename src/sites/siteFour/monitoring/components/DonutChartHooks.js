@@ -3,11 +3,13 @@ import '../common/PageMonitoringStyles.css'
 import {Progress} from "antd";
 import {Center} from "../common/PageMonitoringStyles";
 import {CLASSIFICATION} from "../../../../shared/Constants";
-import {changeClassficationTxt} from "../service/PageMonitoringService";
+import {changeClassficationTxt} from "../service/PageDevOperMonitoringService";
 
 export default function DonutChartHooks(props) {
     const [count, setCount] = useState(-1);
     const [usageOne: any, setUsageOne] = useState(-1);
+    const hwMarginTop = 15;
+    const hwFontSize = 15;
 
     useEffect(() => {
 
@@ -58,7 +60,7 @@ export default function DonutChartHooks(props) {
                                     return usageOne.usedVCpuCount + "/" + usageOne.maxVCpuCount;
                                 }}
                             />
-                            <div style={{marginTop: 5}}>
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
                                 vCPU
                             </div>
                         </div>
@@ -72,7 +74,7 @@ export default function DonutChartHooks(props) {
                                 percent={Math.round(usageOne.usedMemUsage / usageOne.maxMemUsage * 100)}
                                 strokeWidth={10}
                             />
-                            <div style={{marginTop: 5}}>
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
                                 MEM
                             </div>
                         </div>
@@ -89,7 +91,7 @@ export default function DonutChartHooks(props) {
                                     return usageOne.usedDiskUsage + "/" + usageOne.maxDiskUsage;
                                 }}
                             />
-                            <div style={{marginTop: 5}}>
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
                                 DISK
                             </div>
                         </div>
@@ -98,7 +100,7 @@ export default function DonutChartHooks(props) {
                         <Center style={{height: height,}}>
                             <div>
                                 <Progress
-                                    strokeColor={'red'}
+                                    strokeColor={'skyblue'}
                                     type="circle"
                                     width={100}
                                     trailColor='#262626'
@@ -107,35 +109,35 @@ export default function DonutChartHooks(props) {
                                     strokeWidth={10}
 
                                 />
-                                <div style={{marginTop: 5}}>
+                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
                                     CPU
                                 </div>
                             </div>
                             <div style={{width: 15}}/>
                             <div>
                                 <Progress
-                                    strokeColor='blue'
+                                    strokeColor='orange'
                                     type="circle"
                                     width={100}
                                     trailColor='#262626'
                                     percent={Math.round(usageOne.sumMemUsage)}
                                     strokeWidth={10}
                                 />
-                                <div style={{marginTop: 5}}>
+                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
                                     MEM
                                 </div>
                             </div>
                             <div style={{width: 15}}/>
                             <div>
                                 <Progress
-                                    strokeColor='green'
+                                    strokeColor='pink'
                                     type="circle"
                                     width={100}
                                     trailColor='#262626'
                                     percent={Math.round(usageOne.sumDiskUsage)}
                                     strokeWidth={10}
                                 />
-                                <div style={{marginTop: 5}}>
+                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
                                     DISK
                                 </div>
                             </div>

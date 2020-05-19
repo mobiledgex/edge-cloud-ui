@@ -13,7 +13,7 @@ import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
 import {renderCircleLoaderForMap, renderWifiLoader} from "../service/PageMonitoringCommonService";
-import {makeLineChartOptions} from "../service/PageMonitoringService";
+import {makeLineChartOptions} from "../service/PageDevOperMonitoringService";
 
 const FA = require('react-fontawesome')
 const mapStateToProps = (state) => {

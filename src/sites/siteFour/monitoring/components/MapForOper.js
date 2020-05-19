@@ -4,7 +4,7 @@ import Ripple from "react-ripples";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
 import type {TypeCloudlet, TypeCluster} from "../../../../shared/Types";
-import {listGroupByKey} from "../service/PageMonitoringService";
+import {listGroupByKey} from "../service/PageDevOperMonitoringService";
 import Control from "react-leaflet-control";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";

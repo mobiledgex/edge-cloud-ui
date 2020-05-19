@@ -48,28 +48,42 @@ import {
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
+    CLUSTER_OPER_HW_MAPPER_KEY,
+    CLUSTER_OPER_LAYOUT_KEY,
     defaultHwMapperListForCluster,
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
     defaultLayoutForCluster,
+    defaultLayoutForClusterForOper,
     defaultLayoutMapperForAppInst,
-    defaultLayoutMapperForCloudlet
+    defaultLayoutMapperForCloudlet,
+    defaultLayoutMapperForClusterForOper
 } from "../common/PageMonitoringLayoutProps";
 
 
 export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
     try {
-        reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
+
         reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
         reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
+        reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
         reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
+        //////////////////////////////////
+        reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
+        reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
+        reactLocalStorage.remove(getUserId() + CLUSTER_OPER_LAYOUT_KEY)
+        reactLocalStorage.remove(getUserId() + CLUSTER_OPER_HW_MAPPER_KEY)
 
         await _this.setState({
             layoutForCluster: [],
             layoutMapperForCluster: [],
             layoutForAppInst: [],
+            layoutMapperForAppInst: [],
+            layoutForCloudlet: [],
+            layoutMapperForCloudlet: [],
+            layoutForClusterForOper: [],
+            layoutMapperForClusterForOper: [],
+
         });
 
         await _this.setState({
@@ -79,6 +93,9 @@ export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
             layoutMapperForAppInst: defaultLayoutMapperForAppInst,
             layoutForCloudlet: defaultLayoutForCloudlet,
             layoutMapperForCloudlet: defaultLayoutMapperForCloudlet,
+            layoutForClusterForOper: defaultLayoutForClusterForOper,
+            layoutMapperForClusterForOper: defaultLayoutMapperForClusterForOper,
+
         })
 
     } catch (e) {
@@ -1164,7 +1181,10 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
 
 export const convertToClassification = (pClassification) => {
     if (pClassification === CLASSIFICATION.APPINST) {
-        return "App Inst"
+        return CLASSIFICATION.APP_INST
+    }
+    if (pClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+        return CLASSIFICATION.CLUSTER
     } else {
         return pClassification.toString().replace("_", " ")
     }

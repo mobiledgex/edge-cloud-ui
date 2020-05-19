@@ -24,7 +24,7 @@ import {
     reduceLegendClusterCloudletName,
     reduceString,
     revertToDefaultLayout,
-} from "../service/PageMonitoringService";
+} from "../service/PageDevOperMonitoringService";
 import {
     ADD_ITEM_LIST,
     APP_INST_MATRIX_HW_USAGE_INDEX,
@@ -1150,7 +1150,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleAppInstDropdown={this.handleOnChangeAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.DONUTS) {
+                }else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+                    return this.state.loading ? renderPlaceHolderLoader() :
+                        <ClusterEventLogListHook
+                            parent={this}
+                            eventLogList={this.state.filteredClusterEventLogList}
+                        />
+                }
+
+                else if (graphType.toUpperCase() === GRID_ITEM_TYPE.DONUTS) {
                     return this.state.loading ? renderPlaceHolderLoader() :
                         <DonutChartHooks
                             currentClassification={this.state.currentClassification}
