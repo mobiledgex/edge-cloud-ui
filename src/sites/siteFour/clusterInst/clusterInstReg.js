@@ -140,10 +140,7 @@ class ClusterInstReg extends React.Component {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? 1 : undefined
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
-            else if (form.field === fields.numberOfNodes) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
-            }
-            else if (form.field === fields.sharedVolumeSize) {
+            else if (form.field === fields.numberOfNodes || form.field === fields.sharedVolumeSize) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
         }
