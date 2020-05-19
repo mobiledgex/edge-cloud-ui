@@ -716,7 +716,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
-                    <Toolbar style={{ marginRight:0}}>
+                    <Toolbar style={{paddingRight:0}}>
                         <label className='content_title_label'>Audit Logs</label>
                         <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
