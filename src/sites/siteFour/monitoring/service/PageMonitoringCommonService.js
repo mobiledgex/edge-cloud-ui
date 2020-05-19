@@ -103,7 +103,7 @@ export const renderPlaceHolderLoader = (type = '') => {
         return (
             <div style={{marginTop: 0,}}>
                 <SkeletonTheme color="#22252C" highlightColor="#444">
-                    <Skeleton count={5} height={38}/>
+                    <Skeleton count={4} height={38}/>
                 </SkeletonTheme>
             </div>
         )

@@ -1856,7 +1856,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         await this.setState({
                             bubbleChartData: bubbleChartData,
-                            currentCluster: pClusterOne,
+                            currentCluster: selectedCluster.trim(),
                             currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_OPER,
                             dropdownRequestLoading: false,
                             filteredClusterUsageList: filteredClusterUsageList,
@@ -2096,10 +2096,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     Cluster</div>}
                                 listHeight={512}
                                 style={{width: 250, maxHeight: '512px !important'}}
-                                disabled={this.state.currentCloudLet === undefined || this.state.filteredClusterList.length === 0}
+                                disabled={this.state.currentCloudLet === undefined && this.state.filteredClusterList.length === 0}
                                 value={this.state.currentCluster}
                                 placeholder={'Select Cluster'}
                                 onChange={async (value) => {
+
                                     this.handleOnChangeClusterDropdown(value)
                                     this.clusterSelectForOper.blur();
                                 }}
