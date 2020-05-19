@@ -1373,7 +1373,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             onLayoutChange={async (layout) => {
                                 this.setState({
-                                    layoutForCluster: layout,
+                                    layoutForCloudlet: layout,
                                 }, async () => {
                                     await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCloudlet);
                                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, layout)
