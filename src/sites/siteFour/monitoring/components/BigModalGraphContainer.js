@@ -157,7 +157,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {this.props.isLoading && renderCircleLoaderForMap()}
                                     </div>
                                 </div>
-                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?
                                     <div style={{display: 'flex'}}>
                                         {this.renderPrevBtn()}
                                         <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
@@ -225,7 +225,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div>
                                 <Line
-                                    //redraw={this.state.redraw ? true : null}
                                     width={window.innerWidth * 0.9}
                                     ref={(reference) => this.lineChart = reference}
                                     height={window.innerHeight * 0.8}

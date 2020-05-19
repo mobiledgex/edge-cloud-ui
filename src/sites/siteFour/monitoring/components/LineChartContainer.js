@@ -87,6 +87,12 @@ export default class LineChartContainer extends React.Component<Props, State> {
             return 'Network Recv'
         } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
             return 'Network Sent'
+        } else if (title.includes(HARDWARE_TYPE.VCPU_USED)) {
+            return 'vCPU Utilization'
+        } else if (title.includes(HARDWARE_TYPE.MEM_USED)) {
+            return 'Mem Utilization'
+        } else if (title.includes(HARDWARE_TYPE.DISK_USED)) {
+            return 'Disk Utilization'
         } else {
             return title + " Utilization"
         }

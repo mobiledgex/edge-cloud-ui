@@ -1,6 +1,6 @@
 [
     {
-        "uuid": "79ec0370-bb0d-4667-ba76-81c3d4b0229a",
+        "uuid": "03b571c7-7f55-4d20-849a-e1bf83851b35",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MEXPrometheusAppName",
@@ -43,7 +43,55 @@
         "Revision": "2020-05-16T050643"
     },
     {
-        "uuid": "44c7a636-a959-4aa9-8c41-e1c13ccee847",
+        "uuid": "76c4158c-ce24-4a31-a7be-3d9566551dbd",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MEXPrometheusAppName",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "autoclustermobiledgexsdkdemo20",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "autoclustermobiledgexsdkdemo20.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 9090,
+                "public_port": 9090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 4,
+        "Error": [
+            "Create App Inst failed: error deploying helm chart, KUBECONFIG=autoclustermobiledgexsdkdemo20.TDG.kubeconfig helm install stable/prometheus-operator --version \"7.1.1\" --name mexprometheusappnamev10 -f mexprometheusappname0, 2020/05/18 05:06:22 Warning: Merging destination map for chart 'prometheus-node-exporter'. Overwriting table item 'extraArgs', with non table value: [--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/) --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$]\n2020/05/18 05:06:22 Warning: Merging destination map for chart 'prometheus-node-exporter'. Overwriting table item 'extraArgs', with non table value: [--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/) --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$]\nError: customresourcedefinitions.apiextensions.k8s.io \"alertmanagers.monitoring.coreos.com\" already exists, Process exited with status 1"
+        ],
+        "Runtime": {},
+        "Created": "seconds : 1589778362",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {
+            "task_number": 2,
+            "task_name": "Creating Helm App"
+        },
+        "Revision": "2020-05-16T050643"
+    },
+    {
+        "uuid": "da5020a7-e9b4-4618-bbeb-75cd1bff1a2a",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MobiledgeX SDK Demo",

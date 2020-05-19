@@ -786,8 +786,6 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             },//scales
             onClick: function (c, i) {
                 if (i.length > 0) {
-
-
                 }
 
             }
@@ -1054,8 +1052,10 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
  * @param lengthLimit
  * @returns {string}
  */
-export const reduceString = (str: string, lengthLimit: number) => {
-    if (str.length > lengthLimit) {
+export const reduceString = (str: string, lengthLimit: number, legendItemCount) => {
+    if (legendItemCount === 1) {
+        return str;
+    } else if (str.length > lengthLimit) {
         return str.substring(0, lengthLimit) + "..";
     } else {
         return str;

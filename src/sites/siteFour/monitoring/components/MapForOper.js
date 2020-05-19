@@ -232,7 +232,7 @@ export default function MapForOper(props) {
                                         <Icon name='th'/> {item.ClusterName}
                                     </div>
                                     <div style={Styles.lable001}>
-                                        <b>Deployment</b>:{item.Deployment}
+                                        <b>Deployment</b>: <span style={{color: 'green', fontWeight: 'bold', fontSize: 15}}>{item.Deployment}</span>
                                     </div>
                                     <div style={Styles.lable001}>
                                         <b>Flavor</b>: {item.Flavor}

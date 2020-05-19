@@ -440,8 +440,8 @@ export const defaultLayoutXYPosForAppInst = [
 
 export const CLOUDLET_LAYOUT_KEY = "_layout_cloudlet";
 export const CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_cloudlet";
-export const CLUSTER_OPER_LAYOUT_KEY = "_layout_cluster_oper";
-export const CLUSTER_OPER_HW_MAPPER_KEY = "_layout_mapper_cluster_oper";
+export const CLUSTER_FOR_OPER_LAYOUT_KEY = "_layout_cluster_oper";
+export const CLUSTER_FOR_OPER_HW_MAPPER_KEY = "_layout_mapper_cluster_oper";
 
 
 export const CLUSTER_LAYOUT_KEY = "_layout";

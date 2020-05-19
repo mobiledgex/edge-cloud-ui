@@ -1,11 +1,11 @@
 [
     {
-        "uuid": "3104db6e-7038-43ed-b965-d7c508392b9e",
+        "uuid": "721c721e-2441-4294-8ca4-247d167b1ab3",
         "Region": "EU",
-        "ClusterName": "wonho-cluster",
-        "OrganizationName": "MobiledgeX",
-        "Operator": "mex",
-        "Cloudlet": "hackathon-wonhopark",
+        "ClusterName": "BicContributorTest",
+        "OrganizationName": "WonhoOrg1",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-frankfurt-cloudlet",
         "Flavor": "m4.small",
         "IpAccess": 3,
         "CloudletLocation": "-",
@@ -13,7 +13,7 @@
         "Progress": "",
         "Status": {},
         "Reservable": "NO",
-        "Deployment": "kubernetes",
+        "Deployment": "docker",
         "Edit": [
             "Region",
             "ClusterName",
@@ -28,7 +28,7 @@
         ]
     },
     {
-        "uuid": "1704e72e-06a5-441b-91bb-3a23580358cc",
+        "uuid": "1ad952d4-2e64-4643-8c6f-9f97054e4ecf",
         "Region": "EU",
         "ClusterName": "autoclustermobiledgexsdkdemo",
         "OrganizationName": "MobiledgeX",
@@ -56,7 +56,7 @@
         ]
     },
     {
-        "uuid": "6e377f6b-d61b-477b-a0d9-c980f9be4143",
+        "uuid": "a93c3217-816e-4684-8b9b-3fce6d4fd204",
         "Region": "EU",
         "ClusterName": "hackathon-venky-clust",
         "OrganizationName": "MobiledgeX",
@@ -84,7 +84,67 @@
         ]
     },
     {
-        "uuid": "e316d649-675a-4b96-9866-92ab0027432e",
+        "uuid": "a4d7cbcc-9932-431f-aee3-b31708e7348b",
+        "Region": "EU",
+        "ClusterName": "wonho-cluster",
+        "OrganizationName": "MobiledgeX",
+        "Operator": "mex",
+        "Cloudlet": "hackathon-wonhopark",
+        "Flavor": "m4.small",
+        "IpAccess": 3,
+        "CloudletLocation": "-",
+        "State": 5,
+        "Progress": "",
+        "Status": {},
+        "Reservable": "NO",
+        "Deployment": "kubernetes",
+        "Edit": [
+            "Region",
+            "ClusterName",
+            "OrganizationName",
+            "Operator",
+            "Cloudlet",
+            "Flavor",
+            "IpAccess",
+            "Number_of_Master",
+            "Number_of_Node",
+            "CloudletLocation"
+        ]
+    },
+    {
+        "uuid": "92ae500c-0041-4ffe-b377-35c88c207820",
+        "Region": "EU",
+        "ClusterName": "autoclustermobiledgexsdkdemo",
+        "OrganizationName": "MobiledgeX",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-berlin-cloudlet",
+        "Flavor": "m4.medium",
+        "IpAccess": 1,
+        "CloudletLocation": "-",
+        "State": 4,
+        "Progress": "",
+        "Status": {
+            "task_number": 1,
+            "task_name": "Creating Heat Stack for mexplat-stage-berlin-cloudlet-autoclustermobiledgexsdkdemo-mobiledgex",
+            "step_name": "Heat Stack Status: CREATE_FAILED"
+        },
+        "Reservable": "NO",
+        "Deployment": "kubernetes",
+        "Edit": [
+            "Region",
+            "ClusterName",
+            "OrganizationName",
+            "Operator",
+            "Cloudlet",
+            "Flavor",
+            "IpAccess",
+            "Number_of_Master",
+            "Number_of_Node",
+            "CloudletLocation"
+        ]
+    },
+    {
+        "uuid": "b175ee94-10e2-45ab-bc03-2a159d45b440",
         "Region": "US",
         "ClusterName": "testcluster",
         "OrganizationName": "MobiledgeX",

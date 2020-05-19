@@ -94,7 +94,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     notification.success({
                         placement: 'bottomLeft',
                         duration: 3,
-                        message: `${this.state.currentItemType} [${currentHwTypeList}] items added`,
+                        description: `${this.state.currentItemType} [${currentHwTypeList}] items added`,
                     });
                 }
 
@@ -105,7 +105,8 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 notification.success({
                     placement: 'bottomLeft',
                     duration: 3,
-                    message: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
+                    description: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
+                    style: {fontSize: 9}
                 });
             }
 
@@ -122,7 +123,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
         let hardwareDropdownList = []
         let hwDropdownChildren = [];
-        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
             hardwareDropdownList = this.props.parent.state.hwListForCluster
         } else {
             hardwareDropdownList = this.props.parent.state.hwListForAppInst

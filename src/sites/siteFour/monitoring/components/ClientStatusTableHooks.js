@@ -10,7 +10,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
-import {Empty} from "antd";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
@@ -160,9 +159,9 @@ export default function ClientStatusTableHooks(props) {
                             }}
                         >
                             <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
-                                {!props.parent.state.loading ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                                {!props.parent.state.loading
+                                    ? <div style={{fontSize: 28, color: 'orange'}}> No Data</div>
                                     : renderPlaceHolderLoader('sk')
-
                                 }
                             </TableCell>
                         </TableRow>}
