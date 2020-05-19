@@ -135,17 +135,18 @@ export const defaultLayoutMapperForCloudlet = [
 ];
 
 
-/*desc:#####################################
+/*desc:#########################################################################################################################################
 todo:  Cluster ClusterClusterClusterClusterClusterClusterClusterClusterClusterClusterCluster LAYOUT, MAPPER FOR OPERTATOR
-desc:#######################################*/
+desc:###########################################################################################################################################*/
 
 export const defaultLayoutForClusterForOper = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
-    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 0, y: 3, w: 4, h: 1, "add": false},//mem
+    {i: '7', x: 1, y: 3, w: 4, h: 1, "add": false},//disk
 ];
 
 
@@ -183,9 +184,15 @@ export const defaultLayoutMapperForClusterForOper = [
     },
     {
         id: '6',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST,
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
+    {
+        id: '7',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+
 
 ];
 

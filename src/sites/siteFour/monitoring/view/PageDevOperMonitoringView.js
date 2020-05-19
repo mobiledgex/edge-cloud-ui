@@ -23,7 +23,6 @@ import {
     makeLineChartDataForBigModal,
     reduceLegendClusterCloudletName,
     reduceString,
-    revertToDefaultLayout,
 } from "../service/PageDevOperMonitoringService";
 import {
     ADD_ITEM_LIST,
@@ -1204,111 +1203,116 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             _____renderGridLayoutForClusterDevOper() {
+                try {
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                        return (
+                            <ResponsiveReactGridLayout
+                                isResizable={true}
+                                draggableHandle=".draggable"
+                                verticalCompact={true}
+                                compactType={'vertical'}
+                                preventCollision={true}
+                                isDraggable={true}
+                                autoSize={true}
+                                style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
+                                className='layout page_monitoring_layout_dev_oper'
+                                cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
+                                layout={this.state.layoutForCluster}
+                                rowHeight={this.gridItemHeight}
+                                onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                                    let width = newItem.w;
+                                    this.setState({
+                                        isResizeComplete: !this.state.isResizeComplete,
+                                        currentWidgetWidth: width,
+                                    })
+                                }}
+                                onLayoutChange={async (layout) => {
+                                    this.setState({
+                                        layoutForCluster: layout,
+                                    }, async () => {
+                                        await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
+                                        reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, layout)
+                                    });
 
-                if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                    return (
-                        <ResponsiveReactGridLayout
-                            isResizable={true}
-                            draggableHandle=".draggable"
-                            verticalCompact={true}
-                            compactType={'vertical'}
-                            preventCollision={true}
-                            isDraggable={true}
-                            autoSize={true}
-                            style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
-                            className='layout page_monitoring_layout_dev_oper'
-                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutForCluster}
-                            rowHeight={this.gridItemHeight}
-                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                let width = newItem.w;
-                                this.setState({
-                                    isResizeComplete: !this.state.isResizeComplete,
-                                    currentWidgetWidth: width,
-                                })
-                            }}
-                            onLayoutChange={async (layout) => {
-                                this.setState({
-                                    layoutForCluster: layout,
-                                }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
-                                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, layout)
-                                });
+                                }}
+                                {...this.props}
+                            >
+                                {this.state.layoutForCluster.map((item, loopIndex) => {
 
-                            }}
-                            {...this.props}
-                        >
-                            {this.state.layoutForCluster.map((item, loopIndex) => {
+                                    const uniqueIndex = item.i;
+                                    let hwType = HARDWARE_TYPE.CPU
+                                    let graphType = GRID_ITEM_TYPE.LINE;
+                                    if (!isEmpty(this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex))) {
+                                        hwType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).hwType
+                                        graphType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).graphType
+                                        graphType = graphType.toUpperCase()
+                                    }
+                                    return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                                })}
 
-                                const uniqueIndex = item.i;
-                                let hwType = HARDWARE_TYPE.CPU
-                                let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).graphType
-                                    graphType = graphType.toUpperCase()
-                                }
-                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                            })}
+                            </ResponsiveReactGridLayout>
 
-                        </ResponsiveReactGridLayout>
+                        )
+                    } else {
 
-                    )
-                } else {//todo; operator
+                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
+                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
+                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
+                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
+                        return (
+                            <ResponsiveReactGridLayout
+                                isResizable={true}
+                                draggableHandle=".draggable"
+                                verticalCompact={true}
+                                compactType={'vertical'}
+                                preventCollision={true}
+                                isDraggable={true}
+                                autoSize={true}
+                                style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
+                                className='layout page_monitoring_layout_dev_oper'
+                                cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
+                                layout={this.state.layoutForClusterForOper}
+                                rowHeight={this.gridItemHeight}
+                                onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                                    let width = newItem.w;
+                                    this.setState({
+                                        isResizeComplete: !this.state.isResizeComplete,
+                                        currentWidgetWidth: width,
+                                    })
+                                }}
+                                onLayoutChange={async (layout) => {
+                                    this.setState({
+                                        layoutForCluster: layout,
+                                    }, async () => {
+                                        await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterForOper);
+                                        reactLocalStorage.setObject(getUserId() + CLUSTER_OPER_LAYOUT_KEY, layout)
+                                    });
 
-                    return (
-                        <ResponsiveReactGridLayout
-                            isResizable={true}
-                            draggableHandle=".draggable"
-                            verticalCompact={true}
-                            compactType={'vertical'}
-                            preventCollision={true}
-                            isDraggable={true}
-                            autoSize={true}
-                            style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
-                            className='layout page_monitoring_layout_dev_oper'
-                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutForClusterForOper}
-                            rowHeight={this.gridItemHeight}
-                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                let width = newItem.w;
-                                this.setState({
-                                    isResizeComplete: !this.state.isResizeComplete,
-                                    currentWidgetWidth: width,
-                                })
-                            }}
-                            onLayoutChange={async (layout) => {
-                                this.setState({
-                                    layoutForCluster: layout,
-                                }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterForOper);
-                                    reactLocalStorage.setObject(getUserId() + CLUSTER_OPER_LAYOUT_KEY, layout)
-                                });
+                                }}
+                                {...this.props}
+                            >
+                                {this.state.layoutForClusterForOper.map((item, loopIndex) => {
+                                    const uniqueIndex = item.i;
+                                    let hwType = HARDWARE_TYPE.CPU
+                                    let graphType = GRID_ITEM_TYPE.LINE;
+                                    if (!isEmpty(this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex))) {
+                                        hwType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).hwType
+                                        graphType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).graphType
+                                        graphType = graphType.toUpperCase()
+                                    }
 
-                            }}
-                            {...this.props}
-                        >
-                            {this.state.layoutForClusterForOper.map((item, loopIndex) => {
-                                const uniqueIndex = item.i;
-                                let hwType = HARDWARE_TYPE.CPU
-                                let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).graphType
-                                    graphType = graphType.toUpperCase()
-                                }
+                                    console.log(`item==${hwType}=>`, item);
 
-                                console.log(`item==${hwType}=>`, item);
+                                    return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                                })}
 
-                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                            })}
+                            </ResponsiveReactGridLayout>
+                        )
 
-                        </ResponsiveReactGridLayout>
-                    )
-
+                    }
+                } catch (e) {
+                    showToast(e.toString())
                 }
-
-
             }
 
 
@@ -1405,6 +1409,46 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            revertToDefaultLayout = async () => {
+                try {
+                    reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
+                    reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
+                    reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
+                    reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
+                    reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
+                    reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
+                    reactLocalStorage.remove(getUserId() + CLUSTER_OPER_LAYOUT_KEY)
+                    reactLocalStorage.remove(getUserId() + CLUSTER_OPER_HW_MAPPER_KEY)
+
+                    await _this.setState({
+                        layoutForCluster: [],
+                        layoutMapperForCluster: [],
+                        layoutForAppInst: [],
+                        layoutMapperForAppInst: [],
+                        layoutForCloudlet: [],
+                        layoutMapperForCloudlet: [],
+                        layoutForClusterForOper: [],
+                        layoutMapperForClusterForOper: [],
+
+                    });
+
+                    await _this.setState({
+                        layoutForCluster: defaultLayoutForCluster,
+                        layoutMapperForCluster: defaultHwMapperListForCluster,
+                        layoutForAppInst: defaultLayoutForAppInst,
+                        layoutMapperForAppInst: defaultLayoutMapperForAppInst,
+                        layoutForCloudlet: defaultLayoutForCloudlet,
+                        layoutMapperForCloudlet: defaultLayoutMapperForCloudlet,
+                        layoutForClusterForOper: defaultLayoutForClusterForOper,
+                        layoutMapperForClusterForOper: defaultLayoutMapperForClusterForOper,
+
+                    })
+
+                } catch (e) {
+                    showToast(e.toString())
+                }
+            }
+
 
             makeActionMenuListItems = () => {
                 return (
@@ -1470,7 +1514,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={async () => {
-                                        await revertToDefaultLayout(this);
+                                        this.revertToDefaultLayout(this);
                                     }}
                         >
                             <MaterialIcon icon={'grid_on'} color={'white'}/>

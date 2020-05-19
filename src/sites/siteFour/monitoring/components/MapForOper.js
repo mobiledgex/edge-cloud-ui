@@ -52,8 +52,8 @@ const Styles = {
 export default function MapForOper(props) {
     const mapRef = useRef(null);
     const [cloudletObjects, setCloudletObjects] = useState([]);
-    const [locList, setLocList] = useState([]);
     //const [newCloudletList, setCloudletList] = useState([]);
+    const [locList, setLocList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)

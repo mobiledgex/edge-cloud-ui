@@ -41,67 +41,7 @@ import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUti
 import {renderUsageLabelByType} from "./PageAdmMonitoringService";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
-import {
-    APPINST_HW_MAPPER_KEY,
-    APPINST_LAYOUT_KEY,
-    CLOUDLET_HW_MAPPER_KEY,
-    CLOUDLET_LAYOUT_KEY,
-    CLUSTER_HW_MAPPER_KEY,
-    CLUSTER_LAYOUT_KEY,
-    CLUSTER_OPER_HW_MAPPER_KEY,
-    CLUSTER_OPER_LAYOUT_KEY,
-    defaultHwMapperListForCluster,
-    defaultLayoutForAppInst,
-    defaultLayoutForCloudlet,
-    defaultLayoutForCluster,
-    defaultLayoutForClusterForOper,
-    defaultLayoutMapperForAppInst,
-    defaultLayoutMapperForCloudlet,
-    defaultLayoutMapperForClusterForOper
-} from "../view/PageMonitoringLayoutProps";
 
-
-export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
-    try {
-
-        reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
-        reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
-        //////////////////////////////////
-        reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
-        reactLocalStorage.remove(getUserId() + CLUSTER_OPER_LAYOUT_KEY)
-        reactLocalStorage.remove(getUserId() + CLUSTER_OPER_HW_MAPPER_KEY)
-
-        await _this.setState({
-            layoutForCluster: [],
-            layoutMapperForCluster: [],
-            layoutForAppInst: [],
-            layoutMapperForAppInst: [],
-            layoutForCloudlet: [],
-            layoutMapperForCloudlet: [],
-            layoutForClusterForOper: [],
-            layoutMapperForClusterForOper: [],
-
-        });
-
-        await _this.setState({
-            layoutForCluster: defaultLayoutForCluster,
-            layoutMapperForCluster: defaultHwMapperListForCluster,
-            layoutForAppInst: defaultLayoutForAppInst,
-            layoutMapperForAppInst: defaultLayoutMapperForAppInst,
-            layoutForCloudlet: defaultLayoutForCloudlet,
-            layoutMapperForCloudlet: defaultLayoutMapperForCloudlet,
-            layoutForClusterForOper: defaultLayoutForClusterForOper,
-            layoutMapperForClusterForOper: defaultLayoutMapperForClusterForOper,
-
-        })
-
-    } catch (e) {
-        //showToast(e.toString())
-    }
-}
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
