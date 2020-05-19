@@ -2,21 +2,23 @@ import React, {useEffect, useState} from 'react';
 import '../common/PageMonitoringStyles.css'
 import {Progress} from "antd";
 import {Center} from "../common/PageMonitoringStyles";
-import type {TypeCloudletUsage} from "../../../../shared/Types";
+import {CLASSIFICATION} from "../../../../shared/Constants";
 
 export default function DonutChartHooks(props) {
-    const [cloudletCount, setCloudletCount] = useState(-1);
-    const [cloudletUsageOne: TypeCloudletUsage, setCloudletUsageOne] = useState(-1);
+    const [count, setCount] = useState(-1);
+    const [usageOne: any, setUsageOne] = useState(-1);
 
     useEffect(() => {
-        if (props.filteredCloudletUsageList !== undefined && props.filteredCloudletUsageList.length === 1) {
-            setCloudletCount(props.filteredCloudletUsageList.length)
-            setCloudletUsageOne(props.filteredCloudletUsageList[0])
+
+        console.log(`filteredUsageList===>`, props.filteredUsageList);
+        if (props.filteredUsageList !== undefined && props.filteredUsageList.length === 1) {
+            setCount(props.filteredUsageList.length)
+            setUsageOne(props.filteredUsageList[0])
         } else {
-            setCloudletCount(-1);
+            setCount(-1);
         }
 
-    }, [props.filteredCloudletUsageList]);
+    }, [props.filteredUsageList]);
 
     const height = 200;
 
@@ -39,7 +41,7 @@ export default function DonutChartHooks(props) {
 
             </div>
             <div style={{backgroundColor: 'transparent', height: '100%'}}>
-                {cloudletCount === 1 ?
+                {count === 1 && props.currentClassification === CLASSIFICATION.CLOUDLET ?
                     <Center style={{height: height,}}>
                         <div>
                             <Progress
@@ -48,13 +50,10 @@ export default function DonutChartHooks(props) {
                                 width={100}
                                 trailColor='#262626'
                                 style={{fontSize: 10}}
-                                percent={cloudletUsageOne.usedVCpuCount / cloudletUsageOne.maxVCpuCount * 100}
+                                percent={usageOne.usedVCpuCount / usageOne.maxVCpuCount * 100}
                                 strokeWidth={10}
                                 format={(percent, successPercent) => {
-
-                                    console.log(`format==1==>`, percent);
-                                    console.log(`format==2==>`, successPercent);
-                                    return cloudletUsageOne.usedVCpuCount + "/" + cloudletUsageOne.maxVCpuCount;
+                                    return usageOne.usedVCpuCount + "/" + usageOne.maxVCpuCount;
                                 }}
                             />
                             <div style={{marginTop: 5}}>
@@ -68,7 +67,7 @@ export default function DonutChartHooks(props) {
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
-                                percent={Math.ceil(cloudletUsageOne.usedMemUsage / cloudletUsageOne.maxMemUsage * 100)}
+                                percent={Math.round(usageOne.usedMemUsage / usageOne.maxMemUsage * 100)}
                                 strokeWidth={10}
                             />
                             <div style={{marginTop: 5}}>
@@ -82,13 +81,10 @@ export default function DonutChartHooks(props) {
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
-                                percent={Math.ceil((cloudletUsageOne.usedDiskUsage / cloudletUsageOne.maxDiskUsage) * 100)}
+                                percent={Math.ceil((usageOne.usedDiskUsage / usageOne.maxDiskUsage) * 100)}
                                 strokeWidth={10}
                                 format={(percent, successPercent) => {
-
-                                    console.log(`format==1==>`, percent);
-                                    console.log(`format==2==>`, successPercent);
-                                    return cloudletUsageOne.usedDiskUsage + "/" + cloudletUsageOne.maxDiskUsage;
+                                    return usageOne.usedDiskUsage + "/" + usageOne.maxDiskUsage;
                                 }}
                             />
                             <div style={{marginTop: 5}}>
@@ -96,24 +92,70 @@ export default function DonutChartHooks(props) {
                             </div>
                         </div>
                     </Center>
-                    :
-                    <Center style={{
-                        fontSize: 22,
-                        backgroundColor: 'rgba(157,255,255,.02)',
-                        height: height,
-                        flexDirection: 'column'
-                    }}>
-                        <div>
+                    : count === 1 && props.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ? //@DESC: CLUSTER LEVEL FOR OPER
+                        <Center style={{height: height,}}>
                             <div>
-                                No Available
+                                <Progress
+                                    strokeColor={'red'}
+                                    type="circle"
+                                    width={100}
+                                    trailColor='#262626'
+                                    style={{fontSize: 10}}
+                                    percent={Math.round(usageOne.sumCpuUsage)}
+                                    strokeWidth={10}
+
+                                />
+                                <div style={{marginTop: 5}}>
+                                    CPU
+                                </div>
                             </div>
-                            <div style={{fontSize: 12}}>
-                                (It is shown only in one specific cloudlet)
+                            <div style={{width: 15}}/>
+                            <div>
+                                <Progress
+                                    strokeColor='blue'
+                                    type="circle"
+                                    width={100}
+                                    trailColor='#262626'
+                                    percent={Math.round(usageOne.sumMemUsage)}
+                                    strokeWidth={10}
+                                />
+                                <div style={{marginTop: 5}}>
+                                    MEM
+                                </div>
                             </div>
-                        </div>
+                            <div style={{width: 15}}/>
+                            <div>
+                                <Progress
+                                    strokeColor='green'
+                                    type="circle"
+                                    width={100}
+                                    trailColor='#262626'
+                                    percent={Math.round(usageOne.sumDiskUsage)}
+                                    strokeWidth={10}
+                                />
+                                <div style={{marginTop: 5}}>
+                                    DISK
+                                </div>
+                            </div>
+                        </Center>
+                        :
+                        <Center style={{
+                            fontSize: 22,
+                            backgroundColor: 'rgba(157,255,255,.02)',
+                            height: height,
+                            flexDirection: 'column'
+                        }}>
+                            <div>
+                                <div>
+                                    No Available
+                                </div>
+                                <div style={{fontSize: 12}}>
+                                    (It is shown only in one specific cloudlet)
+                                </div>
+                            </div>
 
 
-                    </Center>
+                        </Center>
                 }
 
 

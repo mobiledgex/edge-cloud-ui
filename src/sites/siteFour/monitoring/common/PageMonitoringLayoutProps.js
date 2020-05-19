@@ -72,50 +72,9 @@ export const CHART_TYPE = {
 }
 
 
-export const defaultLayoutForClusterForOper = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
-    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
-    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
-];
-
-
-export const defaultLayoutMapperForClusterForOper= [
-    {
-        id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-
-    {
-        id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.LINE,
-    },
-    {
-        id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-    },
-    {
-        id: '5',
-        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-    },
-    {
-        id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-    },
-
-];
+/*desc:#####################################
+Desc: Cloudlet  LAYOUT, MAPPER FOR OPERTATOR
+desc:#######################################*/
 
 
 export const defaultLayoutForCloudlet = [
@@ -171,6 +130,59 @@ export const defaultLayoutMapperForCloudlet = [
         id: '8',
         hwType: HARDWARE_TYPE_FOR_GRID.netSend,
         graphType: CHART_TYPE.LINE,
+    },
+
+];
+
+
+/*desc:#####################################
+Desc:  Cluster  LAYOUT, MAPPER FOR OPERTATOR
+desc:#######################################*/
+
+export const defaultLayoutForClusterForOper = [
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//bubble
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//appinst event log
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+];
+
+
+export const defaultLayoutMapperForClusterForOper = [
+
+    {
+        id: '1',
+        hwType: undefined,
+        graphType: CHART_TYPE.DONUTS,
+    },
+
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: CHART_TYPE.LINE,
+    },
+
+    {
+        id: '5',
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: CHART_TYPE.LINE,
+    },
+    {
+        id: '6',
+        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
 
 ];
