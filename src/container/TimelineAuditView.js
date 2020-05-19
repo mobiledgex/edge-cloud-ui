@@ -15,6 +15,7 @@ import { hot } from "react-hot-loader/root";
 import {Card, IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
 import OfflinePinIcon from '@material-ui/icons/OfflinePin';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import {ACTION_REFRESH} from "./MexToolbar";
 
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
@@ -715,7 +716,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
-                    <Toolbar>
+                    <Toolbar style={{ marginRight:0}}>
                         <label className='content_title_label'>Audit Logs</label>
                         <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
@@ -775,9 +776,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     </div>
                                     <button className="page_audit_error_button"  onClick={this.onCurrentClick}>Go</button>
                                 </div>
-                                <button className="page_audit_error_button"  onClick={this.onRefreshClick}>
-                                    <RefreshIcon fontSize='small' style={{marginTop:5}} />
-                                </button>
+
+                                <IconButton aria-label="refresh" onClick={this.onRefreshClick} style={{marginLeft:10}}>
+                                    <RefreshIcon style={{ color: '#76ff03' }} />
+                                </IconButton>
                             </div>
                         </div>
                     </Toolbar>
