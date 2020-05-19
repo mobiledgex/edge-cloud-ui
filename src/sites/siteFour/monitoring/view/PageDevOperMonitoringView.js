@@ -38,11 +38,32 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, TypeClusterUsageList, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeCloudlet,
+    TypeCloudletUsage,
+    TypeCluster,
+    TypeClusterUsageList,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
-import {getAppLevelUsageList, getClientStatusList, getClusterLevelUsageList, requestShowAppInstClientWS} from "../service/PageMonitoringMetricService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
+import {
+    getAppLevelUsageList,
+    getClientStatusList,
+    getClusterLevelUsageList,
+    requestShowAppInstClientWS
+} from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -66,7 +87,12 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListContainer from "../components/AppInstEventLogListContainer";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -271,6 +297,7 @@ type PageDevMonitoringState = {
     layoutForAppInst: any,
     layoutMapperForCloudlet: any,
     currentOperLevel: string,
+    currentIndex: number,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -479,6 +506,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     allClientStatusList: [],
                     filteredClientStatusList: [],
                     currentOperLevel: CLASSIFICATION.CLOUDLET,
+                    currentIndex: 0,
                 };
             }
 
@@ -1748,6 +1776,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentClassification: CLASSIFICATION.CLOUDLET,
                         currentCluster: undefined,
                         currentOperLevel: undefined,
+                        currentIndex: index,
                     });
                 } else {//todo: When allCloudlet
                     this.setState({
@@ -1998,7 +2027,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                     return (
-                        <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_box"
+                             style={{alignSelf: 'center', justifyContent: 'center'}}>
                             <div
                                 className="page_monitoring_dropdown_label"
                                 style={{
@@ -2050,7 +2080,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@todo: When Operator
                     //@todo: ####################################3
                     return (
-                        <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_box"
+                             style={{alignSelf: 'center', justifyContent: 'center'}}>
                             <div className="page_monitoring_dropdown_label">
                                 Cluster
                             </div>
@@ -2058,7 +2089,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 ref={c => this.clusterSelectForOper = c}
                                 showSearch={true}
                                 dropdownStyle={{}}
-                                notFoundContent={<div style={{color: 'orange', marginLeft: 5, fontWeight: 'bold', fontStyle: 'italic'}}>No Cluster</div>}
+                                notFoundContent={<div
+                                    style={{color: 'orange', marginLeft: 5, fontWeight: 'bold', fontStyle: 'italic'}}>No
+                                    Cluster</div>}
                                 listHeight={512}
                                 style={{width: 250, maxHeight: '512px !important'}}
                                 disabled={this.state.currentCloudLet === undefined || this.state.filteredClusterList.length === 0}
@@ -2071,7 +2104,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             >
                                 {this.state.filteredClusterList.map((item: TypeCluster, index) => {
                                     return (
-                                        <Option key={index} value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
+                                        <Option key={index}
+                                                value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
                                     )
                                 })}
                             </Select>
@@ -2167,13 +2201,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     onClick={async () => {
                                     }}
                                     span={pLegendItemCount === 1 ? 24 : 3}
-                                    style={{marginTop: 3, marginBottom: 3, justifyContent: pLegendItemCount === 1 ? 'center' : null}}
+                                    style={{
+                                        marginTop: 3,
+                                        marginBottom: 3,
+                                        justifyContent: pLegendItemCount === 1 ? 'center' : null
+                                    }}
                                 >
                                     <Ripple
                                         style={{marginLeft: 0,}}
                                         color='#1cecff' during={100}
                                         onClick={async () => {
-                                            await this.handleOnChangeCloudletDropdown(item.CloudletName)
+                                            await this.handleOnChangeCloudletDropdown(item.CloudletName, index)
                                         }}
                                     >
                                         {this.renderDot(index)}
@@ -2280,40 +2318,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </Col>
                     </Row>
 
-                )
-            }
-
-            makeAllDotLabel() {
-                return (
-                    <Col
-                        className="gutterRow"
-                        onClick={async () => {
-                        }}
-                        span={3}
-                        style={{marginTop: 3, marginBottom: 3}}
-                    >
-                        <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
-                            <div
-                                style={{
-                                    backgroundColor: 'white',
-                                    width: 15,
-                                    height: 15,
-                                    borderRadius: 50,
-                                }}
-                            >
-                            </div>
-                        </div>
-                        <div
-                            style={{marginTop: 0, marginLeft: 3,}}
-                            onClick={async () => {
-                                await this.handleOnChangeCloudletDropdown(undefined)
-                            }}
-                        >
-                            all
-                        </div>
-                        <div style={{marginRight: 5,}}>
-                        </div>
-                    </Col>
                 )
             }
 
