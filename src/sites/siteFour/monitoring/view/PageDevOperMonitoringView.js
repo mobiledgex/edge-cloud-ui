@@ -1306,6 +1306,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     console.log(`item==${hwType}=>`, item);
 
+                                    console.log(`layoutForClusterForOper===>`, this.state.layoutForClusterForOper);
+
                                     return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
                                 })}
 
@@ -1428,10 +1430,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
                     reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
+
                     reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
                     reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
+
                     reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
                     reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
+
                     reactLocalStorage.remove(getUserId() + CLUSTER_OPER_LAYOUT_KEY)
                     reactLocalStorage.remove(getUserId() + CLUSTER_OPER_HW_MAPPER_KEY)
 

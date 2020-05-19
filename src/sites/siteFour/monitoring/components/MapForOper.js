@@ -192,7 +192,12 @@ export default function MapForOper(props) {
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
                             return (
-                                <div key={index} style={{display: 'flex', flexDirection: 'column', marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,}}>
+                                <div
+                                    onClick={async () => {
+                                        await props.parent.handleOnChangeClusterDropdown(item.ClusterName + " | " + item.Cloudlet)
+                                    }}
+                                    key={index} style={{display: 'flex', flexDirection: 'column', marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,}}
+                                >
                                     <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
                                         <Icon name='th'/> {item.ClusterName}
                                     </div>

@@ -146,8 +146,7 @@ export const defaultLayoutForClusterForOper = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//mem
-    {i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//disk
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//mem
 ];
 
 export const defaultLayoutMapperForClusterForOper = [
@@ -162,11 +161,6 @@ export const defaultLayoutMapperForClusterForOper = [
         graphType: HARDWARE_TYPE_FOR_GRID.MAP,
     },
 
-    /*{
-        id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.LINE,
-    },*/
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
@@ -187,12 +181,6 @@ export const defaultLayoutMapperForClusterForOper = [
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
         graphType: GRID_ITEM_TYPE.LINE,
     },
-    {
-        id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: GRID_ITEM_TYPE.LINE,
-    },
-
 
 ];
 
