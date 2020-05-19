@@ -381,7 +381,7 @@ export default class CalendarTimeline extends React.PureComponent {
                     items={items}
                     keys={keys}
                     lineHeight={60} // size of vertical gap
-                    canMove
+                    canMove={false}
                     canSelect
                     itemsSorted
                     itemTouchSendsClick={false}
