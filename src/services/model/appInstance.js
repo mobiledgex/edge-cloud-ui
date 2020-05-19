@@ -24,6 +24,7 @@ export const keys = () => ([
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
   { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access'},
+  { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size'},
   { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false },
@@ -57,6 +58,11 @@ export const getKey = (data, isCreate) => {
     if (data[fields.ipAccess]) {
       appinst.auto_cluster_ip_access = constant.IPAccessLabel(data[fields.ipAccess])
     }
+
+    if (data[fields.sharedVolumeSize]) {
+        appinst.shared_volume_size = parseInt(data[fields.sharedVolumeSize])
+    }
+
   }
 
   return ({
@@ -186,6 +192,7 @@ const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
+  value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
 }
 
 export const getData = (response, body) => {
