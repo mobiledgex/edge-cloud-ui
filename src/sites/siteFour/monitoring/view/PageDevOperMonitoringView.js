@@ -42,7 +42,18 @@ import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, Typ
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
-import {getAppLevelUsageList, getClientStatusList, getClusterLevelUsageList, requestShowAppInstClientWS} from "../service/PageMonitoringMetricService";
+import {
+    fetchAppInstList,
+    fetchCloudletList,
+    fetchClusterList,
+    getAllAppInstEventLogs,
+    getAllClusterEventLogList,
+    getAppLevelUsageList,
+    getClientStatusList,
+    getCloudletUsageList,
+    getClusterLevelUsageList,
+    requestShowAppInstClientWS
+} from "../service/PageMonitoringMetricService";
 import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
@@ -516,21 +527,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
 
                     //todo:realdata
-                    /*  promiseList.push(fetchCloudletList())
-                      promiseList.push(fetchClusterList())
-                      promiseList.push(fetchAppInstList())
-                      let newPromiseList = await Promise.all(promiseList);
-                      let cloudletList = newPromiseList[0];
-                      let clusterList = newPromiseList[1];
-                      let appInstList = newPromiseList[2];*/
+                    promiseList.push(fetchCloudletList())
+                    promiseList.push(fetchClusterList())
+                    promiseList.push(fetchAppInstList())
+                    let newPromiseList = await Promise.all(promiseList);
+                    let cloudletList = newPromiseList[0];
+                    let clusterList = newPromiseList[1];
+                    let appInstList = newPromiseList[2];
 
                     console.log(`appInstList===>`, appInstList);
 
 
                     //todo:fakedata
-                    let cloudletList = require('../temp/cloudletList')
+                    /*let cloudletList = require('../temp/cloudletList')
                     let clusterList = require('../temp/clusterList')
-                    let appInstList = require('../temp/appInstList')
+                    let appInstList = require('../temp/appInstList')*/
 
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
@@ -561,26 +572,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
 
                     //todo: realdata
-                    /*   promiseList2.push(getAllClusterEventLogList(clusterList))
-                       promiseList2.push(getAllAppInstEventLogs());
-                       promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                       promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
-                       let newPromiseList2 = await Promise.all(promiseList2);
-                       let allClusterEventLogList = newPromiseList2[0];
-                       let allAppInstEventLogList = newPromiseList2[1];
-                       let allClusterUsageList = newPromiseList2[2];
-                       let allCloudletUsageList = newPromiseList2[3];*/
+                    promiseList2.push(getAllClusterEventLogList(clusterList))
+                    promiseList2.push(getAllAppInstEventLogs());
+                    promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                    promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
+                    let newPromiseList2 = await Promise.all(promiseList2);
+                    let allClusterEventLogList = newPromiseList2[0];
+                    let allAppInstEventLogList = newPromiseList2[1];
+                    let allClusterUsageList = newPromiseList2[2];
+                    let allCloudletUsageList = newPromiseList2[3];
 
                     //fixme: fakedata
                     //fixme: fakedata
-                    let allClusterEventLogList = []
+                    /*let allClusterEventLogList = []
                     let allAppInstEventLogList = []
                     let allClusterUsageList = require('../temp/clusterUSageList')
-                    let allCloudletUsageList = require('../temp/cloudletUsageList')
+                    let allCloudletUsageList = require('../temp/cloudletUsageList')*/
 
                     console.log(`allClusterEventLogList....clusterList===>`, clusterList);
                     console.log(`allClusterEventLogList===>`, allClusterEventLogList);
-
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let maxCpu = Math.max.apply(Math, allClusterUsageList.map(function (o) {
