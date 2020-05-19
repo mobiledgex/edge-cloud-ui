@@ -150,13 +150,11 @@ export const defaultLayoutForClusterForOper = [
 
 
 export const defaultLayoutMapperForClusterForOper = [
-
     {
         id: '1',
-        hwType: undefined,
-        graphType: CHART_TYPE.DONUTS,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: CHART_TYPE.LINE,
     },
-
     {
         id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
@@ -173,11 +171,10 @@ export const defaultLayoutMapperForClusterForOper = [
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
     },
-
     {
         id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: CHART_TYPE.LINE,
+        hwType: undefined,
+        graphType: CHART_TYPE.DONUTS,
     },
     {
         id: '6',
