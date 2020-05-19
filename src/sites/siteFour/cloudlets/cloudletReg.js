@@ -50,26 +50,28 @@ class ClusterInstReg extends React.Component {
     }
 
     locationChange = (currentForm, forms, isInit) => {
-        let parentForm = currentForm.parent.form
-        let childForms = parentForm.forms
-        let latitude = undefined
-        let longitude = undefined
-        for (let i = 0; i < childForms.length; i++) {
-            let form = childForms[i]
-            if (form.field === fields.latitude) {
-                latitude = form.value
+        if (isInit === undefined || isInit === false) {
+            let parentForm = currentForm.parent.form
+            let childForms = parentForm.forms
+            let latitude = undefined
+            let longitude = undefined
+            for (let i = 0; i < childForms.length; i++) {
+                let form = childForms[i]
+                if (form.field === fields.latitude) {
+                    latitude = form.value
+                }
+                else if (form.field === fields.longitude) {
+                    longitude = form.value
+                }
             }
-            else if (form.field === fields.longitude) {
-                longitude = form.value
+            if (latitude && longitude) {
+                let cloudlet = {}
+                cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
+                this.setState({ mapData: [cloudlet] })
             }
-        }
-        if (latitude && longitude) {
-            let cloudlet = {}
-            cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
-            this.setState({ mapData: [cloudlet] })
-        }
-        else {
-            this.setState({ mapData: [] })
+            else {
+                this.setState({ mapData: [] })
+            }
         }
     }
 
