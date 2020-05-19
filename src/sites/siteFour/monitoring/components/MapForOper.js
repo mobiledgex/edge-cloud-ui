@@ -35,7 +35,18 @@ const Styles = {
         fontSize: 13,
         marginLeft: 10,
         fontStyle: 'italic'
-    }
+    },
+    infoDiv: {
+        position: 'absolute',
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.5)',
+        width: '100%',
+        height: 190,
+        zIndex: 99999,
+        padding: 10,
+        marginLeft: 0,
+        display: 'flex'
+    },
 }
 
 export default function MapForOper(props) {
@@ -146,22 +157,7 @@ export default function MapForOper(props) {
                 {/*@todo:##########################################*/}
                 {currentCluodlet !== undefined &&
                 <div
-                    style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        background: 'rgba(0, 0, 0, 0.5)',
-                        width: '100%',
-                        height: 190,
-                        zIndex: 99999,
-                        //opacity: 0.5,
-                        padding: 10,
-                        marginLeft: 0,
-                        display: 'flex'
-
-                    }}
-                    onClick={() => {
-                    }}
-
+                    style={Styles.infoDiv}
                 >
                     {/*todo:##################################*/}
                     {/*todo:Cloudlet bottom info              */}
@@ -319,10 +315,7 @@ export default function MapForOper(props) {
                                                     await handleMarkerClicked(cloudLetOne)
                                                 }}
                                             >
-                                                <div
-                                                    className='oper_popup_div'
-
-                                                >
+                                                <div className='oper_popup_div'>
                                                     {cloudLetOne.CloudletName}
                                                 </div>
                                             </Ripple>
