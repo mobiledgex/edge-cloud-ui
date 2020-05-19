@@ -1288,6 +1288,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
                         //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
                         //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
+
+
                         return (
                             <ResponsiveReactGridLayout
                                 isResizable={true}
@@ -1311,7 +1313,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                                 onLayoutChange={async (layout) => {
                                     this.setState({
-                                        layoutForCluster: layout,
+                                        layoutForClusterForOper: layout,
                                     }, async () => {
                                         await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterForOper);
                                         reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, layout)
