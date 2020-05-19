@@ -4,7 +4,7 @@ import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK
 import Lottie from "react-lottie";
 import BubbleChartCore from "../components/BubbleChartCore";
 import type {TypeAppInstanceUsage2, TypeClientStatus, TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeAppInstance} from "../../../../shared/Types";
+import {TypeAppInst} from "../../../../shared/Types";
 import {renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "./PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
@@ -31,7 +31,7 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
 export function filteredClientStatusListByAppName(filteredAppInstList, allClientStatusList) {
 
     let appNames = []
-    filteredAppInstList.map((item: TypeAppInstance, index) => {
+    filteredAppInstList.map((item: TypeAppInst, index) => {
         appNames.push(item.AppName)
     })
 
@@ -1239,7 +1239,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
  * @todo: 앱의 인스턴스 리스트를 리전에 맞게 필터링처리..
  * @param pRegion
  * @param appInstanceList
- * @returns {TypeAppInstance[]|Array<TypeAppInstance>}
+ * @returns {TypeAppInst[]|Array<TypeAppInst>}
  */
 export const filterAppInstanceListByRegion = (pRegion, appInstanceList) => {
     if (pRegion === REGION.ALL) {

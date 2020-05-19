@@ -9,38 +9,20 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {Card, DatePicker,} from 'antd';
 import {filterListBykeyForCloudlet, renderBubbleChartForCloudlet,} from "../service/PageAdmMonitoringService";
-import {
-    CLASSIFICATION,
-    HARDWARE_OPTIONS_FOR_CLOUDLET,
-    HARDWARE_TYPE,
-    NETWORK_OPTIONS,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
-} from "../../../../shared/Constants";
+import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
+import {TypeAppInst, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../common/PageMonitoringStyles.css'
 import {renderLoaderArea, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {
-    handleBubbleChartDropDownForCloudlet,
-    makeBarChartDataForCloudlet,
-    makeLineChartForCloudlet,
-    renderBottomGridAreaForCloudlet
-} from "./service/PageOperMonitoringService";
+import {handleBubbleChartDropDownForCloudlet, makeBarChartDataForCloudlet, makeLineChartForCloudlet, renderBottomGridAreaForCloudlet} from "./service/PageOperMonitoringService";
 import LeafletMap from "../components/MapForOper";
 import {filterByClassification, makeSelectBoxListWithKey, sortByKey} from "./service/PageDevMonitoringService";
 import {PageMonitoringStyles} from "../PageMonitoringStyles";
-import {
-    getAllCloudletEventLogs,
-    getCloudletEventLog,
-    getCloudletUsageList,
-    getCloudletList,
-} from '../PageMonitoringMetricService'
+import {getAllCloudletEventLogs, getCloudletEventLog, getCloudletList, getCloudletUsageList,} from '../PageMonitoringMetricService'
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -93,9 +75,9 @@ type State = {
     filteredDiskUsageList: any,
     filteredNetworkUsageList: any,
     counter: number,
-    appInstanceList: Array<TypeAppInstance>,
-    allAppInstanceList: Array<TypeAppInstance>,
-    appInstanceOne: TypeAppInstance,
+    appInstanceList: Array<TypeAppInst>,
+    allAppInstanceList: Array<TypeAppInst>,
+    appInstanceOne: TypeAppInst,
     currentRegion: string,
     allUsageList: Array,
     allCpuUsageList: Array,

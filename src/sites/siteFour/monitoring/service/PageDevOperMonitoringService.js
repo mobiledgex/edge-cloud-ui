@@ -21,7 +21,7 @@ import {
     THEME_OPTIONS,
     USAGE_INDEX
 } from "../../../../shared/Constants";
-import type {TypeAppInstance, TypeCloudlet} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
@@ -184,7 +184,7 @@ export function getCloudletClusterNameList(orgAppInstList) {
     let cloudletNameList = []
     orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
     let clusterNameList = [];
-    orgAppInstList.map((item: TypeAppInstance, index) => {
+    orgAppInstList.map((item: TypeAppInst, index) => {
         clusterNameList.push({
             ClusterInst: item.ClusterInst,
             Cloudlet: item.Cloudlet,
@@ -1297,7 +1297,7 @@ export const makeDropdownForCloudlet = (pList) => {
 export const makeDropdownForAppInst = (appInstList) => {
     let appInstDropdownList = [];
     try {
-        appInstList.map((item: TypeAppInstance, index) => {
+        appInstList.map((item: TypeAppInst, index) => {
             let AppName = item.AppName
             let Cloudlet = item.Cloudlet
             let ClusterInst = item.ClusterInst

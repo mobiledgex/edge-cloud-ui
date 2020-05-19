@@ -1,6 +1,6 @@
 import React, {createRef} from "react";
 import * as L from 'leaflet';
-import type {TypeAppInstance, TypeClient} from "../../../../shared/Types";
+import type {TypeAppInst, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
@@ -279,7 +279,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     let Cloudlet = '';
                     let ClusterInst = '';
 
-                    pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInstance, index) => {
+                    pAppInstanceListGroupByCloudlet[key].map((innerItem: TypeAppInst, index) => {
                         if (index === (pAppInstanceListGroupByCloudlet[key].length - 1)) {
                             AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
                         } else {

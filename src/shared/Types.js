@@ -203,7 +203,7 @@ export type TypeClusterUsageList = {
     sumTcpRetrans: number,
 
 }
-export type TypeAppInstance = {
+export type TypeAppInst = {
     "Region": string,
     "OrganizationName": string,
     "AppName": string,

@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {TypeAppInstance, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
+import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import {sendSyncRequest} from "../../../../services/serviceMC";
@@ -1068,7 +1068,7 @@ export const getAllAppInstEventLogs = async () => {
  * @param appInst
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const getClientStateOne = async (appInst: TypeAppInstance) => {
+export const getClientStateOne = async (appInst: TypeAppInst) => {
 
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';

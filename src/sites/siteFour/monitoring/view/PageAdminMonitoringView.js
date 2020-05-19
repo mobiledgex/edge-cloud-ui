@@ -36,7 +36,7 @@ import {
     renderSixGridForAppInstOnCloudlet,
 } from "../service/PageAdmMonitoringService";
 import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
-import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeAppInst, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
@@ -95,9 +95,9 @@ type State = {
     endTime: string,
     clusterList: any,
     counter: number,
-    appInstanceList: Array<TypeAppInstance>,
-    allAppInstanceList: Array<TypeAppInstance>,
-    appInstanceOne: TypeAppInstance,
+    appInstanceList: Array<TypeAppInst>,
+    allAppInstanceList: Array<TypeAppInst>,
+    appInstanceOne: TypeAppInst,
     currentRegion: string,
     cloudLetSelectBoxPlaceholder: string,
     clusterSelectBoxPlaceholder: string,
@@ -279,9 +279,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cloudletList: allCloudletList,
                 })
 
-                let appInstanceList: Array<TypeAppInstance> = await fetchAppInstList(localStorage.getItem('regions').split(","), USER_TYPE.ADMIN);
+                let appInstanceList: Array<TypeAppInst> = await fetchAppInstList(localStorage.getItem('regions').split(","), USER_TYPE.ADMIN);
 
-                appInstanceList.map(async (item: TypeAppInstance, index) => {
+                appInstanceList.map(async (item: TypeAppInst, index) => {
                     if (index === 0) {
                         await this.setState({
                             appInstanceOne: APPINSTANCE_INIT_VALUE,
