@@ -24,7 +24,7 @@ import FreeBreakfastOutlinedIcon from '@material-ui/icons/FreeBreakfastOutlined'
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
 import GamesOutlinedIcon from '@material-ui/icons/GamesOutlined';
-import TvOutlinedIcon from '@material-ui/icons/TvOutlined';
+import TvOutlinedIcon from '@material-ui/icons/TvOutlined'; 
 import FeaturedPlayListOutlinedIcon from '@material-ui/icons/FeaturedPlayListOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
