@@ -1711,13 +1711,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              }
                          })*/
 
-                        let appInstList = this.state.appInstList;
                         let filteredAppInstList = []
-                        appInstList.map((item: TypeAppInstance, index) => {
+                        this.state.appInstList.map((item: TypeAppInstance, index) => {
                             if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
                                 filteredAppInstList.push(item)
                             }
                         })
+
+
+                        let filteredClusterList = []
+                        this.state.clusterList.map((item: TypeCluster, index) => {
+                            if (item.ClusterName === this.state.currentCluster) {
+                                filteredClusterList.push(item)
+                            }
+                        })
+
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
@@ -1735,6 +1743,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredAppInstList: filteredAppInstList,
                             appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
                             currentAppInst: undefined,
+                            filteredClusterList: filteredClusterList,
                         });
 
                     }
@@ -2070,7 +2079,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     {filteredClusterUsageListLength === 1 ?
                                         <React.Fragment>
                                             <div className='clusterCloudletBoxOne'>
-                                                {item.cluster + "[" + item.cloudlet + "]"}
+                                                <div style={{}}>
+                                                    {item.cluster}
+                                                </div>
+                                                <div style={{color: 'white',}}>
+                                                    &nbsp;[{item.cloudlet}]
+                                                </div>
                                             </div>
                                         </React.Fragment>
                                         :
@@ -2241,7 +2255,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.state.legendHeight : this.state.currentClassification === CLASSIFICATION.APPINST ? 30 :
                                         this.state.currentClassification === CLASSIFICATION.CLOUDLET ? 60 : this.state.legendHeight
                             }}>
-                            {this.state.currentClassification === CLASSIFICATION.CLUSTER ?//@desc: When Cluster Level Legend
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?//@desc: CLUSTER  Level Legend
                                 this.renderClusterLegend()
                                 ://@desc: When Cloudlet Level Legend
                                 this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
@@ -2251,10 +2265,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.renderAppLegend()
 
                             }
-                            {/*################################*/}
-                            {/* fold/unfoled icons on right    */}
-                            {/*################################*/}
-                            {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                            {/*@todo:################################*/}
+                            {/*@todo: fold/unfoled icons on right    */}
+                            {/*@todo:################################*/}
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER &&
                             <div
                                 style={PageMonitoringStyles.expandIconDiv}
                                 onClick={() => {

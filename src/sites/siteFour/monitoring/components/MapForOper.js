@@ -12,7 +12,6 @@ import {CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
 
 let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),
-    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
     iconSize: [40, 21],
     iconAnchor: [20, 21],
     shadowSize: [41, 41]
@@ -197,7 +196,7 @@ export default function MapForOper(props) {
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
                             return (
-                                <div key={index} style={{display: 'flex', flexDirection: 'column'}}>
+                                <div key={index} style={{display: 'flex', flexDirection: 'column', marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,}}>
                                     <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
                                         <Icon name='th'/> {item.ClusterName}
                                     </div>
@@ -213,7 +212,13 @@ export default function MapForOper(props) {
                                     <div style={Styles.lable001}>
                                         <b>Reservable</b>: {item.Reservable}
                                     </div>
-                                    <div style={Styles.lable001}>
+                                    <div style={{
+                                        marginTop: 5,
+                                        fontSize: 13,
+                                        marginLeft: 10,
+                                        fontStyle: 'italic',
+
+                                    }}>
                                         <b>IpAccess</b>: {item.IpAccess}
                                     </div>
                                 </div>
@@ -238,7 +243,7 @@ export default function MapForOper(props) {
                             style={mapIconStyle}
                             onClick={async () => {
                                 setCurrentCloudlet(undefined)
-                                props.parent.handleCloudletDropdown(undefined).then(() => {
+                                props.parent.handleOnChangeCloudletDropdown(undefined).then(() => {
                                     props.parent.setState({
                                         toggleZoom: !props.parent.state.toggleZoom
                                     });
