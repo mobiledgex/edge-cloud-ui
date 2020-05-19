@@ -117,7 +117,7 @@ export default function MapForOper(props) {
     async function handleMarkerClicked(cloudLetOne) {
         setCurrentCloudlet(undefined)
         setCurrentCloudlet(JSON.parse(JSON.stringify(cloudLetOne)))
-        await props.parent.handleCloudletDropdown(cloudLetOne.CloudletName)
+        await props.parent.handleOnChangeCloudletDropdown(cloudLetOne.CloudletName)
     }
 
 

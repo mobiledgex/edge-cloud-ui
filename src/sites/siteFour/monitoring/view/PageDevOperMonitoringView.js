@@ -1950,7 +1950,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             />
                         </div>
                     )
-                } else {//@todo: When Operator
+                } else {
+                    //@todo: ####################################3
+                    //@todo: When Operator
+                    //@todo: ####################################3
                     return (
                         <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                             <div className="page_monitoring_dropdown_label">
@@ -1968,7 +1971,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 placeholder={'Select Cluster'}
                                 onChange={async (value) => {
                                     this.handleOnChangeClusterDropdown(value)
-                                    //this.clusterSelectForOper.blur();
+                                    this.clusterSelectForOper.blur();
                                 }}
                             >
                                 {this.state.filteredClusterList.map((item: TypeCluster, index) => {
