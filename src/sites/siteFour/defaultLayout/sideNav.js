@@ -25,11 +25,12 @@ import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
 import GamesOutlinedIcon from '@material-ui/icons/GamesOutlined';
 import TvOutlinedIcon from '@material-ui/icons/TvOutlined';
-import AlbumOutlinedIcon from '@material-ui/icons/AlbumOutlined';
 import FeaturedPlayListOutlinedIcon from '@material-ui/icons/FeaturedPlayListOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import AdjustOutlinedIcon from '@material-ui/icons/AdjustOutlined';
+import PolicyIcon from '@material-ui/icons/Policy';
+import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 
 import SiteFourPageOrganization from '../organization/organizationList';
 import SiteFourPageAccount from '../accounts/accountList';
@@ -111,9 +112,9 @@ const options = [
     {label: 'Apps', icon: <AppsOutlinedIcon/>, pg: 5, page: <SiteFourPageApps/>, roles: ['AdminManager', 'DeveloperManager']},
     {label: 'App Instances', icon: <GamesOutlinedIcon/>, pg: 6, page: <SiteFourPageAppInst/>, roles: ['AdminManager', 'DeveloperManager']},
     {
-        label: 'Policies', icon: <AlbumOutlinedIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
-            {label: 'Auto Provisioning Policy', icon: <AdjustOutlinedIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
-            {label: 'Privacy Policy', icon: <AdjustOutlinedIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
+        label: 'Policies', icon: <TrackChangesIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
+            {label: 'Auto Provisioning Policy', icon: <GroupWorkIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
+            {label: 'Privacy Policy', icon: <PolicyIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
         ]
     },
     {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
