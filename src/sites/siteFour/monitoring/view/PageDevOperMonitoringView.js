@@ -102,7 +102,7 @@ import {
 } from "./PageMonitoringLayoutProps";
 import MapForOper from "../components/MapForOper";
 import DonutChartHooks from "../components/DonutChartHooks";
-import ClientSummaryHooks from "../components/ClientSummaryHooks";
+import ClientStatusTableHooks from "../components/ClientStatusTableHooks";
 import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName} from "../service/PageAdmMonitoringService";
 
@@ -544,6 +544,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({
                             allClientStatusList: clientStatusList,
                             filteredClientStatusList: clientStatusList,
+                            loading: true,
                         })
                     }
 
@@ -1145,7 +1146,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLIENT_STATUS_TABLE) {
                     return (
-                        <ClientSummaryHooks
+                        <ClientStatusTableHooks
                             parent={this}
                             clientStatusList={this.state.filteredClientStatusList}
                             chartColorList={this.state.chartColorList}

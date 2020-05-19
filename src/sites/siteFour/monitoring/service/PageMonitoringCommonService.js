@@ -101,11 +101,9 @@ export const renderPlaceHolderLoader = (type = '') => {
 
     if (type === 'sk') {
         return (
-            <div style={{marginTop: 35,}}>
+            <div style={{marginTop: 0,}}>
                 <SkeletonTheme color="#22252C" highlightColor="#444">
-                    <p>
-                        <Skeleton count={13}/>
-                    </p>
+                    <Skeleton count={5} height={35}/>
                 </SkeletonTheme>
             </div>
         )

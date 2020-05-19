@@ -11,12 +11,13 @@ import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
 import {Empty} from "antd";
+import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     clientStatusList: any,
 };
 
-export default function ClientSummaryHooks(props) {
+export default function ClientStatusTableHooks(props) {
 
     useEffect(() => {
     }, [props.clientStatusList]);
@@ -159,7 +160,10 @@ export default function ClientSummaryHooks(props) {
                             }}
                         >
                             <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
-                                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                                {!props.parent.state.loading ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                                    : renderPlaceHolderLoader('sk')
+
+                                }
                             </TableCell>
                         </TableRow>}
                     </TableBody>
