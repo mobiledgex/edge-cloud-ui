@@ -67,7 +67,7 @@
 
 .page_audit_history_option_period .ui.selection.dropdown {
     z-index: 1001; /* it need to be higher than the timeline header's zIndex(= 1000) */
-    width: 150px;
+    min-width: 150px;
 }
 
 .page_audit_history_timeline {
