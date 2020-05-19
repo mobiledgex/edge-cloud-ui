@@ -973,38 +973,38 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             showBigModal = (hwType, graphType) => {
-               try{
-                   let chartDataSets = []
-                   if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
+                try {
+                    let chartDataSets = []
+                    if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
 
-                       let lineChartDataSet = []
-                       if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                           lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
-                       } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                           lineChartDataSet = makeLineChartData(this.state.filteredCloudletUsageList, hwType, this)
-                       } else {
-                           lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
-                       }
+                        let lineChartDataSet = []
+                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                            lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
+                        } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                            lineChartDataSet = makeLineChartData(this.state.filteredCloudletUsageList, hwType, this)
+                        } else {
+                            lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
+                        }
 
-                       chartDataSets = makeLineChartDataForBigModal(lineChartDataSet, this)
+                        chartDataSets = makeLineChartDataForBigModal(lineChartDataSet, this)
 
-                   } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
+                    } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
 
-                       let barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
-                       chartDataSets = barChartDataSet.chartDataList;
-                   }
+                        let barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        chartDataSets = barChartDataSet.chartDataList;
+                    }
 
-                   this.setState({
-                       isShowBigGraph: !this.state.isShowBigGraph,
-                       chartDataForBigModal: chartDataSets,
-                       popupGraphHWType: hwType,
-                       popupGraphType: graphType,
-                       isPopupMap: !this.state.isPopupMap,
-                       isMapUpdate: true,
-                   });
-               }catch (e) {
+                    this.setState({
+                        isShowBigGraph: !this.state.isShowBigGraph,
+                        chartDataForBigModal: chartDataSets,
+                        popupGraphHWType: hwType,
+                        popupGraphType: graphType,
+                        isPopupMap: !this.state.isPopupMap,
+                        isMapUpdate: true,
+                    });
+                } catch (e) {
 
-               }
+                }
             }
 
 

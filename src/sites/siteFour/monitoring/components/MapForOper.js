@@ -215,9 +215,9 @@ export default function MapForOper(props) {
                     </div>
 
 
-                    {/*todo:##################################*/}
-                    {/*todo:cluster bottom info               */}
-                    {/*todo:##################################*/}
+                    {/*desc:##################################*/}
+                    {/*desc:cluster bottom info               */}
+                    {/*desc:##################################*/}
                     <div style={{flex: .5, border: '0.5px solid grey', padding: 10, overflowY: 'auto', marginLeft: 15, marginRight: 5, borderRadius: 10,}}>
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
