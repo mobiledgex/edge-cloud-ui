@@ -1740,61 +1740,63 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             handleOnChangeCloudletDropdown = async (pCloudletOne) => {
-                if (pCloudletOne !== undefined) {
-                    await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletOne)})
-                    let currentCloudletOne = this.state.currentCloudLet
-                    let filteredClusterList = this.state.clusterList.filter((clusterOne: TypeCluster, index) => {
-                        return clusterOne.Cloudlet === currentCloudletOne
-                    })
-                    let filteredClusterUsageList = this.state.allClusterUsageList.filter((clusterUsageOne: TypeClusterUsageList, index) => {
-                        return clusterUsageOne.cloudlet === currentCloudletOne
-                    })
-                    let filteredCloudletUsageList = this.state.allCloudletUsageList.filter((item: TypeCloudletUsage, index) => {
-                        return item.cloudlet === currentCloudletOne
-                    })
+                try {
+                    if (pCloudletOne !== undefined) {
+                        await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletOne)})
+                        let currentCloudletOne = this.state.currentCloudLet
+                        let filteredClusterList = this.state.clusterList.filter((clusterOne: TypeCluster, index) => {
+                            return clusterOne.Cloudlet === currentCloudletOne
+                        })
+                        let filteredClusterUsageList = this.state.allClusterUsageList.filter((clusterUsageOne: TypeClusterUsageList, index) => {
+                            return clusterUsageOne.cloudlet === currentCloudletOne
+                        })
+                        let filteredCloudletUsageList = this.state.allCloudletUsageList.filter((item: TypeCloudletUsage, index) => {
+                            return item.cloudlet === currentCloudletOne
+                        })
 
-                    let filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
-                        return item.CloudletName === currentCloudletOne
-                    })
-
-
-                    let filteredAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => {
-                        return item.Cloudlet === currentCloudletOne
-                    })
+                        let filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
+                            return item.CloudletName === currentCloudletOne
+                        })
 
 
-                    let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
+                        let filteredAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => {
+                            return item.Cloudlet === currentCloudletOne
+                        })
 
-                    this.setState({
-                        currentCloudLet: pCloudletOne,
-                        filteredCloudletUsageList: filteredCloudletUsageList,
-                        filteredCloudletList: filteredCloudletList,
-                        filteredClusterList: filteredClusterList,
-                        filteredClusterUsageList: filteredClusterUsageList,
-                        filteredAppInstList: filteredAppInstList,
-                        filteredClientStatusList: filteredClientStatusList,
-                        currentClassification: CLASSIFICATION.CLOUDLET,
-                        currentCluster: undefined,
-                        currentOperLevel: undefined,
-                        currentIndex: index,
-                    });
-                } else {//todo: When allCloudlet
-                    this.setState({
-                        currentCloudLet: undefined,
-                        filteredCloudletUsageList: this.state.allCloudletUsageList,
-                        filteredCloudletList: this.state.cloudletList,
-                        toggleOperMapZoom: !this.state.toggleOperMapZoom,
-                        filteredClientStatusList: this.state.allClientStatusList,
-                        currentClassification: CLASSIFICATION.CLOUDLET,
-                        currentCluster: undefined,
-                        currentOperLevel: undefined,
-                    })
+
+                        let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
+
+                        this.setState({
+                            currentCloudLet: pCloudletOne,
+                            filteredCloudletUsageList: filteredCloudletUsageList,
+                            filteredCloudletList: filteredCloudletList,
+                            filteredClusterList: filteredClusterList,
+                            filteredClusterUsageList: filteredClusterUsageList,
+                            filteredAppInstList: filteredAppInstList,
+                            filteredClientStatusList: filteredClientStatusList,
+                            currentClassification: CLASSIFICATION.CLOUDLET,
+                            currentCluster: undefined,
+                            currentOperLevel: undefined,
+                        });
+                    } else {//todo: When allCloudlet
+                        this.setState({
+                            currentCloudLet: undefined,
+                            filteredCloudletUsageList: this.state.allCloudletUsageList,
+                            filteredCloudletList: this.state.cloudletList,
+                            toggleOperMapZoom: !this.state.toggleOperMapZoom,
+                            filteredClientStatusList: this.state.allClientStatusList,
+                            currentClassification: CLASSIFICATION.CLOUDLET,
+                            currentCluster: undefined,
+                            currentOperLevel: undefined,
+                        })
+                    }
+                } catch (e) {
+
                 }
             }
 
 
             async handleOnChangeClusterDropdown(pClusterOne) {
-
                 try {
                     //todo: When all Cluster
                     if (pClusterOne === '' || pClusterOne === undefined) {
