@@ -39,8 +39,8 @@ export const HARDWARE_TYPE_FOR_GRID = {
     TCPRETRANS: 'TCPRETRANS',
 
     //NETWORK
-    SENDBYTES: 'SEND_BYTES',
-    RECVBYTES: 'RECV_BYTES',
+    SENDBYTES: 'SENDBYTES',
+    RECVBYTES: 'RECVBYTES',
 
     MEM: 'MEM',
     MEM2: 'MEM',
@@ -136,7 +136,7 @@ export const defaultLayoutMapperForCloudlet = [
 
 
 /*desc:#####################################
-Desc:  Cluster  LAYOUT, MAPPER FOR OPERTATOR
+todo:  Cluster ClusterClusterClusterClusterClusterClusterClusterClusterClusterClusterCluster LAYOUT, MAPPER FOR OPERTATOR
 desc:#######################################*/
 
 export const defaultLayoutForClusterForOper = [
@@ -152,7 +152,7 @@ export const defaultLayoutForClusterForOper = [
 export const defaultLayoutMapperForClusterForOper = [
     {
         id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
         graphType: CHART_TYPE.LINE,
     },
     {
@@ -161,14 +161,19 @@ export const defaultLayoutMapperForClusterForOper = [
         graphType: HARDWARE_TYPE_FOR_GRID.MAP,
     },
 
-    {
+    /*{
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: CHART_TYPE.LINE,
+    },*/
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.RECVBYTES,
         graphType: CHART_TYPE.LINE,
     },
     {
         id: '4',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        hwType: HARDWARE_TYPE_FOR_GRID.SENDBYTES,
         graphType: CHART_TYPE.LINE,
     },
     {
@@ -178,8 +183,8 @@ export const defaultLayoutMapperForClusterForOper = [
     },
     {
         id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST,
     },
 
 ];
@@ -224,7 +229,7 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        hwType: undefined,
         graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
     },
 

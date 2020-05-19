@@ -197,8 +197,7 @@ export default function MapForOper(props) {
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
                             return (
-
-                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                <div key={index} style={{display: 'flex', flexDirection: 'column'}}>
                                     <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
                                         <Icon name='th'/> {item.ClusterName}
                                     </div>

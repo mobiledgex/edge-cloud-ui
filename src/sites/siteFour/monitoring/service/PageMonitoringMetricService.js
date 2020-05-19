@@ -902,7 +902,6 @@ export const getAllCloudletEventLogs = async (cloudletList) => {
 export const getAllClusterEventLogList = async (clusterList) => {
     try {
         let clusterPromiseList = []
-        //todo: 모든 클러스터에 대한 이벤트 로그를 요청 비동기식 promiseList
         clusterList.map((clusterOne: TypeCluster, index) => {
             clusterPromiseList.push(getClusterEventLogListOne(clusterOne))
         })

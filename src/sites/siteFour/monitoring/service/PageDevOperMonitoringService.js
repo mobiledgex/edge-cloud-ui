@@ -58,7 +58,7 @@ import {
     defaultLayoutMapperForAppInst,
     defaultLayoutMapperForCloudlet,
     defaultLayoutMapperForClusterForOper
-} from "../common/PageMonitoringLayoutProps";
+} from "../view/PageMonitoringLayoutProps";
 
 
 export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
@@ -675,7 +675,7 @@ export const covertUnits = (value, hardwareType, _this) => {
             } else {
                 return convertToMegaGigaForNumber(value);
             }
-        } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
             if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
                 return value + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
