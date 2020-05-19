@@ -416,7 +416,7 @@ class HeaderAuditLog extends React.Component {
                 <div className='audit_calendar'>
                     <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
                 </div>
-
+                <div className='audit_timeline_vertical'>
                     {
                         (groups.length > 0) ?
                             groups.map((group, gIndex) => {
@@ -433,6 +433,7 @@ class HeaderAuditLog extends React.Component {
                                 })}
                             </Stepper>
                     }
+                </div>
             </div>
         )
     }
