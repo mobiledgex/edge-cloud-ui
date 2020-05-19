@@ -9,7 +9,8 @@ export const GRID_ITEM_TYPE = {
     CLUSTER_LIST: 'CLUSTER_LIST',
     CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
     APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
-    PERFORMANCE_SUM: 'PERFORMANCE_SUM'
+    PERFORMANCE_SUM: 'PERFORMANCE_SUM',
+    CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE'
 }
 export const HARDWARE_TYPE_FOR_GRID = {
     ETC: 'ETC',
@@ -83,9 +84,9 @@ export const defaultLayoutForCloudlet = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//DONUTS
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
-    {i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},//DONUTS
-    {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},//performance Grid
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//
+    /*{i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},//
+    {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},//*/
 ];
 
 
@@ -119,9 +120,9 @@ export const defaultLayoutMapperForCloudlet = [
     {
         id: '6',
         hwType: undefined,
-        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        graphType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
     },
-    {
+    /*{
         id: '7',
         hwType: HARDWARE_TYPE_FOR_GRID.netRecv,
         graphType: CHART_TYPE.LINE,
@@ -130,7 +131,7 @@ export const defaultLayoutMapperForCloudlet = [
         id: '8',
         hwType: HARDWARE_TYPE_FOR_GRID.netSend,
         graphType: CHART_TYPE.LINE,
-    },
+    },*/
 
 ];
 
@@ -145,10 +146,9 @@ export const defaultLayoutForClusterForOper = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 3, w: 4, h: 1, "add": false},//mem
-    {i: '7', x: 1, y: 3, w: 4, h: 1, "add": false},//disk
+    {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//mem
+    {i: '7', x: 1, y: 2, w: 1, h: 1, "add": false},//disk
 ];
-
 
 export const defaultLayoutMapperForClusterForOper = [
     {
@@ -184,12 +184,12 @@ export const defaultLayoutMapperForClusterForOper = [
     },
     {
         id: '6',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
         graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
         graphType: GRID_ITEM_TYPE.LINE,
     },
 
