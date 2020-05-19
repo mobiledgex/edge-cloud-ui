@@ -7,6 +7,7 @@ import MexTextArea from './MexTextArea';
 import MexDualList from './MexDualList';
 import MexCheckbox from './MexCheckbox';
 import MexButton from './MexButton';
+import MexSelectTree from './selectTree/MexSelectTree';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -28,6 +29,7 @@ export const ICON_BUTTON = 'IconButton'
 export const TEXT_AREA = 'TextArea'
 export const BUTTON = 'Button'
 export const MULTI_FORM = 'MultiForm'
+export const SELECT_RADIO_TREE = 'SelectRadioTree'
 
 const MexForms = (props) => {
     let forms = props.forms
@@ -251,11 +253,11 @@ const MexForms = (props) => {
                                 loadInputForms(form, required, disabled) :
                                 form.formType === SELECT ?
                                     loadDropDownForms(form, required, disabled) :
-                                    form.formType === CHECKBOX ?
-                                        <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> :
-                                        form.formType === ICON_BUTTON || form.formType === BUTTON ?
-                                            loadButton(form, i) :
-                                            null
+                                        form.formType === CHECKBOX ?
+                                            <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> :
+                                            form.formType === ICON_BUTTON || form.formType === BUTTON ?
+                                                loadButton(form, i) :
+                                                null
                         }
                     </Grid.Column> : null
             )
@@ -307,14 +309,16 @@ const MexForms = (props) => {
                     <Grid.Column width={11}>
                         {
                             form.forms ?
-                            <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid> :
+                                <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid> :
                                 form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                     loadDropDownForms(form, required, disabled) :
-                                    form.formType === INPUT || form.formType === TEXT_AREA ?
-                                        loadInputForms(form, required, disabled) :
-                                        form.formType === CHECKBOX ?
-                                            <MexCheckbox form={form} onChange={onValueSelect} /> :
-                                            null
+                                    form.formType === SELECT_RADIO_TREE ?
+                                        <MexSelectTree form={form} forms={forms} onChange={onValueSelect}/> :
+                                        form.formType === INPUT || form.formType === TEXT_AREA ?
+                                            loadInputForms(form, required, disabled) :
+                                            form.formType === CHECKBOX ?
+                                                <MexCheckbox form={form} onChange={onValueSelect} /> :
+                                                null
                         }
                     </Grid.Column>
                     {
