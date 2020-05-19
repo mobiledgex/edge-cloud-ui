@@ -85,8 +85,17 @@ export const revertToDefaultLayout = async (_this: PageDevMonitoring) => {
         //showToast(e.toString())
     }
 }
+
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
+}
+
+export function changeClassficationTxt(currentClassification) {
+    if (currentClassification === CLASSIFICATION.CLOUDLET) {
+        return currentClassification;
+    } else {
+        return CLASSIFICATION.CLUSTER
+    }
 }
 
 

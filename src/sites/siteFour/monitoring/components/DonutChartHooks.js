@@ -3,6 +3,7 @@ import '../common/PageMonitoringStyles.css'
 import {Progress} from "antd";
 import {Center} from "../common/PageMonitoringStyles";
 import {CLASSIFICATION} from "../../../../shared/Constants";
+import {changeClassficationTxt} from "../service/PageMonitoringService";
 
 export default function DonutChartHooks(props) {
     const [count, setCount] = useState(-1);
@@ -22,6 +23,7 @@ export default function DonutChartHooks(props) {
 
     const height = 200;
 
+
     return (
         <div>
             <div style={{
@@ -36,7 +38,7 @@ export default function DonutChartHooks(props) {
                          color: 'white'
                      }}
                 >
-                    Resource of Cloudlet
+                    Resource of {changeClassficationTxt(props.currentClassification)}
                 </div>
 
             </div>
@@ -150,7 +152,7 @@ export default function DonutChartHooks(props) {
                                     No Available
                                 </div>
                                 <div style={{fontSize: 12}}>
-                                    (It is shown only in one specific cloudlet)
+                                    (It is shown only in one specific {changeClassficationTxt(props.currentClassification)})
                                 </div>
                             </div>
 
