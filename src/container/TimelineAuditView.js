@@ -14,7 +14,8 @@ import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
 import {Card, IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
 import OfflinePinIcon from '@material-ui/icons/OfflinePin';
-import AccountCircleOutlinedIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import RefreshIcon from '@material-ui/icons/Refresh';
+import {ACTION_REFRESH} from "./MexToolbar";
 
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
@@ -24,7 +25,6 @@ const countryOptions = [
     { key: '1', value: 1, flag: '1', text: 'Last hour' },
 ]
 
-const nameOptions = [{ key: 'all', value: 'all', text: 'All' }]
 let _self = null;
 const jsonView = (jsonObj, self) => {
     return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
@@ -97,7 +97,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             statusErrorToggle: false,
             statusNormalToggle: false,
             dropDownStatusValue: '',
-            dropDownNameValue: 'All',
+            dropDownNameValue: '',
             realtime: moment()
         };
         jsonViewProps = {
@@ -203,6 +203,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                     let auditList = nextProps.data.data;
                     let tasksList = []
+                    let nameOptions = [{ key: 'all', value: 'all', text: 'All' }]
 
                     //todo: Extract only the TaskName to display at the top of the timeline.
                     for (let i in auditList) {
@@ -542,7 +543,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     timesList.push(datetime)
                     statusList.push({"status": allValue.status, "traceid": allValue.traceid})
 
-                    this.setState({dropDownNameValue:'All'})
+                    this.setState({dropDownNameValue:''})
                 } else if (v.value === taskValue) {
                     tasksList.push(taskValue)
                     timesList.push(datetime)
@@ -554,7 +555,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             statusCount.push(this.dropDownOnChangeStatusCount(allData, v))
             if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList, 'current':current})
-            this.setState({timelineList: timelineList, statusErrorToggle: false, statusNormalToggle: false, unCheckedErrorToggle:false, statusCount: statusCount})
+            this.setState({timelineList: timelineList, statusErrorToggle: false, statusNormalToggle: false, unCheckedErrorToggle:false, statusCount: statusCount, timelineSelectedIndex: 0})
         }
 
         onClickUnCheckedError = (e, current) => {
@@ -600,7 +601,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
             if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList, 'current':current})
-            this.setState({timelineList: timelineList, statusErrorToggle:false, statusNormalToggle:false, dropDownNameValue: 'All'})
+            this.setState({timelineList: timelineList, statusErrorToggle:false, statusNormalToggle:false, dropDownNameValue: '', timelineSelectedIndex: 0})
         }
 
         onClickStatus = (status, current) => {
@@ -645,7 +646,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         tasksList.push(taskValue)
                         timesList.push(datetime)
                         statusList.push({"status":allValue.status, "traceid":allValue.traceid})
-                    } else if(nameValue === 'All') {
+                    } else if(nameValue === '') {
                         tasksList.push(taskValue)
                         timesList.push(datetime)
                         statusList.push({"status":allValue.status, "traceid":allValue.traceid})
@@ -662,7 +663,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             timesList.push(datetime)
                             statusList.push({"status": allValue.status, "traceid": allValue.traceid});
                         }
-                    } else if(nameValue === 'All') {
+                    } else if(nameValue === '') {
                         if (status === 'error' && allValue.status !== 200) {
                             tasksList.push(taskValue)
                             timesList.push(datetime)
@@ -679,16 +680,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
             if(statusList.length)this.onHandleIndexClick({traceid:statusList[0].traceid})
             timelineList.push({'timesList' : timesList ,'tasksList':tasksList, 'statusList': statusList, 'current':current})
-            this.setState({timelineList: timelineList, unCheckedErrorToggle:false})
+            this.setState({timelineList: timelineList, unCheckedErrorToggle:false, timelineSelectedIndex: 0})
         }
 
         onCurrentClick = () => {
             let statusValue = this.state.dropDownStatusValue
             let nameValue = this.state.dropDownNameValue
 
-            if(statusValue === '' && nameValue === 'All'){
+            if(statusValue === '' && nameValue === ''){
                 this.dropDownOnNameChange('name', {value:'all'}, true)
-            } else if(statusValue === '' && nameValue !== 'All'){
+            } else if(statusValue === '' && nameValue !== ''){
                 this.dropDownOnNameChange('name', {value:nameValue}, true)
             } else if(statusValue === 'error' || statusValue === 'normal'){
                 this.onClickStatus(statusValue, true)
@@ -697,6 +698,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }
         };
 
+        onRefreshClick = () => {
+            this.refreshData()
+        }
+
 
         getWidth = () => {
             return localStorage.getItem("navigation") == 0 ? window.innerWidth - 90 : window.innerWidth - 280
@@ -704,14 +709,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
         refreshData = ()=>
         {
-            this.setState({rawAllData:[], rawViewData :[], requestData: [], responseData: [], currentTraceid: 'traceId', isLoading2: false})
+            this.setState({rawAllData:[], rawViewData :[], requestData: [], responseData: [], currentTraceid: 'traceId', isLoading2: false, nameList: [], dropDownNameValue: ''})
             this.props.refreshData()
         }
 
         render() {
             return (
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
-                    <Toolbar>
+                    <Toolbar style={{paddingRight:0}}>
                         <label className='content_title_label'>Audit Logs</label>
                         <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
@@ -726,6 +731,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         fluid
                                         search
                                         selection
+                                        value={this.state.dropDownNameValue}
                                         options={this.state.nameList}
                                         onChange={this.dropDownOnNameChange}
                                     />
@@ -770,6 +776,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     </div>
                                     <button className="page_audit_error_button"  onClick={this.onCurrentClick}>Go</button>
                                 </div>
+
+                                <IconButton aria-label="refresh" onClick={this.onRefreshClick} style={{marginLeft:10}}>
+                                    <RefreshIcon style={{ color: '#76ff03' }} />
+                                </IconButton>
                             </div>
                         </div>
                     </Toolbar>

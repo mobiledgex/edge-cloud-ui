@@ -49,9 +49,38 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    locationChange = (currentForm, forms, isInit) => {
+        if (isInit === undefined || isInit === false) {
+            let parentForm = currentForm.parent.form
+            let childForms = parentForm.forms
+            let latitude = undefined
+            let longitude = undefined
+            for (let i = 0; i < childForms.length; i++) {
+                let form = childForms[i]
+                if (form.field === fields.latitude) {
+                    latitude = form.value
+                }
+                else if (form.field === fields.longitude) {
+                    longitude = form.value
+                }
+            }
+            if (latitude && longitude) {
+                let cloudlet = {}
+                cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
+                this.setState({ mapData: [cloudlet] })
+            }
+            else {
+                this.setState({ mapData: [] })
+            }
+        }
+    }
+
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.platformType) {
             this.platformTypeValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.latitude || form.field === fields.longitude) {
+            this.locationChange(form, forms, isInit)
         }
     }
 
@@ -243,8 +272,8 @@ class ClusterInstReg extends React.Component {
     }
 
     locationForm = () => ([
-        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type:'number'}, width: 8, visible: true },
-        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type:'number'}, width: 8, visible: true }
+        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type:'number', onBlur: true}, width: 8, visible: true },
+        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type:'number', onBlur: true}, width: 8, visible: true }
     ])
 
     formKeys = () => {
@@ -252,12 +281,12 @@ class ClusterInstReg extends React.Component {
             { label: 'Create Cloudlet', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.' },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.' },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false}, visible: true, value: getOrganization(), tip: 'Name of the organization you are currently managing.' },
-            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'Cloudlet Location' },
-            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false}, visible: true, value: getOrganization(), tip: 'Organization of the cloudlet site' },
+            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location' },
+            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
-            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, update: true },
+            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, update: true, tip:'Cloudlet container version' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
