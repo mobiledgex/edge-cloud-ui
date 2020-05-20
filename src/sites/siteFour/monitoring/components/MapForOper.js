@@ -84,6 +84,7 @@ export default function MapForOper(props) {
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
     const [filteredClusterList, setFilteredClusterList] = useState([])
+    const [isEnableZoom, setIsEnableZoom] = useState(true)
 
     useEffect(() => {
         if (zoom !== 1) {
@@ -93,6 +94,14 @@ export default function MapForOper(props) {
         }
         setMapCenter(worldMapCenter);
     }, [props.toggleOperMapZoom])
+
+    useEffect(() => {
+        if (currentCluodlet === CLASSIFICATION.CLUSTER_FOR_OPER) {
+            setIsEnableZoom(false)
+        } else {
+            setIsEnableZoom(true)
+        }
+    }, [props.currentClassification])
 
 
     useEffect(() => {
@@ -171,6 +180,7 @@ export default function MapForOper(props) {
                 dragging={true}
                 zoomControl={false}
                 boundsOptions={{padding: [50, 50]}}
+                scrollWheelZoom={isEnableZoom}
             >
                 <TileLayer
                     url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
@@ -363,6 +373,9 @@ export default function MapForOper(props) {
                         : null
                 }
 
+                {/*todo:Control*/}
+                {/*todo:Control*/}
+                {/*todo:Control*/}
                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
                     <div style={PageMonitoringStyles.mapControlDiv}>
@@ -407,6 +420,18 @@ export default function MapForOper(props) {
                         >
                             <Icon
                                 name='minus'
+                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                            />
+                        </div>
+                        <div
+                            style={mapIconStyle}
+                            onClick={() => {
+                                setIsEnableZoom(!isEnableZoom
+                                )
+                            }}
+                        >
+                            <Icon
+                                name='arrows alternate vertical'
                                 style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
                             />
                         </div>

@@ -713,6 +713,24 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             animation: {
                 duration: 500
             },
+            tooltips: {
+                callbacks: {
+                    label: (tooltipItem, data) => {
+                        const index = tooltipItem.datasetIndex === undefined ? tooltipItem.index : tooltipItem.datasetIndex
+                        const itemData = data.datasets[index]
+                        // Return custom data to tooltip, these will be available inside the tooltip.body
+
+                        return {
+                            id: data.id,
+                            pictureUrl: itemData.pictureUrl,
+                            label: itemData.label,
+                            value: covertUnits(tooltipItem.yLabel, hardwareType, _this,),
+                            xLabel: tooltipItem.xLabel,
+                            percent: data.percent
+                        }
+                    }
+                }
+            },
             maintainAspectRatio: false,
             responsive: true,
             datasetStrokeWidth: 1,
@@ -763,9 +781,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     ticks: {
                         fontColor: "#CCC", // this here
                         callback(value, index, label) {
-
                             return covertUnits(value, hardwareType, _this,)
-
                         },
                     },
                 }, {

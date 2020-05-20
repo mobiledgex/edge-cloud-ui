@@ -183,25 +183,27 @@ export const fetchCloudletList = async () => {
         })
 
         //@todo: when oper role
-        if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
-            let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
-                return item.Operator === localStorage.getItem('selectOrg').toString().trim()
-            })
-            result.sort((a: TypeCloudlet, b: TypeCloudlet) => {
-                if (a.CloudletName < b.CloudletName) {
-                    return -1;
-                }
-                if (a.CloudletName > b.CloudletName) {
-                    return 1;
-                }
-                return 0;
-            })
-            return result;
+        /* if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
+             let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
+                 return item.Operator === localStorage.getItem('selectOrg').toString().trim()
+             })
+             result.sort((a: TypeCloudlet, b: TypeCloudlet) => {
+                 if (a.CloudletName < b.CloudletName) {
+                     return -1;
+                 }
+                 if (a.CloudletName > b.CloudletName) {
+                     return 1;
+                 }
+                 return 0;
+             })
+             return result;
 
-        } else {
-            return mergedCloudletList;
-        }
+         } else {
+             return mergedCloudletList;
+         }
+ */
 
+        return mergedCloudletList;
 
     } catch (e) {
         //showToast( e.toString())
@@ -775,7 +777,7 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + pToken
         },
-        timeout: 15 * 1000
+        timeout: 30 * 1000
     }).then(async response => {
         return response.data;
     }).catch(e => {
@@ -815,7 +817,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + pToken
             },
-            timeout: 15 * 1000
+            timeout: 30 * 1000
         }).then(async response => {
             return response.data;
         }).catch(e => {
@@ -849,7 +851,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
             },
-            timeout: 15 * 1000
+            timeout: 30 * 1000
         }).then(async response => {
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values

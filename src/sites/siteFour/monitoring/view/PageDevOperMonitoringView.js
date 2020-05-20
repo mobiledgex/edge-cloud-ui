@@ -597,15 +597,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
                     //todo: realdata
-                    promiseList2.push(getAllClusterEventLogList(clusterList))
-                    promiseList2.push(getAllAppInstEventLogs());
+                    /*promiseList2.push(getAllClusterEventLogList(clusterList))
+                    promiseList2.push(getAllAppInstEventLogs());*/
                     promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                     promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
                     let newPromiseList2 = await Promise.all(promiseList2);
-                    let allClusterEventLogList = newPromiseList2[0];
-                    let allAppInstEventLogList = newPromiseList2[1];
-                    let allClusterUsageList = newPromiseList2[2];
-                    let allCloudletUsageList = newPromiseList2[3];
+                    /*let allClusterEventLogList = newPromiseList2[0];
+                    let allAppInstEventLogList = newPromiseList2[1];*/
+                    let allClusterUsageList = newPromiseList2[0];
+                    let allCloudletUsageList = newPromiseList2[1];
                     //fixme: fakedata
                     //fixme: fakedata
                     /*   let allClusterEventLogList = []
@@ -613,20 +613,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                        let allClusterUsageList = require('../temp/clusterUSageList')
                        let allCloudletUsageList = require('../temp/cloudletUsageList')*/
 
-                    console.log(`allClusterEventLogList....clusterList===>`, clusterList);
-                    console.log(`allClusterEventLogList===>`, allClusterEventLogList);
+                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
+
+                    console.log(`cloudletDropdownList====>`, cloudletDropdownList);
 
                     await this.setState({
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 30,
                         isNoData: appInstList.length === 0,
                         bubbleChartData: bubbleChartData,
-                        allClusterEventLogList: allClusterEventLogList,
-                        filteredClusterEventLogList: allClusterEventLogList,
-                        allAppInstEventLogs: allAppInstEventLogList,
-                        filteredAppInstEventLogs: allAppInstEventLogList,
+                        /* allClusterEventLogList: allClusterEventLogList,
+                         filteredClusterEventLogList: allClusterEventLogList,
+                         allAppInstEventLogs: allAppInstEventLogList,
+                         filteredAppInstEventLogs: allAppInstEventLogList,*/
                         isReady: true,
                         clusterDropdownList: clusterDropdownList,//@fixme
                         dropDownCludsterListOnCloudlet: clusterDropdownList,//@fixme
@@ -649,7 +650,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     });
                 } catch (e) {
-                    //showToast(e.toString())
+                    showToast(e.toString())
 
                 }
 
@@ -1232,6 +1233,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else {
                         return (
                             <MapForOper
+                                isEnableZoom={true}
+                                currentClassification={this.state.currentClassification}
                                 parent={this}
                                 cloudletList={this.state.filteredCloudletList}
                                 appInstList={this.state.filteredAppInstList}
@@ -2077,7 +2080,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{}}
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
-                            disabled={isEmpty(this.state.cloudletDropdownList)}
+                            //disabled={isEmpty(this.state.cloudletDropdownList)}
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
@@ -2085,7 +2088,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 this.cloudletSelect.blur();
                             }}
                         >
-                            {!isEmpty(this.state.cloudletDropdownList) && this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
+                            {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
                                 if (index === 0) {
                                     return <Option key={index} value={item.value} style={{}}>
                                         <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
@@ -2507,6 +2510,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                                 <div style={{color: 'green', fontSize: 14}}>
                                     &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectRole.toString()}
+                                </div>
+                                <div style={{color: 'skyblue', fontSize: 14}}>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectOrg.toString()}
                                 </div>
                             </label>
                             <div className='page_monitoring_select_area'
