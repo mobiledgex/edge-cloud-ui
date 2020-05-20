@@ -1236,6 +1236,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 isEnableZoom={true}
                                 currentClassification={this.state.currentClassification}
                                 parent={this}
+                                cloudletLength={this.state.filteredCloudletList.length}
                                 cloudletList={this.state.filteredCloudletList}
                                 appInstList={this.state.filteredAppInstList}
                                 toggleOperMapZoom={!this.state.toggleOperMapZoom}
@@ -1946,7 +1947,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
                             currentAppInst: undefined,
                             filteredClusterList: filteredClusterList,
-                            currentOperLevel: CLASSIFICATION.CLUSTER
+                            currentOperLevel: CLASSIFICATION.CLUSTER,
+
                         }, () => {
                             console.log(`sdlkflskdfkl==3333==>`, this.state.filteredClusterUsageList);
                         });
@@ -2294,7 +2296,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         style={{marginLeft: 0,}}
                                         color='#1cecff' during={100}
                                         onClick={async () => {
-                                            await this.handleOnChangeCloudletDropdown(item.CloudletName, index)
+                                            if (this.state.filteredCloudletList.length > 1) {
+                                                await this.handleOnChangeCloudletDropdown(item.CloudletName)
+                                            } else {
+                                                await this.handleOnChangeCloudletDropdown(undefined)
+                                            }
+
+
                                         }}
                                     >
                                         {this.renderDot(index)}

@@ -96,12 +96,12 @@ export default function MapForOper(props) {
     }, [props.toggleOperMapZoom])
 
     useEffect(() => {
-        if (currentCluodlet === CLASSIFICATION.CLUSTER_FOR_OPER) {
+        if (props.cloudletLength === 1) {
             setIsEnableZoom(false)
         } else {
             setIsEnableZoom(true)
         }
-    }, [props.currentClassification])
+    }, [props.cloudletLength])
 
 
     useEffect(() => {
@@ -166,6 +166,188 @@ export default function MapForOper(props) {
         await props.parent.handleOnChangeCloudletDropdown(cloudLetOne.CloudletName)
     }
 
+    function renderClusterBottomInfo() {
+        return (
+            <div style={{
+                flex: .5,
+                border: '0.5px solid grey',
+                padding: 10,
+                overflowY: 'auto',
+                marginLeft: 15,
+                marginRight: 5,
+                borderRadius: 10,
+            }}>
+
+                {filteredClusterList.map((item: TypeCluster, index) => {
+                    return (
+                        <div
+                            onClick={async () => {
+                                await props.parent.handleOnChangeClusterDropdown(item.ClusterName + " | " + item.Cloudlet)
+                            }}
+                            key={index} style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
+                            marginBottom: 15,
+                        }}
+                        >
+                            <div style={{
+                                fontSize: 15,
+                                color: 'yellow',
+                                fontWeight: 'bold',
+                                marginTop: 0,
+                                fontFamily: 'Roboto'
+                            }}>
+                                <Icon name='th'/> {item.ClusterName}
+                            </div>
+                            <div style={Styles.lable001}>
+                                <b>Deployment</b>: <span style={{
+                                color: 'green',
+                                fontWeight: 'bold',
+                                fontSize: 15
+                            }}>{item.Deployment}</span>
+                            </div>
+                            <div style={Styles.lable001}>
+                                <b>Flavor</b>: {item.Flavor}
+                            </div>
+                            <div style={Styles.lable001}>
+                                <b>State</b>: {CLOUDLET_CLUSTER_STATE[item.State]}
+                            </div>
+                            <div style={Styles.lable001}>
+                                <b>Reservable</b>: {item.Reservable}
+                            </div>
+                            <div style={{
+                                marginTop: 5,
+                                fontSize: 13,
+                                marginLeft: 10,
+                                fontStyle: 'italic',
+
+                            }}>
+                                <b>IpAccess</b>: {item.IpAccess}
+                            </div>
+                        </div>
+                    )
+                })}
+                {filteredClusterList.length === 0 &&
+                <Center style={{fontSize: 20, color: 'orange', alignSelf: 'center', height: 135}}>
+                    <div style={{marginTop: 15, fontStyle: 'italic'}}>
+                        No Cluster
+                    </div>
+                </Center>
+                }
+
+            </div>
+        )
+    }
+
+    function renderCloudletInfo() {
+        return (
+            <div style={{flex: .5, border: '0.5px solid grey', padding: 10, borderRadius: 10, marginLeft: 5}}
+                 onClick={async () => {
+                     await props.parent.handleOnChangeCloudletDropdown(currentCluodlet.CloudletName + " | " + JSON.stringify(currentCluodlet.CloudletLocation))
+                 }}
+            >
+                <div style={{
+                    fontSize: 15,
+                    color: 'yellow',
+                    fontWeight: 'bold',
+                    marginTop: 0,
+                    fontFamily: 'Roboto'
+                }}>
+                    <Icon name='cloud'/> {currentCluodlet.CloudletName}
+                </div>
+                <div style={Styles.lable001}>
+                    <b>Operator</b>: {currentCluodlet.Operator}
+                </div>
+                <div style={Styles.lable001}>
+                    <b>Ip_support</b>: {currentCluodlet.Ip_support}
+                </div>
+
+                <div style={Styles.lable001}>
+                    <b>Num_dynamic_ips</b>:{currentCluodlet.Num_dynamic_ips}
+                </div>
+                <div style={Styles.lable001}>
+                    <b>State</b>: {CLOUDLET_CLUSTER_STATE[currentCluodlet.State]}
+                </div>
+                <div style={Styles.lable001}>
+                    <b>CloudletInfoState</b>: {currentCluodlet.CloudletInfoState}
+                </div>
+            </div>
+
+        )
+
+    }
+
+    function renderAppInstInfo() {
+        return (
+            props.currentOperLevel === CLASSIFICATION.CLUSTER && props.filteredAppInstList.length > 0 && filteredClusterList.length === 1 ?
+                <div
+                    style={Styles.topInfoDiv}
+                >
+                    {/*todo:##################################*/}
+                    {/*todo:appInst top info               */}
+                    {/*todo:##################################*/}
+                    <div style={{
+                        flex: 1,
+                        border: '0.5px solid grey',
+                        padding: 10,
+                        overflowY: 'auto',
+                        marginLeft: 15,
+                        marginRight: 5,
+                        borderRadius: 10,
+                    }}>
+                        {props.filteredAppInstList.map((item: TypeAppInst, index) => {
+                            return (
+                                <div
+                                    onClick={async () => {
+                                    }}
+                                    key={index} style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
+                                }}
+                                >
+                                    <div style={{fontSize: 12, color: 'white',}}>
+                                        <Icon name='server'/> {item.AppName}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+                : props.currentOperLevel === CLASSIFICATION.CLUSTER && props.filteredAppInstList.length === 0 ?
+                <div
+                    style={Styles.topInfoDivNoAppInst}
+                >
+                    <div style={{
+                        flex: 1,
+                        border: '0.5px solid grey',
+                        padding: 0,
+                        overflowY: 'auto',
+                        marginLeft: 15,
+                        marginRight: 5,
+                        borderRadius: 10,
+                    }}>
+                        <Center style={{
+                            fontSize: 15,
+                            color: 'orange',
+                            alignSelf: 'center',
+                            height: 40,
+                            marginTop: -1,
+                            fontWeight: 'bold'
+                        }}>
+                            <div style={{marginTop: 0, fontStyle: 'italic'}}>
+                                No App Inst
+                            </div>
+                        </Center>
+                    </div>
+                </div>
+                : null
+
+        )
+
+    }
+
 
     return (
         <div style={{height: '100%', width: '100%'}}>
@@ -188,190 +370,18 @@ export default function MapForOper(props) {
                     minZoom={1}
                 />
 
-                {/*@todo:##########################################*/}
-                {/*@todo:cloudlet/cluster info                     */}
-                {/*@todo:##########################################*/}
+                {/*@todo:#####################################################*/}
+                {/*@todo:cloudlet , cluster ,AppInst info                        */}
+                {/*@todo:####################################################*/}
                 {currentCluodlet !== undefined &&
                 <div
                     style={Styles.infoDiv}
                 >
-                    {/*todo:##################################*/}
-                    {/*todo:Cloudlet bottom info              */}
-                    {/*todo:##################################*/}
-                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10, borderRadius: 10, marginLeft: 5}}
-                         onClick={async () => {
-                             await props.parent.handleOnChangeCloudletDropdown(currentCluodlet.CloudletName + " | " + JSON.stringify(currentCluodlet.CloudletLocation))
-                         }}
-                    >
-                        <div style={{
-                            fontSize: 15,
-                            color: 'yellow',
-                            fontWeight: 'bold',
-                            marginTop: 0,
-                            fontFamily: 'Roboto'
-                        }}>
-                            <Icon name='cloud'/> {currentCluodlet.CloudletName}
-                        </div>
-                        <div style={Styles.lable001}>
-                            <b>Operator</b>: {currentCluodlet.Operator}
-                        </div>
-                        <div style={Styles.lable001}>
-                            <b>Ip_support</b>: {currentCluodlet.Ip_support}
-                        </div>
-
-                        <div style={Styles.lable001}>
-                            <b>Num_dynamic_ips</b>:{currentCluodlet.Num_dynamic_ips}
-                        </div>
-                        <div style={Styles.lable001}>
-                            <b>State</b>: {CLOUDLET_CLUSTER_STATE[currentCluodlet.State]}
-                        </div>
-                        <div style={Styles.lable001}>
-                            <b>CloudletInfoState</b>: {currentCluodlet.CloudletInfoState}
-                        </div>
-                    </div>
-
-
-                    {/*todo:##################################*/}
-                    {/*todo:cluster bottom info               */}
-                    {/*todo:##################################*/}
-                    <div style={{
-                        flex: .5,
-                        border: '0.5px solid grey',
-                        padding: 10,
-                        overflowY: 'auto',
-                        marginLeft: 15,
-                        marginRight: 5,
-                        borderRadius: 10,
-                    }}>
-
-                        {filteredClusterList.map((item: TypeCluster, index) => {
-                            return (
-                                <div
-                                    onClick={async () => {
-                                        await props.parent.handleOnChangeClusterDropdown(item.ClusterName + " | " + item.Cloudlet)
-                                    }}
-                                    key={index} style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
-                                }}
-                                >
-                                    <div style={{
-                                        fontSize: 15,
-                                        color: 'yellow',
-                                        fontWeight: 'bold',
-                                        marginTop: 0,
-                                        fontFamily: 'Roboto'
-                                    }}>
-                                        <Icon name='th'/> {item.ClusterName}
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Deployment</b>: <span style={{
-                                        color: 'green',
-                                        fontWeight: 'bold',
-                                        fontSize: 15
-                                    }}>{item.Deployment}</span>
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Flavor</b>: {item.Flavor}
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>State</b>: {CLOUDLET_CLUSTER_STATE[item.State]}
-                                    </div>
-                                    <div style={Styles.lable001}>
-                                        <b>Reservable</b>: {item.Reservable}
-                                    </div>
-                                    <div style={{
-                                        marginTop: 5,
-                                        fontSize: 13,
-                                        marginLeft: 10,
-                                        fontStyle: 'italic',
-
-                                    }}>
-                                        <b>IpAccess</b>: {item.IpAccess}
-                                    </div>
-                                </div>
-                            )
-                        })}
-                        {filteredClusterList.length === 0 &&
-                        <Center style={{fontSize: 20, color: 'orange', alignSelf: 'center', height: 135}}>
-                            <div style={{marginTop: 15, fontStyle: 'italic'}}>
-                                No Cluster
-                            </div>
-                        </Center>
-                        }
-
-                    </div>
-
+                    {renderCloudletInfo()}
+                    {renderClusterBottomInfo()}
                 </div>
                 }
-                {/*@desc:##########################################*/}
-                {/*@desc:AppInstInfo DIv topRight               */}
-                {/*@desc:##########################################*/}
-                {props.currentOperLevel === CLASSIFICATION.CLUSTER && props.filteredAppInstList.length > 0 && filteredClusterList.length === 1 ?
-                    <div
-                        style={Styles.topInfoDiv}
-                    >
-                        {/*todo:##################################*/}
-                        {/*todo:appInst top info               */}
-                        {/*todo:##################################*/}
-                        <div style={{
-                            flex: 1,
-                            border: '0.5px solid grey',
-                            padding: 10,
-                            overflowY: 'auto',
-                            marginLeft: 15,
-                            marginRight: 5,
-                            borderRadius: 10,
-                        }}>
-                            {props.filteredAppInstList.map((item: TypeAppInst, index) => {
-                                return (
-                                    <div
-                                        onClick={async () => {
-                                        }}
-                                        key={index} style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
-                                    }}
-                                    >
-                                        <div style={{fontSize: 12, color: 'white',}}>
-                                            <Icon name='server'/> {item.AppName}
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                    : props.currentOperLevel === CLASSIFICATION.CLUSTER && props.filteredAppInstList.length === 0 ?
-                        <div
-                            style={Styles.topInfoDivNoAppInst}
-                        >
-                            <div style={{
-                                flex: 1,
-                                border: '0.5px solid grey',
-                                padding: 0,
-                                overflowY: 'auto',
-                                marginLeft: 15,
-                                marginRight: 5,
-                                borderRadius: 10,
-                            }}>
-                                <Center style={{
-                                    fontSize: 15,
-                                    color: 'orange',
-                                    alignSelf: 'center',
-                                    height: 40,
-                                    marginTop: -1,
-                                    fontWeight: 'bold'
-                                }}>
-                                    <div style={{marginTop: 0, fontStyle: 'italic'}}>
-                                        No App Inst
-                                    </div>
-                                </Center>
-                            </div>
-                        </div>
-                        : null
-                }
+                {renderAppInstInfo()}
 
                 {/*todo:Control*/}
                 {/*todo:Control*/}
@@ -432,7 +442,7 @@ export default function MapForOper(props) {
                         >
                             <Icon
                                 name='arrows alternate vertical'
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                style={{fontSize: 20, color: isEnableZoom ? 'white' : 'grey', cursor: 'pointer'}}
                             />
                         </div>
 
