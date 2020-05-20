@@ -33,7 +33,7 @@ const Styles = {
     lable001: {
         marginTop: 5,
         fontSize: 13,
-        marginLeft: 10,
+        marginLeft: 25,
         fontStyle: 'italic'
     },
     infoDiv: {
@@ -188,7 +188,8 @@ export default function MapForOper(props) {
                             display: 'flex',
                             flexDirection: 'column',
                             marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
-                            marginBottom: 15,
+                            marginBottom: 5,
+                            //border: '0.5px solid grey',
                         }}
                         >
                             <div style={{
@@ -216,13 +217,7 @@ export default function MapForOper(props) {
                             <div style={Styles.lable001}>
                                 <b>Reservable</b>: {item.Reservable}
                             </div>
-                            <div style={{
-                                marginTop: 5,
-                                fontSize: 13,
-                                marginLeft: 10,
-                                fontStyle: 'italic',
-
-                            }}>
+                            <div style={Styles.lable001}>
                                 <b>IpAccess</b>: {item.IpAccess}
                             </div>
                         </div>
