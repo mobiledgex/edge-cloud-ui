@@ -283,13 +283,20 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 };
 
 export function makeMultiLineChartDatas(multiLineChartDataSets) {
+
+    console.log(`multiLineChartDataSets====>`, multiLineChartDataSets);
+
     let hardwareType = []
     let levelTypeNameList = []
     let newDateTimeList = []
     let usageSetList = []
     multiLineChartDataSets.map((dataSetsOne: TypeLineChartData, index) => {
         hardwareType = hardwareType.concat(dataSetsOne.hardwareType)
-        levelTypeNameList = levelTypeNameList.concat(dataSetsOne.levelTypeNameList)
+        levelTypeNameList = levelTypeNameList.concat(dataSetsOne.hardwareType)
+
+        console.log(`levelTypeNameList====>`, dataSetsOne.levelTypeNameList);
+
+
         newDateTimeList = (dataSetsOne.newDateTimeList)
         usageSetList = usageSetList.concat(dataSetsOne.usageSetList)
     })
@@ -351,8 +358,8 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                //////todo:cloudllet/////////
-                //////todo:cloudllet/////////
+                    //////todo:cloudllet/////////
+                    //////todo:cloudllet/////////
                 //////todo:cloudllet/////////
                 else if (
                     hardwareType === HARDWARE_TYPE.NETSEND
@@ -367,7 +374,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 }
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
-                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
                 } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     classificationName = item.cloudlet
@@ -734,7 +741,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                 ticks: {
                     beginAtZero: true,
                     min: 0,
-                    max: 100,//todo max value
+                    // max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
                         return covertUnits(value, hardwareType, _this,)
@@ -751,6 +758,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     ticks: {
                         fontColor: "#CCC", // this here
                         callback(value, index, label) {
+
                             return covertUnits(value, hardwareType, _this,)
 
                         },

@@ -50,8 +50,6 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.chartDataSet !== nextProps.chartDataSet) {
 
-            console.log(`chartDataSet====>`, nextProps.chartDataSet);
-
             let lineChartDataSet = nextProps.chartDataSet
             let hwType = nextProps.pHardwareType;
             let graphType = nextProps.graphType;
@@ -63,14 +61,15 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
     setChartData(plineChartDataSet, hwType, graphType) {
         let multiLineChartDatasSets = makeMultiLineChartDatas(plineChartDataSet);
 
+        console.log(`multiLineChartDatasSets====>`, multiLineChartDatasSets)
+
         let levelTypeNameList = multiLineChartDatasSets.levelTypeNameList;
         let usageSetList = multiLineChartDatasSets.usageSetList;
         let newDateTimeList = multiLineChartDatasSets.newDateTimeList;
         let hardwareType = multiLineChartDatasSets.hardwareType;
-
-        const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
+        const _lineChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
         this.setState({
-            chartDataSet: lineChartDataForRendering,
+            chartDataSet: _lineChartDataSet,
             pHardwareType: hwType,
             graphType: graphType,
         })
@@ -114,7 +113,7 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' style={{fontFamily: 'Roboto'}}>
-                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.makeToShortTitle(this.state.pHardwareType)}
+                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType}
                         </div>
                     </div>
                     <div className='page_monitoring_container'>

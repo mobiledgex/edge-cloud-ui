@@ -1105,7 +1105,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             _______________makeGridItemOneBody(hwType, graphType) {
 
-                console.log(`graphType====>`, graphType);
+                console.log(`hwType====>`, hwType);
 
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && hwType.length >= 2) {
                     let multiLineChartDataSets = []
@@ -1114,8 +1114,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             let lineDataOne = makeLineChartData(this.state.filteredClusterUsageList, hwType[i], this)
                             multiLineChartDataSets.push(lineDataOne);
                         }
-                    }
 
+                        console.log(`multiLineChartDataSets====>`, multiLineChartDataSets);
+                    }
 
                     return (
                         this.state.loading ? renderPlaceHolderLoader() :
@@ -1128,8 +1129,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 chartDataSet={multiLineChartDataSets}
                             />
                     )
-                }
-                if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, hwType, this)
@@ -1138,6 +1138,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
                     }
+
+                    console.log(`chartDataSets222====>`, chartDataSets);
 
                     return (
                         this.state.loading ? renderPlaceHolderLoader() :
