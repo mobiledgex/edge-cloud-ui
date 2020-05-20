@@ -332,8 +332,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let themeTitle = getUserId() + "_mon_theme_title";
 
                 //@fixme: DELETE THEME COLOR
-                /*reactLocalStorage.remove(clusterForOperLayoutKey)
-                reactLocalStorage.remove(clusterForOperHwMapperKey)*/
+                reactLocalStorage.remove(cloudletLayout)
+                reactLocalStorage.remove(cloudletlayoutMapper)
+
+                reactLocalStorage.remove(clusterOperLayout)
+                reactLocalStorage.remove(clusterOperLayoutMapper)
                 this.state = {
                     //todo:dev layout
                     //todo:dev layout
@@ -1106,15 +1109,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            _______________makeGridItemOneBody(hwType, graphType) {
-
-                console.log(`hwType====>`, hwType);
-
-                if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && hwType.length >= 2) {
+            _______________makeGridItemOneBody(pHwType, graphType) {
+                if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                        for (let i in hwType) {
-                            let lineDataOne = makeLineChartData(this.state.filteredClusterUsageList, hwType[i], this)
+                        for (let i in pHwType) {
+                            let lineDataOne = makeLineChartData(this.state.filteredClusterUsageList, pHwType[i], this)
                             multiLineChartDataSets.push(lineDataOne);
                         }
 
@@ -1128,18 +1128,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 loading={this.state.loading}
                                 currentClassification={this.state.currentClassification}
                                 parent={this}
-                                pHardwareType={hwType.toString()}
+                                pHardwareType={pHwType.toString()}
                                 chartDataSet={multiLineChartDataSets}
                             />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                        chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                        chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                        chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, hwType, this)
+                        chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                     }
 
                     console.log(`chartDataSets222====>`, chartDataSets);
@@ -1151,7 +1151,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 loading={this.state.loading}
                                 currentClassification={this.state.currentClassification}
                                 parent={this}
-                                pHardwareType={hwType}
+                                pHardwareType={pHwType}
                                 chartDataSet={chartDataSets}
                             />
                     )
@@ -1160,16 +1160,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let barChartDataSet: TypeBarChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                        barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, hwType, this)
+                        barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                        barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, hwType, this)
+                        barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
                     }
                     if (barChartDataSet === undefined) {
                         barChartDataSet = []
                     }
                     return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
                                                loading={this.state.loading} chartDataSet={barChartDataSet}
-                                               pHardwareType={hwType} graphType={graphType}/>)
+                                               pHardwareType={pHwType} graphType={graphType}/>)
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                     return (
@@ -1342,7 +1342,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </ResponsiveReactGridLayout>
 
                         )
-                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                    } else {
                         return (
                             <ResponsiveReactGridLayout
                                 isResizable={true}

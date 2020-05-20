@@ -11,7 +11,8 @@ export const GRID_ITEM_TYPE = {
     APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
     PERFORMANCE_SUM: 'PERFORMANCE_SUM',
     CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
-    MULTI_LINE_CHART: 'MULTI_CONNECTIONS'
+    MULTI_LINE_CHART: 'MULTI_CONNECTIONS',
+    METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
 }
 export const HARDWARE_TYPE_FOR_GRID = {
     ETC: 'ETC',
@@ -65,13 +66,13 @@ export const HARDWARE_TYPE_FOR_GRID = {
 
 };
 
-export const CHART_TYPE = {
+/*export const CHART_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
     COLUMN: 'COLUMN',
     DONUTS: 'DONUTS',
     METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
-}
+}*/
 
 
 /*desc:#########################################################################################################################################
@@ -90,8 +91,8 @@ export const defaultLayoutForClusterForOper = [
 export const defaultLayoutMapperForClusterForOper = [
     {
         id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.LINE,
+        hwType: [HARDWARE_TYPE_FOR_GRID.CPU, HARDWARE_TYPE_FOR_GRID.MEM, HARDWARE_TYPE_FOR_GRID.DISK],
+        graphType: GRID_ITEM_TYPE.MULTI_LINE_CHART,
     },
     {
         id: '2',
@@ -111,8 +112,8 @@ export const defaultLayoutMapperForClusterForOper = [
     },
     {
         id: '5',
-        hwType: undefined,
-        graphType: CHART_TYPE.DONUTS,
+        hwType: '',
+        graphType: GRID_ITEM_TYPE.DONUTS,
     },
     {
         id: '6',
@@ -138,7 +139,6 @@ export const defaultLayoutForCloudlet = [
     /*{i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},//
     {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},//*/
 ];
-
 
 
 export const defaultLayoutMapperForCloudlet = [

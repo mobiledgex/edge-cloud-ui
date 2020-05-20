@@ -7,7 +7,7 @@ import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import Button from "@material-ui/core/Button";
-import {CHART_TYPE as _GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -33,7 +33,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         super(props)
         this.state = {
             //isOpenEditView: [],
-            currentItemType: _GRID_ITEM_TYPE.LINE,
+            currentItemType: GRID_ITEM_TYPE.LINE,
             currentHwTypeList: [],
             isShowHWDropDown: true,
             isShowEventLog: false,
@@ -70,7 +70,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     handleAddClicked = async () => {
         try {
-            if (this.state.currentItemType === _GRID_ITEM_TYPE.LINE || this.state.currentItemType === _GRID_ITEM_TYPE.BAR || this.state.currentItemType === _GRID_ITEM_TYPE.COLUMN) {
+            if (this.state.currentItemType === GRID_ITEM_TYPE.LINE || this.state.currentItemType === GRID_ITEM_TYPE.BAR || this.state.currentItemType === GRID_ITEM_TYPE.COLUMN) {
                 if (this.state.currentHwTypeList.length === 0) {
                     notification.warning({
                         placement: 'topLeft',
@@ -194,7 +194,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div
                                             onClick={() => {
                                                 this.setState({
-                                                    currentItemType: _GRID_ITEM_TYPE.LINE,
+                                                    currentItemType: GRID_ITEM_TYPE.LINE,
                                                     isShowHWDropDown: true,
                                                     isShowEventLog: false,
                                                 })
@@ -207,7 +207,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             </Center>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={_GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
                                         </div>
                                     </ChartIconOuterDiv>
                                     {/*todo:##################################*/}
@@ -218,7 +218,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div
                                             onClick={() => {
                                                 this.setState({
-                                                    currentItemType: _GRID_ITEM_TYPE.BAR,
+                                                    currentItemType: GRID_ITEM_TYPE.BAR,
                                                     isShowHWDropDown: true,
                                                     isShowEventLog: false,
                                                 })
@@ -231,7 +231,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             </Center>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={_GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
                                         </div>
                                     </ChartIconOuterDiv>
                                     }
@@ -243,7 +243,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div
                                             onClick={() => {
                                                 this.setState({
-                                                    currentItemType: _GRID_ITEM_TYPE.COLUMN,
+                                                    currentItemType: GRID_ITEM_TYPE.COLUMN,
                                                     isShowHWDropDown: true,
                                                     isShowEventLog: false,
                                                 })
@@ -256,7 +256,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             </Center>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={_GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
                                         </div>
                                     </ChartIconOuterDiv>
                                     }
@@ -267,7 +267,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div
                                             onClick={() => {
                                                 this.setState({
-                                                    currentItemType: _GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+                                                    currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
                                                     isShowHWDropDown: false,
                                                     isShowEventLog: true,
                                                 })
@@ -280,7 +280,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             </Center>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={_GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
                                         </div>
                                     </ChartIconOuterDiv>
                                     {/*desc:###############################*/}
@@ -290,7 +290,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div
                                             onClick={() => {
                                                 this.setState({
-                                                    currentItemType: _GRID_ITEM_TYPE.MAP,
+                                                    currentItemType: GRID_ITEM_TYPE.MAP,
                                                     isShowHWDropDown: false,
                                                     isShowEventLog: false,
                                                 })
@@ -303,7 +303,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             </Center>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={_GRID_ITEM_TYPE.MAP}>Map</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
                                         </div>
                                     </ChartIconOuterDiv>
 
@@ -314,7 +314,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                         <div
                                             onClick={() => {
                                                 this.setState({
-                                                    currentItemType: _GRID_ITEM_TYPE.BUBBLE,
+                                                    currentItemType: GRID_ITEM_TYPE.BUBBLE,
                                                     isShowHWDropDown: false,
                                                     isShowEventLog: false,
                                                 })
@@ -327,7 +327,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                             </Center>
                                         </div>
                                         <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={_GRID_ITEM_TYPE.BUBBLE}>Bubble Chart</Radio>
+                                            <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble Chart</Radio>
                                         </div>
                                     </ChartIconOuterDiv>
 
