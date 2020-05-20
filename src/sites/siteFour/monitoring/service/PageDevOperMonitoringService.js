@@ -713,24 +713,27 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             animation: {
                 duration: 500
             },
-            tooltips: {
+           /* tooltips: {
                 callbacks: {
-                    label: (tooltipItem, data) => {
-                        const index = tooltipItem.datasetIndex === undefined ? tooltipItem.index : tooltipItem.datasetIndex
-                        const itemData = data.datasets[index]
-                        // Return custom data to tooltip, these will be available inside the tooltip.body
+                    label: function (tooltipItem, data) {
 
-                        return {
-                            id: data.id,
-                            pictureUrl: itemData.pictureUrl,
-                            label: itemData.label,
-                            value: covertUnits(tooltipItem.yLabel, hardwareType, _this,),
-                            xLabel: tooltipItem.xLabel,
-                            percent: data.percent
-                        }
+                        console.log(`tooltipItem====>`, tooltipItem);
+
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+                        var currentValue = dataset.data[tooltipItem.index];
+                        return currentValue.toFixed(2).toString();
+                    },
+                    title: function (tooltipItem, data) {
+
+                        console.log(`tooltipItem...data====>`, data)
+
+                        //return data.labels[tooltipItem[0].index];
+
+                        return data.datasets[tooltipItem[0].index]['label'];
                     }
                 }
-            },
+            },*/
             maintainAspectRatio: false,
             responsive: true,
             datasetStrokeWidth: 1,
