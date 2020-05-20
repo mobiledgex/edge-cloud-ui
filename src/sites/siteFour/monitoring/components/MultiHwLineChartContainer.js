@@ -68,9 +68,12 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
         let newDateTimeList = multiLineChartDatasSets.newDateTimeList;
         let hardwareType = multiLineChartDatasSets.hardwareType;
         const _lineChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
+
+        let hwType2 = hwType.split(",")
+
         this.setState({
             chartDataSet: _lineChartDataSet,
-            pHardwareType: hwType,
+            pHardwareType: hwType2[0] + " / " + hwType2[1],
             graphType: graphType,
         })
 

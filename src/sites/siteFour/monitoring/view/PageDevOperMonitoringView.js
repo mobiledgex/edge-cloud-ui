@@ -221,8 +221,8 @@ type PageDevMonitoringState = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
-    layoutMapperForCluster: [],
-    layoutMapperForAppInst: [],
+    layoutMapperCluster: [],
+    layoutMapperAppInst: [],
     hwListForCluster: [],
     isDraggable: boolean,
     isUpdateEnableForMap: boolean,
@@ -291,12 +291,12 @@ type PageDevMonitoringState = {
     filteredAppInstList: any,
     allClientStatusList: any,
     filteredClientStatusList: any,
-    layoutMapperForClusterForOper: any,
-    layoutForCloudlet: any,
-    layoutForClusterForOper: any,
-    layoutForCluster: any,
-    layoutForAppInst: any,
-    layoutMapperForCloudlet: any,
+    layoutMapperClusterForOper: any,
+    layoutCloudlet: any,
+    layoutClusterForOper: any,
+    layoutCluster: any,
+    layoutAppInst: any,
+    layoutMapperCloudlet: any,
     currentOperLevel: string,
     currentIndex: number,
 }
@@ -317,16 +317,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             constructor(props) {
                 super(props);
 
-                let clusterLayoutKey = getUserId() + CLUSTER_LAYOUT_KEY
-                let clusterHwMapperKey = getUserId() + CLUSTER_HW_MAPPER_KEY
-                let appInstLayoutKey = getUserId() + APPINST_LAYOUT_KEY
-                let appInstHwMapperKey = getUserId() + APPINST_HW_MAPPER_KEY
+                let clusterLayout = getUserId() + CLUSTER_LAYOUT_KEY
+                let clusterLayoutMapper = getUserId() + CLUSTER_HW_MAPPER_KEY
+                let appInstLayout = getUserId() + APPINST_LAYOUT_KEY
+                let appInstLayoutMapper = getUserId() + APPINST_HW_MAPPER_KEY
 
-                let cloudletLayoutKey = getUserId() + CLOUDLET_LAYOUT_KEY
-                let cloudletHwMapperKey = getUserId() + CLOUDLET_HW_MAPPER_KEY
+                let cloudletLayout = getUserId() + CLOUDLET_LAYOUT_KEY
+                let cloudletlayoutMapper = getUserId() + CLOUDLET_HW_MAPPER_KEY
 
-                let clusterForOperLayoutKey = getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY
-                let clusterForOperHwMapperKey = getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY
+                let clusterOperLayout = getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY
+                let clusterOperLayoutMapper = getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY
 
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
@@ -335,17 +335,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 /*reactLocalStorage.remove(clusterForOperLayoutKey)
                 reactLocalStorage.remove(clusterForOperHwMapperKey)*/
                 this.state = {
+                    //todo:dev layout
+                    //todo:dev layout
+                    layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
+                    layoutMapperCluster: isEmpty(reactLocalStorage.get(clusterLayoutMapper)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterLayoutMapper),
+                    layoutAppInst: isEmpty(reactLocalStorage.get(appInstLayout)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayout),
+                    layoutMapperAppInst: isEmpty(reactLocalStorage.get(appInstLayoutMapper)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstLayoutMapper),
+
 
                     //todo:oper layout
-                    layoutForCloudlet: isEmpty(reactLocalStorage.get(cloudletLayoutKey)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayoutKey),
-                    layoutMapperForCloudlet: isEmpty(reactLocalStorage.get(cloudletHwMapperKey)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletHwMapperKey),
-                    layoutForClusterForOper: isEmpty(reactLocalStorage.get(clusterForOperLayoutKey)) ? defaultLayoutForClusterForOper : reactLocalStorage.getObject(clusterForOperLayoutKey),
-                    layoutMapperForClusterForOper: isEmpty(reactLocalStorage.get(clusterForOperHwMapperKey)) ? defaultLayoutMapperForClusterForOper : reactLocalStorage.getObject(clusterForOperHwMapperKey),
-                    //todo:dev layout
-                    layoutForCluster: isEmpty(reactLocalStorage.get(clusterLayoutKey)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayoutKey),
-                    layoutMapperForCluster: isEmpty(reactLocalStorage.get(clusterHwMapperKey)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterHwMapperKey),
-                    layoutForAppInst: isEmpty(reactLocalStorage.get(appInstLayoutKey)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayoutKey),
-                    layoutMapperForAppInst: isEmpty(reactLocalStorage.get(appInstHwMapperKey)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstHwMapperKey),
+                    //todo:oper layout
+                    layoutCloudlet: isEmpty(reactLocalStorage.get(cloudletLayout)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayout),
+                    layoutMapperCloudlet: isEmpty(reactLocalStorage.get(cloudletlayoutMapper)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletlayoutMapper),
+                    layoutClusterForOper: isEmpty(reactLocalStorage.get(clusterOperLayout)) ? defaultLayoutForClusterForOper : reactLocalStorage.getObject(clusterOperLayout),
+                    layoutMapperClusterForOper: isEmpty(reactLocalStorage.get(clusterOperLayoutMapper)) ? defaultLayoutMapperForClusterForOper : reactLocalStorage.getObject(clusterOperLayoutMapper),
 
 
                     date: '',
@@ -814,13 +817,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 /*todo:Cloudlet*/
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
 
-                    let currentItems = this.state.layoutForCluster;
+                    let currentItems = this.state.layoutCloudlet;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
                         maxY = _.maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperForCluster
+                    let mapperList = this.state.layoutMapperCloudlet
 
                     let itemOne = {
                         id: uniqueId,
@@ -831,30 +834,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:  calculate empty space in gridLayout
                     //@desc: ######################################
                     await this.setState({
-                        layoutForCloudlet: this.state.layoutForCluster.concat({
+                        layoutCloudlet: this.state.layoutCluster.concat({
                             i: uniqueId,
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: this.makeGridItemWidth(graphType),
                             h: this.makeGridIItemHeight(graphType),
                         }),
-                        layoutMapperForCluster: mapperList.concat(itemOne),
+                        layoutMapperCluster: mapperList.concat(itemOne),
                     })
 
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutForCluster)
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperForCluster)
+                    reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
+                    reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
                     //@todo: CLUSTER_FOR_OPER add Event
                     //@todo: CLUSTER_FOR_OPER add Event
                     //@todo: CLUSTER_FOR_OPER add Event
 
-                    let currentItems = this.state.layoutForClusterForOper;
+                    let currentItems = this.state.layoutClusterForOper;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
                         maxY = _.maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperForClusterForOper
+                    let mapperList = this.state.layoutMapperClusterForOper
 
                     let itemOne = {
                         id: uniqueId,
@@ -865,31 +868,31 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:  calculate empty space in gridLayout
                     //@desc: ######################################
                     await this.setState({
-                        layoutForClusterForOper: this.state.layoutForClusterForOper.concat({
+                        layoutClusterForOper: this.state.layoutClusterForOper.concat({
                             i: uniqueId,
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: this.makeGridItemWidth(graphType),
                             h: this.makeGridIItemHeight(graphType),
                         }),
-                        layoutMapperForClusterForOper: mapperList.concat(itemOne),
+                        layoutMapperClusterForOper: mapperList.concat(itemOne),
                     })
 
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, this.state.layoutForCluster)
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY, this.state.layoutMapperForCluster)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, this.state.layoutClusterForOper)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY, this.state.layoutMapperClusterForOper)
 
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     //@todo: CLUSTER add Event
                     //@todo: CLUSTER add Event
                     //@todo: CLUSTER add Event
 
-                    let currentItems = this.state.layoutForCluster;
+                    let currentItems = this.state.layoutCluster;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
                         maxY = _.maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperForCluster
+                    let mapperList = this.state.layoutMapperCluster
 
                     let itemOne = {
                         id: uniqueId,
@@ -900,30 +903,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:  calculate empty space in gridLayout
                     //@desc: ######################################
                     await this.setState({
-                        layoutForCluster: this.state.layoutForCluster.concat({
+                        layoutCluster: this.state.layoutCluster.concat({
                             i: uniqueId,
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: this.makeGridItemWidth(graphType),
                             h: this.makeGridIItemHeight(graphType),
                         }),
-                        layoutMapperForCluster: mapperList.concat(itemOne),
+                        layoutMapperCluster: mapperList.concat(itemOne),
                     })
 
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutForCluster)
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperForCluster)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutCluster)
+                    reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperCluster)
 
                 } else {
                     //@desc: ##########################
                     //@desc: APPINST
                     //@desc: ##########################
-                    let currentItems = this.state.layoutForAppInst;
+                    let currentItems = this.state.layoutAppInst;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
                         maxY = _.maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperForAppInst
+                    let mapperList = this.state.layoutMapperAppInst
 
                     let itemOne = {
                         id: uniqueId,
@@ -932,45 +935,45 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     await this.setState({
-                        layoutForAppInst: this.state.layoutForAppInst.concat({
+                        layoutAppInst: this.state.layoutAppInst.concat({
                             i: uniqueId,
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
                             w: 1,
                             h: 1,
                         }),
-                        layoutMapperForAppInst: mapperList.concat(itemOne),
+                        layoutMapperAppInst: mapperList.concat(itemOne),
                     });
-                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, this.state.layoutForAppInst)
-                    reactLocalStorage.setObject(getUserId() + APPINST_HW_MAPPER_KEY, this.state.layoutMapperForAppInst)
+                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, this.state.layoutAppInst)
+                    reactLocalStorage.setObject(getUserId() + APPINST_HW_MAPPER_KEY, this.state.layoutMapperAppInst)
                 }
             }
 
             removeGridItem(i) {
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
+                    let removedLayout = _.reject(this.state.layoutCluster, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, removedLayout)
                     this.setState({
-                        layoutForCluster: removedLayout,
+                        layoutCluster: removedLayout,
                     });
 
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                    let removedLayout = _.reject(this.state.layoutForClusterForOper, {i: i});
+                    let removedLayout = _.reject(this.state.layoutClusterForOper, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, removedLayout)
                     this.setState({
-                        layoutForClusterForOper: removedLayout,
+                        layoutClusterForOper: removedLayout,
                     });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                    let removedLayout = _.reject(this.state.layoutForCloudlet, {i: i});
+                    let removedLayout = _.reject(this.state.layoutCloudlet, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
                     this.setState({
-                        layoutForCloudlet: removedLayout,
+                        layoutCloudlet: removedLayout,
                     });
                 } else {//@desc: AppInst Level
-                    let removedLayout = _.reject(this.state.layoutForAppInst, {i: i});
+                    let removedLayout = _.reject(this.state.layoutAppInst, {i: i});
                     reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, removedLayout)
                     this.setState({
-                        layoutForAppInst: removedLayout,
+                        layoutAppInst: removedLayout,
                     });
                 }
             }
@@ -980,22 +983,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, [])
                     this.setState({
-                        layoutForCloudlet: [],
+                        layoutCloudlet: [],
                     });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
                     reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, [])
                     this.setState({
-                        layoutForClusterForOper: [],
+                        layoutClusterForOper: [],
                     });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, [])
                     this.setState({
-                        layoutForCluster: [],
+                        layoutCluster: [],
                     });
                 } else {//@desc: AppInst Level
                     reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, [])
                     this.setState({
-                        layoutForAppInst: [],
+                        layoutAppInst: [],
                     });
                 }
             }
@@ -1290,7 +1293,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderGridLayoutForCluster() {
                 try {
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                         return (
                             <ResponsiveReactGridLayout
                                 isResizable={true}
@@ -1303,7 +1306,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
                                 className='layout page_monitoring_layout_dev_oper'
                                 cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                                layout={this.state.layoutForCluster}
+                                layout={this.state.layoutCluster}
                                 rowHeight={this.gridItemHeight}
                                 onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
                                     let width = newItem.w;
@@ -1314,7 +1317,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                                 onLayoutChange={async (layout) => {
                                     this.setState({
-                                        layoutForCluster: layout,
+                                        layoutCluster: layout,
                                     }, async () => {
                                         await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
                                         reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, layout)
@@ -1323,14 +1326,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                                 {...this.props}
                             >
-                                {this.state.layoutForCluster.map((item, loopIndex) => {
+                                {this.state.layoutCluster.map((item, loopIndex) => {
 
                                     const uniqueIndex = item.i;
                                     let hwType = HARDWARE_TYPE.CPU
                                     let graphType = GRID_ITEM_TYPE.LINE;
-                                    if (!isEmpty(this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex))) {
-                                        hwType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).hwType
-                                        graphType = this.state.layoutMapperForCluster.find(x => x.id === uniqueIndex).graphType
+                                    if (!isEmpty(this.state.layoutMapperCluster.find(x => x.id === uniqueIndex))) {
+                                        hwType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).hwType
+                                        graphType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).graphType
                                         graphType = graphType.toUpperCase()
                                     }
                                     return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
@@ -1339,14 +1342,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </ResponsiveReactGridLayout>
 
                         )
-                    } else {
-
-                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
-                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
-                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
-                        //todo; operator//todo; operator//todo; operator//todo; operator//todo; operator//todo; operator
-
-
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
                         return (
                             <ResponsiveReactGridLayout
                                 isResizable={true}
@@ -1359,7 +1355,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
                                 className='layout page_monitoring_layout_dev_oper'
                                 cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                                layout={this.state.layoutForClusterForOper}
+                                layout={this.state.layoutClusterForOper}
                                 rowHeight={this.gridItemHeight}
                                 onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
                                     let width = newItem.w;
@@ -1370,7 +1366,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                                 onLayoutChange={async (layout) => {
                                     this.setState({
-                                        layoutForClusterForOper: layout,
+                                        layoutClusterForOper: layout,
                                     }, async () => {
                                         await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterForOper);
                                         reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, layout)
@@ -1379,20 +1375,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                                 {...this.props}
                             >
-                                {this.state.layoutForClusterForOper.map((item, loopIndex) => {
+                                {this.state.layoutClusterForOper.map((item, loopIndex) => {
                                     const uniqueIndex = item.i;
                                     let hwType = HARDWARE_TYPE.CPU
                                     let graphType = GRID_ITEM_TYPE.LINE;
                                     let hwTypeLength = 0;
-                                    if (!isEmpty(this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex))) {
-                                        hwType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).hwType
-                                        graphType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).graphType
+                                    if (!isEmpty(this.state.layoutMapperClusterForOper.find(x => x.id === uniqueIndex))) {
+                                        hwType = this.state.layoutMapperClusterForOper.find(x => x.id === uniqueIndex).hwType
+                                        graphType = this.state.layoutMapperClusterForOper.find(x => x.id === uniqueIndex).graphType
                                         graphType = graphType.toUpperCase()
                                     }
 
                                     console.log(`item==${hwType}=>`, item);
 
-                                    console.log(`layoutForClusterForOper===>`, this.state.layoutForClusterForOper);
+                                    console.log(`layoutForClusterForOper===>`, this.state.layoutClusterForOper);
 
                                     return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
                                 })}
@@ -1420,7 +1416,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             autoSize={true}
                             className='layout page_monitoring_layout_dev_oper'
                             cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutForCloudlet}
+                            layout={this.state.layoutCloudlet}
                             rowHeight={this.gridItemHeight}
                             onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
                                 let width = newItem.w;
@@ -1431,7 +1427,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             onLayoutChange={async (layout) => {
                                 this.setState({
-                                    layoutForCloudlet: layout,
+                                    layoutCloudlet: layout,
                                 }, async () => {
                                     await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCloudlet);
                                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, layout)
@@ -1440,13 +1436,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             {...this.props}
                         >
-                            {this.state.layoutForCloudlet.map((item, loopIndex) => {
+                            {this.state.layoutCloudlet.map((item, loopIndex) => {
                                 const uniqueIndex = item.i;
                                 let hwType = HARDWARE_TYPE.CPU
                                 let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperForCloudlet.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperForCloudlet.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperForCloudlet.find(x => x.id === uniqueIndex).graphType
+                                if (!isEmpty(this.state.layoutMapperCloudlet.find(x => x.id === uniqueIndex))) {
+                                    hwType = this.state.layoutMapperCloudlet.find(x => x.id === uniqueIndex).hwType
+                                    graphType = this.state.layoutMapperCloudlet.find(x => x.id === uniqueIndex).graphType
                                     graphType = graphType.toUpperCase()
                                 }
                                 return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
@@ -1476,28 +1472,28 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             useCSSTransforms={true}
                             className={'layout page_monitoring_layout_dev'}
                             cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
-                            layout={this.state.layoutForAppInst}
+                            layout={this.state.layoutAppInst}
                             rowHeight={this.gridItemHeight}
                             onLayoutChange={async (layout) => {
                                 await this.setState({
-                                    layoutForAppInst: layout
+                                    layoutAppInst: layout
                                 }, async () => {
                                     await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAppInst);
                                     let layoutUniqueId = getUserId() + APPINST_LAYOUT_KEY;
-                                    reactLocalStorage.setObject(layoutUniqueId, this.state.layoutForAppInst)
+                                    reactLocalStorage.setObject(layoutUniqueId, this.state.layoutAppInst)
                                 });
 
                             }}
                         >
-                            {this.state.layoutForAppInst.map((item, loopIndex) => {
+                            {this.state.layoutAppInst.map((item, loopIndex) => {
 
                                 const uniqueIndex = item.i;
                                 let hwType = HARDWARE_TYPE.CPU
                                 let graphType = GRID_ITEM_TYPE.LINE;
 
-                                if (!isEmpty(this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperForAppInst.find(x => x.id === uniqueIndex).graphType
+                                if (!isEmpty(this.state.layoutMapperAppInst.find(x => x.id === uniqueIndex))) {
+                                    hwType = this.state.layoutMapperAppInst.find(x => x.id === uniqueIndex).hwType
+                                    graphType = this.state.layoutMapperAppInst.find(x => x.id === uniqueIndex).graphType
                                 }
                                 return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
 
@@ -1514,39 +1510,46 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             revertToDefaultLayout = async () => {
                 try {
-                    reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
-                    reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                        reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
+                        reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
+                        reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
+                        reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
+                        await this.setState({
+                            layoutCluster: [],
+                            layoutMapperCluster: [],
+                            layoutAppInst: [],
+                            layoutMapperAppInst: [],
+                        });
 
-                    reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
-                    reactLocalStorage.remove(getUserId() + APPINST_HW_MAPPER_KEY)
+                        await this.setState({
+                            layoutCluster: defaultLayoutForCluster,
+                            layoutMapperCluster: defaultHwMapperListForCluster,
+                            layoutAppInst: defaultLayoutForAppInst,
+                            layoutMapperAppInst: defaultLayoutMapperForAppInst,
+                        });
+                    } else {
+                        reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
+                        reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
+                        reactLocalStorage.remove(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY)
+                        reactLocalStorage.remove(getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY)
 
-                    reactLocalStorage.remove(getUserId() + CLOUDLET_LAYOUT_KEY)
-                    reactLocalStorage.remove(getUserId() + CLOUDLET_HW_MAPPER_KEY)
+                        await this.setState({
+                            layoutCloudlet: [],
+                            layoutMapperCloudlet: [],
+                            layoutClusterForOper: [],
+                            layoutMapperClusterForOper: [],
+                        })
 
-                    reactLocalStorage.remove(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY)
-                    reactLocalStorage.remove(getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY)
+                        await this.setState({
+                            layoutCloudlet: defaultLayoutForCloudlet,
+                            layoutMapperCloudlet: defaultLayoutMapperForCloudlet,
+                            layoutClusterForOper: defaultLayoutForClusterForOper,
+                            layoutMapperClusterForOper: defaultLayoutMapperForClusterForOper,
+                        })
+                    }
 
-                    await this.setState({
-                        layoutForCluster: [],
-                        layoutMapperForCluster: [],
-                        layoutForAppInst: [],
-                        layoutMapperForAppInst: [],
-                        layoutForCloudlet: [],
-                        layoutMapperForCloudlet: [],
-                        layoutForClusterForOper: [],
-                        layoutMapperForClusterForOper: [],
-                    });
 
-                    await this.setState({
-                        layoutForCluster: defaultLayoutForCluster,
-                        layoutMapperForCluster: defaultHwMapperListForCluster,
-                        layoutForAppInst: defaultLayoutForAppInst,
-                        layoutMapperForAppInst: defaultLayoutMapperForAppInst,
-                        layoutForCloudlet: defaultLayoutForCloudlet,
-                        layoutMapperForCloudlet: defaultLayoutMapperForCloudlet,
-                        layoutForClusterForOper: defaultLayoutForClusterForOper,
-                        layoutMapperForClusterForOper: defaultLayoutMapperForClusterForOper,
-                    })
                 } catch (e) {
                     showToast(e.toString())
                 }
@@ -2597,6 +2600,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderGridLayoutByClassification() {
+                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    return this.renderGridLayoutForCloudlet();
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                    return this.renderGridLayoutForCluster();
+                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                    return this.renderGridLayoutForAppInst();
+                }
+            }
+
 
             render() {
                 if (this.state.isNoData) {
@@ -2664,7 +2677,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {/*desc: no item message for cluster*/}
-                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutForCluster.length === 0 &&
+                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutCluster.length === 0 &&
                                     <div style={{
                                         marginLeft: 15,
                                         marginTop: 10,
@@ -2673,7 +2686,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}>No Item</div>
                                     }
                                     {/*desc: no item message for appInst*/}
-                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutForAppInst.length === 0 &&
+                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutAppInst.length === 0 &&
                                     <div style={{
                                         marginLeft: 15,
                                         marginTop: 10,
@@ -2681,11 +2694,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         color: 'rgba(255,255,255,.6)'
                                     }}>No Item</div>
                                     }
-                                    {this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderGridLayoutForCloudlet()
-                                        : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ? this.renderGridLayoutForCluster()
-                                            : this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderGridLayoutForCluster()
-                                                : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderGridLayoutForAppInst()
-                                    }
+                                    {this.renderGridLayoutByClassification()}
                                 </div>
                             </div>
                             {/*desc:---------------------------------*/}

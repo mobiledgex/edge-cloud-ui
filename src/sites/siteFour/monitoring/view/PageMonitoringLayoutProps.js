@@ -124,7 +124,7 @@ export const defaultLayoutMapperForClusterForOper = [
 
 
 /*desc:#####################################
-Desc: Cloudlet  LAYOUT, MAPPER FOR OPERTATOR
+todo: Cloudlet  LAYOUT
 desc:#######################################*/
 
 
@@ -138,6 +138,7 @@ export const defaultLayoutForCloudlet = [
     /*{i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},//
     {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},//*/
 ];
+
 
 
 export const defaultLayoutMapperForCloudlet = [
