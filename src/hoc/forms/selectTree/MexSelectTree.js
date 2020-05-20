@@ -1,12 +1,12 @@
 import React from 'react';
+import _ from 'lodash';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Input, RadioGroup, FormControlLabel, Radio, InputAdornment} from '@material-ui/core';
+import { Input, RadioGroup, FormControlLabel, Radio, InputAdornment } from '@material-ui/core';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -16,7 +16,7 @@ import './mexSelectTree.css'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width:'100%'
+        width: '100%'
     },
     paper: {
         marginRight: theme.spacing(2),
@@ -35,19 +35,19 @@ const StyledMenuItem = withStyles({
 const StyledPaper = withStyles({
     root: {
         backgroundColor: '#16181D',
-        borderBottom:'1px solid #96C8DA',
-        borderLeft:'1px solid #96C8DA',
-        borderRight:'1px solid #96C8DA',
-        borderBottomLeftRadius:4,
-        borderBottomRightRadius:4,
-        borderTopLeftRadius:0,
-        borderTopRightRadius:0,
+        borderBottom: '1px solid #96C8DA',
+        borderLeft: '1px solid #96C8DA',
+        borderRight: '1px solid #96C8DA',
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
     }
 })(Paper);
 
 
 export default function MexSelectRadioTree(props) {
-    let form = props.form;  
+    let form = props.form;
     let rawDataList = [];
 
     const filterOptions = () => {
@@ -63,8 +63,12 @@ export default function MexSelectRadioTree(props) {
                 if (dependentForm.value === undefined) {
                     dataList = []
                 }
-                for (let j = 0; j < dependentForm.value.length; j++) {
-                    dependentKey[j] = dependentForm.value[j]
+                else if (dependentForm.value.includes('All')) {
+                    dependentKey = _.cloneDeep(dependentForm.options)
+                    dependentKey.splice(0, 1)
+                }
+                else {
+                    dependentKey = dependentForm.value
                 }
             }
             if (dataList && dataList.length > 0) {
@@ -80,14 +84,14 @@ export default function MexSelectRadioTree(props) {
                 }
             }
         }
-        rawDataList = JSON.parse(JSON.stringify(optionList))
+        rawDataList = _.cloneDeep(optionList)
         return optionList
     }
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState(form.value ? form.value : []);
-    const [output, setOutput] = React.useState(form.value ? form.value.map(item => {return item.parent + '>' + item.value + '  '}) : form.placeholder);
+    const [output, setOutput] = React.useState(form.value ? form.value.map(item => { return item.parent + '>' + item.value + '  ' }) : form.placeholder);
     const [list, setList] = React.useState(filterOptions());
     const anchorRef = React.useRef(null);
 
@@ -158,53 +162,45 @@ export default function MexSelectRadioTree(props) {
                 {output}
             </button>
             <Popper className='tree_popper' open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                {({ TransitionProps, placement }) => (
-                    <Grow
-                        {...TransitionProps}
-                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                    >
-                        <StyledPaper className='tree_dropdown'>
-                            <ClickAwayListener onClickAway={handleClose}>
-                                <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                    <StyledMenuItem>
-                                        <Input
-                                            disableUnderline={true}
-                                            className="select_tree_search"
-                                            inputProps={{ style: { backgroundColor: '#1D2025', color:'white', border:'none' } }}
-                                            variant="outlined"
-                                            startAdornment={
-                                                <InputAdornment position="start">
-                                                    <SearchIcon />
-                                                </InputAdornment>
-                                            }
-                                            onChange={(e) => { onFilterValue(e) }} />
+                <StyledPaper className='tree_dropdown'>
+                    <ClickAwayListener onClickAway={handleClose}>
+                        <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                            <StyledMenuItem>
+                                <Input
+                                    disableUnderline={true}
+                                    className='select_tree_search'
+                                    inputProps={{ style: { backgroundColor: '#1D2025', color: '#ACACAC', border: 'none' } }}
+                                    variant="outlined"
+                                    startAdornment={
+                                        <InputAdornment position="start">
+                                            <SearchIcon />
+                                        </InputAdornment>
+                                    }
+                                    onChange={(e) => { onFilterValue(e) }} />
+                            </StyledMenuItem>
+                            {list && list.length > 0 ? list.map((item, i) => {
+                                return (
+                                    <StyledMenuItem key={i}>
+                                        <TreeView
+                                            className='select_tree_view'
+                                            key={i}
+                                            defaultCollapseIcon={<ExpandMoreIcon />}
+                                            defaultExpandIcon={<ChevronRightIcon />}
+                                        >
+                                            <TreeItem nodeId={i + ""} label={item.label}>
+                                                <RadioGroup aria-label={item.label} name={item.label} value={value[i] ? value[i].value : undefined} onChange={(e) => { handleChange(e, i, item) }}>
+                                                    {item.children.map((child, j) => {
+                                                        return <FormControlLabel style={{ color: 'inherit' }} key={j} value={child.label} control={<Radio style={{ color: 'inherit' }} />} label={child.label} />
+                                                    })}
+                                                </RadioGroup>
+                                            </TreeItem>
+                                        </TreeView>
                                     </StyledMenuItem>
-                                    {list && list.length > 0 ? list.map((item, i) => {
-                                        return (
-                                            <StyledMenuItem key={i}>
-                                                <TreeView
-                                                    style={{ color: '#ACACAC', width: '100%' }}
-                                                    key={i}
-                                                    className={classes.root}
-                                                    defaultCollapseIcon={<ExpandMoreIcon />}
-                                                    defaultExpandIcon={<ChevronRightIcon />}
-                                                >
-                                                    <TreeItem nodeId={i+""} label={<p style={{backgroundColor:'#16181D', width:'100%'}}>{item.label}</p>}>
-                                                        <RadioGroup aria-label={item.label} name={item.label} value={value[i] ? value[i].value : undefined} onChange={(e) => { handleChange(e, i, item) }}>
-                                                            {item.children.map((child, j) => {
-                                                                return <FormControlLabel style={{ color: 'inherit' }} key={j} value={child.label} control={<Radio style={{ color: 'inherit' }} />} label={child.label} />
-                                                            })}
-                                                        </RadioGroup>
-                                                    </TreeItem>
-                                                </TreeView>
-                                            </StyledMenuItem>
-                                        )
-                                    }) : null}
-                                </MenuList>
-                            </ClickAwayListener>
-                        </StyledPaper>
-                    </Grow>
-                )}
+                                )
+                            }) : null}
+                        </MenuList>
+                    </ClickAwayListener>
+                </StyledPaper>
             </Popper>
         </div>
     );

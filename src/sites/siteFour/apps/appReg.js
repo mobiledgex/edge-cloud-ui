@@ -31,7 +31,8 @@ class AppReg extends React.Component {
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = _.cloneDeep(props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion)
+        this.regions.splice(0, 0, 'All')
         this.flavorList = []
         this.privacyPolicyList = []
         this.autoProvPolicyList = []
@@ -53,8 +54,6 @@ class AppReg extends React.Component {
         form.error = undefined;
         return true;
     }
-
-
 
     /**Deployment manifest block */
 
@@ -158,7 +157,6 @@ class AppReg extends React.Component {
         this.setState({ forms: forms })
     }
 
-
     updateImagePath = (forms, form) => {
         let organizationName = undefined;
         let version = undefined;
@@ -239,24 +237,27 @@ class AppReg extends React.Component {
     }
 
     getFlavorInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
+        if (region && !this.requestedRegionList.includes(region)) {
+            let newList = await getFlavorList(this, { region: region })
+            this.flavorList = [...this.flavorList, ...newList]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
     }
 
     getPrivacyPolicy = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
+        if (region && !this.requestedRegionList.includes(region)) {
+            let newList = await getPrivacyPolicyList(this, { region: region })
+            this.privacyPolicyList = [...this.privacyPolicyList, ...newList]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
     }
 
     getAutoProvPolicy = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.autoProvPolicyList = [...this.autoProvPolicyList, ...await getAutoProvPolicyList(this, { region: region })]
+        if (region && !this.requestedRegionList.includes(region)) {
+            let newList = await getAutoProvPolicyList(this, { region: region })
+            this.autoProvPolicyList = [...this.autoProvPolicyList, ...newList]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
@@ -275,29 +276,45 @@ class AppReg extends React.Component {
         }
     }
 
-    regionValueChange = (currentForm, forms, isInit) => {
-        let regions = currentForm.value;
-        regions.map(region => {
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
-                if (form.field === fields.autoPolicyName) {
-                    if (isInit === undefined || isInit === false) {
-                        this.getAutoProvPolicy(region, form, forms)
-                    }
-                }
-                else if (form.field === fields.flavorName) {
-                    if (isInit === undefined || isInit === false) {
-                        this.getFlavorInfo(region, form, forms)
-                    }
-                }
-                else if (form.field === fields.privacyPolicyName) {
-                    if (isInit === undefined || isInit === false) {
-                        this.getPrivacyPolicy(region, form, forms)
-                    }
+    regionDependentDataUpdate = (region, forms, isInit)=>
+    {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.autoPolicyName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getAutoProvPolicy(region, form, forms)
                 }
             }
-            this.requestedRegionList.push(region)
-        })
+            else if (form.field === fields.flavorName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getFlavorInfo(region, form, forms)
+                }
+            }
+            else if (form.field === fields.privacyPolicyName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getPrivacyPolicy(region, form, forms)
+                }
+            }
+        }
+    }
+
+    regionValueChange = (currentForm, forms, isInit) => {
+        let regions = currentForm.value;
+        if(regions.includes('All'))
+        {
+            regions = _.cloneDeep(this.regions)
+            regions.splice(0, 1)
+        }
+        if (regions.length > 0) {
+            regions.map(region => {
+                this.regionDependentDataUpdate(region, forms, isInit)
+                this.requestedRegionList.push(region)
+            })
+        }
+        else
+        {
+            this.regionDependentDataUpdate(undefined, forms, isInit) 
+        }
     }
 
     organizationValueChange = (currentForm, forms, isInit) => {
