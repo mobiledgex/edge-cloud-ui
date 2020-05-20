@@ -100,7 +100,7 @@ export default function DonutChartHooks(props) {
                         <Center style={{height: height,}}>
                             <div>
                                 <Progress
-                                    strokeColor={'skyblue'}
+                                    strokeColor={props.chartColorList[0]}
                                     type="circle"
                                     width={100}
                                     trailColor='#262626'
@@ -116,7 +116,7 @@ export default function DonutChartHooks(props) {
                             <div style={{width: 15}}/>
                             <div>
                                 <Progress
-                                    strokeColor='orange'
+                                    strokeColor={props.chartColorList[1]}
                                     type="circle"
                                     width={100}
                                     trailColor='#262626'
@@ -130,7 +130,7 @@ export default function DonutChartHooks(props) {
                             <div style={{width: 15}}/>
                             <div>
                                 <Progress
-                                    strokeColor='pink'
+                                    strokeColor={props.chartColorList[2]}
                                     type="circle"
                                     width={100}
                                     trailColor='#262626'
@@ -154,7 +154,8 @@ export default function DonutChartHooks(props) {
                                     No Available
                                 </div>
                                 <div style={{fontSize: 12}}>
-                                    (It is shown only in one specific {changeClassficationTxt(props.currentClassification)})
+                                    (It is shown only in one
+                                    specific {changeClassficationTxt(props.currentClassification)})
                                 </div>
                             </div>
 

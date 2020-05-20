@@ -86,6 +86,7 @@ export const defaultLayoutForClusterForOper = [
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
     {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//mem
+
 ];
 
 export const defaultLayoutMapperForClusterForOper = [
@@ -145,7 +146,7 @@ export const defaultLayoutMapperForCloudlet = [
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
-        graphType: CHART_TYPE.LINE,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '2',
@@ -156,17 +157,17 @@ export const defaultLayoutMapperForCloudlet = [
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.memUsed,
-        graphType: CHART_TYPE.LINE,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '4',
         hwType: undefined,
-        graphType: CHART_TYPE.METHOD_USAGE_COUNT,
+        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
     },
     {
         id: '5',
         hwType: undefined,
-        graphType: CHART_TYPE.DONUTS,
+        graphType: GRID_ITEM_TYPE.DONUTS,
     },
     {
         id: '6',
@@ -201,7 +202,7 @@ export const defaultHwMapperListForCluster = [
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.LINE,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '2',
@@ -212,7 +213,7 @@ export const defaultHwMapperListForCluster = [
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.LINE,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '4',
@@ -252,7 +253,7 @@ export const defaultLayoutMapperForAppInst = [
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
-        graphType: CHART_TYPE.LINE,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '2',
@@ -263,12 +264,12 @@ export const defaultLayoutMapperForAppInst = [
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.MEM,
-        graphType: CHART_TYPE.LINE,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '4',
         hwType: HARDWARE_TYPE_FOR_GRID.DISK,
-        graphType: CHART_TYPE.LINE,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '5',

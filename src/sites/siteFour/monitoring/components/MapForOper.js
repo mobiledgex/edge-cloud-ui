@@ -79,7 +79,7 @@ export default function MapForOper(props) {
     const mapRef = useRef(null);
     const [cloudletObjects, setCloudletObjects] = useState([]);
     //const [newCloudletList, setCloudletList] = useState([]);
-    const [locList, setLocList] = useState([]);
+    const [cloudLocList, setCloudLocList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
@@ -133,7 +133,7 @@ export default function MapForOper(props) {
 
         let cloudletObjs = listGroupByKey(newCloudletList, 'cloudletLocationStr')
         let cloudletLocList = Object.keys(cloudletObjs)
-        setLocList(cloudletLocList)
+        setCloudLocList(cloudletLocList)
         setCloudletObjects(cloudletObjs)
 
 
@@ -193,7 +193,13 @@ export default function MapForOper(props) {
                              await props.parent.handleOnChangeCloudletDropdown(currentCluodlet.CloudletName + " | " + JSON.stringify(currentCluodlet.CloudletLocation))
                          }}
                     >
-                        <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                        <div style={{
+                            fontSize: 15,
+                            color: 'yellow',
+                            fontWeight: 'bold',
+                            marginTop: 0,
+                            fontFamily: 'Roboto'
+                        }}>
                             <Icon name='cloud'/> {currentCluodlet.CloudletName}
                         </div>
                         <div style={Styles.lable001}>
@@ -215,10 +221,18 @@ export default function MapForOper(props) {
                     </div>
 
 
-                    {/*desc:##################################*/}
-                    {/*desc:cluster bottom info               */}
-                    {/*desc:##################################*/}
-                    <div style={{flex: .5, border: '0.5px solid grey', padding: 10, overflowY: 'auto', marginLeft: 15, marginRight: 5, borderRadius: 10,}}>
+                    {/*todo:##################################*/}
+                    {/*todo:cluster bottom info               */}
+                    {/*todo:##################################*/}
+                    <div style={{
+                        flex: .5,
+                        border: '0.5px solid grey',
+                        padding: 10,
+                        overflowY: 'auto',
+                        marginLeft: 15,
+                        marginRight: 5,
+                        borderRadius: 10,
+                    }}>
 
                         {filteredClusterList.map((item: TypeCluster, index) => {
                             return (
@@ -226,13 +240,27 @@ export default function MapForOper(props) {
                                     onClick={async () => {
                                         await props.parent.handleOnChangeClusterDropdown(item.ClusterName + " | " + item.Cloudlet)
                                     }}
-                                    key={index} style={{display: 'flex', flexDirection: 'column', marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,}}
+                                    key={index} style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
+                                }}
                                 >
-                                    <div style={{fontSize: 15, color: 'yellow', fontWeight: 'bold', marginTop: 0, fontFamily: 'Roboto'}}>
+                                    <div style={{
+                                        fontSize: 15,
+                                        color: 'yellow',
+                                        fontWeight: 'bold',
+                                        marginTop: 0,
+                                        fontFamily: 'Roboto'
+                                    }}>
                                         <Icon name='th'/> {item.ClusterName}
                                     </div>
                                     <div style={Styles.lable001}>
-                                        <b>Deployment</b>: <span style={{color: 'green', fontWeight: 'bold', fontSize: 15}}>{item.Deployment}</span>
+                                        <b>Deployment</b>: <span style={{
+                                        color: 'green',
+                                        fontWeight: 'bold',
+                                        fontSize: 15
+                                    }}>{item.Deployment}</span>
                                     </div>
                                     <div style={Styles.lable001}>
                                         <b>Flavor</b>: {item.Flavor}
@@ -277,13 +305,25 @@ export default function MapForOper(props) {
                         {/*todo:##################################*/}
                         {/*todo:appInst top info               */}
                         {/*todo:##################################*/}
-                        <div style={{flex: 1, border: '0.5px solid grey', padding: 10, overflowY: 'auto', marginLeft: 15, marginRight: 5, borderRadius: 10,}}>
+                        <div style={{
+                            flex: 1,
+                            border: '0.5px solid grey',
+                            padding: 10,
+                            overflowY: 'auto',
+                            marginLeft: 15,
+                            marginRight: 5,
+                            borderRadius: 10,
+                        }}>
                             {props.filteredAppInstList.map((item: TypeAppInst, index) => {
                                 return (
                                     <div
                                         onClick={async () => {
                                         }}
-                                        key={index} style={{display: 'flex', flexDirection: 'row', marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,}}
+                                        key={index} style={{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
+                                    }}
                                     >
                                         <div style={{fontSize: 12, color: 'white',}}>
                                             <Icon name='server'/> {item.AppName}
@@ -297,8 +337,23 @@ export default function MapForOper(props) {
                         <div
                             style={Styles.topInfoDivNoAppInst}
                         >
-                            <div style={{flex: 1, border: '0.5px solid grey', padding: 0, overflowY: 'auto', marginLeft: 15, marginRight: 5, borderRadius: 10,}}>
-                                <Center style={{fontSize: 15, color: 'orange', alignSelf: 'center', height: 40, marginTop: -1, fontWeight: 'bold'}}>
+                            <div style={{
+                                flex: 1,
+                                border: '0.5px solid grey',
+                                padding: 0,
+                                overflowY: 'auto',
+                                marginLeft: 15,
+                                marginRight: 5,
+                                borderRadius: 10,
+                            }}>
+                                <Center style={{
+                                    fontSize: 15,
+                                    color: 'orange',
+                                    alignSelf: 'center',
+                                    height: 40,
+                                    marginTop: -1,
+                                    fontWeight: 'bold'
+                                }}>
                                     <div style={{marginTop: 0, fontStyle: 'italic'}}>
                                         No App Inst
                                     </div>
@@ -358,7 +413,7 @@ export default function MapForOper(props) {
 
                     </div>
                 </Control>
-                {locList.map((locOne, index) => {
+                {cloudLocList.map((locOne, index) => {
 
                     let CloudletLocation = JSON.parse(locOne)
                     return (

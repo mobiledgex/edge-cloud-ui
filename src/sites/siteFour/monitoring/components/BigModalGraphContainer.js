@@ -72,6 +72,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
+
+                console.log(`chartDataForBigModal====>`, nextProps.chartDataForBigModal);
+
                 this.setState({
                     chartDataForRendering: nextProps.chartDataForBigModal,
                     graphType: nextProps.graphType.toUpperCase(),
@@ -173,18 +176,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </div>
                                             }
                                         </div>
-                                        {/*<div>
-                                            <Button
-                                                type={this.state.redraw ? 'primary' : null}
-                                                onClick={() => {
-                                                    this.setState({
-                                                        redraw: !this.state.redraw,
-                                                    })
-                                                }}
-                                            >
-                                                Redraw Graph
-                                            </Button>
-                                        </div>*/}
                                     </div>
 
                                     : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?

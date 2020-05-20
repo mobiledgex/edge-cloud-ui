@@ -293,10 +293,6 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
     multiLineChartDataSets.map((dataSetsOne: TypeLineChartData, index) => {
         hardwareType = hardwareType.concat(dataSetsOne.hardwareType)
         levelTypeNameList = levelTypeNameList.concat(dataSetsOne.hardwareType)
-
-        console.log(`levelTypeNameList====>`, dataSetsOne.levelTypeNameList);
-
-
         newDateTimeList = (dataSetsOne.newDateTimeList)
         usageSetList = usageSetList.concat(dataSetsOne.usageSetList)
     })
@@ -653,6 +649,12 @@ export const covertUnits = (value, hardwareType, _this) => {
                 return convertByteToMegaGigaByte(value, hardwareType)
             } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
                 return convertToMegaGigaForNumber(value);
+            } else if (hardwareType === HARDWARE_TYPE.CPU_MEM_DISK) {
+                return value + " %";
+            } else if (hardwareType === `${HARDWARE_TYPE.UDPRECV} / ${HARDWARE_TYPE.UDPSENT}` || hardwareType === `${HARDWARE_TYPE.TCPCONNS} / ${HARDWARE_TYPE.TCPRETRANS}`) {
+                return convertToMegaGigaForNumber(value);
+            } else if (hardwareType === `${HARDWARE_TYPE.SENDBYTES} / ${HARDWARE_TYPE.RECVBYTES}`) {
+                return convertByteToMegaGigaByte(value);
             } else {
                 return convertToMegaGigaForNumber(value);
             }
@@ -702,6 +704,9 @@ export const listGroupByKey222 = (items, key) => items.reduce(
 
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
+
+    console.log(`hardwareType====>`, hardwareType);
+
     try {
         let options = {
             stacked: true,

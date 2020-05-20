@@ -67,22 +67,22 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
         let usageSetList = multiLineChartDatasSets.usageSetList;
         let newDateTimeList = multiLineChartDatasSets.newDateTimeList;
         let hardwareType = multiLineChartDatasSets.hardwareType;
-        const _lineChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
+        const lineChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
 
-        let hwTypeSplited = hwType.split(",")
+        let splitedHwTypes = hwType.split(",")
 
-        /*  let fullHwTypeNames = ''
-          hwType2.map((item, index) => {
-              if (index === item.length - 1) {
-                  fullHwTypeNames += item;
-              } else {
-                  fullHwTypeNames += item + " / "
-              }
+        let fullHwTypeNames = ''
+        splitedHwTypes.map((item, index) => {
+            if (index === (splitedHwTypes.length - 1)) {
+                fullHwTypeNames += item
+            } else {
+                fullHwTypeNames += item + " / "
+            }
 
-          })*/
+        })
 
         this.setState({
-            chartDataSet: hwTypeSplited[0] + " / " + hwTypeSplited[1],
+            chartDataSet: lineChartDataSet,
             pHardwareType: fullHwTypeNames,
             graphType: graphType,
         })

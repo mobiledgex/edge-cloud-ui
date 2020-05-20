@@ -447,6 +447,7 @@ export const HARDWARE_TYPE = {
 
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
+    CPU_MEM_DISK: 'CPU / MEM / DISK',
     VCPU: 'vCPU',
     NET_SEND: 'NET_SEND',
     NET_RECV: 'NET_RECV',
