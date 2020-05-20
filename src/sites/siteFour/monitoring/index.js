@@ -81,7 +81,6 @@ class MonitoringAdmin extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) { }
 
     onReceiveResult(result) {
         try {
@@ -95,7 +94,9 @@ class MonitoringAdmin extends React.Component {
                 return;
             }
 
+            console.log("20200519 cloudlets result.Cloudlets == ", result.Cloudlets, ":", count);
             if (count <= 0) {
+                console.log("20200519 cloudlets set state compCloudlet == ", this.hasCloudlets);
                 this.setState({
                     compCloudlet: this.hasCloudlets,
                 });
@@ -111,15 +112,14 @@ class MonitoringAdmin extends React.Component {
         }
     }
 
-    async initialize(props: any, self: any) {
+    initialize = async (props: any, self: any) => {
         try {
             /**  As result call method which << this.onReceiveResult >> */
             if (props.method === serviceMC.getEP().SHOW_APP_INST) {
                 const resultMetrics = await Service.getPrepareList(props, self);
                 if (resultMetrics && resultMetrics[0].AppinstList) {
-                    count = resultMetrics.length;
                     resultMetrics.map(mtr => {
-                        this.onReceiveResult(mtr);
+                        self.onReceiveResult(mtr);
                     });
                 }
             } else if (props.method === serviceMC.getEP().SHOW_CLOUDLET) {
@@ -193,9 +193,9 @@ const mapDispatchProps = (dispatch) => ({
     handleAlertInfo: (mode, msg) => {
         dispatch(actions.alertInfo(mode, msg));
     },
-    handleLoadingSpinner: (data) => {
-        dispatch(actions.loadingSpinner(data));
-    },
+    // handleLoadingSpinner: (data) => {
+    //     dispatch(actions.loadingSpinner(data));
+    // },
     onLoadComplete: (data) => {
         scope.onReceiveResult(data);
     },
@@ -265,21 +265,21 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generatWidget({
-            id: dataType.REGIST_CLIENT,
+            id: dataType.REGISTER_CLIENT,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
             type: "scatter",
-            title: { value: "Rate of Regist Client", align: "left" },
+            title: { value: "Rate of Register Client", align: "left" },
             filter: null,
             page: "single",
             ...defaultProp,
         }),
         generatWidget({
-            id: dataType.METHOD_CLIENT,
-            method: serviceMC.getEP().METHOD_CLIENT,
+            id: dataType.FIND_CLOUDLET,
+            method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
             type: "bar",
-            title: { value: "Rate of Find Cloudlet", align: "left" },
+            title: { value: "Count of Find Cloudlet", align: "left" },
             filter: null,
             page: "single",
             ...defaultProp,

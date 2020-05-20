@@ -57,8 +57,7 @@ const getListCloud = (self, params) => {
  *********************************** */
 const getListAppinst = async (self, params) =>
     /* First, need to get data for all appinstance */
-    await Appinst.getAppinstanceList(self, params)
-    ;
+    await Appinst.getAppinstanceList(self, params);
 
 
 /** *********************************
@@ -69,7 +68,8 @@ const getListAppinst = async (self, params) =>
 const store = (localStorage && localStorage.PROJECT_INIT) ? JSON.parse(localStorage.PROJECT_INIT) : null;
 let token = store ? store.userToken : "null";
 const getMetricsCloudlet = async (self, params) => {
-    /* Continue, get events of cloudlets */
+    /**
+    * Continue, get events of cloudlets */
     const requestData = (cloudletInfo) => ({
         token,
         pRegion: cloudletInfo.region,
@@ -84,6 +84,7 @@ const getMetricsCloudlet = async (self, params) => {
             self,
             requestData(cloudlet),
         );
+        /** * self : parent is the scope of <<< ContainerWrapper.js >>> */
         self.onReceiveResult(response, self);
     });
 };
@@ -169,13 +170,14 @@ export const MetricsService = async (defaultValue: MetricsParmaType, self: any) 
     }
     if (defaultValue.method === serviceMC.getEP().METRICS_CLOUDLET) {
         // 잠시 막음
-        // const result = await getMetricsCloudlet(self, defaultValue);
-        // return result;
+        const result = await getMetricsCloudlet(self, defaultValue);
+        return result;
     }
 
     if (defaultValue.method === serviceMC.getEP().METRICS_CLIENT) {
-        const result = await getMetricsClient(self, defaultValue);
-        return result;
+        // 잠시 막음
+        // const result = await getMetricsClient(self, defaultValue);
+        // return result;
     }
 };
 

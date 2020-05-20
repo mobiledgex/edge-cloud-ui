@@ -17,6 +17,7 @@ import * as DataType from "../formatter/dataType";
 import FilteringComponent from "../components/FilteringComponent";
 import * as DataFormats from "../formatter/dataFormats";
 
+
 class ChartWidget extends React.Component {
     constructor(props) {
         super(props);
@@ -28,40 +29,64 @@ class ChartWidget extends React.Component {
             data: [],
             dataRaw: []
         };
+        this.id = null;
     }
 
     componentDidMount() {
+        console.log("20200519 cloudlets props id == ", this.props.id);
+        this.id = this.props.id;
+        this.setState({ id: this.props.id });
         // this.divRef = React.createRef();
         // setTimeout(() => {
         //     if (this.divRef.current) this.divRef.current.setDataToWidget(this.getData());
         // }, 1000);
     }
 
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return true;
+    // }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (_.isEqual(prevState.dataRaw, nextProps.data) === false) {
+            console.log("20200519 cloudlets wrapper  ...22 ", ":         nextProps = ", nextProps, ": prevState = ", prevState);
+            return { dataRaw: nextProps.data };
+        }
+        return null;
+    }
+
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.data !== this.state.dataRaw) {
-            console.log("20200516 compare method ==  : chart type = ", this.props.chartType, ": id = ", prevProps.id, ": data = ", prevProps.data);
-            if (prevProps.id === DataType.REGIST_CLIENT) {
+        console.log("20200519 cloudlets compare method == 33 :  prevProps id = ", prevProps.id);
+        console.log("20200519 cloudlets compare method == 33 :  prevProps data = ", prevProps.data, "prevState data = ", prevState.dataRaw, ":", this.state.id);
+        if (_.isEqual(prevProps.data, prevState.data) === false) {
+            if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
                 if (prevProps.data && prevProps.data.values) {
-                    if (prevProps.data.values.length > 0) this.updateData(prevProps.data);
+                    if (prevProps.data.values.length > 0) this.updateData(prevProps.data, prevState.id);
                 }
-            } else {
-                // this.setState({ data: prevProps.data });
+            } else if (prevProps.id === DataType.NETWORK_CLOUDLET) {
+                this.setState({ data: prevProps.data });
             }
-            this.setState({ dataRaw: prevProps.data });
+            // this.setState({ dataRaw: prevProps.data });
         }
     }
 
-    updateData = async uData => {
-        console.log("20200516 compare ....... dataFormatRateRegistregist ... ", uData);
-        const updatedata = await DataFormats.dataFormatRateRegist(uData);
-        console.log("20200516 update data .. ", updatedata);
+
+    updateData = async (uData, props) => {
+        console.log("20200519 compare ....... dataFormatRateRegistregist ... ", uData);
+        let updatedata = null;
+        switch (props) {
+            case DataType.REGISTER_CLIENT: updatedata = await DataFormats.dataFormatRateRegist(uData); break;
+            // case DataType.FIND_CLOUDLET: updatedata = await DataFormats.dataFormatCountCloudlet(uData); break;
+            case DataType.FIND_CLOUDLET: updatedata = await DataFormats.dataFormatRateRegist(uData); break;
+            default: updatedata = await DataFormats.dataFormatRateRegist(uData);
+        }
+        console.log("20200517 update data .. ", updatedata);
         this.setState({ data: updatedata });
     }
 
     // componentWillReceiveProps(prevProps, prevState) {
     //     if (prevProps.data !== this.props.data) {
-    //         console.log("20200515 method ==  : chart type = ", this.props.chartType, ": id = ", prevProps.id, ": data type = ", DataType.REGIST_CLIENT);
-    //         if (prevProps.id === DataType.REGIST_CLIENT) {
+    //         console.log("20200515 method ==  : chart type = ", this.props.chartType, ": id = ", prevProps.id, ": data type = ", DataType.REGISTER_CLIENT);
+    //         if (prevProps.id === DataType.REGISTER_CLIENT) {
     //             console.log("20200515 ....... dataFormatRateRegistregist ... ", prevProps);
     //             if (prevProps && prevProps.data && prevProps.data.values) this.setState({ data: DataFormats.dataFormatRateRegist(prevProps.data) });
     //         } else {
@@ -84,7 +109,7 @@ class ChartWidget extends React.Component {
 
     render() {
         const {
-            chartType, type, size, title, legendShow, filter, method, page
+            chartType, type, size, title, legendShow, filter, method, page, id, selectedIndex
         } = this.props;
         const {
             activeStep, mapData, clusterCnt, data
@@ -100,11 +125,12 @@ class ChartWidget extends React.Component {
             >
                 {(filter) ? (
                     <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <FilteringComponent data={data} filterInfo={filter} />
+                        <FilteringComponent id={id} data={data} filterInfo={filter} />
                     </div>
                 ) : null}
                 {chartType === ChartType.GRAPH ? (
                     <TimeSeries
+                        id={id}
                         size={size}
                         type={type}
                         chartType={chartType}
@@ -112,12 +138,14 @@ class ChartWidget extends React.Component {
                         title={title.value}
                         showLegend={legendShow}
                         method={method}
+                        selectedMethod={selectedIndex}
                         filterInfo={filter}
                         divide={4}
                         step={activeStep}
                     />
                 ) : chartType === ChartType.GAUGE ? (
                     <ContainerHealth
+                        id={id}
                         size={size}
                         type={type}
                         chartType={chartType}
@@ -126,6 +154,7 @@ class ChartWidget extends React.Component {
                     />
                 ) : chartType === ChartType.MAP ? (
                     <Map
+                        id={id}
                         size={size}
                         type={type}
                         chartType={chartType}
@@ -139,6 +168,7 @@ class ChartWidget extends React.Component {
                     />
                 ) : chartType === ChartType.COUNTER ? (
                     <CounterWidget
+                        id={id}
                         size={size}
                         type={type}
                         chartType={chartType}
@@ -149,12 +179,12 @@ class ChartWidget extends React.Component {
                         method={method}
                     />
                 ) : (
-                                    <DataGrid size={size} type={type} chartType={chartType} data={data} title={title.value} method={method} />
+                                    <DataGrid id={id} size={size} type={type} chartType={chartType} data={data} title={title.value} method={method} />
                                 )}
                 {page === "multi"
                     ? (
                         <div style={{ height: 10 }}>
-                            <DotsMobileStepper setActiveStep={this.setActiveStep} />
+                            <DotsMobileStepper id={id} data={data} setActiveStep={this.setActiveStep} />
                         </div>
                     ) : null}
 
@@ -254,12 +284,6 @@ class Slider extends React.Component {
             }
         }, 300);
         this.compareSize = Object.assign(nextProps.size);
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.size !== this.props.size) {
-            //
-        }
     }
 
     getItem = (item, i, size) => (

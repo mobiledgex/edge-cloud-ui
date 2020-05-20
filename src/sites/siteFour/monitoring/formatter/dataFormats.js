@@ -3,18 +3,36 @@
 * Format drawing for plotly.js chart
 */
 const setdataPart = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
-    const setted = {};
     const seriesX = [];
     const seriesY = [];
+    const names = [];
     const time = 0;
     data.map((item, i) => {
         if (item[cloudletIdx] === cloudlet && item[methodIdx] === method) {
             seriesX.push(item[time]);
             seriesY.push(item[req]);
+            names.push(item[cloudletIdx]);
         }
     });
 
-    return seriesY;
+    return { x: seriesX, y: seriesY, names };
+};
+const setdataPartSum = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
+    const seriesX = [];
+    const seriesY = [];
+    const names = [];
+    const time = 0;
+    if (data && data.length > 0) {
+        data.map((item, i) => {
+            if (item[cloudletIdx] === cloudlet && item[methodIdx] === method) {
+                seriesX.push(item[time]);
+                seriesY.push(item[req]);
+                names.push(item[cloudletIdx]);
+            }
+        });
+    }
+
+    return { x: [Math.max(...seriesX)], y: [Math.max(...seriesY)], names };
 };
 
 const createSeries = (resSeries, idx) => {
@@ -25,6 +43,16 @@ const createSeries = (resSeries, idx) => {
     return series;
 };
 
+const createTimes = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
+    const seriesX = [];
+    data.map((item, i) => {
+        if (item[cloudletIdx] === cloudlet && item[methodIdx] === method) {
+            seriesX.push(item[0]);
+        }
+    });
+    return seriesX;
+};
+
 const createObjects = (resSeries, idx) => {
     const method = [];
     resSeries.map(value => {
@@ -33,7 +61,13 @@ const createObjects = (resSeries, idx) => {
     return [...new Set(method)]; /* to avoid duplicated */
 };
 
-export const dataFormatRateRegist = response => {
+/*
+    resutParse = {
+        registClient : [{cloudletA : plotlyFormatData}],
+        getAppInstList : [{cloudletB : plotlyFormatData}]
+    }
+*/
+export const parseData = (response) => {
     const resData = [];
     let times = [];
     let names = [];
@@ -64,13 +98,6 @@ export const dataFormatRateRegist = response => {
                 });
             });
 
-            /*
-            resutParse = {
-                registClient : [{cloudletA : plotlyFormatData}],
-                getAppInstList : [{cloudletB : plotlyFormatData}]
-            }
-            */
-
             resData.push(resultParse);
         });
     } else {
@@ -79,4 +106,12 @@ export const dataFormatRateRegist = response => {
     }
 
     return resData;
+};
+
+
+export const dataFormatRateRegist = response => {
+    return parseData(response);
+};
+export const dataFormatCountCloudlet = response => {
+    return setdataPartSum(response);
 };

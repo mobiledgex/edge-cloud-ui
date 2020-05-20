@@ -34,40 +34,68 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         this.allData = [];
         this.state = {
             data: [],
+            dataRaw: [],
             chartType: "",
             chartMethod: "",
             title: null,
             legendShow: false,
             page: "single",
+            selectedIndex: 0,
+            id: null,
+            method: null,
+            cloudlets: [],
+            appinsts: []
         };
     }
 
-    componentDidMount() {
-        this.setState({ chartType: this.props.chartType, title: this.props.title, page: this.props.page });
-    }
-
-    componentWillReceiveProps(nextProps) {
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (_.isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
+            console.log("20200519 cloudlets wrapper prevState.cloudlets ... ", prevState.cloudlets, ":         nextProps.cloudlets = ", nextProps.cloudlets);
+            return { cloudlets: nextProps.cloudlets };
+        }
+        if (_.isEqual(prevState.appinsts, nextProps.appinsts) === false) {
+            return { appinsts: nextProps.appinsts };
+        }
+        if (prevState.method !== nextProps.method) {
+            return { method: nextProps.method };
+        }
+        if (prevState.id !== nextProps.id) {
+            return { id: nextProps.id };
+        }
         if (nextProps.panelInfo) {
-            if (nextProps.panelInfo.title.value === this.state.title.value) {
-                this.setState({ legendShow: !this.state.legendShow });
+            if (nextProps.panelInfo.title.value === prevState.title.value) {
+                return { legendShow: !prevState.legendShow };
+            }
+            if (nextProps.id) {
+                return { id: prevProps.id };
             }
         }
 
-        // TODO: 20200509 //데이터가 갱신될 경우 id는 새로 갱신되어 들어온다
-        /** *******************************************
-             * STEP # 1
-             * necessary to get cloudlets from the parent
-             ******************************************** */
-        // this.firstProps = _.cloneDeep(nextProps.id);
-        if (nextProps.id === this.firstProps) return;
-        if (nextProps.cloudlets && nextProps.cloudlets.length > 0 && nextProps.method) {
-            this.setState({ method: nextProps.method });
-            this.initialize(nextProps, this);
-        }
-        // ////
-        if (nextProps.appinsts && nextProps.appinsts.length > 0 && nextProps.method) {
-            this.setState({ method: nextProps.method });
-            this.initialize(nextProps, this);
+        return null;
+    }
+
+    componentDidMount() {
+        this.setState({ chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id });
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+        if (_.isEqual(prevProps.cloudlets, this.state.cloudlets) === false) {
+            console.log("20200519 cloudlets prevProps ...22222 ", prevProps, ": prevState = ", prevState);
+            // TODO: 20200509 //데이터가 갱신될 경우 id는 새로 갱신되어 들어온다
+            /** *******************************************
+                * STEP # 1
+                * necessary to get cloudlets from the parent
+                ******************************************** */
+            console.log("20200519 cloudlets ready to initial == == == == == == ==", prevProps.cloudlets, ":", prevProps.appinsts, ": method= ", prevProps.method);
+
+            if (this.state.cloudlets && this.state.cloudlets.length > 0 && this.state.method) {
+                this.initialize(this.state, this);
+            }
+            // ////
+            if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
+                this.initialize(this.state, this);
+            }
         }
     }
 
@@ -76,9 +104,11 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
             /** filtering data */
             const groupByData = result;
-
-
-            this.setState({ data: result });
+            console.log("20200519 on receive result in container wrapper ==  ", result);
+            if (result && result.length > 0) {
+                console.log("20200519 on receive result in container wrapper ==  ", result);
+            }
+            this.setState({ data: { [self.state.id]: result } });
         } catch (e) { }
     }
 
@@ -90,6 +120,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 /**
                  * completing service, go to onReceiveResult below lines
                  */
+                alert("good" + result.toString());
             }
         } catch (e) {
             console.log(e);
@@ -97,7 +128,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     render() {
-        const { data, chartType, legendShow } = this.state;
+        const { data, chartType, legendShow, selectedIndex } = this.state;
         return (
             <SizeMe monitorHeight>
                 {({ size }) => (
@@ -107,6 +138,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                         chartType={chartType}
                         size={size}
                         legendShow={legendShow}
+                        selectedIndex={selectedIndex}
                     />
                 )}
             </SizeMe>
@@ -126,9 +158,9 @@ const mapDispatchProps = (dispatch) => ({
     handleAlertInfo: (mode, msg) => {
         dispatch(actions.alertInfo(mode, msg));
     },
-    handleLoadingSpinner: (data) => {
-        dispatch(actions.loadingSpinner(data));
-    },
+    // handleLoadingSpinner: (data) => {
+    //     dispatch(actions.loadingSpinner(data));
+    // },
     onLoadComplete: (data) => {
         _self.onReceiveResult(data);
     },

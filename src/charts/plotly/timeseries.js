@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import "./styles.css";
 import * as actions from "../../actions";
 import serviceMC from "../../sites/siteFour/monitoring/formatter/chartType";
-
+import * as dataType from "../../sites/siteFour/monitoring/formatter/dataType";
 
 // https://plot.ly/python/#layout-options
 // https://plot.ly/javascript/axes/#tick-placement-color-and-style
@@ -86,7 +86,7 @@ class TimeSeries extends React.Component {
         this.stackAllData = [];
         this.stackData = [];
         this.loadedCount = 0;
-        this.maxDataCount = 20;
+        this.maxDataCount = 0;
         this.currentPage = 0;
     }
 
@@ -116,103 +116,99 @@ class TimeSeries extends React.Component {
         console.log("20200515 .. props in did mount == ", this.props);
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("20200519 timesereis wrapper prevState.data ...11 ", prevState.data, ":         nextProps.data = ", nextProps.data);
+        if (_.isEqual(prevState.data, nextProps.data) === false) {
+            console.log("20200519 timesereis wrapper prevState.data ...22 ", prevState.data, ":         nextProps.data = ", nextProps.data);
+            return { data: nextProps.data };
+        }
+        return null;
+    }
+
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.data !== this.state.dataRaw) {
+        console.log("20200519 timeseries prev props ==11 ", prevProps.data, ":", this.state.data);
+        if (_.isEqual(prevProps.data, this.state.data) === false) {
             // TODO : select box의 선택에 따른 데이터 교체
-
+            console.log("20200519 timeseries prev props data ==22 ", prevProps.data[prevProps.id]);
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
-            // if (prevProps.data.length > 0) {
-            //     let selectedItem = "";
-            //     if (prevProps.method === "") {
-            //         selectedItem = "diskUsed";
-            //     }
-            //     const times = prevProps.data[0].times[0];
-            //     const datas = prevProps.data[0].resData_util[0].diskUsed.y;
-            //     const methods = prevProps.data[0].methods[0];
-            //     this.reloadChart(
-            //         datas,
-            //         times,
-            //         methods
-            //     );
-            //     this.stackAllData.push(Object.assign(prevProps.data));
-            // }
-
-            // metics of clients
-            const selectedMethodName = "RegisterClient";
-            if ((prevProps.data.length > 0) && (_.isEqual(prevProps.data, this.state.dataRaw) === false)) {
-                const { times } = prevProps.data[0];
-                const { methods } = prevProps.data[0];
-                const { cloudlets } = prevProps.data[0];
-                const { names } = prevProps.data[0];
-                const datas = prevProps.data[0][selectedMethodName][0][cloudlets];
-                console.log("20200517 timeseries data == ", datas);
+            if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
+                const shortHand = prevProps.data[prevProps.id];
+                let selectedItem = "";
+                if (prevProps.method === "") {
+                    selectedItem = "diskUsed";
+                }
+                const times = shortHand[0].times[0]; // not use
+                const datas = shortHand[0].resData_util[0].diskUsed; // as x & y
+                const methods = shortHand[0].methods[0]; // as names
+                const { type } = prevProps;
+                datas.names = methods;
                 this.reloadChart(
-                    datas,
-                    times,
-                    methods,
-                    names
+                    { [methods[0]]: datas },
+                    methods[0],
+                    type
                 );
-                //this.stackAllData.push(Object.assign(prevProps.data));
+                this.stackAllData.push(Object.assign(shortHand));
             }
 
-            this.setState({ dataRaw: prevProps.data });
-        }
-        /**
-        * sliding page
-        * * */
-        if (this.currentPage !== prevProps.step) {
-            this.currentPage = prevProps.step;
-            this.stackData = [];
-            this.loadedCount = 0;
-            this.stackAllData.map(data => {
-                const { times } = prevProps.data[0];
-                const { methods } = prevProps.data[0];
-                const { cloudlets } = prevProps.data[0];
-                const datas = prevProps.data[0][selectedMethodName][0][cloudlets];
-                this.reloadChart(
-                    datas,
-                    times,
-                    methods,
-                    names
-                );
-            });
+            // metics of clients
+            // let selectedIdx = prevProps.selectedMethod;
+            // if (prevProps.id === dataType.FIND_CLOUDLET) {
+            //     selectedIdx = 1;
+            // }
+            // if (prevProps.data.length > 0) {
+            //     const { times } = prevProps.data[0];
+            //     const { methods } = prevProps.data[0];
+            //     const { cloudlets } = prevProps.data[0];
+            //     const { names } = prevProps.data[0];
+            //     selectedIdx = methods.indexOf(prevProps.id);
+            //     const selectedMethodName = methods[selectedIdx];
+            //     const dataArray = prevProps.data[0][selectedMethodName];
+            //     console.log("20200518 data .. length ... ", dataArray);
+            //     dataArray.map((data, i) => {
+            //         const datas = data;
+            //         const { type } = prevProps;
+            //         console.log("20200517 timeseries data == ", datas);
+            //         this.reloadChart(
+            //             datas,
+            //             cloudlets[i],
+            //             type
+            //         );
+            //     });
+            //     this.stackAllData.push(Object.assign(prevProps.data));
+            // }
         }
 
-        if (prevProps.size !== this.state.size) {
-            console.log("20200515 props size == ", prevProps.size);
-            // this.setState({
-            //     vWidth: prevProps.size.width,
-            //     vHeight: prevProps.size.height
-            // });
-            this.setState({ size: prevProps.size });
-        }
     }
 
     /** nemes = ["RegisterClient", "FindCloudlet", "VerifyLocation"] */
-    reloadChart(data, times, methods, names) {
+    reloadChart(data, cloudlet, type) {
         let seriesData = null;
-        // let series = times.map((time) => (
-        //     d3.TimeSeries()
-        // ))
+        console.log("20200518 series dddd .... ", data[cloudlet]);
 
+        /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
-            mode: "line",
-            x: times,
-            y: data,
+            type: type || "line",
+            x: data[cloudlet].x,
+            y: data[cloudlet].y,
             yaxis: "y",
-            text: names,
-            name: names,
-            line: {
-                dash: "solid",
-                width: 1
-            },
-            marker: { size: 4 },
+            text: data[cloudlet].names,
+            name: data[cloudlet].names[0],
+            mode: "lines+markers",
+            // line: {
+            //     dash: "solid",
+            //     width: 10
+            // },
+            // marker: { size: 4 },
             hovertemplate: "<i>Count</i>: %{y:.2f}"
                 + "<br><b>Time</b>: %{x}<br>"
                 + "<b> %{text} </b>"
                 + "<extra></extra>"
         };
 
+        /**
+        * 페이지별로 나누어 데이터 표현
+        * once draw count of data to one page
+        */
         if (this.stackData.length < this.maxDataCount) {
             if (Math.floor(this.loadedCount / this.maxDataCount) === this.currentPage) {
                 this.stackData.push(seriesData);
