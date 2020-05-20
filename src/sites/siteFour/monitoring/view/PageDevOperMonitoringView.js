@@ -20,7 +20,7 @@ import {
     makeDropdownForCloudlet,
     makeid,
     makeLineChartData,
-    makeLineChartDataForBigModal,
+    makeLineChartDataForBigModal, makeMultiLineChartDatas,
     reduceLegendClusterCloudletName,
     reduceString,
 } from "../service/PageDevOperMonitoringService";
@@ -29,7 +29,6 @@ import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_LIST,
     CLASSIFICATION,
-    GRID_ITEM_TYPE,
     HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
@@ -94,6 +93,7 @@ import {
     PageDevMonitoringMapStateToProps
 } from "../common/PageMonitoringProps";
 import {
+    GRID_ITEM_TYPE,
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
     CLOUDLET_HW_MAPPER_KEY,
@@ -120,6 +120,7 @@ import DonutChartHooks from "../components/DonutChartHooks";
 import ClientStatusTableHooks from "../components/ClientStatusTableHooks";
 import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName} from "../service/PageAdmMonitoringService";
+import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -1101,7 +1102,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+
             _______________makeGridItemOneBody(hwType, graphType) {
+
+                console.log(`graphType====>`, graphType);
+
+                if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && hwType.length >= 2) {
+                    let multiLineChartDataSets = []
+                    if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                        for (let i in hwType) {
+                            let lineDataOne = makeLineChartData(this.state.filteredClusterUsageList, hwType[i], this)
+                            multiLineChartDataSets.push(lineDataOne);
+                        }
+                    }
+
+
+                    return (
+                        this.state.loading ? renderPlaceHolderLoader() :
+                            <MultiHwLineChartContainer
+                                isResizeComplete={this.state.isResizeComplete}
+                                loading={this.state.loading}
+                                currentClassification={this.state.currentClassification}
+                                parent={this}
+                                pHardwareType={hwType.toString()}
+                                chartDataSet={multiLineChartDataSets}
+                            />
+                    )
+                }
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
@@ -1354,6 +1381,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     const uniqueIndex = item.i;
                                     let hwType = HARDWARE_TYPE.CPU
                                     let graphType = GRID_ITEM_TYPE.LINE;
+                                    let hwTypeLength = 0;
                                     if (!isEmpty(this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex))) {
                                         hwType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).hwType
                                         graphType = this.state.layoutMapperForClusterForOper.find(x => x.id === uniqueIndex).graphType

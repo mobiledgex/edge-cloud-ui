@@ -340,7 +340,7 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
-export const GRID_ITEM_TYPE = {
+/*export const GRID_ITEM_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
     COLUMN: 'COLUMN',
@@ -354,7 +354,8 @@ export const GRID_ITEM_TYPE = {
     PERFORMANCE_SUM: 'PERFORMANCE_SUM',
     CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
     METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
-}
+    MULTI_LINE_CHART: 'MULTI_LINE_CHART'
+}*/
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
     //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},

@@ -10,10 +10,10 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import {notification} from "antd";
 import {makeGradientColor} from "./PageDevOperMonitoringService";
-import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
+import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "./PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
+import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
@@ -668,7 +668,6 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
 
 
 }
-
 
 /**
  *

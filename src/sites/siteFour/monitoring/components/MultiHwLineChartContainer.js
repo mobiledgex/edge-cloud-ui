@@ -1,6 +1,11 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
+import {
+    convertToClassification,
+    makeGradientLineChartData,
+    makeLineChartOptions,
+    makeMultiLineChartDatas
+} from "../service/PageDevOperMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
@@ -20,7 +25,7 @@ type State = {
     isResizeComplete: boolean,
 };
 
-export default class LineChartContainer extends React.Component<Props, State> {
+export default class MultiHwLineChartContainer extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -55,11 +60,13 @@ export default class LineChartContainer extends React.Component<Props, State> {
     }
 
 
-    setChartData(lineChartDataSet, hwType, graphType) {
-        let levelTypeNameList = lineChartDataSet.levelTypeNameList;
-        let usageSetList = lineChartDataSet.usageSetList;
-        let newDateTimeList = lineChartDataSet.newDateTimeList;
-        let hardwareType = lineChartDataSet.hardwareType;
+    setChartData(plineChartDataSet, hwType, graphType) {
+        let multiLineChartDatasSets = makeMultiLineChartDatas(plineChartDataSet);
+
+        let levelTypeNameList = multiLineChartDatasSets.levelTypeNameList;
+        let usageSetList = multiLineChartDatasSets.usageSetList;
+        let newDateTimeList = multiLineChartDatasSets.newDateTimeList;
+        let hardwareType = multiLineChartDatasSets.hardwareType;
 
         const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
         this.setState({

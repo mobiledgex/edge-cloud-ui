@@ -21,7 +21,7 @@ import {
     THEME_OPTIONS,
     USAGE_INDEX
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
@@ -69,6 +69,7 @@ export const makeid = (length) => {
 
 export const getUserId = () => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+    console.log(`store====>`, store);
     return store.email;
 };
 
@@ -280,6 +281,27 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 
     }
 };
+
+export function makeMultiLineChartDatas(multiLineChartDataSets) {
+    let hardwareType = []
+    let levelTypeNameList = []
+    let newDateTimeList = []
+    let usageSetList = []
+    multiLineChartDataSets.map((dataSetsOne: TypeLineChartData, index) => {
+        hardwareType = hardwareType.concat(dataSetsOne.hardwareType)
+        levelTypeNameList = levelTypeNameList.concat(dataSetsOne.levelTypeNameList)
+        newDateTimeList = (dataSetsOne.newDateTimeList)
+        usageSetList = usageSetList.concat(dataSetsOne.usageSetList)
+    })
+
+    let newChartDataSets = {
+        hardwareType,
+        levelTypeNameList,
+        newDateTimeList,
+        usageSetList,
+    }
+    return newChartDataSets;
+}
 
 
 /**
