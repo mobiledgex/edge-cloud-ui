@@ -130,6 +130,7 @@ class OrganizationReg extends React.Component {
         super(props);
         this.state = {
             step: 0,
+            userList:[],
             forms: [],
         }
         this.type = null
@@ -193,7 +194,8 @@ class OrganizationReg extends React.Component {
     }
 
     onAddUser = async (data) => {
-
+        let orgData = this.organizationInfo;
+        let userList = this.state.userList;
         if (data) {
             data[fields.role] = this.type + data[fields.role]
             let mcRequest = await addUser(this, data)
@@ -202,9 +204,16 @@ class OrganizationReg extends React.Component {
                 if (message === 'Role added to user') {
                     this.props.handleAlertInfo('success', `User ${data[fields.username]} added successfully`)
                     this.addUserForm(this.organizationInfo)
+                    userList.push({
+                        userName : data[fields.username],
+                        userRole : data[fields.role]
+                    })
                 }
             }
         }
+        orgData.userList = userList
+        this.setState({userList:userList})
+
     }
 
     addUserForm = (data) => {
@@ -262,6 +271,36 @@ class OrganizationReg extends React.Component {
                         <Form>
                             <Header className="newOrg3-1">{`Organization "` + organizationName + `" has been created.`}</Header>
                             <MexDetailViewer detailData={this.organizationInfo} keys={keys()}/>
+                            <div style={{padding: '20px 0', color: 'white'}}>
+                                <div className="newOrg3-2">
+                                    <div>
+                                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.
+                                    </div>
+                                    <br></br>
+                                    <div>
+                                        {`$ docker login -u <username> docker.mobiledgex.net`}
+                                    </div>
+                                    <div>
+                                        {`$ docker tag <your application> docker.mobiledgex.net/` + String(organizationName).toLowerCase() + `/images/<application name>:<version>`}
+                                    </div>
+                                    <div>
+                                        {`$ docker push docker.mobiledgex.net/` + String(organizationName).toLowerCase() + `/images/<application name>:<version>`}
+                                    </div>
+                                    <div>
+                                        $ docker logout docker.mobiledgex.net
+                                    </div>
+                                </div>
+                                <br></br>
+                                <div className="newOrg3-3">
+                                    <div>
+                                        If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
+                                    </div>
+                                    <br />
+                                    <div>
+                                        {'$ curl -u<username> -T <path_to_file>'} <code style={{ color: '#76ff03' }}>{`"https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}/<target_file_path>"`}</code> {'--progress-bar -o <upload status filename>'}
+                                    </div>
+                                </div>
+                            </div>
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organizations</Button>
                             </Form.Group>
