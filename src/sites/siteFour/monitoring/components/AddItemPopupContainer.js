@@ -81,9 +81,10 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 } else {
                     let {currentHwTypeList} = this.state;
 
-                    currentHwTypeList.map(async (item, index) => {
-                        await this.props.parent.addGridItem(item, this.state.currentItemType);
-                    })
+                    for (let i in currentHwTypeList) {
+                        await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
+                    }
+
 
                     //todo:init dropdown selected values
                     await this.setState({
@@ -176,7 +177,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     renderColumnChartRadio() {
         return (
-            this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ?
+            this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ?
                 (
                     <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                         <div
@@ -362,19 +363,32 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         )
     }
 
-    render() {
-
+    makeHwDropdownList() {
         let hardwareDropdownList = []
-        let hwDropdownChildren = [];
-        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+            hardwareDropdownList = this.props.parent.state.hwListForCloudlet
+        } else if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER) {
             hardwareDropdownList = this.props.parent.state.hwListForCluster
         } else {
             hardwareDropdownList = this.props.parent.state.hwListForAppInst
         }
 
+        return hardwareDropdownList;
+    }
+
+    makeHwDropdownChildren(hardwareDropdownList) {
+        let hwDropdownChildren = []
         hardwareDropdownList.map(item => {
             hwDropdownChildren.push(<Option key={item.value}>{item.text}</Option>);
         })
+        return hwDropdownChildren;
+
+    }
+
+    render() {
+
+        let hardwareDropdownList = this.makeHwDropdownList();
+        let hwDropdownChildren = this.makeHwDropdownChildren(hardwareDropdownList);
 
         return (
             <div style={{flex: 1, display: 'flex'}}>

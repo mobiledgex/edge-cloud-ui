@@ -839,18 +839,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            async addGridItem(paramHwType, graphType = 'line') {
+            async addGridItem(paramHwType, graphType) {
+                let uniqueId = undefined
+                let currentLayoutMapper = []
+                let itemOne = {};
+                let currentLayout
                 /*todo:Cloudlet*/
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                    let currentLayout = this.state.layoutCloudlet;
+                    currentLayout = this.state.layoutCloudlet;
                     let maxY = -1;
                     if (!isEmpty(currentLayout)) {
                         maxY = _.maxBy(currentLayout, 'y').y
                     }
-                    let uniqueId = makeid(5)
-                    let layoutMapper = this.state.layoutMapperCloudlet
+                    uniqueId = makeid(5)
+                    currentLayoutMapper = this.state.layoutMapperCloudlet
 
-                    let itemOne = {
+                    itemOne = {
                         id: uniqueId,
                         hwType: paramHwType,
                         graphType: graphType,
@@ -866,7 +870,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             w: this.makeGridItemWidth(graphType),
                             h: this.makeGridIItemHeight(graphType),
                         }),
-                        layoutMapperCloudlet: layoutMapper.concat(itemOne),
+                        layoutMapperCloudlet: currentLayoutMapper.concat(itemOne),
                     })
 
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
@@ -1157,7 +1161,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
 
                     let barChartDataSet: TypeBarChartData = [];
-                    if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                    if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                        barChartDataSet = makeBarChartDataForCluster(this.state.filteredCloudletUsageList, pHwType, this)
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                         barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
@@ -1456,6 +1462,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     )
                 } catch (e) {
+                    showToast('Cloudsf====>>>>')
                     showToast(e.toString())
                 }
 

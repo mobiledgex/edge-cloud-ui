@@ -400,13 +400,14 @@ export const HARDWARE_OPTIONS_FOR_APPINST = [
 
 
 export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
-    {text: 'vCPU', value: 'vCPU'},
-    {text: 'MEM', value: 'MEM'},
-    {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
-    {text: 'FLOATING_IPS', value: 'FLOATING_IPS'},
-    {text: 'IPV4', value: 'IPV4'},
+    {text: 'vCpuUsed', value: 'vCpuUsed'},
+    {text: 'memUsed', value: 'memUsed'},
+    {text: 'diskUsed', value: 'diskUsed'},
+    {text: 'floatingIpsUsed', value: 'floatingIpsUsed'},
+
+    {text: 'ipv4Used', value: 'ipv4Used'},
+    {text: 'netSend', value: 'netSend'},
+    {text: 'netRecv', value: 'netRecv'},
 ]
 
 
