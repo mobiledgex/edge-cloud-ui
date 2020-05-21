@@ -1,6 +1,13 @@
 import React from 'react';
 import '../common/PageMonitoringStyles.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_LIST,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGION
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChartCore from "../components/BubbleChartCore";
 import type {TypeAppInstanceUsage2, TypeClientStatus, TypeGridInstanceList} from "../../../../shared/Types";

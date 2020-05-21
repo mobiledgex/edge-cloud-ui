@@ -8,6 +8,7 @@ import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import Button from "@material-ui/core/Button";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+import {showToast} from "../service/PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -80,11 +81,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 } else {
                     let {currentHwTypeList} = this.state;
 
-
-                    for (let i in currentHwTypeList) {
-                        await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
-                    }
-
+                    currentHwTypeList.map(async (item, index) => {
+                        await this.props.parent.addGridItem(item, this.state.currentItemType);
+                    })
 
                     //todo:init dropdown selected values
                     await this.setState({
@@ -114,11 +113,253 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
 
         } catch (e) {
-            throw new Error(e)
-        } finally {
+            showToast(e.toString())
         }
 
 
+    }
+
+
+    renderLineChartRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.LINE,
+                            isShowHWDropDown: true,
+                            isShowEventLog: false,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Line.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+
+    renderBarChartRadio() {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+            return (
+                <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                    <div
+                        onClick={() => {
+                            this.setState({
+                                currentItemType: GRID_ITEM_TYPE.BAR,
+                                isShowHWDropDown: true,
+                                isShowEventLog: false,
+                            })
+                        }}
+                    >
+                        <Center>
+                            <ReactSVG src={require('../images/chart/Bar.svg')}
+                                      style={PageMonitoringStyles.chartIcon}
+                                      loading={() => (<Center><CircularProgress/></Center>)}/>
+                        </Center>
+                    </div>
+                    <div className='page_monitoring_form_radio_label'>
+                        <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
+                    </div>
+                </ChartIconOuterDiv>
+            )
+        }
+
+    }
+
+    renderColumnChartRadio() {
+        return (
+            this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ?
+                (
+                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                        <div
+                            onClick={() => {
+                                this.setState({
+                                    currentItemType: GRID_ITEM_TYPE.COLUMN,
+                                    isShowHWDropDown: true,
+                                    isShowEventLog: false,
+                                })
+                            }}
+                        >
+                            <Center>
+                                <ReactSVG src={require('../images/chart/Column.svg')}
+                                          style={PageMonitoringStyles.chartIcon}
+                                          loading={() => (<Center><CircularProgress/></Center>)}/>
+                            </Center>
+                        </div>
+                        <div className='page_monitoring_form_radio_label'>
+                            <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
+                        </div>
+                    </ChartIconOuterDiv>
+                ) : null
+
+        )
+    }
+
+    renderEventLogRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+                            isShowHWDropDown: false,
+                            isShowEventLog: true,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Grid.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+
+    renderMapRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.MAP,
+                            isShowHWDropDown: false,
+                            isShowEventLog: false,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Map.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+
+    renderBubbleRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.BUBBLE,
+                            isShowHWDropDown: false,
+                            isShowEventLog: false,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Bubble.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble Chart</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+    renderEventLogSelect() {
+        return (
+            <div className='page_monitoring_form_row'>
+                <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
+                    <Center>
+                        Event Log Type
+                    </Center>
+                </div>
+
+                <div className='page_monitoring_form_column_right'>
+                    <Dropdown
+                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
+                        selectOnBlur={false}
+                        placeholder="Select Item"
+                        selection
+                        onChange={async (e, {value}) => {
+                            this.setState({
+                                currentItemType: value,
+                            })
+                        }}
+                        value={this.state.currentItemType}
+                        options={EVENT_LOG_ITEM_LIST}
+                    />
+                </div>
+            </div>
+        )
+    }
+
+    renderBottomBtns() {
+        return (
+            <div className='page_monitoring_form_row' style={{marginTop: 15}}>
+                <Button
+                    size={'small'}
+                    style={{width: 100, backgroundColor: '#559901', color: 'white'}}
+                    onClick={this.handleAddClicked}
+                >
+                    <label>Add</label>
+                </Button>
+                <div style={{width: 29}}/>
+                <Button
+                    size={'small'}
+                    style={{width: 100, backgroundColor: 'grey', color: 'white'}}
+                    onClick={async () => {
+                        this.closePopupWindow();
+                    }}
+                >Cancel
+                </Button>
+
+            </div>
+        )
+    }
+
+    renderHwDropdown(hwDropdownChildren) {
+        return (
+            <div>
+                <div className='page_monitoring_form_row'>
+                    <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
+                        <Center>
+                            HW Type
+                        </Center>
+                    </div>
+                    <div className='page_monitoring_form_column_right'>
+                        <Select
+                            allowClear={true}
+                            mode="multiple"
+                            style={{width: '100%'}}
+                            placeholder="Select Hardware Type"
+                            value={this.state.currentHwTypeList}
+                            onChange={(values) => {
+                                this.setState({
+                                    currentHwTypeList: values,
+                                })
+                            }}
+                        >
+                            {hwDropdownChildren}
+                        </Select>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     render() {
@@ -187,209 +428,20 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 value={this.state.currentItemType}
                             >
                                 <div className='page_monitoring_form_column_right'>
-                                    {/*todo:##################################*/}
-                                    {/*todo:Line Chart Icon                   */}
-                                    {/*todo:##################################*/}
-                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.LINE,
-                                                    isShowHWDropDown: true,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <Center>
-                                                <ReactSVG src={require('../images/chart/Line.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
-                                                          loading={() => (<Center><CircularProgress/></Center>)}/>
-                                            </Center>
-                                        </div>
-                                        <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
-                                        </div>
-                                    </ChartIconOuterDiv>
-                                    {/*todo:##################################*/}
-                                    {/*todo:Bar Chart Icon                    */}
-                                    {/*todo:##################################*/}
-                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.BAR,
-                                                    isShowHWDropDown: true,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <Center>
-                                                <ReactSVG src={require('../images/chart/Bar.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
-                                                          loading={() => (<Center><CircularProgress/></Center>)}/>
-                                            </Center>
-                                        </div>
-                                        <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
-                                        </div>
-                                    </ChartIconOuterDiv>
-                                    }
-                                    {/*todo:##################################*/}
-                                    {/*todo:Column Chart Icon*/}
-                                    {/*todo:##################################*/}
-                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER &&
-                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.COLUMN,
-                                                    isShowHWDropDown: true,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <Center>
-                                                <ReactSVG src={require('../images/chart/Column.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
-                                                          loading={() => (<Center><CircularProgress/></Center>)}/>
-                                            </Center>
-                                        </div>
-                                        <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
-                                        </div>
-                                    </ChartIconOuterDiv>
-                                    }
-                                    {/*todo:######################################*/}
-                                    {/*todo:APP_INST_EVENT_LOG*/}
-                                    {/*todo:######################################*/}
-                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-                                                    isShowHWDropDown: false,
-                                                    isShowEventLog: true,
-                                                })
-                                            }}
-                                        >
-                                            <Center>
-                                                <ReactSVG src={require('../images/chart/Grid.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
-                                                          loading={() => (<Center><CircularProgress/></Center>)}/>
-                                            </Center>
-                                        </div>
-                                        <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
-                                        </div>
-                                    </ChartIconOuterDiv>
-                                    {/*desc:###############################*/}
-                                    {/*desc:map         */}
-                                    {/*desc:###############################*/}
-                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.MAP,
-                                                    isShowHWDropDown: false,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <Center>
-                                                <ReactSVG src={require('../images/chart/Map.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
-                                                          loading={() => (<Center><CircularProgress/></Center>)}/>
-                                            </Center>
-                                        </div>
-                                        <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
-                                        </div>
-                                    </ChartIconOuterDiv>
-
-                                    {/*desc:###############################*/}
-                                    {/*desc: bubble                        */}
-                                    {/*desc:###############################*/}
-                                    <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                                        <div
-                                            onClick={() => {
-                                                this.setState({
-                                                    currentItemType: GRID_ITEM_TYPE.BUBBLE,
-                                                    isShowHWDropDown: false,
-                                                    isShowEventLog: false,
-                                                })
-                                            }}
-                                        >
-                                            <Center>
-                                                <ReactSVG src={require('../images/chart/Bubble.svg')}
-                                                          style={PageMonitoringStyles.chartIcon}
-                                                          loading={() => (<Center><CircularProgress/></Center>)}/>
-                                            </Center>
-                                        </div>
-                                        <div className='page_monitoring_form_radio_label'>
-                                            <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble Chart</Radio>
-                                        </div>
-                                    </ChartIconOuterDiv>
-
+                                    {this.renderLineChartRadio()}
+                                    {this.renderBarChartRadio()}
+                                    {this.renderColumnChartRadio()}
+                                    {this.renderEventLogRadio()}
+                                    {this.renderMapRadio()}
+                                    {this.renderBubbleRadio()}
                                 </div>
                             </Radio.Group>
                         </div>
                         {/*@todo:###############################*/}
                         {/*@todo:DROP DOWN AREA                 */}
                         {/*@todo:###############################*/}
-                        {this.state.isShowHWDropDown && <div>
-                            <div className='page_monitoring_form_row'>
-                                <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
-                                    <Center>
-                                        HW Type
-                                    </Center>
-                                </div>
-                                <div className='page_monitoring_form_column_right'>
-                                    <Select
-                                        allowClear={true}
-                                        mode="multiple"
-                                        style={{width: '100%'}}
-                                        placeholder="Select Hardware Type"
-                                        value={this.state.currentHwTypeList}
-                                        onChange={(values) => {
-                                            this.setState({
-                                                currentHwTypeList: values,
-                                            })
-                                        }}
-                                    >
-                                        {hwDropdownChildren}
-                                    </Select>
-                                </div>
-                            </div>
-                        </div>}
-                        {this.state.isShowEventLog &&
-                        <div className='page_monitoring_form_row'>
-                            <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
-                                <Center>
-                                    Event Log Type
-                                </Center>
-                            </div>
-
-                            <div className='page_monitoring_form_column_right'>
-                                <Dropdown
-                                    style={PageMonitoringStyles.dropDownForClusterCloudlet3}
-                                    selectOnBlur={false}
-                                    placeholder="Select Item"
-                                    selection
-                                    onChange={async (e, {value}) => {
-                                        this.setState({
-                                            currentItemType: value,
-                                        })
-                                    }}
-                                    value={this.state.currentItemType}
-                                    options={EVENT_LOG_ITEM_LIST}
-                                />
-                            </div>
-                        </div>
-                        }
-                        {/*blank*/}
-                        {/*blank*/}
-                        {/*blank*/}
+                        {this.state.isShowHWDropDown && this.renderHwDropdown(hwDropdownChildren)}
+                        {this.state.isShowEventLog && this.renderEventLogSelect()}
                         {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&
                         <div className='page_monitoring_form_row'>
                             <div className='page_monitoring_form_column_left'
@@ -401,25 +453,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*todo:############################*/}
                         {/*todo:Bottom Buttons              */}
                         {/*todo:############################*/}
-                        <div className='page_monitoring_form_row' style={{marginTop: 15}}>
-                            <Button
-                                size={'small'}
-                                style={{width: 100, backgroundColor: '#559901', color: 'white'}}
-                                onClick={this.handleAddClicked}
-                            >
-                                <label>Add</label>
-                            </Button>
-                            <div style={{width: 29}}/>
-                            <Button
-                                size={'small'}
-                                style={{width: 100, backgroundColor: 'grey', color: 'white'}}
-                                onClick={async () => {
-                                    this.closePopupWindow();
-                                }}
-                            >Cancel
-                            </Button>
-
-                        </div>
+                        {this.renderBottomBtns()}
 
                     </div>
 

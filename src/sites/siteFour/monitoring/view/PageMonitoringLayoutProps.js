@@ -91,7 +91,6 @@ export const defaultLayoutForCloudlet = [
     {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},//
 ];
 
-
 export const defaultLayoutMapperForCloudlet = [
     {
         id: '1',
@@ -101,7 +100,7 @@ export const defaultLayoutMapperForCloudlet = [
     {
         id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: GRID_ITEM_TYPE.MAP,
     },
 
     {
@@ -156,7 +155,7 @@ export const defaultHwMapperListForCluster = [
     {
         id: '2',
         hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: GRID_ITEM_TYPE.MAP,
     },
 
     {
@@ -167,11 +166,11 @@ export const defaultHwMapperListForCluster = [
     {
         id: '4',
         hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
-        graphType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: GRID_ITEM_TYPE.BUBBLE,
     },
     {
         id: '5',
-        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        hwType: undefined,
         graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
     },
     {
