@@ -29,16 +29,12 @@ import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
     makeBubbleChartDataForCluster,
-    renderBarChartCore,
     renderLineChartCore,
     renderPlaceHolderLoader,
-    renderUsageByType,
-    renderUsageByType2,
-    sortUsageListByType
+    renderUsageByType
 } from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import {renderUsageLabelByType} from "./PageAdmMonitoringService";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 
@@ -103,43 +99,38 @@ export const filterByClassification = (originalList, selectOne, filterKey,) => {
 
 };
 
-export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userType = '') => {
+export const renderUsageLabelByType = (usageOne, hardwareType, userType = '') => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
         let cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
         return cpuUsageOne;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM) {
+    } else if (hardwareType === HARDWARE_TYPE.MEM) {
         return numberWithCommas((usageOne.sumMemUsage).toFixed(2)) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK) {
+    } else if (hardwareType === HARDWARE_TYPE.DISK) {
         return numberWithCommas((usageOne.sumDiskUsage).toFixed(2)) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-
+    } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
         return Math.ceil(usageOne.sumTcpConns);
-    }
-
-    if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
+    } else if (hardwareType === HARDWARE_TYPE.TCPRETRANS) {
         return Math.ceil(usageOne.sumTcpRetrans);
-    }
-
-    if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+    } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
         return convertByteToMegaGigaByte(parseInt(usageOne.sumUdpSent))
-    }
-
-    if (hardwareType === HARDWARE_TYPE.UDPRECV) {
+    } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         return convertByteToMegaGigaByte(usageOne.sumUdpRecv)
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return convertByteToMegaGigaByte(usageOne.sumSendBytes)
-    }
-
-    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return convertByteToMegaGigaByte(usageOne.sumRecvBytes)
+    }
+    ////Cloudlet
+    else if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
+        return usageOne.usedVCpuCount
+    } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+        return usageOne.usedMemUsage
+    } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+        return usageOne.usedDiskUsage
+    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED) {
+        return usageOne.usedFloatingIpsUsage
+    } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+        return usageOne.usedIpv4Usage
     }
 };
 
@@ -157,7 +148,7 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
                         usageList[index].cluster.toString() + "\n[" + usageList[index].cloudlet + "]",//clusterName
                         renderUsageByType(usageList[index], hardwareType, _this),
                         _this.state.chartColorList[index],
-                        renderUsageLabelByTypeForCluster(usageList[index], hardwareType) //@desc:annotation
+                        renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
                     ];
                     chartDataList.push(barDataOne);
                 }
@@ -167,6 +158,8 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
                 chartDataList,
                 hardwareType,
             };
+
+
             return chartDataSet
         }
     } catch (e) {
@@ -234,7 +227,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
                         typedUsageList[index].instance.AppName.toString().substring(0, 10) + "..." + "\n[" + typedUsageList[index].instance.Cloudlet + "]",
                         renderUsageByType(typedUsageList[index], hardwareType, _this),
                         CHART_COLOR_LIST[index],
-                        renderUsageLabelByTypeForCluster(typedUsageList[index], hardwareType, _this)
+                        renderUsageLabelByType(typedUsageList[index], hardwareType, _this)
                     ];
                     chartDataList.push(barDataOne);
                 }
@@ -714,27 +707,27 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             animation: {
                 duration: 500
             },
-           /* tooltips: {
-                callbacks: {
-                    label: function (tooltipItem, data) {
+            /* tooltips: {
+                 callbacks: {
+                     label: function (tooltipItem, data) {
 
-                        console.log(`tooltipItem====>`, tooltipItem);
+                         console.log(`tooltipItem====>`, tooltipItem);
 
-                        var dataset = data.datasets[tooltipItem.datasetIndex];
-                        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-                        var currentValue = dataset.data[tooltipItem.index];
-                        return currentValue.toFixed(2).toString();
-                    },
-                    title: function (tooltipItem, data) {
+                         var dataset = data.datasets[tooltipItem.datasetIndex];
+                         var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+                         var currentValue = dataset.data[tooltipItem.index];
+                         return currentValue.toFixed(2).toString();
+                     },
+                     title: function (tooltipItem, data) {
 
-                        console.log(`tooltipItem...data====>`, data)
+                         console.log(`tooltipItem...data====>`, data)
 
-                        //return data.labels[tooltipItem[0].index];
+                         //return data.labels[tooltipItem[0].index];
 
-                        return data.datasets[tooltipItem[0].index]['label'];
-                    }
-                }
-            },*/
+                         return data.datasets[tooltipItem[0].index]['label'];
+                     }
+                 }
+             },*/
             maintainAspectRatio: false,
             responsive: true,
             datasetStrokeWidth: 1,
@@ -1672,30 +1665,36 @@ export const barChartOptions2 = {
 
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
-    usageList = sortUsageListByType(usageList, hardwareType)
 
-    if (usageList.length === 0) {
-        return (
-            <div style={PageMonitoringStyles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
-            if (index < 5) {
+    try {
+        if (usageList.length === 0) {
+            return "";
+        } else {
+            let chartDataList = [];
+            chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}]);
+            for (let index = 0; index < usageList.length; index++) {
+
+                console.log(`usageList====${hardwareType}>`, usageList[index]);
                 let barDataOne = [
                     usageList[index].cloudlet.toString(),
-                    renderUsageByType2(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByType(usageList[index], hardwareType)
-                ]
+                    renderUsageByType(usageList[index], hardwareType, _this),
+                    _this.state.chartColorList[index],
+                    renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
+                ];
                 chartDataList.push(barDataOne);
             }
-        }
 
-        return renderBarChartCore(chartDataList, hardwareType)
+            let chartDataSet = {
+                chartDataList,
+                hardwareType,
+            };
+
+            console.log(`chartDataSet====>`, chartDataSet);
+
+            return chartDataSet
+        }
+    } catch (e) {
+
     }
 }
 

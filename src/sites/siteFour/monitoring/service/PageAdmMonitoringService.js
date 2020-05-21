@@ -12,7 +12,7 @@ import Lottie from "react-lottie";
 import BubbleChartCore from "../components/BubbleChartCore";
 import type {TypeAppInstanceUsage2, TypeClientStatus, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
-import {renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "./PageMonitoringCommonService";
+import {renderBarChartCore, renderLineChartCore, renderUsageByType, showToast} from "./PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
@@ -291,7 +291,7 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
  * @param hardwareType
  * @returns {string}
  */
-export const renderUsageLabelByType = (usageOne, hardwareType, _this) => {
+/*export const renderUsageLabelByType = (usageOne, hardwareType, _this) => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
         let cpuUsageOne = '';
         try {
@@ -334,58 +334,9 @@ export const renderUsageLabelByType = (usageOne, hardwareType, _this) => {
         return usageOne.sumAcceptsConnection
     }
 
-}
-
-
-export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, _this) => {
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        let cpuUsageOne = '';
-        try {
-            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
-        } catch (e) {
-            cpuUsageOne = 0;
-        }
-        return cpuUsageOne;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.sumVCpuUsage) + ""
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-
-}
-
+}*/
 
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
-
-
     if (hardwareType === HARDWARE_TYPE.CPU) {
         usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -418,7 +369,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
         usageList.map((item: TypeAppInstanceUsage2, index) => {
             if (index < 5) {
                 let barDataOne = [item.appName.toString().substring(0, 13) + "..",
-                    renderUsageByType2(item, hardwareType),
+                    renderUsageByType(item, hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByType(item, hardwareType)]
                 chartDataList.push(barDataOne);

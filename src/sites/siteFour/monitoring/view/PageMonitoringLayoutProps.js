@@ -95,6 +95,50 @@ export const defaultLayoutMapperForCloudlet = [
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
+        graphType: GRID_ITEM_TYPE.BAR,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: GRID_ITEM_TYPE.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.memUsed,
+        graphType: GRID_ITEM_TYPE.BAR,
+    },
+    {
+        id: '4',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
+    },
+    {
+        id: '5',
+        hwType: HARDWARE_TYPE_FOR_GRID.diskUsed,
+        graphType: GRID_ITEM_TYPE.BAR,
+    },
+    {
+        id: '6',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
+    },
+    {
+        id: '7',
+        hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
+        graphType: GRID_ITEM_TYPE.BAR,
+    },
+    {
+        id: '8',
+        hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
+        graphType: GRID_ITEM_TYPE.BAR,
+    },
+];
+
+export const defaultLayoutMapperForCloudlet2 = [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
         graphType: GRID_ITEM_TYPE.LINE,
     },
     {
@@ -134,6 +178,7 @@ export const defaultLayoutMapperForCloudlet = [
         graphType: GRID_ITEM_TYPE.LINE,
     },
 ];
+
 
 
 export const defaultLayoutForCluster = [

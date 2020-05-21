@@ -430,7 +430,7 @@ export const lineGraphOptionsForAppInst = (hardwareType) => {
 }
 
 
-export const renderUsageByType2 = (usageOne, hardwareType) => {
+/*export const renderUsageByType2 = (usageOne, hardwareType) => {
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
         return usageOne.sumVCpuUsage;
@@ -470,7 +470,7 @@ export const renderUsageByType2 = (usageOne, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         return usageOne.sumAcceptsConnection
     }
-}
+}*/
 
 export const sortUsageListByType = (usageList, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.VCPU) {
@@ -492,6 +492,8 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 
 
 export const renderUsageByType = (usageOne, hardwareType, _this) => {
+
+    console.log(`hardwareType====>`, hardwareType);
 
     if (hardwareType === HARDWARE_TYPE.CPU) {
         return usageOne.sumCpuUsage
@@ -521,6 +523,19 @@ export const renderUsageByType = (usageOne, hardwareType, _this) => {
         return usageOne.sumHandledConnection
     } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         return usageOne.sumAcceptsConnection
+    }
+
+    ////Cloudlet
+    else if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
+        return usageOne.usedVCpuCount
+    } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+        return usageOne.usedMemUsage
+    } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+        return usageOne.usedDiskUsage
+    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED) {
+        return usageOne.usedFloatingIpsUsage
+    } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+        return usageOne.usedIpv4Usage
     }
 }
 

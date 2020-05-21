@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {Chart} from "react-google-charts";
+import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
@@ -37,7 +37,10 @@ export default class BarChartContainer extends React.Component<Props, State> {
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
-        if (this.props.chartDataSet !== nextProps.chartDataSet) {
+        if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
+
+            console.log(`chartDataSet====>`, nextProps.chartDataSet);
+
             this.setState({
                 chartDataSet: nextProps.chartDataSet,
                 pHardwareType: nextProps.pHardwareType,
@@ -66,7 +69,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
                     <div className='page_monitoring_container'>
                         {this.props.loading ? renderPlaceHolderLoader() :
                             <div style={{width: '100%'}}>
-                                <Chart
+                                <GoogleChart
                                     key={this.state.isResizeComplete}
                                     height={'100%'}
                                     chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}

@@ -12,7 +12,7 @@ import {
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
-    makeBarChartDataForAppInst,
+    makeBarChartDataForAppInst, makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
     makeClusterTreeDropdown,
     makeDropdownForAppInst,
@@ -112,7 +112,7 @@ import {
     defaultLayoutForCluster,
     defaultLayoutForClusterForOper,
     defaultLayoutMapperForAppInst,
-    defaultLayoutMapperForCloudlet,
+    defaultLayoutMapperForCloudlet, defaultLayoutMapperForCloudlet2,
     defaultLayoutMapperForClusterForOper,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
@@ -1159,21 +1159,28 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
-
                     let barChartDataSet: TypeBarChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                        barChartDataSet = makeBarChartDataForCluster(this.state.filteredCloudletUsageList, pHwType, this)
+                        barChartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                         barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
                     }
-                    if (barChartDataSet === undefined) {
-                        barChartDataSet = []
-                    }
-                    return (<BarChartContainer isResizeComplete={this.state.isResizeComplete} parent={this}
-                                               loading={this.state.loading} chartDataSet={barChartDataSet}
-                                               pHardwareType={pHwType} graphType={graphType}/>)
+
+
+                    console.log(`sdlkflskdfkl====>`, this.state.filteredCloudletUsageList);
+
+                    console.log(`barChartDataSet====>`, barChartDataSet);
+
+                    return (
+                        <BarChartContainer
+                            isResizeComplete={this.state.isResizeComplete} parent={this}
+                            loading={this.state.loading}
+                            chartDataSet={barChartDataSet}
+                            pHardwareType={pHwType} graphType={graphType}
+                        />
+                    )
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                     return (
@@ -1462,7 +1469,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     )
                 } catch (e) {
-                    showToast('Cloudsf====>>>>')
+                    showToast('renderGridLayoutForCloudlet error====>>>>')
                     showToast(e.toString())
                 }
 
@@ -1551,7 +1558,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         await this.setState({
                             layoutCloudlet: defaultLayoutForCloudlet,
-                            layoutMapperCloudlet: defaultLayoutMapperForCloudlet,
+                            layoutMapperCloudlet: this.state.filteredCloudletList.length === 1 ? defaultLayoutMapperForCloudlet2 : defaultLayoutMapperForCloudlet,
                         })
                     }
 
@@ -2627,7 +2634,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGridLayoutByClassification() {
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     return this.renderGridLayoutForCloudlet();
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     return this.renderGridLayoutForCluster();
                 } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                     return this.renderGridLayoutForAppInst();
