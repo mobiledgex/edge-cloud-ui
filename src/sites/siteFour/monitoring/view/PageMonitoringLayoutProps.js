@@ -116,7 +116,7 @@ export const defaultLayoutMapperForCloudlet = [
     },
     {
         id: '5',
-        hwType: [HARDWARE_TYPE_FOR_GRID.ipv4Used],
+        hwType: HARDWARE_TYPE_FOR_GRID.diskUsed,
         graphType: GRID_ITEM_TYPE.LINE,
     },
     {
@@ -126,15 +126,9 @@ export const defaultLayoutMapperForCloudlet = [
     },
     {
         id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.netRecv,
+        hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
         graphType: GRID_ITEM_TYPE.LINE,
     },
-    {
-        id: '8',
-        hwType: HARDWARE_TYPE_FOR_GRID.netSend,
-        graphType: GRID_ITEM_TYPE.LINE,
-    },
-
 ];
 
 

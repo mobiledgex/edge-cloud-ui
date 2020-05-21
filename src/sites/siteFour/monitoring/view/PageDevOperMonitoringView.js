@@ -453,7 +453,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     selectedClusterUsageOne: [],
                     selectedClusterUsageOneIndex: 0,
                     gridDraggable: true,
-                    isExistData: false,
+                    isExistData: true,
                     diskGridItemOneStyleTranslate: {
                         transform: 'translate(10px, 1540px)',
                     },
@@ -551,26 +551,31 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let clusterList = []
                 let appInstList = []
                 let cloudletList = []
+
+                let allClusterEventLogList = [];
+                let allAppInstEventLogList = [];
+                let allClusterUsageList = [];
+                let allCloudletUsageList = [];
+
                 try {
                     clearInterval(this.intervalForAppInst)
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
                     //todo:realdata
-                    /*promiseList.push(fetchCloudletList())
-                    promiseList.push(fetchClusterList())
-                    promiseList.push(fetchAppInstList())
-                    let newPromiseList = await Promise.all(promiseList);
-                    cloudletList = newPromiseList[0];
-                    clusterList = newPromiseList[1];
-                    appInstList = newPromiseList[2];*/
-                    console.log(`appInstList===>`, appInstList);
-                    cloudletList = await fetchCloudletList()
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                        promiseList.push(fetchClusterList())
+                        promiseList.push(fetchAppInstList())
+                        let newPromiseList = await Promise.all(promiseList);
+                        clusterList = newPromiseList[0];
+                        appInstList = newPromiseList[1];
+                    } else {//TODO:OPERATOR
+                        cloudletList = await fetchCloudletList();
+                        console.log(`cloudletList====>`, cloudletList);
+                    }
 
-                    //todo:fakedata
-                    /*let cloudletList = require('../temp/cloudletList')
-                    let allClusterList = require('../temp/allClusterList')
-                    let appInstList = require('../temp/appInstList')*/
+                    //fixme:fakedata
+                    /*let cloudletList = require('../temp/cloudletList'), let allClusterList = require('../temp/allClusterList'), let appInstList = require('../temp/appInstList')*/
 
 
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
@@ -600,29 +605,26 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
                     //todo: realdata
-                    /*promiseList2.push(getAllClusterEventLogList(clusterList))
-                    promiseList2.push(getAllAppInstEventLogs());*/
-                    promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                    promiseList2.push(getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT))
-                    let newPromiseList2 = await Promise.all(promiseList2);
-                    /*let allClusterEventLogList = newPromiseList2[0];
-                    let allAppInstEventLogList = newPromiseList2[1];*/
-                    let allClusterUsageList = newPromiseList2[0];
-                    let allCloudletUsageList = newPromiseList2[1];
-                    //fixme: fakedata
-                    //fixme: fakedata
-                    /*   let allClusterEventLogList = []
-                       let allAppInstEventLogList = []
-                       let allClusterUsageList = require('../temp/clusterUSageList')
-                       let allCloudletUsageList = require('../temp/cloudletUsageList')*/
 
-                    console.log(`allCloudletUsageList====>`, allCloudletUsageList);
+
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                        promiseList2.push(getAllClusterEventLogList(clusterList))
+                        promiseList2.push(getAllAppInstEventLogs());
+                        promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                        let newPromiseList2 = await Promise.all(promiseList2);
+                        allClusterEventLogList = newPromiseList2[0];
+                        allAppInstEventLogList = newPromiseList2[1];
+                        allClusterUsageList = newPromiseList2[2];
+                    } else {//TODO:OPERATOR
+                        allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+                    }
+
+                    //fixme: fakedata
+                    /*let allClusterEventLogList = [], let allAppInstEventLogList = [], let allClusterUsageList = require('../temp/clusterUSageList'), let allCloudletUsageList = require('../temp/cloudletUsageList')*/
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
-
-                    console.log(`cloudletDropdownList====>`, cloudletDropdownList);
-                    let dataCount = false;
+                    let dataCount = 0;
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         dataCount = appInstList.length
                     } else {
@@ -634,10 +636,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 30,
                         isExistData: dataCount > 0,
                         bubbleChartData: bubbleChartData,
-                        /* allClusterEventLogList: allClusterEventLogList,
-                         filteredClusterEventLogList: allClusterEventLogList,
-                         allAppInstEventLogs: allAppInstEventLogList,
-                         filteredAppInstEventLogs: allAppInstEventLogList,*/
+                        allClusterEventLogList: allClusterEventLogList,
+                        filteredClusterEventLogList: allClusterEventLogList,
+                        allAppInstEventLogs: allAppInstEventLogList,
+                        filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
                         clusterDropdownList: clusterDropdownList,//@fixme
                         dropDownCludsterListOnCloudlet: clusterDropdownList,//@fixme
@@ -2681,13 +2683,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             render() {
-                if (this.state.isExistData) {
+                if (!this.state.isExistData) {
                     return (
                         <div style={{width: '100%', height: '100%',}}>
                             {this.renderHeader()}
                             <div style={{marginTop: 25, marginLeft: 25, background: 'none'}}>
                                 <div style={{fontSize: 25, color: 'rgba(255,255,255,.6)'}}>
-                                    There is no app instance you can access..
+                                    There is no app, cluster and cloudlet you can access..
                                 </div>
                             </div>
                         </div>
