@@ -371,7 +371,7 @@ export default function MapForOper(props) {
                     <Center style={{height: height,}}>
                         <div>
                             <Progress
-                                strokeColor={'red'}
+                                strokeColor={'orange'}
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -389,7 +389,7 @@ export default function MapForOper(props) {
                         <div style={{width: 15}}/>
                         <div>
                             <Progress
-                                strokeColor='blue'
+                                strokeColor='skyblue'
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -403,7 +403,7 @@ export default function MapForOper(props) {
                         <div style={{width: 15}}/>
                         <div>
                             <Progress
-                                strokeColor='green'
+                                strokeColor='#79FF00'
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
