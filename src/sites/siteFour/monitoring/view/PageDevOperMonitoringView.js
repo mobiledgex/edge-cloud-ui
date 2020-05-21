@@ -2097,11 +2097,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     </Option>
                                 } else {
 
-                                    let itemValues = item.value + " | " + index.toString()
+                                    let itemValues = item.value + " | " + (index - 1).toString()
 
                                     return (
-                                        <Option key={index}
-                                                value={itemValues}>{item.text}</Option>
+                                        <Option key={index} value={itemValues}>{item.text}</Option>
                                     )
                                 }
                             })}
