@@ -1137,8 +1137,8 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     radius: 0,
                     borderWidth: 3,//todo:라인 두께
                     fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    borderColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    backgroundColor: isGradientColor ? gradientList[isOnlyOneData ? _this.state.currentColorIndex : index] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    borderColor: isGradientColor ? gradientList[isOnlyOneData ? _this.state.currentColorIndex : index] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
