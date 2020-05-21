@@ -2256,12 +2256,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            renderDot(index, isAll = false) {
+            renderDot(index, itemCount = false) {
                 return (
                     <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                         <div
                             style={{
-                                backgroundColor: isAll ? 'white' : this.state.chartColorList[index],
+                                backgroundColor: itemCount === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index],
                                 width: 15,
                                 height: 15,
                                 borderRadius: 50,
@@ -2312,7 +2312,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                 >
 
-                                    {this.renderDot(index)}
+                                    {this.renderDot(index, pLegendItemCount)}
                                     <div
                                         style={{marginTop: 0, marginLeft: 3}}
                                     >
