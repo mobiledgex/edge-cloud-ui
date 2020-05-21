@@ -1,5 +1,4 @@
 import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
-import Ripple from "react-ripples";
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -20,7 +19,8 @@ import {
     makeDropdownForCloudlet,
     makeid,
     makeLineChartData,
-    makeLineChartDataForBigModal, makeMultiLineChartDatas,
+    makeLineChartDataForBigModal,
+    makeMultiLineChartDatas,
     reduceLegendClusterCloudletName,
     reduceString,
 } from "../service/PageDevOperMonitoringService";
@@ -59,11 +59,13 @@ import {
 } from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
-    fetchCloudletList, fetchClusterList,
+    fetchCloudletList,
+    fetchClusterList,
     getAllAppInstEventLogs,
     getAllClusterEventLogList,
     getAppLevelUsageList,
-    getClientStatusList, getCloudletUsageList,
+    getClientStatusList,
+    getCloudletUsageList,
     getClusterLevelUsageList,
     requestShowAppInstClientWS
 } from "../service/PageMonitoringMetricService";
@@ -80,7 +82,6 @@ import LineChartContainer from "../components/LineChartContainer";
 import ClusterEventLogListHook from "../components/ClusterEventLogListHook";
 import MaterialIcon from "material-icons-react";
 import '../common/PageMonitoringStyles.css'
-import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
 import {THEME_TYPE} from "../../../../themeStyle";
 import BarChartContainer from "../components/BarChartContainer";
@@ -97,7 +98,6 @@ import {
     PageDevMonitoringMapStateToProps
 } from "../common/PageMonitoringProps";
 import {
-    GRID_ITEM_TYPE,
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
     CLOUDLET_HW_MAPPER_KEY,
@@ -117,7 +117,8 @@ import {
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster,
-    defaultLayoutXYPosForClusterForOper
+    defaultLayoutXYPosForClusterForOper,
+    GRID_ITEM_TYPE
 } from "./PageMonitoringLayoutProps";
 import MapForOper from "../components/MapForOper";
 import DonutChartHooks from "../components/DonutChartHooks";
@@ -125,6 +126,7 @@ import ClientStatusTableHooks from "../components/ClientStatusTableHooks";
 import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
+import AddItemPopupContainer from "../components/AddItemPopupContainer";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -844,7 +846,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 /*todo:Cloudlet*/
                 /*todo:Cloudlet*/
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-
                     let currentItems = this.state.layoutCloudlet;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
@@ -874,46 +875,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                    //@todo: CLUSTER_FOR_OPER add Event
-                    //@todo: CLUSTER_FOR_OPER add Event
-                    //@todo: CLUSTER_FOR_OPER add Event
-
-                    let currentItems = this.state.layoutClusterForOper;
-                    let maxY = -1;
-                    if (!isEmpty(currentItems)) {
-                        maxY = _.maxBy(currentItems, 'y').y
-                    }
-                    let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperClusterForOper
-
-                    let itemOne = {
-                        id: uniqueId,
-                        hwType: paramHwType,
-                        graphType: graphType,
-                    }
-                    //@desc: ######################################
-                    //@desc:  calculate empty space in gridLayout
-                    //@desc: ######################################
-                    await this.setState({
-                        layoutClusterForOper: this.state.layoutClusterForOper.concat({
-                            i: uniqueId,
-                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
-                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: this.makeGridItemWidth(graphType),
-                            h: this.makeGridIItemHeight(graphType),
-                        }),
-                        layoutMapperClusterForOper: mapperList.concat(itemOne),
-                    })
-
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, this.state.layoutClusterForOper)
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY, this.state.layoutMapperClusterForOper)
-
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    //@todo: CLUSTER add Event
-                    //@todo: CLUSTER add Event
-                    //@todo: CLUSTER add Event
-
                     let currentItems = this.state.layoutCluster;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
@@ -2303,7 +2265,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         marginTop: 3,
                                         marginBottom: 3,
                                         justifyContent: pLegendItemCount === 1 ? 'center' : null,
-                                        backgroundColor: 'blue',
+                                        //backgroundColor: 'blue',
                                     }}
                                     onClick={async () => {
                                         if (this.state.filteredCloudletList.length > 1) {
@@ -2545,9 +2507,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div style={{marginLeft: 25}}>
                                             {this.renderCloudletDropdown()}
                                         </div>
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderClusterDropdown()}
-                                        </div>
                                     </React.Fragment>
                                     :
                                     <React.Fragment>
@@ -2700,7 +2659,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         width: this.state.currentWidth,
                         height: '100%',
                     }}>
-                        <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}/>
+                        <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}
+                                           currentClassification={this.state.currentClassification}/>
                         <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                  selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                  parent={this}

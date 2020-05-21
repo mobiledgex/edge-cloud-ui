@@ -1,248 +1,467 @@
 // @flow
 import * as React from 'react';
-import {useEffect, useState} from 'react';
-import {Empty} from 'antd';
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {FixedSizeList} from "react-window";
-import {reduceString} from "../service/PageDevOperMonitoringService";
-import '../common/PageMonitoringStyles.css'
+import {Modal as AModal, notification, Radio, Select} from "antd";
+import {Dropdown} from "semantic-ui-react";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST} from "../../../../shared/Constants";
+import {ReactSVG} from 'react-svg'
+import {CircularProgress} from "@material-ui/core";
+import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import Button from "@material-ui/core/Button";
+import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 
-const FontAwesomeIcon = require('react-fontawesome')
+const FA = require('react-fontawesome')
 type Props = {
-    eventLogList: any,
-    columnList: any,
-    parent: PageDevMonitoring,
+    isOpenEditView: any,
 };
 
-function getWindowDimensions() {
-    const {innerWidth: width, innerHeight: height} = window;
-    return {
-        width,
-        height
-    };
-}
+type State = {
+    isOpenEditView: any,
+    currentItemType: number,
+    currentHwType: string,
+    isShowHWDropDown: boolean,
+    isShowEventLog: boolean,
+    currentHwTypeList: any,
+    selectDefaultValues: any,
+    loading: boolean,
 
+};
 
-export default function AppInstEventLogListContainer(props) {
-    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-    let itemHeight = 55
+const Option = Select.Option;
 
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-
-    }, [props.eventLogList]);
-
-    function handleResize() {
-        setWindowDimensions(getWindowDimensions());
+export default class AddItemPopupContainer extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props)
+        this.state = {
+            //isOpenEditView: [],
+            currentItemType: GRID_ITEM_TYPE.LINE,
+            currentHwTypeList: [],
+            isShowHWDropDown: true,
+            isShowEventLog: false,
+            selectDefaultValues: [],
+            loading: false,
+        }
     }
 
-    function reduceEventName(eventName) {
-        if (eventName !== undefined) {
-            if (eventName.includes('HEALTH_CHECK')) {
-                return eventName.replace('HEALTH_CHECK', 'HEALTH_CHK')
-            } else if (eventName.includes('UPDATE')) {
-                return eventName.replace('UPDATE', 'UPD')
+
+    closePopupWindow() {
+        this.props.parent.setState({
+            isOpenEditView: false,
+        })
+    }
+
+    renderPrevBtn2() {
+        return (
+            <div style={{
+                flex: .025,
+                backgroundColor: 'transparent',
+                width: 120,
+                display: 'flex',
+                alignSelf: 'center',
+                justifyContent: 'center'
+            }} onClick={() => {
+                this.closePopupWindow();
+            }}>
+                {/*<ArrowBack  style={{fontSize: 30, color: 'white'}} color={'white'}/>*/}
+                <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
+
+            </div>
+        )
+    }
+
+    handleAddClicked = async () => {
+        try {
+            if (this.state.currentItemType === GRID_ITEM_TYPE.LINE || this.state.currentItemType === GRID_ITEM_TYPE.BAR || this.state.currentItemType === GRID_ITEM_TYPE.COLUMN) {
+                if (this.state.currentHwTypeList.length === 0) {
+                    notification.warning({
+                        placement: 'topLeft',
+                        duration: 1,
+                        message: `Please, Select HW Type`,
+                    });
+                } else {
+                    let {currentHwTypeList} = this.state;
+
+
+                    for (let i in currentHwTypeList) {
+                        await this.props.parent.addGridItem(currentHwTypeList[i], this.state.currentItemType);
+                    }
+
+
+                    //todo:init dropdown selected values
+                    await this.setState({
+                        currentHwTypeList: [],
+                    })
+
+                    this.closePopupWindow();
+
+                    notification.success({
+                        placement: 'bottomLeft',
+                        duration: 3,
+                        description: `${this.state.currentItemType} [${currentHwTypeList}] items added`,
+                    });
+                }
+
             } else {
-                return eventName;
+
+                await this.props.parent.addGridItem(this.state.currentHwType, this.state.currentItemType);
+                this.closePopupWindow();
+                notification.success({
+                    placement: 'bottomLeft',
+                    duration: 3,
+                    description: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
+                    style: {fontSize: 9}
+                });
             }
+
+
+        } catch (e) {
+            throw new Error(e)
+        } finally {
+        }
+
+
+    }
+
+    renderBarChartRadio() {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+            return (
+                <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                    <div
+                        onClick={() => {
+                            this.setState({
+                                currentItemType: GRID_ITEM_TYPE.BAR,
+                                isShowHWDropDown: true,
+                                isShowEventLog: false,
+                            })
+                        }}
+                    >
+                        <Center>
+                            <ReactSVG src={require('../images/chart/Bar.svg')}
+                                      style={PageMonitoringStyles.chartIcon}
+                                      loading={() => (<Center><CircularProgress/></Center>)}/>
+                        </Center>
+                    </div>
+                    <div className='page_monitoring_form_radio_label'>
+                        <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
+                    </div>
+                </ChartIconOuterDiv>
+            )
         }
 
     }
 
+    renderColumnChartRadio() {
 
-    return (
-        <div>
-            <div style={{
-                display: 'flex',
-                width: '100%',
-                height: 45
-            }}>
-                <div className='page_monitoring_title draggable'
-                     style={{
-                         flex: 1,
-                         marginTop: 10,
-                         color: 'white'
-                     }}
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+            return (
+                <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                    <div
+                        onClick={() => {
+                            this.setState({
+                                currentItemType: GRID_ITEM_TYPE.COLUMN,
+                                isShowHWDropDown: true,
+                                isShowEventLog: false,
+                            })
+                        }}
+                    >
+                        <Center>
+                            <ReactSVG src={require('../images/chart/Column.svg')}
+                                      style={PageMonitoringStyles.chartIcon}
+                                      loading={() => (<Center><CircularProgress/></Center>)}/>
+                        </Center>
+                    </div>
+                    <div className='page_monitoring_form_radio_label'>
+                        <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
+                    </div>
+                </ChartIconOuterDiv>
+            )
+
+        }
+
+    }
+
+    renderEventLogRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+                            isShowHWDropDown: false,
+                            isShowEventLog: true,
+                        })
+                    }}
                 >
-                    App Inst Event Log
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Grid.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+
+    renderLineChartRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.LINE,
+                            isShowHWDropDown: true,
+                            isShowEventLog: false,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Line.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+    renderMapRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.MAP,
+                            isShowHWDropDown: false,
+                            isShowEventLog: false,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Map.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+
+    renderBubbleRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.BUBBLE,
+                            isShowHWDropDown: false,
+                            isShowEventLog: false,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Bubble.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble Chart</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
+    renderEventLogSelect() {
+        return (
+            <div className='page_monitoring_form_row'>
+                <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
+                    <Center>
+                        Event Log Type
+                    </Center>
                 </div>
 
+                <div className='page_monitoring_form_column_right'>
+                    <Dropdown
+                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
+                        selectOnBlur={false}
+                        placeholder="Select Item"
+                        selection
+                        onChange={async (e, {value}) => {
+                            this.setState({
+                                currentItemType: value,
+                            })
+                        }}
+                        value={this.state.currentItemType}
+                        options={EVENT_LOG_ITEM_LIST}
+                    />
+                </div>
             </div>
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
-                   stickyHeader={true}>
+        )
+    }
 
-                <thead style={{backgroundColor: 'red', fontFamily: 'Roboto', zIndex: 99999999999,}}>
-                <tr style={{display: 'flex', backgroundColor: '#303030'}}>
-                    <td padding={'none'} align="center"
-                        style={{
-                            color: 'white', flex: .25,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-                        }}
-                    >
-                        Time
-                    </td>
-                    <td padding={'none'} align="center"
-                        style={{
-                            color: 'white', flex: .5, display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-                        }}
-                    >
-                        <div>
-                            App
-                        </div>
-                        <div>
-                            <div style={{color: ''}}>
-                                Cluster[Cloudlet]
+    renderBottomBtns() {
+        return (
+            <div className='page_monitoring_form_row' style={{marginTop: 15}}>
+                <Button
+                    size={'small'}
+                    style={{width: 100, backgroundColor: '#559901', color: 'white'}}
+                    onClick={this.handleAddClicked}
+                >
+                    <label>Add</label>
+                </Button>
+                <div style={{width: 29}}/>
+                <Button
+                    size={'small'}
+                    style={{width: 100, backgroundColor: 'grey', color: 'white'}}
+                    onClick={async () => {
+                        this.closePopupWindow();
+                    }}
+                >Cancel
+                </Button>
+
+            </div>
+        )
+    }
+
+    renderHwDropdown(hwDropdownChildren) {
+        return (
+            <div>
+                <div className='page_monitoring_form_row'>
+                    <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
+                        <Center>
+                            HW Type
+                        </Center>
+                    </div>
+                    <div className='page_monitoring_form_column_right'>
+                        <Select
+                            allowClear={true}
+                            mode="multiple"
+                            style={{width: '100%'}}
+                            placeholder="Select Hardware Type"
+                            value={this.state.currentHwTypeList}
+                            onChange={(values) => {
+                                this.setState({
+                                    currentHwTypeList: values,
+                                })
+                            }}
+                        >
+                            {hwDropdownChildren}
+                        </Select>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    render() {
+
+        let hardwareDropdownList = []
+        let hwDropdownChildren = [];
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+            hardwareDropdownList = this.props.parent.state.hwListForCluster
+        } else {
+            hardwareDropdownList = this.props.parent.state.hwListForAppInst
+        }
+
+        hardwareDropdownList.map(item => {
+            hwDropdownChildren.push(<Option key={item.value}>{item.text}</Option>);
+        })
+
+        return (
+            <div style={{flex: 1, display: 'flex'}}>
+                <AModal
+                    mask={false}
+                    //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
+                    visible={this.props.isOpenEditView}
+                    onOk={() => {
+                        this.closePopupWindow();
+                    }}
+                    //maskClosable={true}
+                    onCancel={() => {
+                        this.closePopupWindow();
+
+                    }}
+                    closable={false}
+                    bodyStyle={{
+                        height: window.innerHeight * 0.45,
+                        marginTop: 0,
+                        marginLeft: 0,
+                        backgroundColor: 'rgb(41, 44, 51)'
+                    }}
+                    width={'100%'}
+                    style={{padding: '10px', top: 0, minWidth: 1200}}
+                    footer={null}
+                >
+                    <div style={{width: '100%'}}>
+                        <div style={{display: 'flex', width: '100%',}}>
+                            {this.renderPrevBtn2()}
+                            {this.state.loading ? <div style={{marginLeft: 20,}}><CircularProgress/></div> : null}
+                            <div className='page_monitoring_popup_title'>
+                                Add Item [{this.props.parent.state.currentClassification}]
                             </div>
                         </div>
-                    </td>
-                    <td padding={'none'} align="center"
-                        style={{
-                            color: 'white', flex: .25,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-                        }}
-                    >
-                        <div>
-                            Event
+                        <div className='page_monitoring_popup_title_divide'/>
+                        {/*@todo:###############################*/}
+                        {/*@todo:Radio.Group start               */}
+                        {/*@todo:###############################*/}
+                        <div className='page_monitoring_form_row'>
+                            <div className='page_monitoring_form_column_left'>
+                                Item Type
+                            </div>
+                            <Radio.Group
+                                onChange={(e) => {
+                                    let selectedItem = e.target.value;
+
+                                    this.setState({
+                                        currentItemType: selectedItem,
+                                    });
+                                }}
+                                value={this.state.currentItemType}
+                            >
+                                <div className='page_monitoring_form_column_right'>
+                                    {this.renderLineChartRadio()}
+                                    {this.renderBarChartRadio()}
+                                    {this.renderColumnChartRadio()}
+                                    {this.renderEventLogRadio()}
+                                    {this.renderMapRadio()}
+                                    {this.renderBubbleRadio()}
+                                </div>
+                            </Radio.Group>
                         </div>
-                        <div>
-                            [Status]
+                        {/*@todo:###############################*/}
+                        {/*@todo:DROP DOWN AREA                 */}
+                        {/*@todo:###############################*/}
+                        {this.state.isShowHWDropDown && this.renderHwDropdown(hwDropdownChildren)}
+                        {this.state.isShowEventLog && this.renderEventLogSelect()}
+                        {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&
+                        <div className='page_monitoring_form_row'>
+                            <div className='page_monitoring_form_column_left'
+                                 style={{fontFamily: 'Roboto', height: 30}}>
+                                &nbsp;
+                            </div>
                         </div>
-                    </td>
+                        }
+                        {/*todo:############################*/}
+                        {/*todo:Bottom Buttons              */}
+                        {/*todo:############################*/}
+                        {this.renderBottomBtns()}
 
-                </tr>
-                </thead>
-                {/*todo:tableBody*/}
-                {/*todo:tableBody*/}
-                <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
-                {!props.parent.state.loading && props.eventLogList.length > 0 ?
-                    <FixedSizeList
-                        height={179}
-                        itemCount={props.eventLogList.length}
-                        itemSize={itemHeight}
-                        width={'100%'}
-                    >
-                        {({index, style}) => {
-                            return (
-                                <tr key={index} className='table0000001'
-                                    style={style}
-                                >
-                                    <React.Fragment>
-                                        {/*time(date)*/}
-                                        <td padding={'none'} align="center" valign={'center'}
-                                            style={{
-                                                flex: .25,
-                                                color: '#C0C6C8',
-                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                                height: itemHeight,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                flexDirection: 'column',
-                                            }}>
-                                            <div style={{}}>
-                                                <div style={{marginLeft: 2}}>
-                                                    {props.eventLogList[index][0].toString().split('T')[0]}
-                                                </div>
-                                                <div style={{marginLeft: 2}}>
-                                                    {props.eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        {/*App*/}
-                                        <td padding={'none'} align="center"
-                                            style={{
-                                                flex: .5,
-                                                color: '#C0C6C8',
-                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                                height: itemHeight
-                                            }}>
-                                            <React.Fragment>
-                                                <div style={{color: 'white'}}>
-                                                    {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{AppInst}*/}
-                                                    &nbsp;[{props.eventLogList[index][2]}] {/*version*/}
-                                                </div>
-                                                <div style={{fontSize: 12,}}>
-                                                    <div>
-                                                        {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
-                                                    </div>
-                                                    <div style={{color: 'yellow'}}>
-                                                        [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
-                                                    </div>
-                                                </div>
-                                            </React.Fragment>
-                                        </td>
-                                        {/*event[Status]*/}
-                                        <td padding={'none'} align="center"
-                                            style={{
-                                                flex: .25,
-                                                color: '#C0C6C8',
-                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                                height: itemHeight,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                flexDirection: 'column',
-
-                                            }}>
-                                            <div style={{fontSize: 10}}>
-                                                {reduceEventName(props.eventLogList[index][8])}
-                                            </div>
-                                            <div>
-                                                {props.eventLogList[index][9].toLowerCase() === 'up' ?
-                                                    <FontAwesomeIcon
-                                                        name="arrow-up" style={{
-                                                        fontSize: 15,
-                                                        color: 'green',
-                                                        cursor: 'pointer',
-                                                        marginTop: 2
-                                                    }}
-                                                    />
-                                                    :
-                                                    <FontAwesomeIcon
-                                                        name="arrow-down" style={{
-                                                        fontSize: 15,
-                                                        color: 'red',
-                                                        cursor: 'pointer',
-                                                        marginTop: 2
-                                                    }}
-                                                    />
-                                                }
-
-                                            </div>
-                                        </td>
-                                    </React.Fragment>
-
-                                </tr>
-                            )
-                        }}
-
-                    </FixedSizeList>
-                    :
-                    <div style={{
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        alignItems: 'center',
-                        fontSize: 15,
-                        display: 'flex'
-                    }}>
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
                     </div>
-                }
-                </tbody>
-            </table>
 
 
-        </div>
-    )
+                </AModal>
 
+            </div>
+        );
+    };
 };
