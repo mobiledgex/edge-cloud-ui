@@ -94,8 +94,7 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
-                            {this.props.pHardwareType} Usage
-                            of {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)}
+                            {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {this.props.pHardwareType} Utilization
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
