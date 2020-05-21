@@ -6,6 +6,12 @@ import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+import {Line} from "react-chartjs-2";
+import {
+    makeGradientLineChartData,
+    makeGradientLineChartDataForOneColor,
+    makeLineChartOptions
+} from "../service/PageDevOperMonitoringService";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -21,6 +27,7 @@ type State = {
     chartDataSet: any,
     graphType: string,
     isResizeComplete: boolean,
+    lineChartDataSet: any,
 };
 
 export default class BarAndLineChartContainer extends React.Component<Props, State> {
@@ -33,6 +40,7 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
             themeTitle: '',
             chartDataSet: [],
             graphType: '',
+            lineChartDataSet: [],
         }
     }
 
@@ -54,6 +62,29 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                 isResizeComplete: nextProps.isResizeComplete,
             })
         }
+
+
+        //todo:lineChartDataSets
+        if (this.props.lineChartDataSets !== nextProps.lineChartDataSets) {
+            console.log(`chartDataSet====>`, nextProps.lineChartDataSets);
+            let lineChartDataSet = nextProps.lineChartDataSets
+            let hwType = nextProps.pHardwareType;
+            let graphType = nextProps.graphType;
+            this.setChartDataForOneData(lineChartDataSet, hwType, graphType);
+        }
+
+    }
+
+    setChartDataForOneData(lineChartDataSet, hwType, graphType) {
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+        let usageSetList = lineChartDataSet.usageSetList;
+        let newDateTimeList = lineChartDataSet.newDateTimeList;
+        let hardwareType = lineChartDataSet.hardwareType;
+
+        const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, true)
+        this.setState({
+            lineChartDataSet: lineChartDataForRendering,
+        })
 
     }
 
@@ -81,8 +112,11 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                                     />
                                 </div>
                                 :
-                                <div>
-                                    slkflsdkfkl___LINEs
+                                <div style={{width: '100%'}}>
+                                    <Line
+                                        data={this.state.lineChartDataSet}
+                                        options={makeLineChartOptions(this.props.pHardwareType, this.state.lineChartDataSet, this.props.parent)}
+                                    />
                                 </div>
 
                         }

@@ -8,7 +8,7 @@ import {Dialog, Toolbar} from '@material-ui/core'
 import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 import {
     filterByClassification,
-    getCloudletClusterNameList,
+    getCloudletClusterNameList, getOnlyCloudletIndex,
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
@@ -307,6 +307,7 @@ type PageDevMonitoringState = {
     currentOperLevel: string,
     currentIndex: number,
     hwListForCloudlet: any,
+    currentColorIndex: number,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -522,6 +523,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredClientStatusList: [],
                     currentOperLevel: CLASSIFICATION.CLOUDLET,
                     currentIndex: 0,
+                    currentColorIndex: 0,
                 };
             }
 
@@ -1164,7 +1166,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         barChartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
 
-                        let lineChartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
+                        //let currentColorCode = this.state.chartColorList[]
+
+                        let lineChartDataOne = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
+
+
                         return (
                             <BarAndLineChartContainer
                                 isResizeComplete={this.state.isResizeComplete}
@@ -1173,22 +1179,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 chartDataSet={barChartDataSet}
                                 pHardwareType={pHwType}
                                 graphType={graphType}
-                                lineChartDataSets={lineChartDataSets}
+                                lineChartDataSets={lineChartDataOne}
                                 filteredCloudletListLength={this.state.filteredCloudletList.length}
                             />
                         )
-                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
-                        return (
-                            <BarChartContainer
-                                isResizeComplete={this.state.isResizeComplete} parent={this}
-                                loading={this.state.loading}
-                                chartDataSet={barChartDataSet}
-                                pHardwareType={pHwType} graphType={graphType}
-                            />
-                        )
-                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                        barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.APPINST) {
+                        barChartDataSet = this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                            makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this) :
+                            makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
+
                         return (
                             <BarChartContainer
                                 isResizeComplete={this.state.isResizeComplete} parent={this}
@@ -1841,6 +1840,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: CLASSIFICATION.CLOUDLET,
                             currentCluster: undefined,
                             currentOperLevel: undefined,
+                            currentColorIndex: getOnlyCloudletIndex(pCloudletOne),
                         });
                     } else {//todo: When allCloudlet
                         this.setState({
@@ -1856,6 +1856,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
                 } catch (e) {
 
+                    showToast(e.toString())
                 }
             }
 
@@ -2081,18 +2082,28 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
+
+                                alert(value)
                                 this.handleOnChangeCloudletDropdown(value)
                                 this.cloudletSelect.blur();
                             }}
                         >
                             {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
+
+
                                 if (index === 0) {
                                     return <Option key={index} value={item.value} style={{}}>
                                         <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
                                     </Option>
                                 } else {
+
+                                    let itemValues = item.value + " | " + index.toString()
+
+                                    console.log(`sdlkflskdfkl====>`, itemValues);
+
                                     return (
-                                        <Option key={index} value={item.value}>{item.text}</Option>
+                                        <Option key={index}
+                                                value={itemValues}>{item.text}</Option>
                                     )
                                 }
                             })}
@@ -2289,7 +2300,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                     onClick={async () => {
                                         if (this.state.filteredCloudletList.length > 1) {
-                                            await this.handleOnChangeCloudletDropdown(item.CloudletName)
+                                            let fullCloudletItemOne = item.CloudletName + " | " + JSON.stringify(item.CloudletLocation) + " | " + index.toString()
+
+                                            await this.handleOnChangeCloudletDropdown(fullCloudletItemOne)
                                         } else {
                                             await this.handleOnChangeCloudletDropdown(undefined)
                                         }

@@ -43,6 +43,10 @@ export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
 }
 
+export function getOnlyCloudletIndex(cloudletOne) {
+    return cloudletOne.toString().split(" | ")[2].trim();
+}
+
 export function changeClassficationTxt(currentClassification) {
     if (currentClassification === CLASSIFICATION.CLOUDLET) {
         return currentClassification;
@@ -1118,10 +1122,15 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  * @param newDateTimeList
  * @param _this
  * @param isGradientColor
+ * @param hwType
+ * @param isOneData
  * @returns {function(*=): {datasets: [], labels: *}}
  */
-export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType) => {
+export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOneData = false) => {
     try {
+
+        let colorIndex = isOneData ? _this.state.currentColorIndex : index
+
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
             let finalSeriesDataSets = [];
@@ -1131,25 +1140,24 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     radius: 0,
                     borderWidth: 3,//todo:라인 두께
                     fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    borderColor: isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    backgroundColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[colorIndex],
+                    borderColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[colorIndex],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[index],
-                    pointBackgroundColor: _this.state.chartColorList[index],
-                    pointHoverBackgroundColor: _this.state.chartColorList[index],
-                    pointHoverBorderColor: _this.state.chartColorList[index],
+                    pointBorderColor: _this.state.chartColorList[colorIndex],
+                    pointBackgroundColor: _this.state.chartColorList[colorIndex],
+                    pointHoverBackgroundColor: _this.state.chartColorList[colorIndex],
+                    pointHoverBorderColor: _this.state.chartColorList[colorIndex],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
                     order: index,
-
                 };
                 finalSeriesDataSets.push(datasetsOne)
             }
@@ -1166,6 +1174,7 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
 
     }
 };
+
 
 export const convertToClassification = (pClassification) => {
     if (pClassification === CLASSIFICATION.APPINST) {
