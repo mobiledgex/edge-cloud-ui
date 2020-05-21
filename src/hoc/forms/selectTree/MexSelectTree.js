@@ -103,7 +103,11 @@ export default function MexSelectRadioTree(props) {
     useEffect(() => {
         window.addEventListener("resize", () => setWidth(anchorRef.current ? anchorRef.current.offsetWidth : '100%'));
         setWidth(anchorRef.current ? anchorRef.current.offsetWidth : '100%')
-      }, [anchorRef.current]);
+
+        return ()=>{
+            window.removeEventListener("resize", () => {});
+        };
+    }, [anchorRef.current]);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -244,7 +248,7 @@ export default function MexSelectRadioTree(props) {
                                             defaultExpandIcon={<ChevronRightIcon />}
                                         >
                                             <TreeItem nodeId={i + ""} label={item.label}>
-                                                <RadioGroup aria-label={item.label} name={item.label} value={value[i] ? value[i].value : undefined} onChange={(e) => { handleChange(e, i, item) }}>
+                                                <RadioGroup aria-label={item.label} name={item.label} value={value[i] ? value[i].value : null} onChange={(e) => { handleChange(e, i, item) }}>
                                                     {item.children.map((child, j) => {
                                                         return <FormControlLabel style={{ color: 'inherit' }} key={j} value={child.label} control={<Radio style={{ color: 'inherit' }} />} label={child.label} />
                                                     })}
