@@ -4,11 +4,12 @@ import Ripple from "react-ripples";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
 import type {TypeAppInst, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
-import {listGroupByKey} from "../service/PageDevOperMonitoringService";
+import {changeClassficationTxt, listGroupByKey} from "../service/PageDevOperMonitoringService";
 import Control from "react-leaflet-control";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";
 import {CLASSIFICATION, CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
+import {Progress} from "antd";
 
 let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),
@@ -86,6 +87,26 @@ export default function MapForOper(props) {
     const [filteredClusterList, setFilteredClusterList] = useState([])
     const [isEnableZoom, setIsEnableZoom] = useState(true)
 
+    const height = 200;
+    //todo:///////////////// filteredUsageList /////////////
+    //todo://////////////////////////////
+    const [count, setCount] = useState(-1);
+    const [usageOne: any, setUsageOne] = useState(-1);
+    const hwMarginTop = 15;
+    const hwFontSize = 15;
+
+    useEffect(() => {
+
+        console.log(`filteredUsageList===>`, props.filteredUsageList);
+        if (props.filteredUsageList !== undefined && props.filteredUsageList.length === 1) {
+            setCount(props.filteredUsageList.length)
+            setUsageOne(props.filteredUsageList[0])
+        } else {
+            setCount(-1);
+        }
+
+    }, [props.filteredUsageList]);
+
     useEffect(() => {
         if (zoom !== 1) {
             setZoom(1)
@@ -103,7 +124,7 @@ export default function MapForOper(props) {
         }
     }, [props.cloudletLength])
 
-
+    //////////////////////////////////////////////////////
     useEffect(() => {
         console.log(`appInstList===>`, props.filteredAppInstList);
     }, [props.filteredAppInstList])
@@ -146,7 +167,7 @@ export default function MapForOper(props) {
         setCloudletObjects(cloudletObjs)
 
 
-        //todo: 클러스터가 핸개인 경우...
+        //todo: when one Cloudlet
         if (cloudletLocList.length === 1) {
             let selectCloudletOne = cloudletObjs[cloudletLocList[0]]
             setCurrentCloudlet(selectCloudletOne[0])
@@ -166,7 +187,7 @@ export default function MapForOper(props) {
         await props.parent.handleOnChangeCloudletDropdown(cloudLetOne.CloudletName)
     }
 
-    function renderClusterBottomInfo() {
+    /*function renderClusterInfo() {
         return (
             <div style={{
                 flex: .5,
@@ -233,7 +254,7 @@ export default function MapForOper(props) {
 
             </div>
         )
-    }
+    }*/
 
     function renderCloudletInfo() {
         return (
@@ -343,6 +364,133 @@ export default function MapForOper(props) {
 
     }
 
+    function renderCloudletResource() {
+        return (
+            <div style={{backgroundColor: 'transparent', height: '100%', flex: .5}}>
+                {count === 1 && props.currentClassification === CLASSIFICATION.CLOUDLET ?
+                    <Center style={{height: height,}}>
+                        <div>
+                            <Progress
+                                strokeColor={'red'}
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                style={{fontSize: 10}}
+                                percent={usageOne.usedVCpuCount / usageOne.maxVCpuCount * 100}
+                                strokeWidth={10}
+                                format={(percent, successPercent) => {
+                                    return usageOne.usedVCpuCount + "/" + usageOne.maxVCpuCount;
+                                }}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                vCPU
+                            </div>
+                        </div>
+                        <div style={{width: 15}}/>
+                        <div>
+                            <Progress
+                                strokeColor='blue'
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                percent={Math.round(usageOne.usedMemUsage / usageOne.maxMemUsage * 100)}
+                                strokeWidth={10}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                MEM
+                            </div>
+                        </div>
+                        <div style={{width: 15}}/>
+                        <div>
+                            <Progress
+                                strokeColor='green'
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                percent={Math.ceil((usageOne.usedDiskUsage / usageOne.maxDiskUsage) * 100)}
+                                strokeWidth={10}
+                                format={(percent, successPercent) => {
+                                    return usageOne.usedDiskUsage + "/" + usageOne.maxDiskUsage;
+                                }}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                DISK
+                            </div>
+                        </div>
+                    </Center>
+                    : count === 1 && props.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ? //@DESC: CLUSTER LEVEL FOR OPER
+                        <Center style={{height: height,}}>
+                            <div>
+                                <Progress
+                                    strokeColor={props.chartColorList[0]}
+                                    type="circle"
+                                    width={100}
+                                    trailColor='#262626'
+                                    style={{fontSize: 10}}
+                                    percent={Math.round(usageOne.sumCpuUsage)}
+                                    strokeWidth={10}
+
+                                />
+                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                    CPU
+                                </div>
+                            </div>
+                            <div style={{width: 15}}/>
+                            <div>
+                                <Progress
+                                    strokeColor={props.chartColorList[1]}
+                                    type="circle"
+                                    width={100}
+                                    trailColor='#262626'
+                                    percent={Math.round(usageOne.sumMemUsage)}
+                                    strokeWidth={10}
+                                />
+                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                    MEM
+                                </div>
+                            </div>
+                            <div style={{width: 15}}/>
+                            <div>
+                                <Progress
+                                    strokeColor={props.chartColorList[2]}
+                                    type="circle"
+                                    width={100}
+                                    trailColor='#262626'
+                                    percent={Math.round(usageOne.sumDiskUsage)}
+                                    strokeWidth={10}
+                                />
+                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                    DISK
+                                </div>
+                            </div>
+                        </Center>
+                        :
+                        <Center style={{
+                            fontSize: 22,
+                            backgroundColor: 'rgba(157,255,255,.02)',
+                            height: height,
+                            flexDirection: 'column'
+                        }}>
+                            <div>
+                                <div>
+                                    No Available
+                                </div>
+                                <div style={{fontSize: 12}}>
+                                    (It is shown only in one
+                                    specific {changeClassficationTxt(props.currentClassification)})
+                                </div>
+                            </div>
+
+
+                        </Center>
+                }
+
+
+            </div>
+        )
+
+    }
+
 
     return (
         <div style={{height: '100%', width: '100%'}}>
@@ -373,7 +521,7 @@ export default function MapForOper(props) {
                     style={Styles.infoDiv}
                 >
                     {renderCloudletInfo()}
-                    {renderClusterBottomInfo()}
+                    {renderCloudletResource()}
                 </div>
                 }
                 {renderAppInstInfo()}

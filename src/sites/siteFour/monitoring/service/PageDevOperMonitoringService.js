@@ -705,6 +705,7 @@ export const listGroupByKey222 = (items, key) => items.reduce(
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
 
+
     console.log(`hardwareType====>`, hardwareType);
 
     try {

@@ -242,7 +242,7 @@ type PageDevMonitoringState = {
     themeTitle: string,
     addItemList: any,
     themeOptions: any,
-    isNoData: boolean,
+    isExistData: boolean,
     isBubbleChartMaked: boolean,
     allClusterEventLogList: any,
     filteredClusterEventLogList: any,
@@ -453,7 +453,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     selectedClusterUsageOne: [],
                     selectedClusterUsageOneIndex: 0,
                     gridDraggable: true,
-                    isNoData: false,
+                    isExistData: false,
                     diskGridItemOneStyleTranslate: {
                         transform: 'translate(10px, 1540px)',
                     },
@@ -548,21 +548,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async loadInitData(isInterval: boolean = false) {
                 let promiseList = []
                 let promiseList2 = []
+                let clusterList = []
+                let appInstList = []
+                let cloudletList = []
                 try {
                     clearInterval(this.intervalForAppInst)
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
                     //todo:realdata
-                    promiseList.push(fetchCloudletList())
+                    /*promiseList.push(fetchCloudletList())
                     promiseList.push(fetchClusterList())
                     promiseList.push(fetchAppInstList())
                     let newPromiseList = await Promise.all(promiseList);
-                    let cloudletList = newPromiseList[0];
-                    let clusterList = newPromiseList[1];
-                    let appInstList = newPromiseList[2];
+                    cloudletList = newPromiseList[0];
+                    clusterList = newPromiseList[1];
+                    appInstList = newPromiseList[2];*/
                     console.log(`appInstList===>`, appInstList);
-
+                    cloudletList = await fetchCloudletList()
 
                     //todo:fakedata
                     /*let cloudletList = require('../temp/cloudletList')
@@ -619,10 +622,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
                     console.log(`cloudletDropdownList====>`, cloudletDropdownList);
+                    let dataCount = false;
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                        dataCount = appInstList.length
+                    } else {
+                        dataCount = cloudletList.length
+                    }
+
 
                     await this.setState({
                         legendHeight: (Math.ceil(clusterList.length / 8)) * 30,
-                        isNoData: appInstList.length === 0,
+                        isExistData: dataCount > 0,
                         bubbleChartData: bubbleChartData,
                         /* allClusterEventLogList: allClusterEventLogList,
                          filteredClusterEventLogList: allClusterEventLogList,
@@ -1243,6 +1253,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 filteredClusterList={this.state.filteredClusterList}
                                 filteredAppInstList={this.state.filteredAppInstList}
                                 currentOperLevel={this.state.currentOperLevel}
+                                filteredUsageList={this.state.filteredCloudletUsageList}
                             />
                         )
                     }
@@ -2670,7 +2681,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             render() {
-                if (this.state.isNoData) {
+                if (this.state.isExistData) {
                     return (
                         <div style={{width: '100%', height: '100%',}}>
                             {this.renderHeader()}
