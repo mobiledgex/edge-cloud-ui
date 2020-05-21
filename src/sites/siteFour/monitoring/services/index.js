@@ -113,7 +113,7 @@ const getMetricsClient = async (self, params) => {
             self,
             requestData(appinst),
         );
-        if (response && response.values) self.onReceiveResult(response, self);
+        self.onReceiveResult(response, self);
     });
 };
 

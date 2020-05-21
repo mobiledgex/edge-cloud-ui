@@ -83,7 +83,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         console.log("20200521 container widget   == ", prevProps.appinsts, ":", prevState.appinsts);
         if (_.isEqual(prevProps.appinsts, prevState.appinsts) === false) {
             if (prevState.appinsts && prevState.appinsts.length > 0 && prevState.method) {
-                this.initialize(this.state, this);
+                //this.initialize(this.state, this);
             }
         }
 
@@ -104,12 +104,12 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 this.initialize(this.state, this);
             }
         }
-        //
-        // if (_.isEqual(prevProps.appinsts, this.state.appinsts) === false) {
-        //     if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
-        //         this.initialize(this.state, this);
-        //     }
-        // }
+
+        if (_.isEqual(prevProps.appinsts, this.state.appinsts) === false) {
+            if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
+                this.initialize(this.state, this);
+            }
+        }
 
     }
 
@@ -133,7 +133,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 /**
                  * completing service, go to onReceiveResult below lines
                  */
-                alert("good" + result.toString());
+
             }
         } catch (e) {
             console.log(e);
