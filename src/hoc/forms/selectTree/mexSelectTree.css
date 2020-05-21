@@ -41,8 +41,8 @@
 }
 
 .tree_popper { 
-    width: calc(100% - 28px);
     position: absolute;
+    margin-left: 1px;
     z-index: 1;
     color:white;
 }

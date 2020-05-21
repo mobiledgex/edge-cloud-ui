@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Paper from '@material-ui/core/Paper';
@@ -6,13 +6,14 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Input, RadioGroup, FormControlLabel, Radio, InputAdornment } from '@material-ui/core';
+import { Input, RadioGroup, FormControlLabel, Radio, InputAdornment, Box, Tooltip } from '@material-ui/core';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import SearchIcon from '@material-ui/icons/Search';
 import TreeItem from '@material-ui/lab/TreeItem';
 import './mexSelectTree.css'
+import { Icon } from 'semantic-ui-react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -90,12 +91,19 @@ export default function MexSelectRadioTree(props) {
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    const [width, setWidth] = React.useState('100%');
+    const [currentSelection, setCurrentSelection] = React.useState(undefined);
     const [value, setValue] = React.useState(form.value ? form.value : []);
     const [output, setOutput] = React.useState(form.value ? form.value.map(item => { return item.parent + '>' + item.value + '  ' }) : form.placeholder);
     const [list, setList] = React.useState(filterOptions());
     const anchorRef = React.useRef(null);
 
     let filterText = '';
+
+    useEffect(() => {
+        window.addEventListener("resize", () => setWidth(anchorRef.current ? anchorRef.current.offsetWidth : '100%'));
+        setWidth(anchorRef.current ? anchorRef.current.offsetWidth : '100%')
+      }, [anchorRef.current]);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -124,6 +132,7 @@ export default function MexSelectRadioTree(props) {
     }, [open]);
 
     const handleChange = (event, index, item) => {
+        setCurrentSelection(event.target.value)
         let valuearray = form.value ? form.value : []
         valuearray[index] = { parent: item.label, value: event.target.value }
         setValue(valuearray);
@@ -150,18 +159,65 @@ export default function MexSelectRadioTree(props) {
         setList(newList)
     }
 
+    const clearSelection = (e) =>
+    {
+        e.stopPropagation()
+        setValue([])
+        setOutput(form.placeholder)
+    }
+
+    const copyCurrentSelection = (e) => 
+    {
+        e.stopPropagation()  
+        if (currentSelection) {
+            setValue([])
+            let valueArray = []
+            let output = ''
+            list.map((parent, i) => {
+                let children = parent.children
+                for (let j = 0; j < children.length; j++) {
+                    if (children[j].label === currentSelection) {
+                        valueArray[i] = { parent: parent.label, value: currentSelection }
+                        output = output + parent.label + '>' + currentSelection + '  '
+                        break;
+                    }
+                }
+            })
+            if (valueArray.length > 0) {
+                setOutput(output)
+                setValue(valueArray)
+            }
+            setCurrentSelection(undefined)
+        }
+    }
+
     return (
         <div className={classes.root}>
-            <button
+            <div
                 className={open ? 'header_active' : 'header'}
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
                 onClick={handleToggle}
             >
-                {output}
-            </button>
-            <Popper className='tree_popper' open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                <Box display="flex">
+                    <Box p={1} flexGrow={1} >
+                        {output}
+                    </Box>
+                    {form.rules ? form.rules.copy ?
+                        <Box p={1}>
+                            <Tooltip title={'copy current selection to all'} aria-label="clear">
+                                <Icon name="copy outline" onClick={(copyCurrentSelection)}></Icon>
+                            </Tooltip>
+                        </Box> : null : null}
+                    <Box p={1}>
+                        <Tooltip title={'clear'} aria-label="clear">
+                            <Icon name="close" onClick={(clearSelection)}></Icon>
+                        </Tooltip>
+                    </Box>
+                </Box>
+            </div>
+            <Popper className='tree_popper' open={open} anchorEl={anchorRef.current} role={undefined}  style={{width:width}} transition disablePortal>
                 <StyledPaper className='tree_dropdown'>
                     <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
