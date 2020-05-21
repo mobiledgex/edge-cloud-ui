@@ -350,21 +350,6 @@ tbody:hover {
     box-shadow: 0 4px 50px black;
 }
 
-/*todo: ###############################*/
-/*todo: 켈린더 dateTime picker 관련 style*/
-/*todo: ###############################*/
-.ant-calendar-picker-input.ant-input {
-    line-height: 1.5;
-    height: 36px;
-    background-color: black;
-}
-
-.ant-calendar-picker-input.ant-input.ant-input-disabled {
-    line-height: 1.5;
-    height: 36px;
-    background-color: #1e2124;
-}
-
 
 .react-grid-layout {
     position: relative;
@@ -658,7 +643,6 @@ tr td {
 }
 
 
-
 .oper_popup_div {
     margin-top: 3px;
     margin-bottom: 3px;
@@ -697,3 +681,36 @@ tr td {
 }
 
 
+/*todo: ###############################*/
+/*todo: 켈린더 dateTime picker 관련 style*/
+/*todo: ###############################*/
+
+.ant-calendar-picker-input.ant-input.ant-input-disabled {
+    line-height: 1.5;
+    height: 30px;
+    background-color: #1e2124;
+    margin-top: 10px;
+}
+
+.ant-calendar-picker-input.ant-input {
+    line-height: 1.5;
+    height: 30px;
+    background-color: black;
+    margin-top: 10px;
+}
+
+.ant-calendar {
+    background-color: #17171f;
+    background-clip: padding-box;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ant-tag-blue {
+    color: #1890ff;
+    background: #e6f7ff;
+    font-family: Roboto;
+    border-color: blue;
+}

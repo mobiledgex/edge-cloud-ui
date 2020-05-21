@@ -1679,16 +1679,16 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
             let chartDataList = [];
             chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}]);
             for (let index = 0; index < usageList.length; index++) {
-                if (index < 7) {
-                    console.log(`usageList====${hardwareType}>`, usageList[index]);
-                    let barDataOne = [
-                        usageList[index].cloudlet.toString(),
-                        renderUsageByType(usageList[index], hardwareType, _this),
-                        _this.state.chartColorList[index],
-                        renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
-                    ];
-                    chartDataList.push(barDataOne);
-                }
+                /*if (index < 7) {
+                }*/
+                console.log(`usageList====${hardwareType}>`, usageList[index]);
+                let barDataOne = [
+                    usageList[index].cloudlet.toString(),
+                    renderUsageByType(usageList[index], hardwareType, _this),
+                    _this.state.chartColorList[index],
+                    renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
+                ];
+                chartDataList.push(barDataOne);
             }
 
             let chartDataSet = {

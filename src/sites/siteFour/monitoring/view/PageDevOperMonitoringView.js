@@ -5,7 +5,8 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect, DatePicker} from 'antd';
+
 import {
     filterByClassification,
     getCloudletClusterNameList, getOnlyCloudletIndex,
@@ -129,6 +130,7 @@ import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import BarAndLineChartContainer from "../components/BarAndLineChartContainer";
 
+const {RangePicker} = DatePicker;
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -2091,26 +2093,72 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                         >
                             {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
-                               try{
-                                   if (index === 0) {
-                                       return <Option key={index} value={item.value} style={{}}>
-                                           <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
-                                       </Option>
-                                   } else {
-                                       let itemValues = item.value + " | " + (index - 1).toString()
-                                       return (
-                                           <Option key={index} value={itemValues}>{item.text}</Option>
-                                       )
-                                   }
-                               }catch (e) {
-                                   
-                               }
+                                try {
+                                    if (index === 0) {
+                                        return <Option key={index} value={item.value} style={{}}>
+                                            <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
+                                        </Option>
+                                    } else {
+                                        let itemValues = item.value + " | " + (index - 1).toString()
+                                        return (
+                                            <Option key={index} value={itemValues}>{item.text}</Option>
+                                        )
+                                    }
+                                } catch (e) {
+
+                                }
                             })}
                         </Select>
                     </div>
                 )
             }
 
+
+            renderRangeDropdown() {
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label">
+                            Range
+                        </div>
+                        <RangePicker
+                            disabled={this.state.loading}
+                            //disabled={true}
+                            ref={c=>this.rPicker=c}
+                            showTime={{format: 'HH:mm'}}
+                            format="YYYY-MM-DD HH:mm"
+                            placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
+                            onOk={async (date) => {
+                                try {
+                                    let stateTime = date[0].format('YYYY-MM-DD HH:mm')
+                                    let endTime = date[1].format('YYYY-MM-DD HH:mm')
+                                    await this.setState({
+                                        startTime: stateTime,
+                                        endTime: endTime,
+                                    })
+                                    // this.filterUsageListByDate()
+
+                                    this.rPicker.blur()
+
+                                } catch (e) {
+
+                                }
+
+                            }}
+                            ranges={{
+                                Today: [moment(), moment()],
+                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
+                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
+                                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                'Last Month': [moment().date(-30), moment().date(-1)],
+                                'Last 6 Months': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
+                                'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
+                                'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
+                                'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
+                            }}
+                        />
+                    </div>
+                )
+            }
 
             renderClusterDropdown() {
 
@@ -2538,6 +2586,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     <React.Fragment>
                                         <div style={{marginLeft: 25}}>
                                             {this.renderCloudletDropdown()}
+                                        </div>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderRangeDropdown()}
                                         </div>
                                     </React.Fragment>
                                     :
