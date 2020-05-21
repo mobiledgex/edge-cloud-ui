@@ -94,9 +94,7 @@ class MonitoringAdmin extends React.Component {
                 return;
             }
 
-            console.log("20200519 cloudlets result.Cloudlets == ", result.Cloudlets, ":", count);
             if (count <= 0) {
-                console.log("20200519 cloudlets set state compCloudlet == ", this.hasCloudlets);
                 this.setState({
                     compCloudlet: this.hasCloudlets,
                 });

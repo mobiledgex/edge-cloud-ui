@@ -76,7 +76,6 @@ export const parseData = (response) => {
     const resultParse = {};
 
     if (response && response.values && response.values.length > 0) {
-        console.log("20200516 format rate of regist .. ", response.values.length, ":", response.values);
         response.values.map(value => {
             const timeIdx = value.resColumns.indexOf("time");
             const methodIdx = value.resColumns.indexOf("method");

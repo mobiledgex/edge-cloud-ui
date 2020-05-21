@@ -20,7 +20,6 @@ const HeaderFiltering = props => {
 
     React.useEffect(() => {
         if (props.data && props.data.length > 0) {
-            console.log("20200507 data in monitroing viewer ... ", props.data);
         }
         if (props.title) {
             setTitle(props.title);

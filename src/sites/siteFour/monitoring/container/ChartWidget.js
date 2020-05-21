@@ -33,7 +33,6 @@ class ChartWidget extends React.Component {
     }
 
     componentDidMount() {
-        console.log("20200519 cloudlets props id == ", this.props.id);
         this.id = this.props.id;
         this.setState({ id: this.props.id });
         // this.divRef = React.createRef();
@@ -47,31 +46,32 @@ class ChartWidget extends React.Component {
     // }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("20200521 derived state ... ", nextProps, ":", prevState);
         if (_.isEqual(prevState.dataRaw, nextProps.data) === false) {
-            console.log("20200519 cloudlets wrapper  ...22 ", ":         nextProps = ", nextProps, ": prevState = ", prevState);
             return { dataRaw: nextProps.data };
         }
         return null;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log("20200519 cloudlets compare method == 33 :  prevProps id = ", prevProps.id);
-        console.log("20200519 cloudlets compare method == 33 :  prevProps data = ", prevProps.data, "prevState data = ", prevState.dataRaw, ":", this.state.id);
         if (_.isEqual(prevProps.data, prevState.data) === false) {
             if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
                 if (prevProps.data && prevProps.data.values) {
                     if (prevProps.data.values.length > 0) this.updateData(prevProps.data, prevState.id);
                 }
             } else if (prevProps.id === DataType.NETWORK_CLOUDLET) {
-                this.setState({ data: prevProps.data });
+                this.updateMetricData(prevProps.data);
             }
             // this.setState({ dataRaw: prevProps.data });
         }
     }
 
+    updateMetricData = data => {
+        this.setState({ data });
+    }
+
 
     updateData = async (uData, props) => {
-        console.log("20200519 compare ....... dataFormatRateRegistregist ... ", uData);
         let updatedata = null;
         switch (props) {
             case DataType.REGISTER_CLIENT: updatedata = await DataFormats.dataFormatRateRegist(uData); break;
@@ -79,7 +79,6 @@ class ChartWidget extends React.Component {
             case DataType.FIND_CLOUDLET: updatedata = await DataFormats.dataFormatRateRegist(uData); break;
             default: updatedata = await DataFormats.dataFormatRateRegist(uData);
         }
-        console.log("20200517 update data .. ", updatedata);
         this.setState({ data: updatedata });
     }
 

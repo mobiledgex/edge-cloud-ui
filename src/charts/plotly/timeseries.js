@@ -103,79 +103,94 @@ class TimeSeries extends React.Component {
             cloneData[0].type = this.props.type;
             this.setState({ chartData: cloneData || "scatter" });
         }
-        console.log(
-            "20200511 chart size ... ",
-            this.props.filterInfo
-        );
         if (this.props.filterInfo) {
             this.hGab = 38;
         } else {
             this.hGab = 0;
         }
         if (this.props.divide) this.maxDataCount = this.props.divide;
-        console.log("20200515 .. props in did mount == ", this.props);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200519 timesereis wrapper prevState.data ...11 ", prevState.data, ":         nextProps.data = ", nextProps.data);
+        console.log("20200521 shortHand derived state ====== -->> prev :: ", prevState.data, "   next:: ", nextProps.data, ": isEqual=", _.isEqual(prevState.data, nextProps.data));
         if (_.isEqual(prevState.data, nextProps.data) === false) {
-            console.log("20200519 timesereis wrapper prevState.data ...22 ", prevState.data, ":         nextProps.data = ", nextProps.data);
             return { data: nextProps.data };
         }
         return null;
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        console.log("20200519 timeseries prev props ==11 ", prevProps.data, ":", this.state.data);
-        if (_.isEqual(prevProps.data, this.state.data) === false) {
-            // TODO : select box의 선택에 따른 데이터 교체
-            console.log("20200519 timeseries prev props data ==22 ", prevProps.data[prevProps.id]);
-            /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
-            if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
-                const shortHand = prevProps.data[prevProps.id];
-                let selectedItem = "";
-                if (prevProps.method === "") {
-                    selectedItem = "diskUsed";
+    /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        setTimeout(() => {
+            if (prevState.data !== this.state.data) {
+                /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
+                if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0 && prevProps.id === dataType.NETWORK_CLOUDLET) {
+                    const shortHand = prevProps.data[prevProps.id];
+                    console.log("20200521 shortHand ====== -->> ", shortHand);
+                    let selectedItem = "";
+                    if (prevProps.method === "") {
+                        selectedItem = "diskUsed";
+                    }
+
+                    const { type } = prevProps;
+
+                    shortHand.map(data => {
+                        const times = shortHand[0].times[0]; // not use
+                        const datas = shortHand[0].resData_util[0].diskUsed; // as x & y
+                        const methods = shortHand[0].methods[0]; // as names
+                        datas.names = methods;
+                        this.reloadChart(
+                            { [methods[0]]: datas },
+                            methods[0],
+                            type
+                        );
+                    });
+
+                    this.stackAllData.push(Object.assign(shortHand));
                 }
-                const times = shortHand[0].times[0]; // not use
-                const datas = shortHand[0].resData_util[0].diskUsed; // as x & y
-                const methods = shortHand[0].methods[0]; // as names
-                const { type } = prevProps;
-                datas.names = methods;
-                this.reloadChart(
-                    { [methods[0]]: datas },
-                    methods[0],
-                    type
-                );
-                this.stackAllData.push(Object.assign(shortHand));
+
+                return true;
             }
+        }, 1000);
+        return null;
+    }
+
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.data && prevState.data) {
+            console.log("20200521 shortHand componentDidUpdate ====== -->> ", prevProps.data, ":       ", prevState.data);
+            console.log("20200521 shortHand compare -- ", _.isEqual(prevState.data, prevProps.data));
+        }
+        if (prevProps.data && _.isEqual(prevProps.data, prevState.data) === false) {
+            // TODO : select box의 선택에 따른 데이터 교체
+
 
             // metics of clients
-            // let selectedIdx = prevProps.selectedMethod;
-            // if (prevProps.id === dataType.FIND_CLOUDLET) {
-            //     selectedIdx = 1;
-            // }
-            // if (prevProps.data.length > 0) {
-            //     const { times } = prevProps.data[0];
-            //     const { methods } = prevProps.data[0];
-            //     const { cloudlets } = prevProps.data[0];
-            //     const { names } = prevProps.data[0];
-            //     selectedIdx = methods.indexOf(prevProps.id);
-            //     const selectedMethodName = methods[selectedIdx];
-            //     const dataArray = prevProps.data[0][selectedMethodName];
-            //     console.log("20200518 data .. length ... ", dataArray);
-            //     dataArray.map((data, i) => {
-            //         const datas = data;
-            //         const { type } = prevProps;
-            //         console.log("20200517 timeseries data == ", datas);
-            //         this.reloadChart(
-            //             datas,
-            //             cloudlets[i],
-            //             type
-            //         );
-            //     });
-            //     this.stackAllData.push(Object.assign(prevProps.data));
-            // }
+            let selectedIdx = prevProps.selectedMethod;
+            if (prevProps.id === dataType.FIND_CLOUDLET) {
+                selectedIdx = 1;
+            }
+            if (prevProps.data.length > 0) {
+                const { times } = prevProps.data[0];
+                const { methods } = prevProps.data[0];
+                const { cloudlets } = prevProps.data[0];
+                const { names } = prevProps.data[0];
+                selectedIdx = methods.indexOf(prevProps.id);
+                const selectedMethodName = methods[selectedIdx];
+                const dataArray = prevProps.data[0][selectedMethodName];
+                console.log("20200518 data .. length ... ", dataArray);
+                dataArray.map((data, i) => {
+                    const datas = data;
+                    const { type } = prevProps;
+                    console.log("20200517 timeseries data == ", datas);
+                    this.reloadChart(
+                        datas,
+                        cloudlets[i],
+                        type
+                    );
+                });
+                this.stackAllData.push(Object.assign(prevProps.data));
+            }
         }
 
     }
@@ -183,7 +198,6 @@ class TimeSeries extends React.Component {
     /** nemes = ["RegisterClient", "FindCloudlet", "VerifyLocation"] */
     reloadChart(data, cloudlet, type) {
         let seriesData = null;
-        console.log("20200518 series dddd .... ", data[cloudlet]);
 
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
@@ -229,7 +243,6 @@ class TimeSeries extends React.Component {
 
     render() {
         const { error } = this.props;
-        console.log("20200515 props size == == == ", this.state.vWidth, ":", this.state.vHeight);
         return (
             <div
                 className="plotContainer"

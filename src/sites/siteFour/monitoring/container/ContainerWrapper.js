@@ -50,7 +50,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (_.isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
-            console.log("20200519 cloudlets wrapper prevState.cloudlets ... ", prevState.cloudlets, ":         nextProps.cloudlets = ", nextProps.cloudlets);
             return { cloudlets: nextProps.cloudlets };
         }
         if (_.isEqual(prevState.appinsts, nextProps.appinsts) === false) {
@@ -67,7 +66,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 return { legendShow: !prevState.legendShow };
             }
             if (nextProps.id) {
-                return { id: prevProps.id };
+                return { id: nextProps.id };
             }
         }
 
@@ -78,10 +77,22 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         this.setState({ chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id });
     }
 
+    /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+
+        console.log("20200521 container widget   == ", prevProps.appinsts, ":", prevState.appinsts);
+        if (_.isEqual(prevProps.appinsts, prevState.appinsts) === false) {
+            if (prevState.appinsts && prevState.appinsts.length > 0 && prevState.method) {
+                this.initialize(this.state, this);
+            }
+        }
+
+        return null;
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
 
         if (_.isEqual(prevProps.cloudlets, this.state.cloudlets) === false) {
-            console.log("20200519 cloudlets prevProps ...22222 ", prevProps, ": prevState = ", prevState);
             // TODO: 20200509 //데이터가 갱신될 경우 id는 새로 갱신되어 들어온다
             /** *******************************************
                 * STEP # 1
@@ -92,11 +103,14 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             if (this.state.cloudlets && this.state.cloudlets.length > 0 && this.state.method) {
                 this.initialize(this.state, this);
             }
-            // ////
-            if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
-                this.initialize(this.state, this);
-            }
         }
+        //
+        // if (_.isEqual(prevProps.appinsts, this.state.appinsts) === false) {
+        //     if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
+        //         this.initialize(this.state, this);
+        //     }
+        // }
+
     }
 
     async onReceiveResult(result, self) {
@@ -104,7 +118,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
             /** filtering data */
             const groupByData = result;
-            console.log("20200519 on receive result in container wrapper ==  ", result);
             if (result && result.length > 0) {
                 console.log("20200519 on receive result in container wrapper ==  ", result);
             }
