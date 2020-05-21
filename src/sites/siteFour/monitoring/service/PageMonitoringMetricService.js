@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
@@ -182,28 +182,31 @@ export const fetchCloudletList = async () => {
             }
         })
 
+        let userType = localStorage.getItem('selectRole').toString().toLowerCase();
+        let currentSelectedOrg = localStorage.getItem('selectOrg').toString().trim();
+
+
         //@todo: when oper role
-        /* if (localStorage.getItem('selectRole').toString().toLowerCase().includes("oper")) {
-             let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
-                 return item.Operator === localStorage.getItem('selectOrg').toString().trim()
-             })
-             result.sort((a: TypeCloudlet, b: TypeCloudlet) => {
-                 if (a.CloudletName < b.CloudletName) {
-                     return -1;
-                 }
-                 if (a.CloudletName > b.CloudletName) {
-                     return 1;
-                 }
-                 return 0;
-             })
-             return result;
+        if (userType.includes(USER_TYPE.OPERATOR)) {
+            let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
+                return item.Operator === currentSelectedOrg
+            })
+            result.sort((a: TypeCloudlet, b: TypeCloudlet) => {
+                if (a.CloudletName < b.CloudletName) {
+                    return -1;
+                }
+                if (a.CloudletName > b.CloudletName) {
+                    return 1;
+                }
+                return 0;
+            })
+            return result;
 
-         } else {
-             return mergedCloudletList;
-         }
- */
+        } else {
+            return mergedCloudletList;
+        }
 
-        return mergedCloudletList;
+        //return mergedCloudletList;
 
     } catch (e) {
         //showToast( e.toString())

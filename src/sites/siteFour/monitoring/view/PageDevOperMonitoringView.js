@@ -2677,7 +2677,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div style={{width: '100%', height: '100%',}}>
                             {this.renderHeader()}
                             <div style={{marginTop: 25, marginLeft: 25, background: 'none'}}>
-                                <div style={{fontSize: 25, color: 'rgba(255,255,255,.6)'}}>
+                                <div style={{fontSize: 25, color: 'orange'}}>
                                     There is no app, cluster and cloudlet you can access..
                                 </div>
                             </div>
