@@ -129,6 +129,11 @@ export const defaultLayoutMapperForCloudlet = [
         hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
         graphType: GRID_ITEM_TYPE.LINE,
     },
+    {
+        id: '8',
+        hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
 ];
 
 

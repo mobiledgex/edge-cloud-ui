@@ -597,6 +597,23 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     }
 }
 
+let CLOUDLET_USAGE_INDEX = {
+    "time": 0,
+    "cloudlet": 1,
+    "cloudletorg": 2,
+    "netSend": 3,
+    "netRecv": 4,
+    "vCpuUsed": 5,
+    "vCpuMax": 6,
+    "memUsed": 7,
+    "memMax": 8,
+    "diskUsed": 9,
+    "diskMax": 10,
+    "floatingIpsUsed": 11,
+    "floatingIpsMax": 12,
+    "ipv4Used": 13,
+    "ipv4Max": 14,
+}
 
 /**
  *
@@ -646,14 +663,18 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 Region = cloudletList[index].Region
                 let series = item.data["0"].Series["0"].values
                 let columns = item.data["0"].Series["0"].columns
+
+                console.log(`cloudletLevelMatricUsageList..series====>`, series)
+                console.log(`cloudletLevelMatricUsageList..columns====>`, columns)
+
                 //////////////////////////////////////////
-                let netSendSeriesOne = series["0"]["3"]
-                let netRecvSeriesOne = series["0"]["4"]
-                let vCpuSeriesOne = series["0"]["5"]
-                let memSeriesOne = series["0"]["7"]
-                let diskSeriesOne = series["0"]["9"]
-                let floatingIpsSeriesOne = series["0"]["11"]
-                let ipv4UsedSeriesOne = series["0"]["13"]
+                let netSendSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netSend]
+                let netRecvSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netRecv]
+                let vCpuSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.vCpuUsed]
+                let memSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.memUsed]
+                let diskSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.diskUsed]
+                let floatingIpsSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.floatingIpsUsed]
+                let ipv4UsedSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.ipv4Used]
 
                 netSendSeriesList.push(netSendSeriesOne)
                 netRecvSeriesList.push(netRecvSeriesOne)

@@ -605,8 +605,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
                     //todo: realdata
-
-
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList2.push(getAllClusterEventLogList(clusterList))
                         promiseList2.push(getAllAppInstEventLogs());
@@ -617,6 +615,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClusterUsageList = newPromiseList2[2];
                     } else {//TODO:OPERATOR
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+
+                        console.log(`allCloudletUsageList====>`, allCloudletUsageList);
                     }
 
                     //fixme: fakedata
@@ -2302,31 +2302,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     style={{
                                         marginTop: 3,
                                         marginBottom: 3,
-                                        justifyContent: pLegendItemCount === 1 ? 'center' : null
+                                        justifyContent: pLegendItemCount === 1 ? 'center' : null,
+                                        backgroundColor: 'blue',
                                     }}
+                                    onClick={async () => {
+                                        if (this.state.filteredCloudletList.length > 1) {
+                                            await this.handleOnChangeCloudletDropdown(item.CloudletName)
+                                        } else {
+                                            await this.handleOnChangeCloudletDropdown(undefined)
+                                        }
+
+
+                                    }}
+
                                 >
-                                    <Ripple
-                                        style={{marginLeft: 0,}}
-                                        color='#1cecff' during={100}
-                                        onClick={async () => {
-                                            if (this.state.filteredCloudletList.length > 1) {
-                                                await this.handleOnChangeCloudletDropdown(item.CloudletName)
-                                            } else {
-                                                await this.handleOnChangeCloudletDropdown(undefined)
-                                            }
 
-
-                                        }}
+                                    {this.renderDot(index)}
+                                    <div
+                                        style={{marginTop: 0, marginLeft: 3}}
                                     >
-                                        {this.renderDot(index)}
-                                        <div
-                                            style={{marginTop: 0, marginLeft: 3}}
-                                        >
-                                            {reduceString(item.CloudletName, 21, pLegendItemCount)}
-                                        </div>
-                                        <div style={{marginRight: 5,}}>
-                                        </div>
-                                    </Ripple>
+                                        {reduceString(item.CloudletName, 21, pLegendItemCount)}
+                                    </div>
+                                    <div style={{marginRight: 5,}}>
+                                    </div>
+
                                 </Col>
                             )
                         })}
