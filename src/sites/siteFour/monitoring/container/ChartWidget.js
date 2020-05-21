@@ -17,7 +17,7 @@ import * as DataType from "../formatter/dataType";
 import FilteringComponent from "../components/FilteringComponent";
 import * as DataFormats from "../formatter/dataFormats";
 
-
+let scope = null;
 class ChartWidget extends React.Component {
     constructor(props) {
         super(props);
@@ -27,9 +27,11 @@ class ChartWidget extends React.Component {
             size: { width: 10, height: 10 },
             activeStep: 0,
             data: [],
-            dataRaw: []
+            dataRaw: [],
+            resId: ""
         };
         this.id = null;
+        scope = this;
     }
 
     componentDidMount() {
@@ -46,22 +48,30 @@ class ChartWidget extends React.Component {
     // }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200521 derived state ... ", nextProps, ":", prevState);
-        if (_.isEqual(prevState.dataRaw, nextProps.data) === false) {
-            return { dataRaw: nextProps.data };
+        if (_.isEqual(prevState.data, nextProps.data) === false) {
+            console.log("20200521 client >>>> on receive result of client ~~3~3~3~3~3~3~", nextProps.id);
+            if (nextProps.id === DataType.REGISTER_CLIENT || nextProps.id === DataType.FIND_CLOUDLET) {
+                if (nextProps.data && nextProps.data[nextProps.id].values) {
+                    if (nextProps.data[nextProps.id].values.length > 0) scope.updateData(nextProps.data[nextProps.id], nextProps.id);
+                }
+            }
+            return { dataRaw: nextProps.data, resId: nextProps.id };
         }
         return null;
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (_.isEqual(prevProps.data, prevState.data) === false) {
-            if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
-                if (prevProps.data && prevProps.data.values) {
-                    if (prevProps.data.values.length > 0) this.updateData(prevProps.data, prevState.id);
-                }
-            } else if (prevProps.id === DataType.NETWORK_CLOUDLET) {
+            console.log("20200521 client >>>> on receive result of client ~444444", prevProps, ":", prevState);
+            // if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
+            //     if (prevProps.data && prevProps.data.values) {
+            //         if (prevProps.data.values.length > 0) this.updateData(prevProps.data, prevState.data.id);
+            //     }
+            // }
+            if (prevProps.id === DataType.NETWORK_CLOUDLET) {
                 this.updateMetricData(prevProps.data);
             }
+
             // this.setState({ dataRaw: prevProps.data });
         }
     }
@@ -79,7 +89,9 @@ class ChartWidget extends React.Component {
             case DataType.FIND_CLOUDLET: updatedata = await DataFormats.dataFormatRateRegist(uData); break;
             default: updatedata = await DataFormats.dataFormatRateRegist(uData);
         }
-        this.setState({ data: updatedata });
+        // TODO: 오류 때문에 잠시 막음 --> redux 를 사용
+        console.log("20200521 updateData === ", updatedata, ":", this);
+        //this.setState({ data: updatedata };
     }
 
     // componentWillReceiveProps(prevProps, prevState) {

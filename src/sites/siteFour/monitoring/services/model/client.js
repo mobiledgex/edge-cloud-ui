@@ -75,7 +75,7 @@ moment().subtract(1, 'days').endOf('day').toString()
 */
 const metricFromServer = async (self, data) => {
     const selectedTimeRange = "today"; // TODO: selected time form toolbar
-    const yesterdayWithCurrent = moment().subtract(1, "days").toString();
+    const yesterdayWithCurrent = moment().subtract(3, "days").toString();
     const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
     const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
 

@@ -408,3 +408,10 @@ export function clickInfoPanel(info) {
         info
     }
 }
+
+export function saveMetricData(data) {
+    return {
+        type: types.SAVE_METRICS_DATA,
+        data
+    };
+}

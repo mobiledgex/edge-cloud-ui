@@ -105,6 +105,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             }
         }
 
+        // TODO : 크라우드렛 메트릭스를 모두 나오게 하는 영향을 줌.
         if (_.isEqual(prevProps.appinsts, this.state.appinsts) === false) {
             if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
                 this.initialize(this.state, this);
@@ -113,16 +114,27 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     }
 
-    async onReceiveResult(result, self) {
+    onReceiveResult(result, self) {
         try {
             // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
             /** filtering data */
             const groupByData = result;
             if (result && result.length > 0) {
-                console.log("20200519 on receive result in container wrapper ==  ", result);
+                console.log("20200521 client >>>> on receive result in container wrapper ==  ", result, ":", self.state.id);
             }
             this.setState({ data: { [self.state.id]: result } });
         } catch (e) { }
+    }
+
+    onReceiveResultClient = (result, self) => {
+        try {
+            if (result && result.values.length > 0) {
+                console.log("20200521 client >>>> on receive result of client ~2~2~2~2~2~~~", result.path[0], ":", self.state.id);
+                // change to redux ::: this.setState({ data: { [self.state.id]: result }, method: "client" });
+                this.props.handleSavedData({ [self.state.id]: result, method: "client" });
+            }
+        } catch (e) { }
+
     }
 
     async initialize(props: MetricsParmaType, self: any) {
@@ -133,7 +145,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 /**
                  * completing service, go to onReceiveResult below lines
                  */
-
+                console.log("20200521 client >>>> on receive result <<client>> async result ======== ", result);
             }
         } catch (e) {
             console.log(e);
@@ -177,6 +189,9 @@ const mapDispatchProps = (dispatch) => ({
     onLoadComplete: (data) => {
         _self.onReceiveResult(data);
     },
+    handleSavedData: (data) => {
+        dispatch(actions.saveMetricData(data));
+    }
 });
 
 export default ContainerWrapper;

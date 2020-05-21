@@ -96,7 +96,7 @@ const getMetricsCloudlet = async (self, params) => {
 * 3.
  *********************************** */
 const getMetricsClient = async (self, params) => {
-    console.log("20200521 get metrics in services... ", params);
+    console.log("20200521 get metrics client in services... ", params);
     /* Continue, get events of cloudlets */
     const requestData = appinstInfo => ({
         token,
@@ -113,7 +113,9 @@ const getMetricsClient = async (self, params) => {
             self,
             requestData(appinst),
         );
-        self.onReceiveResult(response, self);
+        /** * self : parent is the scope of <<< ContainerWrapper.js >>> */
+        console.log("20200521 client >>>> response for get metrics client... ", response, ": method = ", params.method);
+        self.onReceiveResultClient(response, self);
     });
 };
 
