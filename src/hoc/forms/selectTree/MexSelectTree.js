@@ -190,6 +190,7 @@ export default function MexSelectRadioTree(props) {
             if (valueArray.length > 0) {
                 setOutput(output)
                 setValue(valueArray)
+                props.onChange(form, valueArray)
             }
             setCurrentSelection(undefined)
         }

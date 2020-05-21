@@ -395,6 +395,16 @@ class AppReg extends React.Component {
     }
 
     onAddResponse = (mcRequestList) => {
+        if(mcRequestList && mcRequestList.length > 0)
+        {
+            mcRequestList.map(mcRequest=>{
+                if(mcRequest.response)
+                {
+                    let data = mcRequest.request.data;
+                    this.props.handleAlertInfo('success', `App ${data.app.key.name} added successfully`)
+                }
+            })
+        }
         this.props.onClose(true)
     }
 
