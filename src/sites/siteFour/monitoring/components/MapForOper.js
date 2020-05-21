@@ -359,10 +359,10 @@ export default function MapForOper(props) {
                     </div>
                 </div>
                 : null
-
         )
-
     }
+
+
 
     function renderCloudletResource() {
         return (
