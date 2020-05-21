@@ -341,8 +341,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let themeTitle = getUserId() + "_mon_theme_title";
 
                 //@fixme: DELETE THEME COLOR
-                /*reactLocalStorage.remove(cloudletLayout)
-                reactLocalStorage.remove(cloudletlayoutMapper)*/
+                reactLocalStorage.remove(clusterLayout)
+                reactLocalStorage.remove(clusterLayoutMapper)
 
 
                 this.state = {
@@ -1165,12 +1165,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let barChartDataSet: TypeBarChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         barChartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
-
-                        //let currentColorCode = this.state.chartColorList[]
-
                         let lineChartDataOne = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
-
-
                         return (
                             <BarAndLineChartContainer
                                 isResizeComplete={this.state.isResizeComplete}
@@ -1183,10 +1178,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 filteredCloudletListLength={this.state.filteredCloudletList.length}
                             />
                         )
-                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.APPINST) {
-                        barChartDataSet = this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                            makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this) :
-                            makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                        barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
+                        return (
+                            <BarChartContainer
+                                isResizeComplete={this.state.isResizeComplete} parent={this}
+                                loading={this.state.loading}
+                                chartDataSet={barChartDataSet}
+                                pHardwareType={pHwType} graphType={graphType}
+                            />
+                        )
+                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                        barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
+
 
                         return (
                             <BarChartContainer
@@ -2079,18 +2083,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
                             //disabled={isEmpty(this.state.cloudletDropdownList)}
-                            value={this.state.currentCloudLet}
+                            value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
-
-                                alert(value)
                                 this.handleOnChangeCloudletDropdown(value)
                                 this.cloudletSelect.blur();
                             }}
                         >
                             {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
-
-
                                 if (index === 0) {
                                     return <Option key={index} value={item.value} style={{}}>
                                         <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
@@ -2098,8 +2098,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 } else {
 
                                     let itemValues = item.value + " | " + index.toString()
-
-                                    console.log(`sdlkflskdfkl====>`, itemValues);
 
                                     return (
                                         <Option key={index}

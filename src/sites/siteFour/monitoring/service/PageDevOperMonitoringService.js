@@ -1123,14 +1123,11 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  * @param _this
  * @param isGradientColor
  * @param hwType
- * @param isOneData
+ * @param isOnlyOneData
  * @returns {function(*=): {datasets: [], labels: *}}
  */
-export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOneData = false) => {
+export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false) => {
     try {
-
-        let colorIndex = isOneData ? _this.state.currentColorIndex : index
-
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
             let finalSeriesDataSets = [];
@@ -1140,18 +1137,18 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     radius: 0,
                     borderWidth: 3,//todo:라인 두께
                     fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[colorIndex],
-                    borderColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[colorIndex],
+                    backgroundColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    borderColor: isGradientColor ? gradientList[colorIndex] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[colorIndex],
-                    pointBackgroundColor: _this.state.chartColorList[colorIndex],
-                    pointHoverBackgroundColor: _this.state.chartColorList[colorIndex],
-                    pointHoverBorderColor: _this.state.chartColorList[colorIndex],
+                    pointBorderColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    pointBackgroundColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    pointHoverBackgroundColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    pointHoverBorderColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 2,
