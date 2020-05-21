@@ -112,7 +112,7 @@ import {
     defaultLayoutForCluster,
     defaultLayoutForClusterForOper,
     defaultLayoutMapperForAppInst,
-    defaultLayoutMapperForCloudlet, defaultLayoutMapperForCloudlet2,
+    defaultLayoutMapperForCloudlet,
     defaultLayoutMapperForClusterForOper,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
@@ -127,6 +127,7 @@ import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
+import BarAndLineChartContainer from "../components/BarAndLineChartContainer";
 
 const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
@@ -1162,25 +1163,42 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let barChartDataSet: TypeBarChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         barChartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
+
+                        let lineChartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
+                        return (
+                            <BarAndLineChartContainer
+                                isResizeComplete={this.state.isResizeComplete}
+                                parent={this}
+                                loading={this.state.loading}
+                                chartDataSet={barChartDataSet}
+                                pHardwareType={pHwType}
+                                graphType={graphType}
+                                lineChartDataSets={lineChartDataSets}
+                                filteredCloudletListLength={this.state.filteredCloudletList.length}
+                            />
+                        )
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                         barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
+                        return (
+                            <BarChartContainer
+                                isResizeComplete={this.state.isResizeComplete} parent={this}
+                                loading={this.state.loading}
+                                chartDataSet={barChartDataSet}
+                                pHardwareType={pHwType} graphType={graphType}
+                            />
+                        )
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
+                        return (
+                            <BarChartContainer
+                                isResizeComplete={this.state.isResizeComplete} parent={this}
+                                loading={this.state.loading}
+                                chartDataSet={barChartDataSet}
+                                pHardwareType={pHwType} graphType={graphType}
+                            />
+                        )
                     }
 
-
-                    console.log(`sdlkflskdfkl====>`, this.state.filteredCloudletUsageList);
-
-                    console.log(`barChartDataSet====>`, barChartDataSet);
-
-                    return (
-                        <BarChartContainer
-                            isResizeComplete={this.state.isResizeComplete} parent={this}
-                            loading={this.state.loading}
-                            chartDataSet={barChartDataSet}
-                            pHardwareType={pHwType} graphType={graphType}
-                        />
-                    )
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                     return (
@@ -1558,7 +1576,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         await this.setState({
                             layoutCloudlet: defaultLayoutForCloudlet,
-                            layoutMapperCloudlet: this.state.filteredCloudletList.length === 1 ? defaultLayoutMapperForCloudlet2 : defaultLayoutMapperForCloudlet,
+                            layoutMapperCloudlet: defaultLayoutMapperForCloudlet,
                         })
                     }
 
