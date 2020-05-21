@@ -2091,18 +2091,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                         >
                             {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
-                                if (index === 0) {
-                                    return <Option key={index} value={item.value} style={{}}>
-                                        <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
-                                    </Option>
-                                } else {
-
-                                    let itemValues = item.value + " | " + (index - 1).toString()
-
-                                    return (
-                                        <Option key={index} value={itemValues}>{item.text}</Option>
-                                    )
-                                }
+                               try{
+                                   if (index === 0) {
+                                       return <Option key={index} value={item.value} style={{}}>
+                                           <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
+                                       </Option>
+                                   } else {
+                                       let itemValues = item.value + " | " + (index - 1).toString()
+                                       return (
+                                           <Option key={index} value={itemValues}>{item.text}</Option>
+                                       )
+                                   }
+                               }catch (e) {
+                                   
+                               }
                             })}
                         </Select>
                     </div>
