@@ -1,6 +1,6 @@
 import * as serviceMC from './serviceMC';
 
-import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL } from './endPointTypes'
+import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_SELF, SHOW_AUDIT_ORG } from './endPointTypes'
 
 const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -102,6 +102,16 @@ export const controllers = async (self) => {
 
 export const verifyEmail = async (self) => {
     let mcRequest = await sendRequest(self, { method: VERIFY_EMAIL })
+    return mcRequest
+}
+
+export const showSelf = async (self, data) => {
+    let mcRequest = await sendRequest(self, { method: SHOW_SELF, data: data })
+    return mcRequest
+}
+
+export const showAuditOrg = async (self, data) => {
+    let mcRequest = await sendRequest(self, { method: SHOW_AUDIT_ORG, data: data })
     return mcRequest
 }
 
