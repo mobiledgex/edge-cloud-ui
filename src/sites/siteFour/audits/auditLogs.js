@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import TimelineAuditView from "../../../container/TimelineAuditView";
-import {Card, Toolbar} from "@material-ui/core";
+import {Card} from "@material-ui/core";
 import {AuditTutor} from "../../../tutorial";
 
 const auditSteps = AuditTutor();

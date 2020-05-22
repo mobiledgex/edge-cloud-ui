@@ -1,36 +1,12 @@
 import React from 'react';
 import {Button, Icon, Popup} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
-//redux
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
+import * as serverData from '../services/model/serverData';
 import PopProfileViewer from '../container/popProfileViewer';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import {IconButton} from '@material-ui/core';
-
-
-// const StyledMenu = withStyles({
-//     paper: {
-//         border: '1px solid #d3d4d5',
-//     },
-// })(props => (
-//     <Menu
-//         PaperProps={{ style: { backgroundColor: '#424242', color: 'white' } }}
-//         elevation={0}
-//         getContentAnchorEl={null}
-//         anchorOrigin={{
-//             vertical: 'bottom',
-//             horizontal: 'center',
-//         }}
-//         transformOrigin={{
-//             vertical: 'top',
-//             horizontal: 'center',
-//         }}
-//         {...props}
-//     />
-// ));
-
 
 let _self = null;
 class headerGlobalMini extends React.Component {
@@ -46,7 +22,6 @@ class headerGlobalMini extends React.Component {
         }
     }
 
-
     gotoPreview(value) {
         if (value == '/logout') {
             try {
@@ -58,7 +33,6 @@ class headerGlobalMini extends React.Component {
             }
 
         }
-        //브라우져 입력창에 주소 기록
         let mainPath = value;
         let subPath = 'pg=0';
         this.props.history.push({
@@ -72,29 +46,24 @@ class headerGlobalMini extends React.Component {
 
     }
 
-    componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        let token = store ? store.userToken : 'null';
-        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser);
-    }
-
-
-    receiveCurrentUser(mcRequest) {
-        if (mcRequest) {
+    getCurrentUser = async () =>
+    {
+        let mcRequest = await serverData.currentUser(_self);
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
             if (mcRequest.response) {
-                let response = mcRequest.response;
                 _self.setState({ tokenState: 'live' })
-                _self.setState({ userInfo: response.data })
+                _self.setState({ userInfo: mcRequest.response.data })
             }
         }
     }
 
+    componentDidMount() {
+        this.getCurrentUser()
+    }
 
     profileView() {
         this.onMenuClose();
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        let token = store ? store.userToken : 'null';
-        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser);
+        this.getCurrentUser()
         this.setState({ openProfile: true })
     }
 
@@ -106,11 +75,6 @@ class headerGlobalMini extends React.Component {
         }
         this.setState({ openProfile: false })
     }
-    resetPassword() {
-        this.props.handleClickLogin('forgot')
-    }
-
-
 
     onMenuClose = () => {
         this.setState({
@@ -137,7 +101,6 @@ class headerGlobalMini extends React.Component {
         return (
 
             <div>
-                {/*<div style={{ cursor: 'pointer',marginTop:10  }} onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}><AccountCircleOutlinedIcon fontSize='large'/></div>*/}
                 <Popup
                     inverted
                     trigger={

@@ -19,7 +19,6 @@ import PublicIP from 'public-ip';
 
 const host = window.location.host;
 let self = null;
-let email = 'yourEmail@email.net'
 
 const FormContainer = (props) => (
     <Grid className="signUpBD">

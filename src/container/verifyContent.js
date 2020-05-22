@@ -1,33 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as serviceMC from "../services/serviceMC";
-import {GridLoader} from "react-spinners";
+import * as serverData from "../services/model/serverData";
+import { GridLoader } from "react-spinners";
 import Alert from 'react-s-alert';
 
 let _self = null;
 class VerifyContent extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
-            isReady : false,
+        this.state = {
+            isReady: false,
             isError: false,
-            focused : false,
+            focused: false,
             loginState: false,
-            uid:null,
-            publicKey:null,
-            exponent:null,
+            uid: null,
+            publicKey: null,
+            exponent: null,
             loading: true
         };
         _self = this;
 
     }
-    componentDidMount() {
-        let strArr = this.props.params.subPath.split('=')
-        let token = strArr[1];
-        this.requestVerify(token);
-    }
-   
 
     gotoUrl(site) {
         let mainPath = site;
@@ -38,26 +32,21 @@ class VerifyContent extends Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
-    receiveData(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                Alert.success(response.data.message, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 10000
-                });
-                setTimeout(() => _self.gotoUrl('/site1'), 1000)
-            }
+
+    requestVerify = async () => {
+        let mcRequest = await serverData.verifyEmail(_self);
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
+            Alert.success(mcRequest.response.data.message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 10000
+            });
+            setTimeout(() => _self.gotoUrl('/site1'), 1000)
         }
     }
-    requestVerify(token) {
-        serviceMC.sendRequest(_self, {method: serviceMC.getEP().VERIFY_EMAIL, data: {token: token} }, this.receiveData)
-    }
-
 
     render() {
         return (
@@ -72,11 +61,16 @@ class VerifyContent extends Component {
             </div>
         );
     }
+
+    componentDidMount() {
+        this.requestVerify();
+    }
+
 }
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleInjectData: (data) => { dispatch(actions.setUser(data)) },
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
