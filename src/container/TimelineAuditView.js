@@ -368,14 +368,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     timelineDataOne = data
                 }
             })
-            this.setStorageData(timelineDataOne.traceid, "selected")
-            if(timelineDataOne.status !== 200){
-                if(storageSelectedTraceidList){
-                    let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === timelineDataOne.traceid) : (-1)
-                    if(storageSelectedTraceidIndex === (-1)){
-                        this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
+            if(timelineDataOne) {
+                this.setStorageData(timelineDataOne.traceid, "selected")
+                if (timelineDataOne.status !== 200) {
+                    if (storageSelectedTraceidList) {
+                        let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === timelineDataOne.traceid) : (-1)
+                        if (storageSelectedTraceidIndex === (-1)) {
+                            this.setState({"unCheckedErrorCount": this.state.unCheckedErrorCount - 1})
+                        }
                     }
                 }
+            } else {
+                this.setState({
+                    isLoading2: false,
+                })
+                return;
             }
             setTimeout(() => {
                 this.setRequestView(timelineDataOne)
