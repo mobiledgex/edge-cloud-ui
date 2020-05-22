@@ -92,7 +92,6 @@ export default function MexSelectRadioTree(props) {
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [width, setWidth] = React.useState('100%');
     const [currentSelection, setCurrentSelection] = React.useState(undefined);
     const [value, setValue] = React.useState(form.value ? form.value : []);
     const [output, setOutput] = React.useState(form.value ? form.value.map(item => { return item.parent + '>' + item.value + '  ' }) : form.placeholder);
@@ -100,15 +99,6 @@ export default function MexSelectRadioTree(props) {
     const anchorRef = React.useRef(null);
 
     let filterText = '';
-
-    useEffect(() => {
-        window.addEventListener("resize", () => setWidth(anchorRef.current ? anchorRef.current.offsetWidth : '100%'));
-        setWidth(anchorRef.current ? anchorRef.current.offsetWidth : '100%')
-
-        return ()=>{
-            window.removeEventListener("resize", () => {});
-        };
-    }, [anchorRef.current]);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -129,7 +119,7 @@ export default function MexSelectRadioTree(props) {
     }
 
     const prevOpen = React.useRef(open);
-    React.useEffect(() => {
+    useEffect(() => {
         if (prevOpen.current === true && open === false) {
             anchorRef.current.focus();
         }
@@ -224,15 +214,7 @@ export default function MexSelectRadioTree(props) {
                 </Box>
             </div>
             <Popper className='tree_popper' open={open} anchorEl={anchorRef.current} role={undefined}
-                    placement="bottom-left" transition disablePortal
-                    modifiers={{
-                        flip: {
-                            enabled: false,
-                        },
-                        preventOverflow: {
-                            enabled: false,
-                        },
-                    }}>
+                    placement="bottom-start" transition disablePortal>
                 <StyledPaper className='tree_dropdown'>
                     <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
