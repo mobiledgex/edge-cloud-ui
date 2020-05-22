@@ -7,7 +7,6 @@ import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import LeafletMapWrapperForDev from "./MapForDev";
-import {hot} from "react-hot-loader/root";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
@@ -15,8 +14,8 @@ import * as actions from "../../../../actions";
 import {renderCircleLoaderForMap, renderWifiLoader} from "../service/PageMonitoringCommonService";
 import {makeLineChartOptions} from "../service/PageDevOperMonitoringService";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-
 const FA = require('react-fontawesome')
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -50,10 +49,8 @@ type State = {
     redraw: boolean,
 
 };
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class BigModalGraphContainer extends React.Component<Props, State> {
-
-
         constructor(props: Props) {
             super(props)
             this.state = {
@@ -72,9 +69,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
-
-                console.log(`chartDataForBigModal====>`, nextProps.chartDataForBigModal);
-
                 this.setState({
                     chartDataForRendering: nextProps.chartDataForBigModal,
                     graphType: nextProps.graphType.toUpperCase(),
@@ -264,4 +258,5 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             );
         };
     }
-))))
+)))
+
