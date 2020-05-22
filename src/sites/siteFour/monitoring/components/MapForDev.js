@@ -13,7 +13,12 @@ import {Icon} from "semantic-ui-react";
 import {notification, Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -446,18 +451,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 </MarkerClusterGroup>
             )
         }
+
         handleRefresh = async () => {
             try {
                 await this.setState({
                     zoom: 1,
                     selectedAppInstIndex: -1,
-                }, () => {
-                    notification.success({
-                        placement: 'bottomLeft',
-                        duration: 1.5,
-                        message: 'Fetch locally stored data.',
-                    });
-                })
+                });
 
                 await this.props.parent.handleOnChangeClusterDropdown('');
             } catch (e) {

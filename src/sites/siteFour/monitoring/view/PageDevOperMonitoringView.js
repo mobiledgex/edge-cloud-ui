@@ -1478,8 +1478,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     )
                 } catch (e) {
-                    showToast('renderGridLayoutForCloudlet error====>>>>')
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
 
 
