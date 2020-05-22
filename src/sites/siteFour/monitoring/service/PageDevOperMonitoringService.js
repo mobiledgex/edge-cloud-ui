@@ -688,22 +688,7 @@ export const listGroupByKey = (items, key) => items.reduce(
     {},
 );
 
-export const listGroupByKey222 = (items, key) => items.reduce(
-    (result, item) => ({
-        ...result,
-        [item[key]]: [
-            ...(result[item[key]] || []),
-            item,
-        ],
-    }),
-    {},
-);
-
-
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
-
-
-    console.log(`hardwareType====>`, hardwareType);
 
     try {
         let options = {

@@ -1855,7 +1855,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return (
                     <div style={PageMonitoringStyles.streamSwitchDiv}>
                         <div style={PageMonitoringStyles.listItemTitle}>
-                            {this.state.currentClassification} Stream
+                            {/*{this.state.currentClassification}*/} Stream
                         </div>
                         <div style={PageMonitoringStyles.listItemTitle}>
                             <CustomSwitch
@@ -2500,91 +2500,94 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             makeLegend() {
-                let legendHeight = 30
-                if (this.state.loading) {
-                    return (
-                        <LegendOuterDiv style={{height: legendHeight}}>
-                            <div style={{
-                                display: 'flex',
-                                alignSelf: 'center',
-                                position: 'absolute',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '100%',
-                                height: 30,
-                                //backgroundColor: 'red'
-                            }}>
-                                <ColorLinearProgress
-                                    variant={'query'}
-                                    style={{
-                                        marginLeft: -10,
-                                        width: '7%',
-                                        alignContent: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                />
-                            </div>
-                        </LegendOuterDiv>
-                    )
-                } else {
-                    let legendItemCount = 0;
+                try {
+                    let legendHeight = 30
+                    if (this.state.loading) {
+                        return (
+                            <LegendOuterDiv style={{height: legendHeight}}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignSelf: 'center',
+                                    position: 'absolute',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    height: 30,
+                                    //backgroundColor: 'red'
+                                }}>
+                                    <ColorLinearProgress
+                                        variant={'query'}
+                                        style={{
+                                            marginLeft: -10,
+                                            width: '7%',
+                                            alignContent: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    />
+                                </div>
+                            </LegendOuterDiv>
+                        )
+                    } else {
+                        let legendItemCount = 0;
 
-                    if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        legendItemCount = this.state.filteredClusterUsageList.length
-                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER || this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        legendItemCount = this.state.filteredClusterUsageList.length;
-                    } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                        legendItemCount = this.state.filteredCloudletList.length;
-                    }
+                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                            legendItemCount = this.state.filteredClusterUsageList.length
+                        } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER || this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                            legendItemCount = this.state.filteredClusterUsageList.length;
+                        } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                            legendItemCount = this.state.filteredCloudletList.length;
+                        }
 
+                        return (
+                            <LegendOuterDiv
+                                style={{
+                                    height: legendItemCount > 1 ? 60 : 30,
+                                    marginTop: 4,
+                                }}>
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?//@desc: CLUSTER  Level Legend
+                                    this.renderClusterLegend()
+                                    ://@desc: When Cloudlet Level Legend
+                                    this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
+                                        this.renderCloudletLegend(legendItemCount)
+                                        //@desc: When AppLevel Legend
+                                        : this.state.currentClassification === CLASSIFICATION.APPINST &&
+                                        this.renderAppLegend()
 
-                    return (
-                        <LegendOuterDiv
-                            style={{
-                                height: legendItemCount > 1 ? 60 : 30,
-                                marginTop: 4,
-                            }}>
-                            {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?//@desc: CLUSTER  Level Legend
-                                this.renderClusterLegend()
-                                ://@desc: When Cloudlet Level Legend
-                                this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
-                                    this.renderCloudletLegend(legendItemCount)
-                                    //@desc: When AppLevel Legend
-                                    : this.state.currentClassification === CLASSIFICATION.APPINST &&
-                                    this.renderAppLegend()
-
-                            }
-                            {/*@todo:################################*/}
-                            {/*@todo: fold/unfoled icons on right    */}
-                            {/*@todo:################################*/}
-                            {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER &&
-                            <div
-                                style={PageMonitoringStyles.expandIconDiv}
-                                onClick={() => {
-                                    if (this.state.isLegendExpanded === false) {
-                                        this.setState({
-                                            isLegendExpanded: true,
-                                            legendHeight: (Math.ceil(legendItemCount / 4)) * 25,
-                                            legendColSize: 6,
-                                        })
-                                    } else {//when expanded
-                                        this.setState({
-                                            isLegendExpanded: false,
-                                            legendHeight: (Math.ceil(legendItemCount / 8)) * 25,
-                                            legendColSize: 3,
-                                        })
-                                    }
-                                }}
-                            >
-                                {!this.state.isLegendExpanded ?
-                                    <UnfoldMore style={{fontSize: 18}}/>
-                                    :
-                                    <UnfoldLess style={{fontSize: 18}}/>
                                 }
-                            </div>
-                            }
-                        </LegendOuterDiv>
-                    )
+                                {/*@todo:################################*/}
+                                {/*@todo: fold/unfoled icons on right    */}
+                                {/*@todo:################################*/}
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER &&
+                                <div
+                                    style={PageMonitoringStyles.expandIconDiv}
+                                    onClick={() => {
+                                        if (this.state.isLegendExpanded === false) {
+                                            this.setState({
+                                                isLegendExpanded: true,
+                                                legendHeight: (Math.ceil(legendItemCount / 4)) * 25,
+                                                legendColSize: 6,
+                                            })
+                                        } else {//when expanded
+                                            this.setState({
+                                                isLegendExpanded: false,
+                                                legendHeight: (Math.ceil(legendItemCount / 8)) * 25,
+                                                legendColSize: 3,
+                                            })
+                                        }
+                                    }}
+                                >
+                                    {!this.state.isLegendExpanded ?
+                                        <UnfoldMore style={{fontSize: 18}}/>
+                                        :
+                                        <UnfoldLess style={{fontSize: 18}}/>
+                                    }
+                                </div>
+                                }
+                            </LegendOuterDiv>
+                        )
+                    }
+                } catch (e) {
+
                 }
             }
 

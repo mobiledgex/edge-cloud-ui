@@ -12,6 +12,18 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         height: 50,
     },
+    appPopupDiv:{
+        fontSize: 14,
+        cursor: 'crosshair',
+        flexDirection: 'column',
+        marginTop: 0,
+        marginBottom: 5,
+        borderRadius: 5,
+        justifyContents: 'center',
+        alignSelf: 'center',
+        alignItem: 'center,',
+        display: 'flex',
+    },
     streamSwitchDiv:{
         alignItems: 'center',
         display: 'flex',
