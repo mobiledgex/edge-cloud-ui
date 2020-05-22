@@ -18,7 +18,7 @@ import { Icon } from 'semantic-ui-react';
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
-        position:'relative'
+        position: 'relative'
     },
     paper: {
         marginRight: theme.spacing(2),
@@ -92,7 +92,6 @@ export default function MexSelectRadioTree(props) {
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [currentSelection, setCurrentSelection] = React.useState(undefined);
     const [value, setValue] = React.useState(form.value ? form.value : []);
     const [output, setOutput] = React.useState(form.value ? form.value.map(item => { return item.parent + '>' + item.value + '  ' }) : form.placeholder);
     const [list, setList] = React.useState(filterOptions());
@@ -127,7 +126,7 @@ export default function MexSelectRadioTree(props) {
     }, [open]);
 
     const handleChange = (event, index, item) => {
-        setCurrentSelection(event.target.value)
+        form.currentSelection = event.target.value
         let valuearray = form.value ? form.value : []
         valuearray[index] = { parent: item.label, value: event.target.value }
         setValue(valuearray);
@@ -154,26 +153,25 @@ export default function MexSelectRadioTree(props) {
         setList(newList)
     }
 
-    const clearSelection = (e) =>
-    {
+    const clearSelection = (e) => {
         e.stopPropagation()
         setValue([])
         setOutput(form.placeholder)
+        props.onChange(form, [])
     }
 
-    const copyCurrentSelection = (e) => 
-    {
-        e.stopPropagation()  
-        if (currentSelection) {
+    const copyCurrentSelection = (e) => {
+        e.stopPropagation()
+        if (form.currentSelection) {
             setValue([])
             let valueArray = []
             let output = ''
             list.map((parent, i) => {
                 let children = parent.children
                 for (let j = 0; j < children.length; j++) {
-                    if (children[j].label === currentSelection) {
-                        valueArray[i] = { parent: parent.label, value: currentSelection }
-                        output = output + parent.label + '>' + currentSelection + '  '
+                    if (children[j].label === form.currentSelection) {
+                        valueArray[i] = { parent: parent.label, value: form.currentSelection }
+                        output = output + parent.label + '>' + form.currentSelection + '  '
                         break;
                     }
                 }
@@ -183,9 +181,10 @@ export default function MexSelectRadioTree(props) {
                 setValue(valueArray)
                 props.onChange(form, valueArray)
             }
-            setCurrentSelection(undefined)
+            form.currentSelection = undefined
         }
     }
+
 
     return (
         <div className={classes.root}>
@@ -211,10 +210,25 @@ export default function MexSelectRadioTree(props) {
                             <Icon name="close" onClick={(clearSelection)}></Icon>
                         </Tooltip>
                     </Box>
+                    {form.error ?
+                        <Box p={1}><Tooltip title={form.error} aria-label="clear">
+                            <Icon color='red' name='times circle outline' />
+                        </Tooltip>
+                        </Box> : null}
                 </Box>
             </div>
             <Popper className='tree_popper' open={open} anchorEl={anchorRef.current} role={undefined}
-                    placement="bottom-start" transition disablePortal>
+                placement="bottom-start" transition disablePortal modifiers={{
+                    flip: {
+                        enabled: false,
+                    },
+                    hide: {
+                        enabled: false
+                    },
+                    preventOverflow: {
+                        enabled: false,
+                    }
+                }}>
                 <StyledPaper className='tree_dropdown'>
                     <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
@@ -256,5 +270,5 @@ export default function MexSelectRadioTree(props) {
                 </StyledPaper>
             </Popper>
         </div>
-    );
+    )
 }

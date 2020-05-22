@@ -91,12 +91,31 @@ const MexForms = (props) => {
                 let rules = form.rules;
                 if (rules) {
                     if (rules.required) {
-                        if (form.value === null || form.value === undefined || form.value.length === 0) {
-                            form.error = `${form.label} is mandatory`
-                            valid = false;
+                        if(form.formType === SELECT_RADIO_TREE)
+                        {
+                            let dependentForm = forms[form.dependentData[0].index]
+                            let values = dependentForm.value
+                            if(dependentForm.value.includes('All'))
+                            {
+                                values = _.cloneDeep(dependentForm.options)
+                                values.splice(0, 1)
+                            }
+                            if (form.value === undefined || form.value.length !== values.length) {
+                                form.error = `${form.label} is mandatory`
+                                valid = false;
+
+                            } else {
+                                form.error = undefined
+                            }
                         }
                         else {
-                            form.error = undefined
+                            if (form.value === null || form.value === undefined || form.value.length === 0) {
+                                form.error = `${form.label} is mandatory`
+                                valid = false;
+                            }
+                            else {
+                                form.error = undefined
+                            }
                         }
                     }
                 }
