@@ -1,8 +1,6 @@
 import * as serviceMC from './serviceMC';
 
-export const SHOW_ROLE = "ShowRole";
-export const RESEND_VERIFY = "resendverify";
-export const SETTING_LOCK = "SettingLock";
+import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER } from './endPointTypes'
 
 const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -90,7 +88,16 @@ export const sendVerify = async (self, data) => {
         valid = response.status === 200 ? true : false
     }
     return valid
+}
 
+export const currentUser = async (self) => {
+    let mcRequest = await sendRequest(self, { method: CURRENT_USER })
+    return mcRequest
+}
+
+export const controllers = async (self) => {
+    let mcRequest = await sendRequest(self, { method: SHOW_CONTROLLER })
+    return mcRequest
 }
 
 export const settingLock = async (self, data) => {
