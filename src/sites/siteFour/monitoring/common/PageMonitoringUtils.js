@@ -41,6 +41,7 @@ export const barChartOption = (hwType) => {
 
     return (
         {
+            tooltip: {isHtml: true},
             annotations: {
                 style: 'line',
                 textStyle: {

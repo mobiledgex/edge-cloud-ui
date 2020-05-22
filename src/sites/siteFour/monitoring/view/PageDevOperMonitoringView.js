@@ -1869,108 +1869,118 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async handleOnChangeClusterDropdown(pClusterCloudletOne) {
 
-                try {
-                    //todo: When all Cluster
-                    if (pClusterCloudletOne === '' || pClusterCloudletOne === undefined) {
-                        await this.setState({
-                            filteredClusterList: this.state.allClusterList,
-                        })
-                        await this.resetLocalData();
-                    } else {
+                await this.setState({
+                    isStream: !this.state.isStream,
+                });
+                if (this.state.isStream===false) {
+                    clearInterval(this.intervalForAppInst)
+                    clearInterval(this.intervalForCluster)
+                } else {
+                    try {
+                        //todo: When all Cluster
+                        if (pClusterCloudletOne === '' || pClusterCloudletOne === undefined) {
+                            await this.setState({
+                                filteredClusterList: this.state.allClusterList,
+                            })
+                            await this.resetLocalData();
+                        } else {
 
 
-                        await this.setState({
-                            selectedClientLocationListOnAppInst: [],
-                            dropdownRequestLoading: true,
-                            selectedAppInstIndex: -1,
-                        })
+                            await this.setState({
+                                selectedClientLocationListOnAppInst: [],
+                                dropdownRequestLoading: true,
+                                selectedAppInstIndex: -1,
+                            })
 
-                        let selectData = pClusterCloudletOne.split("|")
-                        let selectedCluster = selectData[0].trim();
-                        let selectedCloudlet = selectData[1].trim();
+                            let selectData = pClusterCloudletOne.split("|")
+                            let selectedCluster = selectData[0].trim();
+                            let selectedCloudlet = selectData[1].trim();
 
-                        //desc: filter  ClusterUsageList
-                        let allClusterUsageList = this.state.allClusterUsageList;
-                        let filteredClusterUsageList = []
-                        allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
-                            if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
-                                filteredClusterUsageList.push(item)
-                            }
-                        })
+                            //desc: filter  ClusterUsageList
+                            let allClusterUsageList = this.state.allClusterUsageList;
+                            let filteredClusterUsageList = []
+                            allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+                                if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
+                                    filteredClusterUsageList.push(item)
+                                }
+                            })
 
-                        console.log(`sdlkflskdfkl====>`, selectedCluster);
-                        console.log(`sdlkflskdfkl====>`, selectedCloudlet);
-                        console.log(`sdlkflskdfkl====>`, filteredClusterUsageList);
+                            console.log(`sdlkflskdfkl====>`, selectedCluster);
+                            console.log(`sdlkflskdfkl====>`, selectedCloudlet);
+                            console.log(`sdlkflskdfkl====>`, filteredClusterUsageList);
 
-                        //desc: filter clusterEventLog
-                        /* let allClusterEventLogList = this.state.allClusterEventLogList
-                         let filteredClusterEventLogList = []
-                         allClusterEventLogList.map(item => {
-                             if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
-                                 filteredClusterEventLogList.push(item)
-                             }
-                         })*/
+                            //desc: filter clusterEventLog
+                            /* let allClusterEventLogList = this.state.allClusterEventLogList
+                             let filteredClusterEventLogList = []
+                             allClusterEventLogList.map(item => {
+                                 if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
+                                     filteredClusterEventLogList.push(item)
+                                 }
+                             })*/
 
-                        let filteredAppInstList = []
-                        this.state.appInstList.map((item: TypeAppInst, index) => {
-                            if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
-                                filteredAppInstList.push(item)
-                            }
-                        })
+                            let filteredAppInstList = []
+                            this.state.appInstList.map((item: TypeAppInst, index) => {
+                                if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                                    filteredAppInstList.push(item)
+                                }
+                            })
 
-                        console.log(`filteredClusterUsageList===>`, filteredClusterUsageList);
+                            console.log(`filteredClusterUsageList===>`, filteredClusterUsageList);
 
-                        console.log(`clusterList====>`, this.state.allClusterList);
+                            console.log(`clusterList====>`, this.state.allClusterList);
 
-                        let filteredClusterList = []
-                        this.state.allClusterList.map((item: TypeCluster, index) => {
-                            if (item.ClusterName === selectedCluster) {
-                                filteredClusterList.push(item)
-                            }
-                        })
+                            let filteredClusterList = []
+                            this.state.allClusterList.map((item: TypeCluster, index) => {
+                                if (item.ClusterName === selectedCluster) {
+                                    filteredClusterList.push(item)
+                                }
+                            })
 
-                        console.log(`filteredClusterList====>`, filteredClusterList);
+                            console.log(`filteredClusterList====>`, filteredClusterList);
 
 
-                        let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
-                        let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
-                        await this.setState({
-                            bubbleChartData: bubbleChartData,
-                            currentCluster: pClusterCloudletOne,
-                            currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_OPER,
-                            dropdownRequestLoading: false,
-                            filteredClusterUsageList: filteredClusterUsageList,
-                            // filteredClusterEventLogList: filteredClusterEventLogList,
-                            filteredClusterEventLogList: [],
-                            appInstDropdown: appInstDropdown,
-                            allAppInstDropdown: appInstDropdown,
-                            appInstSelectBoxPlaceholder: 'Select App Inst',
-                            filteredAppInstList: filteredAppInstList,
-                            appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
-                            currentAppInst: undefined,
-                            filteredClusterList: filteredClusterList,
-                            currentOperLevel: CLASSIFICATION.CLUSTER,
+                            let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
+                            let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                            await this.setState({
+                                bubbleChartData: bubbleChartData,
+                                currentCluster: pClusterCloudletOne,
+                                currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_OPER,
+                                dropdownRequestLoading: false,
+                                filteredClusterUsageList: filteredClusterUsageList,
+                                // filteredClusterEventLogList: filteredClusterEventLogList,
+                                filteredClusterEventLogList: [],
+                                appInstDropdown: appInstDropdown,
+                                allAppInstDropdown: appInstDropdown,
+                                appInstSelectBoxPlaceholder: 'Select App Inst',
+                                filteredAppInstList: filteredAppInstList,
+                                appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+                                currentAppInst: undefined,
+                                filteredClusterList: filteredClusterList,
+                                currentOperLevel: CLASSIFICATION.CLUSTER,
 
-                        }, () => {
-                            console.log(`sdlkflskdfkl==3333==>`, this.state.filteredClusterUsageList);
-                        });
+                            }, () => {
+                                console.log(`sdlkflskdfkl==3333==>`, this.state.filteredClusterUsageList);
+                            });
 
+                        }
+
+                        //desc: ############################
+                        //desc: setStream
+                        //desc: ############################
+                        if (this.state.isStream) {
+                            this.setClusterInterval()
+                        } else {
+                            clearInterval(this.intervalForAppInst)
+                            clearInterval(this.intervalForCluster)
+                        }
+                    } catch (e) {
+
+                        //showToast(e.toString())
+                        showToast('sdlfksdlfksldkflfkd')
                     }
 
-                    //desc: ############################
-                    //desc: setStream
-                    //desc: ############################
-                    if (this.state.isStream) {
-                        this.setClusterInterval()
-                    } else {
-                        clearInterval(this.intervalForAppInst)
-                        clearInterval(this.intervalForCluster)
-                    }
-                } catch (e) {
-
-                    //showToast(e.toString())
-                    showToast('sdlfksdlfksldkflfkd')
                 }
+
 
             }
 
@@ -2123,7 +2133,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <RangePicker
                             disabled={this.state.loading}
                             //disabled={true}
-                            ref={c=>this.rPicker=c}
+                            ref={c => this.rPicker = c}
                             showTime={{format: 'HH:mm'}}
                             format="YYYY-MM-DD HH:mm"
                             placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
@@ -2396,7 +2406,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     onClick={async () => {
                                         let clusterOne = item.cluster + " | " + item.cloudlet;
                                         await this.handleOnChangeClusterDropdown(clusterOne)
-
                                     }}
                                     span={this.state.legendColSize}
                                     title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
@@ -2646,16 +2655,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 checked={this.state.isStream}
                                                 color="primary"
                                                 onChange={async () => {
-                                                    await this.setState({
-                                                        isStream: !this.state.isStream,
-                                                    });
-                                                    if (!this.state.isStream) {
-                                                        clearInterval(this.intervalForAppInst)
-                                                        clearInterval(this.intervalForCluster)
-                                                    } else {
-                                                        await this.handleOnChangeClusterDropdown(this.state.currentCluster)
-
-                                                    }
+                                                    await this.handleOnChangeClusterDropdown(this.state.currentCluster)
                                                 }}
 
                                             />

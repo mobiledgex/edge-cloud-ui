@@ -108,6 +108,29 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                                         loader={<div><CircularProgress style={{color: '#1cecff',}}/></div>}
                                         data={this.state.chartDataSet.chartDataList}
                                         options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
+                                        chartEvents={[
+                                            {
+                                                eventName: "select",
+                                                callback: ({chartWrapper, google}) => {
+                                                    const chart = chartWrapper.getChart();
+                                                    google.visualization.events.addListener(chart, "click", e => {
+
+                                                     /*   var parts = e.targetID.split("#");
+
+                                                        let barIndex = parts[2]
+
+                                                        console.log(`sdlkflskdfkl====>`, barIndex);
+
+                                                        let data = this.state.chartDataSet.chartDataList;
+                                                        let cloudlet = data[barIndex][0]
+                                                        console.log(`sdlkflskdfkl====>`, cloudlet);*/
+
+                                                        //handleOnChangeCloudletDropdown
+
+                                                    });
+                                                }
+                                            }
+                                        ]}
                                     />
                                 </div>
                                 :
@@ -128,10 +151,4 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
 };
 
 
-/*
-<MonitoringConsumer>
-    {(context: MonitoringContextInterface) => (
 
-    )}
-</MonitoringConsumer>
-*/

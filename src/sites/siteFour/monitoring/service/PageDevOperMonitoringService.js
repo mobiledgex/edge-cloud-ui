@@ -128,9 +128,9 @@ export const renderUsageLabelByType = (usageOne, hardwareType, userType = '') =>
     else if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
         return usageOne.usedVCpuCount
     } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-        return usageOne.usedMemUsage
+        return usageOne.usedMemUsage + "MB"
     } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-        return usageOne.usedDiskUsage
+        return usageOne.usedDiskUsage + "GB"
     } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED) {
         return usageOne.usedFloatingIpsUsage
     } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
@@ -1677,17 +1677,43 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
             return "";
         } else {
             let chartDataList = [];
-            chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}]);
+            chartDataList.push([
+                "Element", hardwareType + " Utilization",
+                {
+                    type: 'string',
+                    role: 'tooltip',
+                    'p': {'html': true}
+                },
+
+                {role: "style"},
+                {role: 'annotation'}
+            ]);
             for (let index = 0; index < usageList.length; index++) {
-                /*if (index < 7) {
-                }*/
+
+                let tooltipOne = `<div style="background-color:black ;color: white; padding: 15px; font-size: 9pt; font-style: italic; font-family: Roboto; min-width: 200px; border: solid 1px rgba(255, 255, 255, .2) ">
+                                    <div>
+                                        ${usageList[index].cloudlet.toString()}
+                                    </div>
+                                    <div style="display: flex">
+                                        <div style="color: yellow">
+                                            ${hardwareType}
+                                        </div>
+                                        <div>
+                                            : ${renderUsageLabelByType(usageList[index], hardwareType)}
+                                        </div>
+                                    </div>
+                                  </div>`
+
                 console.log(`usageList====${hardwareType}>`, usageList[index]);
                 let barDataOne = [
                     usageList[index].cloudlet.toString(),
                     renderUsageByType(usageList[index], hardwareType, _this),
+                    tooltipOne,
                     _this.state.chartColorList[index],
                     renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
                 ];
+
+                console.log(`barDataOne====>`, barDataOne);
                 chartDataList.push(barDataOne);
             }
 
