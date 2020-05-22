@@ -10,10 +10,9 @@ import * as actions from '../../actions';
 import Alert from 'react-s-alert';
 // API
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
- import * as serviceMC from '../../services/serviceMC';
+ import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
-import CustomContentAlert from './CustomContentAlert';
 import PublicIP from 'public-ip';
 
 
@@ -144,8 +143,6 @@ const FormSignUpContainer = (props) => (
         </Grid.Row>
     </Grid>
 )
-const customerName = '';
-let flag = true;
 
 const SuccessMsg = (props) => (
     <Grid className="signUpBD">
@@ -241,6 +238,7 @@ class Login extends Component {
         this.params = null;
         this.clientSysInfo = {};
     }
+
     componentDidMount() {
 
         let getUserInfo = localStorage.getItem('userInfo')
@@ -266,34 +264,26 @@ class Login extends Component {
 
     }
 
-    componentWillReceiveProps (nextProps) {
+    resetPassword = async (password) =>
+    {
+        let mcRequest = await serverData.resetPassword(self, {token: store ? store.resetToken : 'null', password:password})
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
+                self.props.handleAlertInfo('success', mcRequest.response.data.message)
+                setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
+                self.onProgress(false);
+        }
+    }
 
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    componentWillReceiveProps (nextProps) {
         if(nextProps.values) {
             if(nextProps.submitSucceeded) {
                 this.setState({email:nextProps.values.email, username:nextProps.values.username})
 
-                //in case user press the button as a submit no matter send params
                 localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
                 if(nextProps.loginMode === 'resetPass'){
-                    serviceMC.sendRequest(self, {method:serviceMC.getEP().RESET_PASSWORD, data : {token: store ? store.resetToken : 'null', password:nextProps.values.password}}, self.resultNewPass)
+                    this.resetPassword(nextProps.values.password)
                 } else {
-                    let requestBody ={
-                        method:serviceMC.getEP().CREATE_USER,
-                        data : {
-                            name: nextProps.values.username,
-                            passhash: nextProps.values.password,
-                            email: nextProps.values.email,
-                            verify: {
-                                email: nextProps.values.email,
-                                operatingsystem: self.clientSysInfo.os.name,
-                                browser: self.clientSysInfo.browser.name,
-                                callbackurl: 'https://' + host + '/verify',
-                                clientip: self.clientSysInfo.clientIP,
-                            }
-                        }
-                    }
-                    serviceMC.sendRequest(this, requestBody, self.resultCreateUser)
+                    this.createUser(nextProps)
                 }
             }
 
@@ -324,26 +314,6 @@ class Login extends Component {
         }
 
     }
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     return (
-    //         nextProps.data != this.props.data ||
-    //         nextState.loginSuccess != this.state.loginSuccess
-    //     )
-    // }
-
-
-    /****
-     * 커스텀 얼럿 : 지우지 말것
-     * @param resource
-     */
-    showAlert = (resource) => {
-        let verifyMessage = `Thank you for signing up. Please verify your account. In order to login to your account, you must verify your account. An email has been sent to ${resource.email} with a link to verify your account. If you have not received the email after a few minutes check your spam folder or resend the verification email.`
-
-        Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: resource && resource.name || 'your name'}} email={resource && resource.email || 'yourEmail@@'} message={verifyMessage}/>, {
-            position: 'top-right', timeout: 15000, limit:1
-        })
-
-    }
 
     receiveClientIp(IPAddress) {
         if(IPAddress) {
@@ -353,7 +323,19 @@ class Login extends Component {
         }
     }
 
-    resultCreateUser(mcRequest) {
+    createUser = async (nextProps) => {
+        let mcRequest = await serverData.createUser(this, {
+            name: nextProps.values.username,
+            passhash: nextProps.values.password,
+            email: nextProps.values.email,
+            verify: {
+                email: nextProps.values.email,
+                operatingsystem: self.clientSysInfo.os.name,
+                browser: self.clientSysInfo.browser.name,
+                callbackurl: 'https://' + host + '/verify',
+                clientip: self.clientSysInfo.clientIP,
+            }
+        })
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
@@ -384,17 +366,6 @@ class Login extends Component {
         }
     }
 
-    resultNewPass(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                self.props.handleAlertInfo('success', response.data.message)
-                setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
-                self.onProgress(false);
-            }
-        }
-    }
-
     onFocusHandle(value) {
         self.setState({focused: value})
     }
@@ -412,63 +383,46 @@ class Login extends Component {
         this.props.handleLoadingSpinner(value)
     }
 
-    /**
-     * success login
-     * 로그인이 성공했을 때 토큰을 저장한다.
-     * @param result
-     */
     receiveToken(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.data.token) {
-                    self.params['userToken'] = response.data.token
-                    localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                    self.props.mapDispatchToLoginWithPassword(self.params)
+        
+    }
 
-                    self.props.handleChangeLoginMode('login')
-                } else {
-                    //display error message
-                    if (Alert) {
-                        self.props.handleAlertInfo('error', response.data.message)
-                        //goto reqeuset verify email ....
-                        if (response.data.message.indexOf('not verified') > -1) {
-                            self.setState({ loginMode: 'verify' })
-                        }
+    returnSignin() {
+        setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
+    }
+
+    requestToken = async (self) => {
+        let mcRequest = await serverData.login(self, { username: self.state.username, password: self.state.password })
+        if (mcRequest && mcRequest.response) {
+            let response = mcRequest.response;
+            if (response.data.token) {
+                self.params['userToken'] = response.data.token
+                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
+                self.props.mapDispatchToLoginWithPassword(self.params)
+
+                self.props.handleChangeLoginMode('login')
+            } else {
+                if (Alert) {
+                    self.props.handleAlertInfo('error', response.data.message)
+                    if (response.data.message.indexOf('not verified') > -1) {
+                        self.setState({ loginMode: 'verify' })
                     }
                 }
             }
         }
     }
 
-    receiveForgoten(mcRequest) {
-        self.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
-        self.setState({loginMode:'forgotMessage', forgotMessage: true})
-    }
-    receiveResendVerify(mcRequest) {
-        self.props.handleAlertInfo('success', 'Success')
-        self.setState({loginMode:'signup', forgotMessage: true})
-    }
-    returnSignin() {
-
-        setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
-    }
-    requestToken(self) {
-        serviceMC.sendRequest(self,{ method: serviceMC.getEP().LOGIN, data: { username: self.state.username, password: self.state.password } }, self.receiveToken)
-    }
     handleClickLogin(mode) {
         self.setState({loginMode:mode})
     }
 
-    onSendEmail(mode) {
+    onSendEmail = async (mode) => {
         if (mode === 'verify') {
-            let requestBody = {
-                method: serviceMC.getEP().RESEND_VERIFY,
-                data: {
-                    email: self.state.email, callbackurl: `https://${host}/verify`
-                }
+            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/verify` })
+            if (valid) {
+                self.props.handleAlertInfo('success', 'Success')
+                self.setState({ loginMode: 'signup', forgotMessage: true })
             }
-            serviceMC.sendRequest(self, requestBody, self.receiveResendVerify)
         } else if (mode === 'back') {
 
             self.setState({ loginMode: 'login' })
@@ -481,7 +435,11 @@ class Login extends Component {
                 callbackurl: 'https://' + host + '/passwordreset',
                 clientip: self.clientSysInfo.clientIP
             }
-            serviceMC.sendRequest(self, { method: serviceMC.getEP().RESET_PASSWORD_REQUEST, data: data }, this.receiveForgoten, this)
+            let valid = await serverData.resetPasswordRequest(self, data)
+            if (valid) {
+                self.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
+                self.setState({ loginMode: 'forgotMessage', forgotMessage: true })
+            }
         }
     }
 

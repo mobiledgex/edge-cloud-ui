@@ -1,6 +1,6 @@
 import * as serviceMC from './serviceMC';
 
-import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_SELF, SHOW_AUDIT_ORG } from './endPointTypes'
+import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_SELF, SHOW_AUDIT_ORG, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
 
 const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -116,13 +116,37 @@ export const showAuditOrg = async (self, data) => {
 }
 
 export const settingLock = async (self, data) => {
-    let valid = false;
+    let valid = false
     let mcRequest = await sendRequest(self, { method: SETTING_LOCK, data: data })
     if (mcRequest && mcRequest.response) {
         let response = mcRequest.response;
         valid = response.status === 200 ? true : false
     }
     return valid
+}
 
+export const resetPassword = async (self, data) => {
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESET_PASSWORD, data: data })
+    return mcRequest
+}
+
+export const createUser = async (self, data) => {
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: CREATE_USER, data: data })
+    return mcRequest
+}
+
+export const login = async(self, data) => {
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: LOGIN, data: data })
+    return mcRequest
+}
+
+export const resetPasswordRequest = async(self, data) => {
+    let valid = false
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESET_PASSWORD_REQUEST, data: data })
+    if (mcRequest && mcRequest.response) {
+        let response = mcRequest.response;
+        valid = response.status === 200 ? true : false
+    }
+    return valid
 }
 
