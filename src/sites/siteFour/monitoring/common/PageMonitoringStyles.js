@@ -12,6 +12,16 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         height: 50,
     },
+    streamSwitchDiv:{
+        alignItems: 'center',
+        display: 'flex',
+        cursor: 'pointer',
+        height: 30,
+        width: 150,
+        marginRight: 20,
+        alignSelf: 'center',
+        justifyContent: 'center',
+    },
     topRightMenu: {
         alignItems: 'center',
         display: 'flex',

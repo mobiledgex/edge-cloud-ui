@@ -567,6 +567,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 try {
                     clearInterval(this.intervalForAppInst)
+                    clearInterval(this.intervalForCluster)
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
@@ -1851,12 +1852,45 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
+            renderStreamSwitch() {
+                return (
+                    <div style={PageMonitoringStyles.streamSwitchDiv}>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            {this.state.currentClassification} Stream
+                        </div>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            <CustomSwitch
+                                size="small"
+                                checked={this.state.isStream}
+                                color="primary"
+                                onChange={async () => {
+                                    await this.setState({isStream: !this.state.isStream});
+
+                                    if (this.state.isStream === false) {
+                                        clearInterval(this.intervalForAppInst)
+                                        clearInterval(this.intervalForCluster)
+                                        this.setState({isStream: false})
+                                    } else {
+                                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster)
+                                        } else {
+                                            await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
+                                        }
+                                        this.setState({isStream: true})
+                                    }
+                                }}
+
+                            />
+                        </div>
+                    </div>
+                )
+            }
 
             async handleOnChangeClusterDropdown(pClusterCloudletOne) {
-
-                if (!this.state.isStream) {
+                if (this.state.isStream === false) {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
+                    await this.setState({isStream: false})
                 }
 
                 try {
@@ -1952,9 +1986,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //desc: ############################
                     if (this.state.isStream) {
                         this.setClusterInterval()
+                        console.log(`sdlkflskdfkl====>`, this.intervalForCluster);
+
                     } else {
                         clearInterval(this.intervalForAppInst)
                         clearInterval(this.intervalForCluster)
+                        await this.setState({isStream: false})
+                        console.log(`intervalForCluster====>`, this.intervalForCluster);
                     }
                 } catch (e) {
 
@@ -2146,6 +2184,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </div>
                 )
             }
+
 
             renderClusterDropdown() {
 
@@ -2363,7 +2402,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderClusterLegend(itemCount) {
+            renderClusterLegend() {
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
 
                 return (
@@ -2381,13 +2420,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     key={index}
                                     className="gutterRow"
                                     onClick={async () => {
+                                        await this.setState({
+                                            currentClassification: CLASSIFICATION.CLUSTER
+                                        })
                                         if (this.state.filteredClusterUsageList.length > 1) {
                                             let clusterOne = item.cluster + " | " + item.cloudlet;
                                             await this.handleOnChangeClusterDropdown(clusterOne)
                                         } else {
                                             await this.handleOnChangeClusterDropdown(undefined)
                                         }
-
 
                                     }}
                                     span={this.state.legendColSize}
@@ -2505,7 +2546,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 marginTop: 4,
                             }}>
                             {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?//@desc: CLUSTER  Level Legend
-                                this.renderClusterLegend(legendItemCount)
+                                this.renderClusterLegend()
                                 ://@desc: When Cloudlet Level Legend
                                 this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
                                     this.renderCloudletLegend(legendItemCount)
@@ -2548,82 +2589,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            renderAppInstStreamSwitch() {
-                return (
-                    this.state.currentClassification === CLASSIFICATION.APPINST &&
-                    <div style={{
-                        alignItems: 'center',
-                        display: 'flex',
-                        cursor: 'pointer',
-                        //backgroundColor: 'red',
-                        height: 30,
-                        width: 170,
-                        marginRight: 20,
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                    }}>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            {/*App Inst*/} Stream
-                        </div>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            <CustomSwitch
-                                size="small"
-                                checked={this.state.isStream}
-                                color="primary"
-                                onChange={async () => {
-                                    await this.setState({
-                                        isStream: !this.state.isStream,
-                                    });
-
-                                    if (!this.state.isStream) {
-                                        clearInterval(this.intervalForAppInst)
-                                    } else {
-                                        await this.handleOnChangeAppInstDropdown(this.state.currentAppInst, true)
-                                    }
-                                }}
-
-                            />
-                        </div>
-                    </div>
-
-                )
-            }
-
-            renderClusterStreamSwitch() {
-                return (
-                    this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                        <div style={{
-                            alignItems: 'center',
-                            display: 'flex',
-                            cursor: 'pointer',
-                            //backgroundColor: 'red',
-                            height: 30,
-                            width: 150,
-                            marginRight: 20,
-                            alignSelf: 'center',
-                            justifyContent: 'center',
-                        }}>
-                            <div style={PageMonitoringStyles.listItemTitle}>
-                                Cluster Stream
-                            </div>
-                            <div style={PageMonitoringStyles.listItemTitle}>
-                                <CustomSwitch
-                                    size="small"
-                                    checked={this.state.isStream}
-                                    color="primary"
-                                    onChange={async () => {
-                                        await this.setState({
-                                            isStream: !this.state.isStream,
-                                        });
-                                        await this.handleOnChangeClusterDropdown(this.state.currentCluster)
-                                    }}
-
-                                />
-                            </div>
-                        </div> : null
-
-                )
-            }
 
             renderMonitoringTitleArea() {
                 return (
@@ -2687,8 +2652,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <div style={{
                                 display: 'flex', flex: .3, justifyContent: 'flex-end',
                             }}>
-                                {this.renderClusterStreamSwitch()}
-                                {this.renderAppInstStreamSwitch()}
+                                {this.renderStreamSwitch()}
                                 {this.makeTopRightMenuActionButton()}
                             </div>
                         </Toolbar>
@@ -2707,6 +2671,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
+            renderNoItemMsg() {
+                if (!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLOUDLET && this.state.layoutCloudlet.length === 0 ||
+                    !this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutCluster.length === 0 ||
+                    !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutAppInst.length === 0
+                ) {
+                    return (
+                        <div style={{
+                            marginLeft: 15,
+                            marginTop: 10,
+                            fontSize: 25,
+                            color: 'orange'
+                        }}>No Item</div>
+                    )
+                }
+            }
 
             render() {
                 if (!this.state.isExistData) {
@@ -2757,14 +2736,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 width: '100%',
                                 height: '106%',
                             }}>
-                                {/*desc:---------------------------------*/}
-                                {/*desc:Content Header                   */}
-                                {/*desc:---------------------------------*/}
                                 <SemanticToastContainer position={"bottom-center"} color={'red'}/>
                                 {this.renderHeader()}
-                                {/*desc:---------------------------------*/}
-                                {/*desc:Legend                           */}
-                                {/*desc:---------------------------------*/}
                                 {this.makeLegend()}
                                 <div className="page_monitoring"
                                      style={{
@@ -2774,32 +2747,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          marginRight: 50,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
-                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLOUDLET && this.state.layoutCloudlet.length === 0 &&
-                                    <div style={{
-                                        marginLeft: 15,
-                                        marginTop: 10,
-                                        fontSize: 25,
-                                        color: 'orange'
-                                    }}>No Item</div>
-                                    }
-                                    {/*desc: no item message for cluster*/}
-                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutCluster.length === 0 &&
-                                    <div style={{
-                                        marginLeft: 15,
-                                        marginTop: 10,
-                                        fontSize: 25,
-                                        color: 'orange'
-                                    }}>No Item</div>
-                                    }
-                                    {/*desc: no item message for appInst*/}
-                                    {!this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutAppInst.length === 0 &&
-                                    <div style={{
-                                        marginLeft: 15,
-                                        marginTop: 10,
-                                        fontSize: 25,
-                                        color: 'rgba(255,255,255,.6)'
-                                    }}>No Item</div>
-                                    }
+                                    {this.renderNoItemMsg()}
                                     {this.renderGridLayoutByClassification()}
                                 </div>
                             </div>
