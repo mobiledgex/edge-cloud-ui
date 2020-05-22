@@ -40,9 +40,9 @@
     background-color:#16181D
 }
 
-.tree_popper { 
-    position: absolute;
-    margin-left: 1px;
+.tree_popper {
+    min-width: 100%;
+    width: 100%;
     z-index: 1;
     color:white;
 }

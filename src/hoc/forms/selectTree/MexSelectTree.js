@@ -17,7 +17,8 @@ import { Icon } from 'semantic-ui-react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%'
+        width: '100%',
+        position:'relative'
     },
     paper: {
         marginRight: theme.spacing(2),
@@ -222,7 +223,16 @@ export default function MexSelectRadioTree(props) {
                     </Box>
                 </Box>
             </div>
-            <Popper className='tree_popper' open={open} anchorEl={anchorRef.current} role={undefined}  style={{width:width}} transition disablePortal>
+            <Popper className='tree_popper' open={open} anchorEl={anchorRef.current} role={undefined}
+                    placement="bottom-left" transition disablePortal
+                    modifiers={{
+                        flip: {
+                            enabled: false,
+                        },
+                        preventOverflow: {
+                            enabled: false,
+                        },
+                    }}>
                 <StyledPaper className='tree_dropdown'>
                     <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
