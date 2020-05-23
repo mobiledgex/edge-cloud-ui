@@ -12,7 +12,7 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         height: 50,
     },
-    appPopupDiv:{
+    appPopupDiv: {
         fontSize: 14,
         cursor: 'crosshair',
         flexDirection: 'column',
@@ -24,7 +24,7 @@ export const PageMonitoringStyles = {
         alignItem: 'center,',
         display: 'flex',
     },
-    streamSwitchDiv:{
+    streamSwitchDiv: {
         alignItems: 'center',
         display: 'flex',
         cursor: 'pointer',
@@ -646,4 +646,8 @@ export const ClusterCluoudletLabel = styled.div`
   align-self: center;
   font-size: 13px;
   marginLeft:50px;
+`
+
+export const Yellow = styled.div`
+  color:yellow;;
 `
