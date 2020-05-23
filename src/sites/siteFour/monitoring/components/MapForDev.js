@@ -571,6 +571,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         renderCloudletMarkers = () => (
             this.state.locationGroupedCloudletList.map((cloudletOne, cloudletIndex) => {
                 let listAppName = cloudletOne.AppNames.split(",")
+                let cloudlets = cloudletOne.Cloudlet.toString().split(',');
                 return (
                     <React.Fragment>
                         <Marker
@@ -582,6 +583,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             }
                         >
                             <Tooltip
+                                className='mapCloudletTooltip'
                                 direction='right'
                                 offset={[14, -10]}//x,y
                                 opacity={0.8}
@@ -592,9 +594,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
                             >
-                                <div
-                                    className='toolTip'
-                                    style={{color: 'black'}}>{cloudletOne.Cloudlet}</div>
+                                {cloudlets.map(item => {
+                                    return (
+                                        <div
+                                            style={{color: 'black'}}
+                                        >
+                                            {item}
+                                        </div>
+                                    )
+                                })}
+
                             </Tooltip>
                             {/*desc:################################*/}
                             {/*desc:appInstPopup                    */}

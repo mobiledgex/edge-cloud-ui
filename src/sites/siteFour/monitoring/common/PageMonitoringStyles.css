@@ -714,3 +714,10 @@ tr td {
     font-family: Roboto;
     border-color: blue;
 }
+
+.mapCloudletTooltip {
+    color: yellow;
+    font-family: Roboto;
+    font-size: 12pt;
+    background-color: rgba(0, 0, 0, 0.5);
+}
