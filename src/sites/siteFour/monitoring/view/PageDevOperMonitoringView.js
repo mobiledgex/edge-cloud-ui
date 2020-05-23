@@ -2348,13 +2348,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     onClick={async () => {
                                         if (this.state.filteredCloudletList.length > 1) {
                                             let fullCloudletItemOne = item.CloudletName + " | " + JSON.stringify(item.CloudletLocation) + " | " + index.toString()
-
                                             await this.handleOnChangeCloudletDropdown(fullCloudletItemOne)
                                         } else {
                                             await this.handleOnChangeCloudletDropdown(undefined)
                                         }
-
-
                                     }}
 
                                 >
