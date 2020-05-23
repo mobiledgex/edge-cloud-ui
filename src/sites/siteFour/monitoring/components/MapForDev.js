@@ -13,12 +13,7 @@ import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -99,6 +94,7 @@ type Props = {
     isLoading: boolean,
     isShowAppInstPopup: boolean,
     isEnableZoomIn: boolean,
+    handleAppInstDropdown: any,
 
 };
 type State = {
@@ -413,7 +409,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
             let groupedClientList = this.state.clientList;
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-
             return (
                 <MarkerClusterGroup key={index}>
                     {groupedClientList[objkeyOne].map((item, index) => {
@@ -544,7 +539,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             console.log(`Cloudlet===selectCloudlet=>`, selectCloudlet);
                                             console.log(`Cloudlet..fullAppInstOne====>`, fullAppInstOne);
                                             console.log(`Cloudlet..appIndex====>`, appIndex);
-
                                             await this.setState({selectedAppInstIndex: appIndex})
                                             await this.props.handleAppInstDropdown(fullAppInstOne)
                                         } catch (e) {
