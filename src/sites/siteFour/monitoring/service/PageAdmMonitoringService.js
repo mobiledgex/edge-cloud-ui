@@ -286,45 +286,6 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
 }
 
 
-/**
- *
- * @param usageOne
- * @param hardwareType
- * @returns {string}
- */
-export const renderUsageLabelByTypeForAppInst = (usageOne, hardwareType, _this) => {
-    try {
-        if (hardwareType === HARDWARE_TYPE.CPU) {
-            let cpuUsageOne = '';
-            try {
-                cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
-            } catch (e) {
-                cpuUsageOne = 0;
-            }
-            return cpuUsageOne;
-        } else if (hardwareType === HARDWARE_TYPE.VCPU) {
-            return numberWithCommas(usageOne.sumVCpuUsage) + ""
-        } else if (hardwareType === HARDWARE_TYPE.MEM) {
-            return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
-        } else if (hardwareType === HARDWARE_TYPE.DISK) {
-            return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
-        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-            return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
-        } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-            return numberWithCommas(usageOne.sumSendBytes) + " Byte";
-        } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-            return usageOne.sumActiveConnection
-        } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-            return usageOne.sumHandledConnection
-        } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-            return usageOne.sumAcceptsConnection
-        }
-    } catch (e) {
-
-    }
-
-}
-
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
     try {
         if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -360,7 +321,7 @@ export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
                     let barDataOne = [item.appName.toString().substring(0, 13) + "..",
                         renderUsageByType(item, hardwareType),
                         CHART_COLOR_LIST[index],
-                        renderUsageLabelByTypeForAppInst(item, hardwareType)]
+                        renderUsageLabelByType(item, hardwareType)]
                     chartDataList.push(barDataOne);
                 }
             })
