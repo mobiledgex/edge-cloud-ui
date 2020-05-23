@@ -2358,13 +2358,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
 
                 return (
-                    <Row gutter={16} style={{
-                        flex: .97,
-                        marginLeft: 10,
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        display: filteredClusterUsageListLength === 1 ? 'flex' : null,
-                    }}>
+                    <Row gutter={16}
+                         style={{
+                             flex: .97,
+                             marginLeft: 10,
+                             justifyContent: 'center',
+                             alignSelf: 'center',
+                             display: filteredClusterUsageListLength === 1 ? 'flex' : null,
+                         }}
+                    >
                         {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, index) => {
                             return (
                                 <Col
@@ -2498,10 +2500,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             legendItemCount = this.state.filteredCloudletList.length;
                         }
 
+                        let RowHeight = Math.ceil(legendItemCount / 6);
+
                         return (
                             <LegendOuterDiv
                                 style={{
-                                    height: legendItemCount > 1 ? 60 : 30,
+                                    height: legendItemCount === 1 ? 30 : (30 * RowHeight),
                                     marginTop: 4,
                                 }}>
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?//@desc: CLUSTER  Level Legend
