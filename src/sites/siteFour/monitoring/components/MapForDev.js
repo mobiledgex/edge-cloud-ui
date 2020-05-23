@@ -315,10 +315,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     let CloudletLocation = '';
                     let Cloudlet = '';
                     appInstListOnCloudlet[key].map((innerItem: TypeAppInst, index) => {
+                        console.log(`Cloudlet11====>`, innerItem.Cloudlet);
+
                         if (index === (appInstListOnCloudlet[key].length - 1)) {
-                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator
+                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " | " + innerItem.Cloudlet
                         } else {
-                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " , "
+                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " | " + innerItem.Cloudlet + " , "
                         }
                         CloudletLocation = innerItem.CloudletLocation;
                         Cloudlet = innerItem.Cloudlet;
@@ -521,12 +523,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         let HealthCheckStatus = AppFullName.trim().split(" | ")[3].trim()
                         let Version = AppFullName.trim().split(" | ")[4].trim()
                         let Operator = AppFullName.trim().split(" | ")[5].trim()
+                        let selectCloudlet = AppFullName.trim().split(" | ")[6].trim()
                         let serverLocation = {
                             lat: cloudletOne.CloudletLocation.latitude,
                             long: cloudletOne.CloudletLocation.longitude,
                         }
 
-                        let selectCloudlet = cloudletOne.Cloudlet.split(",")[cloudletIndex]
                         let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
 
                         return (
@@ -538,7 +540,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     during={500}
                                     onClick={async () => {
                                         try {
-                                            console.log(`fullAppInstOne====>`, fullAppInstOne);
+                                            console.log(`Cloudlet====>`, cloudletOne.Cloudlet);
+                                            console.log(`Cloudlet===selectCloudlet=>`, selectCloudlet);
+                                            console.log(`Cloudlet..fullAppInstOne====>`, fullAppInstOne);
+                                            console.log(`Cloudlet..appIndex====>`, appIndex);
 
                                             await this.setState({selectedAppInstIndex: appIndex})
                                             await this.props.handleAppInstDropdown(fullAppInstOne)
