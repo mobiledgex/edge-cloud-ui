@@ -36,8 +36,10 @@ class VerifyContent extends Component {
 
     }
 
-    requestVerify = async () => {
-        let mcRequest = await serverData.verifyEmail(_self);
+    requestVerify = async (token) => {
+        let strArr = this.props.params.subPath.split('=')		
+        let token = strArr[1];
+        let mcRequest = await serverData.verifyEmail(_self, {token:token});
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
             Alert.success(mcRequest.response.data.message, {
                 position: 'top-right',
