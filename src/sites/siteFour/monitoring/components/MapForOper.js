@@ -185,9 +185,7 @@ export default function MapForOper(props) {
         setCurrentCloudlet(undefined)
         let cloudletObjectOne: TypeCloudlet = _.cloneDeep(cloudLetOne);
         setCurrentCloudlet(cloudletObjectOne)
-
         let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + props.parent.state.currentColorIndex
-
         await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
     }
 
