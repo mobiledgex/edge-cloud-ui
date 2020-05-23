@@ -1169,7 +1169,7 @@ export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) 
             <div>
                 {reduceString(item.cluster, limitCharLength)}
             </div>
-            <div style={{color: 'yellow'}}>
+            <div style={{color: 'white'}}>
                 &nbsp;[{reduceString(item.cloudlet, limitCharLength)}]
             </div>
         </div>
