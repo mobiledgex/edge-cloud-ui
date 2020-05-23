@@ -2492,12 +2492,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else {
                         let legendItemCount = 0;
 
-                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                            legendItemCount = this.state.filteredClusterUsageList.length
-                        } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER || this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                        if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                            legendItemCount = this.state.filteredCloudletList.length
+                        } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                             legendItemCount = this.state.filteredClusterUsageList.length;
-                        } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                            legendItemCount = this.state.filteredCloudletList.length;
+                        } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                            legendItemCount = this.state.filteredAppInstList.length;
                         }
 
                         let RowHeight = Math.ceil(legendItemCount / 6);
