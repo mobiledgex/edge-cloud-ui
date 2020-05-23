@@ -14,6 +14,7 @@ import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "./PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
+import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
