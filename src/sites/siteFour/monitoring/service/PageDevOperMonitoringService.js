@@ -1256,16 +1256,7 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
             if (clusterOne.Cloudlet === cloudletOne) {
                 newCloudletOne.children.push({
-                    title: (
-                        <div>{clusterOne.ClusterName}&nbsp;&nbsp;
-                            <Chip
-                                color="primary"
-                                size="small"
-                                label="Cluster"
-                                style={{color: 'black', backgroundColor: '#0096FF'}}
-                            />
-                        </div>
-                    ),
+                    title: clusterOne.ClusterName,
                     value: clusterOne.ClusterName + " | " + cloudletOne,
                     isParent: false,
                 })
