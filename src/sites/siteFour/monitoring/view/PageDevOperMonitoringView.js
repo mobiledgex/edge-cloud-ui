@@ -2124,7 +2124,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <RangePicker
                             disabled={this.state.loading}
                             //disabled={true}
-                            ref={c => this.rPicker = c}
+                            ref={c => this.rangePicker = c}
                             showTime={{format: 'HH:mm'}}
                             format="YYYY-MM-DD HH:mm"
                             placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
@@ -2137,9 +2137,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         endTime: endTime,
                                     })
                                     // this.filterUsageListByDate()
-
-                                    this.rPicker.blur()
-
+                                    this.rangePicker.blur()
                                 } catch (e) {
 
                                 }
