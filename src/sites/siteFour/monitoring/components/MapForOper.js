@@ -433,7 +433,12 @@ export default function MapForOper(props) {
                 position={
                     [CloudletLocation.latitude, CloudletLocation.longitude,]
                 }
-                /*onMouseOver={(e) => {                                e.target.openPopup();                            }}*/ /* onMouseOut={(e) => {                                 //e.target.closePopup();                            }}*/
+                /* onMouseOver={(e) => {
+                     //e.target.openPopup();
+                 }}
+                 onMouseOut={(e) => {
+                     //e.target.closePopup();
+                 }}*/
             >
                 <Popup
                     className='popup_oper_cloudlet'
