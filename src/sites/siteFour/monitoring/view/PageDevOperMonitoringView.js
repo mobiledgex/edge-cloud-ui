@@ -2066,7 +2066,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{}}
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
-                            //disabled={isEmpty(this.state.cloudletDropdownList)}
+                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList)}
                             value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
