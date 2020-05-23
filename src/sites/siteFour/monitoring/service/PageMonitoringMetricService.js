@@ -13,8 +13,8 @@ import {
     CLOUDLET_METRICS_ENDPOINT,
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
-    SHOW_APP_INST_CLIENT_ENDPOINT
-} from "../common/PageMonitoringMetricEndPoint";
+    SHOW_APP_INST_CLIENT_ENDPOINT, SHOW_METRICS_CLIENT_STATUS
+} from "./PageMonitoringMetricEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
@@ -1095,14 +1095,10 @@ export const getAllAppInstEventLogs = async () => {
  * @returns {Promise<AxiosResponse<any>>}
  */
 export const getClientStateOne = async (appInst: TypeAppInst) => {
-
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
-
-    console.log(`token2====>`, token)
-
     return await axios({
-        url: '/api/v1/auth/metrics/client',
+        url: SHOW_METRICS_CLIENT_STATUS,
         method: 'post',
         data: {
             "region": appInst.Region,
@@ -1122,12 +1118,7 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
         },
         timeout: 15 * 1000
     }).then(async response => {
-
-        console.log(`response====>`, response.data);
-        console.log(`response===2=>`, response.data.data[0].Series);
-
         if (response.data.data[0].Series !== null) {
-
             let seriesValues = response.data.data[0].Series[0].values
             console.log(`response===3====>`, seriesValues);
             let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
@@ -1201,7 +1192,6 @@ export const getClientStatusList = async (appInstList) => {
             mergedClientStatusList.push(item)
         }
     })
-    console.log(`mergedClientStatusList====>`, mergedClientStatusList);
 
     return mergedClientStatusList;
 

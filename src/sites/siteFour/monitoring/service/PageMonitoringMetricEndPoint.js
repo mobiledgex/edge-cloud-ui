@@ -5,7 +5,6 @@ export const CLOUDLET_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/cloudlet'
 export const CLUSTER_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/cluster'
 export const APP_INST_EVENT_LOG_ENDPOINT = '/api/v1/auth/events/app'
 export const SHOW_APP_INST_CLIENT_ENDPOINT = '/api/v1/auth/ctrl/ShowAppInstClient'
-
 export const SHOW_METRICS_CLIENT_STATUS = '/api/v1/auth/metrics/client'
 
 
