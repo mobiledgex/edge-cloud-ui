@@ -114,3 +114,6 @@ export const dataFormatRateRegist = response => {
 export const dataFormatCountCloudlet = response => {
     return setdataPartSum(response);
 };
+export const dataFormatMetricCloudlet = response => {
+    return null;
+};

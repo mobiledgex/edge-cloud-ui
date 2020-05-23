@@ -26,7 +26,8 @@ class ChartWidget extends React.Component {
             clusterCnt: [0],
             size: { width: 10, height: 10 },
             activeStep: 0,
-            data: [],
+            data: null,
+            stackedData: [],
             dataRaw: [],
             resId: ""
         };
@@ -48,36 +49,40 @@ class ChartWidget extends React.Component {
     // }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (_.isEqual(prevState.data, nextProps.data) === false) {
-            console.log("20200521 client >>>> on receive result of client ~~3~3~3~3~3~3~", nextProps.id);
+        if (_.isEqual(prevState.data, nextProps.data) === false && nextProps.data[nextProps.id]) {
+            console.log("20200521 container widget   == 55 55  == nextProps.data = ", nextProps.data, ": prevState.data= ", prevState.data, ": id = ", nextProps.id);
             if (nextProps.id === DataType.REGISTER_CLIENT || nextProps.id === DataType.FIND_CLOUDLET) {
-                if (nextProps.data && nextProps.data[nextProps.id].values) {
-                    if (nextProps.data[nextProps.id].values.length > 0) scope.updateData(nextProps.data[nextProps.id], nextProps.id);
-                }
+                return { data: scope.updateData(nextProps.data[nextProps.id], nextProps.id) };
             }
-            return { dataRaw: nextProps.data, resId: nextProps.id };
         }
         return null;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (_.isEqual(prevProps.data, prevState.data) === false) {
-            console.log("20200521 client >>>> on receive result of client ~444444", prevProps, ":", prevState);
-            // if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
-            //     if (prevProps.data && prevProps.data.values) {
-            //         if (prevProps.data.values.length > 0) this.updateData(prevProps.data, prevState.data.id);
-            //     }
-            // }
-            if (prevProps.id === DataType.NETWORK_CLOUDLET) {
-                this.updateMetricData(prevProps.data);
+        if (_.isEqual(prevProps.data, this.state.data) === false) {
+            console.log("20200521 container widget   == 66 ==", prevProps.data, ": this.state.data = ", this.state.data, ": id= ", prevProps.id);
+            if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
+                if (this.state.data && this.state.data.values) {
+                    // if (this.state.data.values.length > 0) this.updateData(this.state.data, prevState.data.id);
+                }
             }
-
-            // this.setState({ dataRaw: prevProps.data });
+            if (prevProps.id === DataType.NETWORK_CLOUDLET) {
+                if (prevProps.data && prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
+                    this.updateMetricData(prevProps.data[prevProps.id], prevState.id);
+                }
+            }
         }
     }
 
-    updateMetricData = data => {
-        this.setState({ data });
+    updateMetricData = (uData, props) => {
+        // TODO:20200522
+        console.log("20200521 container widget   == 77 ==", uData, ": p = ", props);
+        let updatedata = null;
+        switch (props) {
+            case DataType.NETWORK_CLOUDLET: updatedata = DataFormats.dataFormatRateRegist(uData); break;
+            default: updatedata = DataFormats.dataFormatRateRegist(uData);
+        }
+        //this.setState({ data: updatedata });
     }
 
 
@@ -90,8 +95,8 @@ class ChartWidget extends React.Component {
             default: updatedata = await DataFormats.dataFormatRateRegist(uData);
         }
         // TODO: 오류 때문에 잠시 막음 --> redux 를 사용
-        console.log("20200521 updateData === ", updatedata, ":", this);
-        //this.setState({ data: updatedata };
+        console.log("20200521 container widget   == 77 77  ==", updatedata);
+        this.setState({ data: updatedata });
     }
 
     // componentWillReceiveProps(prevProps, prevState) {
@@ -123,7 +128,7 @@ class ChartWidget extends React.Component {
             chartType, type, size, title, legendShow, filter, method, page, id, selectedIndex
         } = this.props;
         const {
-            activeStep, mapData, clusterCnt, data
+            activeStep, mapData, clusterCnt, data, data2
         } = this.state;
         // const { size } = this.state;
         return (
@@ -146,6 +151,7 @@ class ChartWidget extends React.Component {
                         type={type}
                         chartType={chartType}
                         data={data}
+                        data2={data2}
                         title={title.value}
                         showLegend={legendShow}
                         method={method}

@@ -49,6 +49,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("20200521 container widget   == ", nextProps.cloudlets, ":", prevState.cloudlets, ": equal = ", _.isEqual(prevState.cloudlets, nextProps.cloudlets));
         if (_.isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             return { cloudlets: nextProps.cloudlets };
         }
@@ -78,40 +79,21 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
-    getSnapshotBeforeUpdate(prevProps, prevState) {
 
-        console.log("20200521 container widget   == ", prevProps.appinsts, ":", prevState.appinsts);
-        if (_.isEqual(prevProps.appinsts, prevState.appinsts) === false) {
-            if (prevState.appinsts && prevState.appinsts.length > 0 && prevState.method) {
-                //this.initialize(this.state, this);
-            }
-        }
-
-        return null;
-    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-
-        if (_.isEqual(prevProps.cloudlets, this.state.cloudlets) === false) {
+        if (prevProps.cloudlets !== this.state.cloudlets && this.state.method) {
+            console.log("20200521 container widget   <<== 33 3 == state = ", this.state.method, ": method= ", prevProps.method, ":", prevState.method);
             // TODO: 20200509 //데이터가 갱신될 경우 id는 새로 갱신되어 들어온다
             /** *******************************************
-                * STEP # 1
-                * necessary to get cloudlets from the parent
-                ******************************************** */
-            console.log("20200519 cloudlets ready to initial == == == == == == ==", prevProps.cloudlets, ":", prevProps.appinsts, ": method= ", prevProps.method);
-
+            * STEP # 1
+            * necessary to get cloudlets from the parent
+            ******************************************** */
             if (this.state.cloudlets && this.state.cloudlets.length > 0 && this.state.method) {
+                console.log("20200521 container widget   == 33 == ", this.state.cloudlets, ": method= ", prevProps.method);
                 this.initialize(this.state, this);
             }
         }
-
-        // TODO : 크라우드렛 메트릭스를 모두 나오게 하는 영향을 줌.
-        if (_.isEqual(prevProps.appinsts, this.state.appinsts) === false) {
-            if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
-                this.initialize(this.state, this);
-            }
-        }
-
     }
 
     onReceiveResult(result, self) {
@@ -120,7 +102,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             /** filtering data */
             const groupByData = result;
             if (result && result.length > 0) {
-                console.log("20200521 client >>>> on receive result in container wrapper ==  ", result, ":", self.state.id);
+                console.log("20200521 container widget   == 55 == ", result, ":", self.state.id);
             }
             this.setState({ data: { [self.state.id]: result } });
         } catch (e) { }
@@ -129,9 +111,9 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     onReceiveResultClient = (result, self) => {
         try {
             if (result && result.values.length > 0) {
-                console.log("20200521 client >>>> on receive result of client ~2~2~2~2~2~~~", result.path[0], ":", self.state.id);
-                // change to redux ::: this.setState({ data: { [self.state.id]: result }, method: "client" });
-                this.props.handleSavedData({ [self.state.id]: result, method: "client" });
+                const stateData = { [self.state.id]: result };
+                console.log("20200521 client >>>> on receive result of client ~2~2~2~2~2~~~", stateData, ":", self.state.id);
+                //this.setState({ data: { [self.state.id]: result } });
             }
         } catch (e) { }
 
@@ -145,7 +127,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 /**
                  * completing service, go to onReceiveResult below lines
                  */
-                console.log("20200521 client >>>> on receive result <<client>> async result ======== ", result);
+                console.log("20200521 container widget   == 44 == ", result);
             }
         } catch (e) {
             console.log(e);
