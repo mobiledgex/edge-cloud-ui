@@ -1261,8 +1261,8 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
                             <Chip
                                 color="primary"
                                 size="small"
-                                label="Cloudlet"
-                                style={{color: 'black', backgroundColor: 'orange'}}
+                                label="Cluster"
+                                style={{color: 'black', backgroundColor: '#b2bb29'}}
                             />
                         </div>
                     ),
