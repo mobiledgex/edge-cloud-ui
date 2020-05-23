@@ -540,7 +540,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let clusterList = []
                 let appInstList = []
                 let cloudletList = []
-
                 let allClusterEventLogList = [];
                 let allAppInstEventLogList = [];
                 let allClusterUsageList = [];
@@ -578,13 +577,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
-                    let nameList = getCloudletClusterNameList(orgAppInstList)
-                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(nameList.cloudletNameList), _.uniqWith(nameList.clusterNameList, _.isEqual))
+                    let cloudletClusterNameList = getCloudletClusterNameList(orgAppInstList)
+                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let markerListForMap = []
-                    markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                    let markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                     await this.setState({
                         cloudletList: cloudletList,
                         filteredCloudletList: cloudletList,
@@ -620,6 +618,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else {
                         dataCount = cloudletList.length
                     }
+
+                    console.log(`clusterList===>`, clusterList);
 
 
                     await this.setState({

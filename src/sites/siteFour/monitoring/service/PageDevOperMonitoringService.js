@@ -21,18 +21,11 @@ import {
     THEME_OPTIONS,
     USAGE_INDEX
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet, TypeLineChartData} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderLineChartCore,
-    renderPlaceHolderLoader,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderLineChartCore, renderPlaceHolderLoader, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import {Table} from "semantic-ui-react";
@@ -351,8 +344,8 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                    //////todo:cloudllet/////////
-                    //////todo:cloudllet/////////
+                //////todo:cloudllet/////////
+                //////todo:cloudllet/////////
                 //////todo:cloudllet/////////
                 else if (
                     hardwareType === HARDWARE_TYPE.NETSEND
@@ -1238,7 +1231,14 @@ export const tempClusterList = [
 
 ]
 
-export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
+
+/**
+ *
+ * @param cloudletList
+ * @param clusterNameList
+ * @returns {[]}
+ */
+export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
     let newCloudletList = []
     newCloudletList.push({
         title: 'Reset Filter',
@@ -1249,7 +1249,6 @@ export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
     cloudletList.map(cloudletOne => {
         let newCloudletOne = {
             title: (
-
                 <div>{cloudletOne}&nbsp;&nbsp;
                     <Chip
                         color="primary"
@@ -1264,11 +1263,11 @@ export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
             children: []
         };
 
-        appInstList.map(clusterOne => {
+        clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
             if (clusterOne.Cloudlet === cloudletOne) {
                 newCloudletOne.children.push({
-                    title: clusterOne.ClusterInst,
-                    value: clusterOne.ClusterInst + " | " + cloudletOne,
+                    title: clusterOne.ClusterName,
+                    value: clusterOne.ClusterName + " | " + cloudletOne,
                     isParent: false,
                 })
             }
