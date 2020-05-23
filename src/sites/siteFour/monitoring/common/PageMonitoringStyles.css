@@ -716,8 +716,10 @@ tr td {
 }
 
 .mapCloudletTooltip {
-    color: yellow;
-    font-family: Roboto;
-    font-size: 12pt;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: white
+}
+
+.mapCloudletTooltipInner {
+    color: black;
+    font-weight: bold;
 }

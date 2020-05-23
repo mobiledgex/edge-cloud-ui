@@ -597,7 +597,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {cloudlets.map(item => {
                                     return (
                                         <div
-                                            style={{color: 'black'}}
+                                            className='mapCloudletTooltipInner'
                                         >
                                             {item}
                                         </div>
