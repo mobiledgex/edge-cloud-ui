@@ -1920,9 +1920,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
                         })
 
-                        console.log(`sdlkflskdfkl====>`, selectedCluster);
-                        console.log(`sdlkflskdfkl====>`, selectedCloudlet);
-                        console.log(`sdlkflskdfkl====>`, filteredClusterUsageList);
+                        console.log(`Cluster====>`, selectedCluster);
+                        console.log(`Cluster====>`, selectedCloudlet);
+                        console.log(`Cluster====>`, filteredClusterUsageList);
 
                         //desc: filter clusterEventLog
                         /* let allClusterEventLogList = this.state.allClusterEventLogList
