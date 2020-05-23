@@ -18,6 +18,7 @@ import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {renderUsageLabelByType} from "./PageDevOperMonitoringService";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -284,100 +285,52 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
     return cloudletListForSelectbox;
 }
 
-
-/**
- *
- * @param usageOne
- * @param hardwareType
- * @returns {string}
- */
-/*export const renderUsageLabelByType = (usageOne, hardwareType, _this) => {
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        let cpuUsageOne = '';
-        try {
-            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
-        } catch (e) {
-            cpuUsageOne = 0;
-        }
-        return cpuUsageOne;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.sumVCpuUsage) + ""
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-
-}*/
-
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
-    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
-    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        usageList.sort((a, b) => b.sumAcceptsConnection - a.sumAcceptsConnection);
-    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        usageList.sort((a, b) => b.sumActiveConnection - a.sumActiveConnection);
-    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
-    }
+    try{
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
+        } else if (hardwareType === HARDWARE_TYPE.MEM) {
+            usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+        } else if (hardwareType === HARDWARE_TYPE.DISK) {
+            usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+            usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
+        } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+            usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
+        } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+            usageList.sort((a, b) => b.sumAcceptsConnection - a.sumAcceptsConnection);
+        } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+            usageList.sort((a, b) => b.sumActiveConnection - a.sumActiveConnection);
+        } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+            usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
+        }
 
-    if (usageList.length === 0) {
-        return (
-            <div style={PageMonitoringStyles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
+        if (usageList.length === 0) {
+            return (
+                <div style={PageMonitoringStyles.noData}>
+                    NO DATA
+                </div>
+            )
+        } else {
 
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+            let chartDataList = [];
+            chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
 
-        usageList.map((item: TypeAppInstanceUsage2, index) => {
-            if (index < 5) {
-                let barDataOne = [item.appName.toString().substring(0, 13) + "..",
-                    renderUsageByType(item, hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByType(item, hardwareType)]
-                chartDataList.push(barDataOne);
-            }
-        })
+            usageList.map((item: TypeAppInstanceUsage2, index) => {
+                if (index < 5) {
+                    let barDataOne = [item.appName.toString().substring(0, 13) + "..",
+                        renderUsageByType(item, hardwareType),
+                        CHART_COLOR_LIST[index],
+                        renderUsageLabelByType(item, hardwareType)]
+                    chartDataList.push(barDataOne);
+                }
+            })
 
-        return renderBarChartCore(chartDataList, hardwareType)
+            return renderBarChartCore(chartDataList, hardwareType)
 
+        }
+    }catch (e) {
+        throw new Error(e)
     }
 
 }
