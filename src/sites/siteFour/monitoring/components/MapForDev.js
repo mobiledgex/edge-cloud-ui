@@ -7,10 +7,10 @@ import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, showToast} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import {notification, Select} from 'antd'
+import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {
@@ -25,17 +25,13 @@ import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageDevOperMonitoringService";
 import MomentTimezone from "moment-timezone";
 
-const FontAwesomeIcon = require('react-fontawesome')
-
 const {Option} = Select;
-
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
 
-
-let cellphoneIcon2 = L.icon({
+let cellphoneIcon = L.icon({
     iconUrl: require('../images/cellhone_white003.png'),
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -369,14 +365,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-        async handleClickAppInst(fullAppInstOne) {
-            try {
-                await this.setState({selectedAppInstIndex: appIndex})
-                await this.props.handleAppInstDropdown(fullAppInstOne)
-            } catch (e) {
-                throw new Error(e)
-            }
-        }
 
         makeMapThemeDropDown() {
             return (
@@ -430,7 +418,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         return (
                             <React.Fragment>
                                 <Marker
-                                    icon={cellphoneIcon2}
+                                    icon={cellphoneIcon}
                                     position={
                                         [item.latitude, item.longitude]
                                     }
@@ -523,7 +511,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
-        renderAppInstPopup(listAppName, cloudletOne) {
+        renderAppInstPopup(listAppName, cloudletOne, cloudletIndex) {
             return (
                 <Popup permanent className='cloudlet_popup' ref={this.appInstPopup}>
                     {listAppName.map((AppFullName, appIndex) => {
@@ -538,10 +526,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             long: cloudletOne.CloudletLocation.longitude,
                         }
 
-                        let selectCloudlet = cloudletOne.Cloudlet.split(",")[appIndex]
-
+                        let selectCloudlet = cloudletOne.Cloudlet.split(",")[cloudletIndex]
                         let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
-
 
                         return (
                             <div style={PageMonitoringStyles.appPopupDiv}
@@ -551,7 +537,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     color='#1cecff'
                                     during={500}
                                     onClick={async () => {
-                                        await this.handleClickAppInst(fullAppInstOne)
+                                        try {
+                                            console.log(`fullAppInstOne====>`, fullAppInstOne);
+
+                                            await this.setState({selectedAppInstIndex: appIndex})
+                                            await this.props.handleAppInstDropdown(fullAppInstOne)
+                                        } catch (e) {
+                                            throw new Error(e)
+                                        }
                                     }}
                                 >
                                     {reduceString(AppName.toString(), 25)} [{Version}]
@@ -601,7 +594,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             {/*desc:################################*/}
                             {/*desc:appInstPopup                    */}
                             {/*desc:################################*/}
-                            {this.renderAppInstPopup(listAppName, cloudletOne)}
+                            {this.renderAppInstPopup(listAppName, cloudletOne, cloudletIndex)}
                         </Marker>
 
                     </React.Fragment>
