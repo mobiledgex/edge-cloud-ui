@@ -483,22 +483,6 @@ export const makeGradientColorList = (canvas, height, colorList, isBig = false) 
 
     return gradientList;
 };
-
-
-export const makeGradientColorList2 = (canvas, height, colorList, isBig = false) => {
-    const ctx = canvas.getContext("2d");
-    let gradientList = [];
-    colorList.map(item => {
-        const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, hexToRGB(item, 0.4));
-        gradient.addColorStop(0.5, hexToRGB(item, 0.7));
-        gradient.addColorStop(1, hexToRGB(item, 0.98));
-        gradientList.push(gradient);
-    })
-
-    return gradientList;
-};
-
 /**
  *
  * @param themeTitle
@@ -1272,7 +1256,16 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
             if (clusterOne.Cloudlet === cloudletOne) {
                 newCloudletOne.children.push({
-                    title: clusterOne.ClusterName,
+                    title: (
+                        <div>{clusterOne.ClusterName}&nbsp;&nbsp;
+                            <Chip
+                                color="primary"
+                                size="small"
+                                label="Cloudlet"
+                                style={{color: 'black', backgroundColor: 'orange'}}
+                            />
+                        </div>
+                    ),
                     value: clusterOne.ClusterName + " | " + cloudletOne,
                     isParent: false,
                 })
@@ -1284,28 +1277,6 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
 
     return newCloudletList;
 }
-
-
-export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, valueName) => {
-    try {
-        let newArrList = [];
-        newArrList.push({
-            key: '',
-            value: '',
-            text: 'Reset Filter',
-        })
-        for (let i in arrList) {
-            newArrList.push({
-                key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-                value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-                text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-            })
-        }
-        return newArrList;
-    } catch (e) {
-
-    }
-};
 
 
 export const makeDropdownForCloudlet = (pList) => {
