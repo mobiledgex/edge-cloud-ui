@@ -36,7 +36,7 @@ class VerifyContent extends Component {
 
     }
 
-    requestVerify = async (token) => {
+    requestVerify = async () => {
         let strArr = this.props.params.subPath.split('=')		
         let token = strArr[1];
         let mcRequest = await serverData.verifyEmail(_self, {token:token});
