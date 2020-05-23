@@ -82,7 +82,7 @@ export const showUserRoles = async (self) => {
 
 export const sendVerify = async (self, data) => {
     let valid = false;
-    let mcRequest = await sendRequest(self, { method: RESEND_VERIFY, data: data })
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESEND_VERIFY, data: data })
     if (mcRequest && mcRequest.response) {
         let response = mcRequest.response;
         valid = response.status === 200 ? true : false
