@@ -46,14 +46,11 @@ class headerGlobalMini extends React.Component {
 
     }
 
-    getCurrentUser = async () =>
-    {
+    getCurrentUser = async () => {
         let mcRequest = await serverData.currentUser(_self);
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            if (mcRequest.response) {
-                _self.setState({ tokenState: 'live' })
-                _self.setState({ userInfo: mcRequest.response.data })
-            }
+            _self.setState({ tokenState: 'live' })
+            _self.setState({ userInfo: mcRequest.response.data })
         }
     }
 
