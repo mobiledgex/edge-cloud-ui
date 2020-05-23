@@ -74,6 +74,10 @@ function responseError(self, request, response, callback) {
                     callback({request: request, error: {code: code, message: message}})
                 }
             }
+            else if(request.method === VERIFY_EMAIL)
+            {
+                showError(request, 'Oops, this link is expired')
+            }
         }
     }
 }

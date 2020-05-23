@@ -5,9 +5,16 @@ import Alert from 'react-s-alert';
 
 
 let sockets = [];
+let serverURL = process.env.REACT_APP_API_ENDPOINT;
+
 
 export function getEP() {
     return EP;
+}
+
+const getURL = (request)=>
+{
+    return serverURL + EP.getPath(request)
 }
 
 export function generateUniqueId() {
@@ -68,18 +75,13 @@ function responseError(self, request, response, callback) {
                     callback({request: request, error: {code: code, message: message}})
                 }
             }
-            else if(request.method === EP.VERIFY_EMAIL)
-            {
-                showError(request, 'Oops, this link is expired')
-            }
         }
     }
 }
 
 
 export function sendWSRequest(request, callback) {
-    let url = process.env.REACT_APP_API_ENDPOINT;
-    url = url.replace('http', 'ws');
+    let url = serverURL.replace('http', 'ws');
     const ws = new WebSocket(`${url}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({uuid: request.uuid, socket: ws, isClosed: false});
@@ -113,7 +115,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
         let promise = [];
         let resResults = [];
         requestDataList.map((request) => {
-            promise.push(axios.post(EP.getPath(request), request.data,
+            promise.push(axios.post(getURL(request), request.data,
                 {
                     headers: getHeader(request)
                 }))
@@ -137,7 +139,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
 export const sendSyncRequest = async (self, request) => {
     try {
         request.showSpinner === undefined && showSpinner(self, true)
-        let response = await axios.post(EP.getPath(request), request.data,
+        let response = await axios.post(getURL(request), request.data,
             {
                 headers: getHeader(request)
             });
@@ -153,7 +155,7 @@ export const sendSyncRequest = async (self, request) => {
 export function sendRequest(self, request, callback) {
     let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
     showSpinner(self, isSpinner)
-    axios.post(EP.getPath(request), request.data,
+    axios.post(getURL(request), request.data,
         {
             headers: getHeader(request)
         })
