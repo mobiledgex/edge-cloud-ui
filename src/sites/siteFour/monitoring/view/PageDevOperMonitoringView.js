@@ -1,4 +1,5 @@
 import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+import * as serverData from '../../../../services/model/serverData';
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -951,12 +952,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         layoutCluster: removedLayout,
                     });
 
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                    let removedLayout = _.reject(this.state.layoutClusterForOper, {i: i});
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, removedLayout)
-                    this.setState({
-                        layoutClusterForOper: removedLayout,
-                    });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     let removedLayout = _.reject(this.state.layoutCloudlet, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
@@ -1923,15 +1918,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         console.log(`Cluster====>`, selectedCluster);
                         console.log(`Cluster====>`, selectedCloudlet);
                         console.log(`Cluster====>`, filteredClusterUsageList);
-
-                        //desc: filter clusterEventLog
-                        /* let allClusterEventLogList = this.state.allClusterEventLogList
-                         let filteredClusterEventLogList = []
-                         allClusterEventLogList.map(item => {
-                             if (item[1] === selectedCluster && item[3] === selectedCloudlet) {
-                                 filteredClusterEventLogList.push(item)
-                             }
-                         })*/
 
                         let filteredAppInstList = []
                         this.state.appInstList.map((item: TypeAppInst, index) => {
