@@ -1,20 +1,21 @@
-import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
-import * as serverData from '../../../../services/model/serverData';
+import {Center, ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect, DatePicker} from 'antd';
+import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 
 import {
     filterByClassification,
-    getCloudletClusterNameList, getOnlyCloudletIndex,
+    getCloudletClusterNameList,
+    getOnlyCloudletIndex,
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
-    makeBarChartDataForAppInst, makeBarChartDataForCloudlet,
+    makeBarChartDataForAppInst,
+    makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
     makeClusterTreeDropdown,
     makeDropdownForAppInst,
@@ -31,7 +32,8 @@ import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_LIST,
     CLASSIFICATION,
-    HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLOUDLET,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
     NETWORK_TYPE,
@@ -39,26 +41,10 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -93,12 +79,7 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHooks from "../components/AppInstEventLogListHooks";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -510,12 +491,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     selectedAppInstIndex: -1,
                     openTerminal: false,
                     isOpenGlobe: false,
-                    isLegendExpanded: false,
-                    legendColSize: 3,
+                    isLegendExpanded: true,
+                    legendColSize: 4,
                     currentAppVersion: undefined,
                     isEnableZoomIn: false,
                     searchClusterValue: '',
-                    /////////////////////////
                     cloudletList: [],
                     filteredCloudletList: [],
                     allCloudletUsageList: [],
@@ -877,8 +857,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -1788,10 +1768,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleOnChangeCloudletDropdown = async (pCloudletOne) => {
+            handleOnChangeCloudletDropdown = async (pClusterCloudletOne) => {
                 try {
-                    if (pCloudletOne !== undefined) {
-                        await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletOne)})
+                    if (pClusterCloudletOne !== undefined) {
+                        await this.setState({currentCloudLet: getOnlyCloudletName(pClusterCloudletOne)})
                         let currentCloudletOne = this.state.currentCloudLet
                         let filteredClusterList = this.state.allClusterList.filter((clusterOne: TypeCluster, index) => {
                             return clusterOne.Cloudlet === currentCloudletOne
@@ -1816,7 +1796,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
                         this.setState({
-                            currentCloudLet: pCloudletOne,
+                            currentCloudLet: pClusterCloudletOne,
                             filteredCloudletUsageList: filteredCloudletUsageList,
                             filteredCloudletList: filteredCloudletList,
                             filteredClusterList: filteredClusterList,
@@ -1826,7 +1806,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: CLASSIFICATION.CLOUDLET,
                             currentCluster: undefined,
                             currentOperLevel: undefined,
-                            currentColorIndex: getOnlyCloudletIndex(pCloudletOne),
+                            currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
                         });
                     } else {//todo: When allCloudlet
                         this.setState({
@@ -1950,6 +1930,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentAppInst: undefined,
                             filteredClusterList: filteredClusterList,
                             currentOperLevel: CLASSIFICATION.CLUSTER,
+                            //currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
 
                         }, () => {
                             console.log(`sdlkflskdfkl==3333==>`, this.state.filteredClusterUsageList);
@@ -2380,7 +2361,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     <Row gutter={16} style={{
                         flex: .97,
                         marginLeft: 10,
-                        backgroundColor: 'transparent',
                         justifyContent: 'center',
                         alignSelf: 'center',
                         display: filteredClusterUsageListLength === 1 ? 'flex' : null,
@@ -2404,26 +2384,34 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                     span={this.state.legendColSize}
                                     title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
-                                    style={{marginTop: 5, marginBottom: 5}}
+                                    style={{
+                                        marginTop: 5, marginBottom: 5,
+                                        justifyContent: filteredClusterUsageListLength === 1 ? 'center' : null,
+                                        width: filteredClusterUsageListLength === 1 ? '100%' : null,
+
+                                    }}
                                 >
-                                    {this.renderDot(index)}
                                     {filteredClusterUsageListLength === 1 ?
-                                        <React.Fragment>
-                                            <div className='clusterCloudletBoxOne'>
-                                                <div style={{}}>
+                                        <Center style={{marginLeft: 100}}>
+                                            {this.renderDot(index)}
+                                            <div style={{display: 'flex', marginLeft: 3,}}>
+                                                <div>
                                                     {item.cluster}
                                                 </div>
                                                 <div style={{color: 'yellow',}}>
                                                     &nbsp;[{item.cloudlet}]
                                                 </div>
                                             </div>
-                                        </React.Fragment>
+                                        </Center>
                                         :
-                                        <React.Fragment>
+                                        <Center>
+                                            <div>
+                                                {this.renderDot(index)}
+                                            </div>
                                             <div className="clusterCloudletBox">
                                                 {reduceLegendClusterCloudletName(item, this)}
                                             </div>
-                                        </React.Fragment>
+                                        </Center>
                                     }
                                 </Col>
                             )
