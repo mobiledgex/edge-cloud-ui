@@ -105,10 +105,9 @@ export const getAppList = async (self, data) => {
     return await serverData.showDataFromServer(self, showApps(data))
 }
 
-export const createApp = async (self, data) => {
+export const createApp = (data) => {
     let requestData = getKey(data, true)
-    let request = { method: CREATE_APP, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return { method: CREATE_APP, data: requestData }
 }
 
 const compareObjects = (newData, oldData, ignoreCase) => {

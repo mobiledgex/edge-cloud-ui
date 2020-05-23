@@ -20,6 +20,7 @@ export const keys = () => ([
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
     { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },
     { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Number of Workers' },
+    { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
     { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true, filter: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
@@ -113,6 +114,9 @@ export const clusterKey = (data, isCreate) => {
         if (data[fields.numberOfNodes]) {
             clusterinst.num_nodes = parseInt(data[fields.numberOfNodes])
         }
+        if (data[fields.sharedVolumeSize]) {
+            clusterinst.shared_volume_size = parseInt(data[fields.sharedVolumeSize])
+        }
         if (data[fields.privacyPolicyName]) {
             clusterinst.privacy_policy = data[fields.privacyPolicyName]
         }
@@ -159,6 +163,7 @@ const customData = (value) => {
     value[fields.ipAccess] = IPAccessLabel(value[fields.ipAccess])
     value[fields.reservable] = value[fields.reservable] ? value[fields.reservable] : false
     value[fields.numberOfNodes] = value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? value[fields.numberOfNodes] ? value[fields.numberOfNodes] : 0 : undefined
+    value[fields.sharedVolumeSize] = value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
 }
 
 export const getData = (response, body) => {

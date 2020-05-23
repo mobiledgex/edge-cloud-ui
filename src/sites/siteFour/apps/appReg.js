@@ -2,7 +2,7 @@ import React from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -22,7 +22,7 @@ import { appTutor } from "../../../tutorial";
 
 const appSteps = appTutor();
 
-class ClusterInstReg extends React.Component {
+class AppReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -31,7 +31,8 @@ class ClusterInstReg extends React.Component {
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = _.cloneDeep(props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion)
+        if(!this.isUpdate){this.regions.splice(0, 0, 'All')}
         this.flavorList = []
         this.privacyPolicyList = []
         this.autoProvPolicyList = []
@@ -53,8 +54,6 @@ class ClusterInstReg extends React.Component {
         form.error = undefined;
         return true;
     }
-
-
 
     /**Deployment manifest block */
 
@@ -158,7 +157,6 @@ class ClusterInstReg extends React.Component {
         this.setState({ forms: forms })
     }
 
-
     updateImagePath = (forms, form) => {
         let organizationName = undefined;
         let version = undefined;
@@ -239,24 +237,27 @@ class ClusterInstReg extends React.Component {
     }
 
     getFlavorInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
+        if (region && !this.requestedRegionList.includes(region)) {
+            let newList = await getFlavorList(this, { region: region })
+            this.flavorList = [...this.flavorList, ...newList]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
     }
 
     getPrivacyPolicy = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
+        if (region && !this.requestedRegionList.includes(region)) {
+            let newList = await getPrivacyPolicyList(this, { region: region })
+            this.privacyPolicyList = [...this.privacyPolicyList, ...newList]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
     }
 
     getAutoProvPolicy = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.autoProvPolicyList = [...this.autoProvPolicyList, ...await getAutoProvPolicyList(this, { region: region })]
+        if (region && !this.requestedRegionList.includes(region)) {
+            let newList = await getAutoProvPolicyList(this, { region: region })
+            this.autoProvPolicyList = [...this.autoProvPolicyList, ...newList]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
@@ -275,8 +276,8 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    regionValueChange = (currentForm, forms, isInit) => {
-        let region = currentForm.value;
+    regionDependentDataUpdate = (region, forms, isInit)=>
+    {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.autoPolicyName) {
@@ -295,7 +296,26 @@ class ClusterInstReg extends React.Component {
                 }
             }
         }
-        this.requestedRegionList.push(region)
+    }
+
+    regionValueChange = (currentForm, forms, isInit) => {
+        let regions = currentForm.value;
+        if(regions.includes('All'))
+        {
+            regions = _.cloneDeep(this.regions)
+            regions.splice(0, 1)
+        }
+        if (!this.isUpdate && regions.length > 0) {
+            regions.map(region => {
+                this.regionDependentDataUpdate(region, forms, isInit)
+                this.requestedRegionList.push(region)
+            })
+        }
+        else
+        {
+            let region = this.isUpdate ? currentForm.value : undefined
+            this.regionDependentDataUpdate(region, forms, isInit) 
+        }
     }
 
     organizationValueChange = (currentForm, forms, isInit) => {
@@ -374,6 +394,20 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    onAddResponse = (mcRequestList) => {
+        if(mcRequestList && mcRequestList.length > 0)
+        {
+            mcRequestList.map(mcRequest=>{
+                if(mcRequest.response)
+                {
+                    let data = mcRequest.request.data;
+                    this.props.handleAlertInfo('success', `App ${data.app.key.name} added successfully`)
+                }
+            })
+        }
+        this.props.onClose(true)
+    }
+
     onCreate = async (data) => {
         if (data) {
             let forms = this.state.forms;
@@ -421,15 +455,62 @@ class ClusterInstReg extends React.Component {
                         data[fields.configs] = configs
                     }
 
-                    let isUpdate = this.props.isUpdate;
-                    let valid = isUpdate ? await updateApp(this, data, this.originalData) : await createApp(this, data)
-                    if (valid) {
-                        this.props.handleAlertInfo('success', `App ${data[fields.appName]} ${isUpdate ? 'updated' : 'created'} successfully`)
-                        if (data[fields.refreshAppInst]) {
-                            serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                    if (this.isUpdate) {
+                        if (await updateApp(this, data, this.originalData)) {
+                            this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
+                            if (data[fields.refreshAppInst]) {
+                                serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                            }
+                            else {
+                                this.props.onClose(true)
+                            }
                         }
-                        else {
-                            this.props.onClose(true)
+                    }
+                    else {
+                        let regions = data[fields.region]
+                        let requestDataList = []
+                        if(regions.includes('All'))
+                        {
+                            regions = _.cloneDeep(this.regions)
+                            regions.splice(0, 1)
+                        }
+                        regions.map(region => {
+                            let requestData = JSON.parse(JSON.stringify(data))
+                            requestData[fields.region] = region
+                            requestData[fields.flavorName] = undefined
+                            for (let i = 0; i < data[fields.flavorName].length; i++) {
+                                let flavor = data[fields.flavorName][i]
+                                if (flavor.parent === region) {
+                                    requestData[fields.flavorName] = flavor.value
+                                    break;
+                                }
+                            }
+                            if (data[fields.privacyPolicyName]) {
+                                requestData[fields.privacyPolicyName] = undefined
+                                for (let i = 0; i < data[fields.privacyPolicyName].length; i++) {
+                                    let privacyPolicy = data[fields.privacyPolicyName][i]
+                                    if (privacyPolicy.parent === region) {
+                                        requestData[fields.privacyPolicyName] = privacyPolicy.value
+                                        break;
+                                    }
+                                }
+                            }
+                            if (data[fields.autoPolicyName]) {
+                                requestData[fields.autoPolicyName] = undefined
+                                for (let i = 0; i < data[fields.autoPolicyName].length; i++) {
+                                    let autoPolicy = data[fields.autoPolicyName][i]
+                                    if (autoPolicy.parent === region) {
+                                        requestData[fields.autoPolicyName] = autoPolicy.value
+                                        break;
+                                    }
+                                }
+                            }
+                            requestDataList.push(createApp(requestData))
+                        })
+
+                        if(requestDataList && requestDataList.length > 0)
+                        {
+                            serverData.sendMultiRequest(this, requestDataList, this.onAddResponse)
                         }
                     }
                 }
@@ -469,7 +550,7 @@ class ClusterInstReg extends React.Component {
         if (form) {
             this.resetFormValue(form)
             if (form.field) {
-                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === SELECT_RADIO_TREE) {
                     switch (form.field) {
                         case fields.region:
                             form.options = this.regions;
@@ -600,7 +681,7 @@ class ClusterInstReg extends React.Component {
     formKeys = () => {
         return [
             { label: 'Create Apps', formType: 'Header', visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
+            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name' },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version' },
@@ -608,7 +689,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: true, tip: 'URI of where image resides' },
-            { field: fields.flavorName, label: 'Default Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy:true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, tip: 'Upgrade App Instances running in the cloudlets' },
             { label: 'Ports', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
@@ -616,8 +697,8 @@ class ClusterInstReg extends React.Component {
             { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
             { label: 'Advanced Settings', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'public key used for authentication', advance: false },
-            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }], advance: false },
-            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: SELECT, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region }], advance: false },
+            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }], advance: false },
+            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region }], advance: false },
             { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
@@ -716,4 +797,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppReg));

@@ -86,6 +86,7 @@ const MexMultiSelect = (props) => {
             required={props.required}
             disabled={props.disabled}
             options={getData(form)}
+            style={{backgroundColor:'#16181D'}}
             onChange={(e, { value }) => onSelected(value)}
             value={selected}
         />
