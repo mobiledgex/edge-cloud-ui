@@ -1262,7 +1262,7 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
                                 color="primary"
                                 size="small"
                                 label="Cluster"
-                                style={{color: 'black', backgroundColor: '#b2bb29'}}
+                                style={{color: 'black', backgroundColor: '#0096FF'}}
                             />
                         </div>
                     ),
