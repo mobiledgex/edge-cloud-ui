@@ -100,8 +100,8 @@ export const controllers = async (self) => {
     return mcRequest
 }
 
-export const verifyEmail = async (self) => {
-    let mcRequest = await sendRequest(self, { method: VERIFY_EMAIL })
+export const verifyEmail = async (self, data) => {
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: VERIFY_EMAIL, data : data })
     return mcRequest
 }
 
