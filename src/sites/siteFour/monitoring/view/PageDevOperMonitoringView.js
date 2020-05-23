@@ -1894,8 +1894,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                         await this.resetLocalData();
                     } else {
-
-
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                             dropdownRequestLoading: true,
@@ -1926,18 +1924,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
                         })
 
-                        console.log(`filteredClusterUsageList===>`, filteredClusterUsageList);
-
-                        console.log(`clusterList====>`, this.state.allClusterList);
-
                         let filteredClusterList = []
                         this.state.allClusterList.map((item: TypeCluster, index) => {
                             if (item.ClusterName === selectedCluster) {
                                 filteredClusterList.push(item)
                             }
                         })
-
-                        console.log(`filteredClusterList====>`, filteredClusterList);
 
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
