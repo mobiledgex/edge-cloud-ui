@@ -435,10 +435,10 @@ export default function MapForOper(props) {
                 }
                 /* onMouseOver={(e) => {
                      //e.target.openPopup();
-                 }}
-                 onMouseOut={(e) => {
-                     //e.target.closePopup();
-                 }}*/
+                }}
+                onMouseOut={(e) => {
+                    //e.target.closePopup();
+                }}*/
             >
                 <Popup
                     className='popup_oper_cloudlet'
