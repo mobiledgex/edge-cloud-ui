@@ -1864,7 +1864,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 color="primary"
                                 onChange={async () => {
                                     await this.setState({isStream: !this.state.isStream});
-
                                     if (this.state.isStream === false) {
                                         clearInterval(this.intervalForAppInst)
                                         clearInterval(this.intervalForCluster)
