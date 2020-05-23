@@ -14,7 +14,6 @@ import _ from "lodash";
 import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
 import { scaleLinear } from "d3-scale"
-import request from "axios"
 //redux
 import { connect } from 'react-redux';
 
