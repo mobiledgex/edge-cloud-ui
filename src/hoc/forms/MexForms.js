@@ -1,4 +1,5 @@
 import React from 'react'
+import {cloneDeep} from 'lodash';
 import uuid from 'uuid';
 import MexSelect from './MexSelect';
 import MexMultiSelect from './MexMultiSelect'
@@ -97,7 +98,7 @@ const MexForms = (props) => {
                             let values = dependentForm.value
                             if(dependentForm.value.includes('All'))
                             {
-                                values = _.cloneDeep(dependentForm.options)
+                                values = cloneDeep(dependentForm.options)
                                 values.splice(0, 1)
                             }
                             if (form.value === undefined || form.value.length !== values.length) {
