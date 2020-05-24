@@ -10,11 +10,10 @@ import {
 } from "react-simple-maps"
 import { Button, Icon, List } from 'semantic-ui-react';
 import ContainerDimensions from 'react-container-dimensions';
-import _ from "lodash";
+import {isEqual} from "lodash";
 import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
 import { scaleLinear } from "d3-scale"
-import request from "axios"
 //redux
 import { connect } from 'react-redux';
 
@@ -275,7 +274,7 @@ class ClustersMap extends Component {
         })
 
         
-        if (!_.isEqual(locationData, prevState.cities)) {
+        if (!isEqual(locationData, prevState.cities)) {
 
             let clickMarker = [];
             let zoom = nextProps.locData ? prevState.zoom : 3

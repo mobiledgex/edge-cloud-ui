@@ -1,6 +1,6 @@
 import 'react-hot-loader'
 import React from 'react';
-import {Button, Dropdown, Modal, Icon, Grid} from 'semantic-ui-react';
+import {Button, Dropdown, Modal, Icon} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
@@ -12,10 +12,9 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
-import {Card, IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
+import {IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
 import OfflinePinIcon from '@material-ui/icons/OfflinePin';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import {ACTION_REFRESH} from "./MexToolbar";
 
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
