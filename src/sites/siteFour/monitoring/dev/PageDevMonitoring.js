@@ -69,7 +69,7 @@ import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import MapForDevContainer from "../components/MapForDevContainer";
 import {Responsive, WidthProvider} from "react-grid-layout";
-import _ from "lodash";
+import {uniqBy, uniqWith, isEqual, maxBy, reject} from "lodash";
 import PieChartContainer from "../components/PieChartContainer";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
@@ -485,7 +485,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                     })
 
-                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletNameList), _.uniqWith(clusterNameList, _.isEqual))
+                    let clusterDropdownList = makeClusterTreeDropdown(uniqBy(cloudletNameList), uniqWith(clusterNameList, isEqual))
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
@@ -894,7 +894,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let currentItems = this.state.layoutForCluster;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
-                        maxY = _.maxBy(currentItems, 'y').y
+                        maxY = maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
                     let mapperList = this.state.layoutMapperForCluster
@@ -929,7 +929,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let currentItems = this.state.layoutForAppInst;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
-                        maxY = _.maxBy(currentItems, 'y').y
+                        maxY = maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
                     let mapperList = this.state.layoutMapperForAppInst
@@ -957,13 +957,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             removeGridItem(i) {
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    let removedLayout = _.reject(this.state.layoutForCluster, {i: i});
+                    let removedLayout = reject(this.state.layoutForCluster, {i: i});
                     reactLocalStorage.setObject(getUserId() + "_layout", removedLayout)
                     this.setState({
                         layoutForCluster: removedLayout,
                     });
                 } else {//@desc: AppInst Level
-                    let removedLayout = _.reject(this.state.layoutForAppInst, {i: i});
+                    let removedLayout = reject(this.state.layoutForAppInst, {i: i});
                     reactLocalStorage.setObject(getUserId() + "_layout2", removedLayout)
                     this.setState({
                         layoutForAppInst: removedLayout,
