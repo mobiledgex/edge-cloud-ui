@@ -17,8 +17,8 @@ interface MetricsParmaType {
     self: any;
 }
 
-const setRemote = (result) => { };
-const getArgs = (info) => {
+const setRemote = result => { };
+const getArgs = info => {
     if (info.method === serviceMC.getEP().EVENT_CLOUDLET) {
         return {
             region: info.pRegion,
@@ -63,14 +63,14 @@ const getListAppinst = async (self, params) =>
 /** *********************************
  * METRICS CLOUDLET
  * store : will be change to @Rahul's framwork
- * token : 
+ * token :
  *********************************** */
 const store = (localStorage && localStorage.PROJECT_INIT) ? JSON.parse(localStorage.PROJECT_INIT) : null;
 let token = store ? store.userToken : "null";
 const getMetricsCloudlet = async (self, params) => {
     /**
     * Continue, get events of cloudlets */
-    const requestData = (cloudletInfo) => ({
+    const requestData = cloudletInfo => ({
         token,
         pRegion: cloudletInfo.region,
         selectOrg: cloudletInfo.operatorName,
@@ -79,14 +79,14 @@ const getMetricsCloudlet = async (self, params) => {
         last: 10,
     });
 
-    params.cloudlets.map(async (cloudlet, i) => {
-        const response = await Cloudlet.getCloudletMetrics(
+    // TODO : 페이지 개수만큼 데이터 호출
+    return Promise.all(
+        params.cloudlets.map(async cloudlet => Cloudlet.getCloudletMetrics(
             self,
             requestData(cloudlet),
-        );
-        /** * self : parent is the scope of <<< ContainerWrapper.js >>> */
-        self.onReceiveResult(response, self);
-    });
+            params.chartType,
+        )),
+    );
 };
 /** *********************************
  * METRICS CLIENT
@@ -108,15 +108,24 @@ const getMetricsClient = async (self, params) => {
         last: 10,
     });
 
-    params.appinsts.map(async appinst => {
-        const response = await Client.getClientMetrics(
+    // params.appinsts.map(async appinst => {
+    //     const response = await Client.getClientMetrics(
+    //         self,
+    //         requestData(appinst),
+    //     );
+    //     /** * self : parent is the scope of <<< ContainerWrapper.js >>> */
+    //     console.log("20200521 client >>>> response for get metrics client... ", response, ": method = ", params.method);
+    //     self.onReceiveResultClient(response, self);
+    // });
+
+    // TODO : 페이지 개수만큼 데이터 호출
+    return Promise.all(
+        params.appinsts.map(async appinst => Client.getClientMetrics(
             self,
             requestData(appinst),
-        );
-        /** * self : parent is the scope of <<< ContainerWrapper.js >>> */
-        console.log("20200521 client >>>> response for get metrics client... ", response, ": method = ", params.method);
-        self.onReceiveResultClient(response, self);
-    });
+            params.chartType,
+        )),
+    );
 };
 
 
@@ -126,7 +135,7 @@ const getMetricsClient = async (self, params) => {
 const getEventCloudlet = async (self, params) => {
     /* Continue, get events of cloudlets */
 
-    const execrequest = (cloudletInfo) => getArgs({
+    const execrequest = cloudletInfo => getArgs({
         pRegion: cloudletInfo.region,
         selectOrg: cloudletInfo.operatorName,
         method: serviceMC.getEP().EVENT_CLOUDLET,
@@ -136,7 +145,7 @@ const getEventCloudlet = async (self, params) => {
 
     const store = JSON.parse(localStorage.PROJECT_INIT);
     const token = store ? store.userToken : "null";
-    const requestData = (cloudlet) => ({
+    const requestData = cloudlet => ({
         token,
         method: serviceMC.getEP().EVENT_CLOUDLET,
         data: execrequest(cloudlet),
@@ -166,7 +175,7 @@ export const MetricsService = async (defaultValue: MetricsParmaType, self: any) 
     if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
         // this.props.handleLoadingSpinner(true);
         // 잠시 막음
-        getEventCloudlet(defaultValue.self, defaultValue).then(async (data) => {
+        getEventCloudlet(defaultValue.self, defaultValue).then(async data => {
             self.onReceiveResult(data, self);
         });
     }
@@ -182,7 +191,6 @@ export const MetricsService = async (defaultValue: MetricsParmaType, self: any) 
         return result;
     }
 };
-
 
 
 // / get saved data

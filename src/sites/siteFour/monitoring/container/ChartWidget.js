@@ -48,43 +48,52 @@ class ChartWidget extends React.Component {
     //     return true;
     // }
 
+    /**
+    * 첫번째 인자(nextProps) 는 부모 컴포넌트로 부터 전달받는 객체이며,
+    * 두번째 인자(prevState) 는 렌더링되기 이전의 state 객체다.
+    */
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (_.isEqual(prevState.data, nextProps.data) === false && nextProps.data[nextProps.id]) {
+        if (prevState.data !== nextProps.data) {
             console.log("20200521 container widget   == 55 55  == nextProps.data = ", nextProps.data, ": prevState.data= ", prevState.data, ": id = ", nextProps.id);
-            if (nextProps.id === DataType.REGISTER_CLIENT || nextProps.id === DataType.FIND_CLOUDLET) {
-                return { data: scope.updateData(nextProps.data[nextProps.id], nextProps.id) };
+            if (nextProps.id === DataType.NETWORK_CLOUDLET) {
+                if (nextProps.data && nextProps.data[nextProps.id] && nextProps.data[nextProps.id].length > 0) {
+                    return { data: nextProps.data };
+                }
             }
         }
         return null;
     }
 
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     // 랜더링 조건을 여기에 추가한다. data 값이 같으면 랜더링 하지 않음
+    //     console.log('shouldComponentUpdate');
+    //     if (nextState.data === nextProps.data) return false;
+    //     return true;
+    // }
+
     componentDidUpdate(prevProps, prevState) {
-        if (_.isEqual(prevProps.data, this.state.data) === false) {
-            console.log("20200521 container widget   == 66 ==", prevProps.data, ": this.state.data = ", this.state.data, ": id= ", prevProps.id);
-            if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
-                if (this.state.data && this.state.data.values) {
-                    // if (this.state.data.values.length > 0) this.updateData(this.state.data, prevState.data.id);
-                }
-            }
-            if (prevProps.id === DataType.NETWORK_CLOUDLET) {
-                if (prevProps.data && prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
-                    this.updateMetricData(prevProps.data[prevProps.id], prevState.id);
-                }
+        if (prevProps.data !== this.props.data) {
+            console.log("20200521 container widget   == 66 6 == prevState= ", prevProps.data, ": props data = ", this.props.data, ": id= ", prevProps.id);
+            if (this.props.data && this.props.data[prevProps.id].length > 0 && prevProps.id === DataType.NETWORK_CLOUDLET) {
+                this.updateMetricData(this.props.data[prevProps.id], prevProps.id);
             }
         }
+
+        // if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
+        //     if (this.state.data && this.state.data.values) {
+        //         // if (this.state.data.values.length > 0) this.updateData(this.state.data, prevState.data.id);
+        //     }
+        // }
+
     }
 
     updateMetricData = (uData, props) => {
         // TODO:20200522
         console.log("20200521 container widget   == 77 ==", uData, ": p = ", props);
-        let updatedata = null;
-        switch (props) {
-            case DataType.NETWORK_CLOUDLET: updatedata = DataFormats.dataFormatRateRegist(uData); break;
-            default: updatedata = DataFormats.dataFormatRateRegist(uData);
-        }
-        //this.setState({ data: updatedata });
-    }
 
+        /** 이제는 this.setState를 여기서 사용하면 안됨 */
+        setTimeout(() => this.setState({ data: uData }), 500);
+    }
 
     updateData = async (uData, props) => {
         let updatedata = null;
@@ -96,7 +105,7 @@ class ChartWidget extends React.Component {
         }
         // TODO: 오류 때문에 잠시 막음 --> redux 를 사용
         console.log("20200521 container widget   == 77 77  ==", updatedata);
-        this.setState({ data: updatedata });
+        //this.setState({ data: updatedata });
     }
 
     // componentWillReceiveProps(prevProps, prevState) {
@@ -151,7 +160,6 @@ class ChartWidget extends React.Component {
                         type={type}
                         chartType={chartType}
                         data={data}
-                        data2={data2}
                         title={title.value}
                         showLegend={legendShow}
                         method={method}

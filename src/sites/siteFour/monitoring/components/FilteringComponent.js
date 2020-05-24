@@ -102,7 +102,7 @@ const FilteringComponent = props => {
                     onChange={handleChange}
                     input={<BootstrapInput />}
                 >
-                    {(data && data.length > 0) ? makeMenuItem(data) : null}
+                    {(data && data.length > 0) ? makeMenuItem(data[0]) : null}
                 </Select>
             </FormControl>
         </div>

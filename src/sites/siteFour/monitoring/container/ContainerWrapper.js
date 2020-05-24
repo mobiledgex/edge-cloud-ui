@@ -7,6 +7,7 @@ import * as actions from "../../../../actions";
 import * as Service from "../services";
 import * as serviceMC from "../../../../services/model/serviceMC";
 import * as FormatChart from "../formatter/formatChart";
+import * as Util from "../../../../utils";
 
 let _self = null;
 const hasCloudlets = [];
@@ -94,6 +95,12 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 this.initialize(this.state, this);
             }
         }
+        if (prevProps.appinsts !== this.state.appinsts && this.state.method) {
+            if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
+                console.log("20200521 container widget   == 33 appinsts == ", this.state.appinsts, ": method= ", prevProps.method);
+                //this.initialize(this.state, this);
+            }
+        }
     }
 
     onReceiveResult(result, self) {
@@ -108,26 +115,29 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         } catch (e) { }
     }
 
-    onReceiveResultClient = (result, self) => {
-        try {
-            if (result && result.values.length > 0) {
-                const stateData = { [self.state.id]: result };
-                console.log("20200521 client >>>> on receive result of client ~2~2~2~2~2~~~", stateData, ":", self.state.id);
-                //this.setState({ data: { [self.state.id]: result } });
+    removeEmptyResult = (result) => {
+        const filterItem = [];
+        result.map((item, i) => {
+            if (item.length > 0) {
+                filterItem.push(item);
             }
-        } catch (e) { }
-
+        });
+        return _.uniq(filterItem, "path");
     }
 
     async initialize(props: MetricsParmaType, self: any) {
         try {
             if (props.method) {
-                this.setState({ chartMethod: props.method });
                 const result = await Service.MetricsService(props, self);
                 /**
-                 * completing service, go to onReceiveResult below lines
+                 * completing service, go to onReceiveResult
                  */
-                console.log("20200521 container widget   == 44 == ", result);
+                // reduce duplicated item
+                if (result && result.length > 0) {
+                    const reduceResult = this.removeEmptyResult(result);
+                    console.log("20200521 container widget   == 44 == ", reduceResult, ":", Util.removeDuplicateBy(reduceResult));
+                    this.onReceiveResult(reduceResult, self);
+                }
             }
         } catch (e) {
             console.log(e);

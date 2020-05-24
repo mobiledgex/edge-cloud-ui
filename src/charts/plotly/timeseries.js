@@ -98,7 +98,22 @@ const TimeSeries = (props) => {
     let y3Position = null;
     let datarevision = 0;
 
+    const usePrevious = (value) => {
+        const ref = React.useRef();
+        React.useEffect(() => {
+            ref.current = value;
+        });
+        return ref.current;
+    }
+
+    const useCompare = (val: any) => {
+        const prevVal = usePrevious(val)
+        return prevVal !== val
+    }
+
     React.useEffect(() => {
+        // const hasVal1Changed = useCompare(props.data);
+        // console.log("20200521 container widget   == 88 1 ==", hasVal1Changed);
         if (props.size) {
             console.log("20200522 size = ", props.size);
             setTimeout(() => {
@@ -113,8 +128,8 @@ const TimeSeries = (props) => {
         }
         if (props.id) setPrevPropsId(props.id);
         if (props.divide) maxDataCount = props.divide;
-        if (props.data) {
-            chartUpdate({ data: props.data, id: props.id });
+        if (props.data && (props.data !== data) && props.data[props.id]) {
+            chartUpdate({ data: props.data, id: props.id, type: props.type });
         }
         if (props.showLegend) setShowLegend(props.showLegend);
         if (props.margin) setMargin(props.margin);
@@ -139,9 +154,9 @@ const TimeSeries = (props) => {
                 const { type } = prevProps;
 
                 shortHand.map(data => {
-                    const times = shortHand[0].times[0]; // not use
-                    const datas = shortHand[0].resData_util[0].diskUsed; // as x & y
-                    const methods = shortHand[0].methods[0]; // as names
+                    const times = data[0].times[0]; // not use
+                    const datas = data[0].resData_util[0].diskUsed; // as x & y
+                    const methods = data[0].methods[0]; // as names
                     datas.names = methods;
                     reloadChart(
                         { [methods[0]]: datas },

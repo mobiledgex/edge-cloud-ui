@@ -196,10 +196,14 @@ const parseData = (response, type) => {
             if (data.Series && data.Series.length > 0) {
                 /** metrics of the cloudlets */
 
-                times.push(resSeries_utilize ? createTime(resSeries_utilize.values) : null)
-                methods.push(resSeries_utilize ? createMethods(type, resSeries_utilize.values) : null)
+                times.push(resSeries_utilize ? createTime(resSeries_utilize.values) : null);
+                methods.push(resSeries_utilize ? createMethods(type, resSeries_utilize.values) : null);
+
+                const pathOneIdx = resSeries_utilize.columns.indexOf("cloudletorg");
+                const pathTwoIdx = resSeries_utilize.columns.indexOf("cloudlet");
 
                 let resultParse = {
+                    path: resSeries_utilize.values[0][pathOneIdx] + "/" + resSeries_utilize.values[0][pathTwoIdx],
                     methods: methods,
                     times: times,
                     resData_util: [
