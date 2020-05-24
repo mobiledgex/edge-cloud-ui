@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import _ from 'lodash';
+import {isEqual} from 'lodash';
 import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
@@ -129,11 +129,11 @@ const compareObjects = (newData, oldData, ignoreCase) => {
     }
     else if(ignoreCase)
     {
-        return _.isEqual(newData.toLowerCase(), oldData.toLowerCase())
+        return isEqual(newData.toLowerCase(), oldData.toLowerCase())
     }
     else
     {
-        return _.isEqual(newData, oldData)
+        return isEqual(newData, oldData)
     }
 }
 

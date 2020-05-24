@@ -266,6 +266,7 @@ class Login extends Component {
 
     resetPassword = async (password) =>
     {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let mcRequest = await serverData.resetPassword(self, {token: store ? store.resetToken : 'null', password:password})
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
                 self.props.handleAlertInfo('success', mcRequest.response.data.message)
