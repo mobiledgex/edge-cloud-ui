@@ -2,7 +2,6 @@ import React from 'react';
 import {cloneDeep} from 'lodash';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
-import {cloneDeep} from 'lodash'
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE } from '../../../hoc/forms/MexForms';
 //redux
