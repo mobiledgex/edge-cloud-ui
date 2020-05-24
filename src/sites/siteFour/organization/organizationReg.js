@@ -131,12 +131,10 @@ class OrganizationReg extends React.Component {
         super(props);
         this.state = {
             step: 0,
-            userList:[],
             forms: [],
         }
         this.type = null
         this.organizationInfo = null
-        //To avoid refecthing data from server
     }
 
     makeRoleList = (selectedType, i) => {
@@ -195,8 +193,7 @@ class OrganizationReg extends React.Component {
     }
 
     onAddUser = async (data) => {
-        let orgData = this.organizationInfo;
-        let userList = this.state.userList;
+        let userList = this.organizationInfo.userList ? this.organizationInfo.userList : [];
         if (data) {
             data[fields.role] = this.type + data[fields.role]
             let mcRequest = await addUser(this, data)
@@ -212,9 +209,7 @@ class OrganizationReg extends React.Component {
                 }
             }
         }
-        orgData.userList = userList
-        this.setState({userList:userList})
-
+        this.organizationInfo.userList = userList
     }
 
     addUserForm = (data) => {
