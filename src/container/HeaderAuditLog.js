@@ -24,8 +24,8 @@ import {
 
 let _self = null;
 const options = [
-    { key: 'indivisual', value: 'indivisual', text: 'indivisual' },
-    { key: 'group', value: 'group', text: 'group' }
+    { key: 'Individual', value: 'Individual', text: 'Individual' },
+    { key: 'Group', value: 'Group', text: 'Group' }
 ]
 class HeaderAuditLog extends React.Component {
     constructor(props) {
@@ -40,7 +40,7 @@ class HeaderAuditLog extends React.Component {
             dayData: [],
             groups: [],
             groupsErrorCount: 0,
-            dropDownValue: "indivisual"
+            dropDownValue: "Individual"
         }
     }
 
@@ -190,8 +190,8 @@ class HeaderAuditLog extends React.Component {
             }
         })
 
-        if(this.state.dropDownValue === 'group') {
-            this.dropDownOnChange(null, {value: "group"}, dayData)
+        if(this.state.dropDownValue === 'Group') {
+            this.dropDownOnChange(null, {value: "Group"}, dayData)
         }
 
         this.setState({
@@ -226,7 +226,7 @@ class HeaderAuditLog extends React.Component {
         let dayData = (data)?data:this.state.dayData;
         let groups = [];
 
-        if (v.value === 'group') {
+        if (v.value === 'Group') {
             dayData.map((data, index) => {
                 let renderValue = this.makeOper(data.operationname);
                 let groupsIndex = groups.findIndex(g => g.title === renderValue)
@@ -400,7 +400,7 @@ class HeaderAuditLog extends React.Component {
                     <div class="audit_title_label">Audit Logs</div>
                     <div className='audit_filter'>
                         <Dropdown
-                            placeholder='indivisual'
+                            placeholder='Individual'
                             fluid
                             search
                             selection
