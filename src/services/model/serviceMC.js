@@ -5,9 +5,14 @@ import Alert from 'react-s-alert';
 
 
 let sockets = [];
+let serverURL = process.env.REACT_APP_API_ENDPOINT;
 
 export function getEP() {
     return EP;
+}
+const getURL = (request)=>
+{
+    return serverURL + EP.getPath(request)
 }
 
 export function generateUniqueId() {
@@ -74,6 +79,10 @@ function responseError(self, request, response, callback) {
                     callback({request: request, error: {code: code, message: message}})
                 }
             }
+            else if(request.method === EP.VERIFY_EMAIL)
+            {
+                showError(request, 'Oops, this link is expired')
+            }
         }
     }
 }
@@ -114,7 +123,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
         let promise = [];
         let resResults = [];
         requestDataList.map((request) => {
-            promise.push(axios.post(EP.getPath(request), request.data,
+            promise.push(axios.post(getURL(request), request.data,
                 {
                     headers: getHeader(request)
                 }))
@@ -137,7 +146,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
 export const sendSyncRequest = async (self, request) => {
     try {
         showSpinner(self, true)
-        let response = await axios.post(EP.getPath(request), request.data,
+        let response = await axios.post(getURL(request), request.data,
             {
                 headers: getHeader(request)
             });
@@ -154,7 +163,7 @@ export const sendSyncRequest = async (self, request) => {
 export function sendRequest(self, request, callback) {
     let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
     showSpinner(self, isSpinner)
-    axios.post(EP.getPath(request), request.data,
+    axios.post(getURL(request), request.data,
         {
             headers: getHeader(request)
         })
