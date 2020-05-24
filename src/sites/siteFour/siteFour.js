@@ -9,7 +9,6 @@ import {connect} from 'react-redux';
 import * as actions from '../../actions';
 import {GridLoader} from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
-import * as serviceMC from '../../services/serviceMC';
 import * as serverData from '../../services/model/serverData';
 import {MonitoringTutor} from '../../tutorial';
 import Alert from 'react-s-alert';
@@ -82,23 +81,13 @@ class SiteFour extends React.Component {
         }
     }
 
-    receiveControllerResult(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                _self.props.handleLoadingSpinner();
-                _self.controllerOptions(response.data);
-            }
+    getAdminInfo = async () => {
+        let mcRequest = await serverData.controllers(this)
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
+            _self.props.handleLoadingSpinner();
+            _self.controllerOptions(mcRequest.response.data);
         }
     }
-
-    getAdminInfo = async (token) => {
-        serviceMC.sendRequest(this, {
-            token: token,
-            method: serviceMC.getEP().SHOW_CONTROLLER
-        }, _self.receiveControllerResult);
-    }
-
 
     userRoleInfo = async () => {
         let mcRequest = await serverData.showUserRoles(this)

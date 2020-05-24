@@ -8,7 +8,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
-import * as constant from '../../../services/model/shared';
+import * as shared from '../../../services/model/shared';
 
 import { Button } from '@material-ui/core';
 import {organizationTutor} from "../../../tutorial";
@@ -124,7 +124,7 @@ class OrganizationList extends React.Component {
             sortBy: [fields.organizationName],
             keys: this.keys,
             onAdd: this.onAdd,
-            additionalDetail: constant.additionalDetail,
+            additionalDetail: shared.additionalDetail,
             viewMode: mode
         })
     }

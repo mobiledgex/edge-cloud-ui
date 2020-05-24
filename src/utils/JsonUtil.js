@@ -1,4 +1,4 @@
-import yaml from 'yaml-js';
+
 export const toJson = (data) => {
     let toJson = []
     if (data) {
@@ -14,13 +14,4 @@ export const toJson = (data) => {
         }
     }
     return toJson
-}
-
-export const YAMLtoJSON = (data) => {
-    try {
-        return yaml.load_all(data)
-    }
-    catch (e) {
-        return data
-    }
 }

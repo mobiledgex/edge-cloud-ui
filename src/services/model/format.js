@@ -116,7 +116,10 @@ export const fields = {
     refreshAppInst:'refreshAppInst',
     restagmap:'restagmap',
     powerState:'powerState',
-    tls:'tls'
+    tls:'tls',
+    userList:'userList',
+    userName:'userName',
+    userRole:'userRole'
 }
 
 export const getUserRole = () => {

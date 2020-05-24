@@ -1,25 +1,17 @@
 import React from 'react';
-import {Button, Icon, Popup} from 'semantic-ui-react';
-import Check from "@material-ui/icons/Check";
-import {AppBar, Tabs, Tab, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
+import {Popup} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import PopDetailViewer from '../container/popDetailViewer';
-import PopSecondDetailViewer from '../container/popSecondDetailViewer';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
-import {CircularProgress, IconButton, Step, StepLabel, Stepper} from '@material-ui/core';
-import {CODE_FAILED, CODE_FAILED_403, CODE_FINISH} from "../hoc/stepper/mexMessageMultiStream";
-import moment from "moment";
-import ErrorIcon from "@material-ui/core/SvgIcon/SvgIcon";
-import {green} from "@material-ui/core/colors";
+import * as serverData from '../services/model/serverData';
+import PopDetailViewer from '../container/popDetailViewer';
+import {IconButton} from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 
 
 let _self = null;
-let rgn = ['US', 'EU'];
 class headerGlobalAudit extends React.Component {
     constructor(props) {
         super(props);
@@ -94,37 +86,26 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAudit = async (orgName) => {
-        this.props.handleLoadingSpinner(true);
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData: []})
         this._cloudletDummy = [];
         _self.loadCount = 0;
 
+        let mcRequest = undefined
         if (orgName) {
-            serviceMC.sendRequest(_self, {token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
+            mcRequest = await serverData.showAuditOrg(_self, {"org": this.makeOga(orgName)})
         } else {
-            serviceMC.sendRequest(_self, {token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult)
+            mcRequest = await serverData.showSelf(_self, {})
         }
-    }
 
-    receiveResult = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                if (mcRequest.response.data.length > 0) {
-                    let response = mcRequest.response;
-                    let request = mcRequest.request;
-                    _self.setState({ devData: response.data, auditMounted: true })
-                    if (rgn.length == this.loadCount - 1) {
-                        return
-                    }
-                }
-                else{
-                    this.props.handleAlertInfo('error',"Data Not Present")
-                }
+        if (mcRequest && mcRequest.response) {
+            if (mcRequest.response.data.length > 0) {
+                let response = mcRequest.response;
+                _self.setState({ devData: response.data, auditMounted: true })
+            }
+            else {
+                this.props.handleAlertInfo('error', "Data Not Present")
             }
         }
-        _self.props.toggleLoading(false);
-        _self.props.handleLoadingSpinner(false);
     }
 
     onItemSelected = (item, i) => {

@@ -12,7 +12,7 @@ import HeaderGlobalAudit from '../../../container/headerGlobalAudit';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 
 import { Image, Button } from 'semantic-ui-react';
-import { Menu, MenuItem, DialogContent, DialogContentText, Dialog, DialogActions } from '@material-ui/core';
+import { Menu, MenuItem, Dialog, DialogActions, List, ListItem, ListItemText } from '@material-ui/core';
 
 const drawerWidth = 250;
 
@@ -99,22 +99,28 @@ export default function Header(props) {
                         <Dialog
                             open={open}
                             onClose={handleDialogClose}
+                            fullWidth={true}
+                            maxWidth={'xs'}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"
                         >
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    <Image size='small' src='/assets/brand/MobiledgeX_Logo_tm_white.svg' />
-                                </DialogContentText>
-                                <DialogContentText>
-                                    <div align="center" style={{ fontSize: 13 }}><strong>{process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'version 0.0.0'}</strong></div>
-                                </DialogContentText>
-                                <DialogContentText>
-                                    <div align="center"><a href="https://mobiledgex.com/" target="_blank">www.mobiledgex.com</a></div>
-                                </DialogContentText>
-                            </DialogContent>
+                            <List>
+                                <ListItem>
+                                    <ListItemText align="center">
+                                        <p>
+                                            <Image size='medium' src='/assets/brand/MobiledgeX_Logo_tm_white.svg' />
+                                        </p>
+                                        <p>
+                                            <strong>{process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'version 0.0.0'}</strong>
+                                        </p>
+                                        <p>
+                                            <a href="https://mobiledgex.com/" target="_blank">www.mobiledgex.com</a>
+                                        </p>
+                                    </ListItemText>
+                                </ListItem>
+                            </List>
                             <DialogActions>
-                                <Button onClick={handleDialogClose} color="primary">
+                                <Button onClick={handleDialogClose}>
                                     OK
                                 </Button>
                             </DialogActions>
