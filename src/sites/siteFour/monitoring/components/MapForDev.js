@@ -540,7 +540,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             console.log(`Cloudlet..fullAppInstOne====>`, fullAppInstOne);
                                             console.log(`Cloudlet..appIndex====>`, appIndex);
                                             await this.setState({selectedAppInstIndex: appIndex})
-                                            await this.props.handleAppInstDropdown(fullAppInstOne)
+                                            await this.props.handleOnChangeAppInstDropdown(fullAppInstOne)
+
                                         } catch (e) {
                                             throw new Error(e)
                                         }

@@ -240,7 +240,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                                                 parent={this}
                                                 isDraggable={true}
                                                 isFullScreenMap={true}
-                                                handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
+                                                handleOnChangeAppInstDropdown={this.props.parent.handleOnChangeAppInstDropdown}
                                                 markerList={this.state.appInstanceListGroupByCloudlet}
                                                 selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                                             />

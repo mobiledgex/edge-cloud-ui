@@ -77,7 +77,7 @@ import * as reducer from "../../../../utils";
 import TerminalViewer from "../../../../container/TerminalViewer";
 import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
-import MapForDevContainer from "../components/MapForDev";
+import MapForDev from "../components/MapForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
 import _ from "lodash";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
@@ -1198,7 +1198,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         return (
-                            <MapForDevContainer
+                            <MapForDev
                                 markerList={this.state.appInstanceListGroupByCloudlet}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
                                 isMapUpdate={this.state.isMapUpdate}
@@ -1206,7 +1206,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 mapPopUploading={this.state.mapPopUploading}
                                 parent={this}
                                 isDraggable={this.state.isDraggable}
-                                handleAppInstDropdown={this.handleOnChangeAppInstDropdown}
+                                handleOnChangeAppInstDropdown={this.handleOnChangeAppInstDropdown}
                                 isFullScreenMap={false}
                                 isShowAppInstPopup={this.state.isShowAppInstPopup}
                                 selectedAppInstIndex={this.state.selectedAppInstIndex}
@@ -1985,7 +1985,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc: requestShowAppInstClientWS
                     //@desc: ################################
                     if (this.state.showAppInstClient) {
-
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                         })
