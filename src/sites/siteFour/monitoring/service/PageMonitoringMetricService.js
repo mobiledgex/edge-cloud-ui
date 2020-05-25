@@ -99,7 +99,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
                 _this.setState({
                     selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
-                }, () => {
+                },()=>{
                 });
 
                 setTimeout(() => {
@@ -452,6 +452,8 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             }
 
         })
+
+
         return allUsageList;
     } catch (e) {
         //throw new Error(e.toString())

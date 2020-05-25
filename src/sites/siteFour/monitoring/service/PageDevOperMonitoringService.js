@@ -372,7 +372,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     classificationName = item.cloudlet
                 } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
-                    classificationName = item.instanceData.AppName
+                    classificationName = item.instance.AppName
                 }
 
                 let usageList = [];
