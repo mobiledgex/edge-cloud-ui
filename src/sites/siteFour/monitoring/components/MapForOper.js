@@ -180,12 +180,12 @@ export default function MapForOper(props) {
         }
     }
 
-   /* async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet, positionIndex) {
-        setCurrentCloudlet(undefined)
-        setCurrentCloudlet(_.cloneDeep(cloudletObjectOne))
-        let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + (positionIndex - 1).toString()
-        await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
-    }*/
+    /* async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet, positionIndex) {
+         setCurrentCloudlet(undefined)
+         setCurrentCloudlet(_.cloneDeep(cloudletObjectOne))
+         let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + (positionIndex - 1).toString()
+         await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
+     }*/
 
     function renderCloudletInfo() {
         return (
@@ -421,10 +421,21 @@ export default function MapForOper(props) {
 
     }
 
+    function openPopup(marker) {
+        if (marker && marker.leafletElement && props.cloudletList.length === 1) {
+            window.setTimeout(() => {
+                marker.leafletElement.openPopup()
+            })
+        } else {
+            mapRef.current.leafletElement.closePopup()
+        }
+    }
+
     function renderCloudletMarkerOne(locOne, cloudletIndex) {
         let CloudletLocation = JSON.parse(locOne)
         return (
             <Marker
+                ref={openPopup}
                 key={cloudletIndex}
                 icon={cloudGreenIcon}
                 className='marker1'
@@ -449,16 +460,9 @@ export default function MapForOper(props) {
 
                             console.log(`${cloudLetOne.CloudletName}===cloudletObjects=>`, parseInt(cloudletIndex + innerIndex).toString());
                             return (
-                                <Ripple
-                                    key={innerIndex}
-                                    className='popup_oper_cloudlet'
-                                    during={250}
-                                    color='#1cecff'
-                                >
-                                    <div className='oper_popup_div'>
-                                        {cloudLetOne.CloudletName}
-                                    </div>
-                                </Ripple>
+                                <div className='popup_oper_cloudlet'>
+                                    {cloudLetOne.CloudletName}
+                                </div>
                             )
                         })}
                     </div>
