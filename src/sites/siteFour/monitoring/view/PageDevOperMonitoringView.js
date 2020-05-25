@@ -2107,11 +2107,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderRangeDropdown() {
+            renderDateRangeDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label">
-                            Range
+                            Date
                         </div>
                         <RangePicker
                             disabled={this.state.loading}
@@ -2604,7 +2604,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             {this.renderCloudletDropdown()}
                                         </div>
                                         <div style={{marginLeft: 25}}>
-                                            {this.renderRangeDropdown()}
+                                            {this.renderDateRangeDropdown()}
                                         </div>
                                     </React.Fragment>
                                     :
@@ -2628,7 +2628,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <div style={{
                                 display: 'flex', flex: .3, justifyContent: 'flex-end',
                             }}>
-                                {this.renderStreamSwitch()}
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.APPINST && this.renderStreamSwitch()}
                                 {this.makeTopRightMenuActionButton()}
                             </div>
                         </Toolbar>

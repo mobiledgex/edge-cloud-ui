@@ -1228,6 +1228,26 @@ export const tempClusterList = [
 
 ]
 
+export function convertHWType(hwType) {
+    if (hwType === HARDWARE_TYPE.VCPU_USED) {
+        return 'vCPU';
+    } else if (hwType === HARDWARE_TYPE.MEM_USED) {
+        return 'MEM';
+    } else if (hwType === HARDWARE_TYPE.DISK_USED) {
+        return 'DISK';
+    } else if (hwType === HARDWARE_TYPE.IPV4_USED) {
+        return 'IPV4';
+    } else if (hwType === HARDWARE_TYPE.FLOATING_IP_USED) {
+        return 'FLOATING IP';
+    } else if (hwType === HARDWARE_TYPE.NETSEND) {
+        return 'NET SEND';
+    } else if (hwType === HARDWARE_TYPE.NETRECV) {
+        return 'NET RECV';
+    } else {
+        return hwType;
+    }
+}
+
 
 /**
  *

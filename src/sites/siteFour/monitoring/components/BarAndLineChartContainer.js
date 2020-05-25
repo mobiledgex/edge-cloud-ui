@@ -8,6 +8,7 @@ import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import {Line} from "react-chartjs-2";
 import {
+    convertHWType,
     makeGradientLineChartData,
     makeGradientLineChartDataForOneColor,
     makeLineChartOptions
@@ -94,7 +95,7 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
-                            {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {this.props.pHardwareType} Utilization
+                            {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
@@ -115,15 +116,15 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                                                     const chart = chartWrapper.getChart();
                                                     google.visualization.events.addListener(chart, "click", e => {
 
-                                                     /*   var parts = e.targetID.split("#");
+                                                        /*   var parts = e.targetID.split("#");
 
-                                                        let barIndex = parts[2]
+                                                           let barIndex = parts[2]
 
-                                                        console.log(`sdlkflskdfkl====>`, barIndex);
+                                                           console.log(`sdlkflskdfkl====>`, barIndex);
 
-                                                        let data = this.state.chartDataSet.chartDataList;
-                                                        let cloudlet = data[barIndex][0]
-                                                        console.log(`sdlkflskdfkl====>`, cloudlet);*/
+                                                           let data = this.state.chartDataSet.chartDataList;
+                                                           let cloudlet = data[barIndex][0]
+                                                           console.log(`sdlkflskdfkl====>`, cloudlet);*/
 
                                                         //handleOnChangeCloudletDropdown
 
