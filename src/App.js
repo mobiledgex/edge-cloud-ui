@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import Alert from 'react-s-alert';
 
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
-import {GridLoader} from "react-spinners";
+import { GridLoader } from "react-spinners";
 //redux
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actions from './actions';
 import * as serverData from './services/model/serverData';
-import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
+import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/siteOne/entranceGlob';
 import './app.css';
@@ -23,8 +23,8 @@ import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import {ThemeProvider} from "@material-ui/styles";
-import {getDarkTheme, getLightTheme, THEME_TYPE} from "./themeStyle";
+import { ThemeProvider } from "@material-ui/styles";
+import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 
 let self = null;
 
@@ -61,26 +61,26 @@ const DashboardContainer = (props, props2) => {
     // Login check
     /////////////////////////////////////////
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
-   
+
     let storeData = localStorage.getItem('PROJECT_INIT')
 
-
+    // TODO : 'undefined' catch
     if (storeData && !loaded) {
         loaded = true;
         let userInfo = JSON.parse(storeData);
         if (userInfo.userToken) {
             validateToken()
         }
-    } 
+    }
 
-  
+
     let allRegions = localStorage.getItem('regions')
     if (!allRegions) {
         self.getControllers();
     }
 
     if (!self.routed) {
-        self.props.handleChangeSite({mainPath: _params.mainPath, subPath: _params.subPath})
+        self.props.handleChangeSite({ mainPath: _params.mainPath, subPath: _params.subPath })
         self.props.handleChangeTab(
             (_params.subPath === 'pg=0') ? 0 :
                 (_params.subPath === 'pg=1') ? 1 :
@@ -121,7 +121,7 @@ const DashboardContainer = (props, props2) => {
         history.push({
             pathname: mainPath,
             search: subPath,
-            state: {some: 'state'}
+            state: { some: 'state' }
         });
         history.location.search = subPath;
         props.mainPath = '/site1'
@@ -130,7 +130,7 @@ const DashboardContainer = (props, props2) => {
         history.push({
             pathname: _params.mainPath,
             search: _params.subPath,
-            state: {some: 'state'}
+            state: { some: 'state' }
         });
         history.location.search = _params.subPath;
     }
@@ -138,33 +138,33 @@ const DashboardContainer = (props, props2) => {
     return (
         (self.routeCnt === 1) ?
 
-            <div style={{height: '100%', width: '100%', backgroundColor: 'transparent'}}>
+            <div style={{ height: '100%', width: '100%', backgroundColor: 'transparent' }}>
                 {props.mainPath === '/logout' &&
-                <EntranceGlob params={_params} history={(props2.history) ? props2.history : null}/>}
+                    <EntranceGlob params={_params} history={(props2.history) ? props2.history : null} />}
                 {props.mainPath === '/' &&
-                <EntranceGlob params={_params} history={(props2.history) ? props2.history : null}/>}
+                    <EntranceGlob params={_params} history={(props2.history) ? props2.history : null} />}
                 {props.mainPath === '/site1' &&
-                <EntranceGlob params={_params} history={(props2.history) ? props2.history : null}/>}
+                    <EntranceGlob params={_params} history={(props2.history) ? props2.history : null} />}
                 {props.mainPath === '/site4' &&
-                <SiteFour params={_params} history={(props2.history) ? props2.history : null}/>}
+                    <SiteFour params={_params} history={(props2.history) ? props2.history : null} />}
                 {props.mainPath === '/createAccount' &&
-                <CreateAccount params={_params} history={(props2.history) ? props2.history : null}/>}
+                    <CreateAccount params={_params} history={(props2.history) ? props2.history : null} />}
                 {props.mainPath === '/passwordreset' &&
-                <EntranceGlob params={_params} history={(props2.history) ? props2.history : null} reset={true}/>}
+                    <EntranceGlob params={_params} history={(props2.history) ? props2.history : null} reset={true} />}
                 {props.mainPath === '/verify' &&
-                <VerifyContent params={_params} history={(props2.history) ? props2.history : null}/>}
-                <Alert stack={{limit: 3}}/>
+                    <VerifyContent params={_params} history={(props2.history) ? props2.history : null} />}
+                <Alert stack={{ limit: 3 }} />
                 {(self.props.loadingSpinner == true) ?
-                    <div className="loadingBox" style={{zIndex: 99999}}>
+                    <div className="loadingBox" style={{ zIndex: 99999 }}>
                         <GridLoader
                             sizeUnit={"px"}
                             size={25}
                             color={'#70b2bc'}
                             loading={self.props.loadingSpinner}
-                            //loading={true}
+                        //loading={true}
                         />
                         <span className={self.props.loadingSpinner ? '' : 'loading'}
-                              style={{fontSize: '22px', color: '#70b2bc'}}>Creating...</span>
+                            style={{ fontSize: '22px', color: '#70b2bc' }}>Creating...</span>
                     </div> : null}
 
             </div>
@@ -185,9 +185,9 @@ class App extends Component {
         this.routeCnt = 0;
     }
 
-    state = {animation: 'ani', duration: 500, user: {}, selectedCloudlet: '', tokenState: ''}
+    state = { animation: 'ani', duration: 500, user: {}, selectedCloudlet: '', tokenState: '' }
 
-    handleChange = (e, {name, value}) => this.setState({[name]: value})
+    handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
     goToNext(main, sub) {
         if (main == '/logout') {
@@ -201,12 +201,12 @@ class App extends Component {
         history.push({
             pathname: mainPath,
             search: subPath,
-            state: {some: 'state'},
-            userInfo: {info: null}
+            state: { some: 'state' },
+            userInfo: { info: null }
         });
         history.location.pathName = main;
         history.location.search = subPath;
-        self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
+        self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
         self.props.handleChangeLoginMode('logout');
     }
 
@@ -253,21 +253,21 @@ class App extends Component {
         return (
             <ThemeProvider theme={this.props.themeType === THEME_TYPE.DARK ? getDarkTheme() : getLightTheme()}>
                 <Router history={history} ref={router => this.router = router}>
-                    <div style={{width: '100%', height: '100%'}}>
-                        <Route exact path='/logout' component={DashboardContainer.bind(this, {mainPath: '/logout'})}/>
-                        <Route exact path='/' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
-                        <Route exact path='/site1/:page' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
-                        <Route exact path='/site1' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
-                        <Route exact path='/site2/:page' component={DashboardContainer.bind(this, {mainPath: '/site2'})}/>
-                        <Route exact path='/site2' component={DashboardContainer.bind(this, {mainPath: '/site2'})}/>
-                        <Route exact path='/site3/:page' component={DashboardContainer.bind(this, {mainPath: '/site3'})}/>
-                        <Route exact path='/site3' component={DashboardContainer.bind(this, {mainPath: '/site3'})}/>
-                        <Route exact path='/site4' component={DashboardContainer.bind(this, {mainPath: '/site4'})}/>
-                        <Route exact path='/site4/:page' component={DashboardContainer.bind(this, {mainPath: '/site4', ...history.location.search})}/>
-                        <Route exact path='/site5' component={DashboardContainer.bind(this, {mainPath: '/site5'})}/>
-                        <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath: '/createAccount'})}/>
-                        <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath: '/passwordreset'})}/>
-                        <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath: '/verify'})}/>
+                    <div style={{ width: '100%', height: '100%' }}>
+                        <Route exact path='/logout' component={DashboardContainer.bind(this, { mainPath: '/logout' })} />
+                        <Route exact path='/' component={DashboardContainer.bind(this, { mainPath: '/site1' })} />
+                        <Route exact path='/site1/:page' component={DashboardContainer.bind(this, { mainPath: '/site1' })} />
+                        <Route exact path='/site1' component={DashboardContainer.bind(this, { mainPath: '/site1' })} />
+                        <Route exact path='/site2/:page' component={DashboardContainer.bind(this, { mainPath: '/site2' })} />
+                        <Route exact path='/site2' component={DashboardContainer.bind(this, { mainPath: '/site2' })} />
+                        <Route exact path='/site3/:page' component={DashboardContainer.bind(this, { mainPath: '/site3' })} />
+                        <Route exact path='/site3' component={DashboardContainer.bind(this, { mainPath: '/site3' })} />
+                        <Route exact path='/site4' component={DashboardContainer.bind(this, { mainPath: '/site4' })} />
+                        <Route exact path='/site4/:page' component={DashboardContainer.bind(this, { mainPath: '/site4', ...history.location.search })} />
+                        <Route exact path='/site5' component={DashboardContainer.bind(this, { mainPath: '/site5' })} />
+                        <Route exact path='/createAccount' component={DashboardContainer.bind(this, { mainPath: '/createAccount' })} />
+                        <Route exact path='/passwordreset' component={DashboardContainer.bind(this, { mainPath: '/passwordreset' })} />
+                        <Route exact path='/verify' component={DashboardContainer.bind(this, { mainPath: '/verify' })} />
                     </div>
                 </Router>
             </ThemeProvider>
@@ -296,7 +296,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeTab: (data) => {
             dispatch(actions.changeTab(data))
         },
-        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({params: data})),
+        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data })),
         handleRegionInfo: (data) => {
             dispatch(actions.regionInfo(data))
         },
