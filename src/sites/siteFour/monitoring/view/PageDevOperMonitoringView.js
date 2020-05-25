@@ -2330,7 +2330,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              backgroundColor: 'transparent',
                              justifyContent: 'center',
                              alignSelf: 'center',
-                             height: this.state.filteredCloudletList.length > 1 ? 50 : 25,
                          }}
                     >
                         {this.state.filteredCloudletList.map((item: TypeCloudlet, index) => {
@@ -2340,7 +2339,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                     }}
-                                    span={pLegendItemCount === 1 ? 24 : 3}
+                                    span={pLegendItemCount === 1 ? 24 : 4}
                                     style={{
                                         marginTop: 3,
                                         marginBottom: 3,
@@ -2522,14 +2521,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }
 
                         let RowHeight = Math.ceil(legendItemCount / 6);
+                        console.log(`RowHeight...legendItemCount====>`, legendItemCount);
+                        console.log(`RowHeight====>`, RowHeight);
 
                         return (
                             <LegendOuterDiv
                                 style={{
-                                    height: legendItemCount === 1 ? 30 : (30 * RowHeight),
+                                    height: 30 * RowHeight,
                                     marginTop: 4,
                                 }}>
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?//@desc: CLUSTER  Level Legend
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
                                     this.renderClusterLegend()
                                     ://@desc: When Cloudlet Level Legend
                                     this.state.currentClassification === CLASSIFICATION.CLOUDLET ?

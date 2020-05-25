@@ -422,12 +422,16 @@ export default function MapForOper(props) {
     }
 
     function openPopup(marker) {
-        if (marker && marker.leafletElement && props.cloudletList.length === 1) {
-            window.setTimeout(() => {
-                marker.leafletElement.openPopup()
-            })
-        } else {
-            mapRef.current.leafletElement.closePopup()
+        try {
+            if (marker && marker.leafletElement && props.cloudletList.length === 1) {
+                window.setTimeout(() => {
+                    marker.leafletElement.openPopup()
+                })
+            } else {
+                mapRef.current.leafletElement.closePopup()
+            }
+        } catch (e) {
+            //throw new Error(e)
         }
     }
 
