@@ -69,7 +69,6 @@ export const makeid = (length) => {
 
 export const getUserId = () => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-    console.log(`store====>`, store);
     return store.email;
 };
 
@@ -281,7 +280,6 @@ export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selecte
 
 export function makeMultiLineChartDatas(multiLineChartDataSets) {
 
-    console.log(`multiLineChartDataSets====>`, multiLineChartDataSets);
 
     let hardwareType = []
     let levelTypeNameList = []
@@ -351,8 +349,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                    //////todo:cloudllet/////////
-                    //////todo:cloudllet/////////
                 //////todo:cloudllet/////////
                 else if (
                     hardwareType === HARDWARE_TYPE.NETSEND
@@ -1686,7 +1682,6 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
                                     </div>
                                   </div>`
 
-                console.log(`usageList====${hardwareType}>`, usageList[index]);
                 let barDataOne = [
                     usageList[index].cloudlet.toString(),
                     renderUsageByType(usageList[index], hardwareType, _this),
@@ -1695,7 +1690,6 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
                     renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
                 ];
 
-                console.log(`barDataOne====>`, barDataOne);
                 chartDataList.push(barDataOne);
             }
 
@@ -1703,8 +1697,6 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
                 chartDataList,
                 hardwareType,
             };
-
-            console.log(`chartDataSet====>`, chartDataSet);
 
             return chartDataSet
         }

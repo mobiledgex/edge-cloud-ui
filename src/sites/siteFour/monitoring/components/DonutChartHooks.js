@@ -12,8 +12,6 @@ export default function DonutChartHooks(props) {
     const hwFontSize = 15;
 
     useEffect(() => {
-
-        console.log(`filteredUsageList===>`, props.filteredUsageList);
         if (props.filteredUsageList !== undefined && props.filteredUsageList.length === 1) {
             setCount(props.filteredUsageList.length)
             setUsageOne(props.filteredUsageList[0])

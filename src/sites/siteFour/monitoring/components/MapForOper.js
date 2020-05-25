@@ -471,8 +471,6 @@ export default function MapForOper(props) {
                 >
                     <div style={{display: 'flex', flexDirection: 'column'}}>
                         {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
-
-                            console.log(`${cloudLetOne.CloudletName}===cloudletObjects=>`, parseInt(cloudletIndex + innerIndex).toString());
                             return (
                                 <div className='popup_oper_cloudlet'>
                                     {cloudLetOne.CloudletName}

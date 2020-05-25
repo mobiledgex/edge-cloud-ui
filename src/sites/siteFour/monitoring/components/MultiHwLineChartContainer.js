@@ -60,9 +60,6 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
 
     setChartData(plineChartDataSet, hwType, graphType) {
         let multiLineChartDatasSets = makeMultiLineChartDatas(plineChartDataSet);
-
-        console.log(`multiLineChartDatasSets====>`, multiLineChartDatasSets)
-
         let levelTypeNameList = multiLineChartDatasSets.levelTypeNameList;
         let usageSetList = multiLineChartDatasSets.usageSetList;
         let newDateTimeList = multiLineChartDatasSets.newDateTimeList;

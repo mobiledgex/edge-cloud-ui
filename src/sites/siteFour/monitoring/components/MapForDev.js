@@ -311,7 +311,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     let CloudletLocation = '';
                     let Cloudlet = '';
                     appInstListOnCloudlet[key].map((innerItem: TypeAppInst, index) => {
-                        console.log(`Cloudlet11====>`, innerItem.Cloudlet);
 
                         if (index === (appInstListOnCloudlet[key].length - 1)) {
                             AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " | " + innerItem.Cloudlet
@@ -535,10 +534,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     during={500}
                                     onClick={async () => {
                                         try {
-                                            console.log(`Cloudlet====>`, cloudletOne.Cloudlet);
-                                            console.log(`Cloudlet===selectCloudlet=>`, selectCloudlet);
-                                            console.log(`Cloudlet..fullAppInstOne====>`, fullAppInstOne);
-                                            console.log(`Cloudlet..appIndex====>`, appIndex);
                                             await this.setState({selectedAppInstIndex: appIndex})
                                             await this.props.handleOnChangeAppInstDropdown(fullAppInstOne)
 

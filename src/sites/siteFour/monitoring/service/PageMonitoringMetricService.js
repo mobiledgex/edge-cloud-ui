@@ -19,8 +19,6 @@ import {
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
 
-        console.log(`requestShowAppInstClientWS====>`, pCurrentAppInst);
-
         let AppName = pCurrentAppInst.split('|')[0].trim()
         let Cloudlet = pCurrentAppInst.split('|')[1].trim()
         let ClusterInst = pCurrentAppInst.split('|')[2].trim()
@@ -246,7 +244,6 @@ export const fetchClusterList = async () => {
             }
         })
 
-        console.log(`mergedClusterList====>`, mergedClusterList);
 
         let result = []
         if (localStorage.getItem('selectRole').includes('Oper')) {
@@ -290,7 +287,6 @@ export const getCloudletListAll = async () => {
             }
         })
 
-        console.log(`cloudletList====>`, cloudletList);
 
         return mergedCloudletList;
     } catch (e) {
@@ -651,7 +647,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
-        console.log(`cloudletLevelMatricUsageList====>`, cloudletLevelMatricUsageList);
 
 
         let netSendSeriesList = [];
@@ -673,8 +668,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 let series = item.data["0"].Series["0"].values
                 let columns = item.data["0"].Series["0"].columns
 
-                console.log(`cloudletLevelMatricUsageList..series====>`, series)
-                console.log(`cloudletLevelMatricUsageList..columns====>`, columns)
 
                 //////////////////////////////////////////
                 let netSendSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netSend]
@@ -789,7 +782,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
             }
 
         });
-        console.log(`usageList333====>`, usageList);
         return usageList;
     } catch (e) {
     }
@@ -1126,7 +1118,6 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
     }).then(async response => {
         if (response.data.data[0].Series !== null) {
             let seriesValues = response.data.data[0].Series[0].values
-            console.log(`response===3====>`, seriesValues);
             let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
             return clientMatricSumDataOne;
         } else {

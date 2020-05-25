@@ -494,8 +494,6 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 
 export const renderUsageByType = (usageOne, hardwareType, _this) => {
 
-    console.log(`hardwareType====>`, hardwareType);
-
     if (hardwareType === HARDWARE_TYPE.CPU) {
         return usageOne.sumCpuUsage
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
@@ -627,10 +625,6 @@ export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, date
             }
         }
     }
-
-
-    console.log(`formBody====>`, formBody);
-
     return formBody;
 }
 

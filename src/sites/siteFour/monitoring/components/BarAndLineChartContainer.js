@@ -49,7 +49,6 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
 
         if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
 
-            console.log(`chartDataSet====>`, nextProps.chartDataSet);
 
             this.setState({
                 chartDataSet: nextProps.chartDataSet,
@@ -67,7 +66,6 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
 
         //todo:lineChartDataSets
         if (this.props.lineChartDataSets !== nextProps.lineChartDataSets) {
-            console.log(`chartDataSet====>`, nextProps.lineChartDataSets);
             let lineChartDataSet = nextProps.lineChartDataSets
             let hwType = nextProps.pHardwareType;
             let graphType = nextProps.graphType;

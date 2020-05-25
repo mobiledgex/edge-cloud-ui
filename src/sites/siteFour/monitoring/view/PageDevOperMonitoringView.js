@@ -581,13 +581,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         appInstList = newPromiseList[1];
                     } else {//TODO:OPERATOR
                         cloudletList = await fetchCloudletList();
-                        console.log(`cloudletList====>`, cloudletList);
                     }
-
-                    //fixme:fakedata
-                    /*let cloudletList = require('../temp/cloudletList'), let allClusterList = require('../temp/allClusterList'), let appInstList = require('../temp/appInstList')*/
-
-
                     if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
                         let clientStatusList = await getClientStatusList(appInstList);
                         await this.setState({
@@ -626,15 +620,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let date = [moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                         let startTime = makeCompleteDateTime(date[0]);
                         let endTime = makeCompleteDateTime(date[1]);
-                        console.log(`date====>`, startTime)
-                        console.log(`date====>`, endTime)
 
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
-                        console.log(`allCloudletUsageList====>`, allCloudletUsageList);
                     }
-
-                    //fixme: fakedata
-                    /*let allClusterEventLogList = [], let allAppInstEventLogList = [], let allClusterUsageList = require('../temp/clusterUSageList'), let allCloudletUsageList = require('../temp/cloudletUsageList')*/
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
@@ -644,8 +632,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else {
                         dataCount = cloudletList.length
                     }
-
-                    console.log(`clusterList===>`, clusterList);
 
 
                     await this.setState({
@@ -1412,9 +1398,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         graphType = graphType.toUpperCase()
                                     }
 
-                                    console.log(`item==${hwType}=>`, item);
-
-                                    console.log(`layoutForClusterForOper===>`, this.state.layoutClusterForOper);
 
                                     return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
                                 })}
@@ -1912,9 +1895,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
                         })
 
-                        console.log(`Cluster====>`, selectedCluster);
-                        console.log(`Cluster====>`, selectedCloudlet);
-                        console.log(`Cluster====>`, filteredClusterUsageList);
 
                         let filteredAppInstList = []
                         this.state.appInstList.map((item: TypeAppInst, index) => {
@@ -1952,7 +1932,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             //currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
 
                         }, () => {
-                            console.log(`sdlkflskdfkl==3333==>`, this.state.filteredClusterUsageList);
                         });
 
                     }
@@ -1962,13 +1941,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //desc: ############################
                     if (this.state.isStream) {
                         this.setClusterInterval()
-                        console.log(`sdlkflskdfkl====>`, this.intervalForCluster);
 
                     } else {
                         clearInterval(this.intervalForAppInst)
                         clearInterval(this.intervalForCluster)
                         await this.setState({isStream: false})
-                        console.log(`intervalForCluster====>`, this.intervalForCluster);
                     }
                 } catch (e) {
 
@@ -2521,8 +2498,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }
 
                         let RowHeight = Math.ceil(legendItemCount / 6);
-                        console.log(`RowHeight...legendItemCount====>`, legendItemCount);
-                        console.log(`RowHeight====>`, RowHeight);
 
                         return (
                             <LegendOuterDiv
