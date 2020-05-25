@@ -79,6 +79,8 @@ class ChartWidget extends React.Component {
             }
         }
 
+        // TODO : // 여기부터 이어서 작업하기 (월요일)
+
         // if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
         //     if (this.state.data && this.state.data.values) {
         //         // if (this.state.data.values.length > 0) this.updateData(this.state.data, prevState.data.id);

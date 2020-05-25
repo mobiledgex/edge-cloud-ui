@@ -98,7 +98,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         if (prevProps.appinsts !== this.state.appinsts && this.state.method) {
             if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
                 console.log("20200521 container widget   == 33 appinsts == ", this.state.appinsts, ": method= ", prevProps.method);
-                //this.initialize(this.state, this);
+                this.initialize(this.state, this);
             }
         }
     }
@@ -115,19 +115,27 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         } catch (e) { }
     }
 
-    removeEmptyResult = (result) => {
+    removeEmptyResult = (result, sub) => {
         const filterItem = [];
-        result.map((item, i) => {
-            if (item.length > 0) {
-                filterItem.push(item);
-            }
-        });
+        if (sub) {
+            result.map((item, i) => {
+                if (item[sub].length > 0) {
+                    filterItem.push(item);
+                }
+            });
+        } else {
+            result.map((item, i) => {
+                if (item.length > 0) {
+                    filterItem.push(item);
+                }
+            });
+        }
         return _.uniq(filterItem, "path");
     }
 
     async initialize(props: MetricsParmaType, self: any) {
         try {
-            if (props.method) {
+            if (props.method === serviceMC.getEP().METRICS_CLOUDLET) {
                 const result = await Service.MetricsService(props, self);
                 /**
                  * completing service, go to onReceiveResult
@@ -135,7 +143,15 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 // reduce duplicated item
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result);
-                    console.log("20200521 container widget   == 44 == ", reduceResult, ":", Util.removeDuplicateBy(reduceResult));
+                    console.log("20200521 container widget   == 44 == ", reduceResult);
+                    this.onReceiveResult(reduceResult, self);
+                }
+            }
+            if (props.method === serviceMC.getEP().METRICS_CLIENT) {
+                const result = await Service.MetricsService(props, self);
+                if (result && result.length > 0) {
+                    const reduceResult = this.removeEmptyResult(result, "values");
+                    console.log("20200521 container widget   == 44 ==>>>> ", reduceResult);
                     this.onReceiveResult(reduceResult, self);
                 }
             }
