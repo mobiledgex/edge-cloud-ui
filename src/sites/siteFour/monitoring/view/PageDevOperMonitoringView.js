@@ -805,8 +805,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({intervalLoading: true,})
                     let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
 
-                    this.setChartDataForBigModal(allAppInstUsageList)
-
+                    //fixme : setChartDataForBigModal
+                    //this.setChartDataForBigModal(allAppInstUsageList)
                     this.setState({
                         intervalLoading: false,
                         filteredAppInstUsageList: allAppInstUsageList,
@@ -2021,16 +2021,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                     let arrDateTime = getOneYearStartEndDatetime();
-                    let appInstUsageList = [];
-                    await this.setState({dropdownRequestLoading: true})
-                    try {
-                        appInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
-                    } catch (e) {
-                        showToast(e.toString())
-                    } finally {
-                        this.setState({dropdownRequestLoading: false})
-                    }
-
+                    let appInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
                     pCurrentAppInst = pCurrentAppInst.trim();
                     pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim() + ' | ' + Version
 
@@ -2452,7 +2443,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              backgroundColor: 'transparent',
                              justifyContent: 'center',
                              alignSelf: 'center',
-                             height: 25,
                          }}
                     >
                         <Col
@@ -2517,7 +2507,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                             legendItemCount = this.state.filteredClusterUsageList.length;
                         } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                            legendItemCount = this.state.filteredAppInstList.length;
+                            legendItemCount = this.state.filteredAppInstUsageList.length;
                         }
 
                         let RowHeight = Math.ceil(legendItemCount / 6);
