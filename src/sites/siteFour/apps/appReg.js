@@ -1,4 +1,5 @@
 import React from 'react';
+import {cloneDeep} from 'lodash';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
@@ -31,7 +32,7 @@ class AppReg extends React.Component {
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = _.cloneDeep(props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion)
+        this.regions = cloneDeep(props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion)
         if(!this.isUpdate){this.regions.splice(0, 0, 'All')}
         this.flavorList = []
         this.privacyPolicyList = []
@@ -302,7 +303,7 @@ class AppReg extends React.Component {
         let regions = currentForm.value;
         if(regions.includes('All'))
         {
-            regions = _.cloneDeep(this.regions)
+            regions = cloneDeep(this.regions)
             regions.splice(0, 1)
         }
         if (!this.isUpdate && regions.length > 0) {
@@ -471,7 +472,7 @@ class AppReg extends React.Component {
                         let requestDataList = []
                         if(regions.includes('All'))
                         {
-                            regions = _.cloneDeep(this.regions)
+                            regions = cloneDeep(this.regions)
                             regions.splice(0, 1)
                         }
                         regions.map(region => {

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import _ from 'lodash';
+import {cloneDeep} from 'lodash';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
@@ -66,7 +66,7 @@ export default function MexSelectRadioTree(props) {
                     dataList = []
                 }
                 else if (dependentForm.value.includes('All')) {
-                    dependentKey = _.cloneDeep(dependentForm.options)
+                    dependentKey = cloneDeep(dependentForm.options)
                     dependentKey.splice(0, 1)
                 }
                 else {
@@ -86,7 +86,7 @@ export default function MexSelectRadioTree(props) {
                 }
             }
         }
-        rawDataList = _.cloneDeep(optionList)
+        rawDataList = cloneDeep(optionList)
         return optionList
     }
 

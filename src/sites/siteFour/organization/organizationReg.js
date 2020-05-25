@@ -8,6 +8,7 @@ import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
+import {additionalDetail} from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 //model
 import { keys, createOrganization } from '../../../services/model/organization';
@@ -134,7 +135,6 @@ class OrganizationReg extends React.Component {
         }
         this.type = null
         this.organizationInfo = null
-        //To avoid refecthing data from server
     }
 
     makeRoleList = (selectedType, i) => {
@@ -193,7 +193,7 @@ class OrganizationReg extends React.Component {
     }
 
     onAddUser = async (data) => {
-
+        let userList = this.organizationInfo.userList ? this.organizationInfo.userList : [];
         if (data) {
             data[fields.role] = this.type + data[fields.role]
             let mcRequest = await addUser(this, data)
@@ -202,9 +202,14 @@ class OrganizationReg extends React.Component {
                 if (message === 'Role added to user') {
                     this.props.handleAlertInfo('success', `User ${data[fields.username]} added successfully`)
                     this.addUserForm(this.organizationInfo)
+                    userList.push({
+                        userName : data[fields.username],
+                        userRole : data[fields.role]
+                    })
                 }
             }
         }
+        this.organizationInfo.userList = userList
     }
 
     addUserForm = (data) => {
@@ -262,6 +267,7 @@ class OrganizationReg extends React.Component {
                         <Form>
                             <Header className="newOrg3-1">{`Organization "` + organizationName + `" has been created.`}</Header>
                             <MexDetailViewer detailData={this.organizationInfo} keys={keys()}/>
+                            {additionalDetail(this.organizationInfo)}
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organizations</Button>
                             </Form.Group>
