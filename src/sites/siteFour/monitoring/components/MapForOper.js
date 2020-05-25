@@ -181,10 +181,9 @@ export default function MapForOper(props) {
     }
 
 
-    async function handleMarkerClicked(cloudLetOne) {
+    async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet) {
         setCurrentCloudlet(undefined)
-        let cloudletObjectOne: TypeCloudlet = _.cloneDeep(cloudLetOne);
-        setCurrentCloudlet(cloudletObjectOne)
+        setCurrentCloudlet(_.cloneDeep(cloudletObjectOne))
         let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + props.parent.state.currentColorIndex
         await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
     }
@@ -455,7 +454,7 @@ export default function MapForOper(props) {
                                     during={250}
                                     color='#1cecff'
                                     onClick={async () => {
-                                        await handleMarkerClicked(cloudLetOne)
+                                        await handleCloudletClicked(cloudLetOne)
                                     }}
                                 >
                                     <div className='oper_popup_div'>

@@ -34,6 +34,8 @@ export const GLOBE_THEME = {
 export const REGION = {
     ALL: 'ALL',
 }
+export const CLOUDLET_LOCATION_STR = 'cloudletLocationStr'
+
 
 export const THEME_OPTIONS = {
     DEFAULT: 'DEFAULT',
