@@ -128,7 +128,7 @@ import MapForOper from "../components/MapForOper";
 import DonutChartHooks from "../components/DonutChartHooks";
 import ClientStatusTableHooks from "../components/ClientStatusTableHooks";
 import MethodUsageCount from "../components/MethodUsageCount";
-import {filteredClientStatusListByAppName} from "../service/PageAdmMonitoringService";
+import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import BarAndLineChartContainer from "../components/BarAndLineChartContainer";
@@ -623,8 +623,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
                     } else {//TODO:OPERATOR
-                        allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+                        let date = [moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                        let startTime = makeCompleteDateTime(date[0]);
+                        let endTime = makeCompleteDateTime(date[1]);
+                        console.log(`date====>`, startTime)
+                        console.log(`date====>`, endTime)
 
+                        allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                         console.log(`allCloudletUsageList====>`, allCloudletUsageList);
                     }
 
@@ -2107,6 +2112,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            async filterUsageListByDateForCloudlet() {
+                try {
+                    if (this.state.startTime !== '' && this.state.endTime !== '') {
+                        let startTime = makeCompleteDateTime(this.state.startTime);
+                        let endTime = makeCompleteDateTime(this.state.endTime);
+                        this.setState({loading: true})
+                        let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                        this.setState({
+                            filteredCloudletUsageList: usageList,
+                            loading: false
+                        })
+                        //this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
+                    }
+                } catch (e) {
+
+                }
+
+            }
+
 
             renderDateRangeDropdown() {
                 return (
@@ -2129,7 +2153,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         startTime: stateTime,
                                         endTime: endTime,
                                     })
-                                    // this.filterUsageListByDate()
+
+                                    this.filterUsageListByDateForCloudlet()
                                     this.rangePicker.blur()
                                 } catch (e) {
 

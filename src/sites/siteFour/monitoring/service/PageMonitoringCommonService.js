@@ -595,20 +595,41 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
     return dataForm;
 }
 
-export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, dateLimitCount = 20, pStartTime = '', pEndTime = '') => {
+    let formBody = {};
+    if (pStartTime === '' && pEndTime === '') {
 
-    let formBody = {
-        "token": token,
-        "params": {
-            "region": dataOne.Region,
-            "cloudlet": {
-                "organization": dataOne.Operator,
-                "name": dataOne.CloudletName,
-            },
-            "last": fetchingDataNo,
-            "selector": "*"
+        formBody = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.CloudletName,
+                },
+                "last": dateLimitCount,
+                "selector": "*"
+            }
+        }
+    } else {
+        formBody = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.CloudletName,
+                },
+                "last": dateLimitCount,
+                "selector": "*",
+                "starttime": pStartTime,
+                "endtime": pEndTime,
+            }
         }
     }
+
+
+    console.log(`formBody====>`, formBody);
 
     return formBody;
 }
