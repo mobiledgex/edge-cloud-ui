@@ -72,10 +72,16 @@ class ChartWidget extends React.Component {
     // }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.data !== this.props.data) {
+        if (prevProps.data !== this.props.data && this.props.data[prevProps.id].length > 0) {
             console.log("20200521 container widget   == 66 6 == prevState= ", prevProps.data, ": props data = ", this.props.data, ": id= ", prevProps.id);
-            if (this.props.data && this.props.data[prevProps.id].length > 0 && prevProps.id === DataType.NETWORK_CLOUDLET) {
+            if (prevProps.id === DataType.NETWORK_CLOUDLET) {
                 this.updateMetricData(this.props.data[prevProps.id], prevProps.id);
+            }
+            //
+            let updatedata = null;
+            if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
+                updatedata = DataFormats.dataFormatRateRegist(this.props.data[prevProps.id]);
+                this.updateClientData(updatedata);
             }
         }
 
@@ -89,25 +95,13 @@ class ChartWidget extends React.Component {
 
     }
 
-    updateMetricData = (uData, props) => {
-        // TODO:20200522
-        console.log("20200521 container widget   == 77 ==", uData, ": p = ", props);
-
-        /** 이제는 this.setState를 여기서 사용하면 안됨 */
+    updateMetricData = (uData) => {
         setTimeout(() => this.setState({ data: uData }), 500);
     }
 
-    updateData = async (uData, props) => {
-        let updatedata = null;
-        switch (props) {
-            case DataType.REGISTER_CLIENT: updatedata = await DataFormats.dataFormatRateRegist(uData); break;
-            // case DataType.FIND_CLOUDLET: updatedata = await DataFormats.dataFormatCountCloudlet(uData); break;
-            case DataType.FIND_CLOUDLET: updatedata = await DataFormats.dataFormatRateRegist(uData); break;
-            default: updatedata = await DataFormats.dataFormatRateRegist(uData);
-        }
-        // TODO: 오류 때문에 잠시 막음 --> redux 를 사용
-        console.log("20200521 container widget   == 77 77  ==", updatedata);
-        //this.setState({ data: updatedata });
+    updateClientData = async (uData) => {
+        console.log("20200521 container widget   == 77 77  ==", uData);
+        setTimeout(() => this.setState({ data: uData }), 500);
     }
 
     // componentWillReceiveProps(prevProps, prevState) {

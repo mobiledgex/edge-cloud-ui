@@ -112,7 +112,7 @@ const parseCloudletData = (response) => {
 
 
 export const dataFormatRateRegist = response => {
-    return parseData(response);
+    return parseData(response[0]);
 };
 export const dataFormatCountCloudlet = response => {
     return setdataPartSum(response);

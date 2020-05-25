@@ -113,7 +113,7 @@ const TimeSeries = (props) => {
 
     React.useEffect(() => {
         // const hasVal1Changed = useCompare(props.data);
-        // console.log("20200521 container widget   == 88 1 ==", hasVal1Changed);
+        console.log("20200521 container widget   == 88 1 data ==", props.data, ": props.id =", props.id);
         if (props.size) {
             console.log("20200522 size = ", props.size);
             setTimeout(() => {
@@ -128,8 +128,13 @@ const TimeSeries = (props) => {
         }
         if (props.id) setPrevPropsId(props.id);
         if (props.divide) maxDataCount = props.divide;
+        // cloudlet
         if (props.data && (props.data !== data) && props.data[props.id]) {
             chartUpdate({ data: props.data, id: props.id, type: props.type });
+        }
+        // client
+        if (props.id === dataType.REGISTER_CLIENT || props.id === dataType.FIND_CLOUDLET) {
+            if (props.data && props.data.length) chartUpdate({ data: props.data[0], id: props.id, type: props.type });
         }
         if (props.showLegend) setShowLegend(props.showLegend);
         if (props.margin) setMargin(props.margin);
@@ -141,7 +146,7 @@ const TimeSeries = (props) => {
     */
     const chartUpdate = (prevProps) => {
         console.log("20200521 container widget   == 88 ==", prevProps.data, ":", prevProps.id, ":", prevProps.data[prevProps.id]);
-        if (prevProps.data && prevProps.data[prevProps.id] && prevProps.id === dataType.NETWORK_CLOUDLET) {
+        if (prevProps.id === dataType.NETWORK_CLOUDLET) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
@@ -168,10 +173,44 @@ const TimeSeries = (props) => {
                 //stackAllData.push(Object.assign(shortHand));
             }
             // //////////////
-            // if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0 && prevProps.id === dataType.REGISTER_CLIENT) {
-            //     alert(prevProps.id)
-            // }
 
+
+        }
+        if (prevProps.id === dataType.REGISTER_CLIENT) {
+            if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
+                const shortHand = prevProps.data[prevProps.id];
+                console.log("20200521 container widget   == 99 ==", shortHand);
+
+                const { type } = prevProps;
+
+                shortHand.map(data => {
+                    const keys = Object.keys(data);
+                    const methods = keys;
+                    reloadChart(
+                        { [methods[0]]: data[methods[0]] },
+                        methods[0],
+                        type
+                    );
+                });
+            }
+        }
+        if (prevProps.id === dataType.FIND_CLOUDLET) {
+            if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
+                const shortHand = prevProps.data[prevProps.id];
+                console.log("20200521 container widget   == 99 ==", shortHand);
+
+                const { type } = prevProps;
+
+                shortHand.map(data => {
+                    const keys = Object.keys(data);
+                    const methods = keys;
+                    reloadChart(
+                        { [methods[0]]: data[methods[0]] },
+                        methods[0],
+                        type
+                    );
+                });
+            }
         }
     }
 
