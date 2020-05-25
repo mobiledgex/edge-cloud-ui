@@ -307,7 +307,7 @@ export default function MapForOper(props) {
         )
     }
 
-    function renderResourceDashBoardForCloudlet() {
+    function renderCloudletDashBoard() {
         return (
             <div style={{
                 backgroundColor: 'transparent',
@@ -321,7 +321,7 @@ export default function MapForOper(props) {
                     <Center style={{height: height,}}>
                         <div>
                             <Progress
-                                strokeColor={'red'}
+                                strokeColor={'orange'}
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -353,7 +353,7 @@ export default function MapForOper(props) {
                         <div style={{width: 15}}/>
                         <div>
                             <Progress
-                                strokeColor='green'
+                                strokeColor='#44B227'
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -580,7 +580,7 @@ export default function MapForOper(props) {
                 >
                     {renderCloudletInfo()}
                     <div style={{flex: .02}}></div>
-                    {renderResourceDashBoardForCloudlet()}
+                    {renderCloudletDashBoard()}
                 </div>
                 }
                 {renderAppInstInfo()}
