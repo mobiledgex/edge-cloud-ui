@@ -1227,6 +1227,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 filteredAppInstList={this.state.filteredAppInstList}
                                 currentOperLevel={this.state.currentOperLevel}
                                 filteredUsageList={this.state.filteredCloudletUsageList}
+                                chartColorList={this.state.chartColorList}
+                                currentColorIndex={this.state.currentColorIndex}
                             />
                         )
                     }

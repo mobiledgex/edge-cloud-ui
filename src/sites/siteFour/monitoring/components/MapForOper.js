@@ -87,12 +87,12 @@ export default function MapForOper(props) {
     const [filteredClusterList, setFilteredClusterList] = useState([])
     const [isEnableZoom, setIsEnableZoom] = useState(true)
 
-    const height = 200;
+    const height = 160;
     //todo:///////////////// filteredUsageList /////////////
     //todo://////////////////////////////
     const [count, setCount] = useState(-1);
     const [usageOne: any, setUsageOne] = useState(-1);
-    const hwMarginTop = 15;
+    const hwMarginTop = 10;
     const hwFontSize = 15;
 
     useEffect(() => {
@@ -187,43 +187,6 @@ export default function MapForOper(props) {
          await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
      }*/
 
-    function renderCloudletInfo() {
-        return (
-            <div style={{flex: .5, border: '0.5px solid grey', padding: 10, borderRadius: 10, marginLeft: 5}}
-                 onClick={async () => {
-                     await props.parent.handleOnChangeCloudletDropdown(currentCluodlet.CloudletName + " | " + JSON.stringify(currentCluodlet.CloudletLocation))
-                 }}
-            >
-                <div style={{
-                    fontSize: 15,
-                    color: 'yellow',
-                    fontWeight: 'bold',
-                    marginTop: 0,
-                    fontFamily: 'Roboto'
-                }}>
-                    <Icon name='cloud'/> {currentCluodlet.CloudletName}
-                </div>
-                <div style={Styles.lable001}>
-                    <b>Operator</b>: {currentCluodlet.Operator}
-                </div>
-                <div style={Styles.lable001}>
-                    <b>Ip_support</b>: {currentCluodlet.Ip_support}
-                </div>
-
-                <div style={Styles.lable001}>
-                    <b>Num_dynamic_ips</b>:{currentCluodlet.Num_dynamic_ips}
-                </div>
-                <div style={Styles.lable001}>
-                    <b>State</b>: {CLOUDLET_CLUSTER_STATE[currentCluodlet.State]}
-                </div>
-                <div style={Styles.lable001}>
-                    <b>CloudletInfoState</b>: {currentCluodlet.CloudletInfoState}
-                </div>
-            </div>
-
-        )
-
-    }
 
     function renderAppInstInfo() {
         return (
@@ -293,15 +256,93 @@ export default function MapForOper(props) {
         )
     }
 
-
-    function renderCloudletResource() {
+    function renderCloudletInfo() {
         return (
-            <div style={{backgroundColor: 'transparent', height: '100%', flex: .5}}>
+            <div style={{flex: .49, border: '0.5px solid grey', padding: 10, borderRadius: 10, marginLeft: 5}}
+                 onClick={async () => {
+                     await props.parent.handleOnChangeCloudletDropdown(currentCluodlet.CloudletName + " | " + JSON.stringify(currentCluodlet.CloudletLocation))
+                 }}
+            >
+                <div style={{
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    marginTop: 0,
+                    fontFamily: 'Roboto',
+                    display: 'flex',
+                }}>
+                    <div style={{color: props.chartColorList[props.currentColorIndex],}}>
+                        <Icon name='cloud'/>
+                    </div>
+                    <div style={{marginLeft: 10}}>
+                        {currentCluodlet.CloudletName}
+                    </div>
+                </div>
+                <hr/>
+                <table style={{width: '100%', marginTop: 10, marginLeft: 10}}>
+                    <tr style={{width: '100%'}}>
+                        <td style={{width: '50%'}}>
+                            <b>Operator</b>
+                        </td>
+                        <td style={{width: '50%'}}>
+                            {currentCluodlet.Operator}
+                        </td>
+                    </tr>
+                    <tr style={{width: '100%'}}>
+                        <td style={{width: '50%'}}>
+                            <b>Ip_support</b>
+                        </td>
+                        <td style={{width: '50%'}}>
+                            {currentCluodlet.Ip_support}
+                        </td>
+                    </tr>
+                    <tr style={{width: '100%'}}>
+                        <td style={{width: '50%'}}>
+                            <b>Num_dynamic_ips</b>
+                        </td>
+                        <td style={{width: '50%'}}>
+                            {currentCluodlet.Num_dynamic_ips}
+                        </td>
+                    </tr>
+
+                    <tr style={{width: '100%'}}>
+                        <td style={{width: '50%'}}>
+                            <b>State</b>
+                        </td>
+                        <td style={{width: '50%', color: 'yellow'}}>
+                            {CLOUDLET_CLUSTER_STATE[currentCluodlet.State]}
+                        </td>
+                    </tr>
+                    <tr style={{width: '100%'}}>
+                        <td style={{width: '50%'}}>
+                            <b>CloudletInfoState</b>
+                        </td>
+                        <td style={{width: '50%'}}>
+                            {currentCluodlet.CloudletInfoState}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        )
+    }
+
+    function renderCloudletResourceDashBoard() {
+
+
+        return (
+            <div style={{
+                backgroundColor: 'transparent',
+                height: '100%',
+                flex: .49,
+                /*border: '0.5px solid grey',
+                padding: 10,*/
+                borderRadius: 10,
+            }}>
                 {count === 1 && props.currentClassification === CLASSIFICATION.CLOUDLET ?
                     <Center style={{height: height,}}>
                         <div>
                             <Progress
-                                strokeColor={'orange'}
+                                strokeColor={'red'}
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -319,7 +360,7 @@ export default function MapForOper(props) {
                         <div style={{width: 15}}/>
                         <div>
                             <Progress
-                                strokeColor='skyblue'
+                                strokeColor='blue'
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -333,7 +374,7 @@ export default function MapForOper(props) {
                         <div style={{width: 15}}/>
                         <div>
                             <Progress
-                                strokeColor='#79FF00'
+                                strokeColor='green'
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -505,7 +546,8 @@ export default function MapForOper(props) {
                     style={Styles.infoDiv}
                 >
                     {renderCloudletInfo()}
-                    {renderCloudletResource()}
+                    <div style={{flex: .02}}></div>
+                    {renderCloudletResourceDashBoard()}
                 </div>
                 }
                 {renderAppInstInfo()}
