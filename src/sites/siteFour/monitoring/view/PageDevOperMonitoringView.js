@@ -1099,14 +1099,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this._______________makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this.__makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
 
-            _______________makeGridItemOneBody(pHwType, graphType) {
+            __makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
@@ -1316,8 +1316,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            ___________________________________________________________________________________________________________________________________________________________________________________() {
-            }
 
             renderGridLayoutForCluster() {
                 try {
@@ -1531,9 +1529,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } catch (e) {
                     showToast(e.toString())
                 }
-            }
-
-            _______________________________________________________________________________________________________________________________________________________________________________________() {
             }
 
             revertToDefaultLayout = async () => {
@@ -1789,9 +1784,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </ADropdown>
                     </div>
                 )
-            }
-
-            _______________________________________________________________________() {
             }
 
 
@@ -2067,9 +2059,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            _________________________________________________________________________________________________() {
-            }
-
 
             renderCloudletDropdown() {
                 return (
@@ -2299,9 +2288,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </Select>
                     </div>
                 )
-            }
-
-            ________________________________________________________________________() {
             }
 
             async filterClusterList(value) {
