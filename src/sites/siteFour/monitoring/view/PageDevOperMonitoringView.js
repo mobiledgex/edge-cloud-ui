@@ -804,9 +804,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 this.intervalForAppInst = setInterval(async () => {
                     this.setState({intervalLoading: true,})
                     let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
-
-                    //fixme : setChartDataForBigModal
-                    //this.setChartDataForBigModal(allAppInstUsageList)
+                    this.setChartDataForBigModal(allAppInstUsageList)
                     this.setState({
                         intervalLoading: false,
                         filteredAppInstUsageList: allAppInstUsageList,
