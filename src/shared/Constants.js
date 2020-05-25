@@ -400,16 +400,12 @@ export const HARDWARE_OPTIONS_FOR_APPINST = [
     {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS'},
 ]
 
-
 export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
     {text: 'vCpuUsed', value: 'vCpuUsed'},
     {text: 'memUsed', value: 'memUsed'},
     {text: 'diskUsed', value: 'diskUsed'},
     {text: 'floatingIpsUsed', value: 'floatingIpsUsed'},
-
     {text: 'ipv4Used', value: 'ipv4Used'},
-    {text: 'netSend', value: 'netSend'},
-    {text: 'netRecv', value: 'netRecv'},
 ]
 
 
