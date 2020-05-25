@@ -329,7 +329,7 @@ export default function MapForOper(props) {
                                 percent={usageOne.usedVCpuCount / usageOne.maxVCpuCount * 100}
                                 strokeWidth={10}
                                 format={(percent, successPercent) => {
-                                    return usageOne.usedVCpuCount + "/" + usageOne.maxVCpuCount;
+                                    return parseInt(usageOne.usedVCpuCount.toFixed(0)) + "/" + usageOne.maxVCpuCount;
                                 }}
                             />
                             <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
