@@ -79,32 +79,26 @@ const Styles = {
 export default function MapForOper(props) {
     const mapRef = useRef(null);
     const [cloudletObjects, setCloudletObjects] = useState([]);
-    //const [newCloudletList, setCloudletList] = useState([]);
     const [cloudLocList, setCloudLocList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
     const [filteredClusterList, setFilteredClusterList] = useState([])
     const [isEnableZoom, setIsEnableZoom] = useState(true)
-
-    const height = 180;
-    //todo:///////////////// filteredUsageList /////////////
-    //todo://////////////////////////////
     const [count, setCount] = useState(-1);
     const [usageOne: any, setUsageOne] = useState(-1);
+    const height = 180;
     const hwMarginTop = 10;
     const hwFontSize = 15;
 
-    useEffect(() => {
 
-        console.log(`filteredUsageList===>`, props.filteredUsageList);
+    useEffect(() => {
         if (props.filteredUsageList !== undefined && props.filteredUsageList.length === 1) {
             setCount(props.filteredUsageList.length)
             setUsageOne(props.filteredUsageList[0])
         } else {
             setCount(-1);
         }
-
     }, [props.filteredUsageList]);
 
     useEffect(() => {
@@ -124,9 +118,7 @@ export default function MapForOper(props) {
         }
     }, [props.cloudletLength])
 
-    //////////////////////////////////////////////////////
     useEffect(() => {
-        console.log(`appInstList===>`, props.filteredAppInstList);
     }, [props.filteredAppInstList])
 
     useEffect(() => {
@@ -166,26 +158,16 @@ export default function MapForOper(props) {
         setCloudLocList(cloudletLocList)
         setCloudletObjects(cloudletObjs)
 
-
-        //todo: when one Cloudlet
+        //todo: when only one Cloudlet
         if (cloudletLocList.length === 1) {
             let selectCloudletOne = cloudletObjs[cloudletLocList[0]]
             setCurrentCloudlet(selectCloudletOne[0])
-
-            console.log(`filteredClusterList===>`, props.filteredClusterList);
             setFilteredClusterList(props.filteredClusterList)
 
         } else {
             setCurrentCloudlet(undefined)
         }
     }
-
-    /* async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet, positionIndex) {
-         setCurrentCloudlet(undefined)
-         setCurrentCloudlet(_.cloneDeep(cloudletObjectOne))
-         let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + (positionIndex - 1).toString()
-         await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
-     }*/
 
 
     function renderAppInstInfo() {
@@ -270,10 +252,10 @@ export default function MapForOper(props) {
                     fontFamily: 'Roboto',
                     display: 'flex',
                 }}>
-                    <div style={{color: props.chartColorList[props.currentColorIndex],}}>
+                    <div style={{color: props.chartColorList[props.currentColorIndex], marginLeft: 5}}>
                         <Icon name='cloud'/>
                     </div>
-                    <div style={{marginLeft: 10}}>
+                    <div style={{marginLeft: 5}}>
                         {currentCluodlet.CloudletName}
                     </div>
                 </div>
@@ -326,8 +308,6 @@ export default function MapForOper(props) {
     }
 
     function renderCloudletResourceDashBoard() {
-
-
         return (
             <div style={{
                 backgroundColor: 'transparent',
@@ -450,12 +430,8 @@ export default function MapForOper(props) {
                                     specific {changeClassficationTxt(props.currentClassification)})
                                 </div>
                             </div>
-
-
                         </Center>
                 }
-
-
             </div>
         )
 
@@ -486,12 +462,6 @@ export default function MapForOper(props) {
                 position={
                     [CloudletLocation.latitude, CloudletLocation.longitude,]
                 }
-                /* onMouseOver={(e) => {
-                     //e.target.openPopup();
-                }}
-                onMouseOut={(e) => {
-                    //e.target.closePopup();
-                }}*/
             >
                 <Popup
                     className='popup_oper_cloudlet'
@@ -533,7 +503,6 @@ export default function MapForOper(props) {
             >
                 <TileLayer
                     url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-                    //url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     minZoom={1}
                 />
 
@@ -617,9 +586,7 @@ export default function MapForOper(props) {
                     </div>
                 </Control>
                 {cloudLocList.map((locOne, index) => {
-
                     return renderCloudletMarkerOne(locOne, index)
-
                 })}
                 {props.parent.state.mapLoading && renderPlaceHolderLottiePinJump2()}
             </Map>
