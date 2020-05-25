@@ -176,25 +176,7 @@ const TimeSeries = (props) => {
 
 
         }
-        if (prevProps.id === dataType.REGISTER_CLIENT) {
-            if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
-                const shortHand = prevProps.data[prevProps.id];
-                console.log("20200521 container widget   == 99 ==", shortHand);
-
-                const { type } = prevProps;
-
-                shortHand.map(data => {
-                    const keys = Object.keys(data);
-                    const methods = keys;
-                    reloadChart(
-                        { [methods[0]]: data[methods[0]] },
-                        methods[0],
-                        type
-                    );
-                });
-            }
-        }
-        if (prevProps.id === dataType.FIND_CLOUDLET) {
+        if (prevProps.id === dataType.REGISTER_CLIENT || prevProps.id === dataType.FIND_CLOUDLET) {
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
                 console.log("20200521 container widget   == 99 ==", shortHand);
