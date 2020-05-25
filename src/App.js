@@ -25,7 +25,7 @@ import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import {ThemeProvider} from "@material-ui/styles";
 import {getDarkTheme, getLightTheme, THEME_TYPE} from "./themeStyle";
-import DonutChartHooks from "./sites/siteFour/monitoring/components/DonutChartHooks";
+import EchartBarChartExampleCode from "./sites/siteFour/monitoring/temp/EchartBarChartExampleCode";
 // API
 
 let self = null;
@@ -360,7 +360,7 @@ class App extends Component {
                         <Route exact path='/passwordreset'
                                component={DashboardContainer.bind(this, {mainPath: '/passwordreset'})}/>
                         <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath: '/verify'})}/>
-                        <Route exact path='/Test001' component={DonutChartHooks}/>
+                        <Route exact path='/EchartBarChartExampleCode' component={EchartBarChartExampleCode}/>
                     </div>
                 </Router>
             </ThemeProvider>

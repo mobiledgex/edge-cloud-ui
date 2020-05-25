@@ -1788,10 +1788,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleOnChangeCloudletDropdown = async (pCloudletOne) => {
+            handleOnChangeCloudletDropdown = async (paramCloudletFullOne) => {
                 try {
-                    if (pCloudletOne !== undefined) {
-                        await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletOne)})
+                    if (paramCloudletFullOne !== undefined) {
+                        await this.setState({currentCloudLet: getOnlyCloudletName(paramCloudletFullOne)})
                         let currentCloudletOne = this.state.currentCloudLet
                         let filteredClusterList = this.state.allClusterList.filter((clusterOne: TypeCluster, index) => {
                             return clusterOne.Cloudlet === currentCloudletOne
@@ -1816,7 +1816,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
                         this.setState({
-                            currentCloudLet: pCloudletOne,
+                            currentCloudLet: paramCloudletFullOne,
                             filteredCloudletUsageList: filteredCloudletUsageList,
                             filteredCloudletList: filteredCloudletList,
                             filteredClusterList: filteredClusterList,
@@ -1826,7 +1826,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: CLASSIFICATION.CLOUDLET,
                             currentCluster: undefined,
                             currentOperLevel: undefined,
-                            currentColorIndex: getOnlyCloudletIndex(pCloudletOne),
+                            currentColorIndex: getOnlyCloudletIndex(paramCloudletFullOne),
                         });
                     } else {//todo: When allCloudlet
                         this.setState({

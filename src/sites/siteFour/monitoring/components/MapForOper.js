@@ -181,80 +181,14 @@ export default function MapForOper(props) {
     }
 
 
-    async function handleMarkerClicked(cloudLetOne) {
+    async function handleCloudletClicked(cloudletObject: TypeCloudlet, cloudletIndex) {
         setCurrentCloudlet(undefined)
-        setCurrentCloudlet(JSON.parse(JSON.stringify(cloudLetOne)))
-        await props.parent.handleOnChangeCloudletDropdown(cloudLetOne.CloudletName)
+        setCurrentCloudlet(_.cloneDeep(cloudletObject))
+        let cloudletFullOne = cloudletObject.CloudletName + " | " + JSON.stringify(cloudletObject.CloudletLocation) + " | " + props.parent.state.chartColorList[cloudletIndex]
+
+        await props.parent.handleOnChangeCloudletDropdown(cloudletFullOne)
     }
 
-    /*function renderClusterInfo() {
-        return (
-            <div style={{
-                flex: .5,
-                border: '0.5px solid grey',
-                padding: 10,
-                overflowY: 'auto',
-                marginLeft: 15,
-                marginRight: 5,
-                borderRadius: 10,
-            }}>
-
-                {filteredClusterList.map((item: TypeCluster, index) => {
-                    return (
-                        <div
-                            onClick={async () => {
-                                await props.parent.handleOnChangeClusterDropdown(item.ClusterName + " | " + item.Cloudlet)
-                            }}
-                            key={index} style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
-                            marginBottom: 5,
-                            //border: '0.5px solid grey',
-                        }}
-                        >
-                            <div style={{
-                                fontSize: 15,
-                                color: 'yellow',
-                                fontWeight: 'bold',
-                                marginTop: 0,
-                                fontFamily: 'Roboto'
-                            }}>
-                                <Icon name='th'/> {item.ClusterName}
-                            </div>
-                            <div style={Styles.lable001}>
-                                <b>Deployment</b>: <span style={{
-                                color: 'green',
-                                fontWeight: 'bold',
-                                fontSize: 15
-                            }}>{item.Deployment}</span>
-                            </div>
-                            <div style={Styles.lable001}>
-                                <b>Flavor</b>: {item.Flavor}
-                            </div>
-                            <div style={Styles.lable001}>
-                                <b>State</b>: {CLOUDLET_CLUSTER_STATE[item.State]}
-                            </div>
-                            <div style={Styles.lable001}>
-                                <b>Reservable</b>: {item.Reservable}
-                            </div>
-                            <div style={Styles.lable001}>
-                                <b>IpAccess</b>: {item.IpAccess}
-                            </div>
-                        </div>
-                    )
-                })}
-                {filteredClusterList.length === 0 &&
-                <Center style={{fontSize: 20, color: 'orange', alignSelf: 'center', height: 135}}>
-                    <div style={{marginTop: 15, fontStyle: 'italic'}}>
-                        No Cluster
-                    </div>
-                </Center>
-                }
-
-            </div>
-        )
-    }*/
 
     function renderCloudletInfo() {
         return (
@@ -361,7 +295,6 @@ export default function MapForOper(props) {
                 : null
         )
     }
-
 
 
     function renderCloudletResource() {
@@ -621,7 +554,7 @@ export default function MapForOper(props) {
                                                 during={250}
                                                 color='#1cecff'
                                                 onClick={async () => {
-                                                    await handleMarkerClicked(cloudLetOne)
+                                                    await handleCloudletClicked(cloudLetOne, innerIndex)
                                                 }}
                                             >
                                                 <div className='oper_popup_div'>
