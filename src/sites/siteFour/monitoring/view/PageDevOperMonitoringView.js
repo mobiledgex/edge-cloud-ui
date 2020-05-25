@@ -1,20 +1,21 @@
-import {ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
-import * as serverData from '../../../../services/model/serverData';
+import {Center, ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect, DatePicker} from 'antd';
+import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 
 import {
     filterByClassification,
-    getCloudletClusterNameList, getOnlyCloudletIndex,
+    getCloudletClusterNameList,
+    getOnlyCloudletIndex,
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
-    makeBarChartDataForAppInst, makeBarChartDataForCloudlet,
+    makeBarChartDataForAppInst,
+    makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
     makeClusterTreeDropdown,
     makeDropdownForAppInst,
@@ -31,7 +32,8 @@ import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_LIST,
     CLASSIFICATION,
-    HARDWARE_OPTIONS_FOR_APPINST, HARDWARE_OPTIONS_FOR_CLOUDLET,
+    HARDWARE_OPTIONS_FOR_APPINST,
+    HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
     NETWORK_TYPE,
@@ -39,26 +41,10 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -93,12 +79,7 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHooks from "../components/AppInstEventLogListHooks";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -510,12 +491,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     selectedAppInstIndex: -1,
                     openTerminal: false,
                     isOpenGlobe: false,
-                    isLegendExpanded: false,
-                    legendColSize: 3,
+                    isLegendExpanded: true,
+                    legendColSize: 4,
                     currentAppVersion: undefined,
                     isEnableZoomIn: false,
                     searchClusterValue: '',
-                    /////////////////////////
                     cloudletList: [],
                     filteredCloudletList: [],
                     allCloudletUsageList: [],
@@ -560,7 +540,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let clusterList = []
                 let appInstList = []
                 let cloudletList = []
-
                 let allClusterEventLogList = [];
                 let allAppInstEventLogList = [];
                 let allClusterUsageList = [];
@@ -598,13 +577,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
-                    let nameList = getCloudletClusterNameList(orgAppInstList)
-                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(nameList.cloudletNameList), _.uniqWith(nameList.clusterNameList, _.isEqual))
+                    let cloudletClusterNameList = getCloudletClusterNameList(orgAppInstList)
+                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let markerListForMap = []
-                    markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                    let markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                     await this.setState({
                         cloudletList: cloudletList,
                         filteredCloudletList: cloudletList,
@@ -640,6 +618,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else {
                         dataCount = cloudletList.length
                     }
+
+                    console.log(`clusterList===>`, clusterList);
 
 
                     await this.setState({
@@ -877,8 +857,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -1788,10 +1768,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleOnChangeCloudletDropdown = async (paramCloudletFullOne) => {
+            handleOnChangeCloudletDropdown = async (pClusterCloudletOne) => {
                 try {
-                    if (paramCloudletFullOne !== undefined) {
-                        await this.setState({currentCloudLet: getOnlyCloudletName(paramCloudletFullOne)})
+                    if (pClusterCloudletOne !== undefined) {
+                        await this.setState({currentCloudLet: getOnlyCloudletName(pClusterCloudletOne)})
                         let currentCloudletOne = this.state.currentCloudLet
                         let filteredClusterList = this.state.allClusterList.filter((clusterOne: TypeCluster, index) => {
                             return clusterOne.Cloudlet === currentCloudletOne
@@ -1816,7 +1796,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
                         this.setState({
-                            currentCloudLet: paramCloudletFullOne,
+                            currentCloudLet: pClusterCloudletOne,
                             filteredCloudletUsageList: filteredCloudletUsageList,
                             filteredCloudletList: filteredCloudletList,
                             filteredClusterList: filteredClusterList,
@@ -1826,7 +1806,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: CLASSIFICATION.CLOUDLET,
                             currentCluster: undefined,
                             currentOperLevel: undefined,
-                            currentColorIndex: getOnlyCloudletIndex(paramCloudletFullOne),
+                            currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
                         });
                     } else {//todo: When allCloudlet
                         this.setState({
@@ -1950,6 +1930,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentAppInst: undefined,
                             filteredClusterList: filteredClusterList,
                             currentOperLevel: CLASSIFICATION.CLUSTER,
+                            //currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
 
                         }, () => {
                             console.log(`sdlkflskdfkl==3333==>`, this.state.filteredClusterUsageList);
@@ -2085,7 +2066,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{}}
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
-                            //disabled={isEmpty(this.state.cloudletDropdownList)}
+                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList)}
                             value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
@@ -2377,14 +2358,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
 
                 return (
-                    <Row gutter={16} style={{
-                        flex: .97,
-                        marginLeft: 10,
-                        backgroundColor: 'transparent',
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        display: filteredClusterUsageListLength === 1 ? 'flex' : null,
-                    }}>
+                    <Row gutter={16}
+                         style={{
+                             flex: .97,
+                             marginLeft: 10,
+                             justifyContent: 'center',
+                             alignSelf: 'center',
+                             display: filteredClusterUsageListLength === 1 ? 'flex' : null,
+                         }}
+                    >
                         {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, index) => {
                             return (
                                 <Col
@@ -2404,26 +2386,34 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                     span={this.state.legendColSize}
                                     title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
-                                    style={{marginTop: 5, marginBottom: 5}}
+                                    style={{
+                                        marginTop: 5, marginBottom: 5,
+                                        justifyContent: filteredClusterUsageListLength === 1 ? 'center' : null,
+                                        width: filteredClusterUsageListLength === 1 ? '100%' : null,
+
+                                    }}
                                 >
-                                    {this.renderDot(index)}
                                     {filteredClusterUsageListLength === 1 ?
-                                        <React.Fragment>
-                                            <div className='clusterCloudletBoxOne'>
-                                                <div style={{}}>
+                                        <Center style={{marginLeft: 100}}>
+                                            {this.renderDot(index)}
+                                            <div style={{display: 'flex', marginLeft: 3,}}>
+                                                <div>
                                                     {item.cluster}
                                                 </div>
                                                 <div style={{color: 'yellow',}}>
                                                     &nbsp;[{item.cloudlet}]
                                                 </div>
                                             </div>
-                                        </React.Fragment>
+                                        </Center>
                                         :
-                                        <React.Fragment>
+                                        <Center>
+                                            <div>
+                                                {this.renderDot(index)}
+                                            </div>
                                             <div className="clusterCloudletBox">
                                                 {reduceLegendClusterCloudletName(item, this)}
                                             </div>
-                                        </React.Fragment>
+                                        </Center>
                                     }
                                 </Col>
                             )
@@ -2502,18 +2492,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else {
                         let legendItemCount = 0;
 
-                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                            legendItemCount = this.state.filteredClusterUsageList.length
-                        } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER || this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                        if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                            legendItemCount = this.state.filteredCloudletList.length
+                        } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                             legendItemCount = this.state.filteredClusterUsageList.length;
-                        } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                            legendItemCount = this.state.filteredCloudletList.length;
+                        } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                            legendItemCount = this.state.filteredAppInstList.length;
                         }
+
+                        let RowHeight = Math.ceil(legendItemCount / 6);
 
                         return (
                             <LegendOuterDiv
                                 style={{
-                                    height: legendItemCount > 1 ? 60 : 30,
+                                    height: legendItemCount === 1 ? 30 : (30 * RowHeight),
                                     marginTop: 4,
                                 }}>
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?//@desc: CLUSTER  Level Legend

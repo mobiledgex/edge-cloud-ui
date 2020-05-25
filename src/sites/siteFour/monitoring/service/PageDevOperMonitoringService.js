@@ -21,18 +21,11 @@ import {
     THEME_OPTIONS,
     USAGE_INDEX
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet, TypeLineChartData} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderLineChartCore,
-    renderPlaceHolderLoader,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderLineChartCore, renderPlaceHolderLoader, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import {Table} from "semantic-ui-react";
@@ -351,8 +344,8 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                    //////todo:cloudllet/////////
-                    //////todo:cloudllet/////////
+                //////todo:cloudllet/////////
+                //////todo:cloudllet/////////
                 //////todo:cloudllet/////////
                 else if (
                     hardwareType === HARDWARE_TYPE.NETSEND
@@ -490,22 +483,6 @@ export const makeGradientColorList = (canvas, height, colorList, isBig = false) 
 
     return gradientList;
 };
-
-
-export const makeGradientColorList2 = (canvas, height, colorList, isBig = false) => {
-    const ctx = canvas.getContext("2d");
-    let gradientList = [];
-    colorList.map(item => {
-        const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, hexToRGB(item, 0.4));
-        gradient.addColorStop(0.5, hexToRGB(item, 0.7));
-        gradient.addColorStop(1, hexToRGB(item, 0.98));
-        gradientList.push(gradient);
-    })
-
-    return gradientList;
-};
-
 /**
  *
  * @param themeTitle
@@ -1170,11 +1147,17 @@ export const convertToClassification = (pClassification) => {
 };
 
 export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
-    if (!_this.state.isLegendExpanded) {
-        return reduceString(item.cluster, 7) + "[" + reduceString(item.cloudlet, 7) + "]"
-    } else {//when legend expanded
-        return reduceString(item.cluster, 20) + "[" + reduceString(item.cloudlet, 19) + "]"
-    }
+    let limitCharLength = _this.state.isLegendExpanded ? 17 : 7
+    return (
+        <div style={{display: 'flex'}}>
+            <div>
+                {reduceString(item.cluster, limitCharLength)}
+            </div>
+            <div style={{color: 'white'}}>
+                &nbsp;[{reduceString(item.cloudlet, limitCharLength)}]
+            </div>
+        </div>
+    )
 }
 
 
@@ -1238,7 +1221,14 @@ export const tempClusterList = [
 
 ]
 
-export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
+
+/**
+ *
+ * @param cloudletList
+ * @param clusterNameList
+ * @returns {[]}
+ */
+export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
     let newCloudletList = []
     newCloudletList.push({
         title: 'Reset Filter',
@@ -1249,13 +1239,15 @@ export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
     cloudletList.map(cloudletOne => {
         let newCloudletOne = {
             title: (
-
                 <div>{cloudletOne}&nbsp;&nbsp;
                     <Chip
                         color="primary"
                         size="small"
                         label="Cloudlet"
-                        //style={{color: 'white', backgroundColor: '#34373E'}}
+                        style={{
+                            //color: 'white',
+                            //backgroundColor: '#34373E'
+                        }}
                     />
                 </div>
             ),
@@ -1264,11 +1256,11 @@ export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
             children: []
         };
 
-        appInstList.map(clusterOne => {
+        clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
             if (clusterOne.Cloudlet === cloudletOne) {
                 newCloudletOne.children.push({
-                    title: clusterOne.ClusterInst,
-                    value: clusterOne.ClusterInst + " | " + cloudletOne,
+                    title: clusterOne.ClusterName,
+                    value: clusterOne.ClusterName + " | " + cloudletOne,
                     isParent: false,
                 })
             }
@@ -1279,28 +1271,6 @@ export const makeClusterTreeDropdown = (cloudletList, appInstList) => {
 
     return newCloudletList;
 }
-
-
-export const makeSelectBoxListWithKeyValuePipeForCluster = (arrList, keyName, valueName) => {
-    try {
-        let newArrList = [];
-        newArrList.push({
-            key: '',
-            value: '',
-            text: 'Reset Filter',
-        })
-        for (let i in arrList) {
-            newArrList.push({
-                key: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-                value: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-                text: arrList[i][keyName].trim() + " | " + arrList[i][valueName].trim(),
-            })
-        }
-        return newArrList;
-    } catch (e) {
-
-    }
-};
 
 
 export const makeDropdownForCloudlet = (pList) => {

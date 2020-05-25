@@ -3,7 +3,7 @@ import {Map, Marker, Popup, TileLayer} from "react-leaflet";
 import Ripple from "react-ripples";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
-import type {TypeAppInst, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
 import {changeClassficationTxt, listGroupByKey} from "../service/PageDevOperMonitoringService";
 import Control from "react-leaflet-control";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -181,14 +181,13 @@ export default function MapForOper(props) {
     }
 
 
-    async function handleCloudletClicked(cloudletObject: TypeCloudlet, cloudletIndex) {
+    async function handleMarkerClicked(cloudLetOne) {
         setCurrentCloudlet(undefined)
-        setCurrentCloudlet(_.cloneDeep(cloudletObject))
-        let cloudletFullOne = cloudletObject.CloudletName + " | " + JSON.stringify(cloudletObject.CloudletLocation) + " | " + props.parent.state.chartColorList[cloudletIndex]
-
-        await props.parent.handleOnChangeCloudletDropdown(cloudletFullOne)
+        let cloudletObjectOne: TypeCloudlet = _.cloneDeep(cloudLetOne);
+        setCurrentCloudlet(cloudletObjectOne)
+        let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + props.parent.state.currentColorIndex
+        await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
     }
-
 
     function renderCloudletInfo() {
         return (
@@ -424,6 +423,53 @@ export default function MapForOper(props) {
 
     }
 
+    function renderCloudletMarkerOne(locOne, index) {
+        let CloudletLocation = JSON.parse(locOne)
+        return (
+            <Marker
+                key={index}
+                icon={cloudGreenIcon}
+                className='marker1'
+                position={
+                    [CloudletLocation.latitude, CloudletLocation.longitude,]
+                }
+                /* onMouseOver={(e) => {
+                     //e.target.openPopup();
+                }}
+                onMouseOut={(e) => {
+                    //e.target.closePopup();
+                }}*/
+            >
+                <Popup
+                    className='popup_oper_cloudlet'
+                    offset={[0, 0]}
+                    opacity={0.7}
+                    style={{width: '200px !important'}}
+                >
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                        {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
+                            return (
+                                <Ripple
+                                    key={innerIndex}
+                                    className='popup_oper_cloudlet'
+                                    during={250}
+                                    color='#1cecff'
+                                    onClick={async () => {
+                                        await handleMarkerClicked(cloudLetOne)
+                                    }}
+                                >
+                                    <div className='oper_popup_div'>
+                                        {cloudLetOne.CloudletName}
+                                    </div>
+                                </Ripple>
+                            )
+                        })}
+                    </div>
+                </Popup>
+
+            </Marker>
+        )
+    }
 
     return (
         <div style={{height: '100%', width: '100%'}}>
@@ -526,48 +572,7 @@ export default function MapForOper(props) {
                 </Control>
                 {cloudLocList.map((locOne, index) => {
 
-                    let CloudletLocation = JSON.parse(locOne)
-                    return (
-                        <Marker
-                            key={index}
-                            icon={cloudGreenIcon}
-                            className='marker1'
-                            position={
-                                [CloudletLocation.latitude, CloudletLocation.longitude,]
-                            }
-                            /*onMouseOver={(e) => {                                e.target.openPopup();                            }}*/ /* onMouseOut={(e) => {                                 //e.target.closePopup();                            }}*/
-                            onClick={async () => {
-                            }}
-                        >
-                            <Popup
-                                className='popup_oper_cloudlet'
-                                offset={[0, 0]}
-                                opacity={0.7}
-                                style={{width: '200px !important'}}
-                            >
-                                <div style={{display: 'flex', flexDirection: 'column'}}>
-                                    {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
-                                        return (
-                                            <Ripple
-                                                key={innerIndex}
-                                                className='popup_oper_cloudlet'
-                                                during={250}
-                                                color='#1cecff'
-                                                onClick={async () => {
-                                                    await handleCloudletClicked(cloudLetOne, innerIndex)
-                                                }}
-                                            >
-                                                <div className='oper_popup_div'>
-                                                    {cloudLetOne.CloudletName}
-                                                </div>
-                                            </Ripple>
-                                        )
-                                    })}
-                                </div>
-                            </Popup>
-
-                        </Marker>
-                    )
+                    return renderCloudletMarkerOne(locOne, index)
 
                 })}
                 {props.parent.state.mapLoading && renderPlaceHolderLottiePinJump2()}
