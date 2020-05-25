@@ -372,7 +372,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     classificationName = item.cloudlet
                 } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
-                    classificationName = item.instance.AppName
+                    classificationName = item.instanceData.AppName
                 }
 
                 let usageList = [];
@@ -407,7 +407,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             return _result
         }
     } catch (e) {
-        throw new Error(e)
+        //throw new Error(e)
     }
 
 };
