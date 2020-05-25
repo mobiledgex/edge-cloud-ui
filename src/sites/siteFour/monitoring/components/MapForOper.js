@@ -180,13 +180,12 @@ export default function MapForOper(props) {
         }
     }
 
-
-    async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet, cloudletIndex) {
+   /* async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet, positionIndex) {
         setCurrentCloudlet(undefined)
         setCurrentCloudlet(_.cloneDeep(cloudletObjectOne))
-        let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + cloudletIndex.toString()
+        let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + (positionIndex - 1).toString()
         await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
-    }
+    }*/
 
     function renderCloudletInfo() {
         return (
@@ -447,15 +446,14 @@ export default function MapForOper(props) {
                 >
                     <div style={{display: 'flex', flexDirection: 'column'}}>
                         {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
+
+                            console.log(`${cloudLetOne.CloudletName}===cloudletObjects=>`, parseInt(cloudletIndex + innerIndex).toString());
                             return (
                                 <Ripple
                                     key={innerIndex}
                                     className='popup_oper_cloudlet'
                                     during={250}
                                     color='#1cecff'
-                                    onClick={async () => {
-                                        await handleCloudletClicked(cloudLetOne, cloudletIndex)
-                                    }}
                                 >
                                     <div className='oper_popup_div'>
                                         {cloudLetOne.CloudletName}
