@@ -181,10 +181,10 @@ export default function MapForOper(props) {
     }
 
 
-    async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet) {
+    async function handleCloudletClicked(cloudletObjectOne: TypeCloudlet, cloudletIndex) {
         setCurrentCloudlet(undefined)
         setCurrentCloudlet(_.cloneDeep(cloudletObjectOne))
-        let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + props.parent.state.currentColorIndex
+        let fullCloudletOne = cloudletObjectOne.CloudletName + " | " + JSON.stringify(cloudletObjectOne.CloudletLocation) + " | " + cloudletIndex.toString()
         await props.parent.handleOnChangeCloudletDropdown(fullCloudletOne)
     }
 
@@ -422,11 +422,11 @@ export default function MapForOper(props) {
 
     }
 
-    function renderCloudletMarkerOne(locOne, index) {
+    function renderCloudletMarkerOne(locOne, cloudletIndex) {
         let CloudletLocation = JSON.parse(locOne)
         return (
             <Marker
-                key={index}
+                key={cloudletIndex}
                 icon={cloudGreenIcon}
                 className='marker1'
                 position={
@@ -454,7 +454,7 @@ export default function MapForOper(props) {
                                     during={250}
                                     color='#1cecff'
                                     onClick={async () => {
-                                        await handleCloudletClicked(cloudLetOne)
+                                        await handleCloudletClicked(cloudLetOne, cloudletIndex)
                                     }}
                                 >
                                     <div className='oper_popup_div'>
