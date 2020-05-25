@@ -599,9 +599,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let cloudletClusterNameList = getCloudletClusterNameList(clusterList)
-
-                    console.log(`clusterList====>`, clusterList);
-
                     let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
                     //@desc:#########################################################################
                     //@desc: map Marker
