@@ -812,6 +812,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }, 1000 * 7.0)
             }
 
+
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
