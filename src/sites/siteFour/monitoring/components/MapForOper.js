@@ -307,7 +307,7 @@ export default function MapForOper(props) {
         )
     }
 
-    function renderCloudletResourceDashBoard() {
+    function renderResourceDashBoardForCloudlet() {
         return (
             <div style={{
                 backgroundColor: 'transparent',
@@ -339,7 +339,7 @@ export default function MapForOper(props) {
                         <div style={{width: 15}}/>
                         <div>
                             <Progress
-                                strokeColor='blue'
+                                strokeColor='skyblue'
                                 type="circle"
                                 width={100}
                                 trailColor='#262626'
@@ -486,6 +486,72 @@ export default function MapForOper(props) {
         )
     }
 
+    function renderMapControlButton() {
+        return (
+            <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+                <div style={PageMonitoringStyles.mapControlDiv}>
+                    <div
+                        style={mapIconStyle}
+                        onClick={async () => {
+                            setCurrentCloudlet(undefined)
+                            props.parent.handleOnChangeCloudletDropdown(undefined).then(() => {
+                                props.parent.setState({
+                                    toggleZoom: !props.parent.state.toggleZoom
+                                });
+                                mapRef.current.leafletElement.closePopup();
+                            })
+
+                        }}
+                    >
+                        <Icon
+
+                            name='redo'
+                            style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                        />
+                    </div>
+                    <div
+                        style={mapIconStyle}
+                        onClick={() => {
+                            setZoom(zoom + 1)
+                        }}
+                    >
+                        <Icon
+                            name='add'
+                            style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                        />
+                    </div>
+                    <div style={{width: 2}}/>
+                    <div
+                        style={mapIconStyle}
+                        onClick={() => {
+                            if (zoom > 1) {
+                                setZoom(zoom - 1)
+                            }
+                        }}
+                    >
+                        <Icon
+                            name='minus'
+                            style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                        />
+                    </div>
+                    <div
+                        style={mapIconStyle}
+                        onClick={() => {
+                            setIsEnableZoom(!isEnableZoom
+                            )
+                        }}
+                    >
+                        <Icon
+                            name='arrows alternate vertical'
+                            style={{fontSize: 20, color: isEnableZoom ? 'white' : 'grey', cursor: 'pointer'}}
+                        />
+                    </div>
+
+                </div>
+            </Control>
+        )
+    }
+
     return (
         <div style={{height: '100%', width: '100%'}}>
             <Map
@@ -505,9 +571,8 @@ export default function MapForOper(props) {
                     url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
                     minZoom={1}
                 />
-
                 {/*@todo:#####################################################*/}
-                {/*@todo:cloudlet , cluster ,AppInst info                        */}
+                {/*@todo:map bottom Info                                     */}
                 {/*@todo:####################################################*/}
                 {currentCluodlet !== undefined &&
                 <div
@@ -515,76 +580,11 @@ export default function MapForOper(props) {
                 >
                     {renderCloudletInfo()}
                     <div style={{flex: .02}}></div>
-                    {renderCloudletResourceDashBoard()}
+                    {renderResourceDashBoardForCloudlet()}
                 </div>
                 }
                 {renderAppInstInfo()}
-
-                {/*todo:Control*/}
-                {/*todo:Control*/}
-                {/*todo:Control*/}
-                <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
-
-                    <div style={PageMonitoringStyles.mapControlDiv}>
-                        <div
-                            style={mapIconStyle}
-                            onClick={async () => {
-                                setCurrentCloudlet(undefined)
-                                props.parent.handleOnChangeCloudletDropdown(undefined).then(() => {
-                                    props.parent.setState({
-                                        toggleZoom: !props.parent.state.toggleZoom
-                                    });
-                                    mapRef.current.leafletElement.closePopup();
-                                })
-
-                            }}
-                        >
-                            <Icon
-
-                                name='redo'
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
-                        <div
-                            style={mapIconStyle}
-                            onClick={() => {
-                                setZoom(zoom + 1)
-                            }}
-                        >
-                            <Icon
-                                name='add'
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
-                        <div style={{width: 2}}/>
-                        <div
-                            style={mapIconStyle}
-                            onClick={() => {
-                                if (zoom > 1) {
-                                    setZoom(zoom - 1)
-                                }
-                            }}
-                        >
-                            <Icon
-                                name='minus'
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
-                        <div
-                            style={mapIconStyle}
-                            onClick={() => {
-                                setIsEnableZoom(!isEnableZoom
-                                )
-                            }}
-                        >
-                            <Icon
-                                name='arrows alternate vertical'
-                                style={{fontSize: 20, color: isEnableZoom ? 'white' : 'grey', cursor: 'pointer'}}
-                            />
-                        </div>
-
-                    </div>
-                </Control>
+                {renderMapControlButton()}
                 {cloudLocList.map((locOne, index) => {
                     return renderCloudletMarkerOne(locOne, index)
                 })}
