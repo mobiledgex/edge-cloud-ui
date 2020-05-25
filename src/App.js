@@ -62,12 +62,9 @@ const DashboardContainer = (props, props2) => {
     /////////////////////////////////////////
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
 
-    let storeData = localStorage.getItem('PROJECT_INIT')
-
-    // TODO : 'undefined' catch
-    if (storeData && !loaded) {
+    if (storage_data && storage_data !== "undefined" && !loaded) {
         loaded = true;
-        let userInfo = JSON.parse(storeData);
+        let userInfo = JSON.parse(storage_data);
         if (userInfo.userToken) {
             validateToken()
         }
@@ -109,9 +106,7 @@ const DashboardContainer = (props, props2) => {
     }
     if (props.mainPath === '/passwordreset') {
         let token = props2.location.search.replace('token=', '')
-        let params = {};
-        params['resetToken'] = token
-        localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
+        localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(token))
     }
 
 

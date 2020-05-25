@@ -265,9 +265,9 @@ class Login extends Component {
     }
 
     resetPassword = async (password) => {
-        // TODO: chage store.resetToken ==> store;
+        /* @Smith : chage store.resetToken ==> store;*/
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let mcRequest = await serverData.resetPassword(self, { token: store ? store.resetToken : 'null', password: password })
+        let mcRequest = await serverData.resetPassword(self, { token: store ? store : 'null', password: password })
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
             self.props.handleAlertInfo('success', mcRequest.response.data.message)
             setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
