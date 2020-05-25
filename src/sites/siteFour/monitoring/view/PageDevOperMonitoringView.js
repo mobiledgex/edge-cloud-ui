@@ -598,7 +598,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
-                    let cloudletClusterNameList = getCloudletClusterNameList(orgAppInstList)
+                    let cloudletClusterNameList = getCloudletClusterNameList(clusterList)
+
+                    console.log(`clusterList====>`, clusterList);
+
                     let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
                     //@desc:#########################################################################
                     //@desc: map Marker
@@ -2364,9 +2367,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderClusterLegend() {
+            renderClusterLegend(legendItemCount) {
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
-
                 return (
                     <Row gutter={16}
                          style={{
@@ -2394,7 +2396,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }
 
                                     }}
-                                    span={this.state.legendColSize}
+                                    span={legendItemCount === 1 ? 24 : 4}
                                     title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                     style={{
                                         marginTop: 5, marginBottom: 5,
@@ -2433,7 +2435,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderAppLegend() {
+            renderAppLegend(pLegendItemCount) {
                 return (
                     <Row gutter={16}
                          style={{
@@ -2448,7 +2450,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             className="gutterRow"
                             onClick={async () => {
                             }}
-                            span={24}
+                            span={pLegendItemCount === 1 ? 24 : 4}
                             style={{marginTop: 3, marginBottom: 3}}
                         >
                             <div style={{
@@ -2520,13 +2522,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     marginTop: 4,
                                 }}>
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                    this.renderClusterLegend()
+                                    this.renderClusterLegend(legendItemCount)
                                     ://@desc: When Cloudlet Level Legend
                                     this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
                                         this.renderCloudletLegend(legendItemCount)
                                         //@desc: When AppLevel Legend
                                         : this.state.currentClassification === CLASSIFICATION.APPINST &&
-                                        this.renderAppLegend()
+                                        this.renderAppLegend(legendItemCount)
 
                                 }
                                 {/*@todo:################################*/}

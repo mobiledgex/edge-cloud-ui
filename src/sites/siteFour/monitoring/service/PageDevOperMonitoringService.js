@@ -25,7 +25,14 @@ import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "..
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderLineChartCore, renderPlaceHolderLoader, renderUsageByType} from "./PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderLineChartCore,
+    renderPlaceHolderLoader,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import {Table} from "semantic-ui-react";
@@ -168,16 +175,16 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
 
 /**
  *
- * @param orgAppInstList
+ * @param clusterList
  * @returns {{cloudletNameList: [], clusterNameList: []}}
  */
-export function getCloudletClusterNameList(orgAppInstList) {
+export function getCloudletClusterNameList(clusterList: TypeCluster) {
     let cloudletNameList = []
-    orgAppInstList.map(item => (cloudletNameList.push(item.Cloudlet)))
+    clusterList.map(item => (cloudletNameList.push(item.Cloudlet)))
     let clusterNameList = [];
-    orgAppInstList.map((item: TypeAppInst, index) => {
+    clusterList.map((item: TypeCluster, index) => {
         clusterNameList.push({
-            ClusterInst: item.ClusterInst,
+            ClusterInst: item.ClusterName,
             Cloudlet: item.Cloudlet,
         })
     })
@@ -344,8 +351,8 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.connectionsSeriesList
                 }
-                //////todo:cloudllet/////////
-                //////todo:cloudllet/////////
+                    //////todo:cloudllet/////////
+                    //////todo:cloudllet/////////
                 //////todo:cloudllet/////////
                 else if (
                     hardwareType === HARDWARE_TYPE.NETSEND
@@ -1147,7 +1154,7 @@ export const convertToClassification = (pClassification) => {
 };
 
 export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
-    let limitCharLength = _this.state.isLegendExpanded ? 17 : 7
+    let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
     return (
         <div style={{display: 'flex'}}>
             <div>
