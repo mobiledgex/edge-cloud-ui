@@ -401,11 +401,11 @@ export const HARDWARE_OPTIONS_FOR_APPINST = [
 ]
 
 export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
-    {text: 'vCpuUsed', value: 'vCpuUsed'},
-    {text: 'memUsed', value: 'memUsed'},
-    {text: 'diskUsed', value: 'diskUsed'},
-    {text: 'floatingIpsUsed', value: 'floatingIpsUsed'},
-    {text: 'ipv4Used', value: 'ipv4Used'},
+    {text: 'vCPU', value: 'vCpuUsed'},
+    {text: 'MEM', value: 'memUsed'},
+    {text: 'DISK', value: 'diskUsed'},
+    {text: 'FLOATINGIPS', value: 'floatingIpsUsed'},
+    {text: 'IPV4', value: 'ipv4Used'},
 ]
 
 

@@ -2453,17 +2453,26 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                         </Col>
                     </Row>
-
                 )
             }
 
 
             makeLegend() {
                 try {
-                    let legendHeight = 30
+                    let legendItemCount = 0;
+                    if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                        legendItemCount = this.state.filteredCloudletList.length
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                        legendItemCount = this.state.filteredClusterUsageList.length;
+                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                        legendItemCount = this.state.filteredAppInstUsageList.length;
+                    }
+
+                    let RowHeight = Math.ceil(legendItemCount / 6);
+
                     if (this.state.loading) {
                         return (
-                            <LegendOuterDiv style={{height: legendHeight}}>
+                            <LegendOuterDiv style={{height: 30 * RowHeight,}}>
                                 <div style={{
                                     display: 'flex',
                                     alignSelf: 'center',
@@ -2471,8 +2480,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     width: '100%',
-                                    height: 30,
-                                    //backgroundColor: 'red'
+
                                 }}>
                                     <ColorLinearProgress
                                         variant={'query'}
@@ -2487,18 +2495,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </LegendOuterDiv>
                         )
                     } else {
-                        let legendItemCount = 0;
-
-                        if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                            legendItemCount = this.state.filteredCloudletList.length
-                        } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                            legendItemCount = this.state.filteredClusterUsageList.length;
-                        } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                            legendItemCount = this.state.filteredAppInstUsageList.length;
-                        }
-
-                        let RowHeight = Math.ceil(legendItemCount / 6);
-
                         return (
                             <LegendOuterDiv
                                 style={{
