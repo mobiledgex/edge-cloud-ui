@@ -51,7 +51,9 @@ class EntranceGlobe extends Component {
         }
     }
     componentWillReceiveProps(nextProps, nextContext) {
-
+        if (nextProps.loginMode && nextProps.loginMode === 'resetPass') {
+            return;
+        }
         /** If alrady logined */
         if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
             this.goToNext("/site4");
@@ -130,7 +132,7 @@ class EntranceGlobe extends Component {
             })
             .catch((err) => {
                 localStorage.removeItem(LOCAL_STRAGE_KEY);
-                self.gotoNext("/logout")
+                self.goToNext("/logout")
             })
         this.setState({ modalOpen: true })
 
@@ -150,6 +152,7 @@ class EntranceGlobe extends Component {
     };
 
     handleClickLogin(mode) {
+        self.logoutRequest();
         self.setState({ modalOpen: true })
         setTimeout(() => self.props.handleChangeLoginMode(mode), 500);
     }
