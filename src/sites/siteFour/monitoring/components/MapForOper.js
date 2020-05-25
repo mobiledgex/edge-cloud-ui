@@ -242,7 +242,7 @@ export default function MapForOper(props) {
         return (
             <div style={{flex: .49, border: '0.5px solid grey', padding: 10, borderRadius: 10, marginLeft: 5}}
                  onClick={async () => {
-                     await props.parent.handleOnChangeCloudletDropdown(currentCluodlet.CloudletName + " | " + JSON.stringify(currentCluodlet.CloudletLocation))
+
                  }}
             >
                 <div style={{
@@ -558,7 +558,7 @@ export default function MapForOper(props) {
                 ref={mapRef}
                 center={mapCenter}
                 zoom={zoom}
-                duration={0.7}
+                duration={1.2}
                 style={{width: '100%', height: '100%'}}
                 easeLinearity={1}
                 useFlyTo={true}
