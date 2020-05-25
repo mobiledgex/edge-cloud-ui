@@ -2628,7 +2628,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <div style={{
                                 display: 'flex', flex: .3, justifyContent: 'flex-end',
                             }}>
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.APPINST && this.renderStreamSwitch()}
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderStreamSwitch() : null}
                                 {this.makeTopRightMenuActionButton()}
                             </div>
                         </Toolbar>
