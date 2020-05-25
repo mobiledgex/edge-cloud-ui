@@ -87,7 +87,7 @@ export default function MapForOper(props) {
     const [filteredClusterList, setFilteredClusterList] = useState([])
     const [isEnableZoom, setIsEnableZoom] = useState(true)
 
-    const height = 160;
+    const height = 180;
     //todo:///////////////// filteredUsageList /////////////
     //todo://////////////////////////////
     const [count, setCount] = useState(-1);
@@ -279,44 +279,43 @@ export default function MapForOper(props) {
                 </div>
                 <hr/>
                 <table style={{width: '100%', marginTop: 10, marginLeft: 10}}>
-                    <tr style={{width: '100%'}}>
-                        <td style={{width: '50%'}}>
+                    <tr style={PageMonitoringStyles.trPadding2}>
+                        <td style={PageMonitoringStyles.width50}>
                             <b>Operator</b>
                         </td>
-                        <td style={{width: '50%'}}>
+                        <td style={PageMonitoringStyles.width50}>
                             {currentCluodlet.Operator}
                         </td>
                     </tr>
-                    <tr style={{width: '100%'}}>
-                        <td style={{width: '50%'}}>
+                    <tr style={PageMonitoringStyles.trPadding2}>
+                        <td style={PageMonitoringStyles.width50}>
                             <b>Ip_support</b>
                         </td>
-                        <td style={{width: '50%'}}>
+                        <td style={PageMonitoringStyles.width50}>
                             {currentCluodlet.Ip_support}
                         </td>
                     </tr>
-                    <tr style={{width: '100%'}}>
-                        <td style={{width: '50%'}}>
+                    <tr style={PageMonitoringStyles.trPadding2}>
+                        <td style={PageMonitoringStyles.width50}>
                             <b>Num_dynamic_ips</b>
                         </td>
-                        <td style={{width: '50%'}}>
+                        <td style={PageMonitoringStyles.width50}>
                             {currentCluodlet.Num_dynamic_ips}
                         </td>
                     </tr>
-
-                    <tr style={{width: '100%'}}>
-                        <td style={{width: '50%'}}>
+                    <tr style={PageMonitoringStyles.trPadding2}>
+                        <td style={PageMonitoringStyles.width50}>
                             <b>State</b>
                         </td>
                         <td style={{width: '50%', color: 'yellow'}}>
                             {CLOUDLET_CLUSTER_STATE[currentCluodlet.State]}
                         </td>
                     </tr>
-                    <tr style={{width: '100%'}}>
-                        <td style={{width: '50%'}}>
+                    <tr style={PageMonitoringStyles.trPadding2}>
+                        <td style={PageMonitoringStyles.width50}>
                             <b>CloudletInfoState</b>
                         </td>
-                        <td style={{width: '50%'}}>
+                        <td style={PageMonitoringStyles.width50}>
                             {currentCluodlet.CloudletInfoState}
                         </td>
                     </tr>
