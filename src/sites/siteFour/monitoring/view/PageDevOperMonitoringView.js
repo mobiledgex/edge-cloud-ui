@@ -321,6 +321,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             intervalForCluster = null;
             webSocketInst: WebSocket = null;
             gridItemHeight = 255;
+            lastDay = 30;
 
             componentWillMount(): void {
                 this.setState({
@@ -617,7 +618,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
                     } else {//TODO:OPERATOR
-                        let date = [moment().subtract(30, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                        let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                         let startTime = makeCompleteDateTime(date[0]);
                         let endTime = makeCompleteDateTime(date[1]);
 
@@ -2106,12 +2107,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             Date
                         </div>
                         <RangePicker
-                            disabled={this.state.loading}
-                            //disabled={true}
+                            disabled={this.state.filteredCloudletUsageList.length === 1 || this.state.loading}
                             ref={c => this.rangePicker = c}
                             showTime={{format: 'HH:mm'}}
                             format="YYYY-MM-DD HH:mm"
-                            placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
+                            placeholder={[moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
                             onOk={async (date) => {
                                 try {
                                     let stateTime = date[0].format('YYYY-MM-DD HH:mm')
