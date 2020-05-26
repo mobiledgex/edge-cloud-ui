@@ -33,8 +33,6 @@
         "feather-icons-react": "^0.4.1",
         "flexbox-react": "^4.4.0",
         "gsap": "^2.0.2",
-        "highcharts": "^6.2.0",
-        "highcharts-more": "^0.1.2",
         "history": "^4.7.2",
         "http-proxy-middleware": "^0.20.0",
         "interactjs": "^1.9.7",
@@ -79,7 +77,6 @@
         "react-grid-layout": "^0.17.1",
         "react-gsap-enhancer": "^0.3.0",
         "react-hammerjs": "^0.5.0",
-        "react-highcharts": "^16.0.2",
         "react-hooks-use-modal": "^1.0.9",
         "react-horizontal-timeline": "^1.5.3",
         "react-hot-loader": "^4.12.20",
@@ -138,8 +135,7 @@
         "three": "0.115.0",
         "topojson-client": "^3.1.0",
         "ua-parser-js": "^0.7.20",
-        "uuid": "^3.4.0",
-        "yaml-js": "^0.2.3"
+        "uuid": "^3.4.0"
     },
     "module": "dist/index.js",
     "typings": "dist/index.d.ts",

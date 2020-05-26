@@ -1,15 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './charts/sparkline.css';
 import '../node_modules/react-grid-layout/css/styles.css';
 import '../node_modules/react-resizable/css/styles.css';
 import App from './App';
 import store from './store';
 import {Provider} from 'react-redux';
-import {createMuiTheme, ThemeProvider} from "@material-ui/core";
-import {getTheme} from "./constant";
-//import {theme} from './constant'
 
 
 ReactDOM.render(
