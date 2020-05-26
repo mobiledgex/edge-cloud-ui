@@ -9,7 +9,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import DatePicker from 'antd/es/date-picker';
 import * as reducer from "../../../../utils";
 import {
     cutArrayList,

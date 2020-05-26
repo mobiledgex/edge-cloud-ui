@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Empty} from 'antd';
+import Empty from 'antd/es/empty';
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
