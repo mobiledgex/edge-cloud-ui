@@ -4,14 +4,8 @@ import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import Dialog from '@material-ui/core/Dialog'
-import Toolbar from '@material-ui/core/Toolbar'
-import TreeSelect from "antd/es/tree-select";
-import Select from "antd/es/select";
-import DatePicker from "antd/es/date-picker";
-import ADropdown from "antd/es/dropdown";
-import AMenu from "antd/es/menu";
-import {Row, Col} from 'antd';
+import {Dialog, Toolbar} from '@material-ui/core'
+import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 
 import {
     filterByClassification,
@@ -138,7 +132,6 @@ import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../servic
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import BarAndLineChartContainer from "../components/BarAndLineChartContainer";
-
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
