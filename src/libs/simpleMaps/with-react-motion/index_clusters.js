@@ -10,7 +10,7 @@ import {
 } from "react-simple-maps"
 import { Button, Icon, List } from 'semantic-ui-react';
 import ContainerDimensions from 'react-container-dimensions';
-import {isEqual} from "lodash";
+import isEqual from "lodash/isEqual";
 import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
 import { scaleLinear } from "d3-scale"
