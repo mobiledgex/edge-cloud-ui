@@ -2129,12 +2129,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                             }}
                             ranges={{
-                                Today: [moment(), moment()],
-                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
-                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
+                                'Last 24 hours': [moment().subtract(1, 'd'), moment().subtract(0, 'd')],
+                                'Last 3 Days': [moment().subtract(3, 'd'), moment().subtract(0, 'd')],
+                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(0, 'd')],
+                                'Last 15 Days': [moment().subtract(15, 'd'), moment().subtract(0, 'd')],
+                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(0, 'd')],
                                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                                 'Last Month': [moment().date(-30), moment().date(-1)],
-                                'Last 6 Months': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
+                                'Last 2 Months': [moment().subtract(60, 'd'), moment().subtract(0, 'd')],
+                                'Last 3 Months': [moment().subtract(90, 'd'), moment().subtract(0, 'd')],
+                                'Last 6 Months': [moment().subtract(180, 'd'), moment().subtract(0, 'd')],
                                 'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
                                 'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
                                 'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
@@ -2550,7 +2554,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderMonitoringTitleArea() {
+            renderTitleArea() {
                 return (
                     <label className='content_title_label' style={{marginBottom: 1}}
                            onClick={() => {
@@ -2558,7 +2562,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                            }}
                     >
                         Monitoring
-                        <div style={{color: 'pink', fontSize: 14}}>
+                       {/* <div style={{color: 'pink', fontSize: 14}}>
                             &nbsp;&nbsp;[{this.state.currentClassification}]
 
                         </div>
@@ -2567,7 +2571,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
                         <div style={{color: 'skyblue', fontSize: 14}}>
                             &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectOrg.toString()}
-                        </div>
+                        </div>*/}
                     </label>
                 )
             }
@@ -2581,7 +2585,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                      width: 'fit-content',
                                      flex: .7,
                                  }}>
-                                {this.renderMonitoringTitleArea()}
+                                {this.renderTitleArea()}
                                 {this.state.userType.includes(USER_TYPE.OPERATOR) ?
                                     <React.Fragment>
                                         <div style={{marginLeft: 25}}>
