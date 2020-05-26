@@ -156,10 +156,13 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
                     chartDataList.push(barDataOne);
                 }
             }
+
             let chartDataSet = {
                 chartDataList,
                 hardwareType,
             };
+
+
             return chartDataSet
         }
     } catch (e) {
@@ -1637,7 +1640,7 @@ export const barChartOptions2 = {
 }
 
 
-export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, currentColorIndex = -1) => {
+export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
 
     try {
         if (usageList.length === 0) {
@@ -1675,7 +1678,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, curr
                     usageList[index].cloudlet.toString(),
                     renderUsageByType(usageList[index], hardwareType, _this),
                     tooltipOne,
-                    usageList.length === 1 ? _this.state.chartColorList[currentColorIndex] : _this.state.chartColorList[index],
+                    _this.state.chartColorList[index],
                     renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
                 ];
 
