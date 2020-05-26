@@ -6,7 +6,6 @@ import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {convertHWType} from "../service/PageDevOperMonitoringService";
 
 type Props = {
