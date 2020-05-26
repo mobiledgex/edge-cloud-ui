@@ -5,7 +5,14 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+////////////////////////////////////antd//////////////////////////////////
+import TreeSelect from "antd/es/tree-select";
+import Select from "antd/es/select";
+import Row from "antd/es/row";
+import DatePicker from "antd/es/date-picker";
+import ADropdown from "antd/es/dropdown";
+import AMenu from "antd/es/menu";
+import Col from "antd/es/col";
 
 import {
     filterByClassification,
@@ -132,6 +139,7 @@ import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../servic
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import BarAndLineChartContainer from "../components/BarAndLineChartContainer";
+
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
