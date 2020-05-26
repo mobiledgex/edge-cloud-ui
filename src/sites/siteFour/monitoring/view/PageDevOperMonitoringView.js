@@ -2462,7 +2462,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            makeLegend() {
+            async makeLegend() {
                 try {
                     let legendItemCount = 0;
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
@@ -2477,7 +2477,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     if (this.state.loading) {
                         return (
-                            <LegendOuterDiv style={{height: 30 * RowHeight,}}>
+                            <LegendOuterDiv style={{height: 30 * RowHeight}}>
                                 <div style={{
                                     display: 'flex',
                                     alignSelf: 'center',
@@ -2516,41 +2516,40 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         this.renderAppLegend(legendItemCount)
 
                                 }
-                                {/*@todo:################################*/}
-                                {/*@todo: fold/unfoled icons on right    */}
-                                {/*@todo:################################*/}
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER &&
-                                <div
-                                    style={PageMonitoringStyles.expandIconDiv}
-                                    onClick={() => {
-                                        if (this.state.isLegendExpanded === false) {
-                                            this.setState({
-                                                isLegendExpanded: true,
-                                                legendHeight: (Math.ceil(legendItemCount / 4)) * 25,
-                                                legendColSize: 6,
-                                            })
-                                        } else {//when expanded
-                                            this.setState({
-                                                isLegendExpanded: false,
-                                                legendHeight: (Math.ceil(legendItemCount / 8)) * 25,
-                                                legendColSize: 3,
-                                            })
-                                        }
-                                    }}
-                                >
-                                    {!this.state.isLegendExpanded ?
-                                        <UnfoldMore style={{fontSize: 18}}/>
-                                        :
-                                        <UnfoldLess style={{fontSize: 18}}/>
-                                    }
-                                </div>
-                                }
+                                {this.renderLegendFoldIcons(30 * RowHeight)}
                             </LegendOuterDiv>
                         )
                     }
                 } catch (e) {
 
                 }
+            }
+
+            renderLegendFoldIcons(legendHeight) {
+                return (
+                    <div
+                        style={PageMonitoringStyles.expandIconDiv}
+                        onClick={() => {
+                            if (this.state.isLegendExpanded === false) {
+                                this.setState({
+                                    isLegendExpanded: true,
+                                    legendHeight: 30,
+                                })
+                            } else {//when expanded
+                                this.setState({
+                                    isLegendExpanded: false,
+                                    legendHeight: legendHeight,
+                                })
+                            }
+                        }}
+                    >
+                        {!this.state.isLegendExpanded ?
+                            <UnfoldMore style={{fontSize: 18}}/>
+                            :
+                            <UnfoldLess style={{fontSize: 18}}/>
+                        }
+                    </div>
+                )
             }
 
 
@@ -2562,7 +2561,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                            }}
                     >
                         Monitoring
-                       {/* <div style={{color: 'pink', fontSize: 14}}>
+                        {/* <div style={{color: 'pink', fontSize: 14}}>
                             &nbsp;&nbsp;[{this.state.currentClassification}]
                         </div>
                         <div style={{color: 'green', fontSize: 14}}>
