@@ -979,29 +979,29 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            showBigModal = (paramHwType, graphType) => {
+            showBigModal = (pHwType, graphType) => {
                 try {
                     let chartDataForBigModal = []
                     if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
 
                         let lineChartDataSet = []
                         if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                            lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, paramHwType, this)
+                            lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
                         } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                            lineChartDataSet = makeLineChartData(this.state.filteredCloudletUsageList, paramHwType, this)
+                            lineChartDataSet = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
                         } else {
-                            lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, paramHwType, this)
+                            lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
                         chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
 
                     } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.MULTI_LINE_CHART) {
 
                         let multiLineChartDataSets = []
-                        if (paramHwType.length >= 2) {
+                        if (pHwType.length >= 2) {
 
                             if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                                for (let i in paramHwType) {
-                                    let lineDataOne = makeLineChartData(this.state.filteredClusterUsageList, paramHwType[i], this)
+                                for (let i in pHwType) {
+                                    let lineDataOne = makeLineChartData(this.state.filteredClusterUsageList, pHwType[i], this)
                                     multiLineChartDataSets.push(lineDataOne);
                                 }
                             }
@@ -1010,14 +1010,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         chartDataForBigModal = makeLineChartDataForBigModal(_resuit, this)
 
                     } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
-                        let barChartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, paramHwType, this)
-                        chartDataForBigModal = barChartDataSet.chartDataList;
+                        let chartDataSet = []
+                        if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                            chartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
+                            chartDataForBigModal = chartDataSet.chartDataList;
+                        } else {
+                            chartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
+                            chartDataForBigModal = chartDataSet.chartDataList;
+                        }
                     }
-
                     this.setState({
                         isShowBigGraph: !this.state.isShowBigGraph,
                         chartDataForBigModal: chartDataForBigModal,
-                        popupGraphHWType: paramHwType,
+                        popupGraphHWType: pHwType,
                         popupGraphType: graphType,
                         isPopupMap: !this.state.isPopupMap,
                         isMapUpdate: true,
@@ -1139,17 +1144,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let barChartDataSet: TypeBarChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         barChartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
-                        let lineChartDataOne = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
                         return (
-                            <BarAndLineChartContainer
-                                isResizeComplete={this.state.isResizeComplete}
-                                parent={this}
+                            <BarChartContainer
+                                isResizeComplete={this.state.isResizeComplete} parent={this}
                                 loading={this.state.loading}
                                 chartDataSet={barChartDataSet}
-                                pHardwareType={pHwType}
-                                graphType={graphType}
-                                lineChartDataSets={lineChartDataOne}
-                                filteredCloudletListLength={this.state.filteredCloudletList.length}
+                                pHardwareType={pHwType} graphType={graphType}
                             />
                         )
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
@@ -2087,6 +2087,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                         this.setState({
                             filteredCloudletUsageList: usageList,
+                            allCloudletUsageList: usageList,
                             loading: false
                         })
                         //this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
