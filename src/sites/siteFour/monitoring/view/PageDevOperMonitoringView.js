@@ -1012,7 +1012,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
                         let chartDataSet = []
                         if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                            chartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
+                            chartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this, this.state.currentColorIndex)
                             chartDataForBigModal = chartDataSet.chartDataList;
                         } else {
                             chartDataSet = makeBarChartDataForCluster(this.state.filteredClusterUsageList, pHwType, this)
@@ -1143,7 +1143,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
                     let barChartDataSet: TypeBarChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                        barChartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this)
+                        barChartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this, this.state.currentColorIndex)
                         return (
                             <BarChartContainer
                                 isResizeComplete={this.state.isResizeComplete} parent={this}

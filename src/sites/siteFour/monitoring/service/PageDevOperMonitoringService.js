@@ -38,7 +38,6 @@ import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUti
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
 
-
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
 }
@@ -1640,7 +1639,7 @@ export const barChartOptions2 = {
 }
 
 
-export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
+export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, currentColorIndex = -1) => {
 
     try {
         if (usageList.length === 0) {
@@ -1678,7 +1677,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this) => {
                     usageList[index].cloudlet.toString(),
                     renderUsageByType(usageList[index], hardwareType, _this),
                     tooltipOne,
-                    _this.state.chartColorList[index],
+                    usageList.length === 1 ? _this.state.chartColorList[currentColorIndex] : _this.state.chartColorList[index],
                     renderUsageLabelByType(usageList[index], hardwareType) //@desc:annotation
                 ];
 
