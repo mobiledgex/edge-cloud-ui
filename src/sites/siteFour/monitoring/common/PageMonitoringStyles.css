@@ -112,10 +112,6 @@ tbody:hover {
     z-index: 100;
 }
 
-.popup1 {
-    background-color: black;
-    opacity: 0.7;
-}
 
 .leaflet-container {
     width: 100%;
@@ -167,10 +163,6 @@ tbody:hover {
     max-width: auto;
 }
 
-.clientPopup {
-    width: auto;
-    font-size: 9pt !important;
-}
 
 .leaflet-popup-content {
     font-size: 10pt !important;
@@ -358,21 +350,6 @@ tbody:hover {
     box-shadow: 0 4px 50px black;
 }
 
-/*todo: ###############################*/
-/*todo: 켈린더 dateTime picker 관련 style*/
-/*todo: ###############################*/
-.ant-calendar-picker-input.ant-input {
-    line-height: 1.5;
-    height: 36px;
-    background-color: black;
-}
-
-.ant-calendar-picker-input.ant-input.ant-input-disabled {
-    line-height: 1.5;
-    height: 36px;
-    background-color: #1e2124;
-}
-
 
 .react-grid-layout {
     position: relative;
@@ -553,13 +530,6 @@ tr td {
     display: flex;
 }
 
-.ant-select-selection {
-    background-color: black !important;
-}
-
-.ant-select-dropdown-menu-item-active {
-    background-color: #373f4f !important;
-}
 
 /*.ant-select {
     background-color: black !important;
@@ -569,8 +539,9 @@ tr td {
     background-color: black !important;
 }*/
 
-.draggable {
+.draggable .page_monitoring_title {
     cursor: pointer;
+    color: white !important;
 }
 
 .ant-select-dropdown-menu-item {
@@ -643,3 +614,112 @@ tr td {
     list-style: none;
     outline: 0;
 }*/
+
+.tooltipForOperMarker .leaflet-popup-content-wrapper {
+    width: 120px;
+    border-radius: 0px;
+}
+
+
+/*dropdown-menu*/
+/*dropdown-menu*/
+/*dropdown-menu*/
+.ant-select-dropdown-menu {
+    max-height: 530px;
+    margin-bottom: 0;
+    padding: 4px 0;
+    padding-left: 0;
+    overflow: auto;
+    list-style: none;
+    outline: none;
+}
+
+.ant-select-selection {
+    background-color: #000000 !important;
+}
+
+.ant-select-dropdown-menu-item-active {
+    background-color: #373f4f !important;
+}
+
+
+.oper_popup_div {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.clientPopup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    width: 360px !important;
+    border-color: #00A2FF;
+    border-style: groove;
+    background-color: black;
+}
+
+
+.cloudlet_popup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    width: 450px !important;
+    border-color: #43c02a;
+    background-color: black;
+    border-style: groove;
+}
+
+.popup_oper_cloudlet .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    width: 250px !important;
+    border-color: #43c02a;
+    border-style: groove;
+}
+
+.react-ripples {
+    width: auto;
+}
+
+.ant-progress-circle .ant-progress-text {
+    font-size: 18px;
+}
+
+
+/*todo: ###############################*/
+/*todo: 켈린더 dateTime picker 관련 style*/
+/*todo: ###############################*/
+
+.ant-calendar-picker-input.ant-input.ant-input-disabled {
+    line-height: 1.5;
+    height: 30px;
+    background-color: #1e2124;
+    margin-top: 10px;
+}
+
+.ant-calendar-picker-input.ant-input {
+    line-height: 1.5;
+    height: 30px;
+    background-color: black;
+    margin-top: 10px;
+}
+
+.ant-calendar {
+    background-color: #17171f;
+    background-clip: padding-box;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ant-tag-blue {
+    color: #1890ff;
+    background: #e6f7ff;
+    font-family: Roboto;
+    border-color: blue;
+}
+
+.mapCloudletTooltip {
+    background-color: white
+}
+
+.mapCloudletTooltipInner {
+    color: black;
+    font-weight: bold;
+}

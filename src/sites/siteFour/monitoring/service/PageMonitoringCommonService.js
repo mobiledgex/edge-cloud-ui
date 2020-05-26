@@ -1,19 +1,20 @@
 import React from 'react';
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
-import './PageMonitoring.css';
+import '../common/PageMonitoringStyles.css';
 import {toast} from "react-semantic-toasts";
-import {GRID_ITEM_TYPE, HARDWARE_TYPE, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
-import {makeGradientColor} from "./dev/PageDevMonitoringService";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {makeCompleteDateTime} from "./admin/PageAdminMonitoringService";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
-import {barChartOption, columnChartOption, numberWithCommas,} from "./PageMonitoringUtils";
 import {notification} from "antd";
-import {PageMonitoringStyles} from "./PageMonitoringStyles";
+import {makeGradientColor} from "./PageDevOperMonitoringService";
+import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
+import {makeCompleteDateTime} from "./PageAdmMonitoringService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
+import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
@@ -101,11 +102,9 @@ export const renderPlaceHolderLoader = (type = '') => {
 
     if (type === 'sk') {
         return (
-            <div style={{marginTop: 35,}}>
+            <div style={{marginTop: 0,}}>
                 <SkeletonTheme color="#22252C" highlightColor="#444">
-                    <p>
-                        <Skeleton count={13}/>
-                    </p>
+                    <Skeleton count={4} height={38}/>
                 </SkeletonTheme>
             </div>
         )
@@ -140,7 +139,7 @@ export const renderWifiLoader = (width = 25, height = 25, margin = 3) => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/wifi-signal'),
+                    animationData: require('../../../../lotties/wifi-signal'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -177,14 +176,14 @@ export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/6698-location-pin22222'),
+                    animationData: require('../../../../lotties/6698-location-pin22222'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
                 speed={2.9}
-                height={350}
-                width={350}
+                height={220}
+                width={220}
                 isStopped={false}
                 isPaused={false}
             />
@@ -201,7 +200,7 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/pinjump'),
+                    animationData: require('../../../../lotties/pinjump'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -432,7 +431,7 @@ export const lineGraphOptionsForAppInst = (hardwareType) => {
 }
 
 
-export const renderUsageByType2 = (usageOne, hardwareType) => {
+/*export const renderUsageByType2 = (usageOne, hardwareType) => {
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
         return usageOne.sumVCpuUsage;
@@ -472,7 +471,7 @@ export const renderUsageByType2 = (usageOne, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         return usageOne.sumAcceptsConnection
     }
-}
+}*/
 
 export const sortUsageListByType = (usageList, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.VCPU) {
@@ -523,6 +522,19 @@ export const renderUsageByType = (usageOne, hardwareType, _this) => {
         return usageOne.sumHandledConnection
     } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
         return usageOne.sumAcceptsConnection
+    }
+
+    ////Cloudlet
+    else if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
+        return usageOne.usedVCpuCount
+    } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+        return usageOne.usedMemUsage //+ 'MB'
+    } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+        return usageOne.usedDiskUsage //+ "GB"
+    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED) {
+        return usageOne.usedFloatingIpsUsage
+    } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
+        return usageOne.usedIpv4Usage
     }
 }
 
@@ -581,21 +593,38 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
     return dataForm;
 }
 
-export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, dateLimitCount = 20, pStartTime = '', pEndTime = '') => {
+    let formBody = {};
+    if (pStartTime === '' && pEndTime === '') {
 
-    let formBody = {
-        "token": token,
-        "params": {
-            "region": dataOne.Region,
-            "cloudlet": {
-                "organization": dataOne.Operator,
-                "name": dataOne.CloudletName,
-            },
-            "last": fetchingDataNo,
-            "selector": "*"
+        formBody = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.CloudletName,
+                },
+                "last": dateLimitCount,
+                "selector": "*"
+            }
+        }
+    } else {
+        formBody = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.CloudletName,
+                },
+                "last": dateLimitCount,
+                "selector": "*",
+                "starttime": pStartTime,
+                "endtime": pEndTime,
+            }
         }
     }
-
     return formBody;
 }
 
@@ -605,18 +634,6 @@ export const getOneYearStartEndDatetime = () => {
     let arrDateTime = []
     let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
     let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
-
-    arrDateTime.push(startTime)
-    arrDateTime.push(endTime)
-
-    return arrDateTime;
-}
-
-export const getOneYearStartEndDatetime2 = () => {
-
-    let arrDateTime = []
-    let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm:ss'));
-    let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm:ss'));
 
     arrDateTime.push(startTime)
     arrDateTime.push(endTime)
@@ -642,33 +659,6 @@ export const showToast2 = (title: string, time = 2) => {
     });
 }
 
-/**
- *
- * @param title
- * @param time
- * @param color
- */
-export const showToast3 = (title: string, time = 2, color = 'green') => {
-    toast({
-        type: 'success',
-        title: title,
-        animation: 'swing right',
-        time: time * 1000,
-        color: color,
-        //size: 'tiny',
-    });
-}
-
-
-function removeDups(names) {
-    let unique = {};
-    names.forEach(function (i) {
-        if (!unique[i]) {
-            unique[i] = true;
-        }
-    });
-    return Object.keys(unique);
-}
 
 export const hardwareTypeToUsageKey = (hwType: string) => {
     if (hwType === HARDWARE_TYPE.CPU.toUpperCase()) {
@@ -709,7 +699,6 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
 
 
 }
-
 
 /**
  *

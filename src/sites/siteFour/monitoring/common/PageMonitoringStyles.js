@@ -4,6 +4,42 @@ import styled from 'styled-components';
 
 
 export const PageMonitoringStyles = {
+    legendDiv: {
+        flex: .97,
+        marginLeft: 10,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        height: 50,
+    },
+    trPadding2: {
+        width: '100%', padding: 2,
+        margin: 2, marginTop: 5, marginBottom: 5,
+        fontSize: 13,
+    },
+    width50: {width: '50%'},
+    appPopupDiv: {
+        fontSize: 14,
+        cursor: 'crosshair',
+        flexDirection: 'column',
+        marginTop: 0,
+        marginBottom: 5,
+        borderRadius: 5,
+        justifyContents: 'center',
+        alignSelf: 'center',
+        alignItem: 'center,',
+        display: 'flex',
+    },
+    streamSwitchDiv: {
+        alignItems: 'center',
+        display: 'flex',
+        cursor: 'pointer',
+        height: 30,
+        width: 150,
+        marginRight: 20,
+        alignSelf: 'center',
+        justifyContent: 'center',
+    },
     topRightMenu: {
         alignItems: 'center',
         display: 'flex',
@@ -461,6 +497,35 @@ export const Center = styled.div`
   align-self: center;
   font-family: Roboto;
 `;
+export const CenterFullWidth = styled.div`
+  justify-content: center;
+  text-align: center;
+  display : flex;
+  align-items: center;
+  align-self: center;
+  font-family: Roboto;
+  width:100%;
+`;
+
+export const CenterMethodCount = styled.div`
+  justify-content: center;
+  text-align: center;
+  display : flex;
+  align-items: center;
+  align-self: center;
+  font-family: Roboto;
+  //background-color: red;
+`;
+
+export const CountDivOne = styled.div`
+  justify-content: center;
+  text-align: center;
+  display : flex;
+  align-items: center;
+  align-self: center;
+  font-family: Roboto;
+  //background-color: red;
+`;
 
 export const Center7 = styled.div`
   justify-content: center;
@@ -587,4 +652,8 @@ export const ClusterCluoudletLabel = styled.div`
   align-self: center;
   font-size: 13px;
   marginLeft:50px;
+`
+
+export const Yellow = styled.div`
+  color:yellow;;
 `

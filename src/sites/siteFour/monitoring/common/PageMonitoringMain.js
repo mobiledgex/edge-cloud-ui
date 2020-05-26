@@ -1,10 +1,7 @@
 import React, {useState} from "react";
-import PageMonitoringForOperator from "./oper/PageOperMonitoring";
-import PageMonitoringForDeveloper from "./dev/PageDevMonitoring";
-import PageMonitoringForAdmin from "./admin/PageAdminMonitoring";
+import PageMonitoringForDeveloper from "../view/PageDevOperMonitoringView";
+import PageMonitoringForAdmin from "../view/PageAdminMonitoringView";
 import {Card} from "@material-ui/core";
-import {notification} from "antd";
-
 export default function PageMonitoringMain() {
     const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
 
@@ -14,21 +11,13 @@ export default function PageMonitoringMain() {
                 return (
                     <PageMonitoringForAdmin/>
                 )
-            } else if (userRole.includes('Operator')) {
-                return (
-                    <PageMonitoringForOperator/>
-                )
             } else {
                 return (
                     <PageMonitoringForDeveloper/>
                 )
             }
         } catch (e) {
-          /*  notification.success({
-                placement: 'bottomLeft',
-                duration: 3,
-                message: e.toString(),
-            });*/
+
         }
     }
 

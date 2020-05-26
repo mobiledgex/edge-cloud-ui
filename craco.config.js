@@ -1,5 +1,7 @@
 /*craco.config.js*/
 const path = require('path');
+const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 reactHotReloadPlugin = require('craco-plugin-react-hot-reload');
 const loaderNameMatches = function (rule, loaderName) {
     return rule && rule.loader && typeof rule.loader === 'string' &&
@@ -20,6 +22,10 @@ const getLoader = function (rules, matcher) {
 };
 
 module.exports = {
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin()],
+    },
     dev: {
         useEslint: true
     },
@@ -76,6 +82,9 @@ module.exports = {
         }
     },
     plugins: [
+        {
+            plugin: new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+        },
         {
             plugin: reactHotReloadPlugin
         },
@@ -140,7 +149,7 @@ module.exports = {
                                             '@layout-body-background': '@body-background',
                                             '@tooltip-bg': '#191922',
                                             '@tooltip-arrow-color': '#191922',
-                                            '@popover-bg': '#2d2d3b',
+                                            '@popover-bg': '#000000',
                                             '@success-color': '#00a854',
                                             '@info-color': '@primary-color',
                                             '@warning-color': '#ffbf00',

@@ -1,17 +1,24 @@
 import React from 'react';
-import '../PageMonitoring.css';
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
+import '../common/PageMonitoringStyles.css';
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CHART_COLOR_LIST,
+    HARDWARE_TYPE,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGION
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import BubbleChartCore from "../components/BubbleChartCore";
-import type {TypeAppInstanceUsage2, TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeAppInstance} from "../../../../shared/Types";
-import PageAdminMonitoring from "./PageAdminMonitoring";
-import {renderBarChartCore, renderLineChartCore, renderUsageByType2, showToast} from "../PageMonitoringCommonService";
+import type {TypeAppInstanceUsage2, TypeClientStatus, TypeGridInstanceList} from "../../../../shared/Types";
+import {TypeAppInst} from "../../../../shared/Types";
+import {renderBarChartCore, renderLineChartCore, renderUsageByType, showToast} from "./PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import {Progress} from "antd";
-import {numberWithCommas} from "../PageMonitoringUtils";
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {numberWithCommas} from "../common/PageMonitoringUtils";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {renderUsageLabelByType} from "./PageDevOperMonitoringService";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -21,6 +28,31 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
         }
     }
     return newArrayList;
+}
+
+
+/**
+ *
+ * @param filteredAppInstList
+ * @param allClientStatusList
+ */
+export function filteredClientStatusListByAppName(filteredAppInstList, allClientStatusList) {
+
+    let appNames = []
+    filteredAppInstList.map((item: TypeAppInst, index) => {
+        appNames.push(item.AppName)
+    })
+
+    return allClientStatusList.filter((item: TypeClientStatus, index) => {
+        let count = 0;
+        appNames.map(appNameOne => {
+            if (appNameOne === item.app) {
+                count++;
+            }
+        })
+
+        return count > 0;
+    })
 }
 
 export const makeSelectBoxListByClassification = (arrList, keyName) => {
@@ -254,148 +286,51 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
 }
 
 
-/**
- *
- * @param usageOne
- * @param hardwareType
- * @returns {string}
- */
-export const renderUsageLabelByType = (usageOne, hardwareType, _this) => {
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        let cpuUsageOne = '';
-        try {
-            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
-        } catch (e) {
-            cpuUsageOne = 0;
-        }
-        return cpuUsageOne;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.sumVCpuUsage) + ""
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-
-}
-
-
-export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, _this) => {
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        let cpuUsageOne = '';
-        try {
-            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
-        } catch (e) {
-            cpuUsageOne = 0;
-        }
-        return cpuUsageOne;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return numberWithCommas(usageOne.sumVCpuUsage) + ""
-    }
-
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.sumMemUsage / 1000000).toFixed(2)) + " %"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
-    }
-
-    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-
-}
-
-
 export const makeBarChartDataForInst = (usageList, hardwareType, _this) => {
+    try {
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
+        } else if (hardwareType === HARDWARE_TYPE.MEM) {
+            usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
+        } else if (hardwareType === HARDWARE_TYPE.DISK) {
+            usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+            usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
+        } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+            usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
+        } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+            usageList.sort((a, b) => b.sumAcceptsConnection - a.sumAcceptsConnection);
+        } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+            usageList.sort((a, b) => b.sumActiveConnection - a.sumActiveConnection);
+        } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+            usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
+        }
 
+        if (usageList.length === 0) {
+            return (
+                <div style={PageMonitoringStyles.noData}>
+                    NO DATA
+                </div>
+            )
+        } else {
 
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
-    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
-    } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        usageList.sort((a, b) => b.sumAcceptsConnection - a.sumAcceptsConnection);
-    } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        usageList.sort((a, b) => b.sumActiveConnection - a.sumActiveConnection);
-    } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        usageList.sort((a, b) => b.sumHandledConnection - a.sumHandledConnection);
-    }
+            let chartDataList = [];
+            chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+            usageList.map((item: TypeAppInstanceUsage2, index) => {
+                if (index < 5) {
+                    let barDataOne = [item.appName.toString().substring(0, 13) + "..",
+                        renderUsageByType(item, hardwareType),
+                        CHART_COLOR_LIST[index],
+                        renderUsageLabelByType(item, hardwareType)]
+                    chartDataList.push(barDataOne);
+                }
+            })
 
-    if (usageList.length === 0) {
-        return (
-            <div style={PageMonitoringStyles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
+            return renderBarChartCore(chartDataList, hardwareType)
 
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-
-        usageList.map((item: TypeAppInstanceUsage2, index) => {
-            if (index < 5) {
-                let barDataOne = [item.appName.toString().substring(0, 13) + "..",
-                    renderUsageByType2(item, hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByType(item, hardwareType)]
-                chartDataList.push(barDataOne);
-            }
-        })
-
-        return renderBarChartCore(chartDataList, hardwareType)
-
+        }
+    } catch (e) {
+        throw new Error(e)
     }
 
 }
@@ -797,7 +732,7 @@ export const handleBubbleChartDropDown = async (_this, value) => {
             currentHardwareType: value,
         });
 
-        let appInstanceList = _this.state.appInstanceList;
+        let appInstanceList = _this.state.appInstList;
         let allUsageList = _this.state.allAppInstUsageList;
 
         let chartData = [];
@@ -1215,7 +1150,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
  * @todo: 앱의 인스턴스 리스트를 리전에 맞게 필터링처리..
  * @param pRegion
  * @param appInstanceList
- * @returns {TypeAppInstance[]|Array<TypeAppInstance>}
+ * @returns {TypeAppInst[]|Array<TypeAppInst>}
  */
 export const filterAppInstanceListByRegion = (pRegion, appInstanceList) => {
     if (pRegion === REGION.ALL) {

@@ -1,10 +1,10 @@
-import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/PageMonitoringCommonService";
+import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/service/PageMonitoringCommonService";
 import randomColor from 'randomcolor'
 
 let moreColors = randomColor({
     count: 500,
 });
-export const RECENT_DATA_LIMIT_COUNT = 10
+export const RECENT_DATA_LIMIT_COUNT = 25
 
 export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
@@ -21,7 +21,7 @@ export const CHART_COLOR_JAZZ_NIGHT = ['#C59CDB', '#DFD0F1', '#A67B04', '#F3EED6
 export const CHART_COLOR_BLUE_MOUNTAIN_PEAKS_AND_CLOUDS = ['#A4A4BF', '#16235A', '#2A3457', '#888C46', '#F2EAED', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 export const CHART_COLOR_BRIGHT_AND_FRUITY = ['#D9DCD8', '#9BA747', '#F29D4B', '#D57030', '#8B281F', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 
-export const DARK_LINE_COLOR = 'yellow'
+export const DARK_LINE_COLOR = '#fffc51'
 export const DARK_CLOUTLET_ICON_COLOR = 'green'
 export const WHITE_LINE_COLOR = 'black'
 export const WHITE_CLOUTLET_ICON_COLOR = 'blue'
@@ -34,6 +34,8 @@ export const GLOBE_THEME = {
 export const REGION = {
     ALL: 'ALL',
 }
+export const CLOUDLET_LOCATION_STR = 'cloudletLocationStr'
+
 
 export const THEME_OPTIONS = {
     DEFAULT: 'DEFAULT',
@@ -157,6 +159,7 @@ export const USAGE_TYPE = {
 }
 
 export const CLASSIFICATION = {
+    CLUSTER_FOR_OPER: 'ClusterForOper',
     CLOUDLET: 'Cloudlet',
     CloudletName: 'CloudletName',
     cloudlet: 'cloudlet',
@@ -164,6 +167,7 @@ export const CLASSIFICATION = {
     appName: 'appName',
     APPNAME: 'AppName',
     APPINST: 'AppInst',
+    APP_INST: 'App Inst',
     CLUSTER_INST: 'ClusterInst',
     VERSION: 'Version',
     CLUSTER: 'Cluster',
@@ -326,25 +330,34 @@ export const USAGE_INDEX_FOR_CLUSTER = {
     UDPRECVERR: 14,
 }
 
+export const USER_TYPE = {
+    OPERATOR: 'operator',
+    DEVELOPER: 'developer',
+    AMDIN: 'admin',
+
+}
 
 export const NETWORK_TYPE = {
     RECV_BYTES: 'RECV_BYTES',
     SEND_BYTES: 'SEND_BYTES',
 }
 
-export const GRID_ITEM_TYPE = {
+/*export const GRID_ITEM_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
     COLUMN: 'COLUMN',
     BUBBLE: 'BUBBLE',
     MAP: 'MAP',
     TABLE: 'TABLE',
-    PIE: 'PIE',
+    DONUTS: 'DONUTS',
     CLUSTER_LIST: 'CLUSTER_LIST',
     CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
     APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
-    PERFORMANCE_SUM: 'PERFORMANCE_SUM'
-}
+    PERFORMANCE_SUM: 'PERFORMANCE_SUM',
+    CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
+    METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
+    MULTI_LINE_CHART: 'MULTI_LINE_CHART'
+}*/
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
     //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},
@@ -387,15 +400,12 @@ export const HARDWARE_OPTIONS_FOR_APPINST = [
     {text: 'ACCEPTS CONNECTION', value: 'ACCEPTS'},
 ]
 
-
 export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
-    {text: 'vCPU', value: 'vCPU'},
-    {text: 'MEM', value: 'MEM'},
-    {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECV_BYTES'},
-    {text: 'SEND BYTES', value: 'SEND_BYTES'},
-    {text: 'FLOATING_IPS', value: 'FLOATING_IPS'},
-    {text: 'IPV4', value: 'IPV4'},
+    {text: 'vCPU', value: 'vCpuUsed'},
+    {text: 'MEM', value: 'memUsed'},
+    {text: 'DISK', value: 'diskUsed'},
+    {text: 'FLOATINGIPS', value: 'floatingIpsUsed'},
+    {text: 'IPV4', value: 'ipv4Used'},
 ]
 
 
@@ -436,6 +446,7 @@ export const HARDWARE_TYPE = {
 
     FLAVOR: 'FLAVOR',
     CPU: 'CPU',
+    CPU_MEM_DISK: 'CPU / MEM / DISK',
     VCPU: 'vCPU',
     NET_SEND: 'NET_SEND',
     NET_RECV: 'NET_RECV',
@@ -467,7 +478,7 @@ export const HARDWARE_TYPE = {
     HANDLED_CONNECTION: 'HANDLED',//13
     ACCEPTS_CONNECTION: 'ACCEPTS',//14 (index)
     //For Cloudlet
-    VCPUUSED: 'vCpuUsed',
+    VCPU_USED: 'vCpuUsed',
     MEM_USED: 'memUsed',
     DISK_USED: 'diskUsed',
     FLOATING_IP_USED: 'floatingIpsUsed',
@@ -508,12 +519,6 @@ export const USER_ROLE = {
     //ADMIN_MANAGER : 'AdminManager',
 }
 
-export const USER_TYPE = {
-    DEV: 'dev',
-    OPER: 'oper',
-    ADMIN: 'admin'
-}
-
 export const APPINSTANCE_INIT_VALUE = {
     "Region": "",
     "OrganizationName": "",
@@ -540,4 +545,22 @@ export const APPINSTANCE_INIT_VALUE = {
     "Revision": 0,
 }
 
+
+export const CLOUDLET_CLUSTER_STATE = {
+    0: 'UNKNOWN STATE',
+    1: 'NOT_PRESENT',
+    2: 'CREATE_REQUESTED',
+    3: 'CREATING',
+    4: 'CREATE_ERROR',
+    5: 'READY',
+    6: 'UPDATE_REQUESTED',
+    7: 'UPDATING',
+    8: 'UPDATE_ERROR',
+    9: 'DELETE_REQUESTED',
+    10: 'DELETING',
+    11: 'DELETE_ERROR',
+    12: 'DELETE_PREPARE',
+    13: 'CRM_INITOK',
+    14: 'CREATING_DEPENDENCIES',
+}
 

@@ -1,15 +1,11 @@
 import axios from "axios";
-import type {TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../shared/Types";
-import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT} from "../../../shared/Constants";
-import {sendSyncRequest} from "../../../services/serviceMC";
-import {
-    isEmpty,
-    makeFormForCloudletLevelMatric,
-    makeFormForClusterLevelMatric,
-    showToast
-} from "./PageMonitoringCommonService";
-import {makeFormForAppLevelUsageList} from "./admin/PageAdminMonitoringService";
+import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
+import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {sendSyncRequest} from "../../../../services/serviceMC";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
+import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -17,13 +13,12 @@ import {
     CLOUDLET_METRICS_ENDPOINT,
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
-    SHOW_APP_INST_CLIENT_ENDPOINT
-} from "./MetricServiceEndPoint";
-
-const mcURL = process.env.REACT_APP_API_ENDPOINT
+    SHOW_APP_INST_CLIENT_ENDPOINT, SHOW_METRICS_CLIENT_STATUS
+} from "./PageMonitoringMetricEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
+
         let AppName = pCurrentAppInst.split('|')[0].trim()
         let Cloudlet = pCurrentAppInst.split('|')[1].trim()
         let ClusterInst = pCurrentAppInst.split('|')[2].trim()
@@ -35,7 +30,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
         let token = store ? store.userToken : 'null';
         let organization = localStorage.selectOrg.toString()
 
-        let prefixUrl = (mcURL).replace('http', 'ws');
+        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
 
         const webSocket = new WebSocket(`${prefixUrl}/ws${SHOW_APP_INST_CLIENT_ENDPOINT}`)
         let showAppInstClientRequestForm = {
@@ -102,6 +97,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
                 _this.setState({
                     selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
+                }, () => {
                 });
 
                 setTimeout(() => {
@@ -136,7 +132,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 }
 
-export const getAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
+export const fetchAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
     try {
         let promiseList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -165,7 +161,62 @@ export const getAppInstList = async (pRegionList = localStorage.getItem('regions
 }
 
 
-export const getClusterList = async () => {
+export const fetchCloudletList = async () => {
+    try {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store ? store.userToken : 'null';
+        let regionList = localStorage.getItem('regions').split(",");
+
+        let promiseList = []
+        for (let i in regionList) {
+            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
+            promiseList.push(sendSyncRequest(this, requestData))
+        }
+        let orgCloudletList = await Promise.all(promiseList);
+        let mergedCloudletList = [];
+        orgCloudletList.map(item => {
+            //@todo : null check
+            if (item.response.data.length > 0) {
+                let cloudletList = item.response.data;
+                cloudletList.map(item => {
+                    mergedCloudletList.push(item);
+                })
+            }
+        })
+
+        let userType = localStorage.getItem('selectRole').toString().toLowerCase();
+        let currentSelectedOrg = localStorage.getItem('selectOrg').toString().trim();
+
+
+        //@todo: when oper role
+        if (userType.includes(USER_TYPE.OPERATOR)) {
+            let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
+                return item.Operator === currentSelectedOrg
+            })
+            result.sort((a: TypeCloudlet, b: TypeCloudlet) => {
+                if (a.CloudletName < b.CloudletName) {
+                    return -1;
+                }
+                if (a.CloudletName > b.CloudletName) {
+                    return 1;
+                }
+                return 0;
+            })
+            return result;
+
+        } else {
+            return mergedCloudletList;
+        }
+
+        //return mergedCloudletList;
+
+    } catch (e) {
+        //showToast( e.toString())
+    }
+}
+
+
+export const fetchClusterList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
@@ -193,50 +244,24 @@ export const getClusterList = async () => {
             }
         })
 
-        //todo: Filter to fetch only those belonging to the current organization
-        let orgClusterList = []
-        mergedClusterList.map(item => {
-            if (item.OrganizationName === localStorage.selectOrg) {
-                orgClusterList.push(item)
-            }
-        })
 
-        return orgClusterList;
-    } catch (e) {
-
-    }
-}
-
-
-export const getCloudletList = async () => {
-    try {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        let regionList = localStorage.getItem('regions').split(",");
-
-        let promiseList = []
-        for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
-            promiseList.push(sendSyncRequest(this, requestData))
+        let result = []
+        if (localStorage.getItem('selectRole').includes('Oper')) {
+            result = mergedClusterList;
+        } else {
+            //todo: Filter to fetch only those belonging to the current organization
+            mergedClusterList.map(item => {
+                if (item.OrganizationName === localStorage.selectOrg) {
+                    result.push(item)
+                }
+            })
         }
-
-        let orgCloudletList = await Promise.all(promiseList);
-        let mergedCloudletList = [];
-        orgCloudletList.map(item => {
-            //@todo : null check
-            if (item.response.data.length > 0) {
-                let cloudletList = item.response.data;
-                cloudletList.map(item => {
-                    mergedCloudletList.push(item);
-                })
-            }
-        })
-
-        return mergedCloudletList;
+        return result;
     } catch (e) {
-        //showToast( e.toString())
+
     }
 }
+
 
 export const getCloudletListAll = async () => {
     try {
@@ -250,9 +275,9 @@ export const getCloudletListAll = async () => {
             let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
             promiseList.push(sendSyncRequest(this, requestData))
         }
-        let orgCloudletList = await Promise.all(promiseList);
+        let cloudletList = await Promise.all(promiseList);
         let mergedCloudletList = [];
-        orgCloudletList.map(item => {
+        cloudletList.map(item => {
             //@todo : null check
             if (item.response.data["0"].Region !== '') {
                 let cloudletList = item.response.data;
@@ -423,6 +448,8 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
             }
 
         })
+
+
         return allUsageList;
     } catch (e) {
         //throw new Error(e.toString())
@@ -575,6 +602,23 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     }
 }
 
+let CLOUDLET_USAGE_INDEX = {
+    "time": 0,
+    "cloudlet": 1,
+    "cloudletorg": 2,
+    "netSend": 3,
+    "netRecv": 4,
+    "vCpuUsed": 5,
+    "vCpuMax": 6,
+    "memUsed": 7,
+    "memMax": 8,
+    "diskUsed": 9,
+    "diskMax": 10,
+    "floatingIpsUsed": 11,
+    "floatingIpsMax": 12,
+    "ipv4Used": 13,
+    "ipv4Max": 14,
+}
 
 /**
  *
@@ -585,7 +629,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]>}
  */
-export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {
         let instanceBodyList = []
@@ -604,119 +648,169 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
 
-        //todo: check undefined element.
-        let newCloutletMetric = []
-        cloudletLevelMatricUsageList.map(item => {
-            if (item !== undefined) {
-                newCloutletMetric.push(item)
-            }
-        })
+        let netSendSeriesList = [];
+        let netRecvSeriesList = [];
+        let vCpuSeriesList = [];
+        let memSeriesList = [];
+        let diskSeriesList = [];
+        let floatingIpsSeriesList = [];
+        let ipv4UsedSeriesList = [];
+
+        let cloudlet = "";
+        let operator = "";
+        let Region = '';
 
         let usageList = []
-        newCloutletMetric.map((item, index) => {
+        cloudletLevelMatricUsageList.map((item, index) => {
+            if (!isEmpty(item) && !isEmpty(item.data["0"].Series)) {
+                Region = cloudletList[index].Region
+                let series = item.data["0"].Series["0"].values
+                let columns = item.data["0"].Series["0"].columns
 
-            if (item !== undefined) {
-                let Region = cloudletList[index].Region
-                if (item.data["0"] !== undefined && item.data["0"].Series !== null) {
-                    let series = item.data["0"].Series["0"].values
-                    let columns = item.data["0"].Series["0"].columns
 
-                    let sumVirtualCpuUsed = 0;
-                    let sumVirtualCpuMax = 0;
-                    let sumMemUsed = 0;
-                    let sumMemMax = 0;
-                    let sumDiskUsed = 0;
-                    let sumDiskMax = 0;
-                    let sumNetSend = 0;
-                    let sumNetRecv = 0;
-                    let sumFloatingIpsUsed = 0;
-                    let sumFloatingIpsMax = 0
-                    let sumIpv4Used = 0;
-                    let sumIpv4Max = 0;
+                //////////////////////////////////////////
+                let netSendSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netSend]
+                let netRecvSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netRecv]
+                let vCpuSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.vCpuUsed]
+                let memSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.memUsed]
+                let diskSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.diskUsed]
+                let floatingIpsSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.floatingIpsUsed]
+                let ipv4UsedSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.ipv4Used]
 
-                    let cloudlet = "";
-                    let operator = "";
-                    series.map(item => {
-                        cloudlet = item[1]
-                        operator = item[2]
+                netSendSeriesList.push(netSendSeriesOne)
+                netRecvSeriesList.push(netRecvSeriesOne)
+                vCpuSeriesList.push(vCpuSeriesOne)
+                memSeriesList.push(memSeriesOne)
+                diskSeriesList.push(diskSeriesOne)
+                floatingIpsSeriesList.push(floatingIpsSeriesOne)
+                ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
 
-                        //todo: CPU
-                        let vCpuUsed = item["5"];
-                        let vCpuMax = item["6"];
-                        sumVirtualCpuUsed += vCpuUsed;
-                        sumVirtualCpuMax += vCpuMax;
+                let sumVirtualCpuUsed = 0;
+                let sumvCpuMax = 0;
+                let sumMemUsed = 0;
+                let sumMemMax = 0;
+                let sumDiskUsed = 0;
+                let sumDiskMax = 0;
+                let sumNetSend = 0;
+                let sumNetRecv = 0;
+                let sumFloatingIpsUsed = 0;
+                let sumFloatingIpsMax = 0
+                let sumIpv4Used = 0;
+                let sumIpv4Max = 0;
 
-                        //todo: MEM
-                        sumMemUsed += item["7"];
-                        sumMemMax += item["8"];
+                series.map(item => {
+                    cloudlet = item[1]
+                    operator = item[2]
 
-                        //todo: DISK
-                        sumDiskUsed += item["9"];
-                        sumDiskMax += item["10"];
+                    //todo: CPU
+                    let vCpuUsed = item["5"];
+                    let vCpuMax = item["6"];
+                    sumVirtualCpuUsed += vCpuUsed;
+                    sumvCpuMax += vCpuMax;
 
-                        //todo: NETWORK(RECV,SEND)
-                        sumNetSend += item["3"];
-                        sumNetRecv += item["4"];
+                    //todo: MEM
+                    sumMemUsed += item["7"];
+                    sumMemMax += item["8"];
 
-                        //todo: FLOATIP
-                        sumFloatingIpsUsed += item["11"];
-                        sumFloatingIpsMax += item["12"];
-                        //todo: IPV4
-                        sumIpv4Used += item["13"];
-                        sumIpv4Max += item["14"];
+                    //todo: DISK
+                    sumDiskUsed += item["9"];
+                    sumDiskMax += item["10"];
 
-                    })
+                    //todo: NETWORK(RECV,SEND)
+                    sumNetSend += item["3"];
+                    sumNetRecv += item["4"];
 
-                    usageList.push({
-                        sumVCpuUsage: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-                        sumSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-                        sumFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-                        sumIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
-                        columns: columns,
-                        series: series,
-                        cloudlet: cloudlet,
-                        operator: operator,
-                        Region: Region,
+                    //todo: FLOATIP
+                    sumFloatingIpsUsed += item["11"];
+                    sumFloatingIpsMax += item["12"];
+                    //todo: IPV4
+                    sumIpv4Used += item["13"];
+                    sumIpv4Max += item["14"];
 
-                    })
-                }
+                })
+
+                usageList.push({
+                    usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+                    usedSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+                    usedFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+                    usedIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+                    maxVCpuCount: sumvCpuMax / RECENT_DATA_LIMIT_COUNT,
+                    maxMemUsage: sumMemMax / RECENT_DATA_LIMIT_COUNT,
+                    maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
+                    columns: columns,
+                    series: series,
+                    cloudlet: cloudlet,
+                    operator: operator,
+                    Region: Region,
+                    netSendSeriesList,
+                    netRecvSeriesList,
+                    vCpuSeriesList,
+                    memSeriesList,
+                    diskSeriesList,
+                    floatingIpsSeriesList,
+                    ipv4UsedSeriesList,
+                })
+            } else {//Seires is null
+                usageList.push({
+                    usedVCpuCount: 0,
+                    usedMemUsage: 0,
+                    usedDiskUsage: 0,
+                    usedRecvBytes: 0,
+                    usedSendBytes: 0,
+                    usedFloatingIpsUsage: 0,
+                    usedIpv4Usage: 0,
+                    maxVCpuCount: 0,
+                    maxMemUsage: 0,
+                    maxDiskUsage: 0,
+                    columns: [],
+                    series: [],
+                    cloudlet: cloudletList[index].CloudletName,
+                    operator: cloudletList[index].Operator,
+                    Region: cloudletList[index].Region,
+                    netSendSeriesList: [],
+                    netRecvSeriesList: [],
+                    vCpuSeriesList: [],
+                    memSeriesList: [],
+                    diskSeriesList: [],
+                    floatingIpsSeriesList: [],
+                    ipv4UsedSeriesList: [],
+                })
             }
 
-        })
-
+        });
         return usageList;
     } catch (e) {
-        //throw new Error(e)
     }
 
 }
 
+
 export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
-    console.log('token2===>', pToken);
-    let result = await axios({
-        url: mcURL + CLOUDLET_METRICS_ENDPOINT,
+    console.log('token===>', pToken);
+    return await axios({
+        url: CLOUDLET_METRICS_ENDPOINT,
         method: 'post',
         data: serviceBody['params'],
         headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + pToken
         },
-        timeout: 15 * 1000
+        timeout: 30 * 1000
     }).then(async response => {
         return response.data;
     }).catch(e => {
-        //showToast(e.toString())
+        let tempArray = []
+        return tempArray;
     })
-    return result;
 }
 
 export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
-        url: mcURL + APP_INST_METRICS_ENDPOINT,
+        url: APP_INST_METRICS_ENDPOINT,
         method: 'post',
         data: serviceBodyForAppInstanceOneInfo['params'],
         headers: {
@@ -735,16 +829,16 @@ export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) =
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     try {
-        console.log('token2===>', pToken);
+        console.log('token===>', pToken);
         let result = await axios({
-            url: mcURL + CLUSTER_METRICS_ENDPOINT,
+            url: CLUSTER_METRICS_ENDPOINT,
             method: 'post',
             data: serviceBody['params'],
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + pToken
             },
-            timeout: 15 * 1000
+            timeout: 30 * 1000
         }).then(async response => {
             return response.data;
         }).catch(e => {
@@ -764,7 +858,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         let selectOrg = localStorage.getItem('selectOrg')
 
         let result = await axios({
-            url: mcURL + CLOUDLET_EVENT_LOG_ENDPOINT,
+            url: CLOUDLET_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: {
                 "region": pRegion,
@@ -778,7 +872,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
             },
-            timeout: 15 * 1000
+            timeout: 30 * 1000
         }).then(async response => {
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
@@ -831,7 +925,6 @@ export const getAllCloudletEventLogs = async (cloudletList) => {
 export const getAllClusterEventLogList = async (clusterList) => {
     try {
         let clusterPromiseList = []
-        //todo: 모든 클러스터에 대한 이벤트 로그를 요청 비동기식 promiseList
         clusterList.map((clusterOne: TypeCluster, index) => {
             clusterPromiseList.push(getClusterEventLogListOne(clusterOne))
         })
@@ -852,7 +945,7 @@ export const getAllClusterEventLogList = async (clusterList) => {
 
         return completedEventLogList;
     } catch (e) {
-        showToast(e.toString())
+        //showToast(e.toString())
     }
 }
 
@@ -884,7 +977,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 
 
         let result = await axios({
-            url: mcURL + CLUSTER_EVENT_LOG_ENDPOINT,
+            url: CLUSTER_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: form,
             headers: {
@@ -933,7 +1026,7 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         return await axios({
-            url: mcURL + APP_INST_EVENT_LOG_ENDPOINT,
+            url: APP_INST_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: form,
             headers: {
@@ -992,3 +1085,110 @@ export const getAllAppInstEventLogs = async () => {
     }
 }
 
+
+/**
+ * @desc : Inquire the status of the client attached to AppInstOne
+ * @param appInst
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export const getClientStateOne = async (appInst: TypeAppInst) => {
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+    return await axios({
+        url: SHOW_METRICS_CLIENT_STATUS,
+        method: 'post',
+        data: {
+            "region": appInst.Region,
+            "appinst": {
+                "app_key": {
+                    "organization": appInst.OrganizationName,
+                    "name": appInst.AppName,
+                    "version": appInst.Version,
+                }
+            },
+            "selector": "api",
+            //'last': 100
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        if (response.data.data[0].Series !== null) {
+            let seriesValues = response.data.data[0].Series[0].values
+            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
+            return clientMatricSumDataOne;
+        } else {
+            return undefined
+        }
+
+    })
+}
+
+export function makeClientMatricSumDataOne(seriesValues) {
+    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
+    let RegisterClientCount = 0;
+    let FindCloudletCount = 0;
+    let VerifyLocationCount = 0
+    let app = '';
+    let apporg = '';
+    let cellID = '';
+    let cloudlet = '';
+    let cloudletorg = '';
+    let ver = ''
+
+    seriesValues.map(item => {
+        let methodType = item[17];
+        if (methodType === "RegisterClient") {
+            RegisterClientCount++;
+        }
+        if (methodType === "FindCloudlet") {
+            FindCloudletCount++;
+        }
+        if (methodType === "VerifyLocation") {
+            FindCloudletCount++;
+        }
+
+        app = item[6]//app
+        apporg = item[7]//apporg
+        cellID = item[8]//cellID
+        cloudlet = item[9]//cloudlet
+        cloudletorg = item[10]//cloudletorg
+        ver = item[20]//ver
+    })
+
+    let metricSumDataOne = {
+        RegisterClientCount,
+        FindCloudletCount,
+        VerifyLocationCount,
+        app,
+        apporg,
+        cellID,
+        cloudlet,
+        cloudletorg,
+        ver,
+    }
+
+    return metricSumDataOne;
+
+}
+
+
+export const getClientStatusList = async (appInstList) => {
+    let promiseList = []
+    appInstList.map((appInstOne: TypeCloudlet, index) => {
+        promiseList.push(getClientStateOne(appInstOne))
+    })
+    let newPromiseList = await Promise.all(promiseList);
+
+    let mergedClientStatusList = []
+    newPromiseList.map((item, index) => {
+        if (item !== undefined) {
+            mergedClientStatusList.push(item)
+        }
+    })
+
+    return mergedClientStatusList;
+
+}

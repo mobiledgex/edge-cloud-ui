@@ -1,3 +1,4 @@
+/*
 // @flow
 import * as React from 'react';
 import {Chart} from "react-google-charts";
@@ -75,3 +76,4 @@ export default class PieChartContainer extends React.Component<Props, State> {
         );
     };
 };
+*/

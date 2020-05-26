@@ -1,6 +1,6 @@
 import React from 'react';
 import TagCloud from 'react-tag-cloud';
-import type {TypeClusterUsageList} from "../../../../shared/Types";
+import type {TypeClusterUsageOne} from "../../../../shared/Types";
 import {CHART_COLOR_MONOKAI} from "../../../../shared/Constants";
 
 type Props = {
@@ -69,7 +69,7 @@ export default class TagCloudContainer extends React.Component<Props, State> {
                                 backgroundColor: '#0a0a0a',
 
                             }}>
-                            {this.state.allClusterUsageList.map((item: TypeClusterUsageList, index) => {
+                            {this.state.allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
 
                                 let randNo = this.makeRandNo(15, 25);
                                 let randNo2 = this.makeRandNo(100, 1200);
