@@ -66,29 +66,18 @@ export const HARDWARE_TYPE_FOR_GRID = {
 
 };
 
-/*export const CHART_TYPE = {
-    LINE: 'LINE',
-    BAR: 'BAR',
-    COLUMN: 'COLUMN',
-    DONUTS: 'DONUTS',
-    METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
-}*/
-
-
 /*desc:#####################################
 todo: Cloudlet  LAYOUT
 desc:#######################################*/
-
-
 export const defaultLayoutForCloudlet = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//vCPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
-    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//findCloudlet_widget
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//DONUTS
     {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//
-    {i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},//
-    {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},//
+    /*{i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},
+    {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},*/
 ];
 
 export const defaultLayoutMapperForCloudlet = [
@@ -135,52 +124,10 @@ export const defaultLayoutMapperForCloudlet = [
     },
 ];
 
-export const defaultLayoutMapperForCloudlet2 = [
-    {
-        id: '1',
-        hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
-        graphType: GRID_ITEM_TYPE.LINE,
-    },
-    {
-        id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: GRID_ITEM_TYPE.MAP,
-    },
 
-    {
-        id: '3',
-        hwType: HARDWARE_TYPE_FOR_GRID.memUsed,
-        graphType: GRID_ITEM_TYPE.LINE,
-    },
-    {
-        id: '4',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
-    },
-    {
-        id: '5',
-        hwType: HARDWARE_TYPE_FOR_GRID.diskUsed,
-        graphType: GRID_ITEM_TYPE.LINE,
-    },
-    {
-        id: '6',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
-    },
-    {
-        id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
-        graphType: GRID_ITEM_TYPE.LINE,
-    },
-    {
-        id: '8',
-        hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
-        graphType: GRID_ITEM_TYPE.LINE,
-    },
-];
-
-
-
+/*desc:#####################################
+todo: Cluster   LAYOUT
+desc:#######################################*/
 export const defaultLayoutForCluster = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
@@ -487,8 +434,6 @@ export const CLOUDLET_LAYOUT_KEY = "_layout_cloudlet";
 export const CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_cloudlet";
 export const CLUSTER_FOR_OPER_LAYOUT_KEY = "_layout_cluster_oper";
 export const CLUSTER_FOR_OPER_HW_MAPPER_KEY = "_layout_mapper_cluster_oper";
-
-
 export const CLUSTER_LAYOUT_KEY = "_layout";
 export const CLUSTER_HW_MAPPER_KEY = "_layout_mapper";
 export const APPINST_LAYOUT_KEY = "_layout2";
