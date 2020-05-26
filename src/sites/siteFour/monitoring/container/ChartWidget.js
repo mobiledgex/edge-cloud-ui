@@ -54,7 +54,7 @@ class ChartWidget extends React.Component {
     */
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.data !== nextProps.data) {
-            console.log("20200521 container widget   == 55 55  == nextProps.data = ", nextProps.data, ": prevState.data= ", prevState.data, ": id = ", nextProps.id);
+            //console.log("20200521 container widget   == 55 55  == nextProps.data = ", nextProps.data, ": prevState.data= ", prevState.data, ": id = ", nextProps.id);
             if (nextProps.id === DataType.NETWORK_CLOUDLET) {
                 if (nextProps.data && nextProps.data[nextProps.id] && nextProps.data[nextProps.id].length > 0) {
                     return { data: nextProps.data };

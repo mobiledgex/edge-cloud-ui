@@ -175,9 +175,8 @@ export const MetricsService = async (defaultValue: MetricsParmaType, self: any) 
     if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
         // this.props.handleLoadingSpinner(true);
         // 잠시 막음
-        getEventCloudlet(defaultValue.self, defaultValue).then(async data => {
-            self.onReceiveResult(data, self);
-        });
+        const result = await getEventCloudlet(self, defaultValue);
+        return result;
     }
     if (defaultValue.method === serviceMC.getEP().METRICS_CLOUDLET) {
         // 잠시 막음

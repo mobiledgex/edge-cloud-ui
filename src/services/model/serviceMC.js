@@ -176,6 +176,8 @@ export const sendSyncRequest = async (self, request) => {
     } catch (error) {
         if (error.response) {
             responseError(self, request, error.response);
+        } else {
+            responseError(self, request, "You have entered an invalid username or password");
         }
     }
 };

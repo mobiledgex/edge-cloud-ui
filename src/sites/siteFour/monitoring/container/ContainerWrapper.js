@@ -91,7 +91,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             * necessary to get cloudlets from the parent
             ******************************************** */
             if (this.state.cloudlets && this.state.cloudlets.length > 0 && this.state.method) {
-                console.log("20200521 container widget   == 33 == ", this.state.cloudlets, ": method= ", prevProps.method);
                 this.initialize(this.state, this);
             }
         }
@@ -137,13 +136,8 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         try {
             if (props.method === serviceMC.getEP().METRICS_CLOUDLET) {
                 const result = await Service.MetricsService(props, self);
-                /**
-                 * completing service, go to onReceiveResult
-                 */
-                // reduce duplicated item
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result);
-                    console.log("20200521 container widget   == 44 == ", reduceResult);
                     this.onReceiveResult(reduceResult, self);
                 }
             }
@@ -151,9 +145,13 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 const result = await Service.MetricsService(props, self);
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result, "values");
-                    console.log("20200521 container widget   == 44 ==>>>> ", reduceResult);
                     this.onReceiveResult(reduceResult, self);
                 }
+            }
+            if (props.method === serviceMC.getEP().EVENT_CLOUDLET) {
+                const result = await Service.MetricsService(props, self);
+                console.log("20200521 container widget   == 55 result event cloudlet == ", result);
+                this.onReceiveResult(result, self);
             }
         } catch (e) {
             console.log(e);
