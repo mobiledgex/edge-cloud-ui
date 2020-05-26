@@ -2,7 +2,7 @@ import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
-import {sendSyncRequest} from "../../../../services/serviceMC";
+import {sendSyncRequest, mcURL} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
@@ -30,9 +30,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
         let token = store ? store.userToken : 'null';
         let organization = localStorage.selectOrg.toString()
 
-        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
-
-        const webSocket = new WebSocket(`${prefixUrl}/ws${SHOW_APP_INST_CLIENT_ENDPOINT}`)
+        const webSocket = new WebSocket(`${mcURL(true)}/ws${SHOW_APP_INST_CLIENT_ENDPOINT}`)
         let showAppInstClientRequestForm = {
             "Region": Region,
             "AppInstClientKey": {
@@ -791,7 +789,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
     console.log('token===>', pToken);
     return await axios({
-        url: CLOUDLET_METRICS_ENDPOINT,
+        url: mcURL() + CLOUDLET_METRICS_ENDPOINT,
         method: 'post',
         data: serviceBody['params'],
         headers: {
@@ -810,7 +808,7 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
 export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
-        url: APP_INST_METRICS_ENDPOINT,
+        url: mcURL() + APP_INST_METRICS_ENDPOINT,
         method: 'post',
         data: serviceBodyForAppInstanceOneInfo['params'],
         headers: {
@@ -831,7 +829,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
     try {
         console.log('token===>', pToken);
         let result = await axios({
-            url: CLUSTER_METRICS_ENDPOINT,
+            url: mcURL() + CLUSTER_METRICS_ENDPOINT,
             method: 'post',
             data: serviceBody['params'],
             headers: {
@@ -858,7 +856,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         let selectOrg = localStorage.getItem('selectOrg')
 
         let result = await axios({
-            url: CLOUDLET_EVENT_LOG_ENDPOINT,
+            url: mcURL() + CLOUDLET_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: {
                 "region": pRegion,
@@ -977,7 +975,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
 
 
         let result = await axios({
-            url: CLUSTER_EVENT_LOG_ENDPOINT,
+            url: mcURL() + CLUSTER_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: form,
             headers: {
@@ -1026,7 +1024,7 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         return await axios({
-            url: APP_INST_EVENT_LOG_ENDPOINT,
+            url: mcURL() + APP_INST_EVENT_LOG_ENDPOINT,
             method: 'post',
             data: form,
             headers: {
@@ -1095,7 +1093,7 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     return await axios({
-        url: SHOW_METRICS_CLIENT_STATUS,
+        url: mcURL() + SHOW_METRICS_CLIENT_STATUS,
         method: 'post',
         data: {
             "region": appInst.Region,

@@ -5,16 +5,32 @@ import Alert from 'react-s-alert';
 
 
 let sockets = [];
-let serverURL = process.env.REACT_APP_API_ENDPOINT;
 
 
 export function getEP() {
     return EP;
 }
 
-const getURL = (request)=>
+export const mcURL = (isWebSocket) =>
 {
-    return serverURL + EP.getPath(request)
+    let serverURL = ''
+    if(process.env.NODE_ENV === 'production' )
+    {
+        var url = window.location.href
+        var arr = url.split("/");
+        serverURL = arr[0] + "//" + arr[2]
+    }
+
+    if(isWebSocket)
+    {
+        serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+    }
+    return serverURL
+}
+
+const getHttpURL = (request)=>
+{
+    return mcURL(false) + EP.getPath(request)
 }
 
 export function generateUniqueId() {
@@ -81,8 +97,7 @@ function responseError(self, request, response, callback) {
 
 
 export function sendWSRequest(request, callback) {
-    let url = serverURL.replace('http', 'ws');
-    const ws = new WebSocket(`${url}/ws${EP.getPath(request)}`)
+    const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({uuid: request.uuid, socket: ws, isClosed: false});
         ws.send(`{"token": "${request.token}"}`);
@@ -115,7 +130,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
         let promise = [];
         let resResults = [];
         requestDataList.map((request) => {
-            promise.push(axios.post(getURL(request), request.data,
+            promise.push(axios.post(getHttpURL(request), request.data,
                 {
                     headers: getHeader(request)
                 }))
@@ -139,7 +154,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
 export const sendSyncRequest = async (self, request) => {
     try {
         request.showSpinner === undefined && showSpinner(self, true)
-        let response = await axios.post(getURL(request), request.data,
+        let response = await axios.post(getHttpURL(request), request.data,
             {
                 headers: getHeader(request)
             });
@@ -155,7 +170,7 @@ export const sendSyncRequest = async (self, request) => {
 export function sendRequest(self, request, callback) {
     let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
     showSpinner(self, isSpinner)
-    axios.post(getURL(request), request.data,
+    axios.post(getHttpURL(request), request.data,
         {
             headers: getHeader(request)
         })
@@ -169,9 +184,3 @@ export function sendRequest(self, request, callback) {
             }
         })
 }
-
-
-
-
-
-
