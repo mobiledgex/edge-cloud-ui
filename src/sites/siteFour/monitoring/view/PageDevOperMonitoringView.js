@@ -617,7 +617,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
                     } else {//TODO:OPERATOR
-                        let date = [moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                        let date = [moment().subtract(30, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                         let startTime = makeCompleteDateTime(date[0]);
                         let endTime = makeCompleteDateTime(date[1]);
 
