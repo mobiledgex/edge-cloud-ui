@@ -2462,7 +2462,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            async makeLegend() {
+            makeLegend() {
                 try {
                     let legendItemCount = 0;
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
@@ -2477,7 +2477,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     if (this.state.loading) {
                         return (
-                            <LegendOuterDiv style={{height: 30 * RowHeight}}>
+                            <LegendOuterDiv style={{height: 30}}>
                                 <div style={{
                                     display: 'flex',
                                     alignSelf: 'center',
@@ -2516,40 +2516,41 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         this.renderAppLegend(legendItemCount)
 
                                 }
-                                {this.renderLegendFoldIcons(30 * RowHeight)}
+                                {/*@todo:################################*/}
+                                {/*@todo: fold/unfoled icons on right    */}
+                                {/*@todo:################################*/}
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER &&
+                                <div
+                                    style={PageMonitoringStyles.expandIconDiv}
+                                    onClick={() => {
+                                        if (this.state.isLegendExpanded === false) {
+                                            this.setState({
+                                                isLegendExpanded: true,
+                                                legendHeight: (Math.ceil(legendItemCount / 4)) * 25,
+                                                legendColSize: 6,
+                                            })
+                                        } else {//when expanded
+                                            this.setState({
+                                                isLegendExpanded: false,
+                                                legendHeight: (Math.ceil(legendItemCount / 8)) * 25,
+                                                legendColSize: 3,
+                                            })
+                                        }
+                                    }}
+                                >
+                                    {!this.state.isLegendExpanded ?
+                                        <UnfoldMore style={{fontSize: 18}}/>
+                                        :
+                                        <UnfoldLess style={{fontSize: 18}}/>
+                                    }
+                                </div>
+                                }
                             </LegendOuterDiv>
                         )
                     }
                 } catch (e) {
 
                 }
-            }
-
-            renderLegendFoldIcons(legendHeight) {
-                return (
-                    <div
-                        style={PageMonitoringStyles.expandIconDiv}
-                        onClick={() => {
-                            if (this.state.isLegendExpanded === false) {
-                                this.setState({
-                                    isLegendExpanded: true,
-                                    legendHeight: 30,
-                                })
-                            } else {//when expanded
-                                this.setState({
-                                    isLegendExpanded: false,
-                                    legendHeight: legendHeight,
-                                })
-                            }
-                        }}
-                    >
-                        {!this.state.isLegendExpanded ?
-                            <UnfoldMore style={{fontSize: 18}}/>
-                            :
-                            <UnfoldLess style={{fontSize: 18}}/>
-                        }
-                    </div>
-                )
             }
 
 
