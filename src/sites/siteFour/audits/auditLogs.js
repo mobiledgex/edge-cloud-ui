@@ -128,7 +128,7 @@ class SiteFourPageAudits extends React.Component {
         if (all.error) {
             this.props.handleAlertInfo('error', all.error)
         } else {
-            all.map((item, i) => {
+             all.map((item, i) => {
                 if (savedArray && JSON.parse(savedArray).length) {
 
                     //이전에 없던 데이터 이면 추가하기

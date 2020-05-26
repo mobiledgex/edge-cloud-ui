@@ -1,7 +1,6 @@
 import React, { useState } from "react";
+import { Toolbar, Grid } from '@material-ui/core'
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
 import FilterMenu from "./FilterMenu";
 
 const useStyles = makeStyles(theme => ({
@@ -27,25 +26,11 @@ const HeaderFiltering = props => {
     }, [props]);
 
     return (
-        <div className={classes.root} style={{ margin: 0 }}>
-            <Grid
-                container
-                direction="row"
-                justify="space-between"
-                alignItems="center"
-                spacing={3}
-            >
-                <Grid item xs>
-                    a
-                </Grid>
-                <Grid item xs={6}>
-                    <FilterMenu />
-                </Grid>
-                <Grid item xs>
-                    c
-                </Grid>
-            </Grid>
-        </div>
+        
+        <Toolbar className='monitoring_title' >
+            <label className='content_title_label'>Monitoring</label>
+            <FilterMenu />
+        </Toolbar>
     );
 };
 export default HeaderFiltering;

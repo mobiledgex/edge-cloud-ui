@@ -137,13 +137,10 @@ class MonitoringAdmin extends React.Component {
             <div
                 style={{
                     width: "100%",
-                    height: "100%",
-                    backgroundColor: "#ababab",
+                    height: "100%"
                 }}
             >
-                <HeaderFiltering
-                    title="MONITORING"
-                />
+                <HeaderFiltering title="MONITORING"/>
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
