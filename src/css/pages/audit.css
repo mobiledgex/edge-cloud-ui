@@ -662,3 +662,436 @@
     margin-left: 10px;
     color: rgb(118, 255, 3);
 }
+
+
+/* ------------- audit V3 */
+
+.audit_bedge {
+    position: absolute;
+    background-color: #d32f2f;
+    top: 5px;
+    right: 5px;
+    /*height: 16px;*/
+    padding:0 5px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #fff;
+
+}
+
+.audit_container {
+    background-color: #292C33;
+    width: 450px;
+    box-shadow: -3px 0 4px 0 rgba(0, 0, 0, 0.3)
+}
+
+.audit_title {
+    margin:10px 20px;
+    display: flex;
+    flex-direction: row;
+    height:48px;
+    /*justify-content: center;*/
+    align-items: center;
+}
+.audit_title .audit_title_label {
+    margin-right: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.6;
+    letter-spacing: 0.07px;
+    color: #ffffff;
+}
+.audit_title .audit_filter {
+    display: flex;
+    flex: 1;
+}
+
+/* calendar */
+
+.audit_calendar {
+    flex: 1;
+    background-color: transparent;
+    padding:0 20px;
+    border-bottom: 1px solid rgba(255,255,255,.5);
+}
+.audit_calendar_month {
+    color: rgba(255, 255, 255, 0.5);
+    padding: unset;
+    width:100%;
+    max-width: 100%;
+    font-size: 16px;
+    line-height: 30px;
+    letter-spacing: 0.09px;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.audit_calendar_button_today {
+    position: absolute;
+    right: 0;
+    width: 138px;
+    height: 30px;
+    border: solid 1px #292c33;
+    background-color: #4c5260;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.58;
+    letter-spacing: 0.3px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.audit_calendar_button_today:hover {
+    background-color: #5d6576;
+    color: #fff;
+
+}
+
+.audit_calendar_button_prev, .audit_calendar_button_next {
+    background: none;
+    border: none;
+    width: 20px;
+    padding:0
+}
+
+.audit_calendar_button_prev .MuiSvgIcon-root, .audit_calendar_button_next .MuiSvgIcon-root {
+    color: rgba(255,255,255,.5)
+}
+
+.audit_calendar_button_prev .MuiSvgIcon-root:hover, .audit_calendar_button_next .MuiSvgIcon-root:hover {
+    color: #fff
+}
+
+.audit_timeline_vertical {
+    overflow-y: auto;
+    height: calc(100% - 158px);
+}
+
+/* timeline */
+
+.audit_container .audit_timeline_container {
+    padding:30px 0 10px 0;
+}
+
+.audit_container .MuiPaper-root, .audit_container .MuiPaper-root {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.audit_container .MuiExpansionPanel-root:before {
+    display: none;
+}
+.audit_container .MuiExpansionPanel-root.Mui-expanded{
+    margin: 0;
+}
+
+.audit_container .MuiExpansionPanelSummary-root {
+    display: flex;
+    padding: 0px 30px;
+    height:50px;
+    min-height: 50px;
+}
+.audit_container .MuiExpansionPanelSummary-root.Mui-expanded {
+    min-height: 50px;
+}
+
+.audit_container .MuiExpansionPanelSummary-content {
+    margin: 0;
+    align-self: flex-start;
+}
+.audit_container .MuiExpansionPanelSummary-content.Mui-expanded {
+    margin: 0;
+}
+
+.audit_container .MuiStep-root {
+    display: flex;
+    flex-direction: row;
+}
+
+.audit_timeline_time {
+    display: flex;
+    margin: 0 10px 0 0;
+    width: 60px;
+    text-align: right;
+    font-size: 14px;
+    line-height: 1.43;
+    letter-spacing: 0.1px;
+    text-align: right;
+    color: #ffffff;
+}
+
+.audit_container .MuiStepLabel-iconContainer{
+    position: relative;
+}
+.audit_container .MuiStepLabel-iconContainer:before {
+    content:'';
+    display: block;
+    position: absolute;
+    top: 26px;
+    left: 11px;
+    width: 4px;
+    height: 24px;
+    background-color: #5d6576;
+}
+.audit_timeline_container .MuiExpansionPanel-root:last-child .MuiStepLabel-iconContainer:before{
+    display: none;
+}
+
+.audit_timeline_Step {
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.audit_timeline_Step .MuiSvgIcon-root {
+    width: 12px;
+    height: 12px;
+    font-size: 12px;
+}
+
+.audit_container .MuiStepConnector-vertical {
+    margin-left: 111px;
+    padding: 0;
+
+}
+
+.audit_container .MuiStepConnector-lineVertical {
+    border-left-width: 4px;
+    border-color: #5d6576;
+    min-height: 24px;
+}
+
+.audit_container .MuiCollapse-container {
+    background-color: #4c5260;
+}
+
+.audit_container .MuiExpansionPanelDetails-root{
+    padding: 20px;
+    flex-direction: column;
+}
+
+.audit_timeline_container .MuiStepLabel-root {
+    align-items: flex-start;
+}
+
+.audit_timeline_title {
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.09px;
+    color: #ffffff;
+
+}
+
+.audit_timeline_traceID {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.43;
+    letter-spacing: 0.1px;
+    color: #9e9e9e;
+
+}
+
+.audit_timeline_traceID span {
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.43;
+    letter-spacing: 0.1px;
+    color: #9e9e9e;
+
+}
+
+.audit_timeline_detail_row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.audit_timeline_detail_left {
+    width:120px;
+    margin-right: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.43;
+    letter-spacing: 0.1px;
+    text-align: right;
+    color: #ffffff;
+}
+
+.audit_timeline_detail_right {
+    font-size: 14px;
+    line-height: 1.43;
+    letter-spacing: 0.1px;
+    color: #ffffff;
+}
+
+.audit_timeline_detail_button {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 10px 0;
+}
+
+.audit_timeline_detail_button button {
+    width: 120px;
+    height: 36px;
+    border-radius: 4px;
+    background-color: #6b7487;
+    border: none;
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,0.20), 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.69;
+    letter-spacing: 0.3px;
+    color: #ffffff;
+}
+
+/* group */
+
+.audit_container .audit_timeline_group .audit_timeline_container {
+    padding:10px 0 10px 0;
+}
+
+.audit_timeline_group {
+    padding:0;
+}
+
+.audit_timeline_group:nth-child(odd) {
+    background-color: #3c404a;
+}
+
+.audit_timeline_group:nth-child(even) {
+    background-color: #292c33;
+}
+
+.audit_timeline_group_header{
+    margin: 0 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #5d6576;
+    font-size: 16px;
+    line-height: 1.25;
+    letter-spacing: 0.11px;
+    color: #9e9e9e;
+}
+
+.audit_timeline_group_header .audit_timeline_group_bedge {
+    padding: 0 5px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #b71c1c;
+    font-size: 12px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    text-align: center;
+    color: #ffffff;
+    margin-left: 10px;
+
+}
+
+
+/* popup */
+
+.audit_popup .MuiDialog-paper {
+    width: 900px;
+    max-width: 900px;
+    min-height:600px;
+    max-height: 900px;
+    border-radius: 4px;
+    background-color: #292c33;
+}
+
+.audit_popup .MuiDialogContent-root {
+    padding:0 20px;
+}
+.audit_popup .audit_popup_panel{
+    width: 100%;
+    border-radius: 4px;
+    overflow-y: auto;
+    background-color: #3c404a;
+    margin: 0 0 30px 0;
+    box-shadow: none;
+}
+
+.audit_popup .audit_popup_panel.Mui-expanded {
+    margin: 0 0 30px 0;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.14), 0 2px 1px -1px rgba(0,0,0,0.12), 0 1px 3px 0 rgba(0,0,0,0.20);
+}
+
+.audit_popup .MuiExpansionPanel-root:before {
+    display: none;
+}
+
+.audit_popup .audit_popup_panel:last-child, .audit_popup .audit_popup_panel:last-child {
+    margin-bottom: 0;
+}
+
+.audit_popup_title {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.07px;
+    color: #b5b9c1;
+}
+
+.audit_popup .MuiExpansionPanelSummary-root{
+    padding: 12px 24px;
+    min-height: 48px;
+}
+.audit_popup .MuiExpansionPanelSummary-root.Mui-expanded {
+    padding: 20px 24px 10px 24px;
+    min-height: 24px;
+}
+
+.audit_popup .MuiExpansionPanelSummary-content {
+    margin: 0;
+    align-items: center;
+}
+
+.audit_popup .MuiExpansionPanelSummary-content> div:first-child {
+    display: flex;
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.09px;
+    color: #ffffff;
+}
+
+.audit_popup .MuiExpansionPanelSummary-content .MuiSvgIcon-root {
+    color: #818898;
+}
+
+.audit_popup .MuiExpansionPanelSummary-content.Mui-expanded {
+    margin: 0;
+}
+
+.audit_popup .MuiExpansionPanelDetails-root  {
+    display: flex;
+    padding: 0 20px 10px 20px;
+    word-break: break-word;
+}
+.audit_popup .MuiExpansionPanelDetails-root .react-json-view {
+    max-height: 532px;
+    overflow-y: auto;
+
+}
+
+.audit_popup .MuiDialogActions-root {
+    padding: 15px 20px;
+}
+
+.audit_popup .MuiDialogActions-root .MuiIconButton-label {
+    font-size: 14px;
+
+}
+
