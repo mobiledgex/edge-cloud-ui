@@ -693,7 +693,6 @@ export const getCloudletLevelUsageList = async (cloudletList, pHardwareType, rec
 
 export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
-    console.log('Rahul1234', mcURL() + CLOUDLET_METRICS_ENDPOINT)
     let result = await axios({
         url: mcURL() + CLOUDLET_METRICS_ENDPOINT,
         method: 'post',

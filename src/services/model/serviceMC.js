@@ -106,7 +106,7 @@ function responseError(self, request, response, callback) {
 }
 
 export function sendWSRequest(request, callback) {
-    const ws = new WebSocket(`${mcURl(true)}/ws${EP.getPath(request)}`)
+    const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({uuid: request.uuid, socket: ws, isClosed: false});
         ws.send(`{"token": "${request.token}"}`);
