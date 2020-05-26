@@ -113,19 +113,6 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                                                 callback: ({chartWrapper, google}) => {
                                                     const chart = chartWrapper.getChart();
                                                     google.visualization.events.addListener(chart, "click", e => {
-
-                                                        /*   var parts = e.targetID.split("#");
-
-                                                           let barIndex = parts[2]
-
-                                                           console.log(`sdlkflskdfkl====>`, barIndex);
-
-                                                           let data = this.state.chartDataSet.chartDataList;
-                                                           let cloudlet = data[barIndex][0]
-                                                           console.log(`sdlkflskdfkl====>`, cloudlet);*/
-
-                                                        //handleOnChangeCloudletDropdown
-
                                                     });
                                                 }
                                             }

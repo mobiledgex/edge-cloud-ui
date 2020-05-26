@@ -97,7 +97,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
                 _this.setState({
                     selectedClientLocationListOnAppInst: _this.state.selectedClientLocationListOnAppInst.concat(clientLocationOne),
-                },()=>{
+                }, () => {
                 });
 
                 setTimeout(() => {
@@ -648,7 +648,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
 
-
         let netSendSeriesList = [];
         let netRecvSeriesList = [];
         let vCpuSeriesList = [];
@@ -830,7 +829,7 @@ export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) =
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     try {
-        console.log('token2===>', pToken);
+        console.log('token===>', pToken);
         let result = await axios({
             url: CLUSTER_METRICS_ENDPOINT,
             method: 'post',

@@ -40,9 +40,6 @@ export default class BarChartContainer extends React.Component<Props, State> {
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
         if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
-
-            console.log(`chartDataSet====>`, nextProps.chartDataSet);
-
             this.setState({
                 chartDataSet: nextProps.chartDataSet,
                 pHardwareType: nextProps.pHardwareType,

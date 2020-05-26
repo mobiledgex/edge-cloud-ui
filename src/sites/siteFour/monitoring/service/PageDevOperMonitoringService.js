@@ -679,20 +679,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             /* tooltips: {
                  callbacks: {
                      label: function (tooltipItem, data) {
-
-                         console.log(`tooltipItem====>`, tooltipItem);
-
                          var dataset = data.datasets[tooltipItem.datasetIndex];
                          var meta = dataset._meta[Object.keys(dataset._meta)[0]];
                          var currentValue = dataset.data[tooltipItem.index];
                          return currentValue.toFixed(2).toString();
                      },
                      title: function (tooltipItem, data) {
-
-                         console.log(`tooltipItem...data====>`, data)
-
-                         //return data.labels[tooltipItem[0].index];
-
                          return data.datasets[tooltipItem[0].index]['label'];
                      }
                  }
