@@ -4,15 +4,14 @@ import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import {Dialog, Toolbar} from '@material-ui/core'
-////////////////////////////////////antd//////////////////////////////////
-import TreeSelect from "antd/es/tree-select";
-import Select from "antd/es/select";
-import Row from "antd/es/row";
-import DatePicker from "antd/es/date-picker";
-import ADropdown from "antd/es/dropdown";
-import AMenu from "antd/es/menu";
-import Col from "antd/es/col";
+import Dialog from '@material-ui/core/Dialog'
+import Toolbar from '@material-ui/core/Toolbar'
+import TreeSelect from "antd/lib/tree-select";
+import Select from "antd/lib/select";
+import DatePicker from "antd/lib/date-picker";
+import ADropdown from "antd/lib/dropdown";
+import AMenu from "antd/lib/menu";
+import {Col, Row} from "antd";
 
 import {
     filterByClassification,
