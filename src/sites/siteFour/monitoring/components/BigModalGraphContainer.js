@@ -1,21 +1,21 @@
 // @flow
 import React from 'react';
 import {Modal as AModal} from "antd";
-import {CLASSIFICATION, GRID_ITEM_TYPE} from "../../../../shared/Constants";
+import {CLASSIFICATION} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
-import LeafletMapWrapperForDev from "./MapForDevContainer";
-import {hot} from "react-hot-loader/root";
+import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
+import LeafletMapWrapperForDev from "./MapForDev";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
-import {renderCircleLoaderForMap, renderWifiLoader} from "../PageMonitoringCommonService";
-import {makeLineChartOptions} from "../dev/PageDevMonitoringService";
-
+import {renderCircleLoaderForMap, renderWifiLoader} from "../service/PageMonitoringCommonService";
+import {makeLineChartOptions} from "../service/PageDevOperMonitoringService";
+import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 const FA = require('react-fontawesome')
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -49,10 +49,8 @@ type State = {
     redraw: boolean,
 
 };
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class BigModalGraphContainer extends React.Component<Props, State> {
-
-
         constructor(props: Props) {
             super(props)
             this.state = {
@@ -157,29 +155,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {this.props.isLoading && renderCircleLoaderForMap()}
                                     </div>
                                 </div>
-                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?
                                     <div style={{display: 'flex'}}>
                                         {this.renderPrevBtn()}
                                         <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
-                                            Cluster {this.props.popupGraphHWType} Usage
+                                            Cluster {this.props.popupGraphHWType} Utilization
                                             {this.props.intervalLoading &&
-                                            <div style={{backgroundColor: 'transparent', zIndex: 999999999999, marginLeft: 25}}>
+                                            <div style={{
+                                                backgroundColor: 'transparent',
+                                                zIndex: 999999999999,
+                                                marginLeft: 25
+                                            }}>
                                                 {renderWifiLoader(35, 35)}
                                             </div>
                                             }
                                         </div>
-                                        {/*<div>
-                                            <Button
-                                                type={this.state.redraw ? 'primary' : null}
-                                                onClick={() => {
-                                                    this.setState({
-                                                        redraw: !this.state.redraw,
-                                                    })
-                                                }}
-                                            >
-                                                Redraw Graph
-                                            </Button>
-                                        </div>*/}
                                     </div>
 
                                     : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
@@ -187,9 +177,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {this.renderPrevBtn()}
 
                                             <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
-                                                App Instance {this.props.popupGraphHWType} Usage
+                                                App Instance {this.props.popupGraphHWType} Utilization
                                                 {this.props.intervalLoading &&
-                                                <div style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
+                                                <div
+                                                    style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
                                                     {renderWifiLoader(35, 35)}
                                                 </div>
                                                 }
@@ -209,8 +200,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <div style={{display: 'flex'}}>
                                                 {this.renderPrevBtn()}
                                                 <div className='page_monitoring_popup_title'>
-                                                    Top 5 {this.props.popupGraphHWType} Usage
-                                                    of {this.props.parent.state.currentClassification}
+                                                    {this.props.parent.state.currentClassification} {this.props.popupGraphHWType} Utilization
                                                 </div>
                                             </div>
 
@@ -220,7 +210,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div>
                                 <Line
-                                    //redraw={this.state.redraw ? true : null}
                                     width={window.innerWidth * 0.9}
                                     ref={(reference) => this.lineChart = reference}
                                     height={window.innerHeight * 0.8}
@@ -251,7 +240,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 parent={this}
                                                 isDraggable={true}
                                                 isFullScreenMap={true}
-                                                handleAppInstDropdown={this.props.parent.handleAppInstDropdown}
+                                                handleOnChangeAppInstDropdown={this.props.parent.handleOnChangeAppInstDropdown}
                                                 markerList={this.state.appInstanceListGroupByCloudlet}
                                                 selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                                             />
@@ -269,4 +258,5 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             );
         };
     }
-))))
+)))
+

@@ -9,7 +9,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import DatePicker from 'antd/es/date-picker';
 import * as reducer from "../../../../utils";
 import {
     cutArrayList,
@@ -34,16 +34,16 @@ import {
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
-} from "./PageAdminMonitoringService";
+} from "../service/PageAdmMonitoringService";
 import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
-import type {TypeAppInstance, TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeAppInst, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../PageMonitoringCommonService";
-import '../PageMonitoring.css'
-import {getAppInstList, getAppLevelUsageList, getCloudletListAll} from "../PageMonitoringMetricService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/PageMonitoringCommonService";
+import '../common/PageMonitoringStyles.css'
+import {fetchAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -95,9 +95,9 @@ type State = {
     endTime: string,
     clusterList: any,
     counter: number,
-    appInstanceList: Array<TypeAppInstance>,
-    allAppInstanceList: Array<TypeAppInstance>,
-    appInstanceOne: TypeAppInstance,
+    appInstanceList: Array<TypeAppInst>,
+    allAppInstanceList: Array<TypeAppInst>,
+    appInstanceOne: TypeAppInst,
     currentRegion: string,
     cloudLetSelectBoxPlaceholder: string,
     clusterSelectBoxPlaceholder: string,
@@ -279,9 +279,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     cloudletList: allCloudletList,
                 })
 
-                let appInstanceList: Array<TypeAppInstance> = await getAppInstList(localStorage.getItem('regions').split(","), USER_TYPE.ADMIN);
+                let appInstanceList: Array<TypeAppInst> = await fetchAppInstList(localStorage.getItem('regions').split(","), USER_TYPE.ADMIN);
 
-                appInstanceList.map(async (item: TypeAppInstance, index) => {
+                appInstanceList.map(async (item: TypeAppInst, index) => {
                     if (index === 0) {
                         await this.setState({
                             appInstanceOne: APPINSTANCE_INIT_VALUE,
@@ -295,7 +295,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 await this.setState({
                     //newCloudletList:newCloudletList,
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                    appInstanceList: appInstanceList,
+                    appInstList: appInstanceList,
                     allAppInstanceList: appInstanceList,
                     isAppInstaceDataReady: true,
                 })
@@ -555,7 +555,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     filteredGridInstanceList: filteredGridInstanceList,
                     gridInstanceListMemMax: gridInstanceListMemMax,
                     gridInstanceListCpuMax: gridInstanceListCpuMax,
-                    appInstanceList: appInstanceList,
+                    appInstList: appInstanceList,
                     appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                     loading0: false,
                     dropDownCludsterListOnCloudlet: cloudletSelectBoxList,

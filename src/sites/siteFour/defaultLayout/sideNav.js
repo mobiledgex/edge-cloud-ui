@@ -44,7 +44,7 @@ import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
 import SiteFourPageAudits from '../audits/auditLogs';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
-import PageMonitoringMain from '../monitoring/PageMonitoringMain'
+import PageMonitoringMain from '../monitoring/common/PageMonitoringMain'
 
 import {Collapse, Tooltip} from '@material-ui/core';
 import {Image} from 'semantic-ui-react';
@@ -229,9 +229,9 @@ export default function MiniDrawer(props) {
                                                                 null
                                 }
                             </div>
-                    </ListItemIcon> : 
-                    open ? 
-                    null :  
+                    </ListItemIcon> :
+                    open ?
+                    null :
                     <ListItemIcon><div className="markBox"><div className="mark markA markS">?</div></div></ListItemIcon>
                 }
                 <ListItemText>

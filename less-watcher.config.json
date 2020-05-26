@@ -1,7 +1,0 @@
-{
-  "watchFolder": "src/css/",
-  "outputFolder": "src/css/antTheme/",
-  "sourceMap": true,
-  "runOnce": false,
-  "enableJs": true
-}

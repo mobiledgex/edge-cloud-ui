@@ -1,10 +1,11 @@
 // @flow
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Empty} from 'antd';
-import PageDevMonitoring from "../dev/PageDevMonitoring";
+import Empty from 'antd/es/empty';
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {FixedSizeList} from "react-window";
-import {reduceString} from "../dev/PageDevMonitoringService";
+import '../common/PageMonitoringStyles.css'
+import {reduceString} from "../service/PageDevOperMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -22,7 +23,7 @@ function getWindowDimensions() {
 }
 
 
-export default function AppInstEventLogListContainer(props) {
+export default function AppInstEventLogListHooks(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
 
@@ -51,7 +52,7 @@ export default function AppInstEventLogListContainer(props) {
 
 
     return (
-        <div style={{fontFamily: 'Roboto'}}>
+        <div>
             <div style={{
                 display: 'flex',
                 width: '100%',
@@ -61,6 +62,7 @@ export default function AppInstEventLogListContainer(props) {
                      style={{
                          flex: 1,
                          marginTop: 10,
+                         color: 'white'
                      }}
                 >
                     App Inst Event Log

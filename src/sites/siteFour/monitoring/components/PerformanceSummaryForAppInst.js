@@ -8,10 +8,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress} from "antd";
-import '../PageMonitoring.css'
-import {numberWithCommas} from "../PageMonitoringUtils";
+import '../common/PageMonitoringStyles.css'
+import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {Paper} from "@material-ui/core";
-import {convertByteToMegaGigaByte} from "../PageMonitoringCommonService";
+import {convertByteToMegaGigaByte} from "../service/PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,
@@ -55,7 +55,7 @@ export default function PerformanceSummaryForAppInst(props) {
                 <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
                        stickyHeader={true}>
 
-                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true}>
+                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                             </TableCell>

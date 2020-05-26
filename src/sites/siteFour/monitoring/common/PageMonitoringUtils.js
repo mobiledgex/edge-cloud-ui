@@ -1,4 +1,4 @@
-import {HARDWARE_TYPE} from "../../../shared/Constants";
+import {HARDWARE_TYPE} from "../../../../shared/Constants";
 
 
 export const numberWithCommas = (x) => {
@@ -41,6 +41,7 @@ export const barChartOption = (hwType) => {
 
     return (
         {
+            tooltip: {isHtml: true},
             annotations: {
                 style: 'line',
                 textStyle: {
