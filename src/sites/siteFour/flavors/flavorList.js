@@ -6,6 +6,11 @@ import { connect } from 'react-redux';
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
+import * as actions from "../../../actions";
+import {flavorTutor} from "../../../tutorial";
+
+
+const flavorSteps = flavorTutor();
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -24,7 +29,7 @@ class FlavorList extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <FlavorReg onClose={this.onRegClose}/> })
+        this.setState({ currentView: <FlavorReg onClose={this.onRegClose}/> });
     }
 
     /**Action menu block */
@@ -37,6 +42,9 @@ class FlavorList extends React.Component {
     /*Action menu block*/
 
     requestInfo = () => {
+
+        let mode = (localStorage.selectRole === 'AdminManager')? flavorSteps.stepsFlavors : null ;
+
         return ({
             id: 'Flavors',
             headerLabel: 'Flavors',
@@ -45,7 +53,8 @@ class FlavorList extends React.Component {
             requestType: [showFlavors],
             sortBy: [fields.region, fields.flavorName],
             keys: this.keys,
-            onAdd: isAdmin() ? this.onAdd : undefined
+            onAdd: isAdmin() ? this.onAdd : undefined,
+            viewMode : mode
         })
     }
 

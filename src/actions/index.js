@@ -14,6 +14,14 @@ export function changeSite(state) {
     };
 }
 
+export function viewMode(mode) {
+    return {
+        type: types.VIEW_MODE,
+        mode: mode
+    };
+}
+
+
 export function changeTab(state) {
     return {
         type: types.CHANGE_TAB,

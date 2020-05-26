@@ -76,8 +76,6 @@ export const defaultLayoutXYPosForCluster = [
     {x: 0, y: 1},
     {x: 3, y: 1},
     {x: 0, y: 2},
-
-
     //////////// 4,5,6 row
     {x: 0, y: 3},
     {x: 1, y: 3},

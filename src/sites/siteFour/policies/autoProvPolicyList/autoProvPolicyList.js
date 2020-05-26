@@ -10,6 +10,10 @@ import { fields } from '../../../../services/model/format';
 import { keys, showAutoProvPolicies, deleteAutoProvPolicy } from '../../../../services/model/autoProvisioningPolicy';
 //list
 import MexListView from '../../../../container/MexListView';
+import {PolicyTutor} from "../../../../tutorial";
+
+
+const policySteps = PolicyTutor();
 
 class AutoProvPolicy extends React.Component {
     constructor(props) {
@@ -25,15 +29,15 @@ class AutoProvPolicy extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <AutoProvPolicyReg onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AutoProvPolicyReg onClose={this.onRegClose}/> });
     }
 
     onAddCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Add'} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Add'} onClose={this.onRegClose}/> });
     }
 
     onDeleteCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Delete'} onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={'Delete'} onClose={this.onRegClose}/> });
     }
 
     actionMenu = () => {
@@ -50,7 +54,8 @@ class AutoProvPolicy extends React.Component {
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
             keys: keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : policySteps.stepsPolicy
         })
     }
 
@@ -68,7 +73,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 

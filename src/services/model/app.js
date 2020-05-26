@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import _ from 'lodash';
+import {isEqual} from 'lodash';
 import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
@@ -105,10 +105,9 @@ export const getAppList = async (self, data) => {
     return await serverData.showDataFromServer(self, showApps(data))
 }
 
-export const createApp = async (self, data) => {
+export const createApp = (data) => {
     let requestData = getKey(data, true)
-    let request = { method: CREATE_APP, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return { method: CREATE_APP, data: requestData }
 }
 
 const compareObjects = (newData, oldData, ignoreCase) => {
@@ -130,11 +129,11 @@ const compareObjects = (newData, oldData, ignoreCase) => {
     }
     else if(ignoreCase)
     {
-        return _.isEqual(newData.toLowerCase(), oldData.toLowerCase())
+        return isEqual(newData.toLowerCase(), oldData.toLowerCase())
     }
     else
     {
-        return _.isEqual(newData, oldData)
+        return isEqual(newData, oldData)
     }
 }
 
@@ -153,6 +152,10 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push('9.1')
     }
+    if(!compareObjects(data[fields.authPublicKey], originalData[fields.authPublicKey]))
+    {
+        updateFields.push('12')
+    }
     if(!compareObjects(data[fields.command], originalData[fields.command]))
     {
         updateFields.push('13')
@@ -167,6 +170,12 @@ export const updateApp = async (self, data, originalData) => {
     }
     if(!compareObjects(data[fields.configs], originalData[fields.configs]))
     {
+        if (data[fields.configs] && data[fields.configs].length > 0) {
+            data[fields.configs] = data[fields.configs].map(config => {
+                config[fields.kind] = constant.configType(config[fields.kind])
+                return config
+            })
+        }
         updateFields.push('21', '21.1', '21.2')
     }
     if(!compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster]))

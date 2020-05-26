@@ -14,6 +14,10 @@ import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { Icon } from 'semantic-ui-react';
+import {appInstTutor} from "../../../tutorial";
+
+
+const appInstSteps = appInstTutor();
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -36,6 +40,7 @@ class AppInstList extends React.Component {
 
     onAdd = (action, data) => {
         this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
+
     }
 
     onTerminalVisible = (data) => {
@@ -82,7 +87,8 @@ class AppInstList extends React.Component {
     actionMenu = () => {
         return [
             { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
-            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst },
+            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
+            { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
             { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
@@ -94,7 +100,8 @@ class AppInstList extends React.Component {
     groupActionMenu = () => {
         return [
             { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader }
+            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
+            { label: 'Refresh', onClick: refreshAppInst, icon: 'refresh', warning: 'refresh all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
         ]
     }
 
@@ -110,7 +117,8 @@ class AppInstList extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : appInstSteps.stepsAppInst
         })
     }
 
@@ -176,7 +184,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 

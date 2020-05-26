@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react';
 import MexListView from '../../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
@@ -8,6 +7,10 @@ import * as actions from '../../../../actions';
 
 import PrivacyPolicyReg from './privacyPolicyReg'
 import { keys, fields, showPrivacyPolicies, deletePrivacyPolicy } from '../../../../services/model/privacyPolicy';
+import {PolicyTutor} from "../../../../tutorial";
+
+
+const policySteps = PolicyTutor();
 
 class PrivacyPolicy extends React.Component {
     constructor(props) {
@@ -24,7 +27,7 @@ class PrivacyPolicy extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <PrivacyPolicyReg onClose={this.onRegClose} /> })
+        this.setState({ currentView: <PrivacyPolicyReg onClose={this.onRegClose} /> });
     }
 
     onUpdate = (action, data) => {
@@ -46,7 +49,8 @@ class PrivacyPolicy extends React.Component {
             nameField: fields.privacyPolicyName,
             sortBy: [fields.region, fields.privacyPolicyName],
             keys: this.keys,
-            onAdd: this.onAdd
+            onAdd: this.onAdd,
+            viewMode : policySteps.stepsPolicy
         })
     }
 
@@ -65,7 +69,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 

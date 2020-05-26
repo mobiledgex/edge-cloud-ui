@@ -388,7 +388,6 @@ body, button, input, textarea, optgroup, select, textarea,
 /* console main style */
 .ui.grid {
     background-color: transparent;
-    z-index: 100;
     margin: 0;
     height: 100%;
 }
@@ -1004,6 +1003,7 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 0.5em;
     overflow: hidden;
     width: 100%;
+    height: 100%;
 }
 .ui.header.panel_title {
     height: 1.643em;
@@ -1177,7 +1177,6 @@ body, button, input, textarea, optgroup, select, textarea,
 .gnb_header .ui.menu .ui.dropdown .menu>.item,
 .round_panel .ui.dropdown .menu>.item,
 .round_panel .ui.menu .ui.dropdown .menu>.item {
-    background: rgba(29,31,35,.75) !important;
 }
 .round_panel .ui.search.selection.dropdown>input.search {
     padding: .5em 2.1em .5em 0.7em;
@@ -1259,6 +1258,7 @@ body, button, input, textarea, optgroup, select, textarea,
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,.15);
+    overflow: auto;
     /* border-top: solid 2px rgba(51, 46, 46, 0.2); */
     /* border-bottom: solid 2px rgba(255,255,255,0.2); */
 }

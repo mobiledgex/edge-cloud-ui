@@ -8,9 +8,13 @@ import { fields } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
-import * as constant from '../../../services/model/shared';
+import * as shared from '../../../services/model/shared';
 
 import { Button } from '@material-ui/core';
+import {organizationTutor} from "../../../tutorial";
+
+const orgaSteps = organizationTutor();
+
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -30,7 +34,7 @@ class OrganizationList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> })
+        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
     }
 
     /**Action menu block */
@@ -75,7 +79,9 @@ class OrganizationList extends React.Component {
 
     getManage = (data) => {
         return (
-            <Button size={'small'} style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
+            <Button size={'small'}
+                    className='buttonManage'
+                    style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
                 <label>Manage</label>
             </Button>)
     }
@@ -108,6 +114,8 @@ class OrganizationList extends React.Component {
     }
 
     requestInfo = () => {
+        let mode = (localStorage.selectRole === 'AdminManager')? orgaSteps.stepsOrgDataAdmin : orgaSteps.stepsOrgDataDeveloper ;
+
         return ({
             id: 'Organizations',
             headerLabel: 'Organizations',
@@ -116,7 +124,8 @@ class OrganizationList extends React.Component {
             sortBy: [fields.organizationName],
             keys: this.keys,
             onAdd: this.onAdd,
-            additionalDetail: constant.additionalDetail
+            additionalDetail: shared.additionalDetail,
+            viewMode: mode
         })
     }
 
@@ -176,7 +185,7 @@ class OrganizationList extends React.Component {
 const mapStateToProps = (state) => {
     return {
         roleInfo: state.roleInfo ? state.roleInfo.role : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null
+        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 };
 

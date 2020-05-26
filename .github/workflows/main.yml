@@ -26,3 +26,11 @@ jobs:
           repository: mobiledgex/console
           tag_with_ref: true
           build_args: TAG=${{ steps.get_tag.outputs.RELEASE_TAG }}
+
+      - name: Deploy to staging console
+        uses: ./.github/actions/deploy-to-staging
+        with:
+          jenkins_username: ${{ secrets.JENKINS_USER }}
+          jenkins_api_token: ${{ secrets.JENKINS_APITOKEN }}
+          jenkins_build_token: ${{ secrets.JOB_TOKEN }}
+          tag: ${{ steps.get_tag.outputs.RELEASE_TAG }}

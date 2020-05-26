@@ -13,6 +13,7 @@ export const fields = {
     nodeFlavor: 'nodeFlavor',
     numberOfMasters: 'numberOfMasters',
     numberOfNodes: 'numberOfNodes',
+    sharedVolumeSize : 'sharedVolumeSize',
     autoClusterInstance:'autoClusterInstance',
     state: 'state',
     status: 'status',
@@ -114,7 +115,11 @@ export const fields = {
     upgrade:'upgrade',
     refreshAppInst:'refreshAppInst',
     restagmap:'restagmap',
-    powerState:'powerState'
+    powerState:'powerState',
+    tls:'tls',
+    userList:'userList',
+    userName:'userName',
+    userRole:'userRole'
 }
 
 export const getUserRole = () => {

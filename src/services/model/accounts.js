@@ -5,7 +5,7 @@ let fields = formatter.fields
 
 export const keys = [
     { field: fields.username, serverField: 'Name', sortable: true, label: 'Username', visible: true, filter:true },
-    { field: fields.email, serverField: 'Email', sortable: true, label: 'Email', visible: true },
+    { field: fields.email, serverField: 'Email', sortable: true, label: 'Email', visible: true, filter:true },
     { field: fields.emailVerified, serverField: 'EmailVerified', sortable: true, label: 'Email Verified', visible: true, clickable: true },
     { field: fields.passHash, serverField: 'Passhash', label: 'Passhash' },
     { field: fields.iter, serverField: 'Iter', label: 'Iter' },

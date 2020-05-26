@@ -24,12 +24,13 @@ import FreeBreakfastOutlinedIcon from '@material-ui/icons/FreeBreakfastOutlined'
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
 import GamesOutlinedIcon from '@material-ui/icons/GamesOutlined';
-import TvOutlinedIcon from '@material-ui/icons/TvOutlined';
-import AlbumOutlinedIcon from '@material-ui/icons/AlbumOutlined';
+import TvOutlinedIcon from '@material-ui/icons/TvOutlined'; 
 import FeaturedPlayListOutlinedIcon from '@material-ui/icons/FeaturedPlayListOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import AdjustOutlinedIcon from '@material-ui/icons/AdjustOutlined';
+import PolicyIcon from '@material-ui/icons/Policy';
+import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 
 import SiteFourPageOrganization from '../organization/organizationList';
 import SiteFourPageAccount from '../accounts/accountList';
@@ -111,9 +112,9 @@ const options = [
     {label: 'Apps', icon: <AppsOutlinedIcon/>, pg: 5, page: <SiteFourPageApps/>, roles: ['AdminManager', 'DeveloperManager']},
     {label: 'App Instances', icon: <GamesOutlinedIcon/>, pg: 6, page: <SiteFourPageAppInst/>, roles: ['AdminManager', 'DeveloperManager']},
     {
-        label: 'Policies', icon: <AlbumOutlinedIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
-            {label: 'Auto Provisioning Policy', icon: <AdjustOutlinedIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
-            {label: 'Privacy Policy', icon: <AdjustOutlinedIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
+        label: 'Policies', icon: <TrackChangesIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
+            {label: 'Auto Provisioning Policy', icon: <GroupWorkIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
+            {label: 'Privacy Policy', icon: <PolicyIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
         ]
     },
     {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
@@ -194,9 +195,11 @@ export default function MiniDrawer(props) {
 
     const roleInfo = () => {
         return (
-            <ListItem onClick={(e) => {
-                setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
-            }}>
+            <ListItem
+                onClick={(e) => {
+                    setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
+                }}
+            >
                 {
                 localStorage.selectRole && localStorage.selectRole!=='null'?
                     <ListItemIcon>
@@ -263,30 +266,27 @@ export default function MiniDrawer(props) {
     }
 
     const menuList = () => {
-        return options.map((option, i) => (
-            option.divider ?
-                <Divider key={i}/> :
-                option.roles.includes(getRoleInfo(getUserRole())) ?
-                    <div key={i}>
-                        {showOptionForm(i, option)}
-                        {option.subOptions ?
-                            <Collapse in={expand} timeout="auto" unmountOnExit>
-                                <List component="div" disablePadding>
-                                    {option.subOptions.map((subOption, j) => (
-                                        showOptionForm(j, subOption)
-                                    ))}
+        if (getUserRole()) {
+            return options.map((option, i) => (
+                option.divider ?
+                    <Divider key={i} /> :
+                    option.roles.includes(getRoleInfo(getUserRole())) ?
+                        <div key={i}>
+                            {showOptionForm(i, option)}
+                            {option.subOptions ?
+                                <Collapse in={expand} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding>
+                                        {option.subOptions.map((subOption, j) => (
+                                            showOptionForm(j, subOption)
+                                        ))}
 
-                                </List>
-                            </Collapse> : null}
-                    </div> : null
-        ))
+                                    </List>
+                                </Collapse> : null}
+                        </div> : null
+            ))
+        }
     }
 
-    const versionInfo = () => (
-        <div style={{position: 'absolute', bottom: 5, marginLeft: 4, color: '#B1B2B4'}}>
-            {process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'}
-        </div>
-    )
     /**
      * Legend Block
      * * */
@@ -300,7 +300,7 @@ export default function MiniDrawer(props) {
             <React.Fragment>
                 <CssBaseline/>
                 <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
-                           helpClick={props.helpClick} gotoUrl={props.gotoUrl}/>
+                           helpClick={props.helpClick} gotoUrl={props.gotoUrl} viewMode={props.viewMode}/>
             </React.Fragment>
             }
             <Drawer
@@ -326,7 +326,6 @@ export default function MiniDrawer(props) {
                 <List style={{backgroundColor: '#292c33', height: '100%'}}>
                     {roleInfo()}
                     {menuList()}
-                    {versionInfo()}
                 </List>
             </Drawer>
             <main className={classes.content}>

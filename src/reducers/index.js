@@ -49,6 +49,7 @@ import ThemeReducer from "./ThemeReducer";
 import ChartDataReducer from "./ChartDataReducer";
 import infoPanelReducer from "./infoPanelReducer";
 import saveMetricDataReducer from "./saveMetricDataReducer";
+import ViewMode from "./ViewMode";
 
 const reducers = combineReducers({
     videoControl,
@@ -100,7 +101,8 @@ const reducers = combineReducers({
     ChartDataReducer,
     infoPanelReducer,
     form: formReducer,
-    saveMetricDataReducer
+    saveMetricDataReducer,
+    ViewMode
 });
 
 export default reducers;

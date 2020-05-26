@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
-// import React3DGlobe from '../libs/react3dglobe';
-// import { getMockData } from "../libs/react3dglobe/mockData";
 import Login from '../../components/login';
 // API
 import * as MyAPI from '../../components/utils/MyAPI';
@@ -53,8 +51,7 @@ class EntranceGlobe extends Component {
         }
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.loginMode === 'resetPass') {
-            this.logoutRequest();
+        if (nextProps.loginMode && nextProps.loginMode === 'resetPass') {
             return;
         }
         /** If alrady logined */
@@ -156,24 +153,15 @@ class EntranceGlobe extends Component {
     };
 
     handleClickLogin(mode) {
+        self.logoutRequest();
         self.setState({ modalOpen: true })
         setTimeout(() => self.props.handleChangeLoginMode(mode), 500);
     }
     render() {
         const { clickedMarker, hoveredMarker, mouseEvent } = this.state;
         return (
-
-            // add data to "data" attribute, and render <Gio> tag
-
             (this.state.intro) ?
                 <div style={{ width: '100%', height: '100%', overflow: 'hidden' }} className="intro_globe">
-                    {/*<React3DGlobe*/}
-                    {/*markers={pointMarkers}*/}
-                    {/*onMarkerMouseover={this.handleMarkerMouseover}*/}
-                    {/*onMarkerMouseout={this.handleMarkerMouseout}*/}
-                    {/*onMarkerClick={this.handleMarkerClick}*/}
-                    {/*/>*/}
-
                     {(this.state.modalOpen && !this.state.logined) ?
                         <Grid style={{ backgroundColor: 'transparent', height: 100, position: 'absolute', top: 20, right: (this.state.modalOpen) ? 50 : 185, alignSelf: 'center' }}>
                             <Grid.Row columns={2}>

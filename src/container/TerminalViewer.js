@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import Terminal from '../hoc/terminal/mexTerminal'
-import * as serviceMC from '../services/serviceMC'
+import * as serviceMC from '../services/model/serviceMC'
 import * as serverData from '../services/model/serverData'
 import * as actions from "../actions";
 import { withRouter } from "react-router-dom";

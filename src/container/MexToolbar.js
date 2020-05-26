@@ -63,6 +63,7 @@ const MexToolbar = (props) => {
                             <SearchIcon />
                         </InputAdornment>
                     }
+                    value = {props.filterText}
                     placeholder={'Search'} 
                 />
                 {requestInfo.isRegion ?
@@ -86,7 +87,7 @@ const MexToolbar = (props) => {
                 }
                 {
                     requestInfo.onAdd ?
-                        <IconButton aria-label="new" onClick={(e) => { props.onAction(ACTION_NEW) }}>
+                        <IconButton aria-label="new" className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
                             <AddIcon style={{ color: '#76ff03' }} />
                         </IconButton> : null
                 }

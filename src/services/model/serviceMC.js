@@ -4,9 +4,13 @@ import * as EP from "./endPointTypes";
 import Alert from "react-s-alert";
 
 let sockets = [];
+let serverURL = process.env.REACT_APP_API_ENDPOINT;
 
 export function getEP() {
     return EP;
+}
+const getURL = (request) => {
+    return serverURL + EP.getPath(request)
 }
 
 export function generateUniqueId() {
@@ -80,6 +84,9 @@ function responseError(self, request, response, callback) {
                     });
                 }
             }
+            else if (request.method === EP.VERIFY_EMAIL) {
+                showError(request, 'Oops, this link is expired')
+            }
         }
     }
 }
@@ -121,9 +128,9 @@ export function sendMultiRequest(self, requestDataList, callback) {
         showSpinner(self, isSpinner);
         let promise = [];
         let resResults = [];
-        requestDataList.map(request => {
-            promise.push(
-                axios.post(EP.getPath(request), request.data, {
+        requestDataList.map((request) => {
+            promise.push(axios.post(getURL(request), request.data,
+                {
                     headers: getHeader(request)
                 })
             );
@@ -158,10 +165,11 @@ export const sendSyncRequest = async (self, request) => {
         EP.getPath(request)
     );
     try {
-        showSpinner(self, true);
-        let response = await axios.post(EP.getPath(request), request.data, {
-            headers: getHeader(request)
-        });
+        showSpinner(self, true)
+        let response = await axios.post(getURL(request), request.data,
+            {
+                headers: getHeader(request)
+            });
 
         showSpinner(self, false);
         return EP.formatData(request, response);
@@ -173,18 +181,17 @@ export const sendSyncRequest = async (self, request) => {
 };
 
 export function sendRequest(self, request, callback) {
-    let isSpinner =
-        request.showSpinner === undefined ? true : request.showSpinner;
-    showSpinner(self, isSpinner);
-    axios
-        .post(EP.getPath(request), request.data, {
+    let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
+    showSpinner(self, isSpinner)
+    axios.post(getURL(request), request.data,
+        {
             headers: getHeader(request)
         })
-        .then(function(response) {
+        .then(function (response) {
             showSpinner(self, false);
             callback(EP.formatData(request, response));
         })
-        .catch(function(error) {
+        .catch(function (error) {
             if (error.response) {
                 responseError(self, request, error.response, callback);
             }

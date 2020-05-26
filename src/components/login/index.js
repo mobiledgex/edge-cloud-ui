@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import { Container, Button, Label, Grid, Input } from 'semantic-ui-react'
 import { Redirect } from 'react-router';
 import * as moment from 'moment';
@@ -10,16 +10,14 @@ import * as actions from '../../actions';
 import Alert from 'react-s-alert';
 // API
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
- import * as serviceMC from '../../services/serviceMC';
+import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
-import CustomContentAlert from './CustomContentAlert';
 import PublicIP from 'public-ip';
 
 
 const host = window.location.host;
 let self = null;
-let email = 'yourEmail@email.net'
 
 const FormContainer = (props) => (
     <Grid className="signUpBD">
@@ -28,12 +26,12 @@ const FormContainer = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Username or Email' name='username' ref={ipt => { props.self.uid = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column >
-                <Input style={{width:'100%'}} placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -45,7 +43,7 @@ const FormContainer = (props) => (
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
-            <div style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', display:'inline-block'}} onClick={() => props.self.handleClickLogin('forgot')}>Forgot Password?</div>
+            <div style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', display: 'inline-block' }} onClick={() => props.self.handleClickLogin('forgot')}>Forgot Password?</div>
         </Grid.Row>
     </Grid>
 
@@ -60,7 +58,7 @@ const FormForgotPass = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Enter your email address' name='email' width ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSendEmail()} }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' width ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -99,10 +97,10 @@ const ResetPassword = (props) => (
         <Grid.Row>
             <span className='title'>Reset your password</span>
         </Grid.Row>
-        <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')}/>
+        <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')} />
         <Grid.Row>
             <span>
-                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
+                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
@@ -118,7 +116,7 @@ const FormResendVerify = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Enter your email address' name='email' width ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSendEmail('verify')} }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' width ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail('verify') } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -137,23 +135,21 @@ const FormSignUpContainer = (props) => (
         <Grid.Row>
             <span className='title'>Create New Account</span>
         </Grid.Row>
-        <RegistryUserForm onSubmit={(a,b) => console.log('20190906 ProfileForm was submitted', a, b)} userInfo={{username:props.self.state.username, email:props.self.state.email, commitDone:props.self.state.commitDone}}/>
+        <RegistryUserForm onSubmit={(a, b) => console.log('20190906 ProfileForm was submitted', a, b)} userInfo={{ username: props.self.state.username, email: props.self.state.email, commitDone: props.self.state.commitDone }} />
         <Grid.Row>
             <span>
-            By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
+                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
 )
-const customerName = '';
-let flag = true;
 
 const SuccessMsg = (props) => (
     <Grid className="signUpBD">
         {!(props.msg.indexOf('created') > -1) &&
-        <Grid.Row>
-            <span className='title' onClick={()=>console.log(props.msg)}>{String(props.msg)}</span>
-        </Grid.Row>
+            <Grid.Row>
+                <span className='title' onClick={() => console.log(props.msg)}>{String(props.msg)}</span>
+            </Grid.Row>
         }
         {(props.msg.indexOf('created') !== -1) ?
             <Fragment>
@@ -161,7 +157,7 @@ const SuccessMsg = (props) => (
                     <div className="login-text">{props.self.state.resultMsg}</div>
                 </Grid.Row>
                 <Grid.Row>
-                    <div className="login-text">If you have not received the email after a few minutes, check your spam folder or click <span style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', display:'inline-block'}} onClick={() => props.self.onSendEmail('verify')}>here</span> to resend verification email.</div>
+                    <div className="login-text">If you have not received the email after a few minutes, check your spam folder or click <span style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', display: 'inline-block' }} onClick={() => props.self.onSendEmail('verify')}>here</span> to resend verification email.</div>
                 </Grid.Row>
             </Fragment>
             :
@@ -175,64 +171,64 @@ const SuccessMsg = (props) => (
                     </Grid.Column>
                 </Grid.Row>
             </Fragment>
-            }
+        }
         <Grid.Row>
             <Grid.Column>
-                 <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() =>  props.self.handleClickLogin('login')}><span>Log In</span></Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('login')}><span>Log In</span></Button>
             </Grid.Column>
         </Grid.Row>
     </Grid>
 )
 const validate = values => {
-    const error= {};
-    error.email= '';
-    error.name= '';
+    const error = {};
+    error.email = '';
+    error.name = '';
     var ema = values.email;
     var nm = values.name;
-    if(values.email === undefined){
+    if (values.email === undefined) {
         ema = '';
     }
-    if(values.name === undefined){
+    if (values.name === undefined) {
         nm = '';
     }
-    if(ema.length < 4 && ema !== ''){
-        error.email= 'too short';
+    if (ema.length < 4 && ema !== '') {
+        error.email = 'too short';
     }
 
     return error;
 }
 
 class Login extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         self = this;
-        this.state={
-            isReady : false,
-            focused : false,
+        this.state = {
+            isReady: false,
+            focused: false,
             loginSuccess: false,
-            session:'close',
-            uid:'',
-            name:'',
+            session: 'close',
+            uid: '',
+            name: '',
             confirmed: false,
             submit: true,
             disabled: false,
-            redirect:false,
-            directLink:'/site1',
-            mainPath:'/', subPath:'pg=0',
-            loginBtnStyle:'loginBtn',
-            email:'',
-            password:'',
-            username:'',
-            successCreate:false,
-            errorCreate:false,
-            loginMode:'login',
-            successMsg:'Success create new account',
-            loginDanger:'',
-            forgotPass:false,
-            forgotMessage:false,
-            created:false,
-            store:null,
-            resultMsg:'',
+            redirect: false,
+            directLink: '/site1',
+            mainPath: '/', subPath: 'pg=0',
+            loginBtnStyle: 'loginBtn',
+            email: '',
+            password: '',
+            username: '',
+            successCreate: false,
+            errorCreate: false,
+            loginMode: 'login',
+            successMsg: 'Success create new account',
+            loginDanger: '',
+            forgotPass: false,
+            forgotMessage: false,
+            created: false,
+            store: null,
+            resultMsg: '',
             submitDone: false
         };
 
@@ -242,6 +238,7 @@ class Login extends Component {
         this.params = null;
         this.clientSysInfo = {};
     }
+
     componentDidMount() {
 
         let getUserInfo = localStorage.getItem('userInfo')
@@ -267,94 +264,79 @@ class Login extends Component {
 
     }
 
-    componentWillReceiveProps (nextProps) {
-
+    resetPassword = async (password) => {
+        /* @Smith : chage store.resetToken ==> store;*/
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(nextProps.values) {
-            if(nextProps.submitSucceeded) {
-                this.setState({email:nextProps.values.email, username:nextProps.values.username})
+        let mcRequest = await serverData.resetPassword(self, { token: store ? store : 'null', password: password })
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
+            self.props.handleAlertInfo('success', mcRequest.response.data.message)
+            setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
+            self.onProgress(false);
+        }
+    }
 
-                //in case user press the button as a submit no matter send params
-                localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
-                if(nextProps.loginMode === 'resetPass'){
-                    serviceMC.sendRequest(self, {method:serviceMC.getEP().RESET_PASSWORD, data : {token: store ? store.resetToken : 'null', password:nextProps.values.password}}, self.resultNewPass)
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.values) {
+            if (nextProps.submitSucceeded) {
+                this.setState({ email: nextProps.values.email, username: nextProps.values.username })
+
+                localStorage.setItem('userInfo', JSON.stringify({ email: nextProps.values.email, username: nextProps.values.username, date: new Date() }))
+                if (nextProps.loginMode === 'resetPass') {
+                    this.resetPassword(nextProps.values.password)
                 } else {
-                    let requestBody ={
-                        method:serviceMC.getEP().CREATE_USER,
-                        data : {
-                            name: nextProps.values.username,
-                            passhash: nextProps.values.password,
-                            email: nextProps.values.email,
-                            verify: {
-                                email: nextProps.values.email,
-                                operatingsystem: self.clientSysInfo.os.name,
-                                browser: self.clientSysInfo.browser.name,
-                                callbackurl: 'https://' + host + '/verify',
-                                clientip: self.clientSysInfo.clientIP,
-                            }
-                        }
-                    }
-                    serviceMC.sendRequest(this, requestBody, self.resultCreateUser)
+                    this.createUser(nextProps)
                 }
             }
 
         }
 
-        if(nextProps.loginMode === 'login') {
-            if(this.state.errorCreate){
-                setTimeout(() => self.setState({successCreate:false, errorCreate:false, forgotMessage:false, forgotPass:false}), 3000);
+        if (nextProps.loginMode === 'login') {
+            if (this.state.errorCreate) {
+                setTimeout(() => self.setState({ successCreate: false, errorCreate: false, forgotMessage: false, forgotPass: false }), 3000);
             } else {
-                this.setState({successCreate:false, loginMode:'login', forgotMessage:false, forgotPass:false});
+                this.setState({ successCreate: false, loginMode: 'login', forgotMessage: false, forgotPass: false });
             }
 
-        } else if(nextProps.loginMode === 'signup'){
-            this.setState({successCreate:false, loginMode:'signup', forgotMessage:false, forgotPass:false, errorCreate:false});
-        } else if(nextProps.loginMode === 'forgot'){
-            this.setState({successCreate:false, loginMode:'forgot', forgotMessage:false, forgotPass:false});
-        } else if(nextProps.loginMode === 'verify'){
-            this.setState({successCreate:false, loginMode:'verify', forgotMessage:false, forgotPass:false});
-        } else if(nextProps.loginMode === 'resetPass'){
-            this.setState({successCreate:false, loginMode:'resetPass', forgotMessage:false, forgotPass:false});
-        } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
+        } else if (nextProps.loginMode === 'signup') {
+            this.setState({ successCreate: false, loginMode: 'signup', forgotMessage: false, forgotPass: false, errorCreate: false });
+        } else if (nextProps.loginMode === 'forgot') {
+            this.setState({ successCreate: false, loginMode: 'forgot', forgotMessage: false, forgotPass: false });
+        } else if (nextProps.loginMode === 'verify') {
+            this.setState({ successCreate: false, loginMode: 'verify', forgotMessage: false, forgotPass: false });
+        } else if (nextProps.loginMode === 'resetPass') {
+            this.setState({ successCreate: false, loginMode: 'resetPass', forgotMessage: false, forgotPass: false });
+        } else if (nextProps.loginMode === 'signuped' && nextProps.createSuccess) {
             localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Welcome to the Edge! Thank you for signing up.
                             To login to your account, you must first validate your email address.
                             An email has been sent to  ${email} with a link to authenticate your account.`
-            this.setState({successCreate:true, loginMode:'signuped', successMsg:'Account created', resultMsg:msgTxt})
+            this.setState({ successCreate: true, loginMode: 'signuped', successMsg: 'Account created', resultMsg: msgTxt })
         }
-
-    }
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     return (
-    //         nextProps.data != this.props.data ||
-    //         nextState.loginSuccess != this.state.loginSuccess
-    //     )
-    // }
-
-
-    /****
-     * 커스텀 얼럿 : 지우지 말것
-     * @param resource
-     */
-    showAlert = (resource) => {
-        let verifyMessage = `Thank you for signing up. Please verify your account. In order to login to your account, you must verify your account. An email has been sent to ${resource.email} with a link to verify your account. If you have not received the email after a few minutes check your spam folder or resend the verification email.`
-
-        Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: resource && resource.name || 'your name'}} email={resource && resource.email || 'yourEmail@@'} message={verifyMessage}/>, {
-            position: 'top-right', timeout: 15000, limit:1
-        })
 
     }
 
     receiveClientIp(IPAddress) {
-        if(IPAddress) {
+        if (IPAddress) {
             self.clientSysInfo['clientIP'] = IPAddress;
         } else {
             self.clientSysInfo['clientIP'] = '127.0.0.1';
         }
     }
 
-    resultCreateUser(mcRequest) {
+    createUser = async (nextProps) => {
+        let mcRequest = await serverData.createUser(this, {
+            name: nextProps.values.username,
+            passhash: nextProps.values.password,
+            email: nextProps.values.email,
+            verify: {
+                email: nextProps.values.email,
+                operatingsystem: self.clientSysInfo.os.name,
+                browser: self.clientSysInfo.browser.name,
+                callbackurl: 'https://' + host + '/verify',
+                clientip: self.clientSysInfo.clientIP,
+            }
+        })
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
@@ -385,25 +367,14 @@ class Login extends Component {
         }
     }
 
-    resultNewPass(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                self.props.handleAlertInfo('success', response.data.message)
-                setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
-                self.onProgress(false);
-            }
-        }
-    }
-
     onFocusHandle(value) {
-        self.setState({focused: value})
+        self.setState({ focused: value })
     }
     onSignOut() {
         this.props.requestLogout();
     }
     onConfirm() {
-        this.props.requestLogin(this.props.target, {uid:this.uid.value, pwd: this.pwd.value}); // ajax 요청
+        this.props.requestLogin(this.props.target, { uid: this.uid.value, pwd: this.pwd.value }); // ajax 요청
 
     }
     onChangeInput = (e, { name, value }) => {
@@ -413,63 +384,46 @@ class Login extends Component {
         this.props.handleLoadingSpinner(value)
     }
 
-    /**
-     * success login
-     * 로그인이 성공했을 때 토큰을 저장한다.
-     * @param result
-     */
     receiveToken(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.data.token) {
-                    self.params['userToken'] = response.data.token
-                    localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                    self.props.mapDispatchToLoginWithPassword(self.params)
 
-                    self.props.handleChangeLoginMode('login')
-                } else {
-                    //display error message
-                    if (Alert) {
-                        self.props.handleAlertInfo('error', response.data.message)
-                        //goto reqeuset verify email ....
-                        if (response.data.message.indexOf('not verified') > -1) {
-                            self.setState({ loginMode: 'verify' })
-                        }
+    }
+
+    returnSignin() {
+        setTimeout(() => self.setState({ forgotPass: false, forgotMessage: false, loginMode: 'login' }), 1000)
+    }
+
+    requestToken = async (self) => {
+        let mcRequest = await serverData.login(self, { username: self.state.username, password: self.state.password })
+        if (mcRequest && mcRequest.response) {
+            let response = mcRequest.response;
+            if (response.data.token) {
+                self.params['userToken'] = response.data.token
+                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
+                self.props.mapDispatchToLoginWithPassword(self.params)
+
+                self.props.handleChangeLoginMode('login')
+            } else {
+                if (Alert) {
+                    self.props.handleAlertInfo('error', response.data.message)
+                    if (response.data.message.indexOf('not verified') > -1) {
+                        self.setState({ loginMode: 'verify' })
                     }
                 }
             }
         }
     }
 
-    receiveForgoten(mcRequest) {
-        self.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
-        self.setState({loginMode:'forgotMessage', forgotMessage: true})
-    }
-    receiveResendVerify(mcRequest) {
-        self.props.handleAlertInfo('success', 'Success')
-        self.setState({loginMode:'signup', forgotMessage: true})
-    }
-    returnSignin() {
-
-        setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
-    }
-    requestToken(self) {
-        serviceMC.sendRequest(self,{ method: serviceMC.getEP().LOGIN, data: { username: self.state.username, password: self.state.password } }, self.receiveToken)
-    }
     handleClickLogin(mode) {
-        self.setState({loginMode:mode})
+        self.setState({ loginMode: mode })
     }
 
-    onSendEmail(mode) {
+    onSendEmail = async (mode) => {
         if (mode === 'verify') {
-            let requestBody = {
-                method: serviceMC.getEP().RESEND_VERIFY,
-                data: {
-                    email: self.state.email, callbackurl: `https://${host}/verify`
-                }
+            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/verify` })
+            if (valid) {
+                self.props.handleAlertInfo('success', 'Success')
+                self.setState({ loginMode: 'signup', forgotMessage: true })
             }
-            serviceMC.sendRequest(self, requestBody, self.receiveResendVerify)
         } else if (mode === 'back') {
 
             self.setState({ loginMode: 'login' })
@@ -482,26 +436,30 @@ class Login extends Component {
                 callbackurl: 'https://' + host + '/passwordreset',
                 clientip: self.clientSysInfo.clientIP
             }
-            serviceMC.sendRequest(self, { method: serviceMC.getEP().RESET_PASSWORD_REQUEST, data: data }, this.receiveForgoten, this)
+            let valid = await serverData.resetPasswordRequest(self, data)
+            if (valid) {
+                self.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
+                self.setState({ loginMode: 'forgotMessage', forgotMessage: true })
+            }
         }
     }
 
     onSubmit() {
         const { username, password } = this.state
-        if(!username && !password) {
-            self.setState({loginDanger:'Insert Username and Password'});
-        } else if(!username) {
-            self.setState({loginDanger:'Insert Username'});
-        } else if(!password) {
-            self.setState({loginDanger:'Insert Password'});
+        if (!username && !password) {
+            self.setState({ loginDanger: 'Insert Username and Password' });
+        } else if (!username) {
+            self.setState({ loginDanger: 'Insert Username' });
+        } else if (!password) {
+            self.setState({ loginDanger: 'Insert Password' });
         }
         const params = {
             email: username,
             password: password,
         }
         self.params = params;
-        if(username && password) {
-            self.setState({loginDanger:''});
+        if (username && password) {
+            self.setState({ loginDanger: '' });
             self.requestToken(self)
         };
     }
@@ -509,69 +467,69 @@ class Login extends Component {
     render() {
         return (
 
-                (this.state.session !== 'open') ?
-                    <Container>
-                        {
-                            (this.state.loginMode === 'forgot') ?
-                                <FormForgotPass self={this} message={this.state.forgotMessage}/>
-                            :(this.state.loginMode === 'resetPass')?
-                                <ResetPassword self={this}/>
-                            :(this.state.loginMode === 'forgotMessage')?
-                                <ForgotMessage self={this}/>
-                            :(this.state.loginMode === 'verify')?
-                                <FormResendVerify self={this}/>
-                            :(this.state.loginMode === 'signup')?
-                                (this.state.successCreate || this.state.errorCreate)?
-                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
-                                    :
-                                    <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} lastFormValue={this.state.lastFromValue}/>
-                            :(this.state.loginMode === 'signuped')?
-                                (this.state.successCreate || this.state.errorCreate)?
-                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
-                                    :<div></div>
-                            :(this.state.loginMode === 'login')?
-                                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger}/>
-                            :
-                            <div></div>
+            (this.state.session !== 'open') ?
+                <Container>
+                    {
+                        (this.state.loginMode === 'forgot') ?
+                            <FormForgotPass self={this} message={this.state.forgotMessage} />
+                            : (this.state.loginMode === 'resetPass') ?
+                                <ResetPassword self={this} />
+                                : (this.state.loginMode === 'forgotMessage') ?
+                                    <ForgotMessage self={this} />
+                                    : (this.state.loginMode === 'verify') ?
+                                        <FormResendVerify self={this} />
+                                        : (this.state.loginMode === 'signup') ?
+                                            (this.state.successCreate || this.state.errorCreate) ?
+                                                <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                                :
+                                                <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} lastFormValue={this.state.lastFromValue} />
+                                            : (this.state.loginMode === 'signuped') ?
+                                                (this.state.successCreate || this.state.errorCreate) ?
+                                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                                    : <div></div>
+                                                : (this.state.loginMode === 'login') ?
+                                                    <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
+                                                    :
+                                                    <div></div>
 
-                        }
-                    </Container>
+                    }
+                </Container>
                 :
                 (this.state.redirect) ?
-                <Redirect push to={this.state.directLink} />
-                :
-                <Container>
-                    <Label>{`${this.state.uid}님 로그인 상태입니다`}</Label>
-                    <Button onClick={this.onSignOut}>LOGOUT</Button>
-                </Container>
+                    <Redirect push to={this.state.directLink} />
+                    :
+                    <Container>
+                        <Label>{`${this.state.uid}님 로그인 상태입니다`}</Label>
+                        <Button onClick={this.onSignOut}>LOGOUT</Button>
+                    </Container>
 
         );
     }
 }
 
 const mapStateToProps = state => {
-                                let profile = state.form.profile ? state.form.profile : null;
-                                let loginmode = state.loginMode ? state.loginMode : null;
-                                let createSuccess = state.createAccount ? state.createAccount.created.success : null;
-                                let userInfo = state.createAccount ? state.createAccount.created.info : null;
+    let profile = state.form.profile ? state.form.profile : null;
+    let loginmode = state.loginMode ? state.loginMode : null;
+    let createSuccess = state.createAccount ? state.createAccount.created.success : null;
+    let userInfo = state.createAccount ? state.createAccount.created.info : null;
     return {
-            values: profile ? profile.values : null,
-            submitSucceeded: profile ? profile.submitSucceeded : null,
-            loginMode: loginmode ? loginmode.mode : null,
-            createSuccess : createSuccess,
-            userInfo: userInfo
-        }
+        values: profile ? profile.values : null,
+        submitSucceeded: profile ? profile.submitSucceeded : null,
+        loginMode: loginmode ? loginmode.mode : null,
+        createSuccess: createSuccess,
+        userInfo: userInfo
+    }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
-        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
-        handleCreateAccount: (data) => { dispatch(actions.createAccount(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
+        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data })),
+        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
+        handleCreateAccount: (data) => { dispatch(actions.createAccount(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
