@@ -5,13 +5,12 @@ import Alert from 'react-s-alert';
 
 
 let sockets = [];
-let serverURL = process.env.REACT_APP_API_ENDPOINT;
 
 export function getEP() {
     return EP;
 }
 
-const getURL = () =>
+export const mcURL = (isWebSocket) =>
 {
     let serverURL = ''
     if(process.env.NODE_ENV === 'production' )
@@ -20,12 +19,17 @@ const getURL = () =>
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
     }
+
+    if(isWebSocket)
+    {
+        serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+    }
     return serverURL
 }
 
 const getHttpURL = (request)=>
 {
-    return getURL() + EP.getPath(request)
+    return mcURL(false) + EP.getPath(request)
 }
 
 
@@ -102,9 +106,7 @@ function responseError(self, request, response, callback) {
 }
 
 export function sendWSRequest(request, callback) {
-    let url = process.env.REACT_APP_API_ENDPOINT;
-    url = url.replace('http', 'ws');
-    const ws = new WebSocket(`${url}/ws${EP.getPath(request)}`)
+    const ws = new WebSocket(`${mcURl(true)}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({uuid: request.uuid, socket: ws, isClosed: false});
         ws.send(`{"token": "${request.token}"}`);
@@ -173,6 +175,7 @@ export const sendSyncRequest = async (self, request) => {
         }
     }
 }
+
 
 export function sendRequest(self, request, callback) {
     let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
