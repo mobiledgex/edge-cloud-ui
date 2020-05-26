@@ -2564,7 +2564,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         Monitoring
                        {/* <div style={{color: 'pink', fontSize: 14}}>
                             &nbsp;&nbsp;[{this.state.currentClassification}]
-
                         </div>
                         <div style={{color: 'green', fontSize: 14}}>
                             &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectRole.toString()}
