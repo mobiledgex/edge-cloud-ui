@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import HeaderGlobalMini from '../../../container/headerGlobalMini';
+import HeaderGlobalAudit from '../../../container/headerGlobalAudit';
+
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 
 import { Image, Button } from 'semantic-ui-react';
@@ -149,6 +151,7 @@ export default function Header(props) {
                                 null
                         }
                     </IconButton>
+                    <HeaderGlobalAudit />
                     <IconButton aria-label="show 17 new notifications" color="inherit"
                         onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default' />
