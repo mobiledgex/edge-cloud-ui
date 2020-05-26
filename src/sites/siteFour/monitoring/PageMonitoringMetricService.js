@@ -20,7 +20,7 @@ import {
     SHOW_APP_INST_CLIENT_ENDPOINT
 } from "./MetricServiceEndPoint";
 
-const mcURL = process.env.REACT_APP_API_ENDPOINT
+const mcURL = ''
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
@@ -35,7 +35,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
         let token = store ? store.userToken : 'null';
         let organization = localStorage.selectOrg.toString()
 
-        let prefixUrl = (mcURL).replace('http', 'ws');
+        let prefixUrl = (process.env.REACT_APP_API_ENDPOINT).replace('http', 'ws');
 
         const webSocket = new WebSocket(`${prefixUrl}/ws${SHOW_APP_INST_CLIENT_ENDPOINT}`)
         let showAppInstClientRequestForm = {

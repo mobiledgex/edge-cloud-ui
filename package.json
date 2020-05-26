@@ -3,8 +3,6 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@ant-design/dark-theme": "^1.0.3",
-        "@ant-design/icons": "^4.0.5",
         "@craco/craco": "^5.6.3",
         "@crowdlinker/react-pager": "^0.2.6",
         "@hot-loader/react-dom": "^16.8.6",
