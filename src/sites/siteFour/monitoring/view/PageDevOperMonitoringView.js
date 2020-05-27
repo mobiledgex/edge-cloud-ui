@@ -336,38 +336,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let clusterLayoutMapper = getUserId() + CLUSTER_HW_MAPPER_KEY
                 let appInstLayout = getUserId() + APPINST_LAYOUT_KEY
                 let appInstLayoutMapper = getUserId() + APPINST_HW_MAPPER_KEY
-
                 let cloudletLayout = getUserId() + CLOUDLET_LAYOUT_KEY
                 let cloudletlayoutMapper = getUserId() + CLOUDLET_HW_MAPPER_KEY
-
-                let clusterOperLayout = getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY
-                let clusterOperLayoutMapper = getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY
-
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
 
                 //@fixme: DELETE THEME COLOR
-                reactLocalStorage.remove(clusterLayout)
-                reactLocalStorage.remove(clusterLayoutMapper)
-
+                /*reactLocalStorage.remove(clusterLayout)
+                reactLocalStorage.remove(clusterLayoutMapper)*/
 
                 this.state = {
-                    //todo:dev layout
                     //todo:dev layout
                     layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
                     layoutMapperCluster: isEmpty(reactLocalStorage.get(clusterLayoutMapper)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterLayoutMapper),
                     layoutAppInst: isEmpty(reactLocalStorage.get(appInstLayout)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayout),
                     layoutMapperAppInst: isEmpty(reactLocalStorage.get(appInstLayoutMapper)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstLayoutMapper),
-
-
-                    //todo:oper layout
                     //todo:oper layout
                     layoutCloudlet: isEmpty(reactLocalStorage.get(cloudletLayout)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayout),
                     layoutMapperCloudlet: isEmpty(reactLocalStorage.get(cloudletlayoutMapper)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletlayoutMapper),
-                    layoutClusterForOper: isEmpty(reactLocalStorage.get(clusterOperLayout)) ? defaultLayoutForClusterForOper : reactLocalStorage.getObject(clusterOperLayout),
-                    layoutMapperClusterForOper: isEmpty(reactLocalStorage.get(clusterOperLayoutMapper)) ? defaultLayoutMapperForClusterForOper : reactLocalStorage.getObject(clusterOperLayoutMapper),
-
-
                     date: '',
                     time: '',
                     dateTime: '',
