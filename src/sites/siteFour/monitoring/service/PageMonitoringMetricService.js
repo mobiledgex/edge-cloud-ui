@@ -1145,7 +1145,9 @@ export function getIndex(columns, searchValue) {
 }
 
 export function makeClientMatricSumDataOne(seriesValues, columns) {
-    //let __column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
+
+    console.log(`getClientStateOne===column2>`, columns);
+
     let RegisterClientCount = 0;
     let FindCloudletCount = 0;
     let VerifyLocationCount = 0
