@@ -688,10 +688,10 @@
 }
 
 .audit_title {
-    margin:10px 20px;
+    padding: 10px 20px;
     display: flex;
     flex-direction: row;
-    height:48px;
+    min-height:45px;
     /*justify-content: center;*/
     align-items: center;
 }
