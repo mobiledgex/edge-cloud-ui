@@ -6,6 +6,7 @@ import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {Center} from "../common/PageMonitoringStyles";
 import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
+import {reduceString} from "../service/PageDevOperMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -156,7 +157,7 @@ export default function CloudletEventLogListHooks(props) {
                                             style={makeTableRowStyle(index, itemHeight)}
                                         >
                                             <div style={{color: 'white'}}>
-                                                {props.cloudletEventLogList[index][1].toString().substring(0, 15)}
+                                                {reduceString(props.cloudletEventLogList[index][1], 15)}
                                             </div>
                                             <div>
                                                 [{props.cloudletEventLogList[index][2]}]
