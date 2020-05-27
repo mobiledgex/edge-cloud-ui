@@ -119,9 +119,6 @@ export default function MapForOper(props) {
     }, [props.cloudletLength])
 
     useEffect(() => {
-    }, [props.filteredAppInstList])
-
-    useEffect(() => {
         async function loadContent() {
             await setCloudletLocation()
             if (!isEmpty(props.cloudletList)) {
