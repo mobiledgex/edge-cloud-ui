@@ -35,7 +35,7 @@ import {
     HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_OPTIONS_FOR_CLUSTER,
-    HARDWARE_TYPE,
+    HARDWARE_TYPE, MEX_PROMETHEUS_APPNAME, MEXPrometheusAppName,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS_LIST,
@@ -565,6 +565,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let newPromiseList = await Promise.all(promiseList);
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
+
                     } else {//TODO:OPERATOR
                         cloudletList = await fetchCloudletList();
                     }

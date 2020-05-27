@@ -1,7 +1,12 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    MEX_PROMETHEUS_APPNAME,
+    RECENT_DATA_LIMIT_COUNT,
+    USER_TYPE
+} from "../../../../shared/Constants";
 import {sendSyncRequest, mcURL} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
@@ -152,7 +157,12 @@ export const fetchAppInstList = async (pRegionList = localStorage.getItem('regio
             let mergedList = mergedAppInstanceList.concat(listOne);
             mergedAppInstanceList = mergedList;
         })
-        return mergedAppInstanceList;
+
+        let filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {
+            return item.AppName !== MEX_PROMETHEUS_APPNAME
+        })
+
+        return filteredAppInstList;
     } catch (e) {
         //throw new Error(e)
     }

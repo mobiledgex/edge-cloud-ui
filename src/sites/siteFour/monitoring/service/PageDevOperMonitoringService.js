@@ -16,7 +16,7 @@ import {
     CHART_COLOR_MONOKAI,
     CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
-    HARDWARE_TYPE,
+    HARDWARE_TYPE, MEX_PROMETHEUS_APPNAME,
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS,
     USAGE_INDEX
@@ -1731,6 +1731,14 @@ export const handleBubbleChartDropDownForCloudlet = async (hwType, _this: PageOp
     _this.setState({
         bubbleChartData: bubbleChartData,
     });
+}
+
+export const filterAppByAppName = (appInstList, AppName) => {
+    let filteredAppList = appInstList.filter((item: TypeAppInst, index) => {
+        return item.AppName !== MEX_PROMETHEUS_APPNAME
+    })
+
+    return filteredAppList;
 }
 
 export const renderBottomGridAreaForCloudlet = (_this: PageOperMonitoring) => {

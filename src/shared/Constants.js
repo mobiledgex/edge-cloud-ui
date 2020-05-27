@@ -175,6 +175,8 @@ export const CLASSIFICATION = {
     REGION: 'Region',
 }
 
+export const MEX_PROMETHEUS_APPNAME= 'MEXPrometheusAppName'
+
 export const APP_INST_USAGE_TYPE_INDEX = {
     TIME: 0,
     APP: 1,
