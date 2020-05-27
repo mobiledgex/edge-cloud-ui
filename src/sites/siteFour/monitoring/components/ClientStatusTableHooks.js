@@ -17,9 +17,41 @@ type Props = {
 };
 
 export default function ClientStatusTableHooks(props) {
-
+    //const [clientStatusLoading, setClientStatusLoading] = useState(false);
     useEffect(() => {
     }, [props.clientStatusList]);
+
+    function renderEmptyTable() {
+        return (
+            <TableRow
+                style={{
+                    backgroundColor: '#1e2025',
+                    color: 'grey',
+                    height: 30,
+                }}
+            >
+                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
+                    <div style={{fontSize: 28, color: 'orange'}}> No Data</div>
+                </TableCell>
+            </TableRow>
+        )
+    }
+
+    function renderTableLoader() {
+        return (
+            <TableRow
+                style={{
+                    backgroundColor: '#1e2025',
+                    color: 'grey',
+                    height: 30,
+                }}
+            >
+                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
+                    {renderPlaceHolderLoader('sk')}
+                </TableCell>
+            </TableRow>
+        )
+    }
 
     return (
         <React.Fragment>
@@ -150,21 +182,9 @@ export default function ClientStatusTableHooks(props) {
                                 </TableRow>
                             )
                         })}
-                        {props.clientStatusList.length === 0 &&
-                        <TableRow
-                            style={{
-                                backgroundColor: '#1e2025',
-                                color: 'grey',
-                                height: 30,
-                            }}
-                        >
-                            <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
-                                {!props.parent.state.loading
-                                    ? <div style={{fontSize: 28, color: 'orange'}}> No Data</div>
-                                    : renderPlaceHolderLoader('sk')
-                                }
-                            </TableCell>
-                        </TableRow>}
+                        {props.parent.state.loadingForClientStatus ? renderTableLoader()
+                            : props.clientStatusList.length === 0 ? renderEmptyTable() : null
+                        }
                     </TableBody>
 
                 </Table>

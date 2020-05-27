@@ -288,6 +288,7 @@ type PageDevMonitoringState = {
     currentIndex: number,
     hwListForCloudlet: any,
     currentColorIndex: number,
+    loadingForClientStatus: boolean,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -489,6 +490,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentOperLevel: CLASSIFICATION.CLOUDLET,
                     currentIndex: 0,
                     currentColorIndex: 0,
+                    loadingForClientStatus: false,
                 };
             }
 
@@ -505,7 +507,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     bubbleChartLoader: true,
                     selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
                     mapLoading: true,
-                    dropdownRequestLoading: true
+                    dropdownRequestLoading: true,
+                    loadingForClientStatus: true,
 
                 })
                 await this.loadInitData();
@@ -527,9 +530,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let allClusterUsageList = [];
                 let allCloudletUsageList = [];
 
+
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
+
+
+                    let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                    let startTime = makeCompleteDateTime(date[0]);
+                    let endTime = makeCompleteDateTime(date[1]);
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
@@ -540,19 +549,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let newPromiseList = await Promise.all(promiseList);
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
-
-                    } else {//TODO:OPERATOR
+                    } else {
+                        //TODO:###############################################
+                        //TODO:OPERATOR
+                        //TODO:###############################################
                         cloudletList = await fetchCloudletList();
-                    }
-                    if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
-                        let clientStatusList = await getClientStatusList(await fetchAppInstList());
-
+                        appInstList = await fetchAppInstList()
+                        let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         console.log(`clientStatusList===>`, clientStatusList);
-
                         await this.setState({
                             allClientStatusList: clientStatusList,
                             filteredClientStatusList: clientStatusList,
-                            loading: true,
+                            loadingForClientStatus: false,
                         })
                     }
 
@@ -582,10 +590,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
                     } else {//TODO:OPERATOR
-                        let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
-                        let startTime = makeCompleteDateTime(date[0]);
-                        let endTime = makeCompleteDateTime(date[1]);
-
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                     }
 
@@ -1732,6 +1736,39 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderStreamSwitch() {
+                return (
+                    <div style={PageMonitoringStyles.streamSwitchDiv}>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            {/*{this.state.currentClassification}*/} Stream
+                        </div>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            <CustomSwitch
+                                size="small"
+                                checked={this.state.isStream}
+                                color="primary"
+                                onChange={async () => {
+                                    await this.setState({isStream: !this.state.isStream});
+                                    if (this.state.isStream === false) {
+                                        clearInterval(this.intervalForAppInst)
+                                        clearInterval(this.intervalForCluster)
+                                        this.setState({isStream: false})
+                                    } else {
+                                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster)
+                                        } else {
+                                            await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
+                                        }
+                                        this.setState({isStream: true})
+                                    }
+                                }}
+
+                            />
+                        </div>
+                    </div>
+                )
+            }
+
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne) => {
                 try {
@@ -1752,10 +1789,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             return item.CloudletName === currentCloudletOne
                         })
 
-
                         let filteredAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => {
                             return item.Cloudlet === currentCloudletOne
                         })
+
+
+                        console.log(`filteredAppInstList===>`, filteredAppInstList);
 
 
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
@@ -1791,38 +1830,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            renderStreamSwitch() {
-                return (
-                    <div style={PageMonitoringStyles.streamSwitchDiv}>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            {/*{this.state.currentClassification}*/} Stream
-                        </div>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            <CustomSwitch
-                                size="small"
-                                checked={this.state.isStream}
-                                color="primary"
-                                onChange={async () => {
-                                    await this.setState({isStream: !this.state.isStream});
-                                    if (this.state.isStream === false) {
-                                        clearInterval(this.intervalForAppInst)
-                                        clearInterval(this.intervalForCluster)
-                                        this.setState({isStream: false})
-                                    } else {
-                                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster)
-                                        } else {
-                                            await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
-                                        }
-                                        this.setState({isStream: true})
-                                    }
-                                }}
-
-                            />
-                        </div>
-                    </div>
-                )
-            }
 
             async handleOnChangeClusterDropdown(pClusterCloudletOne) {
                 if (this.state.isStream === false) {
@@ -2044,21 +2051,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async filterUsageListByDateForCloudlet() {
                 try {
                     if (this.state.startTime !== '' && this.state.endTime !== '') {
+                        this.setState({
+                            loading: true,
+                            loadingForClientStatus: true,
+                            filteredClientStatusList: [],
+                        })
                         let startTime = makeCompleteDateTime(this.state.startTime);
                         let endTime = makeCompleteDateTime(this.state.endTime);
-                        this.setState({loading: true})
                         let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                        let clientStatusList = await getClientStatusList(await fetchAppInstList(), startTime, endTime);
+
                         this.setState({
                             filteredCloudletUsageList: usageList,
                             allCloudletUsageList: usageList,
-                            loading: false
+                            filteredClientStatusList: clientStatusList,
+                            loading: false,
+                            loadingForClientStatus: false,
                         })
-                        //this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
                     }
                 } catch (e) {
-
+                    throw new Error(e)
                 }
-
             }
 
 

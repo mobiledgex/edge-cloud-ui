@@ -1095,7 +1095,7 @@ export const getAllAppInstEventLogs = async () => {
  * @param appInst
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const getClientStateOne = async (appInst: TypeAppInst) => {
+export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '') => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     return await axios({
@@ -1111,6 +1111,8 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
                 }
             },
             "selector": "api",
+            "starttime": startTime,
+            "endtime": endTime
             //'last': 100
         },
         headers: {
@@ -1207,10 +1209,10 @@ export function makeClientMatricSumDataOne(seriesValues, columns) {
 }
 
 
-export const getClientStatusList = async (appInstList) => {
+export const getClientStatusList = async (appInstList, startTime, endTime) => {
     let promiseList = []
     appInstList.map((appInstOne: TypeCloudlet, index) => {
-        promiseList.push(getClientStateOne(appInstOne))
+        promiseList.push(getClientStateOne(appInstOne, startTime, endTime))
     })
     let newPromiseList = await Promise.all(promiseList);
 
