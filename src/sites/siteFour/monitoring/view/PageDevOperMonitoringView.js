@@ -534,8 +534,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
-
-
                     let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                     let startTime = makeCompleteDateTime(date[0]);
                     let endTime = makeCompleteDateTime(date[1]);
@@ -556,7 +554,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletList = await fetchCloudletList();
                         appInstList = await fetchAppInstList()
                         let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
-                        console.log(`clientStatusList===>`, clientStatusList);
                         await this.setState({
                             allClientStatusList: clientStatusList,
                             filteredClientStatusList: clientStatusList,

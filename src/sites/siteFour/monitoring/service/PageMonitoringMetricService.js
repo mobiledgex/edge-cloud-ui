@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CONST_CLOUDLET_USAGE, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
@@ -606,7 +606,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     }
 }
 
-let CLOUDLET_USAGE_INDEX = {
+const CLOUDLET_USAGE_INDEX = {
     "time": 0,
     "cloudlet": 1,
     "cloudletorg": 2,
@@ -623,6 +623,8 @@ let CLOUDLET_USAGE_INDEX = {
     "ipv4Used": 13,
     "ipv4Max": 14,
 }
+
+
 
 /**
  *
@@ -663,23 +665,26 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let cloudlet = "";
         let operator = "";
         let Region = '';
+        let columns = [];
 
         let usageList = []
         cloudletLevelMatricUsageList.map((item, index) => {
             if (!isEmpty(item) && !isEmpty(item.data["0"].Series)) {
                 Region = cloudletList[index].Region
                 let series = item.data["0"].Series["0"].values
-                let columns = item.data["0"].Series["0"].columns
+                columns = item.data["0"].Series["0"].columns
+
+                console.log(`series===>`, series);
 
 
-                //////////////////////////////////////////
-                let netSendSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netSend]
-                let netRecvSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netRecv]
-                let vCpuSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.vCpuUsed]
-                let memSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.memUsed]
-                let diskSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.diskUsed]
-                let floatingIpsSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.floatingIpsUsed]
-                let ipv4UsedSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.ipv4Used]
+                let netSendSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.netSend)]
+                let netRecvSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.netRecv)]
+                let vCpuSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.vCpuUsed)]
+                let memSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.memUsed)]
+                let diskSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.diskUsed)]
+                let floatingIpsSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.floatingIpsUsed)]
+                let ipv4UsedSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.ipv4Used)]
+
 
                 netSendSeriesList.push(netSendSeriesOne)
                 netRecvSeriesList.push(netRecvSeriesOne)
@@ -785,6 +790,9 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
             }
 
         });
+
+        console.log(`usageList===>`, usageList);
+
         return usageList;
     } catch (e) {
     }
@@ -1154,8 +1162,6 @@ export function getIndex(columns, searchValue) {
 }
 
 export function makeClientMatricSumDataOne(seriesValues, columns) {
-
-    console.log(`getClientStateOne===column2>`, columns);
 
     let RegisterClientCount = 0;
     let FindCloudletCount = 0;

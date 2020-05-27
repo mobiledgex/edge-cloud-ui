@@ -314,6 +314,24 @@ export const USAGE_INDEX = {
     IPV4MAX: 14,
 }
 
+export const CONST_CLOUDLET_USAGE = {
+    "time": "time",
+    "cloudlet": "cloudlet",
+    "cloudletorg": "cloudletorg",
+    "netSend": "netSend",
+    "netRecv": "netRecv",
+    "vCpuUsed": "vCpuUsed",
+    "vCpuMax": "vCpuMax",
+    "memUsed": "memUsed",
+    "memMax": "memMax",
+    "diskUsed": "diskUsed",
+    "diskMax": "diskMax",
+    "floatingIpsUsed": "floatingIpsUsed",
+    "floatingIpsMax": "floatingIpsMax",
+    "ipv4Used": "ipv4Used",
+    "ipv4Max": "ipv4Max",
+}
+
 
 export const USAGE_INDEX_FOR_CLUSTER = {
     TIME: 0,
