@@ -1,13 +1,8 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    MEX_PROMETHEUS_APPNAME,
-    RECENT_DATA_LIMIT_COUNT,
-    USER_TYPE
-} from "../../../../shared/Constants";
-import {sendSyncRequest, mcURL} from "../../../../services/serviceMC";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
@@ -18,7 +13,8 @@ import {
     CLOUDLET_METRICS_ENDPOINT,
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
-    SHOW_APP_INST_CLIENT_ENDPOINT, SHOW_METRICS_CLIENT_STATUS
+    SHOW_APP_INST_CLIENT_ENDPOINT,
+    SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
@@ -1125,7 +1121,12 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
     }).then(async response => {
         if (response.data.data[0].Series !== null) {
             let seriesValues = response.data.data[0].Series[0].values
-            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
+            let column = response.data.data[0].Series[0].columns
+
+            console.log(`getClientStateOne===seriesValues>`, seriesValues);
+            console.log(`getClientStateOne===column>`, column);
+
+            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column)
             return clientMatricSumDataOne;
         } else {
             return undefined
@@ -1134,8 +1135,20 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
     })
 }
 
-export function makeClientMatricSumDataOne(seriesValues) {
-    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
+export function getIndex(columns, searchValue) {
+    let foundIndex = 0;
+    columns.filter((item, index) => {
+        if (item === searchValue) {
+            foundIndex = index
+            return true;
+        }
+    })
+    return foundIndex;
+}
+
+export function makeClientMatricSumDataOne(seriesValues, columns) {
+    console.log(`column===>`, columns);
+    //let __column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
     let RegisterClientCount = 0;
     let FindCloudletCount = 0;
     let VerifyLocationCount = 0
@@ -1158,12 +1171,12 @@ export function makeClientMatricSumDataOne(seriesValues) {
             FindCloudletCount++;
         }
 
-        app = item[6]//app
-        apporg = item[7]//apporg
-        cellID = item[8]//cellID
-        cloudlet = item[9]//cloudlet
-        cloudletorg = item[10]//cloudletorg
-        ver = item[20]//ver
+        app = item[getIndex(columns, 'app')]
+        apporg = item[getIndex(columns, 'apporg')]
+        cellID = item[getIndex(columns, 'cellID')]
+        cloudlet = item[getIndex(columns, 'cloudlet')]
+        cloudletorg = item[getIndex(columns, 'cloudletorg')]
+        ver = item[getIndex(columns, 'ver')]
     })
 
     let metricSumDataOne = {
