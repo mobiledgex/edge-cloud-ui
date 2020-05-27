@@ -107,7 +107,7 @@ export default function ClientStatusTableHooks(props) {
                                                 alignItems: 'center',
                                                 justifyContent: 'center'
                                             }}>
-                                                {item.app}[{item.ver}]
+                                                {item.app}&nbsp;[{item.ver}]
                                             </div>
                                         </div>
                                     </TableCell>
