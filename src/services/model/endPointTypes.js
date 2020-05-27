@@ -90,6 +90,7 @@ export const EVENT_CLOUDLET = "CloudletLevelEvents";
 export const METRICS_CLOUDLET = "cloudlet";
 export const METRICS_CLUSTER = "cluster";
 export const METRICS_CLIENT = "client";
+export const COUNT_CLUSTER = "cluster";
 
 export function getPath(request) {
     switch (request.method) {
@@ -163,6 +164,7 @@ export function getPath(request) {
         case RUN_COMMAND:
         case SHOW_LOGS:
         case SHOW_CONSOLE:
+        case COUNT_CLUSTER:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:

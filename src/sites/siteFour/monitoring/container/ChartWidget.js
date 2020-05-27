@@ -72,20 +72,24 @@ class ChartWidget extends React.Component {
     // }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.data !== this.props.data && this.props.data[prevProps.id].length > 0) {
+        if (prevProps.data !== this.props.data) {
             console.log("20200521 container widget   == 66 6 == prevState= ", prevProps.data, ": props data = ", this.props.data, ": id= ", prevProps.id);
+            if (prevProps.id === DataType.COUNT_CLUSTER) {
+                const updatedata = this.props.data[prevProps.id];
+                setTimeout(() => this.setState({ data: updatedata }), 500);
+            }
             if (prevProps.id === DataType.NETWORK_CLOUDLET) {
                 this.updateMetricData(this.props.data[prevProps.id], prevProps.id);
             }
             //
-            let updatedata = null;
+
             if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
-                updatedata = DataFormats.dataFormatRateRegist(this.props.data[prevProps.id]);
+                const updatedata = DataFormats.dataFormatRateRegist(this.props.data[prevProps.id]);
                 this.updateClientData(updatedata);
             }
             //
             if (prevProps.id === DataType.EVENT_CLOUDLET) {
-                updatedata = this.props.data[prevProps.id];
+                const updatedata = this.props.data[prevProps.id];
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
         }
@@ -169,6 +173,7 @@ class ChartWidget extends React.Component {
                         chartType={chartType}
                         title={title.value}
                         method={method}
+                        step={activeStep}
                     />
                 ) : chartType === ChartType.MAP ? (
                     <Map
@@ -195,6 +200,7 @@ class ChartWidget extends React.Component {
                         clusterCnt={clusterCnt}
                         title={title.value}
                         method={method}
+                        step={activeStep}
                     />
                 ) : (
                                     <DataGrid id={id} size={size} type={type} chartType={chartType} data={data} title={title.value} method={method} />

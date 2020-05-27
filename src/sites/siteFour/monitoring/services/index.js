@@ -1,6 +1,7 @@
 import * as serviceMC from "../../../../services/model/serviceMC";
 import * as serverData from "../../../../services/model/serverData";
 import * as Cloudlet from "./model/cloudlet";
+import * as Metrics from "./model/metrics";
 import * as Appinst from "./model/appinst";
 import * as Client from "./model/client";
 import * as Events from "./model/events";
@@ -51,6 +52,13 @@ const getListCloud = (self, params) => {
     /* First, need to get data for all cloudltes */
     Cloudlet.getCloudletList(self, params);
     /* Through the result to the ContainerWrapper.onLoadComplete after success execute getCloudletList */
+};
+/** *********************************
+ * LIST CLUSTER
+ *********************************** */
+const getListCluster = async (self, params) => {
+    const result = await Metrics.getClusterList(self, params);
+    return result;
 };
 /** *********************************
  * LIST APPINSTANCE
@@ -172,22 +180,14 @@ export const getPrepareList = async (defaultValue: MetricsParmaType, self: any) 
 };
 
 export const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
-    if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
-        // this.props.handleLoadingSpinner(true);
-        // 잠시 막음
-        const result = await getEventCloudlet(self, defaultValue);
-        return result;
-    }
-    if (defaultValue.method === serviceMC.getEP().METRICS_CLOUDLET) {
-        // 잠시 막음
-        const result = await getMetricsCloudlet(self, defaultValue);
-        return result;
-    }
-
-    if (defaultValue.method === serviceMC.getEP().METRICS_CLIENT) {
-        // 잠시 막음
-        const result = await getMetricsClient(self, defaultValue);
-        return result;
+    let result = null;
+    // this.props.handleLoadingSpinner(true);
+    switch (defaultValue.method) {
+        case serviceMC.getEP().COUNT_CLUSTER: result = await getListCluster(self, defaultValue); return result;
+        case serviceMC.getEP().EVENT_CLOUDLET: result = await getEventCloudlet(self, defaultValue); return result;
+        case serviceMC.getEP().METRICS_CLOUDLET: result = await getMetricsCloudlet(self, defaultValue); return result;
+        case serviceMC.getEP().METRICS_CLIENT: result = await getMetricsClient(self, defaultValue); return result;
+        default: return null;
     }
 };
 

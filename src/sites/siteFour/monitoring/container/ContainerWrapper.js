@@ -134,6 +134,12 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     async initialize(props: MetricsParmaType, self: any) {
         try {
+            if (props.method === serviceMC.getEP().COUNT_CLUSTER) {
+                // count cluster in cloudlet
+                const result = await Service.MetricsService(props, self);
+                this.onReceiveResult(result, self);
+                //this.onReceiveResult(props.cloudlets, self);
+            }
             if (props.method === serviceMC.getEP().METRICS_CLOUDLET) {
                 const result = await Service.MetricsService(props, self);
                 if (result && result.length > 0) {
@@ -150,7 +156,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             }
             if (props.method === serviceMC.getEP().EVENT_CLOUDLET) {
                 const result = await Service.MetricsService(props, self);
-                console.log("20200521 container widget   == 55 result event cloudlet == ", result);
                 this.onReceiveResult(result, self);
             }
         } catch (e) {

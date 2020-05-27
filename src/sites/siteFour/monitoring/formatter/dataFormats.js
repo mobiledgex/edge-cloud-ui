@@ -2,6 +2,8 @@
 * setdataPart
 * Format drawing for plotly.js chart
 */
+import * as Util from "../../../../utils";
+
 const setdataPart = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
     const seriesX = [];
     const seriesY = [];
@@ -110,6 +112,13 @@ const parseCloudletData = (response) => {
     //
 }
 
+const parseCountCluster = response => {
+    let concatData = [];
+    response.map(res => {
+        concatData = concatData.concat(res);
+    });
+    return Util.groupBy(concatData, "cloudletName");
+}
 
 export const dataFormatRateRegist = response => {
     return parseData(response[0]);
@@ -119,4 +128,7 @@ export const dataFormatCountCloudlet = response => {
 };
 export const dataFormatMetricCloudlet = response => {
     return parseCloudletData(response);
+};
+export const dataFormatCountCluster = response => {
+    return parseCountCluster(response);
 };

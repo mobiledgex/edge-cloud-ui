@@ -232,7 +232,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
     return [
         generatWidget({
             id: dataType.COUNT_CLUSTER,
-            method: null,
+            method: serviceMC.getEP().COUNT_CLUSTER,
             chartType: chartType.COUNTER,
             type: "counter",
             title: { value: "Count of Clusters", align: "left" },
