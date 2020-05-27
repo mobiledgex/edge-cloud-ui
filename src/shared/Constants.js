@@ -166,6 +166,7 @@ export const CLASSIFICATION = {
     APP_NAME: 'AppName',
     appName: 'appName',
     APPNAME: 'AppName',
+    APP_INSTANCE: 'App Instance',
     APPINST: 'AppInst',
     APP_INST: 'App Inst',
     CLUSTER_INST: 'ClusterInst',

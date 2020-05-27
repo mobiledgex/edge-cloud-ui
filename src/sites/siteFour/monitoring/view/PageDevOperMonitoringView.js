@@ -361,7 +361,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstanceListGroupByCloudlet: [],
                     loading: false,
                     loading0: false,
-
                     clusterInstanceGroupList: [],
                     allClusterList: [],
                     filteredCpuUsageList: [],
@@ -559,7 +558,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
-                    //todo:realdata
+                    //todo:DEVELOPER
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
@@ -594,7 +593,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
-                    //todo: realdata
+                    //todo: DEVELOPER
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList2.push(getAllClusterEventLogList(clusterList))
                         promiseList2.push(getAllAppInstEventLogs());
@@ -644,7 +643,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         maxCpu: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumCpuUsage)),
                         maxMem: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumMemUsage)),
                         isRequesting: false,
-                        ///@desc: ----------cloudletList--------------
                         allCloudletUsageList: allCloudletUsageList,
                         filteredCloudletUsageList: allCloudletUsageList,
                         cloudletDropdownList: cloudletDropdownList,
@@ -732,7 +730,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             convertToClassification(pClassification) {
                 if (pClassification === CLASSIFICATION.APPINST) {
-                    return "App Instance"
+                    return CLASSIFICATION.APP_INSTANCE//"App Instance"
                 } else {
                     return pClassification
                 }
@@ -929,7 +927,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({
                         layoutCluster: removedLayout,
                     });
-
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     let removedLayout = _.reject(this.state.layoutCloudlet, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
