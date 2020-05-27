@@ -2324,7 +2324,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                     }}
-                                    span={pLegendItemCount === 1 ? 24 : 4}
+                                    span={pLegendItemCount === 1 ? 24 : 3}
                                     style={{
                                         marginTop: 3,
                                         marginBottom: 3,
@@ -2466,15 +2466,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             makeLegend() {
                 try {
                     let legendItemCount = 0;
+                    let RowHeight = 0;
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         legendItemCount = this.state.filteredCloudletList.length
+                        RowHeight = Math.ceil(legendItemCount / 8);
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                         legendItemCount = this.state.filteredClusterUsageList.length;
+                        RowHeight = Math.ceil(legendItemCount / 6);
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         legendItemCount = this.state.filteredAppInstUsageList.length;
+                        RowHeight = Math.ceil(legendItemCount / 6);
                     }
 
-                    let RowHeight = Math.ceil(legendItemCount / 6);
+
 
                     if (this.state.loading) {
                         return (
