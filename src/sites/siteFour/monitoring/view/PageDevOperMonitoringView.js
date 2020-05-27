@@ -41,10 +41,27 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeCloudlet,
+    TypeCloudletEventLog,
+    TypeCloudletUsage,
+    TypeCluster,
+    TypeClusterUsageOne,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -80,7 +97,12 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogHooks from "../components/AppInstEventLogListHooks";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -846,8 +868,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                /*todo:CLUSTER*/
-                /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -2033,47 +2055,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderCloudletDropdown() {
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label">
-                            Cloudlet
-                        </div>
-                        <Select
-                            ref={c => this.cloudletSelect = c}
-                            showSearch={true}
-                            dropdownStyle={{}}
-                            listHeight={512}
-                            style={{width: 250, maxHeight: '512px !important'}}
-                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList)}
-                            value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
-                            placeholder={'Select Cloudlet'}
-                            onSelect={async (value) => {
-                                this.handleOnChangeCloudletDropdown(value)
-                                this.cloudletSelect.blur();
-                            }}
-                        >
-                            {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
-                                try {
-                                    if (index === 0) {
-                                        return <Option key={index} value={item.value} style={{}}>
-                                            <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
-                                        </Option>
-                                    } else {
-                                        let itemValues = item.value + " | " + (index - 1).toString()
-                                        return (
-                                            <Option key={index} value={itemValues}>{item.text}</Option>
-                                        )
-                                    }
-                                } catch (e) {
-
-                                }
-                            })}
-                        </Select>
-                    </div>
-                )
-            }
-
             async filterUsageListByDateForCloudlet() {
                 try {
                     if (this.state.startTime !== '' && this.state.endTime !== '') {
@@ -2145,6 +2126,47 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
                             }}
                         />
+                    </div>
+                )
+            }
+
+            renderCloudletDropdown() {
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label">
+                            Cloudlet
+                        </div>
+                        <Select
+                            ref={c => this.cloudletSelect = c}
+                            showSearch={true}
+                            dropdownStyle={{}}
+                            listHeight={512}
+                            style={{width: 250, maxHeight: '512px !important'}}
+                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
+                            value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
+                            placeholder={'Select Cloudlet'}
+                            onSelect={async (value) => {
+                                this.handleOnChangeCloudletDropdown(value)
+                                this.cloudletSelect.blur();
+                            }}
+                        >
+                            {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
+                                try {
+                                    if (index === 0) {
+                                        return <Option key={index} value={item.value} style={{}}>
+                                            <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
+                                        </Option>
+                                    } else {
+                                        let itemValues = item.value + " | " + (index - 1).toString()
+                                        return (
+                                            <Option key={index} value={itemValues}>{item.text}</Option>
+                                        )
+                                    }
+                                } catch (e) {
+
+                                }
+                            })}
+                        </Select>
                     </div>
                 )
             }
@@ -2477,7 +2499,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         legendItemCount = this.state.filteredAppInstUsageList.length;
                         RowHeight = Math.ceil(legendItemCount / 6);
                     }
-
 
 
                     if (this.state.loading) {

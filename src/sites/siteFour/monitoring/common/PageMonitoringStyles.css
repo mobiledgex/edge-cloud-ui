@@ -723,3 +723,9 @@ tr td {
     color: black;
     font-weight: bold;
 }
+
+
+.ant-calendar-range-picker-input[disabled] {
+    cursor: not-allowed;
+    color: white !important;
+}
