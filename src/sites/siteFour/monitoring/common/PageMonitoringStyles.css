@@ -729,3 +729,15 @@ tr td {
     cursor: not-allowed;
     color: white !important;
 }
+
+.ant-calendar-range-picker-input {
+    color: white !important;
+}
+
+.ant-calendar {
+    border: 1px solid #1cecff;
+}
+
+.ant-input-disabled {
+    background: #1e1e1e !important;
+}
