@@ -1133,6 +1133,13 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
     })
 }
 
+
+/**
+ *
+ * @param columns
+ * @param searchValue
+ * @returns {number}
+ */
 export function getIndex(columns, searchValue) {
     let foundIndex = 0;
     columns.filter((item, index) => {
@@ -1213,7 +1220,6 @@ export const getClientStatusList = async (appInstList) => {
             mergedClientStatusList.push(item)
         }
     })
-
     return mergedClientStatusList;
 
 }
