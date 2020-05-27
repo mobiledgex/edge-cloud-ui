@@ -148,15 +148,12 @@ class MonitoringLayout extends React.Component {
             (l, idx) => (
                 <div
                     key={l.i}
-                    className={l.static ? "static" : "cancelDrageBar"}
+                    className={l.static ? "page_monitoring_layout_column static" : "page_monitoring_layout_column cancelDrageBar"}
                     style={{
                         display: "grid",
                         gridTemplateRows: "30px auto",
-                        borderWidth: 1,
-                        borderColor: "#333333",
-                        backgroundColor: "#222",
-                        padding: "3px"
                     }}
+
                 >
                     {/* progress bar in here */}
                     <HeaderComponent
@@ -169,9 +166,8 @@ class MonitoringLayout extends React.Component {
                     />
                     <div
                         style={{
-                            borderRadius: "10px",
                             padding: "10px",
-                            border: "1px solid #696969"
+                            backgroundColor: "#202329"
                         }}
                     >
                         {items[idx]}
@@ -205,12 +201,12 @@ class MonitoringLayout extends React.Component {
                     useCSSTransforms={this.state.mounted}
                     compactType={this.state.compactType}
                     preventCollision={!this.state.compactType}
-                    autoSize
+                    // autoSize
                     // cols : If size of width reduced then compact the sizing and arange items in vertical
                     cols={{
                         lg: 12, md: 3, sm: 3, xs: 3, xxs: 2
                     }}
-                    rowHeight={this.props.sizeInfo.height / 3 - 26} // TODO : value 70 is maby height of header
+                    rowHeight={(this.props.sizeInfo.height - 90) / 3} // TODO : value 70 is maby height of header
                     draggableHandle=".react-grid-dragHandleExample"
                 >
                     {this.generateDOM(this.props.items)}

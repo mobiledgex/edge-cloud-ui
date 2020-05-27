@@ -99,7 +99,7 @@ class SiteFourPageAudits extends React.Component {
         if (all.error) {
             this.props.handleAlertInfo('error', all.error)
         } else {
-            all.map((item, i) => {
+             all.map((item, i) => {
                 if (savedArray && JSON.parse(savedArray).length) {
                     if (JSON.parse(savedArray).findIndex(k => k == item.traceid) === -1) addArray.push(item.traceid)
                 } else {

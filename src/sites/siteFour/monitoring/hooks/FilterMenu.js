@@ -8,6 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import SendIcon from '@material-ui/icons/Send';
+import RoomIcon from '@material-ui/icons/Room';
 
 const StyledMenu = withStyles({
     paper: {
@@ -52,16 +53,18 @@ export default function FilterMenu() {
     };
 
     return (
-        <div>
+        <div className='page_monitoring_location'>
             <Button
+                className='page_monitoring_location_button'
                 aria-controls="customized-menu"
                 aria-haspopup="true"
                 variant="contained"
-                color="primary"
                 onClick={handleClick}
             >
-                Open Menu
+                <RoomIcon style={{color: 'rgb(118, 255, 3)'}} />
             </Button>
+            <div className='page_monitoring_location_text'>
+            </div>
             <StyledMenu
                 id="customized-menu"
                 anchorEl={anchorEl}
