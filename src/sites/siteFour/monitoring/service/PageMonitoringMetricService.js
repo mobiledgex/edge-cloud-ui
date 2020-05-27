@@ -1122,10 +1122,8 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
         if (response.data.data[0].Series !== null) {
             let seriesValues = response.data.data[0].Series[0].values
             let column = response.data.data[0].Series[0].columns
-
             console.log(`getClientStateOne===seriesValues>`, seriesValues);
             console.log(`getClientStateOne===column>`, column);
-
             let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column)
             return clientMatricSumDataOne;
         } else {
@@ -1147,7 +1145,6 @@ export function getIndex(columns, searchValue) {
 }
 
 export function makeClientMatricSumDataOne(seriesValues, columns) {
-    console.log(`column===>`, columns);
     //let __column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
     let RegisterClientCount = 0;
     let FindCloudletCount = 0;
