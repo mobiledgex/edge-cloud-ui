@@ -60,13 +60,13 @@ export default function ClientStatusTableHooks(props) {
                                 App Inst
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                App Org.
+                                App Org
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
                                 Cloudlet
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
-                                Cloudlet Org.
+                                Cloudlet Org
                             </TableCell>
                             <TableCell padding={'none'} align="center" style={{}}>
                                 RegisterClient Count
