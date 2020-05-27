@@ -1151,6 +1151,7 @@ export function makeClientMatricSumDataOne(seriesValues, columns) {
     let RegisterClientCount = 0;
     let FindCloudletCount = 0;
     let VerifyLocationCount = 0
+    let FoundOperatorCount = 0;
     let app = '';
     let apporg = '';
     let cellID = '';
@@ -1169,6 +1170,9 @@ export function makeClientMatricSumDataOne(seriesValues, columns) {
         if (methodType === "VerifyLocation") {
             FindCloudletCount++;
         }
+        if (methodType === "foundOperator") {
+            FoundOperatorCount++;
+        }
 
         app = item[getIndex(columns, 'app')]
         apporg = item[getIndex(columns, 'apporg')]
@@ -1182,6 +1186,7 @@ export function makeClientMatricSumDataOne(seriesValues, columns) {
         RegisterClientCount,
         FindCloudletCount,
         VerifyLocationCount,
+        FoundOperatorCount,
         app,
         apporg,
         cellID,
