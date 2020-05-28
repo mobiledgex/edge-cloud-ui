@@ -122,7 +122,7 @@ export default function ClientStatusTableHooks(props) {
                                     }}
                                 >
                                     <TableCell padding={'default'} align="center"
-                                               style={{width: 320, color: '#C0C6C8',}}>
+                                               style={{width: 'auto', color: '#C0C6C8',}}>
                                         <div style={{
                                             display: "flex",
                                             justifyContent: 'center',

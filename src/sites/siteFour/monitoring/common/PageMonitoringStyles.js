@@ -586,6 +586,8 @@ export const LegendOuterDiv = styled.div`
   height: 25px;
   width: 98.925%;
   margin-right: 5px;
+  flex-wrap: wrap;
+  padding: auto;
 `
 
 export const ChartIconOuterDiv = styled.div`
