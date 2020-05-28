@@ -97,7 +97,14 @@ export default class LineChartContainer extends React.Component<Props, State> {
             return 'Mem Utilization'
         } else if (title.includes(HARDWARE_TYPE.DISK_USED)) {
             return 'Disk Utilization'
-        } else {
+        }else if (title.includes(HARDWARE_TYPE.FLOATING_IP_USED)) {
+            return 'FLOATING IP Utilization'
+        } else if (title.includes(HARDWARE_TYPE.IPV4_USED)) {
+            return 'IPV4 Utilization'
+        }
+
+
+        else {
             return title + " Utilization"
         }
     }

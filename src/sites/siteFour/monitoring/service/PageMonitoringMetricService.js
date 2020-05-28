@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CONST_CLOUDLET_USAGE, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
@@ -625,7 +625,6 @@ const CLOUDLET_USAGE_INDEX = {
 }
 
 
-
 /**
  *
  * @param cloudletList
@@ -643,6 +642,9 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let token = store ? store.userToken : 'null';
         for (let index = 0; index < cloudletList.length; index++) {
             let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+
+            console.log(`instanceInfoOneForm===>`, instanceInfoOneForm);
+
             instanceBodyList.push(instanceInfoOneForm);
         }
 
@@ -672,27 +674,13 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
             if (!isEmpty(item) && !isEmpty(item.data["0"].Series)) {
                 Region = cloudletList[index].Region
                 let series = item.data["0"].Series["0"].values
+                let ipSeries = item.data["0"].Series["1"].values
+
                 columns = item.data["0"].Series["0"].columns
-
-                console.log(`series===>`, series);
-
-
-                let netSendSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.netSend)]
-                let netRecvSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.netRecv)]
-                let vCpuSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.vCpuUsed)]
-                let memSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.memUsed)]
-                let diskSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.diskUsed)]
-                let floatingIpsSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.floatingIpsUsed)]
-                let ipv4UsedSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.ipv4Used)]
+                console.log(`ipSeries===>`, ipSeries);
 
 
-                netSendSeriesList.push(netSendSeriesOne)
-                netRecvSeriesList.push(netRecvSeriesOne)
-                vCpuSeriesList.push(vCpuSeriesOne)
-                memSeriesList.push(memSeriesOne)
-                diskSeriesList.push(diskSeriesOne)
-                floatingIpsSeriesList.push(floatingIpsSeriesOne)
-                ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
+
 
                 let sumVirtualCpuUsed = 0;
                 let sumvCpuMax = 0;
@@ -707,7 +695,27 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 let sumIpv4Used = 0;
                 let sumIpv4Max = 0;
 
-                series.map(item => {
+                series.map((item, innerIndex) => {
+                    /*let netSendSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.netSend)]*/
+
+                    let netSendSeriesOne = item["3"]
+                    let netRecvSeriesOne = item["4"]
+                    let vCpuSeriesOne = item["5"]
+                    let memSeriesOne = item["7"]
+                    let diskSeriesOne = item["9"]
+                    let floatingIpsSeriesOne = ipSeries[innerIndex]['11']
+                    let ipv4UsedSeriesOne = ipSeries[innerIndex]['13']
+                    console.log(`floatingIpsSeriesOne===>`, floatingIpsSeriesOne);
+                    console.log(`ipv4UsedSeriesOne===>`, ipv4UsedSeriesOne);
+
+                    netSendSeriesList.push(netSendSeriesOne)
+                    netRecvSeriesList.push(netRecvSeriesOne)
+                    vCpuSeriesList.push(vCpuSeriesOne)
+                    memSeriesList.push(memSeriesOne)
+                    diskSeriesList.push(diskSeriesOne)
+                    floatingIpsSeriesList.push(floatingIpsSeriesOne)
+                    ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
+
                     cloudlet = item[1]
                     operator = item[2]
 
@@ -730,11 +738,11 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                     sumNetRecv += item["4"];
 
                     //todo: FLOATIP
-                    sumFloatingIpsUsed += item["11"];
-                    sumFloatingIpsMax += item["12"];
+                    sumFloatingIpsUsed += ipSeries[innerIndex]["11"];
+                    sumFloatingIpsMax += ipSeries[innerIndex]["12"];
                     //todo: IPV4
-                    sumIpv4Used += item["13"];
-                    sumIpv4Max += item["14"];
+                    sumIpv4Used += ipSeries[innerIndex]["13"];
+                    sumIpv4Max += ipSeries[innerIndex]["14"];
 
                 })
 
@@ -751,6 +759,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                     maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
                     columns: columns,
                     series: series,
+                    ipSeries:ipSeries,
                     cloudlet: cloudlet,
                     operator: operator,
                     Region: Region,
@@ -762,7 +771,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                     floatingIpsSeriesList,
                     ipv4UsedSeriesList,
                 })
-            } else {//Seires is null
+            } else {//series is null
                 usageList.push({
                     usedVCpuCount: 0,
                     usedMemUsage: 0,

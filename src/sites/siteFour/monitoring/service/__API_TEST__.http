@@ -898,23 +898,36 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODYzMDIyN
 
 ###
 
-POST  https://console-stage.mobiledgex.net:443/api/v1/auth/events/cluster
+POST  https://console-stage.mobiledgex.net/api/v1/auth/metrics/cloudlet
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODYzMzY5MTUsImlhdCI6MTU4NjI1MDUxNSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.XuVuzLwSO0MmfaddvjmTtkgncSesBoh9a_-1uDAxchFL3wQORVeS-AcdX4oXDiKjP8Ur9sxEDHYvLsGK-FpccQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTA3MDg2MzQsImlhdCI6MTU5MDYyMjIzNCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.RURKZZL3wRIO0VYQ6k1dgxuhEreVCAT5HTwaV6FA9O7FGqKBgI1VcGhyHQjEyDTesZjsxnvcH6qjyf0NGyVlOw
 
 {
   "region": "EU",
-  "clusterinst": {
-    "cluster_key": {
-      "name": "autoclustermobiledgexsdkdemo"
-    },
-    "cloudlet_key": {
-      "name": "RahDemo",
-      "organization": "TDG"
-    },
-    "organization": "MobiledgeX"
-  }
+  "cloudlet": {
+    "organization": "TDG",
+    "name": "mexplat-stage-berlin-cloudlet"
+  },
+  "selector": "*",
+  "last": 10
 }
 
+###
+
+POST  https://console-stage.mobiledgex.net/api/v1/auth/metrics/cloudlet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTA3MDg2MzQsImlhdCI6MTU5MDYyMjIzNCwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.RURKZZL3wRIO0VYQ6k1dgxuhEreVCAT5HTwaV6FA9O7FGqKBgI1VcGhyHQjEyDTesZjsxnvcH6qjyf0NGyVlOw
+
+{
+    "region": "EU",
+    "cloudlet": {
+      "organization": "TDG",
+      "name": "mexplat-stage-berlin-cloudlet"
+    },
+    "last": 25,
+    "selector": "*",
+    "starttime": "2020-04-28T10:27:00Z",
+    "endtime": "2020-05-28T10:27:00Z"
+  }
 
 ###

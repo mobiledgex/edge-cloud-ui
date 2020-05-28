@@ -16,27 +16,17 @@ import {
     CHART_COLOR_MONOKAI,
     CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
-    HARDWARE_TYPE, MEX_PROMETHEUS_APPNAME,
+    HARDWARE_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS,
-    USAGE_INDEX
+    THEME_OPTIONS
 } from "../../../../shared/Constants";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderLineChartCore,
-    renderPlaceHolderLoader,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import {Table} from "semantic-ui-react";
-import {Progress} from "antd";
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -349,17 +339,12 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.connectionsSeriesList
                 }
                 //////todo:cloudllet/////////
-                else if (
-                    hardwareType === HARDWARE_TYPE.NETSEND
-                    || hardwareType === HARDWARE_TYPE.NETRECV
-                    || hardwareType === HARDWARE_TYPE.MEM_USED
-                    || hardwareType === HARDWARE_TYPE.DISK_USED
-                    || hardwareType === HARDWARE_TYPE.VCPU_USED
-                    || hardwareType === HARDWARE_TYPE.FLOATING_IP_USED
-                    || hardwareType === HARDWARE_TYPE.IPV4_USED
-                ) {
+                else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
                     series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED || hardwareType === HARDWARE_TYPE.IPV4_USED) {
+                    series = item.ipSeries
                 }
+
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
                 if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
