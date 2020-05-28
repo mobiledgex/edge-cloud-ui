@@ -21,13 +21,15 @@ const getLoader = function (rules, matcher) {
     return loader;
 };
 
+
+
+
 module.exports = {
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
         splitChunks: {
             cacheGroups: {
-                // chunks:'all',
                 chunks:function(chunk){
                     return chunk.name !== 'antd-icons';
                 },
