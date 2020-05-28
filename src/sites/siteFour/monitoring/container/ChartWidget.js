@@ -82,7 +82,7 @@ class ChartWidget extends React.Component {
 
             if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
                 console.log("20200521 container widget   == 66 6 == prevState= ", prevProps.data, ": props data = ", this.props.data, ": id= ", prevProps.id);
-                const updatedata = DataFormats.dataFormatRateRegist(this.props.data[prevProps.id]);
+                const updatedata = DataFormats.dataFormatRateRegist(this.props.data[prevProps.id], prevProps.id);
                 this.updateClientData(updatedata);
                 // for map
                 // const cloudletdata = DataFormats.dataFormaFindCloudlet(this.props.data[prevProps.id], this.props.cloudlets);

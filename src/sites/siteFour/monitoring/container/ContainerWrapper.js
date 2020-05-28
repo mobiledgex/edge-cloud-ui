@@ -50,7 +50,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200521 container widget   == ", nextProps.cloudlets, ":", prevState.cloudlets, ": equal = ", _.isEqual(prevState.cloudlets, nextProps.cloudlets));
+        console.log("20200521 container widget  prevState.legendShow == ", prevState.legendShow);
         if (_.isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             return { cloudlets: nextProps.cloudlets };
         }
@@ -64,12 +64,13 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             return { id: nextProps.id };
         }
         if (nextProps.panelInfo) {
-            if (nextProps.panelInfo.title.value === prevState.title.value) {
-                return { legendShow: !prevState.legendShow };
-            }
-            if (nextProps.id) {
-                return { id: nextProps.id };
-            }
+            console.log("20200528 id === ", prevState.id, ": panel info == ", nextProps.panelInfo);
+            //if (nextProps.panelInfo.title.value === prevState.title.value) {
+            return { legendShow: nextProps.panelInfo };
+            //}
+        }
+        if (nextProps.id) {
+            return { id: nextProps.id };
         }
 
         return null;

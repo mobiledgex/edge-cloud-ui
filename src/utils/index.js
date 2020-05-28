@@ -115,12 +115,12 @@ export const filterDefineKey = (object, values) => {
     return object;
 
 }
-export const filterSearch = (data, searchValue, searchType) => {
+export const filterSearch = (data, searchValue, searchKey) => {
     let searchArr = []
 
     data.filter((item) => {
 
-        let itemCheck = item[searchType].toLowerCase();
+        let itemCheck = item[searchKey].toLowerCase();
         let searchValueCheck = searchValue.toLowerCase();
 
         if (itemCheck.indexOf(searchValueCheck) !== -1) {

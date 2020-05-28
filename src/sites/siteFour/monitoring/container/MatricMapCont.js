@@ -1,18 +1,20 @@
 import React from "react";
 import Map from "../../../../libs/simpleMaps/with-react-motion/index_monitoring";
+import { filterSearch } from "../../../../utils";
 
 const MatricMapCont = props => {
     const [mapData, setMapData] = React.useState([]);
     const cloudlet = {};
     let markers = [];
-    const makeLocation = object => {
+    const makeLocation = (object, total) => {
         markers = markers.concat(object.cloudletLocation = {
             latitude: object.latitude,
             longitude: object.longitude,
             fields: {
                 state: 5
             },
-            cloudletName: object.cloudletName
+            cloudletName: object.cloudletName,
+            callCount: total
         });
         setMapData(markers);
     };
@@ -25,18 +27,21 @@ const MatricMapCont = props => {
             let findCountTotal = 0;
             props.data.map(data => {
                 const { cloudlets } = data;
-                let cloudletName = "";
+                let matchCloudlet = [];
                 cloudlets.map((_cloudlet, i) => {
                     // _cloudlet 이름으로 prop.cloudlets 안에 정보를 찾아서
-                    if (data.FindCloudlet[i][_cloudlet]) {
+                    if (_cloudlet && data.FindCloudlet[i][_cloudlet]) {
+                        matchCloudlet = filterSearch(props.cloudlets, _cloudlet, "cloudletName");
                         data.FindCloudlet[i][_cloudlet].y.map(value => {
                             findCountTotal += value;
+                        });
+                        matchCloudlet.map(cld => {
+                            makeLocation(cld, findCountTotal);
                         });
                     }
                 });
             });
-            let matchCloudlet = props.cloudlets[0]
-            makeLocation(matchCloudlet, findCountTotal);
+
         }
     }, [props]);
 

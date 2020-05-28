@@ -69,8 +69,16 @@ const TimeSeries = (props) => {
     const [mode, setMode] = React.useState("line+markers");
     const [type, setType] = React.useState("scatter");
     const [size, setSize] = React.useState({});
-
+    const [showLegend, setShowLegend] = React.useState(false);
     const [prevPropsId, setPrevPropsId] = React.useState();
+    const [margin, setMargin] = React.useState({
+        l: 45,
+        r: 3,
+        b: 35,
+        t: 5,
+        pad: 0
+    });
+    let marginRight = 0;
 
     let revision = 10;
     let wGab = 10;
@@ -83,15 +91,7 @@ const TimeSeries = (props) => {
     let maxDataCount = 0;
     let currentPage = 0;
 
-    const [margin, setMargin] = React.useState({
-        l: 45,
-        r: 3,
-        b: 35,
-        t: 5,
-        pad: 0
-    });
-    let marginRight = 0;
-    const [showLegend, setShowLegend] = React.useState(false);
+
     let y2Range = null;
     let y3Range = null;
     let y2Position = null;
@@ -136,7 +136,9 @@ const TimeSeries = (props) => {
         if (props.id === dataType.REGISTER_CLIENT || props.id === dataType.FIND_CLOUDLET) {
             if (props.data && props.data.length) chartUpdate({ data: props.data[0], id: props.id, type: props.type });
         }
-        if (props.showLegend) setShowLegend(props.showLegend);
+        if (props.showLegend) {
+            setShowLegend(!showLegend);
+        }
         if (props.margin) setMargin(props.margin);
 
     }, [props]);
@@ -156,7 +158,7 @@ const TimeSeries = (props) => {
                     selectedItem = "diskUsed";
                 }
 
-                const { type } = prevProps;
+                const { type, id } = prevProps;
 
                 shortHand.map(data => {
                     const times = data[0].times[0]; // not use
@@ -166,7 +168,8 @@ const TimeSeries = (props) => {
                     reloadChart(
                         { [methods[0]]: datas },
                         methods[0],
-                        type
+                        type,
+                        id
                     );
                 });
 
@@ -179,9 +182,9 @@ const TimeSeries = (props) => {
         if (prevProps.id === dataType.REGISTER_CLIENT || prevProps.id === dataType.FIND_CLOUDLET) {
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
-                console.log("20200521 container widget   == 99 ==", shortHand);
+                console.log("20200521 container widget   == 99 ==", shortHand, ": id = ", prevProps.id);
 
-                const { type } = prevProps;
+                const { type, id } = prevProps;
 
                 shortHand.map(data => {
                     const keys = Object.keys(data);
@@ -189,61 +192,43 @@ const TimeSeries = (props) => {
                     reloadChart(
                         { [methods[0]]: data[methods[0]] },
                         methods[0],
-                        type
+                        type,
+                        id
                     );
                 });
             }
         }
     }
 
-    const reloadChartTwo = (data, cloudlet, type) => {
-        let seriesData = null;
-
-        seriesData = {
-            type: type || "line",
-            x: data[cloudlet].x,
-            y: data[cloudlet].y,
-            yaxis: "y",
-            text: data[cloudlet].names,
-            name: data[cloudlet].names[0],
-            mode: "lines+markers",
-            // line: {
-            //     dash: "solid",
-            //     width: 10
-            // },
-            // marker: { size: 4 },
-            hovertemplate: "<i>Count</i>: %{y:.2f}"
-                + "<br><b>Time</b>: %{x}<br>"
-                + "<b> %{text} </b>"
-                + "<extra></extra>"
-        };
-        revision = revision + 1;
-        // this.resetData();
-        // console.log("20200521 reload chart -=== ", seriesData);
-        // this.setState({ chartData: [seriesData] });
-    }
 
     /** nemes = ["RegisterClient", "FindCloudlet", "VerifyLocation"] */
-    const reloadChart = (data, cloudlet, type) => {
+    const reloadChart = (data, cloudlet, type, id) => {
         let seriesData = null;
-
+        const xAxis = data[cloudlet].x;
+        const xCloudlet = data[cloudlet].names;
+        const names = data[cloudlet].x;
+        const cloudletName = data[cloudlet].names;
+        const title = (id === dataType.NETWORK_CLOUDLET) ? "Used" : "Method";
+        const unit = (id === dataType.NETWORK_CLOUDLET) ? "GBs" : "Count";
+        const appinst = data[cloudlet].names[0];
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
             type: type || "line",
-            x: data[cloudlet].x,
+            x: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? xAxis : xCloudlet,
             y: data[cloudlet].y,
             yaxis: "y",
-            text: data[cloudlet].names,
-            name: data[cloudlet].names[0],
+            text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? names : cloudletName,
+            name: data[cloudlet].names[0], // legend lable
             mode: "lines+markers",
             // line: {
             //     dash: "solid",
             //     width: 10
             // },
             // marker: { size: 4 },
-            hovertemplate: "<i>Count</i>: %{y:.2f}"
+            hovertemplate: `<i>${title}</i>: %{y:.2f} ${unit}`
                 + "<br><b>Time</b>: %{x}<br>"
                 + "<b> %{text} </b>"
+                + "<br><b> %{appinst}</b></br>"
                 + "<extra></extra>"
         };
 

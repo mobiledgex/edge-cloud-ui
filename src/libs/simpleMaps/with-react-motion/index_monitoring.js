@@ -6,7 +6,8 @@ import {
     Geographies,
     Geography,
     Markers,
-    Marker, Annotations, Annotation
+    Marker, Annotations, Annotation,
+    Line
 } from "react-simple-maps";
 import { Button, Icon, List } from "semantic-ui-react";
 import ContainerDimensions from "react-container-dimensions";
@@ -89,6 +90,8 @@ class ClustersMap extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         const initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         const data = nextProps.locData ? initialData : initialData.filter(item => item.fields.state === 5);
+        const methodCount = 0;
+        console.log("20200521 container widget   == 101010 =", initialData, ":", methodCount);
 
         function reduceUp(value) {
             return Math.round(value);
@@ -110,7 +113,7 @@ class ClustersMap extends Component {
 
         const locations = data.map(item => {
             if (item) {
-                return ({ LAT: reduceUp(item.latitude), LON: reduceUp(item.longitude), cloudlet: item.cloudletName });
+                return ({ LAT: reduceUp(item.latitude), LON: reduceUp(item.longitude), cloudlet: item.cloudletName, methodCount: item.callCount });
             }
         });
 
@@ -128,7 +131,7 @@ class ClustersMap extends Component {
 
         Object.keys(groupbyData).map(key => {
             locationData.push({
-                name: cloundletName(key), coordinates: [groupbyData[key][0].LON, groupbyData[key][0].LAT], population: 17843000, cost: groupbyData[key].length
+                name: cloundletName(key), coordinates: [groupbyData[key][0].LON, groupbyData[key][0].LAT], population: 17843000, cost: groupbyData[key][0].methodCount
             });
         });
         //
@@ -143,7 +146,7 @@ class ClustersMap extends Component {
 
         Object.keys(groupbyClData).map(key => {
             cloudletData.push({
-                name: key, coordinates: [groupbyClData[key][0].LON, groupbyClData[key][0].LAT], population: 17843000, cost: groupbyClData[key].length
+                name: key, coordinates: [groupbyClData[key][0].LON, groupbyClData[key][0].LAT], population: 17843000, cost: methodCount
             });
         });
 

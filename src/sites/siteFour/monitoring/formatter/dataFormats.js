@@ -2,22 +2,25 @@
 * setdataPart
 * Format drawing for plotly.js chart
 */
+import * as DataType from "../formatter/dataType";
 import * as Util from "../../../../utils";
 
-const setdataPart = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
+const setdataPart = (data, req, cloudlet, cloudletIdx, appisntPath, method, methodIdx) => {
     const seriesX = [];
     const seriesY = [];
     const names = [];
+    const appinsts = [];
     const time = 0;
     data.map((item, i) => {
         if (item[cloudletIdx] === cloudlet && item[methodIdx] === method) {
             seriesX.push(item[time]);
             seriesY.push(item[req]);
             names.push(item[cloudletIdx]);
+            appinsts.push(appisntPath);
         }
     });
 
-    return { x: seriesX, y: seriesY, names };
+    return { x: seriesX, y: seriesY, names, appinsts };
 };
 const setdataPartSum = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
     const seriesX = [];
@@ -69,19 +72,21 @@ const createObjects = (resSeries, idx) => {
         getAppInstList : [{cloudletB : plotlyFormatData}]
     }
 */
-export const parseData = (response) => {
+export const parseData = (response, id) => {
     const resData = [];
     let times = [];
     let names = [];
     let methods = [];
     let cloudlets = [];
     const resultParse = {};
+    const getCloudlet = (id === DataType.FIND_CLOUDLET) ? "foundCloudlet" : "cloudlet";
+    const appisntPath = response.path[0];
 
     if (response && response.values && response.values.length > 0) {
         response.values.map(value => {
             const timeIdx = value.resColumns.indexOf("time");
             const methodIdx = value.resColumns.indexOf("method");
-            const cloudletIdx = value.resColumns.indexOf("foundCloudlet");
+            const cloudletIdx = value.resColumns.indexOf(getCloudlet);
             const orgIdx = value.resColumns.indexOf("apporg");
             const reqCount = value.resColumns.indexOf("reqs");
             times = createSeries(value.resSeries, timeIdx);
@@ -95,7 +100,7 @@ export const parseData = (response) => {
             methods.map((method, i) => {
                 resultParse[method] = [];
                 cloudlets.map((cloudlet, j) => {
-                    resultParse[method][j] = { [cloudlet]: setdataPart(value.resSeries, reqCount, cloudlet, cloudletIdx, method, methodIdx) };
+                    resultParse[method][j] = { [cloudlet]: setdataPart(value.resSeries, reqCount, cloudlet, cloudletIdx, appisntPath, method, methodIdx) };
                 });
             });
 
@@ -126,8 +131,8 @@ const parseFindCloudlet = response => {
     return cloudlet;
 }
 
-export const dataFormatRateRegist = response => {
-    return parseData(response[0]);
+export const dataFormatRateRegist = (response, id) => {
+    return parseData(response[0], id);
 };
 export const dataFormatCountCloudlet = response => {
     return setdataPartSum(response);
