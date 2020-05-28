@@ -1791,9 +1791,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
 
 
-                        console.log(`filteredAppInstList===>`, filteredAppInstList);
-
-
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
                         this.setState({
