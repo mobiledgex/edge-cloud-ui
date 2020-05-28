@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {HashRouter, Route } from "react-router-dom";
+import Alert from 'react-s-alert';
 
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
@@ -12,7 +13,6 @@ import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
 //insert pages
 import './app.css';
 import EntranceGlob from './sites/siteOne/entranceGlob';
-import CreateAccount from './components/login/CreateAccont';
 import VerifyContent from './container/verifyContent';
 import SiteFour from './sites/siteFour/siteFour'
 import './css/index.css';
@@ -78,7 +78,6 @@ class App extends Component {
                         <Route exact path='/logout' component={EntranceGlob}/>
                         <Route exact path='/passwordreset' component={EntranceGlob}/>
                         <Route exact path='/verify' component={VerifyContent}/>
-                        <Route exact path='/createAccount' component={CreateAccount}/>
                     </div>
                 </HashRouter>
             </ThemeProvider>

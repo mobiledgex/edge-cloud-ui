@@ -6,9 +6,6 @@ import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-// alert
-import Alert from 'react-s-alert';
-// API
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
 import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
@@ -58,7 +55,7 @@ const FormForgotPass = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' width ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail() } }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -66,7 +63,7 @@ const FormForgotPass = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password Reset Email</Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password Reset Email</Button>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -116,7 +113,7 @@ const FormResendVerify = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' width ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail('verify') } }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail('verify') } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
