@@ -113,7 +113,6 @@ class TimeSeries extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200521 shortHand derived state ====== -->> prev :: ", prevState.data, "   next:: ", nextProps.data, ": isEqual=", _.isEqual(prevState.data, nextProps.data));
         if (_.isEqual(prevState.data, nextProps.data) === false) {
             return { data: nextProps.data };
         }
@@ -122,12 +121,10 @@ class TimeSeries extends React.Component {
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        console.log("20200521 shortHand ======getSnapshotBeforeUpdate ++++++++++ ", prevProps.data);
         if (prevState.data !== this.state.data) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0 && prevProps.id === dataType.NETWORK_CLOUDLET) {
                 const shortHand = prevProps.data[prevProps.id];
-                console.log("20200521 shortHand ====== -->> ", shortHand);
                 let selectedItem = "";
                 if (prevProps.method === "") {
                     selectedItem = "diskUsed";
@@ -158,7 +155,6 @@ class TimeSeries extends React.Component {
 
 
     componentDidUpdate(prevProps, prevState) {
-        console.log("20200521 map state to props ==== ", prevProps.savedMetricsData, ":   prevProps.id  = ", prevProps.id);
 
 
     }

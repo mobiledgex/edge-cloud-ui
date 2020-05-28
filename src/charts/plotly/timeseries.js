@@ -113,9 +113,7 @@ const TimeSeries = (props) => {
 
     React.useEffect(() => {
         // const hasVal1Changed = useCompare(props.data);
-        console.log("20200521 container widget   == 88 1 data ==", props.data, ": props.id =", props.id);
         if (props.size) {
-            console.log("20200522 size = ", props.size);
             setTimeout(() => {
                 setVWidth(props.size.width);
                 setVHeight(props.size.height);
@@ -147,12 +145,10 @@ const TimeSeries = (props) => {
     * Stored on the stack whenever data is loaded
     */
     const chartUpdate = (prevProps) => {
-        console.log("20200521 container widget   == 88 ==", prevProps.data, ":", prevProps.id, ":", prevProps.data[prevProps.id]);
         if (prevProps.id === dataType.NETWORK_CLOUDLET) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
-                console.log("20200521 shortHand ====== -->> ", shortHand);
                 let selectedItem = "";
                 if (prevProps.method === "") {
                     selectedItem = "diskUsed";
@@ -182,7 +178,6 @@ const TimeSeries = (props) => {
         if (prevProps.id === dataType.REGISTER_CLIENT || prevProps.id === dataType.FIND_CLOUDLET) {
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
-                console.log("20200521 container widget   == 99 ==", shortHand, ": id = ", prevProps.id);
 
                 const { type, id } = prevProps;
 

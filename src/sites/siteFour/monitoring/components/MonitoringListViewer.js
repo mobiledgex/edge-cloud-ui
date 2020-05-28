@@ -66,7 +66,6 @@ export default function MonitoringListViewer(props) {
             setSizeH(parentSize.height - 50);
         }
         if (props.data && props.data.length > 0) {
-            console.log("20200521 container widget   == 10 appinsts == ", props.data);
             setColumns(makeColumn(props.data[0]));
             setRows(props.data);
         }
@@ -102,13 +101,13 @@ export default function MonitoringListViewer(props) {
                 style={{ height: sizeH }}
             >
                 <Table stickyHeader aria-label="sticky table" size={"small"}>
-                    <TableHead style={{backgroundColor:"#51555c"}}>
+                    <TableHead style={{ backgroundColor: "#51555c" }}>
                         <TableRow>
                             {columns.map(column => (
                                 <TableCell
                                     key={column.id}
                                     align={column.align}
-                                    style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                    style={{ minWidth: column.minWidth, fontWeight: 600 }}
                                 >
                                     {column.label.charAt(0).toUpperCase() + column.label.slice(1)}
                                 </TableCell>

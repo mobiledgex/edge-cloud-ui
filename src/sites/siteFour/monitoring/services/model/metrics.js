@@ -18,6 +18,5 @@ const dataFromServer = async (_regions, self, _method) => Promise.all(
  ** **************************************************** */
 export const getClusterList = async (self, param) => {
     const result = await dataFromServer(REGION_ALL, self, param.method);
-    console.log("20200521 container widget   <<== 1212  result == ", result);
     return result;
 }

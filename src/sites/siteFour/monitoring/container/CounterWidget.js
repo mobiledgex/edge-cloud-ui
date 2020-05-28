@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             flexGrow: 1,
-            height:'100%',
+            height: '100%',
         },
         grid: {
             height: '100%',
@@ -24,9 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         item: {
             backgroundColor: "#1e2124",
-            padding:3,
-            width:'100%',
-            height:'100%',
+            padding: 3,
+            width: '100%',
+            height: '100%',
 
         },
         paper: {
@@ -52,7 +52,6 @@ const CounterWidget = forwardRef((props, ref) => {
         setDataToWidget
     }));
     useEffect(() => {
-        console.log("20200521 container widget   == 1111 cloutlet props data == ", props.data, ": init == ", initial, ": step = ", props.step);
         if (props.step !== step) {
             setStep(props.step);
             setData(null);
@@ -60,7 +59,6 @@ const CounterWidget = forwardRef((props, ref) => {
         if (isEqual(props.data, data) === false && !initial) {
             setInitial(true);
             const formatedData = dataFormatCountCluster(props.data);
-            console.log("20200521 container widget   == 1111 groupBy cloudlet == ", formatedData);
             const containerData = [];
             const keys = Object.keys(formatedData);
             keys.map(key => {
@@ -75,12 +73,12 @@ const CounterWidget = forwardRef((props, ref) => {
         setData(props.data);
     }, [props]);
 
-    let index = [0,1,2,3,4,5]
+    let index = [0, 1, 2, 3, 4, 5]
 
     return (
         <div className={classes.root}>
             <Grid className={classes.grid} container spacing={1}>
-                {index.map( i => (
+                {index.map(i => (
                     <Grid className={classes.layout} item xs={4}>
                         <div className={classes.item}>
                             {makeContainer(clusterCnt, (step * gridCnt) + i, step)}

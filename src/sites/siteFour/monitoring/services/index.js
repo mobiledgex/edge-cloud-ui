@@ -104,7 +104,6 @@ const getMetricsCloudlet = async (self, params) => {
 * 3.
  *********************************** */
 const getMetricsClient = async (self, params) => {
-    console.log("20200521 get metrics client in services... ", params);
     /* Continue, get events of cloudlets */
     const requestData = appinstInfo => ({
         token,

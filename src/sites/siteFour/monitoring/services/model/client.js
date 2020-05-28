@@ -79,18 +79,14 @@ const metricFromServer = async (self, data) => {
     const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
     const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
 
-    console.log("20200521 range metricFromServer == ", yesterdayWithCurrent);
-
     const makeUTC = time => moment(time).utc();
     const rangeTime = range => {
         let time = null;
-        console.log("20200521 range == ", range);
         if (range === "start") {
             time = makeUTC(yesterdayWithCurrent);
         } else {
             time = makeUTC(moment());
         }
-        console.log("20200521 range time == ", time);
         return time;
     };
     const requestData = {

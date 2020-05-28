@@ -8,8 +8,8 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
 import * as serviceMC from "../../../../services/model/serviceMC";
 import * as filterOptions from "../formatter/filterOptions";
-import {Dropdown} from "semantic-ui-react";
-import {ACTION_REGION} from "../../../../container/MexToolbar";
+import { Dropdown } from "semantic-ui-react";
+import { ACTION_REGION } from "../../../../container/MexToolbar";
 
 const BootstrapInput = withStyles(theme => ({
     root: {
@@ -61,7 +61,6 @@ const FilteringComponent = props => {
     const menuItems = [];
 
     React.useEffect(() => {
-        console.log("20200520 filter ", props.data, ": id = ", props.id);
         const id = props.id;
         if (props.data && props.data[id] && props.data[id].length > 0) {
             setData(props.data[id]);
@@ -95,7 +94,7 @@ const FilteringComponent = props => {
         ));
     };
     return (
-        <div style={{ display:'flex', justifyContent:'flex-end', height:24}}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', height: 24 }}>
             <FormControl className={classes.margin}>
                 <Select
                     labelId="demo-customized-select-label"
