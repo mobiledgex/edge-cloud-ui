@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CONST_CLOUDLET_USAGE, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
@@ -675,12 +675,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 Region = cloudletList[index].Region
                 let series = item.data["0"].Series["0"].values
                 let ipSeries = item.data["0"].Series["1"].values
-
                 columns = item.data["0"].Series["0"].columns
-                console.log(`ipSeries===>`, ipSeries);
-
-
-
 
                 let sumVirtualCpuUsed = 0;
                 let sumvCpuMax = 0;
@@ -696,17 +691,14 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 let sumIpv4Max = 0;
 
                 series.map((item, innerIndex) => {
-                    /*let netSendSeriesOne = series["0"][getIndex(columns, CONST_CLOUDLET_USAGE.netSend)]*/
 
-                    let netSendSeriesOne = item["3"]
-                    let netRecvSeriesOne = item["4"]
-                    let vCpuSeriesOne = item["5"]
-                    let memSeriesOne = item["7"]
-                    let diskSeriesOne = item["9"]
-                    let floatingIpsSeriesOne = ipSeries[innerIndex]['11']
-                    let ipv4UsedSeriesOne = ipSeries[innerIndex]['13']
-                    console.log(`floatingIpsSeriesOne===>`, floatingIpsSeriesOne);
-                    console.log(`ipv4UsedSeriesOne===>`, ipv4UsedSeriesOne);
+                    let netSendSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.netSend)]
+                    let netRecvSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.netRecv)]
+                    let vCpuSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.vCpuUsed)]
+                    let memSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.memUsed)]
+                    let diskSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.diskUsed)]
+                    let floatingIpsSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.floatingIpsUsed)]
+                    let ipv4UsedSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.ipv4Used)]
 
                     netSendSeriesList.push(netSendSeriesOne)
                     netRecvSeriesList.push(netRecvSeriesOne)
@@ -759,7 +751,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                     maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
                     columns: columns,
                     series: series,
-                    ipSeries:ipSeries,
+                    ipSeries: ipSeries,
                     cloudlet: cloudlet,
                     operator: operator,
                     Region: Region,
