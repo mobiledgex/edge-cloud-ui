@@ -642,9 +642,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let token = store ? store.userToken : 'null';
         for (let index = 0; index < cloudletList.length; index++) {
             let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
-
-            console.log(`instanceInfoOneForm===>`, instanceInfoOneForm);
-
             instanceBodyList.push(instanceInfoOneForm);
         }
 
@@ -655,7 +652,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
-
         let netSendSeriesList = [];
         let netRecvSeriesList = [];
         let vCpuSeriesList = [];
@@ -663,7 +659,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let diskSeriesList = [];
         let floatingIpsSeriesList = [];
         let ipv4UsedSeriesList = [];
-
         let cloudlet = "";
         let operator = "";
         let Region = '';
@@ -791,8 +786,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
             }
 
         });
-
-        console.log(`usageList===>`, usageList);
 
         return usageList;
     } catch (e) {
