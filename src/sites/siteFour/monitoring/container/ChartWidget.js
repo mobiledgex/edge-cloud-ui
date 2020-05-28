@@ -1,9 +1,6 @@
 import React, { useRef } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import MobileStepper from "@material-ui/core/MobileStepper";
 import Dots from "material-ui-dots";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import _ from "lodash";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
@@ -361,8 +358,6 @@ const useStyles = makeStyles({
 });
 
 export const DotsMobileStepper = props => {
-    const classes = useStyles();
-    const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
 
     const handleNext = (idObject) => {
