@@ -8,7 +8,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
-import {notification} from "antd";
+import notification from "antd/es/notification";
 import {makeGradientColor} from "./PageDevOperMonitoringService";
 import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "./PageAdmMonitoringService";

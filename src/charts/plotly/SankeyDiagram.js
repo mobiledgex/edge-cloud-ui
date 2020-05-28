@@ -64,7 +64,7 @@ class SankeyDiagram extends React.Component {
         }
 
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         console.log('update props... simple    -', JSON.stringify(nextProps.size))
             //this.setState({vWidth:nextProps.size.width, vHeight:nextProps.size.height})
     }

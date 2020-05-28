@@ -36,7 +36,7 @@ import {
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import {Table} from "semantic-ui-react";
-import {Progress} from "antd";
+import Progress from "antd/es/progress";
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();

@@ -37,7 +37,7 @@ let Gauge = React.createClass({
     })
   },
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let history = this.state.history || new Array(100).fill(0);
 
     if (history.length > 100) {

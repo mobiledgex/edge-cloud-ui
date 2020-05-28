@@ -9,10 +9,7 @@ class Simple extends React.Component {
             vHeight: 300
         }
     }
-    componentWillReceiveProps(nextProps) {
-        console.log('update props... simple    -', JSON.stringify(nextProps.size))
-            //this.setState({vWidth:nextProps.size.width, vHeight:nextProps.size.height})
-    }
+    
     render() {
         const { width, height } = this.props.size;
         //console.log('size me == ', width, height)

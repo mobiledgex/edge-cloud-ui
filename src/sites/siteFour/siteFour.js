@@ -103,7 +103,7 @@ class SiteFour extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if (nextProps.alertInfo.mode === 'success') {

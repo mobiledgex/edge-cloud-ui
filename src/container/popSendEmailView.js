@@ -91,7 +91,7 @@ const submit = () => {
 
 }
 class PopSendEmailView extends React.Component {
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.submitState !== this.props.submitState) {
             console.log('20191030 nextprops,.., ', nextProps.submitState, " : ", this.props.handleSubmit)
             document.getElementById('popSendEmailSubmit').click();

@@ -49,7 +49,7 @@ class EntranceGlobe extends Component {
             this.props.handleChangeLoginMode('resetPass')
         }
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.loginMode && nextProps.loginMode === 'resetPass') {
             return;
         }

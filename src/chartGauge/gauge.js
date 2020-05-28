@@ -76,7 +76,8 @@ class Gauge extends Component {
         this.renderGauge(0, {}, 'Cores', '');
 
     }
-    componentWillReceiveProps (nextProps) {
+    
+    UNSAFE_componentWillReceiveProps (nextProps) {
         /*
         compareMethod:"gt"
         critical1:28

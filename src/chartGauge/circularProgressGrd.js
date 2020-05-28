@@ -11,9 +11,7 @@ class CircularProgressGRD extends React.Component {
         super();
 
     }
-    componentWillReceiveProps(nextProps) {
-
-    }
+   
     componentDidMount() {
         console.log('d3=')
 

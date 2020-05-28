@@ -20,7 +20,7 @@ export default class PopProfileViewer extends React.Component {
     makeUTC = (time) => {
         return moment( time ).utc().format("YYYY-MM-DD HH:mm:ss") + ' UTC'
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
             let regKeys = [];
