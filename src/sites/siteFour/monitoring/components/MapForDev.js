@@ -228,7 +228,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 //@desc:   hide appInstInfoPopup
                 //@desc : #############################
                 if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
-                    this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
+                    try{
+                        this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();    
+                    }catch (e) {
+                        
+                    }
+                    
                 }
 
                 //@desc : #############################
