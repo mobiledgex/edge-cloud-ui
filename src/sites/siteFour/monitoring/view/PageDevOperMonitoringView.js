@@ -79,7 +79,9 @@ import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import MapForDev from "../components/MapForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
-import _ from "lodash";
+import uniqBy from 'lodash/uniqBy';
+import maxBy from 'lodash/maxBy';
+import reject from 'lodash/reject';
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
@@ -594,7 +596,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let cloudletClusterNameList = getCloudletClusterNameList(clusterList)
-                    let clusterDropdownList = makeClusterTreeDropdown(_.uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
+                    let clusterDropdownList = makeClusterTreeDropdown(uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
@@ -842,7 +844,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentLayout = this.state.layoutCloudlet;
                     let maxY = -1;
                     if (!isEmpty(currentLayout)) {
-                        maxY = _.maxBy(currentLayout, 'y').y
+                        maxY = maxBy(currentLayout, 'y').y
                     }
                     uniqueId = makeid(5)
                     currentLayoutMapper = this.state.layoutMapperCloudlet
@@ -876,7 +878,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let currentItems = this.state.layoutCluster;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
-                        maxY = _.maxBy(currentItems, 'y').y
+                        maxY = maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
                     let mapperList = this.state.layoutMapperCluster
@@ -910,7 +912,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let currentItems = this.state.layoutAppInst;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
-                        maxY = _.maxBy(currentItems, 'y').y
+                        maxY = maxBy(currentItems, 'y').y
                     }
                     let uniqueId = makeid(5)
                     let mapperList = this.state.layoutMapperAppInst
@@ -938,20 +940,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             removeGridItem(i) {
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    let removedLayout = _.reject(this.state.layoutCluster, {i: i});
+                    let removedLayout = reject(this.state.layoutCluster, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutCluster: removedLayout,
                     });
 
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                    let removedLayout = _.reject(this.state.layoutCloudlet, {i: i});
+                    let removedLayout = reject(this.state.layoutCloudlet, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutCloudlet: removedLayout,
                     });
                 } else {//@desc: AppInst Level
-                    let removedLayout = _.reject(this.state.layoutAppInst, {i: i});
+                    let removedLayout = reject(this.state.layoutAppInst, {i: i});
                     reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutAppInst: removedLayout,

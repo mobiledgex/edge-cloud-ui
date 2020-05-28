@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import {isEqual} from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
