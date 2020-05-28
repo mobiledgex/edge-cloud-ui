@@ -552,6 +552,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:OPERATOR
                         //TODO:###############################################
                         cloudletList = await fetchCloudletList();
+
+
+                        console.log(`cloudletList===>`, cloudletList);
+
                         appInstList = await fetchAppInstList()
                         let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
@@ -778,7 +782,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             makeGridItemWidth(graphType) {
-                if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
+                if (graphType === GRID_ITEM_TYPE.PERFORMANCE_SUM || graphType === GRID_ITEM_TYPE.CLIENT_STATUS_TABLE) {
                     return 4;
                 } else if (graphType === GRID_ITEM_TYPE.MAP) {
                     return 2;
@@ -1093,15 +1097,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     return (
-                            <LineChartContainer
-                                isResizeComplete={this.state.isResizeComplete}
-                                loading={this.state.loading}
-                                currentClassification={this.state.currentClassification}
-                                parent={this}
-                                pHardwareType={pHwType}
-                                chartDataSet={chartDataSets}
-                                currentColorIndex={this.state.currentColorIndex}
-                            />
+                        <LineChartContainer
+                            isResizeComplete={this.state.isResizeComplete}
+                            loading={this.state.loading}
+                            currentClassification={this.state.currentClassification}
+                            parent={this}
+                            pHardwareType={pHwType}
+                            chartDataSet={chartDataSets}
+                            currentColorIndex={this.state.currentColorIndex}
+                        />
                     )
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {

@@ -69,7 +69,7 @@ export default function ClientStatusTableHooks(props) {
                          //backgroundColor:'red'
                      }}
                 >
-                    Client status For App Inst
+                    Client Status For App Inst
                 </div>
             </div>
             <TableContainer
