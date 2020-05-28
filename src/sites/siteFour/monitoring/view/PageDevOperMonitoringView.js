@@ -131,6 +131,7 @@ import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../servic
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogListHooks from "../components/CloudletEventLogListHooks";
+import {Icon} from "semantic-ui-react";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -2187,13 +2188,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Cluster
                             </div>
                             <TreeSelect
+                                switcherIcon={(<Icon name='cloud' style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}/>)}
                                 disabled={this.state.loading}
                                 size={'middle'}
                                 showSearch={true}
-                                switcherIcon={<FontAwesomeIcon
-                                    name="arrow-up" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
-                                />}
-                                style={{width: '300px'}}
+                                style={{width: '400px'}}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,

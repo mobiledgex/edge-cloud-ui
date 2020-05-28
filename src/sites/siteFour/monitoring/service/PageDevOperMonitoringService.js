@@ -27,7 +27,7 @@ import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-
+import { Tag } from 'antd';
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
 }
@@ -1239,15 +1239,7 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         let newCloudletOne = {
             title: (
                 <div>{cloudletOne}&nbsp;&nbsp;
-                    <Chip
-                        color="primary"
-                        size="small"
-                        label="Cloudlet"
-                        style={{
-                            //color: 'white',
-                            //backgroundColor: '#34373E'
-                        }}
-                    />
+                    {/*<Tag color="green">Cloudlet</Tag>*/}
                 </div>
             ),
             value: cloudletOne,
