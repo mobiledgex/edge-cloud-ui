@@ -2193,7 +2193,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 size={'middle'}
                                 showSearch={true}
                                 switcherIcon={<FontAwesomeIcon
-                                    name="cloud" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                                    name="cloud" style={{fontSize: 15, color: '#77BD25', cursor: 'pointer', marginTop: 2}}
                                 />}
                                 style={{width: '400px'}}
                                 onSearch={(value) => {
