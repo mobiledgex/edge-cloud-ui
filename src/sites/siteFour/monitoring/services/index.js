@@ -1,5 +1,4 @@
 import * as serviceMC from "../../../../services/model/serviceMC";
-import * as serverData from "../../../../services/model/serverData";
 import * as Cloudlet from "./model/cloudlet";
 import * as Metrics from "./model/metrics";
 import * as Appinst from "./model/appinst";

@@ -206,13 +206,14 @@ const TimeSeries = (props) => {
         const title = (id === dataType.NETWORK_CLOUDLET) ? "Used" : "Method";
         const unit = (id === dataType.NETWORK_CLOUDLET) ? "GBs" : "Count";
         const appinst = data[cloudlet].names[0];
+        const time = (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? "Time" : "";
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
             type: type || "line",
             x: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? xAxis : xCloudlet,
             y: data[cloudlet].y,
             yaxis: "y",
-            text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? names : cloudletName,
+            text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? cloudletName : cloudletName,
             name: data[cloudlet].names[0], // legend lable
             mode: "lines+markers",
             // line: {
@@ -221,9 +222,8 @@ const TimeSeries = (props) => {
             // },
             // marker: { size: 4 },
             hovertemplate: `<i>${title}</i>: %{y:.2f} ${unit}`
-                + "<br><b>Time</b>: %{x}<br>"
+                + `<br><b>${time}</b>: %{x}<br>`
                 + "<b> %{text} </b>"
-                + "<br><b> %{appinst}</b></br>"
                 + "<extra></extra>"
         };
 

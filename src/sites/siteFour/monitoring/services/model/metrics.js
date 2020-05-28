@@ -1,9 +1,8 @@
+/*
+review @Rahul
+*/
 import _ from "lodash";
-import * as serverData from "../../../../../services/model/serverData";
-import * as serviceMC from "../../../../../services/model/serviceMC";
 import { getClusterInstList } from "../../../../../services/model/clusterInstance";
-import { fields } from "../../../../../services/model/format";
-import * as ChartType from "../../formatter/chartType";
 
 
 const regions = localStorage.regions ? localStorage.regions.split(",") : [];

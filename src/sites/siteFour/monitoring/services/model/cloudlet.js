@@ -1,6 +1,5 @@
 import _ from "lodash";
 import * as serverData from "../../../../../services/model/serverData";
-import * as serviceMC from "../../../../../services/model/serviceMC";
 import {
     showCloudlets,
     streamCloudlet
