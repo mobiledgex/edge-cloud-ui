@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import MoreIcon from '@material-ui/icons/More';
+import CropFreeIcon from '@material-ui/icons/CropFree';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const HeaderComponent = (defaultValue) => {
     const [value, setValue] = useState(defaultValue);
@@ -9,8 +12,8 @@ const HeaderComponent = (defaultValue) => {
     return (
         <div className='page_monitoring_title_area'>
             <div className='page_monitoring_title_row'>
-                <div className='page_monitoring_title_label'
-                    // className="headerBar react-grid-dragHandleExample"
+                <div className="page_monitoring_title_label"
+                     id="react-grid-dragHandleExample"
                     // style={{
                     //     width: "100%",
                     //     height: "30px",
@@ -24,21 +27,25 @@ const HeaderComponent = (defaultValue) => {
                     {info.title.value}
                 </div>
                 <div className='page_monitoring_title_button'>
+                    {info.legend &&
                     <div
                         onClick={() => value.onClick("info", info.title)}
                     >
-                        info
+                        <MoreIcon fontSize={'small'} />
                     </div>
+                    }
+                    {/* 기능추가 될 부분
                     <div
                         onClick={() => value.onClick("edit", info.title)}
                     >
-                        edit
+                        <CropFreeIcon fontSize={'small'} />
                     </div>
                     <div
                         onClick={() => value.onPutItem(value.idx)}
                     >
-                        close
+                        <DeleteIcon fontSize={'small'} />
                     </div>
+                    */}
                 </div>
             </div>
         </div>

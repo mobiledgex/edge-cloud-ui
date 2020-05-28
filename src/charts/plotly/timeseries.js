@@ -14,8 +14,8 @@ import * as dataType from "../../sites/siteFour/monitoring/formatter/dataType";
 // https://plot.ly/javascript/streaming/
 
 const trace1 = {
-    x: [1, 2, 3, 4, 5],
-    y: [1, 3, 2, 3, 1],
+    x: [],
+    y: [],
     mode: "lines",
     name: "Solid",
     line: {
@@ -62,7 +62,7 @@ const TimeSeries = (props) => {
     const [vWidth, setVWidth] = React.useState(300);
     const [vHeight, setVHeight] = React.useState(170);
     const [data, setData] = React.useState([]);
-    const [chartData, setChartData] = React.useState([trace1, trace2, trace3, trace4]);
+    const [chartData, setChartData] = React.useState([trace1]);
     const [layout, setLayout] = React.useState({ datarevision: 0 });
     const [name, setName] = React.useState("Solid");
     const [currentKey, setCurrentKey] = React.useState("");
@@ -82,7 +82,7 @@ const TimeSeries = (props) => {
 
     let revision = 10;
     let wGab = 10;
-    let hGab = 38;
+    let hGab = props.filterInfo ? 40 : 10;
     const colors = ["#22cccc", "#6699ff", "#ff710a", "#ffce03"];
     const colorsErr = ["#22cccc", "#ff3355", "#6699ff", "#ffce03"];
     let stackAllData = [];
@@ -122,9 +122,9 @@ const TimeSeries = (props) => {
             }, 2000);
         }
         if (props.filterInfo) {
-            hGab = 38;
+            hGab = 40;
         } else {
-            hGab = 0;
+            hGab = 10;
         }
         if (props.id) setPrevPropsId(props.id);
         if (props.divide) maxDataCount = props.divide;
@@ -265,7 +265,9 @@ const TimeSeries = (props) => {
                 className="plotly-chart"
                 style={{
                     backgroundColor: "transparent",
-                    overflow: "hidden"
+                    width: vWidth,
+                    height: vHeight,
+                    padding: 5
                 }}
                 data={chartData}
                 layout={{

@@ -80,7 +80,7 @@ export default function MonitoringListViewer(props) {
             id: key,
             label: key,
             minWidth: 50,
-            align: "center"
+            align: "left"
         }));
     };
 
@@ -102,15 +102,15 @@ export default function MonitoringListViewer(props) {
                 style={{ height: sizeH }}
             >
                 <Table stickyHeader aria-label="sticky table" size={"small"}>
-                    <TableHead>
+                    <TableHead style={{backgroundColor:"#51555c"}}>
                         <TableRow>
                             {columns.map(column => (
                                 <TableCell
                                     key={column.id}
                                     align={column.align}
-                                    style={{ minWidth: column.minWidth }}
+                                    style={{ minWidth: column.minWidth, fontWeight:600 }}
                                 >
-                                    {column.label}
+                                    {column.label.charAt(0).toUpperCase() + column.label.slice(1)}
                                 </TableCell>
                             ))}
                         </TableRow>

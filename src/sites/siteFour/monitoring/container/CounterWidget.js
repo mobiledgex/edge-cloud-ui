@@ -2,25 +2,43 @@ import React, {
     useState, forwardRef, useImperativeHandle, useEffect
 } from "react";
 import CountUp from "react-countup";
-import { useCountUp } from "use-count-up";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import isEqual from "lodash/isEqual";
 import { dataFormatCountCluster } from "../formatter/dataFormats";
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
-        flexGrow: 1
-    },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: "center",
-        color: theme.palette.text.secondary
-    }
-}));
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            flexGrow: 1,
+            height:'100%',
+        },
+        grid: {
+            height: '100%',
+            margin: '0 -4px'
+        },
+        layout: {
+            height: '50%',
+            maxHeight: '50%',
+            minHeight: '50%'
+        },
+        item: {
+            backgroundColor: "#1e2124",
+            padding:3,
+            width:'100%',
+            height:'100%',
+
+        },
+        paper: {
+            padding: theme.spacing(2),
+            textAlign: "center",
+            color: theme.palette.text.secondary
+        }
+    })
+);
 const CounterWidget = forwardRef((props, ref) => {
     const [clusterCnt, setClusterCnt] = useState(props);
+    const [clusterList, setClusterList] = useState([]);
     const [data, setData] = useState(props.data);
     const [step, setStep] = useState(0);
     const [gridCnt, setGridCnt] = useState(6);
@@ -51,46 +69,24 @@ const CounterWidget = forwardRef((props, ref) => {
                 });
             });
             setClusterCnt(containerData);
+            setClusterList(containerData);
             setTimeout(() => setInitial(false), 500);
         }
         setData(props.data);
     }, [props]);
 
+    let index = [0,1,2,3,4,5]
+
     return (
         <div className={classes.root}>
-            <Grid container spacing={2}>
-                <Grid item xs>
-                    <Paper className={classes.paper} style={{ padding: 5 }}>
-                        {makeContainer(clusterCnt, (step * gridCnt) + 0, step)}
-                    </Paper>
-                </Grid>
-                <Grid item xs>
-                    <Paper className={classes.paper} style={{ padding: 5 }}>
-                        {makeContainer(clusterCnt, (step * gridCnt) + 1, step)}
-                    </Paper>
-                </Grid>
-                <Grid item xs>
-                    <Paper className={classes.paper} style={{ padding: 5 }}>
-                        {makeContainer(clusterCnt, (step * gridCnt) + 2, step)}
-                    </Paper>
-                </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-                <Grid item xs>
-                    <Paper className={classes.paper} style={{ padding: 5 }}>
-                        {makeContainer(clusterCnt, (step * gridCnt) + 3, step)}
-                    </Paper>
-                </Grid>
-                <Grid item xs>
-                    <Paper className={classes.paper} style={{ padding: 5 }}>
-                        {makeContainer(clusterCnt, (step * gridCnt) + 4, step)}
-                    </Paper>
-                </Grid>
-                <Grid item xs>
-                    <Paper className={classes.paper} style={{ padding: 5 }}>
-                        {makeContainer(clusterCnt, (step * gridCnt) + 5, step)}
-                    </Paper>
-                </Grid>
+            <Grid className={classes.grid} container spacing={1}>
+                {index.map( i => (
+                    <Grid className={classes.layout} item xs={4}>
+                        <div className={classes.item}>
+                            {makeContainer(clusterCnt, (step * gridCnt) + i, step)}
+                        </div>
+                    </Grid>
+                ))}
             </Grid>
         </div>
     );
@@ -99,24 +95,16 @@ const CounterWidget = forwardRef((props, ref) => {
 export default CounterWidget;
 
 const makeContainer = (clusterData, index, step) => (
-    <div style={{ height: 90 }}>
+    <div style={{ width: "100%", height: "100%" }}>
         {(clusterData[index])
             ? (
-                <div style={{ width: "100%", height: "100%" }}>
-                    <div
-                        style={{
-                            minWidth: 50,
-                            minHeight: 30,
-                            padding: 2,
-                            display: "flex",
-                            flexDirection: "column"
-                        }}
-                    >
-                        <span>{clusterData[index].region}</span>
-                        <div style={{ fontSize: 26 }}>
-                            <CountUp isCounting end={clusterData[index].count} duration={3.2} />
-                        </div>
-                        <span>{clusterData[index].cloudlet}</span>
+                <div className='page_monitoring_cnt_box'
+
+                >
+                    <div className='page_monitoring_cnt_region'>{clusterData[index].region}</div>
+                    <div className='page_monitoring_cnt_name'>{clusterData[index].cloudlet}</div>
+                    <div className='page_monitoring_cnt_num'>
+                        <CountUp isCounting end={clusterData[index].count} duration={3.2} />
                     </div>
                 </div>
             ) : null}

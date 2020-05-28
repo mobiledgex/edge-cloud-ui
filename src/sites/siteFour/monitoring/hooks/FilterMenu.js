@@ -64,6 +64,7 @@ export default function FilterMenu() {
                 <RoomIcon style={{color: 'rgb(118, 255, 3)'}} />
             </Button>
             <div className='page_monitoring_location_text'>
+                {'All'}
             </div>
             <StyledMenu
                 id="customized-menu"
