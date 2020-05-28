@@ -53,21 +53,20 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
 
     setChartData(lineChartDataSet, hwType, graphType) {
-      try{
-          let levelTypeNameList = lineChartDataSet.levelTypeNameList;
-          let usageSetList = lineChartDataSet.usageSetList;
-          let newDateTimeList = lineChartDataSet.newDateTimeList;
-          let hardwareType = lineChartDataSet.hardwareType;
+        try {
+            let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+            let usageSetList = lineChartDataSet.usageSetList;
+            let newDateTimeList = lineChartDataSet.newDateTimeList;
+            let hardwareType = lineChartDataSet.hardwareType;
+            const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, usageSetList.length === 1)
+            this.setState({
+                chartDataSet: lineChartDataForRendering,
+                pHardwareType: hwType,
+                graphType: graphType,
+            })
+        } catch (e) {
 
-          const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
-          this.setState({
-              chartDataSet: lineChartDataForRendering,
-              pHardwareType: hwType,
-              graphType: graphType,
-          })
-      }catch (e) {
-
-      }
+        }
 
     }
 
@@ -97,14 +96,11 @@ export default class LineChartContainer extends React.Component<Props, State> {
             return 'Mem Utilization'
         } else if (title.includes(HARDWARE_TYPE.DISK_USED)) {
             return 'Disk Utilization'
-        }else if (title.includes(HARDWARE_TYPE.FLOATING_IP_USED)) {
+        } else if (title.includes(HARDWARE_TYPE.FLOATING_IP_USED)) {
             return 'FLOATING IP Utilization'
         } else if (title.includes(HARDWARE_TYPE.IPV4_USED)) {
             return 'IPV4 Utilization'
-        }
-
-
-        else {
+        } else {
             return title + " Utilization"
         }
     }

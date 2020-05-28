@@ -1101,6 +1101,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 parent={this}
                                 pHardwareType={pHwType}
                                 chartDataSet={chartDataSets}
+                                currentColorIndex={this.state.currentColorIndex}
                             />
                     )
 
