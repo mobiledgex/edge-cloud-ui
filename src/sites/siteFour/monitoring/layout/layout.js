@@ -143,17 +143,16 @@ class MonitoringLayout extends React.Component {
         this.props.handleClickPanelInfo({ info, title });
     }
 
+    getHeight = () => {
+        return (window.innerHeight - 78 - 41 - 40)/3 //(window Height - header+(margin+padding for container) - title+margin - space for grid)/3
+    }
+
     generateDOM(items) {
         return this.state.layouts[this.state.currentBreakpoint].map(
             (l, idx) => (
                 <div
                     key={l.i}
                     className={l.static ? "page_monitoring_layout_column static" : "page_monitoring_layout_column cancelDrageBar"}
-                    style={{
-                        display: "grid",
-                        gridTemplateRows: "30px auto",
-                    }}
-
                 >
                     {/* progress bar in here */}
                     <HeaderComponent
@@ -166,8 +165,9 @@ class MonitoringLayout extends React.Component {
                     />
                     <div
                         style={{
-                            padding: "10px",
-                            backgroundColor: "#202329"
+                            flex: '1 0 auto',
+                            /*safari bug*/
+                            height: 0
                         }}
                     >
                         {items[idx]}
@@ -206,8 +206,8 @@ class MonitoringLayout extends React.Component {
                     cols={{
                         lg: 12, md: 3, sm: 3, xs: 3, xxs: 2
                     }}
-                    rowHeight={(this.props.sizeInfo.height - 90) / 3} // TODO : value 70 is maby height of header
-                    draggableHandle=".react-grid-dragHandleExample"
+                    rowHeight={this.getHeight()} // TODO : value 70 is maby height of header
+                    draggableHandle="#react-grid-dragHandleExample"
                 >
                     {this.generateDOM(this.props.items)}
                 </ResponsiveReactGridLayout>

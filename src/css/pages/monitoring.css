@@ -944,12 +944,16 @@ page_monitoring_dashboard_dev {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     flex: 1 1 0;
     overflow: hidden;
     border: 1px solid #4b4d52;
     border-radius: 5px;
     padding: 0 10px 10px 10px;
+}
+
+.page_monitoring_layout_column .page_monitoring_title_area {
+    min-height: fit-content;
 }
 
 .page_monitoring_title_row {
@@ -959,6 +963,9 @@ page_monitoring_dashboard_dev {
 
 .page_monitoring_title_label {
     display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     flex-grow: 1;
     line-height: 1.2;
     font-size: 16px;
@@ -968,4 +975,47 @@ page_monitoring_dashboard_dev {
 .page_monitoring_title_button {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+}
+
+.page_monitoring_title_button > div {
+    margin-left: 5px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.page_monitoring_cnt_box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.page_monitoring_cnt_region {
+    width: 100%;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.page_monitoring_cnt_name {
+    text-align: center;
+    width: 100%;
+    min-height: 27px;
+    font-size: 11px;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+.page_monitoring_cnt_num {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    font-size: 30px;
+    color: #29a1ff;
+}
+
+.page_monitoring_cnt_num > span {
+    vertical-align: middle
 }

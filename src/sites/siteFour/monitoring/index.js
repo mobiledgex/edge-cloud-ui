@@ -203,7 +203,7 @@ export default connect(
 const makeFilterComponent = (info) => {
 
 };
-const generatWidget = (info) => (
+const generateWidget = (info) => (
     <ChartWidget
         id={info.id}
         title={info.title}
@@ -216,6 +216,7 @@ const generatWidget = (info) => (
         appinsts={info.appinsts}
         page={info.page}
         itemCount={info.itemCount}
+        legend={info.legend}
     />
 );
 
@@ -227,7 +228,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
         appinsts,
     };
     return [
-        generatWidget({
+        generateWidget({
             id: dataType.COUNT_CLUSTER,
             method: serviceMC.getEP().COUNT_CLUSTER,
             chartType: chartType.COUNTER,
@@ -236,9 +237,10 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             filter: null,
             page: "multi",
             itemCount: 3,
+            legend: false,
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             id: dataType.NETWORK_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: chartType.GRAPH,
@@ -247,9 +249,10 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
             page: "multi",
             itemCount: 3,
+            legend: true,
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             id: dataType.FIND_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.MAP,
@@ -257,9 +260,10 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             title: { value: "Find Cloudlets", align: "left" },
             filter: null,
             page: "single",
+            legend: true,
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             id: dataType.REGISTER_CLIENT,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
@@ -267,9 +271,10 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             title: { value: "Rate of Register Client", align: "left" },
             filter: null,
             page: "single",
+            legend: true,
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             id: dataType.FIND_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
@@ -277,9 +282,10 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             title: { value: "Count of Find Cloudlet", align: "left" },
             filter: null,
             page: "single",
+            legend: true,
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             id: dataType.EVENT_CLOUDLET,
             method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: chartType.TABLE,
@@ -287,6 +293,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             title: { value: "Events of Cloudlet", align: "center" },
             filter: null,
             page: "single",
+            legend: true,
             ...defaultProp,
         }),
     ];
@@ -294,42 +301,42 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
 const generateComponentOperator = (self, infos) => {
     const defaultProp = { sizeInfo: infos.size, self, props: infos.props };
     return [
-        generatWidget({
+        generateWidget({
             url: "https://test1",
             chartType: "gauge",
             type: "",
             page: "single",
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             url: "https://test2",
             chartType: "timeseries",
             type: "scatter",
             page: "single",
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             url: "https://test3",
             chartType: "map",
             type: "scatter",
             page: "single",
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             url: "https://test4",
             chartType: "timeseries",
             type: "scatter",
             page: "single",
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             url: "https://test5",
             chartType: "timeseries",
             type: "bar",
             page: "single",
             ...defaultProp,
         }),
-        generatWidget({
+        generateWidget({
             url: "https://test6",
             chartType: "table",
             type: "",

@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import {makeStyles, useTheme, withStyles} from "@material-ui/core/styles";
 import Dots from "material-ui-dots";
 import _ from "lodash";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -16,6 +16,7 @@ import FilteringComponent from "../components/FilteringComponent";
 import * as DataFormats from "../formatter/dataFormats";
 
 let scope = null;
+
 class ChartWidget extends React.Component {
     constructor(props) {
         super(props);
@@ -141,23 +142,24 @@ class ChartWidget extends React.Component {
             activeStep, mapData, clusterCnt, data, data2
         } = this.state;
         // const { size } = this.state;
+        let pagerHeight = 12;
+        let resize = {width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height};
         return (
-            <div
-                className="chart-widget"
-                style={{
-                    height: "100%",
-                    backgroundColor: "transparent"
-                }}
-            >
+            <div style={{height:"100%"}}>
+                <div
+                    className="chart-widget"
+                    style={{
+                        height: resize.height,
+                        backgroundColor: chartType !== ChartType.COUNTER && chartType !==  ChartType.TABLE? "#202329" : "transparent",
+                    }}
+                >
                 {(filter) ? (
-                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <FilteringComponent id={id} data={data} filterInfo={filter} />
-                    </div>
+                    <FilteringComponent id={id} data={data} filterInfo={filter} />
                 ) : null}
                 {chartType === ChartType.GRAPH ? (
                     <TimeSeries
                         id={id}
-                        size={size}
+                        size={resize}
                         type={type}
                         chartType={chartType}
                         data={data}
@@ -172,7 +174,7 @@ class ChartWidget extends React.Component {
                 ) : chartType === ChartType.GAUGE ? (
                     <ContainerHealth
                         id={id}
-                        size={size}
+                        size={resize}
                         type={type}
                         chartType={chartType}
                         title={title.value}
@@ -182,7 +184,7 @@ class ChartWidget extends React.Component {
                 ) : chartType === ChartType.MAP ? (
                     <MatricMapCont
                         id={id}
-                        size={size}
+                        size={resize}
                         type={type}
                         chartType={chartType}
                         data={data}
@@ -197,7 +199,7 @@ class ChartWidget extends React.Component {
                 ) : chartType === ChartType.COUNTER ? (
                     <CounterWidget
                         id={id}
-                        size={size}
+                        size={resize}
                         type={type}
                         chartType={chartType}
                         data={data}
@@ -208,15 +210,14 @@ class ChartWidget extends React.Component {
                         step={activeStep}
                     />
                 ) : (
-                                    <DataGrid id={id} size={size} type={type} chartType={chartType} data={data} title={title.value} method={method} />
-                                )}
+                    <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />)}
+                </div>
                 {page === "multi"
-                    ? (
-                        <div style={{ height: 10 }}>
-                            <DotsMobileStepper id={id} data={data} setActiveStep={this.setActiveStep} />
-                        </div>
-                    ) : null}
-
+                ? (
+                    <div style={{ height: pagerHeight }}>
+                        <DotsMobileStepper id={id} data={data} setActiveStep={this.setActiveStep} />
+                    </div>
+                ) : null}
             </div>
         );
     }
@@ -350,14 +351,41 @@ class Slider extends React.Component {
  * DotsMobileStepper
  */
 
+const Pager = withStyles({
+    dots: {
+        position: 'relative',
+        padding: 0
+    },
+    dotOuter: {
+        width: 8,
+        height: 8,
+        padding: '0 4px',
+        float: 'left',
+        position: 'absolute'
+    },
+    dot: {
+        width: 8,
+        height: 8,
+        background: '#fff',
+        transition: 'all 400ms cubic-bezier(0.4, 0.0, 0.2, 1)',
+        borderRadius: 4,
+        marginTop: '0 !important',
+    }
+})(Dots);
+
 const useStyles = makeStyles({
     root: {
-        maxWidth: 400,
-        flexGrow: 1,
-    },
+        display:'flex',
+        width: '100%',
+        marginTop:4,
+        height: 8,
+        justifyContent: 'center'
+    }
 });
 
+
 export const DotsMobileStepper = props => {
+    const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
 
     const handleNext = (idObject) => {
@@ -366,10 +394,13 @@ export const DotsMobileStepper = props => {
     };
 
     return (
-        <Dots
-            index={activeStep}
-            count={5}
-            onDotClick={index => handleNext({ index })}
-        />
+        <div className={classes.root}>
+            <Pager
+                index={activeStep}
+                count={5}
+                onDotClick={index => handleNext({ index })}
+
+            />
+        </div>
     );
 };

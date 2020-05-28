@@ -8,6 +8,8 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
 import * as serviceMC from "../../../../services/model/serviceMC";
 import * as filterOptions from "../formatter/filterOptions";
+import {Dropdown} from "semantic-ui-react";
+import {ACTION_REGION} from "../../../../container/MexToolbar";
 
 const BootstrapInput = withStyles(theme => ({
     root: {
@@ -46,7 +48,7 @@ const BootstrapInput = withStyles(theme => ({
 
 const useStyles = makeStyles(theme => ({
     margin: {
-        margin: "1px",
+        margin: 3,
     },
 }));
 
@@ -93,7 +95,7 @@ const FilteringComponent = props => {
         ));
     };
     return (
-        <div style={{ height: 25 }}>
+        <div style={{ display:'flex', justifyContent:'flex-end', height:24}}>
             <FormControl className={classes.margin}>
                 <Select
                     labelId="demo-customized-select-label"
