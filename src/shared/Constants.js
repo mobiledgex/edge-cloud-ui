@@ -175,7 +175,7 @@ export const CLASSIFICATION = {
     REGION: 'Region',
 }
 
-export const MEX_PROMETHEUS_APPNAME= 'MEXPrometheusAppName'
+export const MEX_PROMETHEUS_APPNAME = 'MEXPrometheusAppName'
 
 export const APP_INST_USAGE_TYPE_INDEX = {
     TIME: 0,
@@ -314,7 +314,7 @@ export const USAGE_INDEX = {
     IPV4MAX: 14,
 }
 
-export const CONST_CLOUDLET_USAGE = {
+export const CLOUDLET_METRIC_COLUMN = {
     "time": "time",
     "cloudlet": "cloudlet",
     "cloudletorg": "cloudletorg",

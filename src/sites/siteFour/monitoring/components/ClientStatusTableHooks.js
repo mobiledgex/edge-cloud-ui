@@ -17,7 +17,6 @@ type Props = {
 };
 
 export default function ClientStatusTableHooks(props) {
-    //const [clientStatusLoading, setClientStatusLoading] = useState(false);
     useEffect(() => {
     }, [props.clientStatusList]);
 

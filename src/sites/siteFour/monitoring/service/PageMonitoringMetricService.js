@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CONST_CLOUDLET_USAGE, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
@@ -687,13 +687,13 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
                 series.map((item, innerIndex) => {
 
-                    let netSendSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.netSend)]
-                    let netRecvSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.netRecv)]
-                    let vCpuSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.vCpuUsed)]
-                    let memSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.memUsed)]
-                    let diskSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.diskUsed)]
-                    let floatingIpsSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.floatingIpsUsed)]
-                    let ipv4UsedSeriesOne = item[getIndex(columns, CONST_CLOUDLET_USAGE.ipv4Used)]
+                    let netSendSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.netSend)]
+                    let netRecvSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.netRecv)]
+                    let vCpuSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.vCpuUsed)]
+                    let memSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.memUsed)]
+                    let diskSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.diskUsed)]
+                    let floatingIpsSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.floatingIpsUsed)]
+                    let ipv4UsedSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.ipv4Used)]
 
                     netSendSeriesList.push(netSendSeriesOne)
                     netRecvSeriesList.push(netRecvSeriesOne)
