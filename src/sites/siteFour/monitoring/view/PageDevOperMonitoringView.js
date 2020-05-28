@@ -2188,10 +2188,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Cluster
                             </div>
                             <TreeSelect
-                                switcherIcon={(<Icon name='cloud' style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}/>)}
+                                //switcherIcon={(<Icon name='cloud' style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}/>)}
                                 disabled={this.state.loading}
                                 size={'middle'}
                                 showSearch={true}
+                                switcherIcon={<FontAwesomeIcon
+                                    name="cloud" style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}
+                                />}
                                 style={{width: '400px'}}
                                 onSearch={(value) => {
                                     this.setState({
