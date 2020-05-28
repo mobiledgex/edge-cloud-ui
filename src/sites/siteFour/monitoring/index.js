@@ -140,7 +140,7 @@ class MonitoringAdmin extends React.Component {
                     height: "100%"
                 }}
             >
-                <HeaderFiltering title="MONITORING"/>
+                <HeaderFiltering title="MONITORING" />
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
@@ -251,7 +251,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
         }),
         generatWidget({
             id: dataType.FIND_CLOUDLET,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.MAP,
             type: "scatter",
             title: { value: "Find Cloudlets", align: "left" },

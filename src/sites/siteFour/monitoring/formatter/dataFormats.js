@@ -81,7 +81,7 @@ export const parseData = (response) => {
         response.values.map(value => {
             const timeIdx = value.resColumns.indexOf("time");
             const methodIdx = value.resColumns.indexOf("method");
-            const cloudletIdx = value.resColumns.indexOf("cloudlet");
+            const cloudletIdx = value.resColumns.indexOf("foundCloudlet");
             const orgIdx = value.resColumns.indexOf("apporg");
             const reqCount = value.resColumns.indexOf("reqs");
             times = createSeries(value.resSeries, timeIdx);
@@ -120,6 +120,12 @@ const parseCountCluster = response => {
     return Util.groupBy(concatData, "cloudletName");
 }
 
+const parseFindCloudlet = response => {
+    const cloudlet = {};
+    cloudlet.cloudletLocation = { latitude: 1, longitude: 1 };
+    return cloudlet;
+}
+
 export const dataFormatRateRegist = response => {
     return parseData(response[0]);
 };
@@ -131,4 +137,7 @@ export const dataFormatMetricCloudlet = response => {
 };
 export const dataFormatCountCluster = response => {
     return parseCountCluster(response);
+};
+export const dataFormaFindCloudlet = response => {
+    return parseFindCloudlet(response);
 };

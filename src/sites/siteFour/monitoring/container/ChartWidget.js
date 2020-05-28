@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
+import Dots from "material-ui-dots";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import _ from "lodash";
@@ -9,7 +10,7 @@ import { Carousel } from "react-responsive-carousel";
 import ContainerWrapper from "./ContainerWrapper";
 import TimeSeries from "../../../../charts/plotly/timeseries";
 import ContainerHealth from "./ContainerHealth";
-import Map from "../../../../libs/simpleMaps/with-react-motion/index_clusters";
+import MatricMapCont from "./MatricMapCont";
 import CounterWidget from "./CounterWidget";
 import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
@@ -54,7 +55,7 @@ class ChartWidget extends React.Component {
     */
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.data !== nextProps.data) {
-            //console.log("20200521 container widget   == 55 55  == nextProps.data = ", nextProps.data, ": prevState.data= ", prevState.data, ": id = ", nextProps.id);
+            // console.log("20200521 container widget   == 55 55  == nextProps.data = ", nextProps.data, ": prevState.data= ", prevState.data, ": id = ", nextProps.id);
             if (nextProps.id === DataType.NETWORK_CLOUDLET) {
                 if (nextProps.data && nextProps.data[nextProps.id] && nextProps.data[nextProps.id].length > 0) {
                     return { data: nextProps.data };
@@ -73,7 +74,6 @@ class ChartWidget extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.data !== this.props.data) {
-            console.log("20200521 container widget   == 66 6 == prevState= ", prevProps.data, ": props data = ", this.props.data, ": id= ", prevProps.id);
             if (prevProps.id === DataType.COUNT_CLUSTER) {
                 const updatedata = this.props.data[prevProps.id];
                 setTimeout(() => this.setState({ data: updatedata }), 500);
@@ -84,8 +84,12 @@ class ChartWidget extends React.Component {
             //
 
             if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
+                console.log("20200521 container widget   == 66 6 == prevState= ", prevProps.data, ": props data = ", this.props.data, ": id= ", prevProps.id);
                 const updatedata = DataFormats.dataFormatRateRegist(this.props.data[prevProps.id]);
                 this.updateClientData(updatedata);
+                // for map
+                // const cloudletdata = DataFormats.dataFormaFindCloudlet(this.props.data[prevProps.id], this.props.cloudlets);
+                // this.updateFindCloudlet(updatedata);
             }
             //
             if (prevProps.id === DataType.EVENT_CLOUDLET) {
@@ -93,16 +97,19 @@ class ChartWidget extends React.Component {
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
         }
-
     }
 
-    updateMetricData = (uData) => {
+    updateMetricData = uData => {
         setTimeout(() => this.setState({ data: uData }), 500);
     }
 
-    updateClientData = async (uData) => {
+    updateClientData = async uData => {
         console.log("20200521 container widget   == 77 77  ==", uData);
         setTimeout(() => this.setState({ data: uData }), 500);
+    }
+
+    updateFindCloudlet = uData => {
+        // setTimeout(() => this.setState({ mapData: uData }), 500);
     }
 
     // componentWillReceiveProps(prevProps, prevState) {
@@ -131,7 +138,7 @@ class ChartWidget extends React.Component {
 
     render() {
         const {
-            chartType, type, size, title, legendShow, filter, method, page, id, selectedIndex
+            chartType, type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets
         } = this.props;
         const {
             activeStep, mapData, clusterCnt, data, data2
@@ -176,13 +183,14 @@ class ChartWidget extends React.Component {
                         step={activeStep}
                     />
                 ) : chartType === ChartType.MAP ? (
-                    <Map
+                    <MatricMapCont
                         id={id}
                         size={size}
                         type={type}
                         chartType={chartType}
                         data={data}
                         locData={mapData}
+                        cloudlets={cloudlets}
                         id="matricMap"
                         reg="cloudletAndClusterMap"
                         zoomControl={{ center: [0, 0], zoom: 1.5 }}
@@ -357,34 +365,16 @@ export const DotsMobileStepper = props => {
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
 
-    const handleNext = () => {
-        setActiveStep(prevActiveStep => prevActiveStep + 1);
-        props.setActiveStep(activeStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep(prevActiveStep => prevActiveStep - 1);
-        props.setActiveStep(activeStep - 1);
+    const handleNext = (idObject) => {
+        setActiveStep(idObject.index);
+        props.setActiveStep(idObject.index);
     };
 
     return (
-        <MobileStepper
-            variant="dots"
-            steps={3}
-            position="static"
-            activeStep={activeStep}
-            className={classes.root}
-            style={{ backgroundColor: "transparent", height: 30 }}
-            nextButton={(
-                <div size="small" onClick={handleNext} disabled={activeStep === 2}>
-                    {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-                </div>
-            )}
-            backButton={(
-                <div size="small" onClick={handleBack} disabled={activeStep === 0}>
-                    {theme.direction === "rtl" ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                </div>
-            )}
+        <Dots
+            index={activeStep}
+            count={5}
+            onDotClick={index => handleNext({ index })}
         />
     );
 };

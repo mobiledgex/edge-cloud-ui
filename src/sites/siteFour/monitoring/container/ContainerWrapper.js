@@ -164,12 +164,13 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     render() {
-        const { data, chartType, legendShow, selectedIndex } = this.state;
+        const { data, chartType, legendShow, selectedIndex, cloudlets } = this.state;
         return (
             <SizeMe monitorHeight>
                 {({ size }) => (
                     <WrapperComponent
                         {...this.props}
+                        cloudlets={cloudlets}
                         data={data}
                         chartType={chartType}
                         size={size}
