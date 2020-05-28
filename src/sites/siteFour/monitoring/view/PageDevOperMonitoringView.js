@@ -536,13 +536,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let allClusterUsageList = [];
                 let allCloudletUsageList = [];
 
-
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
                     let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                     let startTime = makeCompleteDateTime(date[0]);
                     let endTime = makeCompleteDateTime(date[1]);
+
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
@@ -558,7 +558,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:###############################################
                         cloudletList = await fetchCloudletList();
 
-                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList)
+                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
 
                         console.log(`cloudletEventLogs===>`, allCloudletEventLogList);
                         appInstList = await fetchAppInstList()
@@ -1261,10 +1261,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredUsageList={this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.state.filteredCloudletUsageList : this.state.filteredClusterUsageList}
                         />
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.METHOD_USAGE_COUNT) {
-                    return this.state.loading ? renderPlaceHolderLoader() :
+                    return (
                         <MethodUsageCount
+                            loading={this.state.loading}
                             clientStatusList={this.state.filteredClientStatusList}
                         />
+                    )
+
                 }
             }
 

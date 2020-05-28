@@ -76,9 +76,9 @@ export const defaultLayoutForCloudlet = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//findCloudlet_widget
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//DONUTS
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//
-    /*{i: '7', x: 0, y: 3, w: 1, h: 1, "add": false},
-    {i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},*/
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//
+    {i: '7', x: 3, y: 2, w: 1, h: 1, "add": false}
+    /*,{i: '8', x: 1, y: 3, w: 1, h: 1, "add": false},*/
 ];
 
 export const defaultLayoutMapperForCloudlet = [
@@ -115,14 +115,14 @@ export const defaultLayoutMapperForCloudlet = [
     },
     {
         id: '7',
-        hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
-        graphType: GRID_ITEM_TYPE.BAR,
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG,
     },
-    {
-        id: '8',
-        hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
-        graphType: GRID_ITEM_TYPE.BAR,
-    },
+    /*  {
+          id: '8',
+          hwType: HARDWARE_TYPE_FOR_GRID.floatingIpsUsed,
+          graphType: GRID_ITEM_TYPE.BAR,
+      },*/
 ];
 
 

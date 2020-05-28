@@ -22,7 +22,6 @@ function getWindowDimensions() {
     };
 }
 
-
 export default function CloudletEventLogHooks(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
@@ -107,7 +106,17 @@ export default function CloudletEventLogHooks(props) {
                             [Status]
                         </div>
                     </td>
-
+                    <td padding={'none'} align="center" style={{
+                        color: 'white', flex: .03,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                    }}>
+                        <div>
+                            &nbsp;
+                        </div>
+                    </td>
                 </tr>
                 </thead>
                 }
