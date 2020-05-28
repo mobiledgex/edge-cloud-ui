@@ -558,7 +558,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:###############################################
                         cloudletList = await fetchCloudletList();
 
-                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
+                        let allCloudletEventLogList = []
+                        allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
 
                         console.log(`cloudletEventLogs===>`, allCloudletEventLogList);
                         appInstList = await fetchAppInstList()
