@@ -1,41 +1,32 @@
 import React, { Component } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import Login from '../../components/login';
-// API
-import * as MyAPI from '../../components/utils/MyAPI';
 import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import HeaderGlobalMini from '../../container/headerGlobalMini';
-
-import SiteOne from './siteOne';
+import {PAGE_ORGANIZATIONS} from '../../constant';
 
 import { GridLoader } from "react-spinners";
 import Alert from 'react-s-alert';
-
-
-// const pointMarkers = getMockData(0x97bcd8, 'point');
-let src1 = 'assets/images/globe_1.png'
 let self = null;
+
 class EntranceGlobe extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             data: null,
-            intro: true,
             clickedMarker: null,
             hoveredMarker: null,
             mouseEvent: null,
-            loginState: 'out',
             modalOpen: true,
             loading: false,
             signup: false,
             logined: false
         };
         self = this;
-        this.spuserToken = null;
     }
 
     componentDidMount() {
@@ -44,8 +35,16 @@ class EntranceGlobe extends Component {
             this.setState({ modalOpen: false, logined: true })
 
         }
-        // && this.props.params.mainPath=='/logout'
-        if (this.props.params.mainPath === '/passwordreset') {
+        if (this.props.match.path === '/logout') {
+            localStorage.removeItem(LOCAL_STRAGE_KEY);
+            localStorage.setItem('userInfo', null)
+            localStorage.setItem('sessionData', null)
+            localStorage.removeItem('selectOrg')
+            localStorage.setItem('selectRole', null)
+            localStorage.setItem('selectMenu', null)
+            this.setState({ modalOpen: true, logined: false })
+        }
+        else if (this.props.match.path === '/passwordreset') {
             this.setState({ modalOpen: true })
             this.props.handleChangeLoginMode('resetPass')
         }
@@ -54,9 +53,8 @@ class EntranceGlobe extends Component {
         if (nextProps.loginMode && nextProps.loginMode === 'resetPass') {
             return;
         }
-        /** If alrady logined */
         if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
-            this.goToNext("/site4");
+            this.goToNext(`/site4/pg=${PAGE_ORGANIZATIONS}`);
             return;
         }
 
@@ -64,12 +62,12 @@ class EntranceGlobe extends Component {
             this.setState({ modalOpen: true, logined: true })
         } else if (nextProps.loginMode && nextProps.loginMode === 'forgot') {
             this.setState({ modalOpen: true, logined: false })
+
         } else if (nextProps.loginMode === 'logout') {
             this.setState({ modalOpen: true, logined: false })
         } else if (nextProps.loginMode === 'login') {
             if (nextProps.user.userToken) {
-                /** goto console page 202004-05-04 @Smith */
-                this.goToNext("/site4");
+                this.goToNext(`/site4/pg=${PAGE_ORGANIZATIONS}`);
             }
         }
 
@@ -98,44 +96,8 @@ class EntranceGlobe extends Component {
 
     }
 
-    //go to NEXT
     goToNext(site) {
-        //set organization of localstorage
-        if (site == '/site4') {
-            localStorage.setItem('selectMenu', 'Organizations')
-        }
-        //브라우져 입력창에 주소 기록
-        let mainPath = site;
-        let subPath = 'pg=0';
-        this.props.history.push({
-            pathname: mainPath,
-            search: subPath,
-            state: { some: 'state' }
-        });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-
-    }
-
-    logoutRequest = () => {
-
-        const { user } = this.props
-
-        const param = {
-            login_token: user.userToken
-        }
-
-        MyAPI.logout(param)
-            .then((results) => {
-                localStorage.removeItem(LOCAL_STRAGE_KEY);
-                self.goToNext("/logout")
-            })
-            .catch((err) => {
-                localStorage.removeItem(LOCAL_STRAGE_KEY);
-                self.goToNext("/logout")
-            })
-        this.setState({ modalOpen: true })
-
+        this.props.history.push(site)
     }
 
     handleMarkerMouseover = (mouseEvent, hoveredMarker) => {
@@ -152,62 +114,45 @@ class EntranceGlobe extends Component {
     };
 
     handleClickLogin(mode) {
-        self.logoutRequest();
         self.setState({ modalOpen: true })
         setTimeout(() => self.props.handleChangeLoginMode(mode), 500);
     }
     render() {
-        const { clickedMarker, hoveredMarker, mouseEvent } = this.state;
         return (
-            (this.state.intro) ?
-                <div style={{ width: '100%', height: '100%', overflow: 'hidden' }} className="intro_globe">
-                    {(this.state.modalOpen && !this.state.logined) ?
-                        <Grid style={{ backgroundColor: 'transparent', height: 100, position: 'absolute', top: 20, right: (this.state.modalOpen) ? 50 : 185, alignSelf: 'center' }}>
-                            <Grid.Row columns={2}>
-                                <Grid.Column className="login_btn"><Button onClick={() => this.handleClickLogin('login')}><span>Login</span></Button></Grid.Column>
-                                <Grid.Column className="signup_btn"><Button onClick={() => this.handleClickLogin('signup')}><span>Create an account</span></Button></Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                        : <div></div>}
+            <div style={{ width: '100%', height: '100%', overflow: 'hidden' }} className="intro_globe">
+                {(this.state.modalOpen && !this.state.logined) ?
+                    <Grid style={{ backgroundColor: 'transparent', height: 100, position: 'absolute', top: 20, right: (this.state.modalOpen) ? 50 : 185, alignSelf: 'center' }}>
+                        <Grid.Row columns={2}>
+                            <Grid.Column className="login_btn"><Button onClick={() => this.handleClickLogin('login')}><span>Login</span></Button></Grid.Column>
+                            <Grid.Column className="signup_btn"><Button onClick={() => this.handleClickLogin('signup')}><span>Create an account</span></Button></Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                    : <div></div>}
 
-                    {this.state.logined &&
+                {this.state.logined &&
 
-                        <div className='intro_gnb_header'>
-                            <div className='navbar_right'>
-                                <HeaderGlobalMini handleClickLogin={this.handleClickLogin} email={this.state.email} dimmer={false}></HeaderGlobalMini>
-                            </div>
+                    <div className='intro_gnb_header'>
+                        <div className='navbar_right'>
+                            <HeaderGlobalMini handleClickLogin={this.handleClickLogin} email={this.state.email} dimmer={false}></HeaderGlobalMini>
                         </div>
-                    }
-
-                    {this.state.modalOpen &&
-                        <div className='intro_login'>
-                            <Login></Login>
-                        </div>
-                    }
-                    {!this.state.modalOpen &&
-                        <div className='intro_link'>
-                            <Button disabled key='0' onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
-                            <Button key='1' onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>
-                        </div>
-                    }
-
-
-                    <div className="loadingBox">
-                        <GridLoader
-                            sizeUnit={"px"}
-                            size={20}
-                            color={'#70b2bc'}
-                            loading={this.state.loading}
-                        />
                     </div>
+                }
+
+                {this.state.modalOpen &&
+                    <div className='intro_login'>
+                        <Login location={this.props.location} history={this.props.history}></Login>
+                    </div>
+                }
+
+                <div className="loadingBox">
+                    <GridLoader
+                        sizeUnit={"px"}
+                        size={20}
+                        color={'#70b2bc'}
+                        loading={this.state.loading}
+                    />
                 </div>
-                :
-                <div style={{ width: '100%', height: '100%' }}>
-                    <SiteOne />
-                </div>
-
-
-
+            </div>
         )
     }
 }
@@ -216,10 +161,7 @@ function mapStateToProps(state) {
         user: state.user,
         userInfo: state.userInfo ? state.userInfo : null,
         loginMode: state.loginMode ? state.loginMode.mode : null,
-        alertInfo: {
-            mode: state.alertInfo.mode,
-            msg: state.alertInfo.msg
-        }
+        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg }
     }
 }
 const mapDispatchProps = (dispatch) => {

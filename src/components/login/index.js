@@ -179,42 +179,19 @@ const SuccessMsg = (props) => (
         </Grid.Row>
     </Grid>
 )
-const validate = values => {
-    const error = {};
-    error.email = '';
-    error.name = '';
-    var ema = values.email;
-    var nm = values.name;
-    if (values.email === undefined) {
-        ema = '';
-    }
-    if (values.name === undefined) {
-        nm = '';
-    }
-    if (ema.length < 4 && ema !== '') {
-        error.email = 'too short';
-    }
-
-    return error;
-}
 
 class Login extends Component {
     constructor(props) {
         super(props);
         self = this;
         this.state = {
-            isReady: false,
             focused: false,
-            loginSuccess: false,
             session: 'close',
             uid: '',
             name: '',
-            confirmed: false,
             submit: true,
-            disabled: false,
             redirect: false,
             directLink: '/site1',
-            mainPath: '/', subPath: 'pg=0',
             loginBtnStyle: 'loginBtn',
             email: '',
             password: '',
@@ -227,9 +204,7 @@ class Login extends Component {
             forgotPass: false,
             forgotMessage: false,
             created: false,
-            store: null,
-            resultMsg: '',
-            submitDone: false
+            resultMsg: ''
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -265,17 +240,18 @@ class Login extends Component {
     }
 
     resetPassword = async (password) => {
-        /* @Smith : chage store.resetToken ==> store;*/
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let mcRequest = await serverData.resetPassword(self, { token: store ? store : 'null', password: password })
+        let token = this.props.location.search
+        token = token.substring(token.indexOf('token=')+6)
+        let mcRequest = await serverData.resetPassword(self, { token: token, password: password })
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            self.props.handleAlertInfo('success', mcRequest.response.data.message)
+            this.props.history.push({pathname:'/'})
+            this.props.handleAlertInfo('success', mcRequest.response.data.message)
+            self.props.handleChangeLoginMode('forgotMessage')
             setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
-            self.onProgress(false);
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.values) {
             if (nextProps.submitSucceeded) {
                 this.setState({ email: nextProps.values.email, username: nextProps.values.username })
@@ -370,6 +346,7 @@ class Login extends Component {
     onFocusHandle(value) {
         self.setState({ focused: value })
     }
+
     onSignOut() {
         this.props.requestLogout();
     }
@@ -380,12 +357,9 @@ class Login extends Component {
     onChangeInput = (e, { name, value }) => {
         this.setState({ [name]: value })
     }
+
     onProgress(value) {
         this.props.handleLoadingSpinner(value)
-    }
-
-    receiveToken(mcRequest) {
-
     }
 
     returnSignin() {
@@ -403,11 +377,9 @@ class Login extends Component {
 
                 self.props.handleChangeLoginMode('login')
             } else {
-                if (Alert) {
-                    self.props.handleAlertInfo('error', response.data.message)
-                    if (response.data.message.indexOf('not verified') > -1) {
-                        self.setState({ loginMode: 'verify' })
-                    }
+                self.props.handleAlertInfo('error', response.data.message)
+                if (response.data.message.indexOf('not verified') > -1) {
+                    self.setState({ loginMode: 'verify' })
                 }
             }
         }
@@ -419,7 +391,7 @@ class Login extends Component {
 
     onSendEmail = async (mode) => {
         if (mode === 'verify') {
-            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/verify` })
+            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/#/verify` })
             if (valid) {
                 self.props.handleAlertInfo('success', 'Success')
                 self.setState({ loginMode: 'signup', forgotMessage: true })
@@ -433,7 +405,7 @@ class Login extends Component {
                 email: self.state.email,
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
-                callbackurl: 'https://' + host + '/passwordreset',
+                callbackurl: `https://${host}/#/passwordreset`,
                 clientip: self.clientSysInfo.clientIP
             }
             let valid = await serverData.resetPasswordRequest(self, data)
@@ -524,7 +496,6 @@ const mapStateToProps = state => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data })),
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },

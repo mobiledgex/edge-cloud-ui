@@ -14,8 +14,6 @@ import { Button } from '@material-ui/core';
 import {organizationTutor} from "../../../tutorial";
 
 const orgaSteps = organizationTutor();
-
-
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -38,20 +36,9 @@ class OrganizationList extends React.Component {
     }
 
     /**Action menu block */
-
-    gotoUrl(site, subPath) {
-        let mainPath = site;
-        this.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
-    }
-
     onAudit = (action, data) => {
         let orgName = data[fields.organizationName];
-        this.gotoUrl('/site4', 'pg=audits&org=' + orgName)
+        this.props.history.push({pathname:`/site4/pg=AuditLog&org=${orgName}`})
     }
 
     onDelete = (data, success) => {

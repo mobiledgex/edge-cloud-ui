@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {Field, initialize, reduxForm} from "redux-form";
-import {Form, Input, Message} from "semantic-ui-react";
+import {Form} from "semantic-ui-react";
 import './styles.css';
 
 const validate = values => {
@@ -31,52 +31,6 @@ const validate = values => {
     return errors
 }
 
-const renderCheckbox = field => (
-    <Form.Checkbox
-        checked={!!field.input.value}
-        name={field.input.name}
-        label={field.label}
-        onChange={(e, { checked }) => field.input.onChange(checked)}
-    />
-);
-
-const renderRadio = field => (
-    <Form.Radio
-        checked={field.input.value === field.radioValue}
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { checked }) => field.input.onChange(field.radioValue)}
-    />
-);
-
-const renderSelect = field => (
-    <Form.Select
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        options={field.options}
-        placeholder={field.placeholder}
-        value={field.input.value}
-    />
-);
-
-const renderTextArea = field => (
-    <Form.TextArea
-        {...field.input}
-        label={field.label}
-        placeholder={field.placeholder}
-    />
-);
-const renderInputNum = field => (
-    <Form.Field
-        {...field.input}
-        type={field.type}
-        // placeholder={field.placeholder}
-    >
-        <label>{field.label}</label>
-        <Input type="number"></Input>
-    </Form.Field>
-);
 const renderInput = field => (
     <div>
         <Form.Input

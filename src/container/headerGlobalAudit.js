@@ -35,7 +35,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.location && this.props.location.search) {
+        if (this.props.location) {
             this.readyToData(this.props.location.search)
         }
     }
@@ -77,12 +77,16 @@ class headerGlobalAudit extends React.Component {
         this.setState({devData: []})
         this.setState({page: subPath, OrganizationName: subParam})
         this.props.handleLoadingSpinner(true);
-        // get audits data
         this.getDataAudit(subParam);
     }
 
     componentWillUnmount() {
         clearInterval(this.interval);
+    }
+
+    makeOga = (logName) => {
+        let lastSub = logName.substring(logName.lastIndexOf('=') + 1);
+        return lastSub
     }
 
     getDataAudit = async (orgName) => {
@@ -243,20 +247,12 @@ class headerGlobalAudit extends React.Component {
 }
 
 function mapStateToProps(state) {
-    return {
-        user: state.user,
-        userInfo: state.userInfo ? state.userInfo : null,
-    }
+    return {}
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
-        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
+        handleLoadingSpinner: (data) => {dispatch(actions.loadingSpinner(data))},
     };
 };
 

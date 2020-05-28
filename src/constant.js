@@ -61,6 +61,20 @@ export const POWER_STATE_REBOOTING = 'Rebooting'
 export const POWER_STATE_REBOOT = 'Reboot'
 export const POWER_STATE_ERROR = 'Error'
 
+export const PAGE_ORGANIZATIONS = 'Organizations'
+export const PAGE_USER_ROLES = 'UserRoles'
+export const PAGE_ACCOUNTS = 'Accounts'
+export const PAGE_CLOUDLETS = 'Cloudlets'
+export const PAGE_CLOUDLET_POOLS = 'CloudletPools'
+export const PAGE_FLAVORS = 'Flavors'
+export const PAGE_CLUSTER_INSTANCES = 'ClusterInstances'
+export const PAGE_APPS = 'Apps'
+export const PAGE_APP_INSTANCES = 'AppInstances'
+export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
+export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
+export const PAGE_MONITORING = 'Monitoring'
+export const PAGE_AUDIT_LOGS = 'AuditLog'
+
 export const PowerState = (id) => {
     switch (id) {
         case 0:

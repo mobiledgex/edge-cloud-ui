@@ -101,24 +101,24 @@ const useStyles = makeStyles(theme => ({
 
 
 const options = [
-    {label: 'Organizations', icon: <SupervisorAccountOutlinedIcon/>, pg: 0, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
-    {label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon/>, pg: 1, page: <SiteFourPageUser/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
-    {label: 'Accounts', icon: <DvrOutlinedIcon/>, pg: 101, page: <SiteFourPageAccount/>, roles: ['AdminManager']},
-    {divider: true},
-    {label: 'Cloudlets', icon: <CloudQueueOutlinedIcon/>, pg: 2, page: <SiteFourPageCloudlet/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
-    {label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon/>, pg: 7, page: <SiteFourPageCloudletPool/>, roles: [constant.ADMIN_MANAGER]},
-    {label: 'Flavors', icon: <FreeBreakfastOutlinedIcon/>, pg: 3, page: <SiteFourPageFlavor/>, roles: ['AdminManager', 'DeveloperManager']},
-    {label: 'Cluster Instances', icon: <StorageOutlinedIcon/>, pg: 4, page: <SiteFourPageClusterInst/>, roles: ['AdminManager', 'DeveloperManager']},
-    {label: 'Apps', icon: <AppsOutlinedIcon/>, pg: 5, page: <SiteFourPageApps/>, roles: ['AdminManager', 'DeveloperManager']},
-    {label: 'App Instances', icon: <GamesOutlinedIcon/>, pg: 6, page: <SiteFourPageAppInst/>, roles: ['AdminManager', 'DeveloperManager']},
+    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
+    { divider: true },
+    { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, pageId: constant.PAGE_CLOUDLETS, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, pageId: constant.PAGE_CLOUDLET_POOLS, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN_MANAGER] },
+    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, pageId: constant.PAGE_FLAVORS, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, pageId: constant.PAGE_CLUSTER_INSTANCES, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, pageId: constant.PAGE_APPS, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, pageId: constant.PAGE_APP_INSTANCES, page: <SiteFourPageAppInst />, roles: ['AdminManager', 'DeveloperManager'] },
     {
-        label: 'Policies', icon: <TrackChangesIcon/>, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
-            {label: 'Auto Provisioning Policy', icon: <GroupWorkIcon/>, pg: 8, page: <AutoProvPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
-            {label: 'Privacy Policy', icon: <PolicyIcon/>, pg: 9, page: <PrivacyPolicy/>, roles: ['AdminManager', 'DeveloperManager']},
+        label: 'Policies', icon: <TrackChangesIcon />, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
+            { label: 'Auto Provisioning Policy', icon: <GroupWorkIcon />, pg: 8, pageId: constant.PAGE_AUTO_PROVISIONING_POLICY, page: <AutoProvPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+            { label: 'Privacy Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_PRIVACY_POLICY, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
         ]
     },
-    {label: 'Monitoring', icon: <TvOutlinedIcon/>, pg: 'Monitoring', page: <PageMonitoringMain/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']},
-    {label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon/>, pg: 'audits', page: <SiteFourPageAudits/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager']}
+    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', pageId: constant.PAGE_AUDIT_LOGS, page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
 ]
 
 const defaultPage = (options) => {
@@ -130,7 +130,7 @@ const defaultPage = (options) => {
         if (option.subOptions) {
             page = defaultPage(option.subOptions)
         }
-        else if (currentPage.includes('pg=' + option.pg)) {
+        else if (currentPage.includes('pg=' + option.pageId)) {
             page = option.page
             break;
         }
@@ -173,8 +173,11 @@ export default function MiniDrawer(props) {
     }
 
     const onOptionClick = (option, i) => {
+        localStorage.setItem('currentPage', option.page)
+        props.history.push({
+            pathname: `/site4/pg=${option.pageId}`
+        });
         setPage(option.page)
-        props.onOptionClick(i, option.label, option.pg, localStorage.selectRole)
     }
 
     const showOptionForm = (i, option) => {
@@ -300,7 +303,7 @@ export default function MiniDrawer(props) {
             <React.Fragment>
                 <CssBaseline/>
                 <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
-                           helpClick={props.helpClick} gotoUrl={props.gotoUrl} viewMode={props.viewMode}/>
+                           helpClick={props.helpClick} viewMode={props.viewMode}/>
             </React.Fragment>
             }
             <Drawer

@@ -140,11 +140,6 @@ class CreateAccontForm extends Component {
             </Grid.Column>
             <Grid.Column textAlign='left' width={16}>
               <label>Role</label>
-              {/* <Input
-                  style={{width: '100%'}}
-                  name='role'
-                  value='superuser'
-                  placeholder='superuser' /> */}
               <Select
                 placeholder='role'
                 name='role'

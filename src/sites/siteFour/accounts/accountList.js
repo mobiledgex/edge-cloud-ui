@@ -75,7 +75,7 @@ class OrganizationList extends React.Component {
     }
 
     onSendEmail = async (username, email) => {
-        let data = { username: username, email: email, callbackurl: `https://${window.location.host}/verify` }
+        let data = { username: username, email: email, callbackurl: `https://${window.location.host}/#/verify` }
         if (await serverData.sendVerify(this, data)) {
             this.props.handleAlertInfo('success', 'Verification email sent')
         }

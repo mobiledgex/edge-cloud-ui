@@ -10,6 +10,7 @@ import * as actions from '../../actions';
 import {GridLoader} from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
 import * as serverData from '../../services/model/serverData';
+import * as constant from '../../constant';
 import {MonitoringTutor} from '../../tutorial';
 import Alert from 'react-s-alert';
 import '../../css/introjs.css';
@@ -30,7 +31,6 @@ class SiteFour extends React.Component {
             email: store ? store.email : 'Administrator',
             role: '',
             userToken: null,
-            OrganizationName: '',
             adminShow: false,
             menuClick: false,
             learned: false,
@@ -42,29 +42,6 @@ class SiteFour extends React.Component {
             userRole:null,
             selectRole: ''
         };
-    }
-
-    gotoUrl(site, subPath) {
-        let mainPath = site;
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
-        _self.setState({page: subPath})
-    }
-
-    handleItemClick(id, label, pg, role) {
-        localStorage.setItem('selectMenu', label)
-        _self.setState({menuClick: true})
-        _self.props.history.push({
-            pathname: '/site4',
-            search: "pg=" + pg
-        });
-        _self.props.history.location.search = "pg=" + pg;
-        _self.props.handleChangeStep(pg)
-        _self.setState({page: 'pg=' + pg, activeItem: label, headerTitle: label})
     }
 
     controllerOptions(option) {
@@ -111,7 +88,7 @@ class SiteFour extends React.Component {
         let currentStep = this.props.ViewMode ? this.props.ViewMode : null;
 
         if( currentStep ){ enable = true; }
-        if (this.props.params.subPath === "pg=Monitoring") {
+        if (this.props.match.params.pageId === `pg=${constant.PAGE_MONITORING}`) {
             if (localStorage.selectRole === 'AdminManager') {
                 currentStep = monitoringSteps.stepsMonitoring;
             } else if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
@@ -126,35 +103,7 @@ class SiteFour extends React.Component {
         }
     }
 
-    UNSAFE_componentWillMount() {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        _self.setState({
-            activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
-            headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'
-        })
-
-        if (store) {
-            _self.getAdminInfo(store.userToken);
-        } else {
-            _self.gotoUrl('/logout')
-        }
-        _self.props.handleViewMode( null );
-    }
-
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.params && nextProps.params.subPath) {
-            let subPaths = nextProps.params.subPath;
-            let subPath = '';
-            let subParam = '';
-            if (subPaths.indexOf('&org=')) {
-                let paths = subPaths.split('&')
-                subPath = paths[0];
-                subParam = paths[1];
-            }
-            _self.setState({page: subPath, OrganizationName: subParam})
-
-        }
-
         if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if (nextProps.alertInfo.mode === 'success') {
@@ -234,7 +183,7 @@ class SiteFour extends React.Component {
                             loading={_self.props.loadingSpinner}
                         />
                     </div> : null}
-                <SideNav onOptionClick={_self.handleItemClick} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} gotoUrl={_self.gotoUrl} viewMode={_self.props.ViewMode} userRole={this.state.userRole}/>
+                <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} viewMode={_self.props.ViewMode} userRole={this.state.userRole}/>
             </div>
         );
     }

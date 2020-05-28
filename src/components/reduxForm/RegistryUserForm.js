@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {Field, initialize, reduxForm} from "redux-form";
-import {Form, Input, Message} from "semantic-ui-react";
+import {Form, Input} from "semantic-ui-react";
 import './styles.css';
 
 
@@ -108,6 +108,7 @@ class RegistryUserForm extends React.Component{
         this.usernameValue = null;
         this.emailValue = null
     }
+
     onHandleSubmit =(a,b)=> {
         //if  any has error as validation
         this.props.handleSubmit();
@@ -128,17 +129,15 @@ class RegistryUserForm extends React.Component{
         if(a.target.name === 'email') this.emailValue = null;
         localStorage.setItem('userInfo',null);
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         this.setState({lastProps:nextProps})
-        //TODO : 20190906 이전 프롭스 다시 받아서 input filed에 다시 넣기
-
         let userInfo = localStorage.getItem('userInfo');
         let userInfoObj = (userInfo)?JSON.parse(userInfo):null;
         if(userInfoObj) {
             this.usernameValue = userInfoObj.username;
             this.emailValue = userInfoObj.email;
         }
-
     }
 
     componentDidMount() {
@@ -146,7 +145,6 @@ class RegistryUserForm extends React.Component{
     }
 
     render() {
-        const { handleSubmit, reset } = this.props;
 
         return (
             <Fragment>

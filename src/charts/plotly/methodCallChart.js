@@ -246,7 +246,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeCity: (data) => { dispatch(actions.changeCity(data)) },
-        handleInjectData: (data) => { dispatch(actions.injectNetworkData(data))},
     };
 };
 

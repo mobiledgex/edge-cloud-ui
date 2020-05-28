@@ -1,26 +1,15 @@
 import React from 'react';
-import {Dropdown, Icon, Image, Popup} from 'semantic-ui-react';
+import {Dropdown} from 'semantic-ui-react';
 import {ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails} from '@material-ui/core';
 import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import PopProfileViewer from '../container/popProfileViewer';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import {CircularProgress, IconButton, Step, StepLabel, Stepper, Button} from '@material-ui/core';
+import {IconButton, Step, StepLabel, Stepper, Button} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Calendar from '../components/horizontal_calendar/Calendar';
 import moment from "moment";
-import type Moment from "moment";
-import {green, red} from "@material-ui/core/colors";
-import ReactJson from "react-json-view";
-import OfflinePinIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import CheckIcon from '@material-ui/icons/Check';
-import {
-    StyleSheet,
-    View,
-} from 'react-native-web';
 
 let _self = null;
 const options = [
@@ -200,7 +189,7 @@ class HeaderAuditLog extends React.Component {
         });
     };
 
-    onSelectDate = (date: Moment, index) => {
+    onSelectDate = (date, index) => {
         if(index !== (-1) && index < 61){
           this.handleDateChange(date, index)
         }
@@ -447,8 +436,6 @@ function mapStateToProps(state) {
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
-        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleLoadingSpinner: (data) => {

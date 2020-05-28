@@ -30,23 +30,24 @@ class SiteFourPageAudits extends React.Component {
         this._devData = [];
     }
 
-    readyToData(subPaths) {
-        let subPath = '';
-        let subParam = null;
-        if (subPaths.indexOf('&org=') > -1) {
-            let paths = subPaths.split('&')
-            subPath = paths[0];
-            subParam = paths[1];
+    readyToData() {
+        let orgName = this.props.match.params.pageId
+        if(orgName.includes('&org'))
+        {
+            orgName = orgName.substring(orgName.indexOf('&org=')+ 5)
+        }
+        else
+        {
+            orgName = undefined
         }
         this.setState({devData: []})
-        this.setState({page: subPath, OrganizationName: subParam})
         this.props.handleLoadingSpinner(true);
-        this.getDataAudit(subParam);
+        this.getDataAudit(orgName);
     }
 
     refreshData = ()=>
     {
-        if (this.props.location && this.props.location.search) {
+        if (this.props.location) {
             this.readyToData(this.props.location.search)
         }
     }
@@ -58,9 +59,7 @@ class SiteFourPageAudits extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.location && this.props.location.search) {
-            this.readyToData(this.props.location.search)
-        }
+        this.readyToData()
     }
 
     componentWillUnmount() {
@@ -68,7 +67,7 @@ class SiteFourPageAudits extends React.Component {
     }
 
 
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
 
         this.setState({bodyHeight: (window.innerHeight - this.headerH)})
         this.setState({contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap})
@@ -138,7 +137,7 @@ class SiteFourPageAudits extends React.Component {
         this.setState({devData: []})
         let mcRequest = undefined
         if (orgName) {
-            mcRequest = await serverData.showAuditOrg(_self, {"org": this.makeOga(orgName)})
+            mcRequest = await serverData.showAuditOrg(_self, {"org": orgName})
         } else {
             mcRequest = await serverData.showSelf(_self, {})
         }
@@ -169,7 +168,6 @@ class SiteFourPageAudits extends React.Component {
             newCheckData = JSON.parse(checkData);
 
             if (newCheckData) {
-                //만약 이미 체크된 오딧 이면 배열에 넣지 않는다
                 if (newCheckData.findIndex(k => k == selectedAudit.traceid) === -1) {
                     newCheckData.push(selectedAudit.traceid)
                 } else {
