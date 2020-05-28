@@ -41,26 +41,10 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -95,18 +79,12 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogListHooks from "../components/AppInstEventLogListHooks";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
     CLOUDLET_HW_MAPPER_KEY,
     CLOUDLET_LAYOUT_KEY,
-    CLUSTER_FOR_OPER_HW_MAPPER_KEY,
     CLUSTER_FOR_OPER_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
@@ -114,10 +92,8 @@ import {
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
     defaultLayoutForCluster,
-    defaultLayoutForClusterForOper,
     defaultLayoutMapperForAppInst,
     defaultLayoutMapperForCloudlet,
-    defaultLayoutMapperForClusterForOper,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster,
@@ -131,7 +107,6 @@ import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
-import BarAndLineChartContainer from "../components/BarAndLineChartContainer";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -313,6 +288,7 @@ type PageDevMonitoringState = {
     currentIndex: number,
     hwListForCloudlet: any,
     currentColorIndex: number,
+    loadingForClientStatus: boolean,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -336,38 +312,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let clusterLayoutMapper = getUserId() + CLUSTER_HW_MAPPER_KEY
                 let appInstLayout = getUserId() + APPINST_LAYOUT_KEY
                 let appInstLayoutMapper = getUserId() + APPINST_HW_MAPPER_KEY
-
                 let cloudletLayout = getUserId() + CLOUDLET_LAYOUT_KEY
                 let cloudletlayoutMapper = getUserId() + CLOUDLET_HW_MAPPER_KEY
-
-                let clusterOperLayout = getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY
-                let clusterOperLayoutMapper = getUserId() + CLUSTER_FOR_OPER_HW_MAPPER_KEY
-
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
 
                 //@fixme: DELETE THEME COLOR
-                reactLocalStorage.remove(clusterLayout)
-                reactLocalStorage.remove(clusterLayoutMapper)
-
+                /*reactLocalStorage.remove(clusterLayout)
+                reactLocalStorage.remove(clusterLayoutMapper)*/
 
                 this.state = {
-                    //todo:dev layout
                     //todo:dev layout
                     layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
                     layoutMapperCluster: isEmpty(reactLocalStorage.get(clusterLayoutMapper)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterLayoutMapper),
                     layoutAppInst: isEmpty(reactLocalStorage.get(appInstLayout)) ? defaultLayoutForAppInst : reactLocalStorage.getObject(appInstLayout),
                     layoutMapperAppInst: isEmpty(reactLocalStorage.get(appInstLayoutMapper)) ? defaultLayoutMapperForAppInst : reactLocalStorage.getObject(appInstLayoutMapper),
-
-
-                    //todo:oper layout
                     //todo:oper layout
                     layoutCloudlet: isEmpty(reactLocalStorage.get(cloudletLayout)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayout),
                     layoutMapperCloudlet: isEmpty(reactLocalStorage.get(cloudletlayoutMapper)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletlayoutMapper),
-                    layoutClusterForOper: isEmpty(reactLocalStorage.get(clusterOperLayout)) ? defaultLayoutForClusterForOper : reactLocalStorage.getObject(clusterOperLayout),
-                    layoutMapperClusterForOper: isEmpty(reactLocalStorage.get(clusterOperLayoutMapper)) ? defaultLayoutMapperForClusterForOper : reactLocalStorage.getObject(clusterOperLayoutMapper),
-
-
                     date: '',
                     time: '',
                     dateTime: '',
@@ -375,7 +337,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstanceListGroupByCloudlet: [],
                     loading: false,
                     loading0: false,
-
                     clusterInstanceGroupList: [],
                     allClusterList: [],
                     filteredCpuUsageList: [],
@@ -529,6 +490,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentOperLevel: CLASSIFICATION.CLOUDLET,
                     currentIndex: 0,
                     currentColorIndex: 0,
+                    loadingForClientStatus: false,
                 };
             }
 
@@ -545,7 +507,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     bubbleChartLoader: true,
                     selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
                     mapLoading: true,
-                    dropdownRequestLoading: true
+                    dropdownRequestLoading: true,
+                    loadingForClientStatus: true,
 
                 })
                 await this.loadInitData();
@@ -567,28 +530,34 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let allClusterUsageList = [];
                 let allCloudletUsageList = [];
 
+
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
+                    let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                    let startTime = makeCompleteDateTime(date[0]);
+                    let endTime = makeCompleteDateTime(date[1]);
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
-                    //todo:realdata
+                    //todo:DEVELOPER
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
                         let newPromiseList = await Promise.all(promiseList);
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
-                    } else {//TODO:OPERATOR
+                    } else {
+                        //TODO:###############################################
+                        //TODO:OPERATOR
+                        //TODO:###############################################
                         cloudletList = await fetchCloudletList();
-                    }
-                    if (this.state.userType.includes(USER_TYPE.OPERATOR)) {
-                        let clientStatusList = await getClientStatusList(appInstList);
+                        appInstList = await fetchAppInstList()
+                        let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
                             allClientStatusList: clientStatusList,
                             filteredClientStatusList: clientStatusList,
-                            loading: true,
+                            loadingForClientStatus: false,
                         })
                     }
 
@@ -608,7 +577,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
-                    //todo: realdata
+                    //todo: DEVELOPER
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList2.push(getAllClusterEventLogList(clusterList))
                         promiseList2.push(getAllAppInstEventLogs());
@@ -618,10 +587,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
                     } else {//TODO:OPERATOR
-                        let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
-                        let startTime = makeCompleteDateTime(date[0]);
-                        let endTime = makeCompleteDateTime(date[1]);
-
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                     }
 
@@ -658,7 +623,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         maxCpu: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumCpuUsage)),
                         maxMem: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumMemUsage)),
                         isRequesting: false,
-                        ///@desc: ----------cloudletList--------------
                         allCloudletUsageList: allCloudletUsageList,
                         filteredCloudletUsageList: allCloudletUsageList,
                         cloudletDropdownList: cloudletDropdownList,
@@ -746,7 +710,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             convertToClassification(pClassification) {
                 if (pClassification === CLASSIFICATION.APPINST) {
-                    return "App Instance"
+                    return CLASSIFICATION.APP_INSTANCE//"App Instance"
                 } else {
                     return pClassification
                 }
@@ -869,8 +833,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -943,7 +907,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({
                         layoutCluster: removedLayout,
                     });
-
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     let removedLayout = _.reject(this.state.layoutCloudlet, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
@@ -1130,7 +1093,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     return (
-                        this.state.loading ? renderPlaceHolderLoader() :
                             <LineChartContainer
                                 isResizeComplete={this.state.isResizeComplete}
                                 loading={this.state.loading}
@@ -1138,6 +1100,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 parent={this}
                                 pHardwareType={pHwType}
                                 chartDataSet={chartDataSets}
+                                currentColorIndex={this.state.currentColorIndex}
                             />
                     )
 
@@ -1770,6 +1733,39 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderStreamSwitch() {
+                return (
+                    <div style={PageMonitoringStyles.streamSwitchDiv}>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            {/*{this.state.currentClassification}*/} Stream
+                        </div>
+                        <div style={PageMonitoringStyles.listItemTitle}>
+                            <CustomSwitch
+                                size="small"
+                                checked={this.state.isStream}
+                                color="primary"
+                                onChange={async () => {
+                                    await this.setState({isStream: !this.state.isStream});
+                                    if (this.state.isStream === false) {
+                                        clearInterval(this.intervalForAppInst)
+                                        clearInterval(this.intervalForCluster)
+                                        this.setState({isStream: false})
+                                    } else {
+                                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster)
+                                        } else {
+                                            await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
+                                        }
+                                        this.setState({isStream: true})
+                                    }
+                                }}
+
+                            />
+                        </div>
+                    </div>
+                )
+            }
+
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne) => {
                 try {
@@ -1789,7 +1785,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
                             return item.CloudletName === currentCloudletOne
                         })
-
 
                         let filteredAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => {
                             return item.Cloudlet === currentCloudletOne
@@ -1829,38 +1824,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            renderStreamSwitch() {
-                return (
-                    <div style={PageMonitoringStyles.streamSwitchDiv}>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            {/*{this.state.currentClassification}*/} Stream
-                        </div>
-                        <div style={PageMonitoringStyles.listItemTitle}>
-                            <CustomSwitch
-                                size="small"
-                                checked={this.state.isStream}
-                                color="primary"
-                                onChange={async () => {
-                                    await this.setState({isStream: !this.state.isStream});
-                                    if (this.state.isStream === false) {
-                                        clearInterval(this.intervalForAppInst)
-                                        clearInterval(this.intervalForCluster)
-                                        this.setState({isStream: false})
-                                    } else {
-                                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster)
-                                        } else {
-                                            await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
-                                        }
-                                        this.setState({isStream: true})
-                                    }
-                                }}
-
-                            />
-                        </div>
-                    </div>
-                )
-            }
 
             async handleOnChangeClusterDropdown(pClusterCloudletOne) {
                 if (this.state.isStream === false) {
@@ -2082,21 +2045,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async filterUsageListByDateForCloudlet() {
                 try {
                     if (this.state.startTime !== '' && this.state.endTime !== '') {
+                        this.setState({
+                            loading: true,
+                            loadingForClientStatus: true,
+                            filteredClientStatusList: [],
+                        })
                         let startTime = makeCompleteDateTime(this.state.startTime);
                         let endTime = makeCompleteDateTime(this.state.endTime);
-                        this.setState({loading: true})
                         let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                        let clientStatusList = await getClientStatusList(await fetchAppInstList(), startTime, endTime);
+
                         this.setState({
                             filteredCloudletUsageList: usageList,
                             allCloudletUsageList: usageList,
-                            loading: false
+                            filteredClientStatusList: clientStatusList,
+                            loading: false,
+                            loadingForClientStatus: false,
                         })
-                        //this.filterByClassification(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
                     }
                 } catch (e) {
-
+                    throw new Error(e)
                 }
-
             }
 
 
