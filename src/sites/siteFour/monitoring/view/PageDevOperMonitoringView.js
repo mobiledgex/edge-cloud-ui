@@ -1093,7 +1093,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     return (
-                        this.state.loading ? renderPlaceHolderLoader() :
                             <LineChartContainer
                                 isResizeComplete={this.state.isResizeComplete}
                                 loading={this.state.loading}

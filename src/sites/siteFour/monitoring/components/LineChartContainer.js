@@ -4,6 +4,7 @@ import {convertToClassification, makeGradientLineChartData, makeLineChartOptions
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
+import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -111,7 +112,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' style={{fontFamily: 'Roboto'}}>
-                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.makeToShortTitle(this.state.pHardwareType)}
+                            {convertToClassification(this.props.currentClassification)} {this.props.pHardwareType !== undefined && this.makeToShortTitle(this.props.pHardwareType)}
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
@@ -120,11 +121,13 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             width: '99%',
                             height: '99%'
                         }}>
-                            <Line
-                                data={this.state.chartDataSet}
-                                options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
-                                //options={simpleGraphOptions}
-                            />
+                            {this.props.parent.state.loading ? renderPlaceHolderLoader()
+                                : <Line
+                                    data={this.state.chartDataSet}
+                                    options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
+                                    //options={simpleGraphOptions}
+                                />
+                            }
                         </div>
                     </div>
                 </div>
