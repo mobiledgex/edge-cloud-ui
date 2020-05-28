@@ -28,10 +28,10 @@ export const HARDWARE_TYPE_FOR_GRID = {
     FLOATING_IPS: 'FLOATING_IPS',
     IPV4: 'IPV4',
 
-    ////////////
     UDP: 'UDP',
     TCP: 'TCP',
     NETWORK: 'NETWORK',
+
     //UDP
     UDPSENT: 'UDPSENT',
     UDPRECV: 'UDPRECV',
@@ -54,7 +54,7 @@ export const HARDWARE_TYPE_FOR_GRID = {
     ACTIVE_CONNECTION: 'ACTIVE_CONNECTION',//12
     HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
     ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
-
+    //For Cloudlet
     vCpuUsed: 'vCpuUsed',
     memUsed: 'memUsed',
     diskUsed: 'diskUsed',
