@@ -922,6 +922,9 @@ page_monitoring_dashboard_dev {
     border-style: solid;
     border-color: rgba(255,255,255,.2);
 }
+.page_monitoring_location .page_monitoring_location_button:hover {
+    border-color: rgba(255, 255, 255, 0.08)
+}
 
 .page_monitoring_location .page_monitoring_location_text {
     display: flex;
@@ -938,6 +941,7 @@ page_monitoring_dashboard_dev {
     color: rgba(255,255,255,.6);
     align-items: center;
     border-radius: 0 4px 4px 0;
+    font-size: 16px;
 }
 
 .page_monitoring_layout_column {
