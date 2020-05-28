@@ -108,7 +108,7 @@ import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
-import CloudletEventLogHooks from "../components/CloudletEventLogHooks";
+import CloudletEventLogListHooks from "../components/CloudletEventLogListHooks";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -1227,7 +1227,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG) {//TODO: CLOUDLET_EVENT_LOG
                     return (
-                        <CloudletEventLogHooks
+                        <CloudletEventLogListHooks
                             currentCloudlet={this.state.currentCloudLet}
                             parent={this}
                             handleCloudletDropdown={this.handleOnChangeCloudletDropdown}

@@ -22,7 +22,7 @@ function getWindowDimensions() {
     };
 }
 
-export default function CloudletEventLogHooks(props) {
+export default function CloudletEventLogListHooks(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
 
