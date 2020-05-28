@@ -107,7 +107,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 notification.success({
                     placement: 'bottomLeft',
                     duration: 3,
-                    description: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
+                    description: this.state.currentHwType !== undefined ? `${this.state.currentItemType} [${this.state.currentHwType}] item added` : `${this.state.currentItemType}  item added`,
                     style: {fontSize: 9}
                 });
             }
@@ -205,56 +205,30 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
     }
 
     renderEventLogRadio() {
-        //DESC:클라우드렛인 경우
-        //DESC:클라우드렛인 경우
-        //DESC:클라우드렛인 경우
-        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-            return (
-                <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                    <div
-                        onClick={() => {
-                            this.setState({
-                                currentItemType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
-                                isShowHWDropDown: false,
-                                isShowEventLog: true,
-                            })
-                        }}
-                    >
-                        <Center>
-                            <ReactSVG src={require('../images/chart/Grid.svg')}
-                                      style={PageMonitoringStyles.chartIcon}
-                                      loading={() => (<Center><CircularProgress/></Center>)}/>
-                        </Center>
-                    </div>
-                    <div className='page_monitoring_form_radio_label'>
-                        <Radio value={GRID_ITEM_TYPE.CLIENT_STATUS_TABLE}>Table</Radio>
-                    </div>
-                </ChartIconOuterDiv>
-            )
-        } else {//TODO; for appinst , cluster.
-            return (
-                <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
-                    <div
-                        onClick={() => {
-                            this.setState({
-                                currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-                                isShowHWDropDown: false,
-                                isShowEventLog: true,
-                            })
-                        }}
-                    >
-                        <Center>
-                            <ReactSVG src={require('../images/chart/Grid.svg')}
-                                      style={PageMonitoringStyles.chartIcon}
-                                      loading={() => (<Center><CircularProgress/></Center>)}/>
-                        </Center>
-                    </div>
-                    <div className='page_monitoring_form_radio_label'>
-                        <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
-                    </div>
-                </ChartIconOuterDiv>
-            )
-        }
+
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            //DESC:when 클라우드렛, cluster , appInst
+                            currentItemType: this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? GRID_ITEM_TYPE.CLIENT_STATUS_TABLE : GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+                            isShowHWDropDown: false,
+                            isShowEventLog: true,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/Grid.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.CLIENT_STATUS_TABLE}>Table</Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
     }
 
 
@@ -513,7 +487,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*@todo:###############################*/}
                         {this.state.isShowHWDropDown && this.renderHwDropdown(hwDropdownChildren)}
                         {this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderEventLogSelect()
-
                             : this.renderEventLogSelectForCloudlet()
                         }
                         {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&

@@ -41,7 +41,7 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeCloudlet, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
@@ -50,6 +50,7 @@ import {
     fetchCloudletList,
     fetchClusterList,
     getAllAppInstEventLogs,
+    getAllCloudletEventLogs,
     getAllClusterEventLogList,
     getAppLevelUsageList,
     getClientStatusList,
@@ -76,7 +77,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForCluster from "../components/PerformanceSummaryForCluster";
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
-import AppInstEventLogListHooks from "../components/AppInstEventLogListHooks";
+import AppInstEventLogHooks from "../components/AppInstEventLogListHooks";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
 import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
@@ -107,6 +108,7 @@ import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
+import CloudletEventLogHooks from "../components/CloudletEventLogHooks";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -289,6 +291,8 @@ type PageDevMonitoringState = {
     hwListForCloudlet: any,
     currentColorIndex: number,
     loadingForClientStatus: boolean,
+    allCloudletEventLogList: any,
+    filteredCloudletEventLogList: any,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -491,6 +495,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentIndex: 0,
                     currentColorIndex: 0,
                     loadingForClientStatus: false,
+                    allCloudletEventLogList: [],
+                    filteredCloudletEventLogList: [],
                 };
             }
 
@@ -540,8 +546,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
-                    //todo:DEVELOPER
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {                    //todo:DEVELOPER
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
                         let newPromiseList = await Promise.all(promiseList);
@@ -553,15 +558,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:###############################################
                         cloudletList = await fetchCloudletList();
 
+                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList)
 
-                        console.log(`cloudletList===>`, cloudletList);
-
+                        console.log(`cloudletEventLogs===>`, allCloudletEventLogList);
                         appInstList = await fetchAppInstList()
                         let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
                             allClientStatusList: clientStatusList,
                             filteredClientStatusList: clientStatusList,
                             loadingForClientStatus: false,
+                            allCloudletEventLogList: allCloudletEventLogList,
+                            filteredCloudletEventLogList: allCloudletEventLogList,
+
                         })
                     }
 
@@ -1032,7 +1040,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
-                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.METHOD_USAGE_COUNT
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.DONUTS
                             && <div className="maxize page_monitoring_widget_icon"
@@ -1217,19 +1225,28 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             chartColorList={this.state.chartColorList}
                         />
                     )
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG) {//TODO: CLOUDLET_EVENT_LOG
+                    return (
+                        <CloudletEventLogHooks
+                            currentCloudlet={this.state.currentCloudLet}
+                            parent={this}
+                            handleCloudletDropdown={this.handleOnChangeCloudletDropdown}
+                            cloudletEventLogList={this.state.filteredCloudletEventLogList}
+                        />
+                    )
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENT_LOG) {
                     return (
                         <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderLoader() :
-                        <AppInstEventLogListHooks
+                        <AppInstEventLogHooks
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
                             handleAppInstDropdown={this.handleOnChangeAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENTLOG_LIST) {
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderLoader() :
                         <ClusterEventLogListHook
                             parent={this}
@@ -1794,6 +1811,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             return item.Cloudlet === currentCloudletOne
                         })
 
+                        let filteredCloudletEventLogList = this.state.allCloudletEventLogList.filter((item: TypeCloudletEventLog, index) => {
+                            return item[1] === currentCloudletOne
+                        })
+
 
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
@@ -1809,6 +1830,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentCluster: undefined,
                             currentOperLevel: undefined,
                             currentColorIndex: getOnlyCloudletIndex(pCloudletFullOne),
+                            filteredCloudletEventLogList: filteredCloudletEventLogList,
+
                         });
                     } else {//todo: When allCloudlet
                         this.setState({
@@ -1820,6 +1843,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: CLASSIFICATION.CLOUDLET,
                             currentCluster: undefined,
                             currentOperLevel: undefined,
+                            filteredCloudletEventLogList: this.state.allCloudletEventLogList,
                         })
                     }
                 } catch (e) {

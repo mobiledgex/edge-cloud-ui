@@ -133,7 +133,7 @@ export default function AppInstEventLogListHooks(props) {
                     >
                         {({index, style}) => {
                             return (
-                                <tr key={index} className='table0000001'
+                                <tr key={index} className='fixedSizeListTableDiv'
                                     style={style}
                                 >
                                     <React.Fragment>

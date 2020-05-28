@@ -397,8 +397,8 @@ export const EVENT_LOG_ITEM_LIST = [
 
 export const EVENT_LOG_ITEM_LIST_FOR_CLOUDLET = [
     {text: 'CLIENT STATUS', value: 'CLIENT_STATUS_TABLE'},
+    {text: 'CLOUDLET EVENT LOG', value: 'CLOUDLET_EVENT_LOG'},
 ]
-
 
 export const MAP_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},

@@ -525,7 +525,7 @@ tr td {
     height: auto !important;
 }*/
 
-.table0000001 {
+.fixedSizeListTableDiv {
     height: 30px;
     display: flex;
 }

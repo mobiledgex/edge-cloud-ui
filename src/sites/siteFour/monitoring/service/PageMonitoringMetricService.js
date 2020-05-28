@@ -882,6 +882,10 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         }).then(async response => {
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
+                let columns = response.data.data["0"].Series["0"].columns
+
+                console.log(`getCloudletEventLog===>`, columns);
+
                 return values;
             } else {
                 return [];
@@ -896,6 +900,11 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
 }
 
 
+/**
+ *
+ * @param cloudletList
+ * @returns {Promise<[]>}
+ */
 export const getAllCloudletEventLogs = async (cloudletList) => {
 
     try {
