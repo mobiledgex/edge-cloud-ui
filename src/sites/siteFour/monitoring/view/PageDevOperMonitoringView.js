@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, Tag, TreeSelect} from 'antd';
 
 import {
     filterByClassification,
@@ -564,7 +564,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let allCloudletEventLogList = []
                         allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
 
-                        console.log(`cloudletEventLogs===>`, allCloudletEventLogList);
+                        console.log(`cloudletList===>`, cloudletList);
                         appInstList = await fetchAppInstList()
                         let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
@@ -2139,7 +2139,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             showSearch={true}
                             dropdownStyle={{}}
                             listHeight={512}
-                            style={{width: 250, maxHeight: '512px !important'}}
+                            style={{width: 300, maxHeight: '512px !important'}}
                             disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
                             value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
                             placeholder={'Select Cloudlet'}
@@ -2159,7 +2159,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     } else {
                                         let itemValues = item.value + " | " + (index - 1).toString()
                                         return (
-                                            <Option key={index} value={itemValues}>{item.text}</Option>
+                                            <Option key={index} value={itemValues}>
+                                                <div style={{display: 'flex'}}>
+                                                    <div style={{marginLeft: 0}}><Tag color="purple">{item.region}</Tag></div>
+                                                    <div style={{marginLeft: 3,}}>{item.text}</div>
+                                                </div>
+                                            </Option>
                                         )
                                     }
                                 } catch (e) {

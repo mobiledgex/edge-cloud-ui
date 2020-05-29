@@ -23,12 +23,7 @@ import {
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 
@@ -1317,8 +1312,9 @@ export const makeDropdownForCloudlet = (pList) => {
         pList.map((item: TypeCloudlet, index) => {
             let Cloudlet = item.CloudletName
             let CloudletLocation = JSON.stringify(item.CloudletLocation)
-            let cloudletFullOne = Cloudlet + " | " + CloudletLocation
+            let cloudletFullOne = Cloudlet + " | " + CloudletLocation + " | " + item.Region
             newArrayList.push({
+                region: item.Region,
                 key: cloudletFullOne,
                 value: cloudletFullOne,
                 text: Cloudlet,
