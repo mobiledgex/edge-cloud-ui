@@ -1,115 +1,50 @@
-
-import React, { Component } from "react";
+import React, { useEffect } from "react";
+import { Spring, config } from "react-spring/renderprops";
 import {
     ComposableMap,
-    ZoomableGroup,
     Geographies,
     Geography,
-    Markers,
-    Marker, Annotations, Annotation,
-    Line
+    ZoomableGroup,
+    Marker
 } from "react-simple-maps";
-import { Button, Icon, List } from "semantic-ui-react";
-import ContainerDimensions from "react-container-dimensions";
 import { isEqual } from "lodash";
 import { Motion, spring } from "react-motion";
 import * as d3 from "d3";
-import { scaleLinear } from "d3-scale";
-// redux
-import { connect } from "react-redux";
+import styles from "../../../css/worldMapStyles";
 
-import ReactTooltip from "react-tooltip";
-import RadialGradientSVG from "../../../chartGauge/radialGradientSVG";
 
 import * as aggregation from "../../../utils";
-// style
-import styles from "../../../css/worldMapStyles";
-import "./styles.css";
-import CountryCode from "../../country-codes-lat-long-alpha3";
-import { fields } from "../../../services/model/format";
 
-const grdColors = ["#000000", "#00CC44", "#88ff00", "#FFEE00", "#FF7700", "#FF0022", "#66CCFF", "#FF78A5", "#fffba7"];
+const geoPaths = ["/topojson-maps/world-110m.json"];
 const zoomControls = { center: [30, 40], zoom: 3 };
 
-const cityScale = scaleLinear()
-    .domain([0, 37843000])
-    .range([1, 48]);
-const markerSize = [20, 24];
+const ClusterMap = props => {
+    const [toggle, setToggle] = React.useState(false);
+    const [position, setPosition] = React.useState({ coordinates: [0, 0], zoom: 1 });
 
-let _self = null;
-const makeList = obj => (
-    <List>
-        {obj.map((key, i) => (
-            <List.Item key={i}>
 
-                {key}
+    const [center] = React.useState(zoomControls.center);
+    const [zoom] = React.useState(zoomControls.zoom);
+    const [cities, setCities] = React.useState([]);
+    const [countries] = React.useState([]);
+    const [citiesSecond] = React.useState([]);
+    const [detailMode] = React.useState(false);
+    const [selectedCity] = React.useState([]);
+    const [oldCountry] = React.useState("");
+    const [unselectCity] = React.useState("");
+    const [clickCities] = React.useState([]);
+    const [saveMarker] = React.useState([]);
+    const [keyName] = React.useState("");
 
-            </List.Item>
-        ))}
-    </List>
-
-);
-class ClustersMap extends Component {
-    constructor() {
-        super();
-        _self = this;
-        this.state = {
-            center: zoomControls.center,
-            zoom: zoomControls.zoom,
-            cities: [],
-            countries: [],
-            citiesSecond: [],
-            detailMode: false,
-            selectedCity: [],
-            oldCountry: "",
-            unselectCity: "",
-            clickCities: [],
-            saveMarker: [],
-            keyName: ""
-        };
-        this.handleZoomIn = this.handleZoomIn.bind(this);
-        this.handleZoomOut = this.handleZoomOut.bind(this);
-        this.handleCityClick = this.handleCityClick.bind(this);
-        this.handleReset = this.handleReset.bind(this);
-        this.handleLeave = this.handleLeave.bind(this);
-        this.dir = 1;
-        this.interval = null;
-        this.tempData = null;
-        this.tempLocation = null;
-    }
-
-    componentDidMount() {
-        if (this.props.zoomControl) {
-            this.setState({ center: this.props.zoomControl.center, zoom: this.props.zoomControl.zoom });
-        }
-
-        const _self = this;
-        _self.setState({ oldCountry: this.state.selectedCity });
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
-        const data = nextProps.locData ? initialData : initialData.filter(item => item.fields.state === 5);
+    useEffect(() => {
+        const initialData = (props.dataList) ? props.dataList : props.locData;
+        const data = props.locData ? initialData : initialData.filter(item => item.fields.state === 5);
         const methodCount = 0;
         console.log("20200521 container widget   == 101010 =", initialData, ":", methodCount);
 
         function reduceUp(value) {
             return Math.round(value);
         }
-        const mapName = item => {
-            const { id } = nextProps;
-            if (id === "Cloudlets") {
-                return item[fields.cloudletName];
-            } if (id === "AppInsts") {
-                return item[fields.appName];
-            } if (id === "ClusterInst") {
-                if (nextProps.reg === "cloudletAndClusterMap") {
-                    return item[fields.cloudletName];
-                }
-                return item[fields.clusterName];
-            }
-        };
-
 
         const locations = data.map(item => {
             if (item) {
@@ -151,12 +86,12 @@ class ClustersMap extends Component {
         });
 
 
-        if (!isEqual(locationData, prevState.cities)) {
+        if (!isEqual(locationData, cities)) {
             const clickMarker = [];
-            let zoom = nextProps.locData ? prevState.zoom : 3;
-            let center = nextProps.locData ? prevState.center : zoomControls.center;
+            let zoom = props.locData ? zoom : 3;
+            let center = props.locData ? center : zoomControls.center;
 
-            if (nextProps.mapDetails) {
+            if (props.mapDetails) {
                 if (d3.selectAll(".rsm-markers").selectAll(".levelFive")) {
                     d3.selectAll(".rsm-markers").selectAll(".levelFive")
                         .transition()
@@ -164,455 +99,70 @@ class ClustersMap extends Component {
                         .attr("r", markerSize[0]);
                 }
 
-                nextProps.mapDetails.name.map((item, _i) => {
+                props.mapDetails.name.map((item, _i) => {
                     clickMarker.push({
-                        name: item, coordinates: nextProps.mapDetails.coordinates, population: 17843000, cost: 1
+                        name: item, coordinates: props.mapDetails.coordinates, population: 17843000, cost: 1
                     });
                 });
 
                 zoom = 4;
-                center = nextProps.mapDetails.coordinates;
+                center = props.mapDetails.coordinates;
             }
-            return {
-                cities: locationData, center, zoom, detailMode: !!nextProps.mapDetails, clickCities: clickMarker
-            };
+            setCities(locationData);
+            // return {
+            //     cities: locationData, center, zoom, detailMode: !!props.mapDetails, clickCities: clickMarker
+            // };
         }
-        return null;
+    }, [props]);
+
+    function handleZoomIn() {
+        if (position.zoom >= 4) return;
+        setPosition(pos => ({ ...pos, zoom: pos.zoom * 2 }));
     }
 
-
-    componentWillUnmount() {
-        clearInterval(this.interval);
+    function handleZoomOut() {
+        if (position.zoom <= 1) return;
+        setPosition(pos => ({ ...pos, zoom: pos.zoom / 2 }));
     }
 
-    handleReset() {
-        this.setState({
-            center: zoomControls.center,
-            zoom: 3,
-            detailMode: false
-        });
-        if (this.props.onClick) {
-            this.props.onClick();
-        }
+    function handleMoveEnd(position) {
+        //setPosition(position);
     }
 
-    // Todo: Need to reimplement
-    handleCityClick = city => {
-        if (d3.selectAll(".rsm-markers").selectAll(".levelFive")) {
-            d3.selectAll(".rsm-markers").selectAll(".levelFive")
-                .transition()
-                .ease(d3.easeBack)
-                .attr("r", markerSize[0]);
-        }
-        const clickMarker = [];
-        if (city) {
-            city.name.map((item, _i) => {
-                clickMarker.push({
-                    name: item, coordinates: city.coordinates, population: 17843000, cost: 1
-                });
-            });
-        }
-        this.setState({
-            zoom: 4,
-            center: city.coordinates,
-            detailMode: true,
-            clickCities: clickMarker
-        });
-        if (this.props.onClick) {
-            this.props.onClick(city);
-        }
-    }
+    setTimeout(() => {
+        setToggle(true);
+    }, 3000);
 
-    // map marker text click
-    handleAnnoteClick(_city) {
-    }
-
-    /** ************
-     * 지도 줌인 상태에서 지역을 마커를 클릭하면,  우측 패널의 지표값 변경
-     * @param country
-     */
-    handleViewZone(country) {
-        // change the data of detail Info
-        _self.setState({ selectedCity: country.name });
-        if (d3.selectAll(".detailMarker_" + _self.state.oldCountry)) {
-            d3.selectAll(".detailMarker_" + _self.state.oldCountry)
-                .transition()
-                .attr("r", markerSize[0])
-                .style("opacity", 1);
-        }
-        _self.setState({ oldCountry: country.name });
-    }
-
-    // tooltip
-    handleLeave = () => {
-        ReactTooltip.hide(this.tooltipref);
-    }
-
-    handleMoveMk = (marker, evt) => {
-        const x = evt.clientX;
-        const y = evt.clientY + window.pageYOffset;
-        let names = [];
-        if (marker.name.length) {
-            names = makeList(marker.name);
-        }
-
-        _self.setState({ tooltipMsg: (typeof names === "object") ? names : marker.name });
-        if (!_self.moveMouse) {
-            ReactTooltip.rebuild();
-            ReactTooltip.show(_self.circle);
-        }
-
-        _self.moveMouse = true;
-    }
-
-    handleLeaveMk = () => {
-        // this.props.dispatch(hide())
-        ReactTooltip.hide(this.tooltipref);
-        this.moveMouse = false;
-    }
-
-    handleMouseDown = (a, _b) => {
-        const countries = CountryCode.ref_country_codes;
-        let _lat = "";
-        let _long = "";
-        countries.map(country => {
-            if (country.alpha2 === a.properties.ISO_A2) {
-                _lat = country.latitude;
-                _long = country.longitude;
-            }
-        });
-
-        if (this.props.id == "Cloudlets") {
-            const location = {
-                region: a.properties.REGION_UN, name: a.properties.NAME, lat: _lat, long: _long, State: 5
-            };
-
-            const locationData = [
-                {
-                    name: a.properties.NAME,
-                    coordinates: [_long, _lat],
-                    population: 17843000,
-                    cost: 3
-                }];
-            if (this.props.onMapClick) {
-                this.props.onMapClick(location);
-            }
-            _self.setState({ cities: locationData, detailMode: false });
-            _self.forceUpdate();
-        }
-    }
-
-    handleZoomIn() {
-        this.setState({
-            zoom: this.state.zoom * 2
-        });
-    }
-
-    handleZoomOut() {
-        this.setState({
-            zoom: this.state.zoom / 2
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                {this.state.detailMode
-                    ? (
-                        <div
-                            className="zoom-inout-reset-clusterMap"
-                            style={{
-                                left: 8, bottom: 4, position: "absolute", display: "block"
-                            }}
+    return (
+        <Spring
+            from={{ zoom: 1 }}
+            to={{ zoom: toggle ? 3 : 1 }}
+            config={{ clamp: true }}
+        >
+            {props => (
+                <div>
+                    <ComposableMap>
+                        <ZoomableGroup
+                            zoom={props.zoom}
+                            center={position.coordinates}
+                            onMoveEnd={handleMoveEnd}
                         >
-                            <Button id="mapZoomCtl" size="large" icon onClick={this.handleReset}>
-                                <Icon name="compress" />
-                            </Button>
-                        </div>
-                    )
-                    : (
-                        <div
-                            className="zoom-inout-reset-clusterMap"
-                            style={{
-                                left: 8, bottom: 4, position: "absolute", display: "block"
-                            }}
-                        >
-                            <Button id="mapZoomCtl" size="large" icon onClick={this.handleReset}>
-                                <Icon name="expand" />
-                            </Button>
-
-                            <Button id="mapZoomCtl" size="large" icon onClick={this.handleZoomIn}>
-                                <Icon name="plus square outline" />
-                            </Button>
-                            <Button id="mapZoomCtl" size="large" icon onClick={this.handleZoomOut}>
-                                <Icon name="minus square outline" />
-                            </Button>
-                        </div>
-                    )}
-
-                <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[5]} endColor={grdColors[5]} idCSS="levelFive" rotation={0} />
-                <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[4]} endColor={grdColors[4]} idCSS="levelFour" rotation={0} />
-                <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[3]} endColor={grdColors[3]} idCSS="levelThree" rotation={0} />
-                <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[2]} endColor={grdColors[2]} idCSS="levelTwo" rotation={0} />
-                <RadialGradientSVG startColor="#394251" middleColor="#394251" endColor="#394251" idCSS="levelBg" rotation={0} />
-                <ReactTooltip id="happyFace" className="customToolTip" type="dark" effect="float" style={{ left: "-100px" }}>
-                    <span>{this.state.tooltipMsg}</span>
-                </ReactTooltip>
-                <ContainerDimensions>
-                    {({ width, height }) => (
-                        <Motion
-                            defaultStyle={{
-                                zoom: 1,
-                                x: 30,
-                                y: 40,
-                            }}
-                            style={{
-                                zoom: spring(this.state.zoom, { stiffness: 210, damping: 30 }),
-                                x: spring(this.state.center[0], { stiffness: 210, damping: 30 }),
-                                y: spring(this.state.center[1], { stiffness: 210, damping: 30 }),
-                            }}
-                        >
-                            {({ zoom, x, y }) => (
-                                <ComposableMap
-                                    projectionConfig={{ scale: 205 }}
-                                    width={980}
-                                    height={551}
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        backgroundColor: styles.geoBackground.color
-                                    }}
-                                >
-                                    <ZoomableGroup center={[x, y]} zoom={zoom} disablePanning={false}>
-                                        <Geographies geography="/topojson-maps/world-110m.json">
-                                            {(geographies, projection) => geographies.map((geography, i) => geography.id !== "010" && (
-                                                <Geography
-                                                    key={i}
-                                                    geography={geography}
-                                                    projection={projection}
-                                                    data-tip={geography.properties.NAME}
-                                                    style={styles.geography}
-                                                    onMouseDown={this.handleMouseDown}
-                                                    onMouseMove={this.handleMove}
-                                                    onMouseLeave={this.handleLeave}
-                                                />
-                                            ))}
-                                        </Geographies>
-                                        <Markers>
-                                            {(this.props.id === "Cloudlets" && !this.state.detailMode)
-                                                ? this.state.cities.map((city, i) => (
-                                                    MarkerComponent(this, city, i, {
-                                                        transform: "translate(-24,-18)", gColor: 6, cName: "st1", path: 0
-                                                    })
-                                                ))
-                                                : (this.props.id === "ClusterInst" && !this.state.detailMode)
-                                                    ? this.state.cities.map((city, i) => (
-                                                        (this.props.icon === "cloudlet")
-                                                            ? MarkerComponent(this, city, i, {
-                                                                transform: "translate(-24,-18)", gColor: 6, cName: "st1", path: 0
-                                                            })
-                                                            : MarkerComponent(this, city, i, {
-                                                                transform: "translate(-25,-27)", gColor: 8, cName: "st2", path: 1
-                                                            })
-                                                    ))
-                                                    : (this.props.id == "AppInsts" && !this.state.detailMode)
-                                                        ? this.state.cities.map((city, i) => (
-                                                            MarkerComponent(this, city, i, {
-                                                                transform: "translate(-17,-21)", gColor: 7, cName: "st3", path: 2
-                                                            })
-                                                        ))
-                                                        : this.state.clickCities.map((city, i) => (
-                                                            <Marker
-                                                                key={i}
-                                                                marker={city}
-                                                                onClick={this.handleViewZone}
-                                                            >
-                                                                <circle
-                                                                    className={"detailMarker_" + city.name}
-                                                                    cx={0}
-                                                                    cy={0}
-                                                                    r={markerSize[0]}
-                                                                    opacity={1}
-                                                                    fill={styles.marker.second.fill}
-                                                                    stroke={styles.marker.second.stroke}
-                                                                    strokeWidth={styles.marker.second.strokeWidth}
-                                                                />
-                                                            </Marker>
-                                                        ))}
-                                        </Markers>
-                                        <Annotations>
-                                            {
-                                                this.state.detailMode
-
-                                                    ? this.state.clickCities.map((city, i) => (
-                                                        <Annotation
-                                                            key={i}
-                                                            dx={-30}
-                                                            dy={30 + (i * 45)}
-                                                            curve={0.5}
-                                                            zoom={1}
-                                                            subject={city.coordinates}
-                                                            strokeWidth={0.1}
-                                                            stroke="#AFAFAF"
-                                                            style={{ cursor: "pointer" }}
-                                                        >
-                                                            <text
-                                                                className="annoteText"
-                                                                fill="#AFAFAF"
-                                                                style={{ fontSize: 7 }}
-                                                                onClick={(_a, _b) => this.handleAnnoteClick(city)}
-                                                            >
-                                                                {city.name}
-
-                                                            </text>
-                                                        </Annotation>
-                                                    ))
-                                                    : null
-                                            }
-                                        </Annotations>
-                                    </ZoomableGroup>
-                                </ComposableMap>
-                            )}
-
-                        </Motion>
-                    )}
-                </ContainerDimensions>
-
-            </div>
-        );
-    }
-}
-
-
-const mapStateToProps = (state, _ownProps) => {
-    const deleteReset = state.deleteReset.reset;
-    return {
-        data: state.receiveDataReduce.data,
-        itemLabel: state.computeItem.item,
-        deleteReset,
-    };
+                            <Geographies geography={geoPaths[0]}>
+                                {({ geographies }) => geographies.map(geo => (
+                                    <Geography key={geo.rsmKey} geography={geo} style={styles.geography} />
+                                ))}
+                            </Geographies>
+                            <Marker coordinates={[-101, 53]} fill="#777">
+                                <svg width="190" height="160" xmlns="http://www.w3.org/2000/svg">
+                                    <path d={`M 5 5 Q 50 5 100 100`} stroke="greenyellow" strokeDasharray="5,5" fill="transparent" />
+                                </svg>
+                            </Marker>
+                        </ZoomableGroup>
+                    </ComposableMap>
+                </div>
+            )}
+        </Spring>
+    );
 };
-const mapDispatchProps = _dispatch => ({
 
-});
-
-export default connect(mapStateToProps, mapDispatchProps)(ClustersMap);
-
-
-const paths = [
-    "M 38.875 12.960938 C 37.613281 6.019531 31.59375 0.75 24.351562 0.75 C 18.582031 0.75 13.59375 4.089844 11.160156 8.949219 C 5.210938 9.640625 0.59375 14.738281 0.59375 20.929688 C 0.59375 27.554688 5.875 32.921875 12.414062 32.992188 L 38.183594 32.992188 C 43.664062 32.992188 48.113281 28.496094 48.113281 22.957031 C 48.113281 17.667969 44.035156 13.328125 38.875 12.960938 Z M 38.875 12.960938",
-    "M 20.832031 8.332031 L 8.332031 8.332031 C 6.042969 8.332031 4.1875 10.207031 4.1875 12.5 L 4.167969 37.5 C 4.167969 39.792969 6.042969 41.667969 8.332031 41.667969 L 41.667969 41.667969 C 43.957031 41.667969 45.832031 39.792969 45.832031 37.5 L 45.832031 16.667969 C 45.832031 14.375 43.957031 12.5 41.667969 12.5 L 25 12.5 Z M 20.832031 8.332031",
-    "M 34.945312 17.558594 C 34.945312 27.097656 17.539062 49.683594 17.539062 49.683594 C 17.539062 49.683594 0.132812 27.097656 0.132812 17.558594 C 0.132812 8.019531 7.921875 0.289062 17.539062 0.289062 C 27.152344 0.289062 34.945312 8.019531 34.945312 17.558594 Z M 34.945312 17.558594"
-];
-const MarkerComponent = (self, city, i, config) => (
-    (!isNaN(city.coordinates[0]))
-        ? (
-            <Marker
-                className="markerTwo"
-                key={i}
-                marker={city}
-                onClick={self.handleCityClick}
-                onMouseOver={self.handleMoveMk}
-                onMouseMove={self.handleMoveMk}
-                onMouseLeave={self.handleLeaveMk}
-                style={{}}
-            >
-
-                <g
-
-                    version="1.1"
-                    id="Layer_1"
-                    x="0px"
-                    y="0px"
-                    viewBox="0 0 50 50"
-                    style={{ enableBackground: "new 0 0 50 50" }}
-                    // blink
-                    className={[("blinkMark" + i == self.state.keyName) ? self.state.keyName : null, (city.population > 35000000) ? "levelFive" : "levelOther"].join(" ")}
-                    // -blink
-                    cx={0}
-                    cy={0}
-                    r={cityScale(city.population - 200300)}
-                    fill="url(#levelBg)"
-                    stroke={styles.marker.stroke}
-                    strokeWidth={styles.marker.strokeWidth}
-                    transform={config.transform}
-                    mix-blend-mode="lighten"
-
-                >
-                    {/* 필터 InnerGlow */}
-                    <defs>
-                        <filter id="InnerGlow" colorInterpolationFilters="sRGB">
-                            <feGaussianBlur id="GaussianBlur" result="GaussianBlurResult" stdDeviation="8" />
-                            <feComposite id="Composite1" in2="GaussianBlurResult" result="CompositeResult1" in="SourceGraphic" operator="in" />
-
-                            <feFlood
-                                id="Flood"
-                                result="FloodResult"
-                                in="CompositeResult3"
-                                floodOpacity="1"
-                                floodColor={
-                                    (city.population > 35000000) ? grdColors[5]
-                                        : (city.population <= 35000000 && city.population > 30000000) ? grdColors[4]
-                                            : (city.population <= 30000000 && city.population > 25000000) ? grdColors[3]
-                                                : (city.population <= 25000000 && city.population > 20000000) ? grdColors[2]
-                                                    : grdColors[6]
-                                }
-                            />
-                            <feBlend id="Blend" in2="FloodResult" mode="normal" in="CompositeResult1" result="BlendResult1" />
-                            <feComposite id="GaussianBlur" in2="SourceGraphic" result="CompositeResult3" operator="in" in="BlendResult1" />
-                        </filter>
-                    </defs>
-                    {/* 필터 innershadow */}
-                    <defs>
-                        <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
-                            <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
-                            <feOffset dy="2" dx="3" />
-                            <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff" />
-
-                            <feFlood
-                                floodColor={
-                                    (city.population > 35000000) ? grdColors[5]
-                                        : (city.population <= 35000000 && city.population > 30000000) ? grdColors[4]
-                                            : (city.population <= 30000000 && city.population > 25000000) ? grdColors[3]
-                                                : (city.population <= 25000000 && city.population > 20000000) ? grdColors[2]
-                                                    : grdColors[config.gColor]
-                                }
-                                floodOpacity="1"
-                            />
-                            <feComposite in2="shadowDiff" operator="in" />
-                            <feComposite in2="SourceGraphic" operator="over" result="firstfilter" />
-
-
-                            <feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2" />
-                            <feOffset dy="-2" dx="-3" />
-                            <feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff" />
-
-                            <feFlood
-                                floodColor={
-                                    (city.population > 35000000) ? grdColors[5]
-                                        : (city.population <= 35000000 && city.population > 30000000) ? grdColors[4]
-                                            : (city.population <= 30000000 && city.population > 25000000) ? grdColors[3]
-                                                : (city.population <= 25000000 && city.population > 20000000) ? grdColors[2]
-                                                    : grdColors[config.gColor]
-                                }
-                                floodOpacity="1"
-                            />
-                            <feComposite in2="shadowDiff" operator="in" />
-                            <feComposite in2="firstfilter" operator="over" />
-                        </filter>
-                    </defs>
-                    <path filter="url(#innershadow)" className={config.cName} d={paths[config.path]} ref={ref => self.circle = ref} />
-                </g>
-                <g data-tip="tooltip" data-for="happyFace">
-                    <text
-                        textAnchor="middle"
-                        y={8}
-                        className="marker_value"
-                        style={{ fontSize: 24 }}
-                    >
-                        {city.cost}
-                    </text>
-                </g>
-            </Marker>
-        ) : null
-);
+export default ClusterMap;
