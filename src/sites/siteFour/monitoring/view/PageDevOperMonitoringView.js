@@ -2087,12 +2087,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <RangePicker
                             separator={"~"}
                             disabled={this.state.filteredCloudletUsageList.length === 1 || this.state.loading}
-                            ref={c => this.rangePicker = c}
+                            ref={c => this.dateRangePicker = c}
                             showTime={{format: 'HH:mm'}}
                             format="YYYY-MM-DD HH:mm"
                             placeholder={[moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
                             onChange={async (date) => {
                                 try {
+                                    this.dateRangePicker.blur()
                                     let stateTime = date[0].format('YYYY-MM-DD HH:mm')
                                     let endTime = date[1].format('YYYY-MM-DD HH:mm')
                                     await this.setState({
@@ -2101,7 +2102,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     })
 
                                     this.filterUsageListByDateForCloudlet()
-                                    this.rangePicker.blur()
+
                                 } catch (e) {
 
                                 }
