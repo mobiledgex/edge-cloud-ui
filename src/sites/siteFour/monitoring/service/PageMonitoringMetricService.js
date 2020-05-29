@@ -928,9 +928,7 @@ export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endT
         throw new Error(e)
     }
 
-
 }
-
 
 /**
  *
