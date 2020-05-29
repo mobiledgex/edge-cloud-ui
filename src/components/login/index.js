@@ -11,8 +11,6 @@ import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import PublicIP from 'public-ip';
-import * as serviceMC from '../../services/model/serviceMC';
-import { SHOW_CONTROLLER } from '../../services/model/endPointTypes';
 
 
 const host = window.location.host;
