@@ -50,9 +50,8 @@ export default function AppInstEventLogList(props) {
 
     }
 
-
-    return (
-        <div>
+    function renderTitle() {
+        return (
             <div style={{
                 display: 'flex',
                 width: '100%',
@@ -69,59 +68,71 @@ export default function AppInstEventLogList(props) {
                 </div>
 
             </div>
+        )
+    }
+
+    function renderHeader() {
+        return (
+            <thead>
+            <tr style={{display: 'flex', backgroundColor: '#303030', marginTop: 1, height: 45}}>
+                <td padding={'none'} align="center"
+                    style={{
+                        color: 'white', flex: .25,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                    }}
+                >
+                    Time
+                </td>
+                <td padding={'none'} align="center"
+                    style={{
+                        color: 'white', flex: .45, display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <div>
+                        App
+                    </div>
+                    <div>
+                        <div style={{color: ''}}>
+                            Cluster&nbsp;[Cloudlet]
+                        </div>
+                    </div>
+                </td>
+                <td padding={'none'} align="center"
+                    style={{
+                        color: 'white', flex: .3,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <div>
+                        Event
+                    </div>
+                    <div>
+                        [Status]
+                    </div>
+                </td>
+
+            </tr>
+            </thead>
+        )
+    }
+
+    return (
+        <div>
+            {renderTitle()}
             {props.loading ? <div style={{marginTop: 75}}>{renderPlaceHolderLoader()}</div> :
                 <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
                        stickyHeader={true}>
 
-                    <thead>
-                    <tr style={{display: 'flex', backgroundColor: '#303030', marginTop: 1,}}>
-                        <td padding={'none'} align="center"
-                            style={{
-                                color: 'white', flex: .25,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                            }}
-                        >
-                            Time
-                        </td>
-                        <td padding={'none'} align="center"
-                            style={{
-                                color: 'white', flex: .45, display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                            }}
-                        >
-                            <div>
-                                App
-                            </div>
-                            <div>
-                                <div style={{color: ''}}>
-                                    Cluster&nbsp;[Cloudlet]
-                                </div>
-                            </div>
-                        </td>
-                        <td padding={'none'} align="center"
-                            style={{
-                                color: 'white', flex: .3,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                            }}
-                        >
-                            <div>
-                                Event
-                            </div>
-                            <div>
-                                [Status]
-                            </div>
-                        </td>
-
-                    </tr>
-                    </thead>
+                    {renderHeader()}
                     {/*todo:tableBody*/}
                     {/*todo:tableBody*/}
                     <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>

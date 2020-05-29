@@ -1,17 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 import '../common/PageMonitoringStyles.css'
 import {FixedSizeList} from "react-window";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
-import {getWindowDimensions} from "../common/PageMonitoringUtils";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import {Center} from "../common/PageMonitoringStyles";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
 export default function ClusterEventLogList(props) {
-    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
-
 
     const headerStyle = {
         color: 'white', flex: .33,
@@ -20,6 +17,7 @@ export default function ClusterEventLogList(props) {
         justifyContent: 'center',
         flexDirection: 'column',
     }
+
 
     function renderHeader() {
         return (
@@ -62,8 +60,6 @@ export default function ClusterEventLogList(props) {
         )
     }
 
-
-
     const CLUSTER_COLUMN_INDEX = {
         "time": 0,
         "cluster": 1,
@@ -78,6 +74,7 @@ export default function ClusterEventLogList(props) {
         "event": 10,
         "status": 11,
     }
+
 
     function renderTableRowOne(index, style) {
         return (
@@ -103,7 +100,7 @@ export default function ClusterEventLogList(props) {
                         style={makeTableRowStyle(index, itemHeight)}
                     >
                         <div style={{color: 'white'}}>
-                            {reduceString(props.eventLogList[index][CLUSTER_COLUMN_INDEX.cluster], 15)}
+                            {reduceString(props.eventLogList[index][CLUSTER_COLUMN_INDEX.cluster], 20)}
                         </div>
                         <div>
                             [{props.eventLogList[index][CLUSTER_COLUMN_INDEX.clusterorg]}]

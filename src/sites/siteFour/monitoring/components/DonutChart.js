@@ -5,7 +5,7 @@ import {Center} from "../common/PageMonitoringStyles";
 import {CLASSIFICATION} from "../../../../shared/Constants";
 import {changeClassficationTxt} from "../service/PageDevOperMonitoringService";
 
-export default function DonutChartHooks(props) {
+export default function DonutChart(props) {
     const [count, setCount] = useState(-1);
     const [usageOne: any, setUsageOne] = useState(-1);
     const hwMarginTop = 15;
@@ -22,7 +22,6 @@ export default function DonutChartHooks(props) {
     }, [props.filteredUsageList]);
 
     const height = 200;
-
 
     return (
         <div>

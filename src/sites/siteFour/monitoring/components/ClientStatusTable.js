@@ -16,7 +16,7 @@ type Props = {
     clientStatusList: any,
 };
 
-export default function ClientStatusTableHooks(props) {
+export default function ClientStatusTable(props) {
     useEffect(() => {
     }, [props.clientStatusList]);
 

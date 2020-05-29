@@ -113,8 +113,8 @@ import {
     GRID_ITEM_TYPE
 } from "./PageMonitoringLayoutProps";
 import MapForOper from "../components/MapForOper";
-import DonutChartHooks from "../components/DonutChartHooks";
-import ClientStatusTableHooks from "../components/ClientStatusTableHooks";
+import DonutChart from "../components/DonutChart";
+import ClientStatusTable from "../components/ClientStatusTable";
 import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
@@ -1239,7 +1239,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLIENT_STATUS_TABLE) {
                     return (
-                        <ClientStatusTableHooks
+                        <ClientStatusTable
                             parent={this}
                             clientStatusList={this.state.filteredClientStatusList}
                             chartColorList={this.state.chartColorList}
@@ -1279,7 +1279,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.DONUTS) {
                     return this.state.loading ? renderPlaceHolderLoader() :
-                        <DonutChartHooks
+                        <DonutChart
                             parent={this}
                             chartColorList={this.state.chartColorList}
                             currentClassification={this.state.currentClassification}
