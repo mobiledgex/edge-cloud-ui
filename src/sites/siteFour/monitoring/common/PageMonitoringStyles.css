@@ -595,26 +595,6 @@ tr td {
     box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15);
 }
 
-/*.ant-select-tree-title{
-    background-color: red;
-}*/
-/*.ant-select-tree-treenode-switcher-open .ant-select-tree-treenode-switcher-close {
-    height: 15px;
-    padding: 0px;
-    margin: 0px
-}
-
-.ant-select-tree li {
-    margin-top: 0px;
-    margin-right: 0px;
-    margin-bottom: 0px;
-    margin-left: 0px;
-    padding: 5;
-    white-space: nowrap;
-    list-style: none;
-    outline: 0;
-}*/
-
 .tooltipForOperMarker .leaflet-popup-content-wrapper {
     width: 120px;
     border-radius: 0px;
@@ -740,4 +720,19 @@ tr td {
 
 .ant-input-disabled {
     background: #1e1e1e !important;
+}
+
+
+.ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
+    background-color: #3f4338;
+}
+
+/*.ant-select-item-option-content {
+    background-color: coral;
+}*/
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    color: white;
+    font-weight: 600;
+    background-color: #828282;
 }

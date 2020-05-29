@@ -54,14 +54,7 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -97,12 +90,7 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogHooks from "../components/AppInstEventLogListHooks";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -131,7 +119,6 @@ import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../servic
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogListHooks from "../components/CloudletEventLogListHooks";
-import {Icon} from "semantic-ui-react";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -1263,13 +1250,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
-                    return this.state.loading ? renderPlaceHolderLoader() :
+                    return (
                         <AppInstEventLogHooks
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
+                            loading={this.state.loading}
                             handleAppInstDropdown={this.handleOnChangeAppInstDropdown}
                             eventLogList={this.state.filteredAppInstEventLogs}
                         />
+                    )
+
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENT_LOG) {
                     return this.state.loading ? renderPlaceHolderLoader() :
                         <ClusterEventLogListHook
