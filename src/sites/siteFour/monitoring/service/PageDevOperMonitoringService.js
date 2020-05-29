@@ -22,12 +22,11 @@ import {
 } from "../../../../shared/Constants";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
-import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import { Tag } from 'antd';
+
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
 }
@@ -42,6 +41,44 @@ export function changeClassficationTxt(currentClassification) {
     } else {
         return CLASSIFICATION.CLUSTER
     }
+}
+
+export function renderTitle(props) {
+    return (
+        <div style={{
+            display: 'flex',
+            width: '100%',
+            height: 45
+        }}>
+            <div className='page_monitoring_title draggable'
+                 style={{
+                     flex: 1,
+                     marginTop: 10,
+                     color: 'white'
+                 }}
+            >
+                {props.currentClassification} Event Log
+            </div>
+
+        </div>
+    )
+}
+
+export function makeTableRowStyle(index, itemHeight) {
+    return (
+        {
+            flex: .33,
+            color: '#C0C6C8',
+            backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+            height: itemHeight,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+        }
+
+    )
+
 }
 
 

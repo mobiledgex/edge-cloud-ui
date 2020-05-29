@@ -9,6 +9,7 @@ export const GRID_ITEM_TYPE = {
     CLUSTER_LIST: 'CLUSTER_LIST',
     CLUSTER_EVENT_LOG: 'CLUSTER_EVENTLOG_LIST',
     CLOUDLET_EVENT_LOG: 'CLOUDLET_EVENT_LOG',
+
     APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
     PERFORMANCE_SUM: 'PERFORMANCE_SUM',
     CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
@@ -164,7 +165,7 @@ export const defaultHwMapperListForCluster = [
     {
         id: '5',
         hwType: undefined,
-        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
     },
     {
         id: '6',
@@ -175,54 +176,6 @@ export const defaultHwMapperListForCluster = [
 ];
 
 
-/*desc:#########################################################################################################################################
-todo:  Cluster ClusterClusterClusterClusterClusterClusterClusterClusterClusterClusterCluster LAYOUT, MAPPER FOR OPERTATOR
-desc:###########################################################################################################################################*/
-
-export const defaultLayoutForClusterForOper = [
-    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
-    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
-    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},
-    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},
-    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 2, w: 1, h: 1, "add": false},//mem
-
-];
-
-export const defaultLayoutMapperForClusterForOper = [
-    {
-        id: '1',
-        hwType: [HARDWARE_TYPE_FOR_GRID.CPU, HARDWARE_TYPE_FOR_GRID.MEM, HARDWARE_TYPE_FOR_GRID.DISK],
-        graphType: GRID_ITEM_TYPE.MULTI_LINE_CHART,
-    },
-    {
-        id: '2',
-        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
-        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
-    },
-
-    {
-        id: '3',
-        hwType: [HARDWARE_TYPE_FOR_GRID.TCPCONNS, HARDWARE_TYPE_FOR_GRID.TCPRETRANS],
-        graphType: GRID_ITEM_TYPE.MULTI_LINE_CHART,
-    },
-    {
-        id: '4',
-        hwType: [HARDWARE_TYPE_FOR_GRID.RECVBYTES, HARDWARE_TYPE_FOR_GRID.SENDBYTES],
-        graphType: GRID_ITEM_TYPE.MULTI_LINE_CHART,
-    },
-    {
-        id: '5',
-        hwType: '',
-        graphType: GRID_ITEM_TYPE.DONUTS,
-    },
-    {
-        id: '6',
-        hwType: [HARDWARE_TYPE_FOR_GRID.UDPRECV, HARDWARE_TYPE_FOR_GRID.UDPSENT],
-        graphType: GRID_ITEM_TYPE.MULTI_LINE_CHART,
-    },
-
-];
 
 /*
 desc:#####################################

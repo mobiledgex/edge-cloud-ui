@@ -23,7 +23,7 @@ function getWindowDimensions() {
 }
 
 
-export default function AppInstEventLogListHooks(props) {
+export default function AppInstEventLogList(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
 

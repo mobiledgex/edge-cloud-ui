@@ -47,6 +47,7 @@ import type {
     TypeCloudletEventLog,
     TypeCloudletUsage,
     TypeCluster,
+    TypeClusterEventLog,
     TypeClusterUsageOne,
     TypeGridInstanceList,
     TypeLineChartData,
@@ -78,7 +79,7 @@ import _ from "lodash";
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
 import BubbleChartContainer from "../components/BubbleChartContainer";
 import LineChartContainer from "../components/LineChartContainer";
-import ClusterEventLogListHook from "../components/ClusterEventLogListHook";
+import ClusterEventLogList from "../components/ClusterEventLogList";
 import MaterialIcon from "material-icons-react";
 import '../common/PageMonitoringStyles.css'
 import type {Layout, LayoutItem} from "react-grid-layout/lib/utils";
@@ -87,7 +88,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForCluster from "../components/PerformanceSummaryForCluster";
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
-import AppInstEventLogHooks from "../components/AppInstEventLogListHooks";
+import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
 import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
@@ -118,7 +119,7 @@ import MethodUsageCount from "../components/MethodUsageCount";
 import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../service/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
-import CloudletEventLogListHooks from "../components/CloudletEventLogListHooks";
+import CloudletEventLogList from "../components/CloudletEventLogList";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -556,7 +557,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {                    //todo:DEVELOPER
+                    //TODO:###############################################
+                    //todo:DEVELOPER
+                    //TODO:###############################################
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
                         let newPromiseList = await Promise.all(promiseList);
@@ -609,6 +613,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
+
+
+                        console.log(`allClusterEventLogList====>`, allClusterEventLogList);
+
                     } else {//TODO:OPERATOR
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                     }
@@ -1214,19 +1222,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                     return (
-                        this.state.loading ? renderPlaceHolderLoader() :
-                            this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                <PerformanceSummaryForCluster
-                                    parent={this}
-                                    filteredUsageList={this.state.filteredClusterUsageList}
-                                    chartColorList={this.state.chartColorList}
-                                />
-                                :
-                                <PerformanceSummaryForAppInst
-                                    parent={this}
-                                    filteredUsageList={this.state.filteredAppInstUsageList}
-                                    chartColorList={this.state.chartColorList}
-                                />
+                        this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                            <PerformanceSummaryForCluster
+                                parent={this}
+                                loading={this.state.loading}
+                                filteredUsageList={this.state.filteredClusterUsageList}
+                                chartColorList={this.state.chartColorList}
+                            />
+                            :
+                            <PerformanceSummaryForAppInst
+                                parent={this}
+                                loading={this.state.loading}
+                                filteredUsageList={this.state.filteredAppInstUsageList}
+                                chartColorList={this.state.chartColorList}
+                            />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLIENT_STATUS_TABLE) {
                     return (
@@ -1236,9 +1245,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             chartColorList={this.state.chartColorList}
                         />
                     )
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG) {//TODO: CLOUDLET_EVENT_LOG
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG) {
                     return (
-                        <CloudletEventLogListHooks
+                        <CloudletEventLogList
+                            currentClassification={this.state.currentClassification}
                             currentCloudlet={this.state.currentCloudLet}
                             parent={this}
                             handleCloudletDropdown={this.handleOnChangeCloudletDropdown}
@@ -1247,11 +1257,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENT_LOG) {
                     return (
-                        <ClusterEventLogListHook eventLogList={this.state.filteredClusterEventLogList} parent={this}/>
+                        <ClusterEventLogList
+                            currentCloudlet={this.state.currentCluster}
+                            parent={this}
+                            currentClassification={this.state.currentClassification}
+                            loading={this.state.loading}
+                            handleCloudletDropdown={this.handleOnChangeCloudletDropdown}
+                            eventLogList={this.state.filteredClusterEventLogList}
+                        />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.APP_INST_EVENT_LOG) {
                     return (
-                        <AppInstEventLogHooks
+                        <AppInstEventLogList
                             currentAppInst={this.state.currentAppInst}
                             parent={this}
                             loading={this.state.loading}
@@ -1260,12 +1277,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         />
                     )
 
-                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENT_LOG) {
-                    return this.state.loading ? renderPlaceHolderLoader() :
-                        <ClusterEventLogListHook
-                            parent={this}
-                            eventLogList={this.state.filteredClusterEventLogList}
-                        />
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.DONUTS) {
                     return this.state.loading ? renderPlaceHolderLoader() :
                         <DonutChartHooks
@@ -1919,6 +1930,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
                         })
 
+                        //todo:filteredClusterEventLogList
+                        let filteredClusterEventLogList = []
+                        this.state.allClusterEventLogList.map((item: TypeClusterEventLog, index) => {
+                            if (item[1] === selectedCluster) {
+                                filteredClusterEventLogList.push(item)
+                            }
+                        })
+
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
@@ -1928,8 +1947,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_OPER,
                             dropdownRequestLoading: false,
                             filteredClusterUsageList: filteredClusterUsageList,
-                            // filteredClusterEventLogList: filteredClusterEventLogList,
-                            filteredClusterEventLogList: [],
                             appInstDropdown: appInstDropdown,
                             allAppInstDropdown: appInstDropdown,
                             appInstSelectBoxPlaceholder: 'Select App Inst',
@@ -1938,9 +1955,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentAppInst: undefined,
                             filteredClusterList: filteredClusterList,
                             currentOperLevel: CLASSIFICATION.CLUSTER,
+                            filteredClusterEventLogList: filteredClusterEventLogList,
                             //currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
-
-                        }, () => {
                         });
 
                     }

@@ -528,6 +528,7 @@ tr td {
 .fixedSizeListTableDiv {
     height: 30px;
     display: flex;
+    color: white;
 }
 
 
@@ -749,6 +750,7 @@ tr td {
 .ant-picker-cell-inner {
     /*background-color: #2A2C33;*/
 }
+
 .ant-picker-cell-selected {
     background-color: #2A2C33;
 
