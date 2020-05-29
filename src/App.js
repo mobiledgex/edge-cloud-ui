@@ -36,7 +36,7 @@ class App extends Component {
         if (localStorage && localStorage.PROJECT_INIT) {
             let store = JSON.parse(localStorage.PROJECT_INIT);
             if (store.userToken) {
-                let mcRequest = await serverData.controllers(self)
+                let mcRequest = await serverData.controllers(self, store.userToken)
                 if (mcRequest && mcRequest.response) {
                     let response = mcRequest.response;
                     let regions = [];

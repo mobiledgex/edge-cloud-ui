@@ -11,6 +11,8 @@ import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import PublicIP from 'public-ip';
+import * as serviceMC from '../../services/model/serviceMC';
+import { SHOW_CONTROLLER } from '../../services/model/endPointTypes';
 
 
 const host = window.location.host;
@@ -363,15 +365,29 @@ class Login extends Component {
         setTimeout(() => self.setState({ forgotPass: false, forgotMessage: false, loginMode: 'login' }), 1000)
     }
 
+    getControllers = async (token) => {
+        let mcRequest = await serverData.controllers(self, token)
+        if(mcRequest && mcRequest.response && mcRequest.response.data)
+        {
+            let data = mcRequest.response.data
+            let regions = []
+            data.map((data) => {
+                regions.push(data.Region)
+            })
+            localStorage.setItem('regions', regions)
+        }
+    }
+
+
     requestToken = async (self) => {
         let mcRequest = await serverData.login(self, { username: self.state.username, password: self.state.password })
         if (mcRequest && mcRequest.response) {
             let response = mcRequest.response;
             if (response.data.token) {
                 self.params['userToken'] = response.data.token
+                this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
                 self.props.mapDispatchToLoginWithPassword(self.params)
-
                 self.props.handleChangeLoginMode('login')
             } else {
                 self.props.handleAlertInfo('error', response.data.message)

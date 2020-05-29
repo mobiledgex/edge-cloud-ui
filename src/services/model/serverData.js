@@ -95,8 +95,8 @@ export const currentUser = async (self) => {
     return mcRequest
 }
 
-export const controllers = async (self) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_CONTROLLER })
+export const controllers = async (self, token) => {
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: SHOW_CONTROLLER, token: token })
     return mcRequest
 }
 
