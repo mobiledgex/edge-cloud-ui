@@ -736,3 +736,16 @@ tr td {
     font-weight: 600;
     background-color: #828282;
 }
+
+
+.ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
+    color: #3F25BD;
+    background: #f8fced;
+    border-color: #3F25BD;
+    cursor: pointer;
+}
+
+.ant-picker-cell-in-view {
+    color: #184012;
+}
+

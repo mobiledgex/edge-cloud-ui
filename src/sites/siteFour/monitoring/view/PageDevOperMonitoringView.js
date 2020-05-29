@@ -2085,7 +2085,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             showTime={{format: 'HH:mm'}}
                             format="YYYY-MM-DD HH:mm"
                             placeholder={[moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
-                            onOk={async (date) => {
+                            onChange={async (date) => {
                                 try {
                                     let stateTime = date[0].format('YYYY-MM-DD HH:mm')
                                     let endTime = date[1].format('YYYY-MM-DD HH:mm')
