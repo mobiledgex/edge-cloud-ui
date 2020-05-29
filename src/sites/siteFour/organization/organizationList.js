@@ -38,7 +38,7 @@ class OrganizationList extends React.Component {
     /**Action menu block */
     onAudit = (action, data) => {
         let orgName = data[fields.organizationName];
-        this.props.history.push({pathname:`/site4/pg=AuditLog&org=${orgName}`})
+        this.props.subPage(`pg=AuditLog&org=${orgName}`)
     }
 
     onDelete = (data, success) => {
