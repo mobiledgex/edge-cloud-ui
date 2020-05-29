@@ -2108,6 +2108,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             Date
                         </div>
                         <RangePicker
+                            separator={"~"}
                             disabled={this.state.filteredCloudletUsageList.length === 1 || this.state.loading}
                             ref={c => this.rangePicker = c}
                             showTime={{format: 'HH:mm'}}
