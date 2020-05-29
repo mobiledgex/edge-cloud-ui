@@ -727,17 +727,6 @@ tr td {
     background-color: #3f4338;
 }
 
-/*.ant-select-item-option-content {
-    background-color: coral;
-}*/
-
-.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-    color: white;
-    font-weight: 600;
-    background-color: #828282;
-}
-
-
 .ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
     color: #3F25BD;
     background: #f8fced;
@@ -745,7 +734,26 @@ tr td {
     cursor: pointer;
 }
 
-.ant-picker-cell-in-view {
-    color: #184012;
+.ant-picker-cell-in-view.ant-picker-cell-in-range::before {
+    background: #2A2C33;
 }
 
+.ant-picker-cell-range-hover-end {
+    background-color: #2A2C33;
+}
+
+.ant-picker-cell-in-range {
+    background-color: #2A2C33;
+}
+
+.ant-picker-cell-inner {
+    /*background-color: #2A2C33;*/
+}
+.ant-picker-cell-selected {
+    background-color: #2A2C33;
+
+}
+
+.ant-picker-cell-in-view {
+    color: #ebe9f2;
+}
