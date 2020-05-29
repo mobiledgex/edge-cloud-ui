@@ -41,28 +41,10 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletEventLog,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterEventLog,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterEventLog, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -98,12 +80,7 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -876,8 +853,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -2209,13 +2186,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Cluster
                             </div>
                             <TreeSelect
-                                //switcherIcon={(<Icon name='cloud' style={{fontSize: 15, color: 'green', cursor: 'pointer', marginTop: 2}}/>)}
                                 disabled={this.state.loading}
                                 size={'middle'}
                                 showSearch={true}
-                                switcherIcon={<FontAwesomeIcon
-                                    name="cloud" style={{fontSize: 15, color: '#77BD25', cursor: 'pointer', marginTop: 2}}
-                                />}
+                                switcherIcon={
+                                    <div style={{marginLeft: 5,}}>
+                                        <FontAwesomeIcon
+                                            name="cloud" style={{fontSize: 15, color: '#77BD25', cursor: 'pointer', marginTop: 2}}
+                                        />
+                                    </div>
+                                }
                                 style={{width: '400px'}}
                                 onSearch={(value) => {
                                     this.setState({
