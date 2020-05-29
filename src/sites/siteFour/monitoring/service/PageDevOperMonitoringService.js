@@ -23,7 +23,12 @@ import {
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 
@@ -1302,12 +1307,11 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
 
 
 export const makeDropdownForCloudlet = (pList) => {
-
     try {
         let newArrayList = [];
         newArrayList.push({
-            key: undefined,
-            value: undefined,
+            key: undefined | undefined | undefined,
+            value: undefined | undefined | undefined,
             text: 'Reset Filter',
         })
         pList.map((item: TypeCloudlet, index) => {
@@ -1320,6 +1324,9 @@ export const makeDropdownForCloudlet = (pList) => {
                 text: Cloudlet,
             })
         })
+
+        console.log('newArrayList==>', newArrayList)
+
         return newArrayList;
     } catch (e) {
 

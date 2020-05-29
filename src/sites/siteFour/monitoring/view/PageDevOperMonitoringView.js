@@ -55,7 +55,14 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -91,7 +98,12 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -1818,7 +1830,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne) => {
                 try {
-                    if (pCloudletFullOne !== undefined) {
+                    if (pCloudletFullOne !== undefined && pCloudletFullOne.toString() !== '0') {
                         await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletFullOne)})
                         let currentCloudletOne = this.state.currentCloudLet
                         let filteredClusterList = this.state.allClusterList.filter((clusterOne: TypeCluster, index) => {
@@ -2153,16 +2165,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
-                                this.handleOnChangeCloudletDropdown(value)
+                                await this.handleOnChangeCloudletDropdown(value)
                                 this.cloudletSelect.blur();
                             }}
                         >
-                            {this.state.cloudletDropdownList.map((item: TypeCloudlet, index) => {
+                            {this.state.cloudletDropdownList.map((item: any, index) => {
                                 try {
                                     if (index === 0) {
-                                        return <Option key={index} value={item.value} style={{}}>
-                                            <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
-                                        </Option>
+                                        return (
+                                            <Option key={index} value={undefined} style={{}}>
+                                                <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
+                                            </Option>
+                                        )
                                     } else {
                                         let itemValues = item.value + " | " + (index - 1).toString()
                                         return (
