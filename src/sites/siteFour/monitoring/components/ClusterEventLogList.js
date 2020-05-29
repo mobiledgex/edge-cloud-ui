@@ -44,6 +44,10 @@ export default function ClusterEventLogList(props) {
                         [Status]
                     </div>
                 </td>
+
+                {/*todo: empty column*/}
+                {/*todo: empty column*/}
+                {/*todo: empty column*/}
                 <td padding={'none'} align="center" style={{
                     color: 'white', flex: .03,
                     display: 'flex',
