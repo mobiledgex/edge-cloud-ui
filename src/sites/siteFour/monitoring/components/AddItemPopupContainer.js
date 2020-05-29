@@ -283,12 +283,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         )
     }
 
-    renderEventLogSelect() {
+    renderTableSelectForAppInst_Cluster() {
         return (
             <div className='page_monitoring_form_row'>
                 <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
                     <Center>
-                        Event Log Type
+                        Table Type
                     </Center>
                 </div>
 
@@ -312,12 +312,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
     }
 
 
-    renderEventLogSelectForCloudlet() {
+    renderTableSelectForCloudlet() {
         return (
             <div className='page_monitoring_form_row'>
                 <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
                     <Center>
-                        Event Log Type
+                        Table Type
                     </Center>
                 </div>
 
@@ -364,7 +364,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         )
     }
 
-    renderHwDropdown(hwDropdownChildren) {
+    renderHwMultipleDropdown(hwDropdownChildren) {
         return (
             <div>
                 <div className='page_monitoring_form_row'>
@@ -485,9 +485,10 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*@todo:###############################*/}
                         {/*@todo:DROP DOWN AREA                 */}
                         {/*@todo:###############################*/}
-                        {this.state.isShowHWDropDown && this.renderHwDropdown(hwDropdownChildren)}
-                        {this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderEventLogSelect()
-                            : this.renderEventLogSelectForCloudlet()
+                        {this.state.isShowHWDropDown && this.renderHwMultipleDropdown(hwDropdownChildren)}
+                        {this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST
+                            ? this.renderTableSelectForAppInst_Cluster()
+                            : this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderTableSelectForCloudlet() : null
                         }
                         {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&
                         <div className='page_monitoring_form_row'>
