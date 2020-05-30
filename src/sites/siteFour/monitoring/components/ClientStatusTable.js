@@ -59,14 +59,15 @@ export default function ClientStatusTable(props) {
                 style={{
                     display: 'flex',
                     width: '100%',
-                    height: 45
+                    height: 45,
+
                 }}
             >
-                <div className='page_monitoring_title draggable'
+                <div className='page_monitoring_title'
                      style={{
                          flex: 1,
                          marginTop: 5,
-                         //backgroundColor:'red'
+                         color: 'white',
                      }}
                 >
                     Client Status For App Inst
