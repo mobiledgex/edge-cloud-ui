@@ -2370,16 +2370,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             await this.handleOnChangeCloudletDropdown(undefined)
                                         }
                                     }}
-
                                 >
-
-                                    {this.renderDot(index, pLegendItemCount)}
-                                    <div
-                                        style={{marginTop: 0, marginLeft: 3}}
-                                    >
-                                        {reduceString(item.CloudletName, 21, pLegendItemCount)}
+                                    <div>
+                                        {this.renderDot(index, pLegendItemCount)}
                                     </div>
-                                    <div style={{marginRight: 5,}}>
+                                    <div style={{marginTop: 0, marginLeft: 5}}>
+                                        {reduceString(item.CloudletName, 21, pLegendItemCount)}
                                     </div>
 
                                 </Col>
