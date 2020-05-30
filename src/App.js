@@ -57,9 +57,9 @@ class App extends Component {
             return
         }
         const storage_json = JSON.parse(storage_data)
-        if (storage_json) {
-            self.props.mapDispatchToLoginWithPassword(storage_json)
-        }
+        // if (storage_json) {
+        //     self.props.mapDispatchToLoginWithPassword(storage_json)
+        // }
 
         this.getControllers()
     }
@@ -96,7 +96,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data })),
         handleRegionInfo: (data) => {
             dispatch(actions.regionInfo(data))
         },

@@ -7,6 +7,7 @@ import UAParser from 'ua-parser-js';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
@@ -83,7 +84,7 @@ const ForgotMessage = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onfocusout={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to Sign In</Button>
+                <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onBlur={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to Sign In</Button>
             </Grid.Column>
         </Grid.Row>
 
@@ -121,7 +122,7 @@ const FormResendVerify = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
             </Grid.Column>
         </Grid.Row>
 
@@ -164,14 +165,14 @@ const SuccessMsg = (props) => (
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('signup')}><span>Sign Up</span></Button>
+                        <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('signup')}><span>Sign Up</span></Button>
                     </Grid.Column>
                 </Grid.Row>
             </Fragment>
         }
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('login')}><span>Log In</span></Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('login')}><span>Log In</span></Button>
             </Grid.Column>
         </Grid.Row>
     </Grid>
@@ -385,8 +386,7 @@ class Login extends Component {
                 self.params['userToken'] = response.data.token
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                this.props.mapDispatchToLoginWithPassword(self.params)
-                this.props.handleChangeLoginMode('login')
+                this.props.history.push({pathname: `/site4/pg=${PAGE_ORGANIZATIONS}`})
             }
         }
         else
@@ -507,7 +507,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
-        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data })),
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleCreateAccount: (data) => { dispatch(actions.createAccount(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
