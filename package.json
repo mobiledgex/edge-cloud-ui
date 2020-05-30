@@ -5,7 +5,11 @@
     "@comment dependencies": [
         "These are the comments for the `dependencies` section.",
         "echarts-for-react",
-        "echarts"
+        "echarts",
+        "billboard.js",
+        "britecharts",
+        "highcharts",
+        "highcharts-more"
     ],
     "dependencies": {
         "@ant-design/dark-theme": "^1.0.3",
@@ -22,8 +26,6 @@
         "axios": "^0.18.0",
         "babel-plugin-import": "^1.13.0",
         "babel-polyfill": "^6.26.0",
-        "billboard.js": "^1.7.1",
-        "britecharts": "^2.9.8",
         "chart.js": "^2.9.3",
         "chartjs-plugin-labels": "^1.1.0",
         "chartjs-plugin-streaming": "^1.8.0",
@@ -39,8 +41,6 @@
         "feather-icons-react": "^0.4.1",
         "flexbox-react": "^4.4.0",
         "gsap": "^2.0.2",
-        "highcharts": "^6.2.0",
-        "highcharts-more": "^0.1.2",
         "history": "^4.7.2",
         "http-proxy-middleware": "^0.20.0",
         "interactjs": "^1.9.7",
