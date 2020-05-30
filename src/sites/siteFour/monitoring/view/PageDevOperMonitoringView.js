@@ -2153,7 +2153,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (index === 0) {
                                         return (
                                             <Option key={index} value={undefined} style={{}}>
-                                                <div style={{color: 'orange', fontWeight: 'bold'}}>{item.text}</div>
+                                                <div style={{color: 'orange', fontStyle: 'italic'}}>{item.text}</div>
                                             </Option>
                                         )
                                     } else {
