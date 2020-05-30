@@ -6,10 +6,11 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import HeaderGlobalMini from '../../container/headerGlobalMini';
 import {PAGE_ORGANIZATIONS} from '../../constant';
-
 import { GridLoader } from "react-spinners";
-import Alert from 'react-s-alert';
+import MexAlert from '../../hoc/alert/AlertDialog';
 let self = null;
+
+
 
 class EntranceGlobe extends Component {
 
@@ -24,7 +25,8 @@ class EntranceGlobe extends Component {
             modalOpen: true,
             loading: false,
             signup: false,
-            logined: false
+            logined: false,
+            mexAlertMessage:undefined
         };
         self = this;
     }
@@ -49,7 +51,8 @@ class EntranceGlobe extends Component {
             this.props.handleChangeLoginMode('resetPass')
         }
     }
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+    
+    componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps.loginMode && nextProps.loginMode === 'resetPass') {
             return;
         }
@@ -71,29 +74,11 @@ class EntranceGlobe extends Component {
             }
         }
 
-        //Redux Alert
-        if (nextProps.alertInfo.mode) {
-            Alert.closeAll();
-            if (nextProps.alertInfo.mode === 'success') {
-                Alert.success(nextProps.alertInfo.msg, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    beep: true,
-                    timeout: 10000,
-                    offset: 100
-                });
-            } else if (nextProps.alertInfo.mode === 'error') {
-                Alert.error(nextProps.alertInfo.msg, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    beep: true,
-                    timeout: 20000,
-                    offset: 100
-                });
-            }
-            nextProps.handleAlertInfo('', '');
+        if (nextProps.alertInfo.mode && nextProps.alertInfo.msg) {
+            let alertInfo = { msg: nextProps.alertInfo.msg, severity: nextProps.alertInfo.mode }
+            nextProps.handleAlertInfo(undefined, undefined);
+            this.setState({mexAlertMessage: alertInfo})
         }
-
     }
 
     goToNext(site) {
@@ -117,6 +102,7 @@ class EntranceGlobe extends Component {
         self.setState({ modalOpen: true })
         setTimeout(() => self.props.handleChangeLoginMode(mode), 500);
     }
+
     render() {
         return (
             <div style={{ width: '100%', height: '100%', overflow: 'hidden' }} className="intro_globe">
@@ -152,6 +138,8 @@ class EntranceGlobe extends Component {
                         loading={this.state.loading}
                     />
                 </div>
+                {this.state.mexAlertMessage ?
+                    <MexAlert data={this.state.mexAlertMessage} onClose={()=>this.setState({ mexAlertMessage: undefined })} /> : null}
             </div>
         )
     }

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import uuid from 'uuid';
 import * as EP from './endPointTypes'
-import Alert from 'react-s-alert';
 
 
 let sockets = [];
@@ -58,17 +57,10 @@ const showSpinner = (self, value) => {
     }
 }
 
-const showError = (request, message) => {
+const showError = (self, request, message) => {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
-    if (showMessage) {
-        Alert.error(message, {
-            position: 'top-right',
-            effect: 'slide',
-            beep: true,
-            timeout: 20000,
-            offset: 100,
-            html: true
-        });
+    if (showMessage && self && self.handleAlertInfo) {
+        self.handleAlertInfo('error', message)
     }
 }
 
@@ -89,21 +81,18 @@ const checkExpiry = (self, message) => {
 }
 
 function responseError(self, request, response, callback) {
-    if (response) {
+    if (response && response.error) {
+        let error  = response.error
         let message = 'UnKnown';
-        let code = response.status;
-        if (response.data && response.data.message) {
-            message = response.data.message
+        let code = error.status;
+        if (error.data && error.data.message) {
+            message = error.data.message
             if (checkExpiry(self, message)) {
                 showSpinner(self, false)
-                showError(request, message);
+                showError(self, request, message);
                 if (callback) {
-                    callback({request: request, error: {code: code, message: message}})
+                    callback({ request: request, error: { code: code, message: message } })
                 }
-            }
-            else if(request.method === EP.VERIFY_EMAIL)
-            {
-                showError(request, 'Oops, this link is expired')
             }
         }
     }
@@ -158,7 +147,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
-                responseError(self, requestDataList[0], error.response, callback)
+                responseError(self, requestDataList[0], error, callback)
             })
     }
 }
@@ -174,9 +163,21 @@ export const sendSyncRequest = async (self, request) => {
         showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        if (error.response) {
-            responseError(self, request, error.response)
-        }
+        responseError(self, request, error)
+    }
+}
+
+export const sendSyncRequestWithError = async (self, request) => {
+    try {
+        request.showSpinner === undefined && showSpinner(self, true)
+        let response = await axios.post(getHttpURL(request), request.data,
+            {
+                headers: getHeader(request)
+            });
+        request.showSpinner === undefined && showSpinner(self, false)
+        return EP.formatData(request, response);
+    } catch (error) {
+        return { request: request, error: error }
     }
 }
 
@@ -194,7 +195,7 @@ export function sendRequest(self, request, callback) {
         })
         .catch(function (error) {
             if (error.response) {
-                responseError(self, request, error.response, callback)
+                responseError(self, request, error, callback)
             }
         })
 }

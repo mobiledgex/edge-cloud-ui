@@ -101,7 +101,7 @@ export const controllers = async (self, token) => {
 }
 
 export const verifyEmail = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: VERIFY_EMAIL, data : data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: VERIFY_EMAIL, data : data })
     return mcRequest
 }
 
@@ -136,7 +136,7 @@ export const createUser = async (self, data) => {
 }
 
 export const login = async(self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: LOGIN, data: data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: LOGIN, data: data })
     return mcRequest
 }
 

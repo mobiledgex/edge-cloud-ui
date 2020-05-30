@@ -385,14 +385,13 @@ class Login extends Component {
                 self.params['userToken'] = response.data.token
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                self.props.mapDispatchToLoginWithPassword(self.params)
-                self.props.handleChangeLoginMode('login')
-            } else {
-                self.props.handleAlertInfo('error', response.data.message)
-                if (response.data.message.indexOf('not verified') > -1) {
-                    self.setState({ loginMode: 'verify' })
-                }
+                this.props.mapDispatchToLoginWithPassword(self.params)
+                this.props.handleChangeLoginMode('login')
             }
+        }
+        else
+        {
+            this.props.handleAlertInfo('error', 'Invalid username/password')
         }
     }
 

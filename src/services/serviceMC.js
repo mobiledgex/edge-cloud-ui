@@ -1,7 +1,6 @@
 import axios from 'axios';
 import uuid from 'uuid';
 import * as EP from './endPointTypes'
-import Alert from 'react-s-alert';
 
 
 let sockets = [];
@@ -59,17 +58,10 @@ const showSpinner = (self, value) => {
     }
 }
 
-const showError = (request, message) => {
+const showError = (self, request, message) => {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
-    if (showMessage) {
-        Alert.error(message, {
-            position: 'top-right',
-            effect: 'slide',
-            beep: true,
-            timeout: 20000,
-            offset: 100,
-            html: true
-        });
+    if (showMessage && self && self.handleAlertInfo) {
+        self.handleAlertInfo('error', message)
     }
 }
 
@@ -91,7 +83,7 @@ function responseError(self, request, response, callback) {
             message = response.data.message
             if (checkExpiry(self, message)) {
                 showSpinner(self, false)
-                showError(request, message);
+                showError(self, request, message);
                 if (callback) {
                     callback({request: request, error: {code: code, message: message}})
                 }

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import {HashRouter, Route } from "react-router-dom";
-import Alert from 'react-s-alert';
 
-import 'react-s-alert/dist/s-alert-default.css';
-import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
 //redux
 import { connect } from 'react-redux';
@@ -94,7 +91,6 @@ const mapStateToProps = (state) => {
         clickTab: (state.tabClick.clickTab) ? state.tabClick.clickTab : null,
         loadingSpinner: state.loadingSpinner.creating ? state.loadingSpinner.creating : null,
         themeType: state.ThemeReducer.themeType,
-
     };
 };
 
@@ -106,9 +102,6 @@ const mapDispatchProps = (dispatch) => {
         },
         handleUserInfo: (data) => {
             dispatch(actions.userInfo(data))
-        },
-        handleAlertInfo: (mode, msg) => {
-            dispatch(actions.alertInfo(mode, msg))
         },
         toggleTheme: (data) => {
             dispatch(actions.toggleTheme(data))
