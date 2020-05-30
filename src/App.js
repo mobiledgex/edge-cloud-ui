@@ -56,11 +56,6 @@ class App extends Component {
         if (!storage_data) {
             return
         }
-        const storage_json = JSON.parse(storage_data)
-        // if (storage_json) {
-        //     self.props.mapDispatchToLoginWithPassword(storage_json)
-        // }
-
         this.getControllers()
     }
 

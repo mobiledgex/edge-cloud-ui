@@ -40,10 +40,6 @@ class headerGlobalAudit extends React.Component {
         }
     }
 
-    componentWillMount() {
-
-    }
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
         let devData = this.state.devData
