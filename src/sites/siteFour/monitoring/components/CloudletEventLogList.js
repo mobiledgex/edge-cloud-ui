@@ -64,12 +64,12 @@ export default function CloudletEventLogList(props) {
                             </div>
                         </div>
                     </td>
-                    {/*Cloudlet*/}
+                    {/*Cloudlet[org]*/}
                     <td padding={'none'} align="center"
                         style={makeTableRowStyle(index, itemHeight)}
                     >
                         <div style={{color: 'white'}}>
-                            {reduceString(props.cloudletEventLogList[index][1], 15)}
+                            {reduceString(props.cloudletEventLogList[index][1], 35)}
                         </div>
                         <div>
                             [{props.cloudletEventLogList[index][2]}]
