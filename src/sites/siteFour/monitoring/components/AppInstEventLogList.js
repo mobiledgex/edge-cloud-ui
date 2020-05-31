@@ -130,7 +130,7 @@ export default function AppInstEventLogList(props) {
             {renderTitle()}
             {props.loading ? <div style={{marginTop: 75}}>{renderPlaceHolderLoader()}</div> :
                 <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
-                       stickyHeader={true}>
+                       stickyheader={true}>
 
                     {renderHeader()}
                     {/*todo:tableBody*/}

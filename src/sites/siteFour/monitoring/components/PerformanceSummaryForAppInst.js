@@ -56,7 +56,7 @@ export default function PerformanceSummaryForAppInst(props) {
                     }}
                 >
                     <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
-                           stickyHeader={true}>
+                           stickyheader={true}>
 
                         <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
                             <TableRow>

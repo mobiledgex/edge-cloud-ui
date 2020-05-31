@@ -90,14 +90,14 @@ export default function ClusterEventLogList(props) {
                     <td padding={'none'} align="center" valign={'center'}
                         style={makeTableRowStyle(index, itemHeight)}
                     >
-                        <div>
+                        <React.Fragment>
                             <div style={{marginLeft: 2}}>
                                 {props.eventLogList[index][CLUSTER_COLUMN_INDEX.time].toString().split('T')[0]}
                             </div>
                             <div style={{marginLeft: 2}}>
                                 {props.eventLogList[index][CLUSTER_COLUMN_INDEX.time].toString().split('T')[1].substring(0, 8)}
                             </div>
-                        </div>
+                        </React.Fragment>
                     </td>
                     {/*DESC:CLUSTER*/}
                     <td padding={'none'} align="center"
@@ -146,9 +146,9 @@ export default function ClusterEventLogList(props) {
     }
 
     return (
-        <div>
+        <React.Fragment>
             {renderTitle(props)}
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyHeader={true}>
+            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true}>
                 {!props.parent.state.loading && renderHeader()}
                 {!props.loading ?
                     <FixedSizeList
@@ -167,7 +167,7 @@ export default function ClusterEventLogList(props) {
                     </Center>
                 }
             </table>
-        </div>
+        </React.Fragment>
     )
 
 }

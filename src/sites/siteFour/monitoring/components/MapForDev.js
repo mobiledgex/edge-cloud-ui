@@ -408,7 +408,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 >
                     {this.mapTileList.map((item, index) => {
                         return (
-                            <Option style={{color: 'white'}} defaultChecked={index === 0}
+                            <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
                                     value={item.value}>{item.name}</Option>
                         )
                     })}
@@ -521,7 +521,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         renderAppInstPopup(listAppName, cloudletOne, cloudletIndex) {
             return (
-                <Popup permanent className='cloudlet_popup' ref={this.appInstPopup}>
+                <Popup index={cloudletIndex} permanent className='cloudlet_popup' ref={this.appInstPopup}>
                     {listAppName.map((AppFullName, appIndex) => {
                         let AppName = AppFullName.trim().split(" | ")[0].trim()
                         let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
@@ -539,8 +539,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                         return (
                             <div style={PageMonitoringStyles.appPopupDiv}
+                                 index={appIndex * cloudletIndex}
                             >
                                 <Ripples
+
                                     style={{marginLeft: 5,}}
                                     color='#1cecff'
                                     during={500}
@@ -596,9 +598,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
                             >
-                                {cloudlets.map(item => {
+                                {cloudlets.map((item, index) => {
                                     return (
                                         <div
+                                            key={index}
                                             className='mapCloudletTooltipInner'
                                         >
                                             {item}

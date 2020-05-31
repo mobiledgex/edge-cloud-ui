@@ -156,7 +156,7 @@ export default function CloudletEventLogList(props) {
     return (
         <div>
             {renderTitle(props)}
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyHeader={true}>
+            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true}>
                 {!props.parent.state.loading && renderTableHead()}
                 {/*##########################################*/}
                 {/*     tableBody                            */}

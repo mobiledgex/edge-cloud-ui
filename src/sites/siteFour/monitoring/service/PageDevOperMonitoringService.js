@@ -1162,15 +1162,15 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
-    let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
+export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit) => {
+    //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
     return (
         <div style={{display: 'flex'}}>
             <div>
-                {reduceString(item.cluster, limitCharLength)}
+                {reduceString(item.cluster, stringLimit)}
             </div>
             <div style={{color: 'white'}}>
-                &nbsp;[{reduceString(item.cloudlet, limitCharLength)}]
+                &nbsp;[{reduceString(item.cloudlet, stringLimit)}]
             </div>
         </div>
     )
