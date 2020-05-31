@@ -563,8 +563,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let allCloudletEventLogList = []
                         allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
-
-                        console.log(`cloudletList===>`, cloudletList);
                         appInstList = await fetchAppInstList()
                         let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
@@ -602,9 +600,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
-
-
-                        console.log(`allClusterEventLogList====>`, allClusterEventLogList);
 
                     } else {//TODO:OPERATOR
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);

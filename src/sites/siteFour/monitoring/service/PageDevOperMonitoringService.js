@@ -1321,8 +1321,6 @@ export const makeDropdownForCloudlet = (pList) => {
             })
         })
 
-        console.log('newArrayList==>', newArrayList)
-
         return newArrayList;
     } catch (e) {
 
