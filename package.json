@@ -167,6 +167,7 @@
         "eject": "react-scripts eject",
         "json-server": "json-server --watch db.json --port 3004",
         "analyze": "source-map-explorer 'build/static/js/*.js'"
+
     },
     "browserslist": [
         ">0.2%",
