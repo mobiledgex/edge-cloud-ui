@@ -5,15 +5,17 @@ import {
     Geographies,
     Geography,
     ZoomableGroup,
-    Marker
+    Line
 } from "react-simple-maps";
 import { isEqual } from "lodash";
-import { Motion, spring } from "react-motion";
-import * as d3 from "d3";
+import { selectAll, easeBack } from "d3";
+
+import MarkerComponent from "./MarkerComponent";
+import MarkerClient from "./MarkerClient";
 import styles from "../../../css/worldMapStyles";
 
 
-import * as aggregation from "../../../utils";
+import { groupByCompare, groupBy } from "../../../utils";
 
 const geoPaths = ["/topojson-maps/world-110m.json"];
 const zoomControls = { center: [30, 40], zoom: 3 };
@@ -22,7 +24,7 @@ const ClusterMap = props => {
     const [toggle, setToggle] = React.useState(false);
     const [position, setPosition] = React.useState({ coordinates: [0, 0], zoom: 1 });
 
-
+    const [clients, setClients] = React.useState([]);
     const [center] = React.useState(zoomControls.center);
     const [zoom] = React.useState(zoomControls.zoom);
     const [cities, setCities] = React.useState([]);
@@ -48,13 +50,16 @@ const ClusterMap = props => {
 
         const locations = data.map(item => {
             if (item) {
-                return ({ LAT: reduceUp(item.latitude), LON: reduceUp(item.longitude), cloudlet: item.cloudletName, methodCount: item.callCount });
+                return ({
+                    LAT: reduceUp(item.latitude), LON: reduceUp(item.longitude), cloudlet: item.cloudletName, methodCount: item.callCount
+                });
             }
         });
 
 
         const locationData = [];
-        const groupbyData = aggregation.groupByCompare(locations, ["LAT", "LON"]);
+        const clientLocations = [];
+        const groupbyData = groupByCompare(locations, ["LAT", "LON"]);
 
         const cloundletName = key => {
             const nameArray = [];
@@ -68,22 +73,21 @@ const ClusterMap = props => {
             locationData.push({
                 name: cloundletName(key), coordinates: [groupbyData[key][0].LON, groupbyData[key][0].LAT], population: 17843000, cost: groupbyData[key][0].methodCount
             });
-        });
-        //
-        const cloudlet = data.map(item => (
-            { LAT: item.latitude, LON: item.longitude, cloudlet: item.cloudletName }
-        ));
-
-
-        const cloudletData = [];
-
-        const groupbyClData = aggregation.groupBy(cloudlet, "cloudlet");
-
-        Object.keys(groupbyClData).map(key => {
-            cloudletData.push({
-                name: key, coordinates: [groupbyClData[key][0].LON, groupbyClData[key][0].LAT], population: 17843000, cost: methodCount
+            clientLocations.push({
+                name: cloundletName(key), coordinates: [132, 37], population: 17843000, cost: groupbyData[key][0].methodCount
             });
         });
+        //
+        // const cloudlet = data.map(item => (
+        //     { LAT: item.latitude, LON: item.longitude, cloudlet: item.cloudletName }
+        // ));
+        // const cloudletData = [];
+        // const groupbyClData = groupBy(cloudlet, "cloudlet");
+        // Object.keys(groupbyClData).map(key => {
+        //     cloudletData.push({
+        //         name: key, coordinates: [groupbyClData[key][0].LON, groupbyClData[key][0].LAT], population: 17843000, cost: methodCount
+        //     });
+        // });
 
 
         if (!isEqual(locationData, cities)) {
@@ -92,10 +96,10 @@ const ClusterMap = props => {
             let center = props.locData ? center : zoomControls.center;
 
             if (props.mapDetails) {
-                if (d3.selectAll(".rsm-markers").selectAll(".levelFive")) {
-                    d3.selectAll(".rsm-markers").selectAll(".levelFive")
+                if (selectAll(".rsm-markers").selectAll(".levelFive")) {
+                    selectAll(".rsm-markers").selectAll(".levelFive")
                         .transition()
-                        .ease(d3.easeBack)
+                        .ease(easeBack)
                         .attr("r", markerSize[0]);
                 }
 
@@ -109,9 +113,12 @@ const ClusterMap = props => {
                 center = props.mapDetails.coordinates;
             }
             setCities(locationData);
-            // return {
-            //     cities: locationData, center, zoom, detailMode: !!props.mapDetails, clickCities: clickMarker
-            // };
+            setClients(clientLocations);
+
+            /** zoom in * */
+            // setTimeout(() => {
+            //     setToggle(true);
+            // }, 3000);
         }
     }, [props]);
 
@@ -126,12 +133,12 @@ const ClusterMap = props => {
     }
 
     function handleMoveEnd(position) {
-        //setPosition(position);
+        // setPosition(position);
     }
 
-    setTimeout(() => {
-        setToggle(true);
-    }, 3000);
+    // setTimeout(() => {
+    //     setToggle(true);
+    // }, 3000);
 
     return (
         <Spring
@@ -152,11 +159,77 @@ const ClusterMap = props => {
                                     <Geography key={geo.rsmKey} geography={geo} style={styles.geography} />
                                 ))}
                             </Geographies>
-                            <Marker coordinates={[-101, 53]} fill="#777">
-                                <svg width="190" height="160" xmlns="http://www.w3.org/2000/svg">
-                                    <path d={`M 5 5 Q 50 5 100 100`} stroke="greenyellow" strokeDasharray="5,5" fill="transparent" />
-                                </svg>
-                            </Marker>
+
+                            {
+                                cities.map((city, i) => (
+                                    <MarkerComponent
+                                        self={this}
+                                        city={city}
+                                        idx={i}
+                                        config={{
+                                            transform: "translate(-24,-18)", gColor: 6, cName: "st1", path: 0
+                                        }}
+                                        keyName={keyName}
+                                    />
+                                ))
+                            }
+                            {
+                                cities.map((city, i) => (
+                                    <Line
+                                        id="connectLine"
+                                        from={city.coordinates}
+                                        to={[132, 37]}
+                                        stroke="greenyellow"
+                                        strokeWidth={1}
+                                        strokeLinecap="round"
+                                        strokeDasharray="3,3"
+                                    />
+                                ))
+                            }
+                            {
+                                clients.map((client, j) => (
+                                    <MarkerClient
+                                        self={this}
+                                        city={client}
+                                        idx={j}
+                                        config={{
+                                            transform: "translate(-24,-18)", gColor: 6, cName: "st1", path: 0
+                                        }}
+                                        keyName={keyName}
+                                    />
+                                ))
+                            }
+                            {
+                                cities.map((city, i) => (
+                                    <g
+                                        data-tip="tooltip"
+                                        data-for="happyFace"
+                                    >
+                                        <rect
+                                            ry="4.4704852"
+                                            height="21.048122"
+                                            width="70.583839"
+                                            id="rect2829"
+                                            style={{
+                                                fill: "#000000", stroke: "greenyellow", strokeWidth: 0.77330667, strokeOpacity: 1
+                                            }}
+                                        />
+                                        <text
+                                            id="text2852"
+                                            textAnchor="middle"
+                                            y={8}
+                                            className="marker_value"
+                                            fill="#AFAFAF"
+                                            style={{ fontSize: 18 }}
+                                        >
+                                            <textPath href="#connectLine" startOffset="45%">
+                                                {city.cost}
+                                            </textPath>
+                                        </text>
+                                    </g>
+                                ))
+                            }
+
                         </ZoomableGroup>
                     </ComposableMap>
                 </div>
@@ -166,3 +239,20 @@ const ClusterMap = props => {
 };
 
 export default ClusterMap;
+
+/*
+<g data-tip="tooltip" data-for="happyFace">
+                                        <text
+                                            textAnchor="middle"
+                                            y={8}
+                                            className="marker_value"
+                                            fill="#AFAFAF"
+                                            style={{ fontSize: 18 }}
+                                        >
+                                            <textPath href="#connectLine" startOffset="45%">
+                                                {city.cost}
+                                            </textPath>
+
+                                        </text>
+                                    </g>
+                                    */
