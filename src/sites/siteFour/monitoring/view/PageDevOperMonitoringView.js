@@ -1785,7 +1785,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         this.setState({isStream: false})
                                     } else {
                                         if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster)
+                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster, this.state.currentColorIndex)
                                         } else {
                                             await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
                                         }
@@ -1866,7 +1866,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async handleOnChangeClusterDropdown(pClusterCloudletOne, clusterIndex) {
-
                 if (this.state.isStream === false) {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
@@ -2534,7 +2533,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.renderDot(0, pLegendItemCount)}
                                 <ClusterCluoudletLabel
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
-                                    {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
+                                    {this.state.currentAppInst.split("|")[0]}
                                 </ClusterCluoudletLabel>
                             </div>
                         </Col>
