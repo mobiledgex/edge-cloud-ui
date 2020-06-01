@@ -2138,6 +2138,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderDotForCloudlet(index) {
+                return (
+                    <Center>
+                        <div
+                            style={{
+                                backgroundColor: this.state.cloudletDropdownList.length === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index - 1],
+                                width: 15,
+                                height: 15,
+                                borderRadius: 50,
+                            }}
+                        >
+                        </div>
+                    </Center>
+                )
+            }
+
+
             renderCloudletDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -2179,8 +2196,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         return (
                                             <Option key={index} value={itemValues}>
                                                 <div style={{display: 'flex'}}>
-                                                    {/*<div style={{marginLeft: 0}}><Tag color="purple">{item.region}</Tag></div>*/}
-                                                    <div style={{marginLeft: 3,}}>{item.text}</div>
+                                                    {this.renderDotForCloudlet(index)}
+                                                    <div style={{marginLeft: 7,}}>{item.text}</div>
                                                 </div>
                                             </Option>
                                         )
