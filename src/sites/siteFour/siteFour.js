@@ -1,17 +1,18 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 
-import {withRouter} from 'react-router-dom';
-import {Steps} from 'intro.js-react';
+import { withRouter } from 'react-router-dom';
+import { Steps } from 'intro.js-react';
 
 //redux
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import {GridLoader} from "react-spinners";
+import { GridLoader } from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
 import * as serverData from '../../services/model/serverData';
-import {MonitoringTutor} from '../../tutorial';
-import Alert from 'react-s-alert';
+import * as constant from '../../constant';
+import { MonitoringTutor } from '../../tutorial';
+import MexAlert from '../../hoc/alert/AlertDialog';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 
@@ -30,7 +31,6 @@ class SiteFour extends React.Component {
             email: store ? store.email : 'Administrator',
             role: '',
             userToken: null,
-            OrganizationName: '',
             adminShow: false,
             menuClick: false,
             learned: false,
@@ -39,32 +39,10 @@ class SiteFour extends React.Component {
             steps: [],
             enable: false,
             hideNext: true,
-            userRole:null,
-            selectRole: ''
+            userRole: null,
+            selectRole: '',
+            mexAlertMessage: undefined
         };
-    }
-
-    gotoUrl(site, subPath) {
-        let mainPath = site;
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
-        _self.setState({page: subPath})
-    }
-
-    handleItemClick(id, label, pg, role) {
-        localStorage.setItem('selectMenu', label)
-        _self.setState({menuClick: true})
-        _self.props.history.push({
-            pathname: '/site4',
-            search: "pg=" + pg
-        });
-        _self.props.history.location.search = "pg=" + pg;
-        _self.props.handleChangeStep(pg)
-        _self.setState({page: 'pg=' + pg, activeItem: label, headerTitle: label})
     }
 
     controllerOptions(option) {
@@ -110,8 +88,8 @@ class SiteFour extends React.Component {
         let enable = false;
         let currentStep = this.props.ViewMode ? this.props.ViewMode : null;
 
-        if( currentStep ){ enable = true; }
-        if (this.props.params.subPath === "pg=Monitoring") {
+        if (currentStep) { enable = true; }
+        if (this.props.match.params.pageId === `pg=${constant.PAGE_MONITORING}`) {
             if (localStorage.selectRole === 'AdminManager') {
                 currentStep = monitoringSteps.stepsMonitoring;
             } else if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
@@ -120,63 +98,18 @@ class SiteFour extends React.Component {
                 currentStep = monitoringSteps.stepsMonitoringOper;
             }
         }
-        _self.setState({steps: currentStep})
+        _self.setState({ steps: currentStep })
         if (enable) {
-            _self.setState({stepsEnabled: true, enable: true})
+            _self.setState({ stepsEnabled: true, enable: true })
         }
     }
 
-    UNSAFE_componentWillMount() {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        _self.setState({
-            activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
-            headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'
-        })
-
-        if (store) {
-            _self.getAdminInfo(store.userToken);
-        } else {
-            _self.gotoUrl('/logout')
-        }
-        _self.props.handleViewMode( null );
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.params && nextProps.params.subPath) {
-            let subPaths = nextProps.params.subPath;
-            let subPath = '';
-            let subParam = '';
-            if (subPaths.indexOf('&org=')) {
-                let paths = subPaths.split('&')
-                subPath = paths[0];
-                subParam = paths[1];
-            }
-            _self.setState({page: subPath, OrganizationName: subParam})
-
-        }
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
 
         if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
-            Alert.closeAll();
-            if (nextProps.alertInfo.mode === 'success') {
-
-                Alert.success(nextProps.alertInfo.msg, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    beep: true,
-                    timeout: 10000,
-                    offset: 100
-                });
-            } else if (nextProps.alertInfo.mode === 'error') {
-                Alert.error(nextProps.alertInfo.msg, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    beep: true,
-                    timeout: 20000,
-                    offset: 100,
-                    html: true
-                });
-            }
-            nextProps.handleAlertInfo('', '');
+            let alertInfo = { msg: nextProps.alertInfo.msg, severity: nextProps.alertInfo.mode }
+            nextProps.handleAlertInfo(undefined, undefined);
+            this.setState({ mexAlertMessage: alertInfo })
         }
 
         let tutorial = localStorage.getItem('TUTORIAL')
@@ -185,7 +118,7 @@ class SiteFour extends React.Component {
         if (formKey.length) {
             if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({stepsEnabled: false})
+                    _self.setState({ stepsEnabled: false })
                 }
             }
         }
@@ -194,25 +127,25 @@ class SiteFour extends React.Component {
         setTimeout(() => {
             if (enable && !_self.state.learned && !tutorial) {
                 _self.enableSteps();
-                _self.setState({stepsEnabled: true, learned: true})
+                _self.setState({ stepsEnabled: true, learned: true })
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
         }, 1000)
 
         if (!_self.props.changeStep || _self.props.changeStep === '02') {
-            _self.setState({enable: true})
+            _self.setState({ enable: true })
         } else {
-            _self.setState({enable: false})
+            _self.setState({ enable: false })
         }
     }
 
     onExit() {
-        _self.setState({stepsEnabled: false})
+        _self.setState({ stepsEnabled: false })
     }
 
     render() {
-        const {stepsEnabled, initialStep, steps} = _self.state;
+        const { stepsEnabled, initialStep, steps } = _self.state;
         return (
             <div className='view_body'>
                 {steps ?
@@ -222,11 +155,11 @@ class SiteFour extends React.Component {
                         initialStep={initialStep}
                         onExit={_self.onExit}
                         showButtons={true}
-                        options={{hideNext: false}}
+                        options={{ hideNext: false }}
                         ref={steps => (_self.steps = steps)}
                     /> : null}
                 {(_self.props.loadingSpinner == true) ?
-                    <div className="loadingBox" style={{zIndex: 9999}}>
+                    <div className="loadingBox" style={{ zIndex: 9999 }}>
                         <GridLoader
                             sizeUnit={"px"}
                             size={25}
@@ -234,7 +167,10 @@ class SiteFour extends React.Component {
                             loading={_self.props.loadingSpinner}
                         />
                     </div> : null}
-                <SideNav onOptionClick={_self.handleItemClick} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} gotoUrl={_self.gotoUrl} viewMode={_self.props.ViewMode} userRole={this.state.userRole}/>
+                <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} viewMode={_self.props.ViewMode} userRole={this.state.userRole} />
+
+                {this.state.mexAlertMessage ?
+                    <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div>
         );
     }
@@ -244,7 +180,7 @@ class SiteFour extends React.Component {
     }
 
     componentWillUnmount() {
-        _self.setState({learned: false})
+        _self.setState({ learned: false })
     }
 
 };
@@ -299,4 +235,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(SiteFour)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFour)));
