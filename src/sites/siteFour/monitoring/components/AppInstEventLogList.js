@@ -6,6 +6,7 @@ import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageDevOperMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import Table from "@material-ui/core/Table";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -130,7 +131,7 @@ export default function AppInstEventLogList(props) {
             {renderTitle()}
             {props.loading ? <div style={{marginTop: 75}}>{renderPlaceHolderLoader()}</div> :
                 <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
-                       stickyheader={true}>
+                       stickyheader={true.toString()}>
 
                     {renderHeader()}
                     {/*todo:tableBody*/}

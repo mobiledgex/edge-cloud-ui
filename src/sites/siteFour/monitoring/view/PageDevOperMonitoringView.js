@@ -2365,6 +2365,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderCloudletLegend(pLegendItemCount) {
+
+                console.log('width===>', this.props.size.width);
+
+                let stringLimit = 20;
+                if (this.props.size.width > 1700) {
+                    stringLimit = 16
+                } else if (this.props.size.width < 1700 && this.props.size.width >= 1500) {
+                    stringLimit = 14
+                } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                    stringLimit = 12
+                } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                    stringLimit = 10
+                } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+                    stringLimit = 7
+                } else if (this.props.size.width < 720) {
+                    stringLimit = 4
+                }
+
+
                 return (
                     <Row gutter={16}
                          style={{
@@ -2402,7 +2421,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.renderDot(cloudletIndex, pLegendItemCount)}
                                     </div>
                                     <div style={{marginTop: 0, marginLeft: 5}}>
-                                        {reduceString(item.CloudletName, 21, pLegendItemCount)}
+                                        {reduceString(item.CloudletName, stringLimit, pLegendItemCount)}
                                     </div>
 
                                 </Col>
@@ -2424,7 +2443,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     stringLimit = 12
                 } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
                     stringLimit = 10
-                } else if (this.props.size.width < 1150 && this.props.size.width >= 1000) {
+                } else if (this.props.size.width < 1150) {
                     stringLimit = 7
                 }
 
