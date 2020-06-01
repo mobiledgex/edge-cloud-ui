@@ -86,7 +86,7 @@ export default function ClientStatusTable(props) {
                        stickyheader={true}>
 
 
-                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
+                    <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                                 App Inst

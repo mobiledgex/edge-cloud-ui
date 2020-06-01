@@ -117,7 +117,7 @@ export default class PopLegendViewer extends React.Component {
     componentDidMount() {
 
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
             let regKeys = [];
