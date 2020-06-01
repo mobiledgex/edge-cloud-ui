@@ -2386,7 +2386,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderCloudletLegend(pLegendItemCount) {
 
-
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
 
                 return (
