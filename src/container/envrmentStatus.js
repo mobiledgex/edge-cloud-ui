@@ -91,7 +91,8 @@ class EnvironmentStatus extends Component {
         }
 
     }
-    componentWillReceiveProps(nextProps) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps) {
         let self = this;
         setTimeout(function(){self.setState({data: nextProps.data})}, 1500)
     }

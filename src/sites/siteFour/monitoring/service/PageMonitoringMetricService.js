@@ -1,8 +1,8 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
-import {sendSyncRequest, mcURL} from "../../../../services/serviceMC";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
@@ -13,7 +13,8 @@ import {
     CLOUDLET_METRICS_ENDPOINT,
     CLUSTER_EVENT_LOG_ENDPOINT,
     CLUSTER_METRICS_ENDPOINT,
-    SHOW_APP_INST_CLIENT_ENDPOINT, SHOW_METRICS_CLIENT_STATUS
+    SHOW_APP_INST_CLIENT_ENDPOINT,
+    SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
@@ -152,7 +153,12 @@ export const fetchAppInstList = async (pRegionList = localStorage.getItem('regio
             let mergedList = mergedAppInstanceList.concat(listOne);
             mergedAppInstanceList = mergedList;
         })
-        return mergedAppInstanceList;
+
+        let filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {
+            return item.AppName !== MEX_PROMETHEUS_APPNAME
+        })
+
+        return filteredAppInstList;
     } catch (e) {
         //throw new Error(e)
     }
@@ -600,7 +606,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     }
 }
 
-let CLOUDLET_USAGE_INDEX = {
+const CLOUDLET_USAGE_INDEX = {
     "time": 0,
     "cloudlet": 1,
     "cloudletorg": 2,
@@ -617,6 +623,7 @@ let CLOUDLET_USAGE_INDEX = {
     "ipv4Used": 13,
     "ipv4Max": 14,
 }
+
 
 /**
  *
@@ -645,7 +652,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
         let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
-
         let netSendSeriesList = [];
         let netRecvSeriesList = [];
         let vCpuSeriesList = [];
@@ -653,35 +659,18 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let diskSeriesList = [];
         let floatingIpsSeriesList = [];
         let ipv4UsedSeriesList = [];
-
         let cloudlet = "";
         let operator = "";
         let Region = '';
+        let columns = [];
 
         let usageList = []
         cloudletLevelMatricUsageList.map((item, index) => {
             if (!isEmpty(item) && !isEmpty(item.data["0"].Series)) {
                 Region = cloudletList[index].Region
                 let series = item.data["0"].Series["0"].values
-                let columns = item.data["0"].Series["0"].columns
-
-
-                //////////////////////////////////////////
-                let netSendSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netSend]
-                let netRecvSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.netRecv]
-                let vCpuSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.vCpuUsed]
-                let memSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.memUsed]
-                let diskSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.diskUsed]
-                let floatingIpsSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.floatingIpsUsed]
-                let ipv4UsedSeriesOne = series["0"][CLOUDLET_USAGE_INDEX.ipv4Used]
-
-                netSendSeriesList.push(netSendSeriesOne)
-                netRecvSeriesList.push(netRecvSeriesOne)
-                vCpuSeriesList.push(vCpuSeriesOne)
-                memSeriesList.push(memSeriesOne)
-                diskSeriesList.push(diskSeriesOne)
-                floatingIpsSeriesList.push(floatingIpsSeriesOne)
-                ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
+                let ipSeries = item.data["0"].Series["1"].values
+                columns = item.data["0"].Series["0"].columns
 
                 let sumVirtualCpuUsed = 0;
                 let sumvCpuMax = 0;
@@ -696,7 +685,24 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 let sumIpv4Used = 0;
                 let sumIpv4Max = 0;
 
-                series.map(item => {
+                series.map((item, innerIndex) => {
+
+                    let netSendSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.netSend)]
+                    let netRecvSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.netRecv)]
+                    let vCpuSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.vCpuUsed)]
+                    let memSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.memUsed)]
+                    let diskSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.diskUsed)]
+                    let floatingIpsSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.floatingIpsUsed)]
+                    let ipv4UsedSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.ipv4Used)]
+
+                    netSendSeriesList.push(netSendSeriesOne)
+                    netRecvSeriesList.push(netRecvSeriesOne)
+                    vCpuSeriesList.push(vCpuSeriesOne)
+                    memSeriesList.push(memSeriesOne)
+                    diskSeriesList.push(diskSeriesOne)
+                    floatingIpsSeriesList.push(floatingIpsSeriesOne)
+                    ipv4UsedSeriesList.push(ipv4UsedSeriesOne)
+
                     cloudlet = item[1]
                     operator = item[2]
 
@@ -719,11 +725,11 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                     sumNetRecv += item["4"];
 
                     //todo: FLOATIP
-                    sumFloatingIpsUsed += item["11"];
-                    sumFloatingIpsMax += item["12"];
+                    sumFloatingIpsUsed += ipSeries[innerIndex]["11"];
+                    sumFloatingIpsMax += ipSeries[innerIndex]["12"];
                     //todo: IPV4
-                    sumIpv4Used += item["13"];
-                    sumIpv4Max += item["14"];
+                    sumIpv4Used += ipSeries[innerIndex]["13"];
+                    sumIpv4Max += ipSeries[innerIndex]["14"];
 
                 })
 
@@ -740,6 +746,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                     maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
                     columns: columns,
                     series: series,
+                    ipSeries: ipSeries,
                     cloudlet: cloudlet,
                     operator: operator,
                     Region: Region,
@@ -751,7 +758,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                     floatingIpsSeriesList,
                     ipv4UsedSeriesList,
                 })
-            } else {//Seires is null
+            } else {//series is null
                 usageList.push({
                     usedVCpuCount: 0,
                     usedMemUsage: 0,
@@ -779,6 +786,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
             }
 
         });
+
         return usageList;
     } catch (e) {
     }
@@ -1089,7 +1097,7 @@ export const getAllAppInstEventLogs = async () => {
  * @param appInst
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const getClientStateOne = async (appInst: TypeAppInst) => {
+export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '') => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     return await axios({
@@ -1105,6 +1113,8 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
                 }
             },
             "selector": "api",
+            "starttime": startTime,
+            "endtime": endTime
             //'last': 100
         },
         headers: {
@@ -1115,7 +1125,8 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
     }).then(async response => {
         if (response.data.data[0].Series !== null) {
             let seriesValues = response.data.data[0].Series[0].values
-            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues)
+            let column = response.data.data[0].Series[0].columns
+            let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column)
             return clientMatricSumDataOne;
         } else {
             return undefined
@@ -1124,11 +1135,30 @@ export const getClientStateOne = async (appInst: TypeAppInst) => {
     })
 }
 
-export function makeClientMatricSumDataOne(seriesValues) {
-    let column = ["time", "100ms", "10ms", "25ms", "50ms", "5ms", "app", "apporg", "cellID", "cloudlet", "cloudletorg", "dev", "errs", "foundCloudlet", "foundOperator", "id", "inf", "method", "oper", "reqs", "ver",]
+
+/**
+ *
+ * @param columns
+ * @param searchValue
+ * @returns {number}
+ */
+export function getIndex(columns, searchValue) {
+    let foundIndex = 0;
+    columns.filter((item, index) => {
+        if (item === searchValue) {
+            foundIndex = index
+            return true;
+        }
+    })
+    return foundIndex;
+}
+
+export function makeClientMatricSumDataOne(seriesValues, columns) {
+
     let RegisterClientCount = 0;
     let FindCloudletCount = 0;
     let VerifyLocationCount = 0
+    let FoundOperatorCount = 0;
     let app = '';
     let apporg = '';
     let cellID = '';
@@ -1147,19 +1177,23 @@ export function makeClientMatricSumDataOne(seriesValues) {
         if (methodType === "VerifyLocation") {
             FindCloudletCount++;
         }
+        if (methodType === "foundOperator") {
+            FoundOperatorCount++;
+        }
 
-        app = item[6]//app
-        apporg = item[7]//apporg
-        cellID = item[8]//cellID
-        cloudlet = item[9]//cloudlet
-        cloudletorg = item[10]//cloudletorg
-        ver = item[20]//ver
+        app = item[getIndex(columns, 'app')]
+        apporg = item[getIndex(columns, 'apporg')]
+        cellID = item[getIndex(columns, 'cellID')]
+        cloudlet = item[getIndex(columns, 'cloudlet')]
+        cloudletorg = item[getIndex(columns, 'cloudletorg')]
+        ver = item[getIndex(columns, 'ver')]
     })
 
     let metricSumDataOne = {
         RegisterClientCount,
         FindCloudletCount,
         VerifyLocationCount,
+        FoundOperatorCount,
         app,
         apporg,
         cellID,
@@ -1173,10 +1207,10 @@ export function makeClientMatricSumDataOne(seriesValues) {
 }
 
 
-export const getClientStatusList = async (appInstList) => {
+export const getClientStatusList = async (appInstList, startTime, endTime) => {
     let promiseList = []
     appInstList.map((appInstOne: TypeCloudlet, index) => {
-        promiseList.push(getClientStateOne(appInstOne))
+        promiseList.push(getClientStateOne(appInstOne, startTime, endTime))
     })
     let newPromiseList = await Promise.all(promiseList);
 
@@ -1186,7 +1220,6 @@ export const getClientStatusList = async (appInstList) => {
             mergedClientStatusList.push(item)
         }
     })
-
     return mergedClientStatusList;
 
 }

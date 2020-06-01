@@ -157,7 +157,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             });
         }
 
-        componentWillReceiveProps = async (nextProps, nextContext) => {
+        UNSAFE_componentWillReceiveProps = async (nextProps, nextContext) => {
             let dummys = [];
             let dummyConts = [];
             if (nextProps.data !== this.props.data) {

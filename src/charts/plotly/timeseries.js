@@ -33,7 +33,8 @@ class TimeSeries extends React.Component {
         this.colors = ['#22cccc', '#6699ff','#ff710a', '#ffce03' ];
         this.colorsErr = ['#22cccc','#ff3355', '#6699ff', '#ffce03' ];
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.chartData && nextProps.series[0]) {
             this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.label, nextProps.single, nextProps.dataType);
         }

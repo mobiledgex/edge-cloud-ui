@@ -166,6 +166,7 @@ export const CLASSIFICATION = {
     APP_NAME: 'AppName',
     appName: 'appName',
     APPNAME: 'AppName',
+    APP_INSTANCE: 'App Instance',
     APPINST: 'AppInst',
     APP_INST: 'App Inst',
     CLUSTER_INST: 'ClusterInst',
@@ -173,6 +174,8 @@ export const CLASSIFICATION = {
     CLUSTER: 'Cluster',
     REGION: 'Region',
 }
+
+export const MEX_PROMETHEUS_APPNAME = 'MEXPrometheusAppName'
 
 export const APP_INST_USAGE_TYPE_INDEX = {
     TIME: 0,
@@ -309,6 +312,24 @@ export const USAGE_INDEX = {
     FLOATINGIPSMAX: 12,
     IPV4USED: 13,
     IPV4MAX: 14,
+}
+
+export const CLOUDLET_METRIC_COLUMN = {
+    "time": "time",
+    "cloudlet": "cloudlet",
+    "cloudletorg": "cloudletorg",
+    "netSend": "netSend",
+    "netRecv": "netRecv",
+    "vCpuUsed": "vCpuUsed",
+    "vCpuMax": "vCpuMax",
+    "memUsed": "memUsed",
+    "memMax": "memMax",
+    "diskUsed": "diskUsed",
+    "diskMax": "diskMax",
+    "floatingIpsUsed": "floatingIpsUsed",
+    "floatingIpsMax": "floatingIpsMax",
+    "ipv4Used": "ipv4Used",
+    "ipv4Max": "ipv4Max",
 }
 
 
