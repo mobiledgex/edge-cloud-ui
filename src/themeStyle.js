@@ -14,17 +14,37 @@ export const getDarkTheme = () => {
             primary: {
                 main: '#77BD25',
             },
+            text: {
+                primary: "#ffffff",
+                secondary: "#00000",
+            },
+            textColor: '#fff',
         },
         overrides: {
             MuiSvgIcon: {
                 root: {
                     color: '#fff',
-                }
+                },
+
+
             },
             MuiPaper: {
                 root: {
                     backgroundColor: '#292C33',
                     /*marginBottom: -8,*/
+                }
+            },
+            MuiTableCell: {
+                root: {
+                    color: '#fff !important',
+                    textColor: '#fff',
+                },
+                /*sizeSmall: {
+                    color: '#fff !important',
+                    textColor: '#fff',
+                },*/
+                head: {
+                    color: '#fff !important',
                 }
             },
         }

@@ -5,12 +5,11 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, Tag, TreeSelect} from 'antd';
+import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 
 import {
     filterByClassification,
     getCloudletClusterNameList,
-    getOnlyCloudletIndex,
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
@@ -41,18 +40,7 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletEventLog,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterEventLog,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterEventLog, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
@@ -860,8 +848,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -2364,21 +2352,42 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            makeStringLimit(classification) {
+                let stringLimit = 25;
+                if (classification === CLASSIFICATION.CLOUDLET) {
+                    if (this.props.size.width > 1600) {
+                        stringLimit = 25
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                        stringLimit = 17
+                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                        stringLimit = 14
+                    } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+                        stringLimit = 10
+                    } else if (this.props.size.width < 720) {
+                        stringLimit = 4
+                    }
+                    return stringLimit;
+
+                } else if (classification === CLASSIFICATION.CLUSTER) {
+                    if (this.props.size.width > 1700) {
+                        stringLimit = 16
+                    } else if (this.props.size.width < 1700 && this.props.size.width >= 1500) {
+                        stringLimit = 14
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                        stringLimit = 12
+                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                        stringLimit = 10
+                    } else if (this.props.size.width < 1150) {
+                        stringLimit = 7
+                    }
+                    return stringLimit;
+                }
+            }
+
             renderCloudletLegend(pLegendItemCount) {
 
-                let stringLimit = 25;
-                if (this.props.size.width > 1600) {
-                    stringLimit = 25
-                }  else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
-                    stringLimit = 17
-                } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
-                    stringLimit = 14
-                } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
-                    stringLimit = 10
-                } else if (this.props.size.width < 720) {
-                    stringLimit = 4
-                }
 
+                let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
 
                 return (
                     <Row gutter={16}
@@ -2431,18 +2440,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderClusterLegend(legendItemCount) {
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
-                let stringLimit = 14;
-                if (this.props.size.width > 1700) {
-                    stringLimit = 16
-                } else if (this.props.size.width < 1700 && this.props.size.width >= 1500) {
-                    stringLimit = 14
-                } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
-                    stringLimit = 12
-                } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
-                    stringLimit = 10
-                } else if (this.props.size.width < 1150) {
-                    stringLimit = 7
-                }
+                let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
 
                 return (
                     <Row gutter={16}
@@ -2649,15 +2647,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                            }}
                     >
                         Monitoring
-                        {/* <div style={{color: 'pink', fontSize: 14}}>
-                            &nbsp;&nbsp;[{this.state.currentClassification}]
-                        </div>
-                        <div style={{color: 'green', fontSize: 14}}>
-                            &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectRole.toString()}
-                        </div>
-                        <div style={{color: 'skyblue', fontSize: 14}}>
-                            &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectOrg.toString()}
-                        </div>*/}
                     </label>
                 )
             }
