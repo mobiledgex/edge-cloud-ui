@@ -298,8 +298,8 @@ type PageDevMonitoringState = {
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
         class PageDevMonitoring extends Component<PageMonitoringProps, PageDevMonitoringState> {
-            intervalForAppInst = null;
-            intervalForCluster = null;
+            intervalForAppInst = 0;
+            intervalForCluster = 0;
             webSocketInst: WebSocket = null;
             gridItemHeight = 255;
             lastDay = 30;
@@ -766,21 +766,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                     } catch (e) {
                         showToast(e.toString())
+                    } finally {
+                        this.setState({
+                            intervalLoading: false,
+                        })
                     }
 
                 }, 1000 * 6.0)
             }
 
             setAppInstInterval(filteredAppList) {
-                this.intervalForAppInst = setInterval(async () => {
-                    this.setState({intervalLoading: true,})
-                    let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
-                    this.setChartDataForBigModal(allAppInstUsageList)
+                try {
+                    this.intervalForAppInst = setInterval(async () => {
+                        this.setState({intervalLoading: true,})
+                        let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+                        this.setChartDataForBigModal(allAppInstUsageList)
+                        this.setState({
+                            intervalLoading: false,
+                            filteredAppInstUsageList: allAppInstUsageList,
+                        })
+                    }, 1000 * 7.0)
+                } catch (e) {
+
+                } finally {
                     this.setState({
                         intervalLoading: false,
-                        filteredAppInstUsageList: allAppInstUsageList,
                     })
-                }, 1000 * 7.0)
+                }
             }
 
 
@@ -1789,7 +1801,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         } else {
                                             await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
                                         }
-                                        this.setState({isStream: true})
+                                        this.setState({
+                                            isStream: true,
+                                        })
                                     }
                                 }}
 
@@ -1909,7 +1923,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let filteredClusterList = []
                         this.state.allClusterList.map((item: TypeCluster, index) => {
-                            if (item.ClusterName === selectedCluster) {
+                            if (item.ClusterName === selectedCluster && item.Cloudlet === selectedCloudlet) {
                                 filteredClusterList.push(item)
                             }
                         })
@@ -2461,8 +2475,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         })
                                         if (this.state.filteredClusterUsageList.length > 1) {
                                             let clusterOne = item.cluster + " | " + item.cloudlet;
+                                            clearInterval(this.intervalForCluster)
                                             await this.handleOnChangeClusterDropdown(clusterOne, clusterIndex)
                                         } else {
+                                            clearInterval(this.intervalForCluster)
                                             await this.handleOnChangeClusterDropdown(undefined)
                                         }
 
