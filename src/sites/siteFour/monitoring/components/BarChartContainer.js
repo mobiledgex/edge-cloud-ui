@@ -1,11 +1,13 @@
 // @flow
 import * as React from 'react';
-import {renderPlaceHolderLoader} from "../PageMonitoringCommonService";
-import PageDevMonitoring from "../dev/PageDevMonitoring";
-import {Chart} from "react-google-charts";
-import {GRID_ITEM_TYPE} from "../../../../shared/Constants";
+import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {barChartOption, columnChartOption} from "../PageMonitoringUtils";
+import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
+import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+import {HARDWARE_TYPE} from "../../../../shared/Constants";
+import {convertHWType} from "../service/PageDevOperMonitoringService";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -37,7 +39,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
-        if (this.props.chartDataSet !== nextProps.chartDataSet) {
+        if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
             this.setState({
                 chartDataSet: nextProps.chartDataSet,
                 pHardwareType: nextProps.pHardwareType,
@@ -53,20 +55,20 @@ export default class BarChartContainer extends React.Component<Props, State> {
 
     }
 
+
     render() {
         return (
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
-                            {this.props.pHardwareType} Usage
-                            of {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)}
+                            {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
                         {this.props.loading ? renderPlaceHolderLoader() :
                             <div style={{width: '100%'}}>
-                                <Chart
+                                <GoogleChart
                                     key={this.state.isResizeComplete}
                                     height={'100%'}
                                     chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}

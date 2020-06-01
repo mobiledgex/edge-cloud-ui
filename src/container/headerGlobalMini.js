@@ -22,27 +22,16 @@ class headerGlobalMini extends React.Component {
         }
     }
 
-    gotoPreview(value) {
-        if (value == '/logout') {
-            try {
-                localStorage.removeItem('selectOrg');
-                localStorage.removeItem('selectRole')
-                localStorage.removeItem('selectMenu')
-            } catch (error) {
-
-            }
-
+    logout(path) {
+        if (path === '/logout') {
+            localStorage.removeItem('selectOrg');
+            localStorage.removeItem('selectRole')
+            localStorage.removeItem('selectMenu')
         }
-        let mainPath = value;
-        let subPath = 'pg=0';
         this.props.history.push({
-            pathname: mainPath,
-            search: subPath,
-            state: { some: 'state' },
+            pathname: path,
             userInfo: { info: null }
         });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
 
@@ -87,7 +76,7 @@ class headerGlobalMini extends React.Component {
                 <Icon name='user circle outline' size='large' />
                 <strong>Profile</strong>
             </Button>
-            <Button onClick={() => this.gotoPreview('/logout')} className="table_actions_popup_group_button">
+            <Button onClick={() => this.logout('/logout')} className="table_actions_popup_group_button">
                 <Icon name='sign-out' size='large'/>
                 <strong>Logout</strong>
             </Button>
@@ -126,9 +115,6 @@ function mapStateToProps(state) {
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
-        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };

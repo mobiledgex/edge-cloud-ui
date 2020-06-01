@@ -1,7 +1,7 @@
 /*
 review @Rahul
 */
-import _ from "lodash";
+
 import { getClusterInstList } from "../../../../../services/model/clusterInstance";
 
 

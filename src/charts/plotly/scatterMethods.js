@@ -75,7 +75,7 @@ class ScatterMethods extends React.Component {
         _self = this;
 
     }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
 
             //this.setState({vWidth:nextProps.size.width, vHeight:nextProps.size.height})
         if(nextProps.data && nextProps.data.methodCall) {

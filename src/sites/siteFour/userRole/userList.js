@@ -90,7 +90,7 @@ class OrganizationList extends React.Component {
     * Customized data block
     * ** */
 
-    componentWillMount() {
+    componentDidMount() {
         this.customizedData()
     }
 

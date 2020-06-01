@@ -4,9 +4,6 @@ import GradientSVG from './gradientSVG';
 import 'react-circular-progressbar/dist/styles.css';
 import './styles.css';
 
-
-//https://www.kevinqi.com/react-circular-progressbar/
-
 class CircularProgress extends React.Component {
     constructor() {
         super();
@@ -16,9 +13,6 @@ class CircularProgress extends React.Component {
         }
     }
     componentDidMount() {
-
-    }
-    componentWillReceiveProps(nextProps) {
 
     }
 
