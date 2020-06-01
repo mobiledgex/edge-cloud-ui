@@ -1,16 +1,15 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Label, Grid, Input } from 'semantic-ui-react'
-import { Redirect } from 'react-router';
+import { Container, Button, Grid, Input } from 'semantic-ui-react'
 import * as moment from 'moment';
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
-import RegistryUserForm from '../reduxForm/RegistryUserForm';
-import RegistryResetForm from '../reduxForm/registryResetForm';
+import RegistryUserForm from '../../components/reduxForm/RegistryUserForm';
+import RegistryResetForm from '../../components/reduxForm/registryResetForm';
 import PublicIP from 'public-ip';
 
 
@@ -239,10 +238,10 @@ class Login extends Component {
 
     resetPassword = async (password) => {
         let token = this.props.location.search
-        token = token.substring(token.indexOf('token=')+6)
+        token = token.substring(token.indexOf('token=') + 6)
         let mcRequest = await serverData.resetPassword(self, { token: token, password: password })
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            this.props.history.push({pathname:'/'})
+            this.props.history.push({ pathname: '/' })
             this.props.handleAlertInfo('success', mcRequest.response.data.message)
             self.props.handleChangeLoginMode('forgotMessage')
             setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
@@ -366,8 +365,7 @@ class Login extends Component {
 
     getControllers = async (token) => {
         let mcRequest = await serverData.controllers(self, token)
-        if(mcRequest && mcRequest.response && mcRequest.response.data)
-        {
+        if (mcRequest && mcRequest.response && mcRequest.response.data) {
             let data = mcRequest.response.data
             let regions = []
             data.map((data) => {
@@ -386,11 +384,10 @@ class Login extends Component {
                 self.params['userToken'] = response.data.token
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                this.props.history.push({pathname: `/site4/pg=${PAGE_ORGANIZATIONS}`})
+                this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
             }
         }
-        else
-        {
+        else {
             this.props.handleAlertInfo('error', 'Invalid username/password')
         }
     }
@@ -448,42 +445,32 @@ class Login extends Component {
 
     render() {
         return (
-
-            (this.state.session !== 'open') ?
-                <Container>
-                    {
-                        (this.state.loginMode === 'forgot') ?
-                            <FormForgotPass self={this} message={this.state.forgotMessage} />
-                            : (this.state.loginMode === 'resetPass') ?
-                                <ResetPassword self={this} />
-                                : (this.state.loginMode === 'forgotMessage') ?
-                                    <ForgotMessage self={this} />
-                                    : (this.state.loginMode === 'verify') ?
-                                        <FormResendVerify self={this} />
-                                        : (this.state.loginMode === 'signup') ?
+            <Container>
+                {
+                    (this.state.loginMode === 'forgot') ?
+                        <FormForgotPass self={this} message={this.state.forgotMessage} />
+                        : (this.state.loginMode === 'resetPass') ?
+                            <ResetPassword self={this} />
+                            : (this.state.loginMode === 'forgotMessage') ?
+                                <ForgotMessage self={this} />
+                                : (this.state.loginMode === 'verify') ?
+                                    <FormResendVerify self={this} />
+                                    : (this.state.loginMode === 'signup') ?
+                                        (this.state.successCreate || this.state.errorCreate) ?
+                                            <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                            :
+                                            <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} lastFormValue={this.state.lastFromValue} />
+                                        : (this.state.loginMode === 'signuped') ?
                                             (this.state.successCreate || this.state.errorCreate) ?
                                                 <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                                : <div></div>
+                                            : (this.state.loginMode === 'login') ?
+                                                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
                                                 :
-                                                <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} lastFormValue={this.state.lastFromValue} />
-                                            : (this.state.loginMode === 'signuped') ?
-                                                (this.state.successCreate || this.state.errorCreate) ?
-                                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
-                                                    : <div></div>
-                                                : (this.state.loginMode === 'login') ?
-                                                    <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
-                                                    :
-                                                    <div></div>
+                                                <div></div>
 
-                    }
-                </Container>
-                :
-                (this.state.redirect) ?
-                    <Redirect push to={this.state.directLink} />
-                    :
-                    <Container>
-                        <Label>{`${this.state.uid}님 로그인 상태입니다`}</Label>
-                        <Button onClick={this.onSignOut}>LOGOUT</Button>
-                    </Container>
+                }
+            </Container>
 
         );
     }
