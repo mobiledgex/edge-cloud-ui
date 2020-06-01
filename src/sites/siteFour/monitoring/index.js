@@ -22,6 +22,8 @@ let count = 0;
 let countApp = 0;
 let regionCount = 0;
 let scope = null;
+const authDepths = ["summary", "cloudlets", "clusters", "appinsts"];
+
 class MonitoringAdmin extends React.Component {
     constructor() {
         super();
@@ -34,6 +36,7 @@ class MonitoringAdmin extends React.Component {
             toolbox: { lg: [] },
             compCloudlet: [],
             compAppinst: [],
+            currentAuthDepth: 1
         };
         this.hasCloudlets = [];
         this.hasAppinst = [];
@@ -132,7 +135,7 @@ class MonitoringAdmin extends React.Component {
         const scope = this;
         const containerWidth = this.props.size.width;
         const containerHeight = this.props.size.height;
-        const { compCloudlet, compAppinst } = this.state;
+        const { compCloudlet, compAppinst, currentAuthDepth } = this.state;
         return (
             <div
                 style={{
@@ -144,12 +147,28 @@ class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
-                    items={generateComponentAdmin(
-                        scope,
-                        this.props,
-                        compCloudlet,
-                        compAppinst,
-                    )}
+                    items={
+                        currentAuthDepth === 0
+                            ? generateComponentAdmin(
+                                scope,
+                                this.props,
+                                compCloudlet,
+                                compAppinst,
+                            )
+                            : currentAuthDepth === 1
+                                ? generateComponentOperator(
+                                    scope,
+                                    this.props,
+                                    compCloudlet,
+                                    compAppinst,
+                                )
+                                : generateComponentDeveloper(
+                                    scope,
+                                    this.props,
+                                    compCloudlet,
+                                    compAppinst,
+                                )
+                    }
                 />
             </div>
         );
@@ -168,7 +187,7 @@ const itemWidth = [3, 3, 6, 3, 3, 12];
 const itemHeight = [1, 1, 2, 1, 1, 1]; // impact from setting rowHeight for grid layout props
 const raw = 3;
 
-const generateLayout = (size) => headerTitle.map((title, i) => ({
+const generateLayout = size => headerTitle.map((title, i) => ({
     x: itemX[i],
     y: itemY[i],
     w: itemWidth[i],
@@ -178,20 +197,20 @@ const generateLayout = (size) => headerTitle.map((title, i) => ({
     static: false,
     isDraggable: true,
 }));
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     const regionInfo = state.regionInfo ? state.regionInfo : null;
     return {
         regionInfo,
     };
 };
-const mapDispatchProps = (dispatch) => ({
+const mapDispatchProps = dispatch => ({
     handleAlertInfo: (mode, msg) => {
         dispatch(actions.alertInfo(mode, msg));
     },
     // handleLoadingSpinner: (data) => {
     //     dispatch(actions.loadingSpinner(data));
     // },
-    onLoadComplete: (data) => {
+    onLoadComplete: data => {
         scope.onReceiveResult(data);
     },
 });
@@ -200,10 +219,10 @@ export default connect(
     mapDispatchProps,
 )(sizeMe({ monitorHeight: true, refreshMode: "debounce" })(MonitoringAdmin));
 
-const makeFilterComponent = (info) => {
+const makeFilterComponent = info => {
 
 };
-const generateWidget = (info) => (
+const generateWidget = info => (
     <ChartWidget
         id={info.id}
         title={info.title}
@@ -298,49 +317,160 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
         }),
     ];
 };
-const generateComponentOperator = (self, infos) => {
-    const defaultProp = { sizeInfo: infos.size, self, props: infos.props };
+//         dddd
+const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
+    const defaultProp = {
+        sizeInfo: infos.size,
+        self,
+        cloudlets,
+        appinsts,
+    };
     return [
         generateWidget({
-            url: "https://test1",
-            chartType: "gauge",
-            type: "",
-            page: "single",
-            ...defaultProp,
-        }),
-        generateWidget({
-            url: "https://test2",
-            chartType: "timeseries",
+            id: dataType.NETWORK_CLOUDLET,
+            method: serviceMC.getEP().METRICS_CLOUDLET,
+            chartType: chartType.GAUGE,
             type: "scatter",
-            page: "single",
+            title: { value: "Health of Cloudlets", align: "left" },
+            filter: null,
+            page: "multi",
+            itemCount: 3,
+            legend: true,
             ...defaultProp,
         }),
         generateWidget({
-            url: "https://test3",
-            chartType: "map",
+            id: dataType.NETWORK_CLOUDLET,
+            method: null,
+            chartType: chartType.GRAPH,
             type: "scatter",
-            page: "single",
+            title: { value: "Health of Cloudlets", align: "left" },
+            filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
+            page: "multi",
+            itemCount: 3,
+            legend: true,
             ...defaultProp,
         }),
         generateWidget({
-            url: "https://test4",
-            chartType: "timeseries",
+            id: dataType.FIND_CLOUDLET,
+            method: null,
+            chartType: chartType.MAP,
             type: "scatter",
+            title: { value: "Find Cloudlets", align: "left" },
+            filter: null,
             page: "single",
+            legend: true,
             ...defaultProp,
         }),
         generateWidget({
-            url: "https://test5",
-            chartType: "timeseries",
+            id: dataType.REGISTER_CLIENT,
+            method: null,
+            chartType: chartType.GRAPH,
+            type: "scatter",
+            title: { value: "Rate of Register Client", align: "left" },
+            filter: null,
+            page: "single",
+            legend: true,
+            ...defaultProp,
+        }),
+        generateWidget({
+            id: dataType.FIND_CLOUDLET,
+            method: null,
+            chartType: chartType.GRAPH,
             type: "bar",
+            title: { value: "Count of Find Cloudlet", align: "left" },
+            filter: null,
             page: "single",
+            legend: true,
             ...defaultProp,
         }),
         generateWidget({
-            url: "https://test6",
-            chartType: "table",
-            type: "",
+            id: dataType.EVENT_CLOUDLET,
+            method: null,
+            chartType: chartType.TABLE,
+            type: "alarm",
+            title: { value: "Events of Cloudlet", align: "center" },
+            filter: null,
             page: "single",
+            legend: true,
+            ...defaultProp,
+        }),
+    ];
+};
+//
+const generateComponentDeveloper = (self, infos, cloudlets, appinsts) => {
+    const defaultProp = {
+        sizeInfo: infos.size,
+        self,
+        cloudlets,
+        appinsts,
+    };
+    return [
+        generateWidget({
+            id: dataType.COUNT_CLUSTER,
+            method: serviceMC.getEP().COUNT_CLUSTER,
+            chartType: chartType.COUNTER,
+            type: "counter",
+            title: { value: "Count of Clusters", align: "left" },
+            filter: null,
+            page: "multi",
+            itemCount: 3,
+            legend: false,
+            ...defaultProp,
+        }),
+        generateWidget({
+            id: dataType.NETWORK_CLOUDLET,
+            method: serviceMC.getEP().METRICS_CLOUDLET,
+            chartType: chartType.GRAPH,
+            type: "scatter",
+            title: { value: "Health of Cloudlets", align: "left" },
+            filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
+            page: "multi",
+            itemCount: 3,
+            legend: true,
+            ...defaultProp,
+        }),
+        generateWidget({
+            id: dataType.FIND_CLOUDLET,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            chartType: chartType.MAP,
+            type: "scatter",
+            title: { value: "Find Cloudlets", align: "left" },
+            filter: null,
+            page: "single",
+            legend: true,
+            ...defaultProp,
+        }),
+        generateWidget({
+            id: dataType.REGISTER_CLIENT,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            chartType: chartType.GRAPH,
+            type: "scatter",
+            title: { value: "Rate of Register Client", align: "left" },
+            filter: null,
+            page: "single",
+            legend: true,
+            ...defaultProp,
+        }),
+        generateWidget({
+            id: dataType.FIND_CLOUDLET,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            chartType: chartType.GRAPH,
+            type: "bar",
+            title: { value: "Count of Find Cloudlet", align: "left" },
+            filter: null,
+            page: "single",
+            legend: true,
+            ...defaultProp,
+        }),
+        generateWidget({
+            id: dataType.EVENT_CLOUDLET,
+            method: serviceMC.getEP().EVENT_CLOUDLET,
+            chartType: chartType.TABLE,
+            type: "alarm",
+            title: { value: "Events of Cloudlet", align: "center" },
+            filter: null,
+            page: "single",
+            legend: true,
             ...defaultProp,
         }),
     ];

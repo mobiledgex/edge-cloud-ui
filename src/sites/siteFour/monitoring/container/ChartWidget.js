@@ -174,6 +174,7 @@ class ChartWidget extends React.Component {
                             id={id}
                             size={resize}
                             type={type}
+                            data={data}
                             chartType={chartType}
                             title={title.value}
                             method={method}

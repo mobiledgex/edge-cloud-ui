@@ -1,62 +1,47 @@
 import React from "react";
 import { Grid, Segment } from "semantic-ui-react";
-import BasicGauge from "../../../../charts/plotly/BasicGauge";
+// import BasicGauge from "../../../../charts/plotly/BasicGauge";
+import Typography from "@material-ui/core/Typography";
+import CircularProgress from "../../../../chartGauge/circularProgress";
+// import GradientProgress from "../../../../chartGauge/GradientProgress";
 
-const hGap: number = 20;
-export default class ContainerHealth extends React.Component {
-    state = {
-        selfSize: this.props.size || { height: 200 }
-    };
-    getHeight = () => this.state.selfSize.height - hGap;
-    componentDidMount() {}
-    componentWillReceiveProps(nextProps) {
-        this.setState({ selfSize: nextProps.size });
-    }
-    render() {
-        return (
-            <Grid columns={3} style={{ height: this.getHeight() }}>
-                <Grid.Row stretched style={{ paddingTop: 2, paddingBottom: 2 }}>
-                    <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
-                        {Chart({
-                            title: "CPU",
-                            column: 3,
-                            size: this.state.selfSize
-                        })}
-                    </Grid.Column>
-                    <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
-                        {Chart({
-                            title: "MEM",
-                            column: 3,
-                            size: this.state.selfSize
-                        })}
-                    </Grid.Column>
-                    <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
-                        {Chart({
-                            title: "DISK",
-                            column: 3,
-                            size: this.state.selfSize
-                        })}
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-        );
-    }
-}
+const hGap = 20;
+const ContainerHealth = defaultProps => {
+    const [selfSize, setSelfSize] = React.useState(defaultProps.size);
+    const [cpuUsed, setCpuUsed] = React.useState(0);
 
-export const Chart = info => (
-    <div
-        style={{
-            backgroundColor: "transparent",
-            width: "100%",
-            height: "100%"
-        }}
-    >
-        <BasicGauge
-            size={{
-                width: info.size.width / info.column,
-                height: info.size.height - hGap
-            }}
-            title={info.title}
-        ></BasicGauge>
-    </div>
-);
+    const getHeight = () => selfSize.height - hGap;
+    React.useEffect(() => {
+        console.log("20200601 health data == ", defaultProps);
+        setSelfSize(defaultProps.size);
+        // setCpuUsed(defaultProps.data.cpuUsed);
+        setCpuUsed(87);
+    }, [defaultProps]);
+
+
+    return (
+        <Grid columns={3} style={{ height: getHeight() }}>
+            <Grid.Row stretched style={{ paddingTop: 2, paddingBottom: 2 }}>
+                <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
+                    <CircularProgress data={cpuUsed} />
+                    <Typography variant="h6" gutterBottom>
+                        VCPU
+                    </Typography>
+                </Grid.Column>
+                <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
+                    <CircularProgress />
+                    <Typography variant="h6" gutterBottom>
+                        MEM
+                    </Typography>
+                </Grid.Column>
+                <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
+                    <CircularProgress />
+                    <Typography variant="h6" gutterBottom>
+                        DISK
+                    </Typography>
+                </Grid.Column>
+            </Grid.Row>
+        </Grid>
+    );
+};
+export default ContainerHealth;
