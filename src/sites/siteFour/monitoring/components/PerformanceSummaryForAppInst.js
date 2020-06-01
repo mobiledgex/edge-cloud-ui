@@ -111,7 +111,7 @@ export default function PerformanceSummaryForAppInst(props) {
                                                 justifyContent: 'center'
                                             }}>
                                                 <div style={{
-                                                    backgroundColor: props.parent.state.chartColorList[index],
+                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index],
                                                     width: 15,
                                                     height: 15,
                                                     borderRadius: 50,
@@ -144,8 +144,7 @@ export default function PerformanceSummaryForAppInst(props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumCpuUsage.toFixed(0)}
-                                                              strokeColor={props.parent.state.chartColorList[index]}
-
+                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
                                                               status={'normal'}/>
                                                 </div>
                                             </div>

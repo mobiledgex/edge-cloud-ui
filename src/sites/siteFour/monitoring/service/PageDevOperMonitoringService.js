@@ -588,7 +588,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
         chartColorList: selectedChartColorList,
     }, async () => {
         _this.setState({
-            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList),
+            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
         })
     })
 
@@ -1272,7 +1272,7 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         selectable: true,
         children: []
     });
-    cloudletList.map(cloudletOne => {
+    cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
                 <div>{cloudletOne}&nbsp;&nbsp;
@@ -1285,6 +1285,8 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         };
 
         clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
+
+
             if (clusterOne.Cloudlet === cloudletOne) {
                 newCloudletOne.children.push({
                     title: clusterOne.ClusterName,
@@ -1296,6 +1298,8 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
 
         newCloudletList.push(newCloudletOne);
     })
+
+    console.log('newCloudletList===>', newCloudletList);
 
     return newCloudletList;
 }
