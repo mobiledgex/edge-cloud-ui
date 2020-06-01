@@ -1812,7 +1812,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleOnChangeCloudletDropdown = async (pCloudletFullOne) => {
+            handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
                 try {
                     if (pCloudletFullOne !== undefined && pCloudletFullOne.toString() !== '0') {
                         await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletFullOne)})
@@ -1853,8 +1853,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: CLASSIFICATION.CLOUDLET,
                             currentCluster: undefined,
                             currentOperLevel: undefined,
-                            currentColorIndex: getOnlyCloudletIndex(pCloudletFullOne),
                             filteredCloudletEventLogList: filteredCloudletEventLogList,
+                            currentColorIndex: cloudletIndex,
 
                         });
                     } else {//todo: When allCloudlet
@@ -2154,7 +2154,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
                                 this.cloudletSelect.blur();
-                                await this.handleOnChangeCloudletDropdown(value)
+                                let selectIndex = 0;
+                                this.state.cloudletList.map((item: TypeCloudlet, index) => {
+                                    if (item.CloudletName === value.split("|")[0].trim()) {
+                                        selectIndex = index;
+                                    }
+                                })
+
+                                await this.handleOnChangeCloudletDropdown(value, selectIndex)
 
                             }}
                         >
@@ -2212,7 +2219,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         />
                                     </div>
                                 }
-                                style={{width: '400px'}}
+                                style={{width: '320px'}}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,
@@ -2368,10 +2375,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              alignSelf: 'center',
                          }}
                     >
-                        {this.state.filteredCloudletList.map((item: TypeCloudlet, index) => {
+                        {this.state.filteredCloudletList.map((item: TypeCloudlet, cloudletIndex) => {
                             return (
                                 <Col
-                                    key={index}
+                                    key={cloudletIndex}
                                     className="gutterRow"
                                     onClick={async () => {
                                     }}
@@ -2384,15 +2391,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                     onClick={async () => {
                                         if (this.state.filteredCloudletList.length > 1) {
-                                            let fullCloudletItemOne = item.CloudletName + " | " + JSON.stringify(item.CloudletLocation) + " | " + index.toString()
-                                            await this.handleOnChangeCloudletDropdown(fullCloudletItemOne)
+                                            let fullCloudletItemOne = item.CloudletName + " | " + JSON.stringify(item.CloudletLocation) + " | " + cloudletIndex.toString()
+                                            await this.handleOnChangeCloudletDropdown(fullCloudletItemOne, cloudletIndex)
                                         } else {
                                             await this.handleOnChangeCloudletDropdown(undefined)
                                         }
                                     }}
                                 >
                                     <div>
-                                        {this.renderDot(index, pLegendItemCount)}
+                                        {this.renderDot(cloudletIndex, pLegendItemCount)}
                                     </div>
                                     <div style={{marginTop: 0, marginLeft: 5}}>
                                         {reduceString(item.CloudletName, 21, pLegendItemCount)}
