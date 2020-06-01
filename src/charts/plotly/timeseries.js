@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 import Plot from "react-plotly.js";
 import ContainerDimensions from "react-container-dimensions";
 
