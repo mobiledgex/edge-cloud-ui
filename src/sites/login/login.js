@@ -6,11 +6,11 @@ import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
-import RegistryUserForm from '../reduxForm/RegistryUserForm';
-import RegistryResetForm from '../reduxForm/registryResetForm';
+import RegistryUserForm from '../../components/reduxForm/RegistryUserForm';
+import RegistryResetForm from '../../components/reduxForm/registryResetForm';
 import PublicIP from 'public-ip';
 
 

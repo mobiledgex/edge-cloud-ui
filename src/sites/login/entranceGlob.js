@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
-import Login from '../../components/login';
+import Login from './login';
 import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
