@@ -2026,7 +2026,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
                         //currentAppInst: AppName + ' [' + Version + ']',
-                        currentAppInst: AppName + ' [' + Version + ']',
+                        currentAppInst: fullCurrentAppInst,
                         currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
                     });
@@ -2298,7 +2298,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Select
                             ref={c => this.appInstSelect = c}
                             dropdownStyle={{}}
-                            style={{width: 250}}
+                            style={{width: 350}}
                             disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentCluster === undefined}
                             value={this.state.currentAppInst}
                             placeholder={this.state.appInstSelectBoxPlaceholder}
@@ -2533,7 +2533,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.renderDot(0, pLegendItemCount)}
                                 <ClusterCluoudletLabel
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
-                                    {this.state.currentAppInst.split("|")[0]}
+                                    {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
                                 </ClusterCluoudletLabel>
                             </div>
                         </Col>
