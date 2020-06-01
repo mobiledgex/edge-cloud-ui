@@ -15,7 +15,7 @@ import {TypeAppInst} from "../../../../shared/Types";
 import {renderBarChartCore, renderLineChartCore, renderUsageByType, showToast} from "./PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
-import {Progress} from "antd";
+import Progress from "antd/es/progress";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {renderUsageLabelByType} from "./PageDevOperMonitoringService";
