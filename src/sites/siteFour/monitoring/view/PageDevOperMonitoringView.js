@@ -2463,7 +2463,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 <div>
                                                     {item.cluster}
                                                 </div>
-                                                <div style={{color: 'yellow',}}>
+                                                <div style={{color: 'white',}}>
                                                     &nbsp;[{item.cloudlet}]
                                                 </div>
                                             </div>
