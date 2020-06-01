@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
-import Login from '../../components/login';
+import Login from './login';
 import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -9,9 +9,6 @@ import {PAGE_ORGANIZATIONS} from '../../constant';
 import { GridLoader } from "react-spinners";
 import MexAlert from '../../hoc/alert/AlertDialog';
 let self = null;
-
-
-
 class EntranceGlobe extends Component {
 
     constructor(props) {
@@ -27,7 +24,7 @@ class EntranceGlobe extends Component {
             signup: false,
             logined: false,
             mexAlertMessage:undefined
-        };
+        }
         self = this;
     }
 
@@ -35,7 +32,6 @@ class EntranceGlobe extends Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT).userToken : null
         if (store) {
             this.setState({ modalOpen: false, logined: true })
-
         }
         if (this.props.match.path === '/logout') {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
@@ -51,52 +47,34 @@ class EntranceGlobe extends Component {
             this.props.handleChangeLoginMode('resetPass')
         }
     }
-    
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.loginMode && nextProps.loginMode === 'resetPass') {
-            return;
-        }
-        if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
-            this.goToNext(`/site4/pg=${PAGE_ORGANIZATIONS}`);
-            return;
+
+    static getDerivedStateFromProps(props, state) {
+
+        if (props.alertInfo.mode && props.alertInfo.msg) {
+            let alertInfo = { msg: props.alertInfo.msg, severity: props.alertInfo.mode }
+            props.handleAlertInfo(undefined, undefined);
+            return {mexAlertMessage: alertInfo}
         }
 
-        if (nextProps.loginMode && nextProps.loginMode === 'verify') {
-            this.setState({ modalOpen: true, logined: true })
-        } else if (nextProps.loginMode && nextProps.loginMode === 'forgot') {
-            this.setState({ modalOpen: true, logined: false })
-
-        } else if (nextProps.loginMode === 'logout') {
-            this.setState({ modalOpen: true, logined: false })
-        } else if (nextProps.loginMode === 'login') {
-            if (nextProps.user.userToken) {
-                this.goToNext(`/site4/pg=${PAGE_ORGANIZATIONS}`);
-            }
+        if (props.loginMode && props.loginMode === 'resetPass') {
         }
-
-        if (nextProps.alertInfo.mode && nextProps.alertInfo.msg) {
-            let alertInfo = { msg: nextProps.alertInfo.msg, severity: nextProps.alertInfo.mode }
-            nextProps.handleAlertInfo(undefined, undefined);
-            this.setState({mexAlertMessage: alertInfo})
+        else if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
+            props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)
         }
+        else if (props.loginMode && props.loginMode === 'verify') {
+            return { modalOpen: true, logined: true }
+        }
+        else if (props.loginMode && props.loginMode === 'forgot') {
+            return { modalOpen: true, logined: false }
+        }
+        else if (props.loginMode === 'logout') {
+            return { modalOpen: true, logined: false }
+        }
+        else if (props.loginMode === 'login' && props.user.userToken) {
+            props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)
+        }
+        return null
     }
-
-    goToNext(site) {
-        this.props.history.push(site)
-    }
-
-    handleMarkerMouseover = (mouseEvent, hoveredMarker) => {
-        this.setState({ hoveredMarker, mouseEvent });
-    };
-
-    handleMarkerMouseout = mouseEvent => {
-        this.setState({ hoveredMarker: null, mouseEvent });
-    };
-
-    handleMarkerClick = (mouseEvent, clickedMarker) => {
-        alert('mouse click == ' + clickedMarker)
-        this.setState({ clickedMarker, mouseEvent });
-    };
 
     handleClickLogin(mode) {
         self.setState({ modalOpen: true })
