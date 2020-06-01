@@ -6,7 +6,6 @@ import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageDevOperMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import Table from "@material-ui/core/Table";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
