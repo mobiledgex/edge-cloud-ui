@@ -57,28 +57,28 @@ export function clearData(state) {
     };
 }
 
-export function setUser(user: string): Action {
+export function setUser(user) {
     return {
         type: types.SET_USER,
         payload: user,
     };
 }
 
-export function stopVideo(act: string): Action {
+export function stopVideo(act) {
     return {
         type: types.SET_VIDEO,
         status: act,
     };
 }
 
-export function loadedData(act: string): Action {
+export function loadedData(act) {
     return {
         type: types.LOADED_DATA,
         loaded: act,
     };
 }
 
-export function registDeveloper(accountInfo: string): Action {
+export function registDeveloper(accountInfo) {
     return {
         type: types.REGIST_DEVELOPER,
         account: accountInfo,

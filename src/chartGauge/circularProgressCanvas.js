@@ -50,9 +50,7 @@ class CircularProgressCanvas extends React.Component {
 
         }
     }
-    componentWillReceiveProps(nextProps) {
-
-    }
+    
     render() {
         const percentage = 66;
         return (

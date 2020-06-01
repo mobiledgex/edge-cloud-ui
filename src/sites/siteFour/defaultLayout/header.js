@@ -156,7 +156,7 @@ export default function Header(props) {
                         onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default' />
                     </IconButton>
-                    <HeaderGlobalMini email={props.email} data={props.data} />
+                    <HeaderGlobalMini email={props.email} data={props.data}/>
                 </div>
             </Toolbar>
         </AppBar>

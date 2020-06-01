@@ -28,7 +28,8 @@ class TimeSeriesFlow extends React.Component {
         }
         this.colors = ['#22cccc', '#6699ff', '#ffce03', '#ff710a'];
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
 
         if(nextProps.chartData && nextProps.series[0]) {
             this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.label, nextProps.lineLimit);

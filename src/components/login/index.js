@@ -6,10 +6,8 @@ import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-// alert
-import Alert from 'react-s-alert';
-// API
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
@@ -58,7 +56,7 @@ const FormForgotPass = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' width ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail() } }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -66,7 +64,7 @@ const FormForgotPass = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password Reset Email</Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password Reset Email</Button>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -86,7 +84,7 @@ const ForgotMessage = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onfocusout={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to Sign In</Button>
+                <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onBlur={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to Sign In</Button>
             </Grid.Column>
         </Grid.Row>
 
@@ -116,7 +114,7 @@ const FormResendVerify = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' width ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail('verify') } }}></Input>
+                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail('verify') } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -124,7 +122,7 @@ const FormResendVerify = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
             </Grid.Column>
         </Grid.Row>
 
@@ -167,54 +165,31 @@ const SuccessMsg = (props) => (
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('signup')}><span>Sign Up</span></Button>
+                        <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('signup')}><span>Sign Up</span></Button>
                     </Grid.Column>
                 </Grid.Row>
             </Fragment>
         }
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('login')}><span>Log In</span></Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('login')}><span>Log In</span></Button>
             </Grid.Column>
         </Grid.Row>
     </Grid>
 )
-const validate = values => {
-    const error = {};
-    error.email = '';
-    error.name = '';
-    var ema = values.email;
-    var nm = values.name;
-    if (values.email === undefined) {
-        ema = '';
-    }
-    if (values.name === undefined) {
-        nm = '';
-    }
-    if (ema.length < 4 && ema !== '') {
-        error.email = 'too short';
-    }
-
-    return error;
-}
 
 class Login extends Component {
     constructor(props) {
         super(props);
         self = this;
         this.state = {
-            isReady: false,
             focused: false,
-            loginSuccess: false,
             session: 'close',
             uid: '',
             name: '',
-            confirmed: false,
             submit: true,
-            disabled: false,
             redirect: false,
             directLink: '/site1',
-            mainPath: '/', subPath: 'pg=0',
             loginBtnStyle: 'loginBtn',
             email: '',
             password: '',
@@ -227,9 +202,7 @@ class Login extends Component {
             forgotPass: false,
             forgotMessage: false,
             created: false,
-            store: null,
-            resultMsg: '',
-            submitDone: false
+            resultMsg: ''
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -265,17 +238,18 @@ class Login extends Component {
     }
 
     resetPassword = async (password) => {
-        /* @Smith : chage store.resetToken ==> store;*/
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let mcRequest = await serverData.resetPassword(self, { token: store ? store : 'null', password: password })
+        let token = this.props.location.search
+        token = token.substring(token.indexOf('token=')+6)
+        let mcRequest = await serverData.resetPassword(self, { token: token, password: password })
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            self.props.handleAlertInfo('success', mcRequest.response.data.message)
+            this.props.history.push({pathname:'/'})
+            this.props.handleAlertInfo('success', mcRequest.response.data.message)
+            self.props.handleChangeLoginMode('forgotMessage')
             setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
-            self.onProgress(false);
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.values) {
             if (nextProps.submitSucceeded) {
                 this.setState({ email: nextProps.values.email, username: nextProps.values.username })
@@ -370,6 +344,7 @@ class Login extends Component {
     onFocusHandle(value) {
         self.setState({ focused: value })
     }
+
     onSignOut() {
         this.props.requestLogout();
     }
@@ -380,17 +355,28 @@ class Login extends Component {
     onChangeInput = (e, { name, value }) => {
         this.setState({ [name]: value })
     }
+
     onProgress(value) {
         this.props.handleLoadingSpinner(value)
-    }
-
-    receiveToken(mcRequest) {
-
     }
 
     returnSignin() {
         setTimeout(() => self.setState({ forgotPass: false, forgotMessage: false, loginMode: 'login' }), 1000)
     }
+
+    getControllers = async (token) => {
+        let mcRequest = await serverData.controllers(self, token)
+        if(mcRequest && mcRequest.response && mcRequest.response.data)
+        {
+            let data = mcRequest.response.data
+            let regions = []
+            data.map((data) => {
+                regions.push(data.Region)
+            })
+            localStorage.setItem('regions', regions)
+        }
+    }
+
 
     requestToken = async (self) => {
         let mcRequest = await serverData.login(self, { username: self.state.username, password: self.state.password })
@@ -398,18 +384,14 @@ class Login extends Component {
             let response = mcRequest.response;
             if (response.data.token) {
                 self.params['userToken'] = response.data.token
+                this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                self.props.mapDispatchToLoginWithPassword(self.params)
-
-                self.props.handleChangeLoginMode('login')
-            } else {
-                if (Alert) {
-                    self.props.handleAlertInfo('error', response.data.message)
-                    if (response.data.message.indexOf('not verified') > -1) {
-                        self.setState({ loginMode: 'verify' })
-                    }
-                }
+                this.props.history.push({pathname: `/site4/pg=${PAGE_ORGANIZATIONS}`})
             }
+        }
+        else
+        {
+            this.props.handleAlertInfo('error', 'Invalid username/password')
         }
     }
 
@@ -419,7 +401,7 @@ class Login extends Component {
 
     onSendEmail = async (mode) => {
         if (mode === 'verify') {
-            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/verify` })
+            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/#/verify` })
             if (valid) {
                 self.props.handleAlertInfo('success', 'Success')
                 self.setState({ loginMode: 'signup', forgotMessage: true })
@@ -433,7 +415,7 @@ class Login extends Component {
                 email: self.state.email,
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
-                callbackurl: 'https://' + host + '/passwordreset',
+                callbackurl: `https://${host}/#/passwordreset`,
                 clientip: self.clientSysInfo.clientIP
             }
             let valid = await serverData.resetPasswordRequest(self, data)
@@ -524,9 +506,7 @@ const mapStateToProps = state => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
-        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data })),
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleCreateAccount: (data) => { dispatch(actions.createAccount(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
