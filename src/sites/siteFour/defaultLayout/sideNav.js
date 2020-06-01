@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles, useTheme, withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -49,8 +49,10 @@ import PageMonitoringMain from '../monitoring/PageMonitoringMain'
 import {Collapse, Tooltip} from '@material-ui/core';
 import {Image} from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
+import TablePagination from "@material-ui/core/TablePagination";
 
 const drawerWidth = 250;
+
 
 const useStyles = makeStyles(theme => ({
     root: {

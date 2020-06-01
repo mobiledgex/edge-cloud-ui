@@ -12,9 +12,16 @@ import * as actions from "../actions";
 import FlexBox from "flexbox-react";
 import CalendarTimeline from "../components/timeline/calendarTimeline";
 import { hot } from "react-hot-loader/root";
-import {IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
+import {IconButton, Toolbar, ButtonGroup, Button as ButtonM, withStyles} from '@material-ui/core';
 import OfflinePinIcon from '@material-ui/icons/OfflinePin';
 import RefreshIcon from '@material-ui/icons/Refresh';
+
+const StyleToolbar = withStyles((theme) => ({
+    regular: {
+        minHeight: 48,
+        paddingRight:0
+    }
+}))(Toolbar);
 
 const countryOptions = [
     { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
@@ -722,7 +729,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <div style={{display:'flex', height:'100%', flexDirection: 'column'}}>
-                    <Toolbar style={{paddingRight:0}}>
+                    <StyleToolbar>
                         <label className='content_title_label'>Audit Logs</label>
                         <div style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{this.state.orgName}</div>
                         <div className="page_audit_history">
@@ -788,7 +795,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 </IconButton>
                             </div>
                         </div>
-                    </Toolbar>
+                    </StyleToolbar>
                     <div className="mexListView">
 
                         <div className='page_audit_timeline_area'

@@ -1914,9 +1914,6 @@ body ::-webkit-scrollbar-track {
 }
 
 /*코드 오버로딩*/
-.MuiToolbar-regular {
-    min-height: 48px !important;
-}
 
 .MuiToolbar-root>label, .MuiToolbar-root>button, .MuiToolbar-root>button.ui.button {
     margin-right:20px !important;

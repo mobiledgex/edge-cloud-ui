@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -13,6 +13,13 @@ import { Image, Button } from 'semantic-ui-react';
 import { Menu, MenuItem, Dialog, DialogActions, List, ListItem, ListItemText } from '@material-ui/core';
 
 const drawerWidth = 250;
+
+
+const StyleToolbar = withStyles((theme) => ({
+    regular: {
+        minHeight: 48
+    }
+}))(Toolbar);
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -78,7 +85,7 @@ export default function Header(props) {
             })}
             style={{ zIndex: 10 }}
         >
-            <Toolbar style={{ backgroundColor: '#3B3F47' }}>
+            <StyleToolbar style={{ backgroundColor: '#3B3F47' }}>
 
                 {props.open ? null :
                     <Typography variant="h6" noWrap style={{ marginLeft: -14, marginRight: 20 }}>
@@ -155,7 +162,7 @@ export default function Header(props) {
                     </IconButton>
                     <HeaderGlobalMini email={props.email} data={props.data} />
                 </div>
-            </Toolbar>
+            </StyleToolbar>
         </AppBar>
     );
 }
