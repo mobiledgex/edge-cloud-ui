@@ -759,3 +759,8 @@ tr td {
 .ant-picker-cell-in-view {
     color: #ebe9f2;
 }
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    color: #fff;
+    font-weight: 600;
+    background-color: #5c5c58;
+}
