@@ -637,8 +637,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        clusterDropdownList: dropDownCludsterListOnCloudlet,//@fixme
-                        dropDownCludsterListOnCloudlet: dropDownCludsterListOnCloudlet,//@fixme
+                        dropDownCludsterListOnCloudlet: clusterDropdownList,//@fixme
                         allClusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,

@@ -10,7 +10,7 @@ import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import Select from 'antd/es/select'
+import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import {
