@@ -1080,14 +1080,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this.__makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this._______makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
 
-            __makeGridItemOneBody(pHwType, graphType) {
+            _______makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
@@ -1876,7 +1876,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            async handleOnChangeClusterDropdown(pClusterCloudletOne) {
+            async handleOnChangeClusterDropdown(pClusterCloudletOne, clusterIndex) {
                 if (this.state.isStream === false) {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
@@ -1951,7 +1951,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterList: filteredClusterList,
                             currentOperLevel: CLASSIFICATION.CLUSTER,
                             filteredClusterEventLogList: filteredClusterEventLogList,
-                            //currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
+                            currentColorIndex: clusterIndex,
                         });
 
                     }
@@ -2327,7 +2327,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            renderDot(index, itemCount = false) {
+            renderDot(index, itemCount) {
                 return (
                     <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                         <div
@@ -2417,10 +2417,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              display: filteredClusterUsageListLength === 1 ? 'flex' : null,
                          }}
                     >
-                        {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+                        {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
                             return (
                                 <Col
-                                    key={index}
+                                    key={clusterIndex}
                                     className="gutterRow"
                                     onClick={async () => {
                                         await this.setState({
@@ -2428,7 +2428,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         })
                                         if (this.state.filteredClusterUsageList.length > 1) {
                                             let clusterOne = item.cluster + " | " + item.cloudlet;
-                                            await this.handleOnChangeClusterDropdown(clusterOne)
+                                            await this.handleOnChangeClusterDropdown(clusterOne, clusterIndex)
                                         } else {
                                             await this.handleOnChangeClusterDropdown(undefined)
                                         }
@@ -2445,7 +2445,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 >
                                     {filteredClusterUsageListLength === 1 ?
                                         <Center style={{marginLeft: 100}}>
-                                            {this.renderDot(index)}
+                                            {this.renderDot(clusterIndex, filteredClusterUsageListLength)}
                                             <div style={{display: 'flex', marginLeft: 3,}}>
                                                 <div>
                                                     {item.cluster}
@@ -2458,7 +2458,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         :
                                         <Center>
                                             <div>
-                                                {this.renderDot(index)}
+                                                {this.renderDot(clusterIndex)}
                                             </div>
                                             <div className="clusterCloudletBox">
                                                 {reduceLegendClusterCloudletName(item, this, stringLimit)}
