@@ -2244,11 +2244,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     });
                                 }}
                                 ref={c => this.treeSelect = c}
-
+                                listHeight={500}
                                 searchValue={this.state.searchClusterValue}
                                 searchPlaceholder={'Enter the cluster name.'}
                                 placeholder={'Select Cluster'}
-                                dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
+                                dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450}}
                                 treeData={this.state.dropDownCludsterListOnCloudlet}
                                 treeDefaultExpandAll={true}
                                 value={this.state.currentCluster}
