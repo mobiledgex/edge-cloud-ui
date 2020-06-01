@@ -29,6 +29,12 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 
+const StyleToolbar = withStyles((theme) => ({
+    regular: {
+        minHeight: 48
+    }
+}))(Toolbar);
+
 const getRegion = (props)=>
 {
     let options = []
@@ -97,10 +103,10 @@ const MexToolbar = (props) => {
             </div>
         )}
     return (
-        <Toolbar>
+        <StyleToolbar>
             <label className='content_title_label'>{requestInfo.headerLabel}</label>
             {props.isDetail ? getDetail(props) : getList(props)}
-        </Toolbar>
+        </StyleToolbar>
     )
 }
 

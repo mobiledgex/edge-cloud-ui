@@ -923,7 +923,7 @@ page_monitoring_dashboard_dev {
     border-color: rgba(255,255,255,.2);
 }
 .page_monitoring_location .page_monitoring_location_button:hover {
-    border-color: rgba(255, 255, 255, 0.08)
+    background-color: rgba(255, 255, 255, 0.08)
 }
 
 .page_monitoring_location .page_monitoring_location_text {
@@ -1022,4 +1022,29 @@ page_monitoring_dashboard_dev {
 
 .page_monitoring_cnt_num > span {
     vertical-align: middle
+}
+
+.page_monitoring_location_header{
+    width: 100%;
+    line-height: 1.5;
+    font-size: 14px;
+    margin-bottom: 10px;
+
+}
+.page_monitoring_location_row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.page_monitoring_location_label {
+    min-width: 100px;
+    text-align: right;
+    margin-right: 10px;
+}
+.page_monitoring_location_Select {
+    min-width: 200px;
+}
+.page_monitoring_location_apply {
+    display: flex;
+    justify-content: center;
 }
