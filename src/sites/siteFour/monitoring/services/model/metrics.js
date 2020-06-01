@@ -1,9 +1,8 @@
-import _ from "lodash";
-import * as serverData from "../../../../../services/model/serverData";
-import * as serviceMC from "../../../../../services/model/serviceMC";
+/*
+review @Rahul
+*/
+
 import { getClusterInstList } from "../../../../../services/model/clusterInstance";
-import { fields } from "../../../../../services/model/format";
-import * as ChartType from "../../formatter/chartType";
 
 
 const regions = localStorage.regions ? localStorage.regions.split(",") : [];
@@ -18,6 +17,5 @@ const dataFromServer = async (_regions, self, _method) => Promise.all(
  ** **************************************************** */
 export const getClusterList = async (self, param) => {
     const result = await dataFromServer(REGION_ALL, self, param.method);
-    console.log("20200521 container widget   <<== 1212  result == ", result);
     return result;
 }

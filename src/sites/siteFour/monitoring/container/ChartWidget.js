@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import {makeStyles, useTheme, withStyles} from "@material-ui/core/styles";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import Dots from "material-ui-dots";
 import _ from "lodash";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -53,7 +53,6 @@ class ChartWidget extends React.Component {
     */
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.data !== nextProps.data) {
-            // console.log("20200521 container widget   == 55 55  == nextProps.data = ", nextProps.data, ": prevState.data= ", prevState.data, ": id = ", nextProps.id);
             if (nextProps.id === DataType.NETWORK_CLOUDLET) {
                 if (nextProps.data && nextProps.data[nextProps.id] && nextProps.data[nextProps.id].length > 0) {
                     return { data: nextProps.data };
@@ -82,7 +81,6 @@ class ChartWidget extends React.Component {
             //
 
             if (prevProps.id === DataType.REGISTER_CLIENT || prevProps.id === DataType.FIND_CLOUDLET) {
-                console.log("20200521 container widget   == 66 6 == prevState= ", prevProps.data, ": props data = ", this.props.data, ": id= ", prevProps.id);
                 const updatedata = DataFormats.dataFormatRateRegist(this.props.data[prevProps.id], prevProps.id);
                 this.updateClientData(updatedata);
                 // for map
@@ -143,81 +141,81 @@ class ChartWidget extends React.Component {
         } = this.state;
         // const { size } = this.state;
         let pagerHeight = 12;
-        let resize = {width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height};
+        let resize = { width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height };
         return (
-            <div style={{height:"100%"}}>
+            <div style={{ height: "100%" }}>
                 <div
                     className="chart-widget"
                     style={{
                         height: resize.height,
-                        backgroundColor: chartType !== ChartType.COUNTER && chartType !==  ChartType.TABLE? "#202329" : "transparent",
+                        backgroundColor: chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE ? "#202329" : "transparent",
                     }}
                 >
-                {(filter) ? (
-                    <FilteringComponent id={id} data={data} filterInfo={filter} />
-                ) : null}
-                {chartType === ChartType.GRAPH ? (
-                    <TimeSeries
-                        id={id}
-                        size={resize}
-                        type={type}
-                        chartType={chartType}
-                        data={data}
-                        title={title.value}
-                        showLegend={legendShow}
-                        method={method}
-                        selectedMethod={selectedIndex}
-                        filterInfo={filter}
-                        divide={4}
-                        step={activeStep}
-                    />
-                ) : chartType === ChartType.GAUGE ? (
-                    <ContainerHealth
-                        id={id}
-                        size={resize}
-                        type={type}
-                        chartType={chartType}
-                        title={title.value}
-                        method={method}
-                        step={activeStep}
-                    />
-                ) : chartType === ChartType.MAP ? (
-                    <MatricMapCont
-                        id={id}
-                        size={resize}
-                        type={type}
-                        chartType={chartType}
-                        data={data}
-                        locData={mapData}
-                        cloudlets={cloudlets}
-                        id="matricMap"
-                        reg="cloudletAndClusterMap"
-                        zoomControl={{ center: [0, 0], zoom: 1.5 }}
-                        title={title.value}
-                        method={method}
-                    />
-                ) : chartType === ChartType.COUNTER ? (
-                    <CounterWidget
-                        id={id}
-                        size={resize}
-                        type={type}
-                        chartType={chartType}
-                        data={data}
-                        ref={this.divRef}
-                        clusterCnt={clusterCnt}
-                        title={title.value}
-                        method={method}
-                        step={activeStep}
-                    />
-                ) : (
-                    <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />)}
+                    {(filter) ? (
+                        <FilteringComponent id={id} data={data} filterInfo={filter} />
+                    ) : null}
+                    {chartType === ChartType.GRAPH ? (
+                        <TimeSeries
+                            id={id}
+                            size={resize}
+                            type={type}
+                            chartType={chartType}
+                            data={data}
+                            title={title.value}
+                            showLegend={legendShow}
+                            method={method}
+                            selectedMethod={selectedIndex}
+                            filterInfo={filter}
+                            divide={4}
+                            step={activeStep}
+                        />
+                    ) : chartType === ChartType.GAUGE ? (
+                        <ContainerHealth
+                            id={id}
+                            size={resize}
+                            type={type}
+                            chartType={chartType}
+                            title={title.value}
+                            method={method}
+                            step={activeStep}
+                        />
+                    ) : chartType === ChartType.MAP ? (
+                        <MatricMapCont
+                            id={id}
+                            size={resize}
+                            type={type}
+                            chartType={chartType}
+                            data={data}
+                            locData={mapData}
+                            cloudlets={cloudlets}
+                            id="matricMap"
+                            reg="cloudletAndClusterMap"
+                            zoomControl={{ center: [0, 0], zoom: 1.5 }}
+                            title={title.value}
+                            method={method}
+                        />
+                    ) : chartType === ChartType.COUNTER ? (
+                        <CounterWidget
+                            id={id}
+                            size={resize}
+                            type={type}
+                            chartType={chartType}
+                            data={data}
+                            ref={this.divRef}
+                            clusterCnt={clusterCnt}
+                            title={title.value}
+                            method={method}
+                            step={activeStep}
+                        />
+                    ) : (
+                                        <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />)}
                 </div>
                 {page === "multi"
-                ? (
-                    <div style={{ height: pagerHeight }}>
-                        <DotsMobileStepper id={id} data={data} setActiveStep={this.setActiveStep} />
-                    </div>
-                ) : null}
+                    ? (
+                        <div style={{ height: pagerHeight }}>
+                            <DotsMobileStepper id={id} data={data} setActiveStep={this.setActiveStep} />
+                        </div>
+                    ) : null}
             </div>
         );
     }
@@ -375,9 +373,9 @@ const Pager = withStyles({
 
 const useStyles = makeStyles({
     root: {
-        display:'flex',
+        display: 'flex',
         width: '100%',
-        marginTop:4,
+        marginTop: 4,
         height: 8,
         justifyContent: 'center'
     }

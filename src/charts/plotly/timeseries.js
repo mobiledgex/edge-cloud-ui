@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 import Plot from "react-plotly.js";
 import ContainerDimensions from "react-container-dimensions";
 
@@ -113,9 +112,7 @@ const TimeSeries = (props) => {
 
     React.useEffect(() => {
         // const hasVal1Changed = useCompare(props.data);
-        console.log("20200521 container widget   == 88 1 data ==", props.data, ": props.id =", props.id);
         if (props.size) {
-            console.log("20200522 size = ", props.size);
             setTimeout(() => {
                 setVWidth(props.size.width);
                 setVHeight(props.size.height);
@@ -147,12 +144,10 @@ const TimeSeries = (props) => {
     * Stored on the stack whenever data is loaded
     */
     const chartUpdate = (prevProps) => {
-        console.log("20200521 container widget   == 88 ==", prevProps.data, ":", prevProps.id, ":", prevProps.data[prevProps.id]);
         if (prevProps.id === dataType.NETWORK_CLOUDLET) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
-                console.log("20200521 shortHand ====== -->> ", shortHand);
                 let selectedItem = "";
                 if (prevProps.method === "") {
                     selectedItem = "diskUsed";
@@ -182,7 +177,6 @@ const TimeSeries = (props) => {
         if (prevProps.id === dataType.REGISTER_CLIENT || prevProps.id === dataType.FIND_CLOUDLET) {
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
-                console.log("20200521 container widget   == 99 ==", shortHand, ": id = ", prevProps.id);
 
                 const { type, id } = prevProps;
 
@@ -211,13 +205,14 @@ const TimeSeries = (props) => {
         const title = (id === dataType.NETWORK_CLOUDLET) ? "Used" : "Method";
         const unit = (id === dataType.NETWORK_CLOUDLET) ? "GBs" : "Count";
         const appinst = data[cloudlet].names[0];
+        const time = (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? "Time" : "";
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
             type: type || "line",
             x: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? xAxis : xCloudlet,
             y: data[cloudlet].y,
             yaxis: "y",
-            text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? names : cloudletName,
+            text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? cloudletName : cloudletName,
             name: data[cloudlet].names[0], // legend lable
             mode: "lines+markers",
             // line: {
@@ -226,9 +221,8 @@ const TimeSeries = (props) => {
             // },
             // marker: { size: 4 },
             hovertemplate: `<i>${title}</i>: %{y:.2f} ${unit}`
-                + "<br><b>Time</b>: %{x}<br>"
+                + `<br><b>${time}</b>: %{x}<br>`
                 + "<b> %{text} </b>"
-                + "<br><b> %{appinst}</b></br>"
                 + "<extra></extra>"
         };
 

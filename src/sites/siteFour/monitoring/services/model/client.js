@@ -1,3 +1,7 @@
+/*
+review @Rahul
+*/
+
 /* eslint-disable import/prefer-default-export */
 /*
 $ http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/client <<< '{"region":"EU","appinst":{"app_key":{"organization":"TDG","name":"MobiledgeX SDK Demo","version":"2.0"}},"method":"FindCloudlet","selector":"api","last":1}'
@@ -79,18 +83,14 @@ const metricFromServer = async (self, data) => {
     const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
     const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
 
-    console.log("20200521 range metricFromServer == ", yesterdayWithCurrent);
-
     const makeUTC = time => moment(time).utc();
     const rangeTime = range => {
         let time = null;
-        console.log("20200521 range == ", range);
         if (range === "start") {
             time = makeUTC(yesterdayWithCurrent);
         } else {
             time = makeUTC(moment());
         }
-        console.log("20200521 range time == ", time);
         return time;
     };
     const requestData = {
@@ -106,8 +106,9 @@ const metricFromServer = async (self, data) => {
                 },
             },
             selector: "api",
-            starttime: rangeTime("start"),
-            endtime: rangeTime("end")
+            // starttime: rangeTime("start"),
+            // endtime: rangeTime("end")
+            last: data.last
         },
     };
 

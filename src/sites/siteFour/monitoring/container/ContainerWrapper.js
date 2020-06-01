@@ -50,7 +50,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200521 container widget  prevState.legendShow == ", prevState.legendShow);
         if (_.isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             return { cloudlets: nextProps.cloudlets };
         }
@@ -64,7 +63,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             return { id: nextProps.id };
         }
         if (nextProps.panelInfo) {
-            console.log("20200528 id === ", prevState.id, ": panel info == ", nextProps.panelInfo);
             //if (nextProps.panelInfo.title.value === prevState.title.value) {
             return { legendShow: nextProps.panelInfo };
             //}
@@ -85,7 +83,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.cloudlets !== this.state.cloudlets && this.state.method) {
-            console.log("20200521 container widget   <<== 33 3 == state = ", this.state.method, ": method= ", prevProps.method, ":", prevState.method);
             // TODO: 20200509 //데이터가 갱신될 경우 id는 새로 갱신되어 들어온다
             /** *******************************************
             * STEP # 1
@@ -97,7 +94,6 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         }
         if (prevProps.appinsts !== this.state.appinsts && this.state.method) {
             if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
-                console.log("20200521 container widget   == 33 appinsts == ", this.state.appinsts, ": method= ", prevProps.method);
                 this.initialize(this.state, this);
             }
         }
