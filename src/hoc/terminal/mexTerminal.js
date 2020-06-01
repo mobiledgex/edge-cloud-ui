@@ -1,7 +1,7 @@
 
 import React, { useState, createRef } from 'react';
 import { useStyles } from './mexTerminalStyle';
-import Ansi from "ansi-to-react";
+import stripAnsi from 'strip-ansi'
 
 const MexTerminal = (props) => {
 
@@ -41,7 +41,7 @@ const MexTerminal = (props) => {
                     {
                         props.history ?
                             props.history.map((info, i) => {
-                                return <p key={i} className={classes.history} style={{display:'inline'}}><Ansi>{info}</Ansi></p>
+                                return <p key={i} className={classes.history} style={{display:'inline'}}>{stripAnsi(info)}</p>
                             }) :
                             null
                     }
