@@ -764,3 +764,10 @@ tr td {
     font-weight: 600;
     background-color: #5c5c58;
 }
+
+.ant-select-selection-item{
+    background-color: #23232E;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

@@ -380,7 +380,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <Select
                     size={"small"}
                     defaultValue="dark1"
-                    style={{width: 70}}
+                    style={{width: 70, zIndex: 9999999999}}
                     showArrow={false}
                     bordered={false}
                     ref={c => this.themeSelect = c}
@@ -788,9 +788,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {this.makeMapThemeDropDown()}
                                     </div>
-                                    : <Control position="bottomright" style={{marginTop: 1, marginRight: -1}}>
+                                    : <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 99999}}>
                                         {this.makeMapThemeDropDown()}
-                                    </Control>
+                                    </div>
                                 }
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
