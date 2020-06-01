@@ -2366,19 +2366,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderCloudletLegend(pLegendItemCount) {
 
-                console.log('width===>', this.props.size.width);
-
-                let stringLimit = 20;
-                if (this.props.size.width > 1700) {
-                    stringLimit = 16
-                } else if (this.props.size.width < 1700 && this.props.size.width >= 1500) {
-                    stringLimit = 14
-                } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
-                    stringLimit = 12
+                let stringLimit = 25;
+                if (this.props.size.width > 1600) {
+                    stringLimit = 25
+                }  else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                    stringLimit = 17
                 } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
-                    stringLimit = 10
+                    stringLimit = 14
                 } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
-                    stringLimit = 7
+                    stringLimit = 10
                 } else if (this.props.size.width < 720) {
                     stringLimit = 4
                 }
@@ -2401,6 +2397,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                     }}
+                                    title={item.CloudletName}
                                     span={pLegendItemCount === 1 ? 24 : 3}
                                     style={{
                                         marginTop: 3,
