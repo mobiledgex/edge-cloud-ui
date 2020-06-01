@@ -61,7 +61,7 @@ const showSpinner = (self, value) => {
 const showError = (self, request, message) => {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
     if (showMessage && self && self.handleAlertInfo) {
-        self.handleAlertInfo('error', message)
+        self.props.handleAlertInfo('error', message)
     }
 }
 
