@@ -1,6 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Popper from '@material-ui/core/Popper';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -9,22 +10,26 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import SendIcon from '@material-ui/icons/Send';
 import RoomIcon from '@material-ui/icons/Room';
+import {Dropdown} from "semantic-ui-react";
 
-const StyledMenu = withStyles({
-    paper: {
-        border: '1px solid #d3d4d5',
-    },
+const StyledPopper = withStyles({
+
 })((props) => (
-    <Menu
+    <Popper
         elevation={0}
         getContentAnchorEl={null}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
+        placement="bottom-start"
+        modifiers={{
+            flip: {
+                enabled: false,
+            },
+            preventOverflow: {
+                enabled: false,
+            },
         }}
         transformOrigin={{
             vertical: 'top',
-            horizontal: 'center',
+            horizontal: 'left',
         }}
         {...props}
     />
@@ -56,8 +61,9 @@ export default function FilterMenu() {
         <div className='page_monitoring_location'>
             <Button
                 className='page_monitoring_location_button'
-                aria-controls="customized-menu"
-                aria-haspopup="true"
+                aria-describedby={"customized-popper"}
+                // aria-controls="customized-menu"
+                // aria-haspopup="true"
                 variant="contained"
                 onClick={handleClick}
             >
@@ -66,32 +72,69 @@ export default function FilterMenu() {
             <div className='page_monitoring_location_text'>
                 {'All'}
             </div>
-            <StyledMenu
-                id="customized-menu"
+            <StyledPopper
+                style={{
+                    marginTop:5,
+                    border: '1px solid #96c8da',
+                    borderRadius:4,
+                    backgroundColor:'#1b1c1d',
+                    padding: '0 20px 10px 20px'
+                }}
+                id="customized-popper"
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <StyledMenuItem>
-                    <ListItemIcon>
-                        <SendIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary="Sent mail" />
-                </StyledMenuItem>
-                <StyledMenuItem>
-                    <ListItemIcon>
-                        <DraftsIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary="Drafts" />
-                </StyledMenuItem>
-                <StyledMenuItem>
-                    <ListItemIcon>
-                        <InboxIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary="Inbox" />
-                </StyledMenuItem>
-            </StyledMenu>
+                <div className="page_monitoring_location_header">
+                    Select location
+                </div>
+                <div className="page_monitoring_location_row">
+                    <div className="page_monitoring_location_label">
+                        Region
+                    </div>
+                    <div className="page_monitoring_location_Select">
+                        <Dropdown
+                            className="dropdownName"
+                            placeholder='All'
+                            fluid
+                            search
+                            selection
+                        />
+                    </div>
+                </div>
+                <div className="page_monitoring_location_row">
+                    <div className="page_monitoring_location_label">
+                        Cluster / Cloudlet
+                    </div>
+                    <div className="page_monitoring_location_Select">
+                        <Dropdown
+                            className="dropdownName"
+                            placeholder='All'
+                            fluid
+                            search
+                            selection
+                        />
+                    </div>
+                </div>
+                <div className="page_monitoring_location_row">
+                    <div className="page_monitoring_location_label">
+                        App Instance
+                    </div>
+                    <div className="page_monitoring_location_Select">
+                        <Dropdown
+                            className="dropdownName"
+                            placeholder='All'
+                            fluid
+                            search
+                            selection
+                        />
+                    </div>
+                </div>
+                <div className="page_monitoring_location_apply">
+                    <Button style={{backgroundColor:'#6b7487', color:'#fff'}} variant="contained" >Apply</Button>
+                </div>
+            </StyledPopper>
         </div>
     );
 }
