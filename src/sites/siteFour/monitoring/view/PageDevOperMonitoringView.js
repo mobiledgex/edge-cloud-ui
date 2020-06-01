@@ -2395,7 +2395,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderClusterLegend(legendItemCount) {
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
                 let stringLimit = 14;
-
                 if (this.props.size.width > 1700) {
                     stringLimit = 16
                 } else if (this.props.size.width < 1700 && this.props.size.width >= 1500) {
@@ -2407,7 +2406,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (this.props.size.width < 1150 && this.props.size.width >= 1000) {
                     stringLimit = 7
                 }
-
 
                 return (
                     <Row gutter={16}
