@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Map, Marker, Popup, TileLayer} from "react-leaflet";
-import Ripple from "react-ripples";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
 import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
@@ -251,7 +250,10 @@ export default function MapForOper(props) {
                 }}>
                     <div style={{color: props.chartColorList[props.currentColorIndex], marginLeft: 5}}>
                         <Icon name='cloud'/>
-                    </div>
+                    </div
+
+
+                    >
                     <div style={{marginLeft: 5}}>
                         {currentCluodlet.CloudletName}
                     </div>

@@ -22,7 +22,6 @@ import {
 } from "../../../../shared/Constants";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
-import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -44,6 +43,44 @@ export function changeClassficationTxt(currentClassification) {
     } else {
         return CLASSIFICATION.CLUSTER
     }
+}
+
+export function renderTitle(props) {
+    return (
+        <div style={{
+            display: 'flex',
+            width: '100%',
+            height: 45
+        }}>
+            <div className='page_monitoring_title draggable'
+                 style={{
+                     flex: 1,
+                     marginTop: 10,
+                     color: 'white'
+                 }}
+            >
+                {props.currentClassification} Event Log
+            </div>
+
+        </div>
+    )
+}
+
+export function makeTableRowStyle(index, itemHeight) {
+    return (
+        {
+            flex: .33,
+            color: '#C0C6C8',
+            backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+            height: itemHeight,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+        }
+
+    )
+
 }
 
 
@@ -1127,15 +1164,15 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
-    let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
+export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit) => {
+    //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
     return (
         <div style={{display: 'flex'}}>
             <div>
-                {reduceString(item.cluster, limitCharLength)}
+                {reduceString(item.cluster, stringLimit)}
             </div>
             <div style={{color: 'white'}}>
-                &nbsp;[{reduceString(item.cloudlet, limitCharLength)}]
+                &nbsp;[{reduceString(item.cloudlet, stringLimit)}]
             </div>
         </div>
     )
@@ -1241,15 +1278,7 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         let newCloudletOne = {
             title: (
                 <div>{cloudletOne}&nbsp;&nbsp;
-                    <Chip
-                        color="primary"
-                        size="small"
-                        label="Cloudlet"
-                        style={{
-                            //color: 'white',
-                            //backgroundColor: '#34373E'
-                        }}
-                    />
+                    {/*<Tag color="green">Cloudlet</Tag>*/}
                 </div>
             ),
             value: cloudletOne,
@@ -1275,24 +1304,25 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
 
 
 export const makeDropdownForCloudlet = (pList) => {
-
     try {
         let newArrayList = [];
         newArrayList.push({
-            key: undefined,
-            value: undefined,
+            key: undefined | undefined | undefined,
+            value: undefined | undefined | undefined,
             text: 'Reset Filter',
         })
         pList.map((item: TypeCloudlet, index) => {
             let Cloudlet = item.CloudletName
             let CloudletLocation = JSON.stringify(item.CloudletLocation)
-            let cloudletFullOne = Cloudlet + " | " + CloudletLocation
+            let cloudletFullOne = Cloudlet + " | " + CloudletLocation + " | " + item.Region
             newArrayList.push({
+                region: item.Region,
                 key: cloudletFullOne,
                 value: cloudletFullOne,
                 text: Cloudlet,
             })
         })
+
         return newArrayList;
     } catch (e) {
 

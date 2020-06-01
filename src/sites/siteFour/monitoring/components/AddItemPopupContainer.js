@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
 import {Dropdown} from "semantic-ui-react";
-import {CLASSIFICATION, EVENT_LOG_ITEM_LIST} from "../../../../shared/Constants";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -107,7 +107,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 notification.success({
                     placement: 'bottomLeft',
                     duration: 3,
-                    description: `${this.state.currentItemType} [${this.state.currentHwType}] item added`,
+                    description: this.state.currentHwType !== undefined ? `${this.state.currentItemType} [${this.state.currentHwType}] item added` : `${this.state.currentItemType}  item added`,
                     style: {fontSize: 9}
                 });
             }
@@ -205,12 +205,14 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
     }
 
     renderEventLogRadio() {
+
         return (
             <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                 <div
                     onClick={() => {
                         this.setState({
-                            currentItemType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+                            //DESC:when 클라우드렛, cluster , appInst
+                            currentItemType: this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? GRID_ITEM_TYPE.CLIENT_STATUS_TABLE : GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
                             isShowHWDropDown: false,
                             isShowEventLog: true,
                         })
@@ -223,7 +225,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     </Center>
                 </div>
                 <div className='page_monitoring_form_radio_label'>
-                    <Radio value={GRID_ITEM_TYPE.APP_INST_EVENT_LOG}>Event Log</Radio>
+                    <Radio value={GRID_ITEM_TYPE.CLIENT_STATUS_TABLE}>Table</Radio>
                 </div>
             </ChartIconOuterDiv>
         )
@@ -281,12 +283,12 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         )
     }
 
-    renderEventLogSelect() {
+    renderTableSelectForAppInst_Cluster() {
         return (
             <div className='page_monitoring_form_row'>
                 <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
                     <Center>
-                        Event Log Type
+                        Table Type
                     </Center>
                 </div>
 
@@ -303,6 +305,35 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         }}
                         value={this.state.currentItemType}
                         options={EVENT_LOG_ITEM_LIST}
+                    />
+                </div>
+            </div>
+        )
+    }
+
+
+    renderTableSelectForCloudlet() {
+        return (
+            <div className='page_monitoring_form_row'>
+                <div className='page_monitoring_form_column_left' style={{fontFamily: 'Roboto'}}>
+                    <Center>
+                        Table Type
+                    </Center>
+                </div>
+
+                <div className='page_monitoring_form_column_right'>
+                    <Dropdown
+                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
+                        selectOnBlur={false}
+                        placeholder="Select Item"
+                        selection
+                        onChange={async (e, {value}) => {
+                            this.setState({
+                                currentItemType: value,
+                            })
+                        }}
+                        value={this.state.currentItemType}
+                        options={EVENT_LOG_ITEM_LIST_FOR_CLOUDLET}
                     />
                 </div>
             </div>
@@ -333,7 +364,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         )
     }
 
-    renderHwDropdown(hwDropdownChildren) {
+    renderHwMultipleDropdown(hwDropdownChildren) {
         return (
             <div>
                 <div className='page_monitoring_form_row'>
@@ -445,7 +476,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                     {this.renderLineChartRadio()}
                                     {this.renderBarChartRadio()}
                                     {this.renderColumnChartRadio()}
-                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderEventLogRadio() : null}
+                                    {this.renderEventLogRadio()}
                                     {this.renderMapRadio()}
                                     {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
                                 </div>
@@ -454,8 +485,11 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*@todo:###############################*/}
                         {/*@todo:DROP DOWN AREA                 */}
                         {/*@todo:###############################*/}
-                        {this.state.isShowHWDropDown && this.renderHwDropdown(hwDropdownChildren)}
-                        {this.state.isShowEventLog && this.renderEventLogSelect()}
+                        {this.state.isShowHWDropDown && this.renderHwMultipleDropdown(hwDropdownChildren)}
+                        {this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST
+                            ? this.renderTableSelectForAppInst_Cluster()
+                            : this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderTableSelectForCloudlet() : null
+                        }
                         {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&
                         <div className='page_monitoring_form_row'>
                             <div className='page_monitoring_form_column_left'
