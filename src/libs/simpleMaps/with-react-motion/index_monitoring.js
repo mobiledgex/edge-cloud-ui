@@ -116,12 +116,9 @@ const ClusterMap = props => {
             setClients(clientLocations);
 
             /** zoom in * */
-            setTimeout(() => {
-                // setToggle(true);
-                pathOnBoard("45%", 0.45);
-
-            }, 300);
-
+            // setTimeout(() => {
+            //     setToggle(true);
+            // }, 3000);
         }
     }, [props]);
 
@@ -142,18 +139,6 @@ const ClusterMap = props => {
     // setTimeout(() => {
     //     setToggle(true);
     // }, 3000);
-    function pathOnBoard(text, pos) {
-        // Get the coordinates of the point that is the fraction 'pos' along the path
-        const path = document.getElementById("connectLine");
-        const pathLength = path.getTotalLength();
-        const loc = path.getPointAtLength(pos * pathLength);
-
-        // Make a div
-        const element = document.getElementById("rect2829");
-        element.setAttribute("x", loc.x);
-        element.setAttribute("y", loc.y);
-    }
-
 
     return (
         <Spring
@@ -174,28 +159,7 @@ const ClusterMap = props => {
                                     <Geography key={geo.rsmKey} geography={geo} style={styles.geography} />
                                 ))}
                             </Geographies>
-                            <defs>
-                                <marker
-                                    id="Square"
-                                    markerWidth="10"
-                                    markerHeight="10"
-                                    refX="5"
-                                    refY="5"
-                                    orient="auto"
-                                >
-                                    <path d="M 5,1 L 9,5 5,9 1,5 z" fill="#6a9100" />
-                                </marker>
-                                <marker
-                                    id="Circle"
-                                    markerWidth="10"
-                                    markerHeight="10"
-                                    refX="5"
-                                    refY="5"
-                                    orient="auto"
-                                >
-                                    <circle cx="5" cy="5" r="2" fill="dodgerblue" />
-                                </marker>
-                            </defs>
+
                             {
                                 cities.map((city, i) => (
                                     <MarkerComponent
@@ -237,38 +201,35 @@ const ClusterMap = props => {
                             }
                             {
                                 cities.map((city, i) => (
-                                    <svg id="rect2829">
-                                        <g
-                                            data-tip="tooltip"
-                                            data-for="happyFace"
+                                    <g
+                                        data-tip="tooltip"
+                                        data-for="happyFace"
+                                    >
+                                        <rect
+                                            ry="4.4704852"
+                                            height="21.048122"
+                                            width="70.583839"
+                                            id="rect2829"
+                                            style={{
+                                                fill: "#000000", stroke: "greenyellow", strokeWidth: 0.77330667, strokeOpacity: 1
+                                            }}
+                                        />
+                                        <text
+                                            id="text2852"
+                                            textAnchor="middle"
+                                            y={8}
+                                            className="marker_value"
+                                            fill="#AFAFAF"
+                                            style={{ fontSize: 18 }}
                                         >
-                                            <rect
-                                                ry="4.4704852"
-                                                height="21.048122"
-                                                width="70.583839"
-                                                cx="100"
-                                                cy="50"
-                                                style={{
-                                                    fill: "#000000", stroke: "greenyellow", strokeWidth: 0.77330667, strokeOpacity: 1
-                                                }}
-                                            />
-                                            <text
-                                                id="text2852"
-                                                textAnchor="middle"
-                                                x={35}
-                                                y={17}
-                                                className="marker_value"
-                                                fill="#AFAFAF"
-                                                style={{ fontSize: 18 }}
-                                            >
-                                                {/* <textPath href="#connectLine" startOffset="50%"> */}
+                                            <textPath href="#connectLine" startOffset="45%">
                                                 {city.cost}
-                                                {/* </textPath> */}
-                                            </text>
-                                        </g>
-                                    </svg>
+                                            </textPath>
+                                        </text>
+                                    </g>
                                 ))
                             }
+
                         </ZoomableGroup>
                     </ComposableMap>
                 </div>
