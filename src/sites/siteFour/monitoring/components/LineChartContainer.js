@@ -1,9 +1,10 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../dev/PageDevMonitoringService";
-import PageDevMonitoring from "../dev/PageDevMonitoring";
+import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
+import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -27,7 +28,10 @@ export default class LineChartContainer extends React.Component<Props, State> {
         this.state = {
             currentClassification: [],
             themeTitle: '',
-            chartDataSet: [],
+            chartDataSet: {
+                datasets: [],
+                labels: []
+            },
             graphType: '',
         }
     }
@@ -50,17 +54,20 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
 
     setChartData(lineChartDataSet, hwType, graphType) {
-        let levelTypeNameList = lineChartDataSet.levelTypeNameList;
-        let usageSetList = lineChartDataSet.usageSetList;
-        let newDateTimeList = lineChartDataSet.newDateTimeList;
-        let hardwareType = lineChartDataSet.hardwareType;
+        try {
+            let levelTypeNameList = lineChartDataSet.levelTypeNameList;
+            let usageSetList = lineChartDataSet.usageSetList;
+            let newDateTimeList = lineChartDataSet.newDateTimeList;
+            let hardwareType = lineChartDataSet.hardwareType;
+            const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, usageSetList.length === 1)
+            this.setState({
+                chartDataSet: lineChartDataForRendering,
+                pHardwareType: hwType,
+                graphType: graphType,
+            })
+        } catch (e) {
 
-        const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType)
-        this.setState({
-            chartDataSet: lineChartDataForRendering,
-            pHardwareType: hwType,
-            graphType: graphType,
-        })
+        }
 
     }
 
@@ -84,6 +91,16 @@ export default class LineChartContainer extends React.Component<Props, State> {
             return 'Network Recv'
         } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
             return 'Network Sent'
+        } else if (title.includes(HARDWARE_TYPE.VCPU_USED)) {
+            return 'vCPU Utilization'
+        } else if (title.includes(HARDWARE_TYPE.MEM_USED)) {
+            return 'Mem Utilization'
+        } else if (title.includes(HARDWARE_TYPE.DISK_USED)) {
+            return 'Disk Utilization'
+        } else if (title.includes(HARDWARE_TYPE.FLOATING_IP_USED)) {
+            return 'FLOATING IP Utilization'
+        } else if (title.includes(HARDWARE_TYPE.IPV4_USED)) {
+            return 'IPV4 Utilization'
         } else {
             return title + " Utilization"
         }
@@ -95,7 +112,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' style={{fontFamily: 'Roboto'}}>
-                            {convertToClassification(this.props.currentClassification)} {this.state.pHardwareType !== undefined && this.makeToShortTitle(this.state.pHardwareType)}
+                            {convertToClassification(this.props.currentClassification)} {this.props.pHardwareType !== undefined && this.makeToShortTitle(this.props.pHardwareType)}
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
@@ -104,11 +121,13 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             width: '99%',
                             height: '99%'
                         }}>
-                            <Line
-                                data={this.state.chartDataSet}
-                                options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
-                                //options={simpleGraphOptions}
-                            />
+                            {this.props.parent.state.loading ? renderPlaceHolderLoader()
+                                : <Line
+                                    data={this.state.chartDataSet}
+                                    options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
+                                    //options={simpleGraphOptions}
+                                />
+                            }
                         </div>
                     </div>
                 </div>

@@ -9,11 +9,11 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from "antd";
-import '../PageMonitoring.css'
-import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../dev/PageDevMonitoringService";
+import '../common/PageMonitoringStyles.css'
+import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {numberWithCommas} from "../PageMonitoringUtils";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../PageMonitoringCommonService";
+import {numberWithCommas} from "../common/PageMonitoringUtils";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber} from "../service/PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,
@@ -82,7 +82,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                 <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll',}}
                        stickyHeader={true}>
 
-                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true}>
+                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedHeader={true.toString()}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                             </TableCell>

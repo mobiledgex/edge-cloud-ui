@@ -3,8 +3,11 @@ import ReactJson from 'react-json-view';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import * as constant from '../../constant'
 import {getUserRole} from '../../services/model/format';
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
+import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
 import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+
+SyntaxHighlighter.registerLanguage('javascript', js);
 
 const jsonViewProps = {
     name: null,

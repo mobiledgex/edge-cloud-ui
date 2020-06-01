@@ -1,11 +1,11 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../dev/PageDevMonitoringService";
-import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../PageMonitoringCommonService";
-import PageDevMonitoring from "../dev/PageDevMonitoring";
+import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
+import {makeBubbleChartDataForCluster, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {PageMonitoringStyles} from "../PageMonitoringStyles";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Select} from "antd";
 
 const {Option} = Select;
@@ -131,7 +131,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             }
                                             <div style={{flex: .1, marginRight: 50, marginTop: 2,}}>
                                                 <Select
-                                                    ref={c=>this.bubbleChartSelect=c}
+                                                    ref={c => this.bubbleChartSelect = c}
                                                     bordered={false}
                                                     size={'small'}
                                                     style={{width: 125}}
@@ -154,7 +154,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                             })
 
                                                         } catch (e) {
-                                                            showToast(e.toString())
+                                                            // showToast(e.toString())
                                                             this.props.parent.setState({
                                                                 bubbleChartLoader: false,
                                                             })

@@ -160,7 +160,7 @@ class AppInstList extends React.Component {
     * Customized data block
     * ** */
 
-    UNSAFE_componentWillMount() {
+   componentDidMount() {
         this.customizedData()
     }
 
