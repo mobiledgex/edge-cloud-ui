@@ -140,7 +140,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                 justifyContent: 'center'
                                             }}>
                                                 <div style={{
-                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index],
+                                                    backgroundColor: props.parent.state.chartColorList[index],
                                                     width: 15,
                                                     height: 15,
                                                     borderRadius: 50,
@@ -178,7 +178,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumCpuUsage.toFixed(0)}
-                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
+                                                              strokeColor={props.parent.state.chartColorList[index]}
 
                                                               status={'normal'}/>
                                                 </div>
@@ -197,7 +197,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumMemUsage.toFixed(0)}
-                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
+                                                              strokeColor={props.parent.state.chartColorList[index]}
                                                               status={'normal'}/>
                                                 </div>
                                             </div>
@@ -215,7 +215,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumDiskUsage.toFixed(0)}
-                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
+                                                              strokeColor={props.parent.state.chartColorList[index]}
                                                               status={'normal'}/>
                                                 </div>
                                             </div>
