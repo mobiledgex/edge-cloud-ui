@@ -26,8 +26,6 @@ import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import {Table} from "semantic-ui-react";
-import Progress from "antd/es/progress";
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -1300,8 +1298,6 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
 
         newCloudletList.push(newCloudletOne);
     })
-
-    console.log('newCloudletList===>', newCloudletList);
 
     return newCloudletList;
 }

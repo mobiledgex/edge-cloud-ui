@@ -884,8 +884,6 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion, startTim
                 let values = response.data.data["0"].Series["0"].values
                 let columns = response.data.data["0"].Series["0"].columns
 
-                console.log(`getCloudletEventLog===>`, columns);
-
                 return values;
             } else {
                 return [];
@@ -999,12 +997,6 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
             },
             timeout: 30 * 1000
         }).then(async response => {
-
-            console.log(`response====>` , response.data.data[0].Series[0]);
-
-            /*let columns = response.data.data[0].Series[0].columns;
-            let values = response.data.data[0].Series[0].values;*/
-            //let columns = response.data.data[0].Series[0].columns;
 
             return response.data.data[0];
         }).catch(e => {
