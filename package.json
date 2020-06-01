@@ -100,12 +100,12 @@
     "typings": "dist/index.d.ts",
     "devDependencies": {
         "@material-ui/styles": "^4.9.10",
+        "babel-plugin-transform-remove-console": "^6.9.4",
         "craco-plugin-react-hot-reload": "^0.1.0",
         "react-scripts": "^3.4.1",
-        "webpack": "4.43.0",
+        "source-map-explorer": "^2.4.2",
         "terser-webpack-plugin": "^3.0.1",
-        "babel-plugin-transform-remove-console": "^6.9.4",
-        "source-map-explorer": "^2.4.2"
+        "webpack": "4.43.0"
     },
     "scripts": {
         "start": "craco start",

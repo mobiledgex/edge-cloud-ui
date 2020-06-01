@@ -65,7 +65,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
         if (pBubbleChartData.length === 0 && this.props.parent.state.loading === false) {
             return (
                 <div style={PageMonitoringStyles.noData}>
-                    NO DATA
+                    &nbsp;
                 </div>
             )
         } else {
@@ -75,7 +75,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
             function renderZoomLevel(listLength) {
                 if (listLength <= 4) {
-                    return 0.35;
+                    return 0.3;
                 } else {
                     return 0.4;
                 }
@@ -97,82 +97,77 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
             return (
                 <>
-                    {this.props.loading ?
-                        renderPlaceHolderLoader()
-                        : <div style={{
-                            //backgroundColor: 'blue',
-                            //backgroundColor: '#1e2124',
-                            height: this.props.isBig ? window.innerHeight : 450,//window.innerHeight,
-                            width: this.props.isBig ? window.innerWidth : null,
-                            // marginLeft: 0, marginRight: 0, marginBottom: 10,
-                        }}>
-                            <>
-                                <div className='page_monitoring_title_area draggable' style={{}}>
+                    <div style={{
+                        height: this.props.isBig ? window.innerHeight : 450,//window.innerHeight,
+                        width: this.props.isBig ? window.innerWidth : null,
+                    }}>
+                        <>
+                            <div className='page_monitoring_title_area draggable' style={{}}>
 
-                                    <div style={{
-                                        width: '100%',
-                                        height: 30
-                                    }}>
-                                        <div className='page_monitoring_title'
-                                             style={{
-                                                 display: 'flex',
-                                                 flex: 1,
-                                                 marginTop: 5,
+                                <div style={{
+                                    width: '100%',
+                                    height: 30
+                                }}>
+                                    <div className='page_monitoring_title'
+                                         style={{
+                                             display: 'flex',
+                                             flex: 1,
+                                             marginTop: 5,
 
-                                             }}
-                                        >
-                                            {this.props.isBig === undefined ?
-                                                <div style={{flex: .9, marginTop: 5}}>
-                                                    Cluster Bubble Chart
-                                                </div>
-                                                : <div style={{width: window.innerWidth * 0.9}}>
-
-                                                </div>
-                                            }
-                                            <div style={{flex: .1, marginRight: 50, marginTop: 2,}}>
-                                                <Select
-                                                    ref={c => this.bubbleChartSelect = c}
-                                                    bordered={false}
-                                                    size={'small'}
-                                                    style={{width: 125}}
-                                                    disabled={this.props.parent.state.bubbleChartLoader}
-                                                    placeholder='SELECT HARDWARE'
-                                                    defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
-                                                    value={this.props.parent.state.currentHardwareType}
-                                                    onChange={async (value) => {
-                                                        await handleHardwareTabChanges(this.props.parent, value)
-
-                                                        try {
-                                                            let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList);
-
-                                                            this.props.parent.setState({
-                                                                bubbleChartData: bubbleChartData,
-                                                                currentHardwareType: value,
-                                                            }, () => {
-
-                                                                this.bubbleChartSelect.blur();
-                                                            })
-
-                                                        } catch (e) {
-                                                            // showToast(e.toString())
-                                                            this.props.parent.setState({
-                                                                bubbleChartLoader: false,
-                                                            })
-                                                        }
-                                                    }}
-                                                >
-                                                    {HARDWARE_OPTIONS_FOR_CLUSTER.map(item => {
-                                                        return (
-                                                            <Option value={item.value}>{item.text}</Option>
-                                                        )
-                                                    })}
-                                                </Select>
+                                         }}
+                                    >
+                                        {this.props.isBig === undefined ?
+                                            <div style={{flex: .9, marginTop: 5}}>
+                                                Cluster Bubble Chart
+                                            </div>
+                                            : <div style={{width: window.innerWidth * 0.9}}>
 
                                             </div>
-                                        </div>
+                                        }
+                                        <div style={{flex: .1, marginRight: 50, marginTop: 2,}}>
+                                            <Select
+                                                ref={c => this.bubbleChartSelect = c}
+                                                size={'small'}
+                                                style={{width: 125}}
+                                                disabled={this.props.parent.state.bubbleChartLoader}
+                                                placeholder='SELECT HARDWARE'
+                                                defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
+                                                value={this.props.parent.state.currentHardwareType}
+                                                onChange={async (value) => {
+                                                    await handleHardwareTabChanges(this.props.parent, value)
 
+                                                    try {
+                                                        let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList);
+
+                                                        this.props.parent.setState({
+                                                            bubbleChartData: bubbleChartData,
+                                                            currentHardwareType: value,
+                                                        }, () => {
+
+                                                            this.bubbleChartSelect.blur();
+                                                        })
+
+                                                    } catch (e) {
+                                                        // showToast(e.toString())
+                                                        this.props.parent.setState({
+                                                            bubbleChartLoader: false,
+                                                        })
+                                                    }
+                                                }}
+                                            >
+                                                {HARDWARE_OPTIONS_FOR_CLUSTER.map(item => {
+                                                    return (
+                                                        <Option value={item.value}>{item.text}</Option>
+                                                    )
+                                                })}
+                                            </Select>
+
+                                        </div>
                                     </div>
+
                                 </div>
+                            </div>
+                            {this.props.parent.state.loading ? <div style={{marginTop: 80}}>{renderPlaceHolderLoader()}</div> :
                                 <div className='page_monitoring_container'>
                                     <BubbleChartCore
                                         className='bubbleChart'
@@ -218,21 +213,14 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             }
 
                                         }}
-                                        legendClickFun={async (cluster_cloudlet, index) => {
-                                            /*   try {
-                                                   let lineChartDataSet = makeLineChartData(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-                                                   cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                                   handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
-                                               } catch (e) {
-
-                                               }*/
-                                        }}
                                         data={pBubbleChartData}
                                     />
 
                                 </div>
-                            </>
-                        </div>}
+
+                            }
+                        </>
+                    </div>
 
                 </>
             )

@@ -3,6 +3,7 @@ import '../common/PageMonitoringStyles.css'
 import {Center, CenterMethodCount} from "../common/PageMonitoringStyles";
 import type {TypeClientStatus} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
+import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
 
 const height = 200;
 const outerDiv = {flex: .33, border: '0.5px solid grey', height: height, backgroundColor: 'rgba(0,0,0,.3)', margin: 2}
@@ -59,39 +60,45 @@ export default function MethodUsageCount(props) {
                 height: '100%',
                 //backgroundColor: 'red'
             }}>
-                <CenterMethodCount style={{height: height}}>
-                    <div style={outerDiv}>
-                        <Center style={{fontSize: 20, height: height / 2}}>
-                            Find
-                            <br/>
-                            Cloudlet
-                        </Center>
-                        <div style={{marginTop: 5, color: 'green', fontSize: 40, fontWeight: 'bold'}}>
-                            {countReady ? FindCloudletCountTotal : <CircularProgress size={'small'}/>}
+                {!props.loading && props.clientStatusList !== undefined ?
+                    <CenterMethodCount style={{height: height}}>
+                        <div style={outerDiv}>
+                            <Center style={{fontSize: 20, height: height / 2}}>
+                                Find
+                                <br/>
+                                Cloudlet
+                            </Center>
+                            <div style={{marginTop: 5, color: 'green', fontSize: 40, fontWeight: 'bold'}}>
+                                {countReady ? FindCloudletCountTotal : <CircularProgress size={'small'}/>}
+                            </div>
                         </div>
-                    </div>
-                    <div style={outerDiv}>
-                        <Center style={{fontSize: 20, height: height / 2}}>
-                            Register
-                            <br/>
-                            Client
-                        </Center>
-                        <div style={{marginTop: 5, color: 'orange', fontSize: 40, fontWeight: 'bold'}}>
-                            {countReady ? RegisterClientCountTotal : <CircularProgress size={'small'}/>}
+                        <div style={outerDiv}>
+                            <Center style={{fontSize: 20, height: height / 2}}>
+                                Register
+                                <br/>
+                                Client
+                            </Center>
+                            <div style={{marginTop: 5, color: 'orange', fontSize: 40, fontWeight: 'bold'}}>
+                                {countReady ? RegisterClientCountTotal : <CircularProgress size={'small'}/>}
+                            </div>
                         </div>
-                    </div>
-                    <div style={outerDiv}>
-                        <Center style={{fontSize: 20, height: height / 2}}>
-                            Verify
-                            <br/>
-                            Location
-                        </Center>
-                        <div style={{marginTop: 5, color: '#0783FF', fontSize: 40, fontWeight: 'bold'}}>
-                            {countReady ? VerifyLocationCountTotal : <CircularProgress size={'small'}/>}
+                        <div style={outerDiv}>
+                            <Center style={{fontSize: 20, height: height / 2}}>
+                                Verify
+                                <br/>
+                                Location
+                            </Center>
+                            <div style={{marginTop: 5, color: '#0783FF', fontSize: 40, fontWeight: 'bold'}}>
+                                {countReady ? VerifyLocationCountTotal : <CircularProgress size={'small'}/>}
 
+                            </div>
                         </div>
-                    </div>
-                </CenterMethodCount>
+                    </CenterMethodCount>
+                    :
+                    <Center style={{marginTop: 60}}>
+                        {renderPlaceHolderCircular()}
+                    </Center>
+                }
             </div>
         </div>
     )

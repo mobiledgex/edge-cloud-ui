@@ -21,10 +21,23 @@ const getLoader = function (rules, matcher) {
     return loader;
 };
 
+
+
+
 module.exports = {
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
+        splitChunks: {
+            cacheGroups: {
+                chunks:function(chunk){
+                    return chunk.name !== 'antd-icons';
+                },
+                vendors: {
+                    filename: '[name].bundle.js'
+                }
+            }
+        }
     },
     dev: {
         useEslint: true
