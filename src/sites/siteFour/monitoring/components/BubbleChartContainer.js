@@ -155,9 +155,9 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                     }
                                                 }}
                                             >
-                                                {HARDWARE_OPTIONS_FOR_CLUSTER.map(item => {
+                                                {HARDWARE_OPTIONS_FOR_CLUSTER.map((item, index) => {
                                                     return (
-                                                        <Option value={item.value}>{item.text}</Option>
+                                                        <Option key={index} value={item.value}>{item.text}</Option>
                                                     )
                                                 })}
                                             </Select>
