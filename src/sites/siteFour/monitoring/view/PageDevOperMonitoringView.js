@@ -40,7 +40,18 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterEventLog, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeCloudlet,
+    TypeCloudletEventLog,
+    TypeCloudletUsage,
+    TypeCluster,
+    TypeClusterEventLog,
+    TypeClusterUsageOne,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
@@ -860,8 +871,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                /*todo:CLUSTER*/
-                /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -983,7 +994,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         } else {
                             lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
-                        chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
+                        chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this, this.state.currentColorIndex)
 
                     } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.MULTI_LINE_CHART) {
 
@@ -2795,6 +2806,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
                             selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             loading={this.state.loading}
+                            currentColorIndex={this.state.currentColorIndex}
                         />
 
 
