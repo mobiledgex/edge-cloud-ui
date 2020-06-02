@@ -1,9 +1,8 @@
-import React, { Component, useState } from "react";
+import React from "react";
 import moment from "moment";
 
 import Timeline, {
     TimelineHeaders,
-    SidebarHeader,
     CustomHeader
 } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
