@@ -1904,7 +1904,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterList: this.state.allClusterList,
                         })
                         await this.resetLocalData();
-                    } else {
+                    } else {//todo:컬러스터가 한개 이상인 경우에
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                             dropdownRequestLoading: true,
@@ -2234,7 +2234,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return filteredClusterList;
             }
 
-            filterClusterList(allClusterList, selectClusterList) {
+            filterClusterListForTreeSelect(allClusterList, selectClusterList) {
                 let filteredClusterList = []
                 allClusterList.map((item, index) => {
                     selectClusterList.map((innerItem, innerIndex) => {
@@ -2296,8 +2296,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.setState({currentCluster: value});
 
 
-
-
                                     /*  this.treeSelect.blur();
                                       clearInterval(this.intervalForCluster)
                                       clearInterval(this.intervalForAppInst)
@@ -2328,9 +2326,85 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     let allClusterUsageList = this.state.allClusterUsageList
                                     let filteredClusterUsageList = this.filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList)
 
+
+                                    let allClusterList = this.state.allClusterList
+                                    let filteredClusterList = this.filterClusterListForTreeSelect(allClusterList, selectClusterList)
+
+                                    console.log(`filteredClusterList====>`, filteredClusterList)
                                     await this.setState({
                                         filteredClusterUsageList: filteredClusterUsageList,
+                                        filteredClusterList: filteredClusterList,
                                     })
+
+                                    /////////////////////////////////////////////////////
+                                    /////////////////////////////////////////////////////
+                                    await this.setState({
+                                        selectedClientLocationListOnAppInst: [],
+                                        dropdownRequestLoading: true,
+                                        selectedAppInstIndex: -1,
+                                    })
+
+                                    /*let selectData = pClusterCloudletOne.split("|")
+                                    let selectedCluster = selectData[0].trim();
+                                    let selectedCloudlet = selectData[1].trim();*/
+
+
+                                    /*  this.state.appInstList.map((item: TypeAppInst, index) => {
+                                          if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                                              filteredAppInstList.push(item)
+                                          }
+                                      })*/
+                                    ///////////////////////////////////
+
+                                    let filteredAppInstList = []
+                                    this.state.appInstList.map((appInstOne, index) => {
+                                        selectClusterList.map((innerItem, innerIndex) => {
+
+                                            if (appInstOne.ClusterInst === innerItem.split("|")[0].trim() && appInstOne.Cloudlet === innerItem.split("|")[1].trim()) {
+                                                filteredAppInstList.push(appInstOne)
+                                            }
+                                        })
+                                    })
+
+                                    //todo:filteredClusterEventLogList
+                                    /* let filteredClusterEventLogList = []
+                                     this.state.allClusterEventLogList.map((item: TypeClusterEventLog, index) => {
+                                         if (item[1] === selectedCluster) {
+                                             filteredClusterEventLogList.push(item)
+                                         }
+                                     })*/
+
+
+                                    let filteredClusterEventLogList = []
+                                    this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
+                                        selectClusterList.map((innerItem, innerIndex) => {
+                                            if (clusterEventLogOne.cluster === innerItem.split("|")[0].trim() && clusterEventLogOne.cluster === innerItem.split("|")[1].trim()) {
+                                                filteredClusterEventLogList.push(clusterEventLogOne)
+                                            }
+                                        })
+                                    })
+
+
+                                    let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
+                                    let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                                    await this.setState({
+                                        bubbleChartData: bubbleChartData,
+                                        currentCluster: selectClusterList,
+                                        currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_OPER,
+                                        dropdownRequestLoading: false,
+                                        filteredClusterUsageList: filteredClusterUsageList,
+                                        appInstDropdown: appInstDropdown,
+                                        allAppInstDropdown: appInstDropdown,
+                                        appInstSelectBoxPlaceholder: 'Select App Inst',
+                                        filteredAppInstList: filteredAppInstList,
+                                        appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+                                        currentAppInst: undefined,
+                                        filteredClusterList: filteredClusterList,
+                                        currentOperLevel: CLASSIFICATION.CLUSTER,
+                                        filteredClusterEventLogList: filteredClusterEventLogList,
+                                        currentColorIndex: -1,
+                                    });
+
 
                                 }}>
                                     Apply

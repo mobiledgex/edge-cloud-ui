@@ -631,7 +631,7 @@ tr td {
 
 .clientPopup .leaflet-popup-content-wrapper {
     border-radius: 0px;
-    width: 360px !important;
+    width: 420px !important;
     border-color: #00A2FF;
     border-style: groove;
     background-color: black;

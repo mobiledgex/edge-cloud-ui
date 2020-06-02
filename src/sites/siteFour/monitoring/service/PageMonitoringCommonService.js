@@ -725,7 +725,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, cha
                 favor: usageValue,
                 fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
                 cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
-                color: usageList.length === 1 ? chartColorList[clusterIndex] : chartColorList[index],
+                color: chartColorList[index],
             })
         })
 
