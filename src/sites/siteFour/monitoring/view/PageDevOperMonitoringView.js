@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 
 import {
     filterByClassification,
@@ -2241,14 +2241,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 disabled={this.state.loading}
                                 size={'middle'}
                                 showSearch={true}
-                                switcherIcon={
+                                treeCheckable={true}
+                                showCheckedStrategy={'SHOW_CHILD'}
+                                /*switcherIcon={
                                     <div style={{marginLeft: 5,}}>
                                         <FontAwesomeIcon
                                             name="cloud" style={{fontSize: 15, color: '#77BD25', cursor: 'pointer', marginTop: 2}}
                                         />
                                     </div>
-                                }
-                                style={{width: '320px'}}
+                                }*/
+                                style={{width: '500px'}}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,
@@ -2265,27 +2267,52 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 value={this.state.currentCluster}
 
                                 onChange={async (value, label, extra) => {
-                                    this.treeSelect.blur();
-                                    clearInterval(this.intervalForCluster)
-                                    clearInterval(this.intervalForAppInst)
-                                    let selectIndex = 0;
-                                    this.state.allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
-                                        if (item.cluster === value.split("|")[0].trim()) {
-                                            selectIndex = index;
-                                        }
-                                    })
 
-                                    //@desc: When whole cluster ...
-                                    if (value === '') {
-                                        await this.setState({
-                                            filteredClusterList: this.state.allClusterList,
-                                        })
-                                    } else {
-                                        await this.filterClusterList(value)
-                                    }
-                                    await this.handleOnChangeClusterDropdown(value.trim(), selectIndex)
+
+                                    this.setState({currentCluster: value});
+                                    console.log('onChange====>', value);
+
+                                    /*  this.treeSelect.blur();
+                                      clearInterval(this.intervalForCluster)
+                                      clearInterval(this.intervalForAppInst)
+                                      let selectIndex = 0;
+                                      this.state.allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+                                          if (item.cluster === value.split("|")[0].trim()) {
+                                              selectIndex = index;
+                                          }
+                                      })
+
+                                      //@desc: When whole cluster ...
+                                      if (value === '') {
+                                          await this.setState({
+                                              filteredClusterList: this.state.allClusterList,
+                                          })
+                                      } else {
+                                          await this.filterClusterList(value)
+                                      }
+                                      await this.handleOnChangeClusterDropdown(value.trim(), selectIndex)*/
                                 }}
                             />
+                            <div style={{marginLeft: 10,}}>
+                                <Button onClick={() => {
+                                    console.log(`allClusterList...currentCluster====>`, this.state.currentCluster);
+
+                                    /*
+                                    0: "andycluster | automationFrankfurtCloudlet"
+                                    1: "andyclusterhelm | automationFrankfurtCloudlet"
+                                    2: "autoclusterautomation-api-app | automationFrankfurtCloudlet"
+                                    */
+                                    let selectClusterList =  this.state.currentCluster;
+
+                                    this.state.allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+
+                                        console.log(`allClusterList)====>`,this.state.allClusterList);
+                                    })
+
+                                }}>
+                                    apply
+                                </Button>
+                            </div>
                         </div>
                     )
                 } else {
@@ -2717,6 +2744,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div style={{marginLeft: 25}}>
                                             {this.renderClusterDropdown()}
                                         </div>
+
                                         <div style={{marginLeft: 25}}>
                                             {this.renderAppInstDropdown()}
                                         </div>

@@ -1267,12 +1267,12 @@ export function convertHWType(hwType) {
  */
 export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
     let newCloudletList = []
-    newCloudletList.push({
+   /* newCloudletList.push({
         title: 'Reset Filter',
         value: '',
         selectable: true,
         children: []
-    });
+    });*/
     cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
