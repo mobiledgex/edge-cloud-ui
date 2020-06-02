@@ -5,12 +5,11 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, Tag, TreeSelect} from 'antd';
+import {Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 
 import {
     filterByClassification,
     getCloudletClusterNameList,
-    getOnlyCloudletIndex,
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
@@ -310,8 +309,8 @@ type PageDevMonitoringState = {
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
         class PageDevMonitoring extends Component<PageMonitoringProps, PageDevMonitoringState> {
-            intervalForAppInst = null;
-            intervalForCluster = null;
+            intervalForAppInst = 0;
+            intervalForCluster = 0;
             webSocketInst: WebSocket = null;
             gridItemHeight = 255;
             lastDay = 30;
@@ -618,7 +617,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                     }
 
-                    let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
+                    let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
                     let dataCount = 0;
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
@@ -637,7 +636,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        clusterDropdownList: clusterDropdownList,//@fixme
                         dropDownCludsterListOnCloudlet: clusterDropdownList,//@fixme
                         allClusterList: clusterList,
                         filteredClusterList: clusterList,
@@ -697,7 +695,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstanceListGroupByCloudlet: markerListForMap,
                 })
                 //desc: reset bubble chart data
-                let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList);
+                let bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                 await this.setState({
                     bubbleChartData: bubbleChartData,
                     dropdownRequestLoading: false,
@@ -779,21 +777,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                     } catch (e) {
                         showToast(e.toString())
+                    } finally {
+                        this.setState({
+                            intervalLoading: false,
+                        })
                     }
 
                 }, 1000 * 6.0)
             }
 
             setAppInstInterval(filteredAppList) {
-                this.intervalForAppInst = setInterval(async () => {
-                    this.setState({intervalLoading: true,})
-                    let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
-                    this.setChartDataForBigModal(allAppInstUsageList)
+                try {
+                    this.intervalForAppInst = setInterval(async () => {
+                        this.setState({intervalLoading: true,})
+                        let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+                        this.setChartDataForBigModal(allAppInstUsageList)
+                        this.setState({
+                            intervalLoading: false,
+                            filteredAppInstUsageList: allAppInstUsageList,
+                        })
+                    }, 1000 * 7.0)
+                } catch (e) {
+
+                } finally {
                     this.setState({
                         intervalLoading: false,
-                        filteredAppInstUsageList: allAppInstUsageList,
                     })
-                }, 1000 * 7.0)
+                }
             }
 
 
@@ -984,7 +994,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         } else {
                             lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
-                        chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
+                        chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this, this.state.currentColorIndex)
 
                     } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.MULTI_LINE_CHART) {
 
@@ -1082,14 +1092,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this.__makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this._______makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
 
-            __makeGridItemOneBody(pHwType, graphType) {
+            _______makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
@@ -1798,11 +1808,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         this.setState({isStream: false})
                                     } else {
                                         if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster)
+                                            await this.handleOnChangeClusterDropdown(this.state.currentCluster, this.state.currentColorIndex)
                                         } else {
                                             await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
                                         }
-                                        this.setState({isStream: true})
+                                        this.setState({
+                                            isStream: true,
+                                        })
                                     }
                                 }}
 
@@ -1813,7 +1825,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleOnChangeCloudletDropdown = async (pCloudletFullOne) => {
+            handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
                 try {
                     if (pCloudletFullOne !== undefined && pCloudletFullOne.toString() !== '0') {
                         await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletFullOne)})
@@ -1854,8 +1866,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClassification: CLASSIFICATION.CLOUDLET,
                             currentCluster: undefined,
                             currentOperLevel: undefined,
-                            currentColorIndex: getOnlyCloudletIndex(pCloudletFullOne),
                             filteredCloudletEventLogList: filteredCloudletEventLogList,
+                            currentColorIndex: cloudletIndex,
 
                         });
                     } else {//todo: When allCloudlet
@@ -1878,7 +1890,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            async handleOnChangeClusterDropdown(pClusterCloudletOne) {
+            async handleOnChangeClusterDropdown(pClusterCloudletOne, clusterIndex) {
                 if (this.state.isStream === false) {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
@@ -1922,7 +1934,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let filteredClusterList = []
                         this.state.allClusterList.map((item: TypeCluster, index) => {
-                            if (item.ClusterName === selectedCluster) {
+                            if (item.ClusterName === selectedCluster && item.Cloudlet === selectedCloudlet) {
                                 filteredClusterList.push(item)
                             }
                         })
@@ -1937,7 +1949,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
-                        let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                        let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList, clusterIndex);
                         await this.setState({
                             bubbleChartData: bubbleChartData,
                             currentCluster: pClusterCloudletOne,
@@ -1953,7 +1965,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterList: filteredClusterList,
                             currentOperLevel: CLASSIFICATION.CLUSTER,
                             filteredClusterEventLogList: filteredClusterEventLogList,
-                            //currentColorIndex: getOnlyCloudletIndex(pClusterCloudletOne),
+                            currentColorIndex: clusterIndex,
                         });
 
                     }
@@ -1974,7 +1986,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            handleOnChangeAppInstDropdown = async (pCurrentAppInst) => {
+            handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
@@ -1985,18 +1997,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
                         })
-                        this.webSocketInst = requestShowAppInstClientWS(pCurrentAppInst, this);
+                        this.webSocketInst = requestShowAppInstClientWS(fullCurrentAppInst, this);
                     }
 
                     await this.setState({
-                        currentAppInst: pCurrentAppInst,
+                        currentAppInst: fullCurrentAppInst,
                         loading: true,
                     })
 
-                    let AppName = pCurrentAppInst.split('|')[0].trim()
-                    let Cloudlet = pCurrentAppInst.split('|')[1].trim()
-                    let ClusterInst = pCurrentAppInst.split('|')[2].trim()
-                    let Version = pCurrentAppInst.split('|')[3].trim()
+                    let AppName = fullCurrentAppInst.split('|')[0].trim()
+                    let Cloudlet = fullCurrentAppInst.split('|')[1].trim()
+                    let ClusterInst = fullCurrentAppInst.split('|')[2].trim()
+                    let Version = fullCurrentAppInst.split('|')[3].trim()
                     let filteredAppList = filterByClassification(this.state.appInstList, Cloudlet, 'Cloudlet');
                     filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
                     filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
@@ -2018,8 +2030,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let arrDateTime = getOneYearStartEndDatetime();
                     let appInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
-                    pCurrentAppInst = pCurrentAppInst.trim();
-                    pCurrentAppInst = pCurrentAppInst.split("|")[0].trim() + " | " + pCurrentAppInst.split('|')[1].trim() + " | " + pCurrentAppInst.split('|')[2].trim() + ' | ' + Version
+                    fullCurrentAppInst = fullCurrentAppInst.trim();
+                    fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
 
                     //desc: ############################
                     //desc: filtered AppInstEventLogList
@@ -2038,7 +2050,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstUsageList: appInstUsageList,
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
-                        currentAppInst: pCurrentAppInst,
+                        //currentAppInst: AppName + ' [' + Version + ']',
+                        currentAppInst: fullCurrentAppInst,
                         currentCluster: isEmpty(this.state.currentCluster) ? '' : this.state.currentCluster,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
                     });
@@ -2136,6 +2149,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderDotForCloudlet(index) {
+                return (
+                    <Center>
+                        <div
+                            style={{
+                                backgroundColor: this.state.cloudletDropdownList.length === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index - 1],
+                                width: 15,
+                                height: 15,
+                                borderRadius: 50,
+                            }}
+                        >
+                        </div>
+                    </Center>
+                )
+            }
+
+
             renderCloudletDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -2152,8 +2182,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
-                                await this.handleOnChangeCloudletDropdown(value)
                                 this.cloudletSelect.blur();
+                                let selectIndex = 0;
+                                this.state.cloudletList.map((item: TypeCloudlet, index) => {
+                                    if (item.CloudletName === value.split("|")[0].trim()) {
+                                        selectIndex = index;
+                                    }
+                                })
+
+                                await this.handleOnChangeCloudletDropdown(value, selectIndex)
+
                             }}
                         >
                             {this.state.cloudletDropdownList.map((item: any, index) => {
@@ -2169,8 +2207,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         return (
                                             <Option key={index} value={itemValues}>
                                                 <div style={{display: 'flex'}}>
-                                                    {/*<div style={{marginLeft: 0}}><Tag color="purple">{item.region}</Tag></div>*/}
-                                                    <div style={{marginLeft: 3,}}>{item.text}</div>
+                                                    {this.renderDotForCloudlet(index)}
+                                                    <div style={{marginLeft: 7,}}>{item.text}</div>
                                                 </div>
                                             </Option>
                                         )
@@ -2210,24 +2248,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         />
                                     </div>
                                 }
-                                style={{width: '400px'}}
+                                style={{width: '320px'}}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,
                                     });
                                 }}
-
+                                ref={c => this.treeSelect = c}
+                                listHeight={500}
                                 searchValue={this.state.searchClusterValue}
                                 searchPlaceholder={'Enter the cluster name.'}
                                 placeholder={'Select Cluster'}
-                                dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450,}}
+                                dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450}}
                                 treeData={this.state.dropDownCludsterListOnCloudlet}
                                 treeDefaultExpandAll={true}
                                 value={this.state.currentCluster}
 
                                 onChange={async (value, label, extra) => {
+                                    this.treeSelect.blur();
                                     clearInterval(this.intervalForCluster)
                                     clearInterval(this.intervalForAppInst)
+                                    let selectIndex = 0;
+                                    this.state.allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+                                        if (item.cluster === value.split("|")[0].trim()) {
+                                            selectIndex = index;
+                                        }
+                                    })
+
                                     //@desc: When whole cluster ...
                                     if (value === '') {
                                         await this.setState({
@@ -2236,7 +2283,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     } else {
                                         await this.filterClusterList(value)
                                     }
-                                    await this.handleOnChangeClusterDropdown(value.trim())
+                                    await this.handleOnChangeClusterDropdown(value.trim(), selectIndex)
                                 }}
                             />
                         </div>
@@ -2293,13 +2340,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Select
                             ref={c => this.appInstSelect = c}
                             dropdownStyle={{}}
-                            style={{width: 250}}
+                            style={{width: 350}}
                             disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentCluster === undefined}
                             value={this.state.currentAppInst}
                             placeholder={this.state.appInstSelectBoxPlaceholder}
                             onChange={async (value) => {
-                                await this.handleOnChangeAppInstDropdown(value.trim())
                                 this.appInstSelect.blur();
+                                await this.handleOnChangeAppInstDropdown(value.trim())
+
                             }}
                         >
                             {this.state.allAppInstDropdown.map(item => {
@@ -2329,7 +2377,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            renderDot(index, itemCount = false) {
+            renderDot(index, itemCount) {
                 return (
                     <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                         <div
@@ -2345,7 +2393,42 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            makeStringLimit(classification) {
+                let stringLimit = 25;
+                if (classification === CLASSIFICATION.CLOUDLET) {
+                    if (this.props.size.width > 1600) {
+                        stringLimit = 25
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                        stringLimit = 17
+                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                        stringLimit = 14
+                    } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+                        stringLimit = 10
+                    } else if (this.props.size.width < 720) {
+                        stringLimit = 4
+                    }
+                    return stringLimit;
+
+                } else if (classification === CLASSIFICATION.CLUSTER) {
+                    if (this.props.size.width > 1700) {
+                        stringLimit = 16
+                    } else if (this.props.size.width < 1700 && this.props.size.width >= 1500) {
+                        stringLimit = 14
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                        stringLimit = 12
+                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                        stringLimit = 10
+                    } else if (this.props.size.width < 1150) {
+                        stringLimit = 7
+                    }
+                    return stringLimit;
+                }
+            }
+
             renderCloudletLegend(pLegendItemCount) {
+
+                let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
+
                 return (
                     <Row gutter={16}
                          style={{
@@ -2356,13 +2439,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              alignSelf: 'center',
                          }}
                     >
-                        {this.state.filteredCloudletList.map((item: TypeCloudlet, index) => {
+                        {this.state.filteredCloudletList.map((item: TypeCloudlet, cloudletIndex) => {
                             return (
                                 <Col
-                                    key={index}
+                                    key={cloudletIndex}
                                     className="gutterRow"
                                     onClick={async () => {
                                     }}
+                                    title={item.CloudletName}
                                     span={pLegendItemCount === 1 ? 24 : 3}
                                     style={{
                                         marginTop: 3,
@@ -2372,18 +2456,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                     onClick={async () => {
                                         if (this.state.filteredCloudletList.length > 1) {
-                                            let fullCloudletItemOne = item.CloudletName + " | " + JSON.stringify(item.CloudletLocation) + " | " + index.toString()
-                                            await this.handleOnChangeCloudletDropdown(fullCloudletItemOne)
+                                            let fullCloudletItemOne = item.CloudletName + " | " + JSON.stringify(item.CloudletLocation) + " | " + cloudletIndex.toString()
+                                            await this.handleOnChangeCloudletDropdown(fullCloudletItemOne, cloudletIndex)
                                         } else {
                                             await this.handleOnChangeCloudletDropdown(undefined)
                                         }
                                     }}
                                 >
                                     <div>
-                                        {this.renderDot(index, pLegendItemCount)}
+                                        {this.renderDot(cloudletIndex, pLegendItemCount)}
                                     </div>
                                     <div style={{marginTop: 0, marginLeft: 5}}>
-                                        {reduceString(item.CloudletName, 21, pLegendItemCount)}
+                                        {reduceString(item.CloudletName, stringLimit, pLegendItemCount)}
                                     </div>
 
                                 </Col>
@@ -2396,20 +2480,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderClusterLegend(legendItemCount) {
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
-                let stringLimit = 14;
-
-                if (this.props.size.width > 1700) {
-                    stringLimit = 16
-                } else if (this.props.size.width < 1700 && this.props.size.width >= 1500) {
-                    stringLimit = 14
-                } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
-                    stringLimit = 12
-                } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
-                    stringLimit = 10
-                } else if (this.props.size.width < 1150 && this.props.size.width >= 1000) {
-                    stringLimit = 7
-                }
-
+                let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
 
                 return (
                     <Row gutter={16}
@@ -2421,10 +2492,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              display: filteredClusterUsageListLength === 1 ? 'flex' : null,
                          }}
                     >
-                        {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+                        {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
                             return (
                                 <Col
-                                    key={index}
+                                    key={clusterIndex}
                                     className="gutterRow"
                                     onClick={async () => {
                                         await this.setState({
@@ -2432,8 +2503,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         })
                                         if (this.state.filteredClusterUsageList.length > 1) {
                                             let clusterOne = item.cluster + " | " + item.cloudlet;
-                                            await this.handleOnChangeClusterDropdown(clusterOne)
+                                            clearInterval(this.intervalForCluster)
+                                            await this.handleOnChangeClusterDropdown(clusterOne, clusterIndex)
                                         } else {
+                                            clearInterval(this.intervalForCluster)
                                             await this.handleOnChangeClusterDropdown(undefined)
                                         }
 
@@ -2449,12 +2522,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 >
                                     {filteredClusterUsageListLength === 1 ?
                                         <Center style={{marginLeft: 100}}>
-                                            {this.renderDot(index)}
+                                            {this.renderDot(clusterIndex, filteredClusterUsageListLength)}
                                             <div style={{display: 'flex', marginLeft: 3,}}>
                                                 <div>
                                                     {item.cluster}
                                                 </div>
-                                                <div style={{color: 'yellow',}}>
+                                                <div style={{color: 'white',}}>
                                                     &nbsp;[{item.cloudlet}]
                                                 </div>
                                             </div>
@@ -2462,7 +2535,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         :
                                         <Center>
                                             <div>
-                                                {this.renderDot(index)}
+                                                {this.renderDot(clusterIndex)}
                                             </div>
                                             <div className="clusterCloudletBox">
                                                 {reduceLegendClusterCloudletName(item, this, stringLimit)}
@@ -2501,7 +2574,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 marginLeft: 0,
                                 flex: 1,
                             }}>
-                                {this.renderDot(0)}
+                                {this.renderDot(0, pLegendItemCount)}
                                 <ClusterCluoudletLabel
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                     {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
@@ -2616,15 +2689,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                            }}
                     >
                         Monitoring
-                        {/* <div style={{color: 'pink', fontSize: 14}}>
-                            &nbsp;&nbsp;[{this.state.currentClassification}]
-                        </div>
-                        <div style={{color: 'green', fontSize: 14}}>
-                            &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectRole.toString()}
-                        </div>
-                        <div style={{color: 'skyblue', fontSize: 14}}>
-                            &nbsp;&nbsp;&nbsp;&nbsp;{localStorage.selectOrg.toString()}
-                        </div>*/}
                     </label>
                 )
             }
@@ -2742,6 +2806,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
                             selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                             loading={this.state.loading}
+                            currentColorIndex={this.state.currentColorIndex}
                         />
 
 

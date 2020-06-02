@@ -7,6 +7,7 @@ import '../common/PageMonitoringStyles.css'
 import {Center} from "../common/PageMonitoringStyles";
 import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
+import Table from "@material-ui/core/Table";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -156,7 +157,7 @@ export default function CloudletEventLogList(props) {
     return (
         <div>
             {renderTitle(props)}
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true}>
+            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}}  stickyheader={true.toString()}>
                 {!props.parent.state.loading && renderTableHead()}
                 {/*##########################################*/}
                 {/*     tableBody                            */}

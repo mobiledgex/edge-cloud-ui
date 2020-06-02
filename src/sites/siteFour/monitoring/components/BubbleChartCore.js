@@ -131,6 +131,7 @@ export default class BubbleChartCore extends Component {
             })
 
 
+
         node.append("circle")
             .attr("id", function (d) {
                 return d.id;

@@ -4,6 +4,7 @@ import {FixedSizeList} from "react-window";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import {Center} from "../common/PageMonitoringStyles";
+import Table from "@material-ui/core/Table";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -148,7 +149,7 @@ export default function ClusterEventLogList(props) {
     return (
         <React.Fragment>
             {renderTitle(props)}
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true}>
+            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}}  stickyheader={true.toString()}>
                 {!props.parent.state.loading && renderHeader()}
                 {!props.loading ?
                     <FixedSizeList
