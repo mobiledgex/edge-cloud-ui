@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import HeaderGlobalMini from '../../container/headerGlobalMini';
 import {PAGE_ORGANIZATIONS} from '../../constant';
-import { GridLoader } from "react-spinners";
+import GridLoader from "react-spinners/GridLoader";
 import MexAlert from '../../hoc/alert/AlertDialog';
 let self = null;
 class EntranceGlobe extends Component {

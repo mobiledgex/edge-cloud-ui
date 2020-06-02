@@ -1,5 +1,5 @@
 import React from 'react';
-import { GridLoader } from "react-spinners";
+import GridLoader from "react-spinners/GridLoader";
 
 export const showLoader = (flag)=>
 {

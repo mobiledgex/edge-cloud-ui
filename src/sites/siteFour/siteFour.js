@@ -7,7 +7,7 @@ import { Steps } from 'intro.js-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { GridLoader } from "react-spinners";
+import GridLoader from "react-spinners/GridLoader";
 import SideNav from './defaultLayout/sideNav'
 import * as serverData from '../../services/model/serverData';
 import * as constant from '../../constant';

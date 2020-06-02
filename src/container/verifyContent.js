@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as serverData from "../services/model/serverData";
-import { GridLoader } from "react-spinners";
+import GridLoader from "react-spinners/GridLoader";
 import MexAlert from '../hoc/alert/AlertDialog';
 
 
