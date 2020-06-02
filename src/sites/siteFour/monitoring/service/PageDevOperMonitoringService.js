@@ -1061,7 +1061,6 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
-
                 };
 
                 finalSeriesDataSets.push(dataSetsOne)
