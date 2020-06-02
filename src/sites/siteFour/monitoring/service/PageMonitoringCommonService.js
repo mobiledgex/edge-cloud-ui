@@ -642,12 +642,26 @@ export const getOneYearStartEndDatetime = () => {
 }
 
 
-export const showToast = (title: string, time = 3) => {
-    notification.success({
-        placement: 'bottomLeft',
-        duration: time,
-        message: title,
-    });
+/**
+ *
+ * @param title
+ * @param time
+ * @param isSuccessToast
+ */
+export const showToast = (title: string, time = 3, isSuccessToast = true) => {
+    if (isSuccessToast) {
+        notification.success({
+            placement: 'bottomLeft',
+            duration: time,
+            message: title,
+        });
+    } else {
+        notification.warning({
+            placement: 'topLeft',
+            duration: time,
+            message: title,
+        });
+    }
 }
 export const showToast2 = (title: string, time = 2) => {
     toast({

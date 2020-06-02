@@ -54,7 +54,14 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -92,7 +99,12 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -589,7 +601,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     let cloudletClusterNameList = getCloudletClusterNameList(clusterList)
-                    let clusterDropdownList = makeClusterTreeDropdown(uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
+                    let dropDownCludsterListOnCloudlet = makeClusterTreeDropdown(uniqBy(cloudletClusterNameList.cloudletNameList), clusterList)
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
@@ -636,7 +648,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        dropDownCludsterListOnCloudlet: clusterDropdownList,//@fixme
+                        dropDownCludsterListOnCloudlet: dropDownCludsterListOnCloudlet,//@fixme
                         allClusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -2272,70 +2284,48 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Cluster
                             </div>
                             <TreeSelect
+                                showArrow={true}
+                                maxTagCount={5}
                                 disabled={this.state.loading}
                                 size={'middle'}
+                                allowClear={true}
                                 showSearch={true}
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
-                                /*switcherIcon={
-                                    <div style={{marginLeft: 5,}}>
-                                        <FontAwesomeIcon
-                                            name="cloud" style={{fontSize: 15, color: '#77BD25', cursor: 'pointer', marginTop: 2}}
-                                        />
-                                    </div>
-                                }*/
-                                style={{width: '500px'}}
+                                style={{width: '550px'}}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,
                                     });
                                 }}
                                 ref={c => this.treeSelect = c}
-                                listHeight={500}
+                                listHeight={520}
                                 searchValue={this.state.searchClusterValue}
                                 searchPlaceholder={'Enter the cluster name.'}
                                 placeholder={'Select Cluster'}
-                                dropdownStyle={{maxHeight: 800, overflow: 'auto', width: 450}}
+                                dropdownStyle={{maxHeight: 800, overflow: 'auto',}}
                                 treeData={this.state.dropDownCludsterListOnCloudlet}
                                 treeDefaultExpandAll={true}
                                 value={this.state.currentCluster}
-
+                                /*onSelect={(value, node, extra) => {
+                                    alert(value)
+                                }}*/
                                 onChange={async (value, label, extra) => {
-                                    this.setState({currentCluster: value});
+                                    if (!isEmpty(value)) {
+                                        this.setState({currentCluster: value});
+                                    } else {
+                                        this.resetLocalData();
+                                    }
 
-
-                                    /*  this.treeSelect.blur();
-                                      clearInterval(this.intervalForCluster)
-                                      clearInterval(this.intervalForAppInst)
-                                      let selectIndex = 0;
-                                      this.state.allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
-                                          if (item.cluster === value.split("|")[0].trim()) {
-                                              selectIndex = index;
-                                          }
-                                      })
-
-                                      //@desc: When whole cluster ...
-                                      if (value === '') {
-                                          await this.setState({
-                                              filteredClusterList: this.state.allClusterList,
-                                          })
-                                      } else {
-                                          await this.filterClusterList(value)
-                                      }
-                                      await this.handleOnChangeClusterDropdown(value.trim(), selectIndex)*/
                                 }}
                             />
                             <div style={{marginLeft: 10,}}>
                                 <Button onClick={async () => {
-                                    clearInterval(this.intervalForCluster)
-                                    clearInterval(this.intervalForAppInst)
-                                    if (this.state.currentCluster !== undefined || this.state.currentCluster !== '') {
+
+                                    if (this.state.currentCluster !== undefined) {
+                                        clearInterval(this.intervalForCluster)
+                                        clearInterval(this.intervalForAppInst)
                                         let selectClusterList = this.state.currentCluster;
-
-
-                                        console.log(`currentCluster====>`, this.state.currentCluster);
-
-
                                         let allClusterUsageList = this.state.allClusterUsageList
                                         let filteredClusterUsageList = this.filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList)
 
@@ -2400,14 +2390,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         });
 
                                     } else {
-                                        alert('al!!!!!!!!!!!!!!!!!!!!ALLLLLL')
+                                        this.resetLocalData()
                                     }
-
 
                                 }}>
                                     Apply
                                 </Button>
                             </div>
+                           {/* <div style={{marginLeft: 10,}}>
+                                <Button
+                                    onClick={() => {
+                                        this.resetLocalData();
+                                    }}
+                                >
+                                    Reset
+                                </Button>
+                            </div>*/}
                         </div>
                     )
                 } else {

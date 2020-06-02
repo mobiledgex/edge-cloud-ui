@@ -23,7 +23,12 @@ import {
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 
@@ -1267,10 +1272,12 @@ export function convertHWType(hwType) {
  */
 export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
     let newCloudletList = []
-   /* newCloudletList.push({
+    /*newCloudletList.push({
         title: 'Reset Filter',
         value: '',
+        disableCheckbox: false,
         selectable: true,
+        checkable: false,
         children: []
     });*/
     cloudletList.map((cloudletOne, cloudletIndex) => {
