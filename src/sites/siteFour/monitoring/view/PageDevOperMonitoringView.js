@@ -2397,7 +2397,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     Apply
                                 </Button>
                             </div>
-                           {/* <div style={{marginLeft: 10,}}>
+                            {/* <div style={{marginLeft: 10,}}>
                                 <Button
                                     onClick={() => {
                                         this.resetLocalData();
@@ -2502,7 +2502,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                         <div
                             style={{
-                                backgroundColor: itemCount === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index],
+                                backgroundColor: this.state.chartColorList[index],
                                 width: 15,
                                 height: 15,
                                 borderRadius: 50,
