@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Segment } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 // import BasicGauge from "../../../../charts/plotly/BasicGauge";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "../../../../chartGauge/circularProgress";

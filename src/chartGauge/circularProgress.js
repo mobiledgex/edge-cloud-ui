@@ -23,7 +23,7 @@ const CircularProgress = defaultProps => {
         <CircularProgressbar value={percentage} text={`${percentage}%`}
             styles={buildStyles({
                 // Rotation of path and trail, in number of turns (0-1)
-                rotation: 0.25,
+                rotation: 0,
 
                 // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
                 strokeLinecap: 'butt',

@@ -23,6 +23,7 @@ let countApp = 0;
 let regionCount = 0;
 let scope = null;
 const authDepths = ["summary", "cloudlets", "clusters", "appinsts"];
+const regions = localStorage.regions.split(",");
 
 class MonitoringAdmin extends React.Component {
     constructor() {
@@ -36,7 +37,7 @@ class MonitoringAdmin extends React.Component {
             toolbox: { lg: [] },
             compCloudlet: [],
             compAppinst: [],
-            currentAuthDepth: 1
+            currentAuthDepth: 0
         };
         this.hasCloudlets = [];
         this.hasAppinst = [];
@@ -53,7 +54,6 @@ class MonitoringAdmin extends React.Component {
         /**
          * Necessary list of cloudlet to request metrics info
          */
-        const regions = localStorage.regions.split(",");
         if (this.hasCloudlets.length === 0 && !doCloudlets) {
             doCloudlets = true;
             regionCount = regions.length;
@@ -131,6 +131,10 @@ class MonitoringAdmin extends React.Component {
         }
     }
 
+    resetAuthDepth = depth => {
+        this.setState({ currentAuthDepth: depth });
+    }
+
     render() {
         const scope = this;
         const containerWidth = this.props.size.width;
@@ -143,7 +147,7 @@ class MonitoringAdmin extends React.Component {
                     height: "100%"
                 }}
             >
-                <HeaderFiltering title="MONITORING" />
+                <HeaderFiltering title="MONITORING" compCloudlet={compCloudlet} compAppinst={compAppinst} resetAuthDepth={this.resetAuthDepth} regions={regions} selectedRegion={"EU"} />
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
@@ -305,8 +309,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generateWidget({
-            id: dataType.EVENT_CLOUDLET,
-            method: serviceMC.getEP().EVENT_CLOUDLET,
+            id: dataType.METHOD_CLIENT,
+            method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.TABLE,
             type: "alarm",
             title: { value: "Events of Cloudlet", align: "center" },
@@ -333,7 +337,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
             filter: null,
-            page: "multi",
+            page: "single",
             itemCount: 3,
             legend: true,
             ...defaultProp,
@@ -345,7 +349,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
-            page: "multi",
+            page: "single",
             itemCount: 3,
             legend: true,
             ...defaultProp,

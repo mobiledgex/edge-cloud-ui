@@ -92,6 +92,10 @@ class ChartWidget extends React.Component {
                 const updatedata = this.props.data[prevProps.id];
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
+
+            if (prevProps.id === DataType.METHOD_CLIENT) {
+                // TODO : 테이블에 맞게 데이터 포멧 변환 필요
+            }
         }
     }
 
