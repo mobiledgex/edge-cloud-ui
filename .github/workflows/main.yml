@@ -17,15 +17,27 @@ jobs:
         id: get_tag
         run: echo ::set-output name=RELEASE_TAG::$(echo ${GITHUB_REF##refs/tags/})
 
-      - name: Build and push to registry
+      - name: Build and push dev image to registry
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
           registry: registry.mobiledgex.net:5000
           repository: mobiledgex/console
-          tag_with_ref: true
+          tags: ${{ steps.get_tag.outputs.RELEASE_TAG }},latest
+          cache_froms: registry.mobiledgex.net:5000/mobiledgex/console:latest
           build_args: TAG=${{ steps.get_tag.outputs.RELEASE_TAG }}
+
+      - name: Build and push prod image to registry
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          registry: registry.mobiledgex.net:5000
+          repository: mobiledgex/console-prod
+          dockerfile: Dockerfile.prod
+          tags: ${{ steps.get_tag.outputs.RELEASE_TAG }}
+          build_args: CONSOLE_IMAGE=registry.mobiledgex.net:5000/mobiledgex/console:${{ steps.get_tag.outputs.RELEASE_TAG }}
 
       - name: Deploy to staging console
         uses: ./.github/actions/deploy-to-staging
