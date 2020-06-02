@@ -2224,14 +2224,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList) {
                 let filteredClusterList = []
-                allClusterUsageList.map((item, index) => {
+                allClusterUsageList.map((clusterUsageOne, index) => {
                     selectClusterList.map((innerItem, innerIndex) => {
-                        if (item.ClusterName === innerItem.split("|")[0].trim() && item.Cloudlet === innerItem.split("|")[1].trim()) {
-                            filteredClusterList.push(item)
+                        if (clusterUsageOne.cluster === innerItem.split("|")[0].trim() && clusterUsageOne.cloudlet === innerItem.split("|")[1].trim()) {
+                            filteredClusterList.push(clusterUsageOne)
                         }
                     })
                 })
-
                 return filteredClusterList;
             }
 
@@ -2311,7 +2310,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     let selectClusterList = this.state.currentCluster;
                                     let allClusterUsageList = this.state.allClusterUsageList
 
-                                    console.log(`selectClusterList====>`,selectClusterList);
+                                    console.log(`allClusterUsageList====>`,allClusterUsageList);
 
                                     let filteredClusterUsageList = this.filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList)
 
