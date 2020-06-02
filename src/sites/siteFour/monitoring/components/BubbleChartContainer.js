@@ -137,7 +137,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                     await handleHardwareTabChanges(this.props.parent, value)
 
                                                     try {
-                                                        let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList);
+                                                        let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList, this.props.parent.state.currentColorIndex);
 
                                                         this.props.parent.setState({
                                                             bubbleChartData: bubbleChartData,

@@ -55,8 +55,8 @@ export default function PerformanceSummaryForAppInst(props) {
                         overflowX: 'scroll'
                     }}
                 >
-                    <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
-                           stickyheader={true}>
+                    <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}  stickyheader={true.toString()}>
+
                         <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
                             <TableRow>
                                 <TableCell padding={'none'} align="center" style={{}}>
@@ -110,7 +110,7 @@ export default function PerformanceSummaryForAppInst(props) {
                                                 justifyContent: 'center'
                                             }}>
                                                 <div style={{
-                                                    backgroundColor: props.parent.state.chartColorList[index],
+                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index],
                                                     width: 15,
                                                     height: 15,
                                                     borderRadius: 50,
@@ -143,8 +143,7 @@ export default function PerformanceSummaryForAppInst(props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumCpuUsage.toFixed(0)}
-                                                              strokeColor={props.parent.state.chartColorList[index]}
-
+                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
                                                               status={'normal'}/>
                                                 </div>
                                             </div>
