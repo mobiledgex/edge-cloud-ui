@@ -2234,6 +2234,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return filteredClusterList;
             }
 
+            filterClusterList(allClusterList, selectClusterList) {
+                let filteredClusterList = []
+                allClusterList.map((item, index) => {
+                    selectClusterList.map((innerItem, innerIndex) => {
+
+                        if (item.ClusterName === innerItem.split("|")[0].trim() && item.Cloudlet === innerItem.split("|")[1].trim()) {
+                            filteredClusterList.push(item)
+                        }
+                    })
+                })
+
+                return filteredClusterList;
+            }
+
 
             renderClusterDropdown() {
 
@@ -2279,10 +2293,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 value={this.state.currentCluster}
 
                                 onChange={async (value, label, extra) => {
-
-
                                     this.setState({currentCluster: value});
-                                    console.log('onChange====>', value);
+
+
+
 
                                     /*  this.treeSelect.blur();
                                       clearInterval(this.intervalForCluster)
@@ -2306,18 +2320,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                             />
                             <div style={{marginLeft: 10,}}>
-                                <Button onClick={() => {
+                                <Button onClick={async () => {
+                                    clearInterval(this.intervalForCluster)
+                                    clearInterval(this.intervalForAppInst)
+
                                     let selectClusterList = this.state.currentCluster;
                                     let allClusterUsageList = this.state.allClusterUsageList
-
-                                    console.log(`allClusterUsageList====>`,allClusterUsageList);
-
                                     let filteredClusterUsageList = this.filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList)
 
-                                    console.log(`selectClusterList...filteredClusterUsageList2====>`,filteredClusterUsageList);
+                                    await this.setState({
+                                        filteredClusterUsageList: filteredClusterUsageList,
+                                    })
 
                                 }}>
-                                    apply
+                                    Apply
                                 </Button>
                             </div>
                         </div>
