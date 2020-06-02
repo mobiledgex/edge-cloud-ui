@@ -53,7 +53,8 @@ const HeaderFiltering = props => {
         const groupCategory = groupByItem[selected] ? groupBy(groupByItem[selected], property.depthId) : [];
         const cloudletKeys = Object.keys(groupCategory);
         const defaultInsert = makeItemFormat([property.default]);
-        return makeItemFormat(defaultInsert.concat(cloudletKeys));
+        return defaultInsert.concat(makeItemFormat(cloudletKeys));
+        // return makeItemFormat(cloudletKeys);
     };
 
     const onSelectItem = (item, depth) => {
@@ -63,22 +64,22 @@ const HeaderFiltering = props => {
             setSelectedRegion(item);
             if (props.compCloudlet && props.compCloudlet.length > 0) {
                 console.log("20200602 cloudlet info == ", props.compCloudlet);
-                setDepthOne(makeDepthTrees(props.compCloudlet, item, { byId: depth, depthId: "cloudletName", default: "All" }));
+                setDepthOne(makeDepthTrees(props.compCloudlet, item, { byId: depth, depthId: "cloudletName", default: "Select Cloudlet" }));
             }
             /** set clusters in select items box */
         } else if (depth === "cloudlet") {
             // setSelectedCloudlet(item);
             if (props.compAppinst && props.compAppinst.length > 0) {
                 console.log("20200602 appinst info == ", props.compAppinst);
-                setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "clusterName", default: "Select Cloudlet" }));
+                setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "clusterName", default: "Select Cluster" }));
             }
             /** set appinst in select items box */
         } else if (depth === "appinst") {
             // setSelectedCloudlet(item);
-            if (props.compAppinst && props.compAppinst.length > 0) {
-                console.log("20200602 appinst info == ", props.compAppinst);
-                setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "clusterName", default: "Select Cloudlet" }));
-            }
+            // if (props.compAppinst && props.compAppinst.length > 0) {
+            //     console.log("20200602 appinst info == ", props.compAppinst);
+            //     setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "clusterName", default: "Select Cloudlet" }));
+            // }
         }
     };
 
@@ -86,7 +87,8 @@ const HeaderFiltering = props => {
         if (props.compCloudlet && props.compCloudlet.length > 0) {
             const groupRegion = groupBy(props.compCloudlet, "region");
             const regionKeys = Object.keys(groupRegion);
-            setRegions(makeItemFormat(regionKeys));
+            const defaultInsert = makeItemFormat(["All"]);
+            setRegions(defaultInsert.concat(makeItemFormat(regionKeys)));
         }
         if (props.title) {
             setTitle(props.title);

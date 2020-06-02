@@ -1,5 +1,5 @@
 import React from "react";
-import {makeStyles, withStyles} from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 
-/* 
+/*
 ************** example of columns  ******************
 // Don't care delete me
 const columns = [
@@ -51,27 +51,27 @@ const useStyles = makeStyles({
     }
 });
 
-const StyledTableRow = withStyles((theme) => ({
+const StyledTableRow = withStyles(theme => ({
     root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: '#1E2123',
+        "&:nth-of-type(odd)": {
+            backgroundColor: "#1E2123",
         },
     },
 }))(TableRow);
 
-const StyleTablePagination = withStyles((theme) => ({
+const StyleTablePagination = withStyles(theme => ({
     toolbar: {
         minHeight: 20
     }
 }))(TablePagination);
 
-const StyledTableCell = withStyles((theme) => ({
+const StyledTableCell = withStyles(theme => ({
     root: {
-        maxWidth:250,
-        overflow:'hidden',
-        textOverflow:'ellipsis',
-        borderBottom: 'none',
-        height:40
+        maxWidth: 250,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        borderBottom: "none",
+        height: 40
     },
 }))(TableCell);
 
@@ -100,9 +100,9 @@ export default function MonitoringListViewer(props) {
     }, [props]);
 
     const makeColumn = list => {
-        let keys = Object.keys(list);
+        const keys = Object.keys(list);
 
-        //////
+        // ////
         return keys.map(key => ({
             id: key,
             label: key,
@@ -127,14 +127,14 @@ export default function MonitoringListViewer(props) {
             <TableContainer
                 className={classes.container}
             >
-                <Table stickyHeader aria-labelledby="tableTitle" aria-label="sticky table" size={"small"}>
+                <Table stickyHeader aria-labelledby="tableTitle" aria-label="sticky table" size="small">
                     <TableHead>
                         <TableRow>
                             {columns.map(column => (
                                 <TableCell
                                     key={column.id}
                                     align={column.align}
-                                    style={{ minWidth: column.minWidth, fontWeight: 600, backgroundColor: '#2A2C33' }}
+                                    style={{ minWidth: column.minWidth, fontWeight: 600, backgroundColor: "#2A2C33" }}
                                 >
                                     {column.label.charAt(0).toUpperCase() + column.label.slice(1)}
                                 </TableCell>
@@ -147,31 +147,29 @@ export default function MonitoringListViewer(props) {
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
                             )
-                            .map(row => {
-                                return (
-                                    <StyledTableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={row.code}
-                                    >
-                                        {columns.map(column => {
-                                            const value = row[column.id];
-                                            return (
-                                                <StyledTableCell
-                                                    key={column.id}
-                                                    align={column.align}
-                                                >
-                                                    {column.format &&
-                                                        typeof value === "number"
-                                                        ? column.format(value)
-                                                        : value}
-                                                </StyledTableCell>
-                                            );
-                                        })}
-                                    </StyledTableRow>
-                                );
-                            })}
+                            .map(row => (
+                                <StyledTableRow
+                                    hover
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={row.code}
+                                >
+                                    {columns.map(column => {
+                                        const value = row[column.id];
+                                        return (
+                                            <StyledTableCell
+                                                key={column.id}
+                                                align={column.align}
+                                            >
+                                                {column.format
+                                                    && typeof value === "number"
+                                                    ? column.format(value)
+                                                    : value}
+                                            </StyledTableCell>
+                                        );
+                                    })}
+                                </StyledTableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </TableContainer>

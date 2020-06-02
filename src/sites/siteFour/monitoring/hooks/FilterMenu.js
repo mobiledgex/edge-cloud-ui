@@ -1,13 +1,11 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Popper from '@material-ui/core/Popper';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import RoomIcon from '@material-ui/icons/Room';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Popper from "@material-ui/core/Popper";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import RoomIcon from "@material-ui/icons/Room";
 import { Dropdown } from "semantic-ui-react";
-
-
 
 export default function FilterMenu(defaultProps) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -15,8 +13,9 @@ export default function FilterMenu(defaultProps) {
     const [cloudletOptions, setCloudletOptions] = React.useState(null);
     const [clusterOptions, setClusterOptions] = React.useState(null);
     const [appinstOptions, setAppinstOptions] = React.useState(null);
+    const [valueZero, setValueZero] = React.useState("All");
 
-    const handleClick = (event) => {
+    const handleClick = event => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
     };
 
@@ -26,6 +25,7 @@ export default function FilterMenu(defaultProps) {
 
     const onChangeSelect = (event, selectItem) => {
         console.log("20200602 on change select == ", selectItem);
+        // if (selectItem.id === "region") setValueZero(selectItem.id);
         defaultProps.onSelectItem(selectItem.value, selectItem.id);
     };
 
@@ -37,19 +37,19 @@ export default function FilterMenu(defaultProps) {
     }, [defaultProps]);
 
     return (
-        <div className='page_monitoring_location'>
+        <div className="page_monitoring_location">
             <Button
-                className='page_monitoring_location_button'
-                aria-describedby={"customized-popper"}
+                className="page_monitoring_location_button"
+                aria-describedby="customized-popper"
                 // aria-controls="customized-menu"
                 // aria-haspopup="true"
                 variant="contained"
                 onClick={handleClick}
             >
-                <RoomIcon style={{ color: 'rgb(118, 255, 3)' }} />
+                <RoomIcon style={{ color: "rgb(118, 255, 3)" }} />
             </Button>
-            <div className='page_monitoring_location_text'>
-                {'All'}
+            <div className="page_monitoring_location_text">
+                All
             </div>
             <Popper
                 elevation={0}
@@ -64,21 +64,21 @@ export default function FilterMenu(defaultProps) {
                     },
                 }}
                 transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
+                    vertical: "top",
+                    horizontal: "left",
                 }}
                 style={{
                     marginTop: 5,
-                    border: '1px solid #96c8da',
+                    border: "1px solid #96c8da",
                     borderRadius: 4,
-                    backgroundColor: '#1b1c1d',
-                    padding: '5px 20px 10px 20px'
+                    backgroundColor: "#1b1c1d",
+                    padding: "5px 20px 10px 20px"
                 }}
                 id="customized-popper"
                 keepMounted
                 open={Boolean(anchorEl)}
                 anchorEl={anchorEl}
-            //onClose={handleClose}
+            // onClose={handleClose}
             >
                 <div className="page_monitoring_location_header">
                     Select location
@@ -90,7 +90,8 @@ export default function FilterMenu(defaultProps) {
                     <div className="page_monitoring_location_Select">
                         <Dropdown
                             className="dropdownName"
-                            placeholder='All'
+                            placeholder="All"
+                            clearable
                             fluid
                             search
                             selection
@@ -107,7 +108,8 @@ export default function FilterMenu(defaultProps) {
                     <div className="page_monitoring_location_Select">
                         <Dropdown
                             className="dropdownName"
-                            placeholder='Select cloudlet'
+                            placeholder="Select cloudlet"
+                            clearable
                             fluid
                             search
                             selection
@@ -124,7 +126,8 @@ export default function FilterMenu(defaultProps) {
                     <div className="page_monitoring_location_Select">
                         <Dropdown
                             className="dropdownName"
-                            placeholder='All'
+                            placeholder="All"
+                            clearable
                             fluid
                             search
                             selection
@@ -141,7 +144,7 @@ export default function FilterMenu(defaultProps) {
                     <div className="page_monitoring_location_Select">
                         <Dropdown
                             className="dropdownName"
-                            placeholder='All'
+                            placeholder="All"
                             fluid
                             search
                             selection
@@ -152,7 +155,7 @@ export default function FilterMenu(defaultProps) {
                     </div>
                 </div>
                 <div className="page_monitoring_location_apply">
-                    <Button onClick={handleClose} style={{ backgroundColor: '#6b7487', color: '#fff' }} variant="contained" >Apply</Button>
+                    <Button onClick={handleClose} style={{ backgroundColor: "#6b7487", color: "#fff" }} variant="contained">Apply</Button>
                 </div>
             </Popper>
         </div>

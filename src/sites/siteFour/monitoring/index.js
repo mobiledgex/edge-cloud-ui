@@ -20,6 +20,7 @@ import HeaderFiltering from "./hooks/HeaderFiltering";
 let doCloudlets = false;
 let count = 0;
 let countApp = 0;
+let countCluster = 0;
 let regionCount = 0;
 let scope = null;
 const authDepths = ["summary", "cloudlets", "clusters", "appinsts"];
@@ -36,10 +37,12 @@ class MonitoringAdmin extends React.Component {
             layouts: { lg: [] },
             toolbox: { lg: [] },
             compCloudlet: [],
+            compClusterinst: [],
             compAppinst: [],
             currentAuthDepth: 0
         };
         this.hasCloudlets = [];
+        this.hasCluster = [];
         this.hasAppinst = [];
     }
 
@@ -59,6 +62,7 @@ class MonitoringAdmin extends React.Component {
             regionCount = regions.length;
             count = regions.length;
             countApp = regions.length;
+            countCluster = regions.length;
             /**
              * NEED FOR LIST OF CLOUDLET
              * get data all of the cloudlets to get metrics data
@@ -66,6 +70,17 @@ class MonitoringAdmin extends React.Component {
             this.initialize(
                 {
                     method: serviceMC.getEP().SHOW_CLOUDLET,
+                    regions,
+                },
+                this,
+            );
+            /**
+             * NEED FOR LIST OF CLUSTERINSTANCE
+             * get data all of the clusterinstance
+             * */
+            this.initialize(
+                {
+                    method: serviceMC.getEP().SHOW_CLUSTER_INST,
                     regions,
                 },
                 this,
@@ -93,6 +108,9 @@ class MonitoringAdmin extends React.Component {
             } else if (result && result.AppinstList) {
                 this.hasAppinst = this.hasAppinst.concat(result.AppinstList);
                 countApp--;
+            } else if (result && result.ClusterList) {
+                this.hasAppinst = this.hasAppinst.concat(result.ClusterList);
+                countCluster--;
             } else {
                 return;
             }
@@ -105,6 +123,11 @@ class MonitoringAdmin extends React.Component {
             } else if (countApp <= 0) {
                 this.setState({
                     compAppinst: this.hasAppinst,
+                });
+                countApp = regionCount;
+            } else if (countCluster <= 0) {
+                this.setState({
+                    compClusterinst: this.hasCluster,
                 });
                 countApp = regionCount;
             }
@@ -125,6 +148,13 @@ class MonitoringAdmin extends React.Component {
                 }
             } else if (props.method === serviceMC.getEP().SHOW_CLOUDLET) {
                 await Service.getPrepareList(props, self);
+            } else if (props.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
+                const resultClusters = await Service.getPrepareList(props, self);
+                if (resultClusters && resultClusters[0].ClusterList) {
+                    resultClusters.map(mtr => {
+                        self.onReceiveResult(mtr);
+                    });
+                }
             }
         } catch (e) {
             console.log(e);
@@ -139,7 +169,7 @@ class MonitoringAdmin extends React.Component {
         const scope = this;
         const containerWidth = this.props.size.width;
         const containerHeight = this.props.size.height;
-        const { compCloudlet, compAppinst, currentAuthDepth } = this.state;
+        const { compCloudlet, compClusterinst, compAppinst, currentAuthDepth } = this.state;
         return (
             <div
                 style={{
@@ -147,7 +177,7 @@ class MonitoringAdmin extends React.Component {
                     height: "100%"
                 }}
             >
-                <HeaderFiltering title="MONITORING" compCloudlet={compCloudlet} compAppinst={compAppinst} resetAuthDepth={this.resetAuthDepth} regions={regions} selectedRegion={"EU"} />
+                <HeaderFiltering title="MONITORING" compCloudlet={compCloudlet} compAppinst={compAppinst} resetAuthDepth={this.resetAuthDepth} regions={regions} selectedRegion={"All"} />
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
