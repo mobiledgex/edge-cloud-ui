@@ -39,7 +39,7 @@ class MonitoringAdmin extends React.Component {
             compCloudlet: [],
             compClusterinst: [],
             compAppinst: [],
-            currentAuthDepth: 0
+            currentAuthDepth: 1
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -419,7 +419,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
         }),
         generateWidget({
             id: dataType.EVENT_CLOUDLET,
-            method: null,
+            method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: chartType.TABLE,
             type: "alarm",
             title: { value: "Events of Cloudlet", align: "center" },

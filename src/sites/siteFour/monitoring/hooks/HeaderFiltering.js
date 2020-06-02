@@ -69,17 +69,16 @@ const HeaderFiltering = props => {
             /** set clusters in select items box */
         } else if (depth === "cloudlet") {
             // setSelectedCloudlet(item);
-            if (props.compAppinst && props.compAppinst.length > 0) {
-                console.log("20200602 appinst info == ", props.compAppinst);
-                setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "clusterName", default: "Select Cluster" }));
+            if (props.compCluster && props.compCluster.length > 0) {
+                console.log("20200602 compCluster info == ", props.compCluster);
+                setDepthTwo(makeDepthTrees(props.compCluster, item, { byId: depth, depthId: "clusterName", default: "Select Cluster" }));
             }
             /** set appinst in select items box */
-        } else if (depth === "appinst") {
-            // setSelectedCloudlet(item);
-            // if (props.compAppinst && props.compAppinst.length > 0) {
-            //     console.log("20200602 appinst info == ", props.compAppinst);
-            //     setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "clusterName", default: "Select Cloudlet" }));
-            // }
+        } else if (depth === "cluster") {
+            if (props.compAppinst && props.compAppinst.length > 0) {
+                console.log("20200602 appinst info == ", props.compAppinst);
+                setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "app", default: "Select Appinstance" }));
+            }
         }
     };
 
