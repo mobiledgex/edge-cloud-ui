@@ -319,14 +319,10 @@ let selectClusterList = [
 
 let filteredClusterList = []
 allClusterList.map((item, index) => {
-
-    console.log(`sldkflskdflksdlfklsdkfk====>`, item.ClusterName);
-
     selectClusterList.map((innerItem, innerIndex) => {
 
         if (item.ClusterName === innerItem.split("|")[0].trim() && item.Cloudlet === innerItem.split("|")[1].trim()) {
             filteredClusterList.push(item)
-
         }
     })
 })

@@ -2222,6 +2222,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList) {
+                let filteredClusterList = []
+                allClusterUsageList.map((item, index) => {
+                    selectClusterList.map((innerItem, innerIndex) => {
+                        if (item.ClusterName === innerItem.split("|")[0].trim() && item.Cloudlet === innerItem.split("|")[1].trim()) {
+                            filteredClusterList.push(item)
+                        }
+                    })
+                })
+
+                return filteredClusterList;
+            }
+
 
             renderClusterDropdown() {
 
@@ -2295,19 +2308,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             />
                             <div style={{marginLeft: 10,}}>
                                 <Button onClick={() => {
-                                    console.log(`allClusterList...currentCluster====>`, this.state.currentCluster);
+                                    let selectClusterList = this.state.currentCluster;
+                                    let allClusterUsageList = this.state.allClusterUsageList
 
-                                    /*
-                                    0: "andycluster | automationFrankfurtCloudlet"
-                                    1: "andyclusterhelm | automationFrankfurtCloudlet"
-                                    2: "autoclusterautomation-api-app | automationFrankfurtCloudlet"
-                                    */
-                                    let selectClusterList =  this.state.currentCluster;
+                                    console.log(`selectClusterList====>`,selectClusterList);
 
-                                    this.state.allClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+                                    let filteredClusterUsageList = this.filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList)
 
-                                        console.log(`allClusterList)====>`,this.state.allClusterList);
-                                    })
+                                    console.log(`selectClusterList...filteredClusterUsageList2====>`,filteredClusterUsageList);
 
                                 }}>
                                     apply
