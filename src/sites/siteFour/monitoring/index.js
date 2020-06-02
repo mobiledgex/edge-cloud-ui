@@ -339,7 +339,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
             filter: null,
             page: "single",
             itemCount: 3,
-            legend: true,
+            legend: false,
             ...defaultProp,
         }),
         generateWidget({
@@ -351,7 +351,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
             page: "single",
             itemCount: 3,
-            legend: true,
+            legend: false,
             ...defaultProp,
         }),
         generateWidget({
@@ -428,9 +428,9 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts) => {
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
-            page: "multi",
+            page: "single",
             itemCount: 3,
-            legend: true,
+            legend: false,
             ...defaultProp,
         }),
         generateWidget({

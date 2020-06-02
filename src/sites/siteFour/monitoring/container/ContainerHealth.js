@@ -9,6 +9,8 @@ const hGap = 20;
 const ContainerHealth = defaultProps => {
     const [selfSize, setSelfSize] = React.useState(defaultProps.size);
     const [cpuUsed, setCpuUsed] = React.useState(0);
+    const [memoryUsed, setMemoryUsed] = React.useState(0);
+    const [diskUsed, setDiskUsed] = React.useState(0);
 
     const getHeight = () => selfSize.height - hGap;
     React.useEffect(() => {
@@ -16,32 +18,33 @@ const ContainerHealth = defaultProps => {
         setSelfSize(defaultProps.size);
         // setCpuUsed(defaultProps.data.cpuUsed);
         setCpuUsed(87);
+        setMemoryUsed(54);
+        setDiskUsed(20);
     }, [defaultProps]);
 
-
     return (
-        <Grid columns={3} style={{ height: getHeight() }}>
-            <Grid.Row stretched style={{ paddingTop: 2, paddingBottom: 2 }}>
-                <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
+        <div style={{width:"100%", height:"100%", overflow:'auto'}}>
+            <div className='page-monitoring_circle-chart'>
+                <div className='page-monitoring_circle-chart_item'>
                     <CircularProgress data={cpuUsed} />
-                    <Typography variant="h6" gutterBottom>
+                    <div className='page-monitoring_circle-chart_label'>
                         VCPU
-                    </Typography>
-                </Grid.Column>
-                <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
-                    <CircularProgress />
-                    <Typography variant="h6" gutterBottom>
+                    </div>
+                </div>
+                <div className='page-monitoring_circle-chart_item'>
+                    <CircularProgress data={memoryUsed} />
+                    <div className='page-monitoring_circle-chart_label'>
                         MEM
-                    </Typography>
-                </Grid.Column>
-                <Grid.Column style={{ paddingRight: 2, paddingLeft: 2 }}>
-                    <CircularProgress />
-                    <Typography variant="h6" gutterBottom>
+                    </div>
+                </div>
+                <div className='page-monitoring_circle-chart_item'>
+                    <CircularProgress data={diskUsed} />
+                    <div className='page-monitoring_circle-chart_label'>
                         DISK
-                    </Typography>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 export default ContainerHealth;
