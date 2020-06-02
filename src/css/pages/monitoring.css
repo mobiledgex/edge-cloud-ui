@@ -1048,3 +1048,27 @@ page_monitoring_dashboard_dev {
     display: flex;
     justify-content: center;
 }
+
+
+.page-monitoring_circle-chart {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 10px;
+}
+
+.page-monitoring_circle-chart_item {
+    flex:1;
+    width:33.33%;
+    padding: 10px;
+
+}
+
+.page-monitoring_circle-chart_label {
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+}

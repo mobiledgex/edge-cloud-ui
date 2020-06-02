@@ -4,53 +4,15 @@ import Button from '@material-ui/core/Button';
 import Popper from '@material-ui/core/Popper';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
-import SendIcon from '@material-ui/icons/Send';
 import RoomIcon from '@material-ui/icons/Room';
 import {Dropdown} from "semantic-ui-react";
 
-const StyledPopper = withStyles({
-
-})((props) => (
-    <Popper
-        elevation={0}
-        getContentAnchorEl={null}
-        placement="bottom-start"
-        modifiers={{
-            flip: {
-                enabled: false,
-            },
-            preventOverflow: {
-                enabled: false,
-            },
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-        }}
-        {...props}
-    />
-));
-
-const StyledMenuItem = withStyles((theme) => ({
-    root: {
-        '&:focus': {
-            backgroundColor: theme.palette.primary.main,
-            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-                color: theme.palette.common.white,
-            },
-        },
-    },
-}))(MenuItem);
 
 export default function FilterMenu() {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+        setAnchorEl(anchorEl ? null : event.currentTarget);
     };
 
     const handleClose = () => {
@@ -72,19 +34,34 @@ export default function FilterMenu() {
             <div className='page_monitoring_location_text'>
                 {'All'}
             </div>
-            <StyledPopper
+            <Popper
+                elevation={0}
+                // getContentAnchorEl={null}
+                placement="bottom-start"
+                modifiers={{
+                    flip: {
+                        enabled: false,
+                    },
+                    preventOverflow: {
+                        enabled: false,
+                    },
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
                 style={{
                     marginTop:5,
                     border: '1px solid #96c8da',
                     borderRadius:4,
                     backgroundColor:'#1b1c1d',
-                    padding: '0 20px 10px 20px'
+                    padding: '5px 20px 10px 20px'
                 }}
                 id="customized-popper"
-                anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={handleClose}
+                anchorEl={anchorEl}
+                //onClose={handleClose}
             >
                 <div className="page_monitoring_location_header">
                     Select location
@@ -132,9 +109,9 @@ export default function FilterMenu() {
                     </div>
                 </div>
                 <div className="page_monitoring_location_apply">
-                    <Button style={{backgroundColor:'#6b7487', color:'#fff'}} variant="contained" >Apply</Button>
+                    <Button onClick={handleClose} style={{backgroundColor:'#6b7487', color:'#fff'}} variant="contained" >Apply</Button>
                 </div>
-            </StyledPopper>
+            </Popper>
         </div>
     );
 }

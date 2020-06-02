@@ -20,30 +20,51 @@ const CircularProgress = defaultProps => {
     }, [defaultProps]);
 
     return (
-        <CircularProgressbar value={percentage} text={`${percentage}%`}
-            styles={buildStyles({
-                // Rotation of path and trail, in number of turns (0-1)
-                rotation: 0.25,
-
-                // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
-                strokeLinecap: 'butt',
-
-                // Text size
-                textSize: '16px',
-
-                // How long animation takes to go from one percentage to another, in seconds
-                pathTransitionDuration: 0.5,
-
-                // Can specify path transition in more detail, or remove it entirely
-                // pathTransition: 'none',
-
-                // Colors
-                pathColor: `rgba(62, 152, 199, ${percentage / 100})`,
-                textColor: '#f88',
-                trailColor: '#d6d6d6',
-                backgroundColor: '#3e98c7',
-            })}
-        />
+        <CircularProgressbarWithChildren
+            value={percentage}
+            strokeWidth={20}
+            // text={`${percentage}%`}
+            styles={{
+                // Customize the root svg element
+                root: {},
+                // Customize the path, i.e. the "completed progress"
+                path: {
+                    // Path color
+                    stroke: `rgb(78, 114, 214)`,
+                    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+                    strokeLinecap: 'butt',
+                    // Customize transition animation
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    // Rotate the path
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                },
+                // Customize the circle behind the path, i.e. the "total progress"
+                trail: {
+                    // Trail color
+                    stroke: '#fff',
+                    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+                    strokeLinecap: 'butt',
+                    // Rotate the trail
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                },
+                // Customize the text
+                text: {
+                    // Text color
+                    fill: 'fff',
+                    // Text size
+                    fontSize: '16px',
+                },
+                // Customize background - only used when the `background` prop is true
+                background: {
+                },
+            }}
+        >
+            <div style={{ fontSize: 18, marginTop: 0}}>
+                <p>{`${percentage}%`}</p>
+            </div>
+        </CircularProgressbarWithChildren>
     );
 };
 export default CircularProgress;
