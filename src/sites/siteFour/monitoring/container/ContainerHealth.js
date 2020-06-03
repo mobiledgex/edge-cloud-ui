@@ -28,7 +28,7 @@ const ContainerHealth = defaultProps => {
                 <div className='page-monitoring_circle-chart_item'>
                     <CircularProgress data={cpuUsed} />
                     <div className='page-monitoring_circle-chart_label'>
-                        VCPU
+                        vCPU
                     </div>
                 </div>
                 <div className='page-monitoring_circle-chart_item'>
