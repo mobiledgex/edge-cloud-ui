@@ -110,6 +110,7 @@ import {filteredClientStatusListByAppName, makeCompleteDateTime} from "../servic
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
+import axios from "axios";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -295,7 +296,12 @@ type PageDevMonitoringState = {
     filteredCloudletEventLogList: any,
     currentClusterList: any,
     currentAppInstNameVersion: string,
+    prevPromise: any,
 }
+
+export const CancelToken = axios.CancelToken;
+export const source = CancelToken.source();
+
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
         class PageDevMonitoring extends Component<PageMonitoringProps, PageDevMonitoringState> {
@@ -500,6 +506,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     allCloudletEventLogList: [],
                     filteredCloudletEventLogList: [],
                     currentAppInstNameVersion: '',
+                    prevPromise: undefined,
                 };
             }
 
@@ -688,8 +695,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async resetLocalData() {
-                /*clearInterval(this.intervalForCluster)
-                clearInterval(this.intervalForAppInst)*/
+                clearInterval(this.intervalForCluster)
+                clearInterval(this.intervalForAppInst)
                 let markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
                 await this.setState({
                     currentGridIndex: -1,
@@ -772,13 +779,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
             setClusterInterval() {
                 this.intervalForCluster = setInterval(async () => {
                     this.setState({intervalLoading: true})
                     try {
 
-                        let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT);
+                        source.cancel('Operation canceled by the user.');
+
+                        let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT, '', '', this);
 
                         this.setChartDataForBigModal(filteredClusterUsageList)
                         this.setState({

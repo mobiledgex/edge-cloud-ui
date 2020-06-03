@@ -5,7 +5,7 @@ import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_A
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageDevMonitoring, {source} from "../view/PageDevOperMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -17,7 +17,6 @@ import {
     SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
 
-const Promise = require('bluebird');
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
@@ -508,7 +507,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]|Array>}
  */
-export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', _this: PageDevMonitoring) => {
     try {
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -523,11 +522,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
         for (let index = 0; index < instanceBodyList.length; index++) {
             promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
         }
-        let clusterLevelUsageList = await Promise.all(promiseList);
-
+        let promiseClusterLevelUsageList = await Promise.all(promiseList);
 
         let newClusterLevelUsageList = []
-        clusterLevelUsageList.map((item, index) => {
+        promiseClusterLevelUsageList.map((item, index) => {
 
             let sumSendBytes = 0;
             let sumRecvBytes = 0;
@@ -857,6 +855,7 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
     }).then(async response => {
         return response.data;
     }).catch(e => {
+
         let tempArray = []
         return tempArray;
     })
@@ -889,6 +888,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
             url: mcURL() + CLUSTER_METRICS_ENDPOINT,
             method: 'post',
             data: serviceBody['params'],
+            cancelToken: source.token,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + pToken
@@ -897,7 +897,11 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
         }).then(async response => {
             return response.data;
         }).catch(e => {
-            //showToast(e.toString())
+            if (axios.isCancel(e)) {
+                alert('취소!!!!!!!!')
+            } else {
+                //showToast(e.toString())
+            }
         })
         return result;
     } catch (e) {
