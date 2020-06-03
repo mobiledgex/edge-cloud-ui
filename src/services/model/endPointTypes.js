@@ -91,6 +91,7 @@ export const METRICS_CLOUDLET = "cloudlet";
 export const METRICS_CLUSTER = "cluster";
 export const METRICS_CLIENT = "client";
 export const COUNT_CLUSTER = "cluster";
+export const EVENT_CLUSTER = "ClusterLevelEvents";
 
 export function getPath(request) {
     switch (request.method) {
@@ -194,6 +195,8 @@ export function getPath(request) {
             return `/api/v1/auth/orgcloudlet/show`;
         case EVENT_CLOUDLET:
             return `/api/v1/auth/events/cloudlet`;
+        case EVENT_CLUSTER:
+            return `/api/v1/auth/events/cluster`;
         default:
             return null;
     }

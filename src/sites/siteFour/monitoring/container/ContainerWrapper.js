@@ -45,7 +45,8 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             id: null,
             method: null,
             cloudlets: [],
-            appinsts: []
+            appinsts: [],
+            clusters: []
         };
     }
 
@@ -55,6 +56,9 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         }
         if (_.isEqual(prevState.appinsts, nextProps.appinsts) === false) {
             return { appinsts: nextProps.appinsts };
+        }
+        if (_.isEqual(prevState.clusters, nextProps.clusters) === false) {
+            return { clusters: nextProps.clusters };
         }
         if (prevState.method !== nextProps.method) {
             return { method: nextProps.method };
@@ -94,6 +98,11 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         }
         if (prevProps.appinsts !== this.state.appinsts && this.state.method) {
             if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
+                this.initialize(this.state, this);
+            }
+        }
+        if (prevProps.clusters !== this.state.clusters && this.state.method) {
+            if (this.state.clusters && this.state.clusters.length > 0 && this.state.method) {
                 this.initialize(this.state, this);
             }
         }
@@ -152,6 +161,10 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 }
             }
             if (props.method === serviceMC.getEP().EVENT_CLOUDLET) {
+                const result = await Service.MetricsService(props, self);
+                this.onReceiveResult(result, self);
+            }
+            if (props.method === serviceMC.getEP().EVENT_CLUSTER) {
                 const result = await Service.MetricsService(props, self);
                 this.onReceiveResult(result, self);
             }

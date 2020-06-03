@@ -24,7 +24,7 @@ let countCluster = 0;
 let regionCount = 0;
 let scope = null;
 const authDepths = ["summary", "cloudlets", "clusters", "appinsts"];
-const regions = localStorage.regions.split(",");
+const regions = localStorage && localStorage.regions ? localStorage.regions.split(",") : [];
 
 class MonitoringAdmin extends React.Component {
     constructor() {
@@ -39,7 +39,7 @@ class MonitoringAdmin extends React.Component {
             compCloudlet: [],
             compClusterinst: [],
             compAppinst: [],
-            currentAuthDepth: 1
+            currentAuthDepth: 2
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -292,18 +292,20 @@ const generateWidget = info => (
         size={info.sizeInfo}
         cloudlets={info.cloudlets}
         appinsts={info.appinsts}
+        clusters={info.clusters}
         page={info.page}
         itemCount={info.itemCount}
         legend={info.legend}
     />
 );
 
-const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
+const generateComponentAdmin = (self, infos, cloudlets, appinsts,clusters) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
         cloudlets,
         appinsts,
+        clusters
     };
     return [
         generateWidget({
@@ -377,12 +379,13 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts) => {
     ];
 };
 //         dddd
-const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
+const generateComponentOperator = (self, infos, cloudlets, appinsts,clusters) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
         cloudlets,
         appinsts,
+        clusters
     };
     return [
         generateWidget({
@@ -456,12 +459,13 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts) => {
     ];
 };
 //
-const generateComponentDeveloper = (self, infos, cloudlets, appinsts) => {
+const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
         cloudlets,
         appinsts,
+        clusters
     };
     return [
         generateWidget({
@@ -522,11 +526,11 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts) => {
             ...defaultProp,
         }),
         generateWidget({
-            id: dataType.EVENT_CLOUDLET,
-            method: serviceMC.getEP().EVENT_CLOUDLET,
+            id: dataType.EVENT_CLUSTER,
+            method: serviceMC.getEP().EVENT_CLUSTER,
             chartType: chartType.TABLE,
             type: "alarm",
-            title: { value: "Events of Cloudlet", align: "center" },
+            title: { value: "Events of Cluster", align: "center" },
             filter: null,
             page: "single",
             legend: true,
