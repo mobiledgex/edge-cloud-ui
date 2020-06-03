@@ -5,7 +5,7 @@
 import * as DataType from "../formatter/dataType";
 import * as Util from "../../../../utils";
 
-const setdataPart = (data, req, cloudlet, cloudletIdx, appisntPath, method, methodIdx) => {
+const setdataPart = (data, req, cloudlet, cloudletIdx, appinstPath, method, methodIdx) => {
     const seriesX = [];
     const seriesY = [];
     const names = [];
@@ -16,7 +16,7 @@ const setdataPart = (data, req, cloudlet, cloudletIdx, appisntPath, method, meth
             seriesX.push(item[time]);
             seriesY.push(item[req]);
             names.push(item[cloudletIdx]);
-            appinsts.push(appisntPath);
+            appinsts.push(appinstPath);
         }
     });
 
@@ -80,9 +80,10 @@ export const parseData = (response, id) => {
     let cloudlets = [];
     const resultParse = {};
     const getCloudlet = (id === DataType.FIND_CLOUDLET) ? "foundCloudlet" : "cloudlet";
-    const appisntPath = response.path[0];
+    let appinstPath = "";
 
     if (response && response.values && response.values.length > 0) {
+        appinstPath = response.path[0];
         response.values.map(value => {
             const timeIdx = value.resColumns.indexOf("time");
             const methodIdx = value.resColumns.indexOf("method");
@@ -100,7 +101,7 @@ export const parseData = (response, id) => {
             methods.map((method, i) => {
                 resultParse[method] = [];
                 cloudlets.map((cloudlet, j) => {
-                    resultParse[method][j] = { [cloudlet]: setdataPart(value.resSeries, reqCount, cloudlet, cloudletIdx, appisntPath, method, methodIdx) };
+                    resultParse[method][j] = { [cloudlet]: setdataPart(value.resSeries, reqCount, cloudlet, cloudletIdx, appinstPath, method, methodIdx) };
                 });
             });
 

@@ -1,3 +1,7 @@
+/*
+review @Rahul
+*/
+
 /* eslint-disable import/prefer-default-export */
 /*
 $ http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/client <<< '{"region":"EU","appinst":{"app_key":{"organization":"TDG","name":"MobiledgeX SDK Demo","version":"2.0"}},"method":"FindCloudlet","selector":"api","last":1}'
@@ -102,8 +106,9 @@ const metricFromServer = async (self, data) => {
                 },
             },
             selector: "api",
-            starttime: rangeTime("start"),
-            endtime: rangeTime("end")
+            // starttime: rangeTime("start"),
+            // endtime: rangeTime("end")
+            last: data.last
         },
     };
 
