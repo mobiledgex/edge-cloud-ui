@@ -22,13 +22,10 @@ import {
 } from "../../../../shared/Constants";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
-import Chip from "@material-ui/core/Chip";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import {Table} from "semantic-ui-react";
-import Progress from "antd/es/progress";
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -44,6 +41,44 @@ export function changeClassficationTxt(currentClassification) {
     } else {
         return CLASSIFICATION.CLUSTER
     }
+}
+
+export function renderTitle(props) {
+    return (
+        <div style={{
+            display: 'flex',
+            width: '100%',
+            height: 45
+        }}>
+            <div className='page_monitoring_title draggable'
+                 style={{
+                     flex: 1,
+                     marginTop: 10,
+                     color: 'white'
+                 }}
+            >
+                {props.currentClassification} Event Log
+            </div>
+
+        </div>
+    )
+}
+
+export function makeTableRowStyle(index, itemHeight) {
+    return (
+        {
+            flex: .33,
+            color: '#C0C6C8',
+            backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+            height: itemHeight,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
+        }
+
+    )
+
 }
 
 
@@ -553,7 +588,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
         chartColorList: selectedChartColorList,
     }, async () => {
         _this.setState({
-            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList),
+            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
         })
     })
 
@@ -992,7 +1027,7 @@ export const simpleGraphOptions = {
 }
 
 
-export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring) => {
+export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring, currentColorIndex = -1) => {
     try {
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
@@ -1002,29 +1037,30 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
 
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
+
+                let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
                 let dataSetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
                     fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
-                    backgroundColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
-                    borderColor: _this.state.isGradientColor ? gradientList[index] : _this.state.chartColorList[index],
+                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[_colorIndex],
+                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[_colorIndex],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[index],
-                    pointBackgroundColor: _this.state.chartColorList[index],
+                    pointBorderColor: _this.state.chartColorList[_colorIndex],
+                    pointBackgroundColor: _this.state.chartColorList[_colorIndex],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[index],
-                    pointHoverBorderColor: _this.state.chartColorList[index],
+                    pointHoverBackgroundColor: _this.state.chartColorList[_colorIndex],
+                    pointHoverBorderColor: _this.state.chartColorList[_colorIndex],
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
-
                 };
 
                 finalSeriesDataSets.push(dataSetsOne)
@@ -1127,15 +1163,15 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring) => {
-    let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
+export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit) => {
+    //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
     return (
         <div style={{display: 'flex'}}>
             <div>
-                {reduceString(item.cluster, limitCharLength)}
+                {reduceString(item.cluster, stringLimit)}
             </div>
             <div style={{color: 'white'}}>
-                &nbsp;[{reduceString(item.cloudlet, limitCharLength)}]
+                &nbsp;[{reduceString(item.cloudlet, stringLimit)}]
             </div>
         </div>
     )
@@ -1237,19 +1273,11 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         selectable: true,
         children: []
     });
-    cloudletList.map(cloudletOne => {
+    cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
                 <div>{cloudletOne}&nbsp;&nbsp;
-                    <Chip
-                        color="primary"
-                        size="small"
-                        label="Cloudlet"
-                        style={{
-                            //color: 'white',
-                            //backgroundColor: '#34373E'
-                        }}
-                    />
+                    {/*<Tag color="green">Cloudlet</Tag>*/}
                 </div>
             ),
             value: cloudletOne,
@@ -1258,6 +1286,8 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
         };
 
         clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
+
+
             if (clusterOne.Cloudlet === cloudletOne) {
                 newCloudletOne.children.push({
                     title: clusterOne.ClusterName,
@@ -1275,24 +1305,25 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
 
 
 export const makeDropdownForCloudlet = (pList) => {
-
     try {
         let newArrayList = [];
         newArrayList.push({
-            key: undefined,
-            value: undefined,
+            key: undefined | undefined | undefined,
+            value: undefined | undefined | undefined,
             text: 'Reset Filter',
         })
         pList.map((item: TypeCloudlet, index) => {
             let Cloudlet = item.CloudletName
             let CloudletLocation = JSON.stringify(item.CloudletLocation)
-            let cloudletFullOne = Cloudlet + " | " + CloudletLocation
+            let cloudletFullOne = Cloudlet + " | " + CloudletLocation + " | " + item.Region
             newArrayList.push({
+                region: item.Region,
                 key: cloudletFullOne,
                 value: cloudletFullOne,
                 text: Cloudlet,
             })
         })
+
         return newArrayList;
     } catch (e) {
 

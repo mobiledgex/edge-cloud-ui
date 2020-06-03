@@ -16,7 +16,7 @@ type Props = {
     clientStatusList: any,
 };
 
-export default function ClientStatusTableHooks(props) {
+export default function ClientStatusTable(props) {
     useEffect(() => {
     }, [props.clientStatusList]);
 
@@ -59,17 +59,18 @@ export default function ClientStatusTableHooks(props) {
                 style={{
                     display: 'flex',
                     width: '100%',
-                    height: 45
+                    height: 45,
+
                 }}
             >
-                <div className='page_monitoring_title draggable'
+                <div className='page_monitoring_title'
                      style={{
                          flex: 1,
                          marginTop: 5,
-                         //backgroundColor:'red'
+                         color: 'white',
                      }}
                 >
-                    Client status For App Inst
+                    Client Status For App Inst
                 </div>
             </div>
             <TableContainer
@@ -82,10 +83,10 @@ export default function ClientStatusTableHooks(props) {
                 }}
             >
                 <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
-                       stickyHeader={true}>
+                       stickyheader={true.toString()}>
 
 
-                    <TableHead style={{backgroundColor: 'red', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
+                    <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                                 App Inst
@@ -122,7 +123,7 @@ export default function ClientStatusTableHooks(props) {
                                     }}
                                 >
                                     <TableCell padding={'default'} align="center"
-                                               style={{width: 320, color: '#C0C6C8',}}>
+                                               style={{width: 'auto', color: '#C0C6C8',}}>
                                         <div style={{
                                             display: "flex",
                                             justifyContent: 'center',

@@ -59,8 +59,8 @@ const showSpinner = (self, value) => {
 
 const showError = (self, request, message) => {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
-    if (showMessage && self && self.handleAlertInfo) {
-        self.handleAlertInfo('error', message)
+    if (showMessage && self !== null && self.props.handleAlertInfo !== null) {
+        self.props.handleAlertInfo('error', message)
     }
 }
 
@@ -80,13 +80,13 @@ const checkExpiry = (self, message) => {
     return !isExpired;
 }
 
-function responseError(self, request, response, callback) {
-    if (response && response.error) {
-        let error  = response.error
+function responseError(self, request, error, callback) {
+    if (error && error.response) {
+        let response  = error.response
         let message = 'UnKnown';
-        let code = error.status;
-        if (error.data && error.data.message) {
-            message = error.data.message
+        let code = response.status;
+        if (response.data && response.data.message) {
+            message = response.data.message
             if (checkExpiry(self, message)) {
                 showSpinner(self, false)
                 showError(self, request, message);

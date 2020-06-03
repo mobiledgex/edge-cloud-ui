@@ -88,7 +88,7 @@ export type TypeClientLocation = {
     }
 }
 
-export type TypeClientStatus ={
+export type TypeClientStatus = {
     FindCloudletCount: number,
     RegisterClientCount: number,
     VerifyLocationCount: number,
@@ -115,6 +115,15 @@ export type TypeCloudlet = {
     State: number,
     Progress: string,
 }
+
+export type TypeCloudletEventLog = {
+    "time": any,
+    "cloudlet": string,
+    "cloudletorg": string,
+    "event": string,
+    "status": string,
+}
+
 
 export type TypeCluster = {
     Cloudlet: string,

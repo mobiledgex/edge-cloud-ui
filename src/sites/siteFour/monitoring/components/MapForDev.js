@@ -10,10 +10,15 @@ import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import Select from 'antd/es/select'
+import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -228,7 +233,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 //@desc:   hide appInstInfoPopup
                 //@desc : #############################
                 if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
-                    this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
+                    try {
+                        if (this.appInstPopup.current !== undefined) {
+                            this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
+                        }
+                    } catch (e) {
+
+                    }
+
                 }
 
                 //@desc : #############################
@@ -368,7 +380,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <Select
                     size={"small"}
                     defaultValue="dark1"
-                    style={{width: 70}}
+                    style={{width: 70, zIndex: 9999999999}}
                     showArrow={false}
                     bordered={false}
                     ref={c => this.themeSelect = c}
@@ -396,7 +408,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 >
                     {this.mapTileList.map((item, index) => {
                         return (
-                            <Option style={{color: 'white'}} defaultChecked={index === 0}
+                            <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
                                     value={item.value}>{item.name}</Option>
                         )
                     })}
@@ -469,7 +481,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     selectedAppInstIndex: -1,
                 });
 
-                await this.props.parent.handleOnChangeClusterDropdown('');
+                await this.props.parent.handleOnChangeClusterDropdown(undefined);
             } catch (e) {
 
             }
@@ -509,7 +521,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         renderAppInstPopup(listAppName, cloudletOne, cloudletIndex) {
             return (
-                <Popup permanent className='cloudlet_popup' ref={this.appInstPopup}>
+                <Popup index={cloudletIndex} permanent className='cloudlet_popup' ref={this.appInstPopup}>
                     {listAppName.map((AppFullName, appIndex) => {
                         let AppName = AppFullName.trim().split(" | ")[0].trim()
                         let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
@@ -527,8 +539,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                         return (
                             <div style={PageMonitoringStyles.appPopupDiv}
+                                 index={appIndex * cloudletIndex}
                             >
                                 <Ripples
+
                                     style={{marginLeft: 5,}}
                                     color='#1cecff'
                                     during={500}
@@ -584,9 +598,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
                             >
-                                {cloudlets.map(item => {
+                                {cloudlets.map((item, index) => {
                                     return (
                                         <div
+                                            key={index}
                                             className='mapCloudletTooltipInner'
                                         >
                                             {item}
@@ -773,9 +788,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {this.makeMapThemeDropDown()}
                                     </div>
-                                    : <Control position="bottomright" style={{marginTop: 1, marginRight: -1}}>
+                                    : <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 99999}}>
                                         {this.makeMapThemeDropDown()}
-                                    </Control>
+                                    </div>
                                 }
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}

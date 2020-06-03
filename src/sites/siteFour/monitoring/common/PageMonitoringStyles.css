@@ -525,9 +525,10 @@ tr td {
     height: auto !important;
 }*/
 
-.table0000001 {
+.fixedSizeListTableDiv {
     height: 30px;
     display: flex;
+    color: white;
 }
 
 
@@ -594,26 +595,6 @@ tr td {
     border-color: #96c8da;
     box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15);
 }
-
-/*.ant-select-tree-title{
-    background-color: red;
-}*/
-/*.ant-select-tree-treenode-switcher-open .ant-select-tree-treenode-switcher-close {
-    height: 15px;
-    padding: 0px;
-    margin: 0px
-}
-
-.ant-select-tree li {
-    margin-top: 0px;
-    margin-right: 0px;
-    margin-bottom: 0px;
-    margin-left: 0px;
-    padding: 5;
-    white-space: nowrap;
-    list-style: none;
-    outline: 0;
-}*/
 
 .tooltipForOperMarker .leaflet-popup-content-wrapper {
     width: 120px;
@@ -722,4 +703,71 @@ tr td {
 .mapCloudletTooltipInner {
     color: black;
     font-weight: bold;
+}
+
+
+.ant-calendar-range-picker-input[disabled] {
+    cursor: not-allowed;
+    color: white !important;
+}
+
+.ant-calendar-range-picker-input {
+    color: white !important;
+}
+
+.ant-calendar {
+    border: 1px solid #1cecff;
+}
+
+.ant-input-disabled {
+    background: #1e1e1e !important;
+}
+
+
+.ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
+    background-color: #3f4338;
+}
+
+.ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
+    color: #3F25BD;
+    background: #f8fced;
+    border-color: #3F25BD;
+    cursor: pointer;
+}
+
+.ant-picker-cell-in-view.ant-picker-cell-in-range::before {
+    background: #2A2C33;
+}
+
+.ant-picker-cell-range-hover-end {
+    background-color: #2A2C33;
+}
+
+.ant-picker-cell-in-range {
+    background-color: #2A2C33;
+}
+
+.ant-picker-cell-inner {
+    /*background-color: #2A2C33;*/
+}
+
+.ant-picker-cell-selected {
+    background-color: #2A2C33;
+
+}
+
+.ant-picker-cell-in-view {
+    color: #ebe9f2;
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    color: #fff;
+    font-weight: 600;
+    background-color: #5c5c58;
+}
+
+.ant-select-selection-item{
+    background-color: #23232E;
+    display: flex;
+    justify-content: center;
+    text-align: center;
 }

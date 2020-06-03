@@ -1,0 +1,9 @@
+ARG CONSOLE_IMAGE
+FROM $CONSOLE_IMAGE AS builder
+
+WORKDIR /edge-cloud-ui
+RUN npm run build
+
+FROM nginx:stable
+
+COPY --from=builder /edge-cloud-ui/build /usr/share/nginx/html

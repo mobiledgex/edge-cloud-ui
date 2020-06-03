@@ -3,7 +3,7 @@ import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from ".
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
@@ -857,7 +857,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
 }
 
 
-export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
+export const getCloudletEventLog = async (cloudletSelectedOne, pRegion, startTime = '', endTime = '') => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
@@ -872,7 +872,7 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
                     "organization": selectOrg,
                     "name": cloudletSelectedOne
                 },
-                "last": 10
+                "last": 100
             },
             headers: {
                 'Content-Type': 'application/json',
@@ -882,12 +882,14 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
         }).then(async response => {
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
+                let columns = response.data.data["0"].Series["0"].columns
+
                 return values;
             } else {
                 return [];
             }
         }).catch(e => {
-            // showToast(e.toString())
+            showToast(e.toString())
         })
         return result;
     } catch (e) {
@@ -896,12 +898,17 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion) => {
 }
 
 
-export const getAllCloudletEventLogs = async (cloudletList) => {
+/**
+ *
+ * @param cloudletList
+ * @returns {Promise<[]>}
+ */
+export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '') => {
 
     try {
         let promiseList = []
         cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-            promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region))
+            promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region, startTime = '', endTime = ''))
         })
 
         let allCloudletEventLogList = await Promise.all(promiseList);
@@ -919,9 +926,7 @@ export const getAllCloudletEventLogs = async (cloudletList) => {
         throw new Error(e)
     }
 
-
 }
-
 
 /**
  *

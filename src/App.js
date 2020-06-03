@@ -9,7 +9,7 @@ import * as serverData from './services/model/serverData';
 import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
 //insert pages
 import './app.css';
-import EntranceGlob from './sites/siteOne/entranceGlob';
+import EntranceGlob from './sites/login/entranceGlob';
 import VerifyContent from './container/verifyContent';
 import SiteFour from './sites/siteFour/siteFour'
 import './css/index.css';
