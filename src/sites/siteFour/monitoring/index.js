@@ -39,7 +39,7 @@ class MonitoringAdmin extends React.Component {
             compCloudlet: [],
             compClusterinst: [],
             compAppinst: [],
-            currentAuthDepth: 1
+            currentAuthDepth: 0
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -100,7 +100,7 @@ class MonitoringAdmin extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log("20200603 did update == ", prevProps);
+        console.log("20200603 did update == ", prevProps, ":autho depth = ", this.state.currentAuthDepth);
     }
 
 
@@ -184,6 +184,7 @@ class MonitoringAdmin extends React.Component {
         const {
             compCloudlet, compClusterinst, compAppinst, currentAuthDepth
         } = this.state;
+        console.log("20200603 render =", currentAuthDepth);
         return (
             <div
                 style={{
