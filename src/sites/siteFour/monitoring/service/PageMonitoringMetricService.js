@@ -647,25 +647,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     }
 }
 
-const CLOUDLET_USAGE_INDEX = {
-    "time": 0,
-    "cloudlet": 1,
-    "cloudletorg": 2,
-    "netSend": 3,
-    "netRecv": 4,
-    "vCpuUsed": 5,
-    "vCpuMax": 6,
-    "memUsed": 7,
-    "memMax": 8,
-    "diskUsed": 9,
-    "diskMax": 10,
-    "floatingIpsUsed": 11,
-    "floatingIpsMax": 12,
-    "ipv4Used": 13,
-    "ipv4Max": 14,
-}
-
-
 /**
  *
  * @param cloudletList
