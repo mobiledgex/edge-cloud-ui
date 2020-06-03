@@ -534,16 +534,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             };
 
-            makeClusterUsageListWithColorCode(allClusterUsageList) {
-                let newClusterUsageList = []
-                allClusterUsageList.map((item, index) => {
-                    item.colorCodeIndex = index;
-                    newClusterUsageList.push(item)
-                })
-
-                return newClusterUsageList;
-            }
-
 
             async loadInitData(isInterval: boolean = false) {
                 let promiseList = []
@@ -1848,7 +1838,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 filteredClusterCloudletlist.push(clusterCloudletOne)
                                             })
 
-
                                             await this.handleOnChangeClusterDropdown(filteredClusterCloudletlist)
 
                                         } else {
@@ -1933,14 +1922,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async handleOnChangeClusterDropdown(selectClusterCloudletList) {
-                if (this.state.isStream === false) {
-                    clearInterval(this.intervalForAppInst)
-                    clearInterval(this.intervalForCluster)
-                    await this.setState({isStream: false})
-                }
-
                 try {
-                    //@todo:#####################################################
+                    if (this.state.isStream === false) {
+                        clearInterval(this.intervalForAppInst)
+                        clearInterval(this.intervalForCluster)
+                        await this.setState({isStream: false})
+                    }
+
+
                     if (!isEmpty(selectClusterCloudletList)) {
                         let allClusterUsageList = this.state.allClusterUsageList
                         let filteredClusterUsageList = this.filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterCloudletList)
@@ -1954,7 +1943,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterList: filteredClusterList,
                         })
 
-                        /////////////////////////////////////////////////////
                         /////////////////////////////////////////////////////
                         await this.setState({
                             selectedClientLocationListOnAppInst: [],
@@ -2003,10 +1991,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterEventLogList: filteredClusterEventLogList,
                             currentColorIndex: -1,
                         });
-                    } else {
+                    } else {//todo:when allCluster selected
                         this.resetLocalData();
                     }
-
 
                     //desc: ############################
                     //desc: setStream
@@ -2349,9 +2336,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             />
                             <div style={{marginLeft: 10,}}>
                                 <Button onClick={async () => {
-
                                     if (this.state.currentClusterList !== undefined) {
-
                                         let selectClusterCloudletList = this.state.currentClusterList
                                         this.handleOnChangeClusterDropdown(selectClusterCloudletList)
 
@@ -2513,7 +2498,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderClusterLegend(pLegendItemCount) {
                 let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
-
                 console.log(`width===>`, this.props.size.width);
 
                 return (
@@ -2542,6 +2526,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             clusterCloudletList.push(clusterOne)
                                             clearInterval(this.intervalForCluster)
                                             await this.handleOnChangeClusterDropdown(clusterCloudletList)
+
                                         } else {
                                             clearInterval(this.intervalForCluster)
                                             await this.handleOnChangeClusterDropdown(undefined)
