@@ -1,92 +1,91 @@
-import * as serviceMC from "./serviceMC";
+import * as serviceMC from './serviceMC';
 
 import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_SELF, SHOW_AUDIT_ORG, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
 
 const getToken = (self) => {
-    const store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     if (store) {
-        return store.userToken;
+        return store.userToken
     }
     self.props.history.push({
-        pathname: "/logout",
-    });
-};
+        pathname: '/logout'
+    })
+}
 
 export const sendRequest = async (self, requestData) => {
-    const token = getToken(self);
+    let token = getToken(self)
     if (token) {
         requestData.token = token;
-        const result = await serviceMC.sendSyncRequest(self, requestData);
-        return result;
+        return await serviceMC.sendSyncRequest(self, requestData)
     }
-};
+}
 /**
- * orgData : this parameter is useful when we are trying to process multiple
+ * orgData : this parameter is useful when we are trying to process multiple 
  *           data and need to access original data for which request was made
- *           because websocket supports multi request response
- *  * */
+ *           because websocket supports multi request response 
+ *  **/
 export const sendWSRequest = async (self, requestData, callback, orgData) => {
-    const token = getToken(self);
+    let token = getToken(self)
     if (token) {
         requestData.token = token;
-        requestData.orgData = orgData;
-        serviceMC.sendWSRequest(requestData, callback);
+        requestData.orgData = orgData
+        serviceMC.sendWSRequest(requestData, callback)
     }
-};
+}
 
 export const sendMultiRequest = (self, requestInfoList, callback) => {
-    const token = getToken(self);
+    let token = getToken(self)
     if (token) {
-        const requestDataList = [];
+        let requestDataList = [];
         for (let i = 0; i < requestInfoList.length; i++) {
-            const requestInfo = requestInfoList[i];
+            let requestInfo = requestInfoList[i];
             requestInfo.token = getToken(self);
-            requestDataList.push(requestInfo);
+            requestDataList.push(requestInfo)
         }
-        serviceMC.sendMultiRequest(self, requestDataList, callback);
+        serviceMC.sendMultiRequest(self, requestDataList, callback)
     }
-};
+}
 
 export const showDataFromServer = async (self, requestData) => {
-    let dataList = [];
-    const token = getToken(self);
+    let dataList = []
+    let token = getToken(self)
     if (token) {
         requestData.token = token;
-        const mcRequest = await serviceMC.sendSyncRequest(self, requestData);
+        let mcRequest = await serviceMC.sendSyncRequest(self, requestData)
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
             dataList = mcRequest.response.data;
         }
     }
     return dataList;
-};
+}
 
 export const showMultiDataFromServer = (self, requestType, filter, callback) => {
-    const token = getToken(self);
+    let token = getToken(self)
     if (token) {
-        const requestDataList = [];
+        let requestDataList = [];
         for (let i = 0; i < requestType.length; i++) {
-            const request = requestType[i]({ ...filter });
+            let request = requestType[i](Object.assign({}, filter))
             if (request) {
                 request.token = token;
                 requestDataList.push(request);
             }
         }
-        serviceMC.sendMultiRequest(self, requestDataList, callback);
+        serviceMC.sendMultiRequest(self, requestDataList, callback)
     }
-};
+}
 
 /* User Role */
 export const showUserRoles = async (self) => {
-    const mcRequest = await sendRequest(self, { method: SHOW_ROLE });
-    return mcRequest;
-};
+    let mcRequest = await sendRequest(self, { method: SHOW_ROLE })
+    return mcRequest
+}
 
 export const sendVerify = async (self, data) => {
     let valid = false;
     let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESEND_VERIFY, data: data })
     if (mcRequest && mcRequest.response) {
-        const { response } = mcRequest;
-        valid = response.status === 200;
+        let response = mcRequest.response;
+        valid = response.status === 200 ? true : false
     }
     return valid
 }
@@ -96,13 +95,13 @@ export const currentUser = async (self) => {
     return mcRequest
 }
 
-export const controllers = async (self) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_CONTROLLER })
+export const controllers = async (self, token) => {
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: SHOW_CONTROLLER, token: token })
     return mcRequest
 }
 
 export const verifyEmail = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: VERIFY_EMAIL, data: data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: VERIFY_EMAIL, data : data })
     return mcRequest
 }
 
@@ -120,8 +119,8 @@ export const settingLock = async (self, data) => {
     let valid = false
     let mcRequest = await sendRequest(self, { method: SETTING_LOCK, data: data })
     if (mcRequest && mcRequest.response) {
-        const { response } = mcRequest;
-        valid = response.status === 200;
+        let response = mcRequest.response;
+        valid = response.status === 200 ? true : false
     }
     return valid
 }
@@ -136,12 +135,12 @@ export const createUser = async (self, data) => {
     return mcRequest
 }
 
-export const login = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: LOGIN, data: data })
+export const login = async(self, data) => {
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: LOGIN, data: data })
     return mcRequest
 }
 
-export const resetPasswordRequest = async (self, data) => {
+export const resetPasswordRequest = async(self, data) => {
     let valid = false
     let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESET_PASSWORD_REQUEST, data: data })
     if (mcRequest && mcRequest.response) {

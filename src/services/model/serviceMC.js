@@ -1,17 +1,36 @@
-import axios from "axios";
-import uuid from "uuid";
-import * as EP from "./endPointTypes";
-import Alert from "react-s-alert";
+import axios from 'axios';
+import uuid from 'uuid';
+import * as EP from './endPointTypes'
+
 
 let sockets = [];
-let serverURL = process.env.REACT_APP_API_ENDPOINT;
 
 export function getEP() {
     return EP;
 }
-const getURL = (request) => {
-    return serverURL + EP.getPath(request)
+
+export const mcURL = (isWebSocket) => {
+    let serverURL = ''
+    if (process.env.NODE_ENV === 'production') {
+        var url = window.location.href
+        var arr = url.split("/");
+        serverURL = arr[0] + "//" + arr[2]
+    }
+
+    if (serverURL.includes('localhost')) {
+        serverURL = process.env.REACT_APP_API_ENDPOINT;
+    }
+
+    if (isWebSocket) {
+        serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+    }
+    return serverURL
 }
+
+const getHttpURL = (request) => {
+    return mcURL(false) + EP.getPath(request)
+}
+
 
 export function generateUniqueId() {
     return uuid();
@@ -34,18 +53,10 @@ const showSpinner = (self, value) => {
     }
 };
 
-const showError = (request, message) => {
-    let showMessage =
-        request.showMessage === undefined ? true : request.showMessage;
-    if (showMessage) {
-        Alert.error(message, {
-            position: "top-right",
-            effect: "slide",
-            beep: true,
-            timeout: 20000,
-            offset: 100,
-            html: true
-        });
+const showError = (self, request, message) => {
+    let showMessage = request.showMessage === undefined ? true : request.showMessage;
+    if (showMessage && self !== null && self.props.handleAlertInfo !== null) {
+        self.props.handleAlertInfo('error', message)
     }
 };
 
@@ -68,33 +79,26 @@ const checkExpiry = (self, message) => {
     return !isExpired;
 };
 
-function responseError(self, request, response, callback) {
-    if (response) {
-        let message = "UnKnown";
+function responseError(self, request, error, callback) {
+    if (error && error.response) {
+        let response = error.response
+        let message = 'UnKnown';
         let code = response.status;
         if (response.data && response.data.message) {
             message = response.data.message;
             if (checkExpiry(self, message)) {
-                showSpinner(self, false);
-                showError(request, message);
+                showSpinner(self, false)
+                showError(self, request, message);
                 if (callback) {
-                    callback({
-                        request: request,
-                        error: { code: code, message: message }
-                    });
+                    callback({ request: request, error: { code: code, message: message } })
                 }
-            }
-            else if (request.method === EP.VERIFY_EMAIL) {
-                showError(request, 'Oops, this link is expired')
             }
         }
     }
 }
 
 export function sendWSRequest(request, callback) {
-    let url = process.env.REACT_APP_API_ENDPOINT;
-    url = url.replace("http", "ws");
-    const ws = new WebSocket(`${url}/ws${EP.getPath(request)}`);
+    const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({ uuid: request.uuid, socket: ws, isClosed: false });
         ws.send(`{"token": "${request.token}"}`);
@@ -129,7 +133,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
         let promise = [];
         let resResults = [];
         requestDataList.map((request) => {
-            promise.push(axios.post(getURL(request), request.data,
+            promise.push(axios.post(getHttpURL(request), request.data,
                 {
                     headers: getHeader(request)
                 })
@@ -145,6 +149,9 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 });
                 showSpinner(self, false);
                 callback(resResults);
+
+            }).catch(error => {
+                responseError(self, requestDataList[0], error, callback)
             })
             .catch(error => {
                 responseError(
@@ -166,7 +173,7 @@ export const sendSyncRequest = async (self, request) => {
     );
     try {
         showSpinner(self, true)
-        let response = await axios.post(getURL(request), request.data,
+        let response = await axios.post(getHttpURL(request), request.data,
             {
                 headers: getHeader(request)
             });
@@ -174,18 +181,29 @@ export const sendSyncRequest = async (self, request) => {
         showSpinner(self, false);
         return EP.formatData(request, response);
     } catch (error) {
-        if (error.response) {
-            responseError(self, request, error.response);
-        } else {
-            responseError(self, request, "You have entered an invalid username or password");
-        }
+        responseError(self, request, error)
+    }
+}
+
+export const sendSyncRequestWithError = async (self, request) => {
+    try {
+        request.showSpinner === undefined && showSpinner(self, true)
+        let response = await axios.post(getHttpURL(request), request.data,
+            {
+                headers: getHeader(request)
+            });
+        request.showSpinner === undefined && showSpinner(self, false)
+        return EP.formatData(request, response);
+    } catch (error) {
+        return { request: request, error: error }
     }
 };
+
 
 export function sendRequest(self, request, callback) {
     let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
     showSpinner(self, isSpinner)
-    axios.post(getURL(request), request.data,
+    axios.post(getHttpURL(request), request.data,
         {
             headers: getHeader(request)
         })
@@ -195,7 +213,7 @@ export function sendRequest(self, request, callback) {
         })
         .catch(function (error) {
             if (error.response) {
-                responseError(self, request, error.response, callback);
+                responseError(self, request, error, callback)
             }
-        });
+        })
 }

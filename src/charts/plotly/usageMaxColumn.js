@@ -53,7 +53,8 @@ class UsageMaxColumn extends React.Component {
         this.colors = ['#6699ff','#22cccc', '#aa77ff', '#ffce03' ];
         this.colorsErr = ['#22cccc','#ff3355', '#6699ff', '#ffce03' ];
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.chartData) {
             this.reloadChart(nextProps.chartData, nextProps.series);
         }

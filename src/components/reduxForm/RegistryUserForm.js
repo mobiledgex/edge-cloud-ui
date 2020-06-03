@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {Field, initialize, reduxForm} from "redux-form";
-import {Form, Input, Message} from "semantic-ui-react";
+import {Form} from "semantic-ui-react";
 import './styles.css';
 
 
@@ -35,52 +35,6 @@ const validate = values => {
     return errors
 }
 
-const renderCheckbox = field => (
-    <Form.Checkbox
-        checked={!!field.input.value}
-        name={field.input.name}
-        label={field.label}
-        onChange={(e, { checked }) => field.input.onChange(checked)}
-    />
-);
-
-const renderRadio = field => (
-    <Form.Radio
-        checked={field.input.value === field.radioValue}
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { checked }) => field.input.onChange(field.radioValue)}
-    />
-);
-
-const renderSelect = field => (
-    <Form.Select
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        options={field.options}
-        placeholder={field.placeholder}
-        value={field.input.value}
-    />
-);
-
-const renderTextArea = field => (
-    <Form.TextArea
-        {...field.input}
-        label={field.label}
-        placeholder={field.placeholder}
-    />
-);
-const renderInputNum = field => (
-    <Form.Field
-        {...field.input}
-        type={field.type}
-        // placeholder={field.placeholder}
-    >
-        <label>{field.label}</label>
-        <Input type="number"></Input>
-    </Form.Field>
-);
 const renderInput = field => (
     <div>
         <Form.Input
@@ -108,6 +62,7 @@ class RegistryUserForm extends React.Component{
         this.usernameValue = null;
         this.emailValue = null
     }
+
     onHandleSubmit =(a,b)=> {
         //if  any has error as validation
         this.props.handleSubmit();
@@ -128,25 +83,18 @@ class RegistryUserForm extends React.Component{
         if(a.target.name === 'email') this.emailValue = null;
         localStorage.setItem('userInfo',null);
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         this.setState({lastProps:nextProps})
-        //TODO : 20190906 이전 프롭스 다시 받아서 input filed에 다시 넣기
-
         let userInfo = localStorage.getItem('userInfo');
         let userInfoObj = (userInfo)?JSON.parse(userInfo):null;
         if(userInfoObj) {
             this.usernameValue = userInfoObj.username;
             this.emailValue = userInfoObj.email;
         }
-
-    }
-
-    componentDidMount() {
-        //console.log('20190906 didmount reg user form..'+JSON.stringify(this.props))
     }
 
     render() {
-        const { handleSubmit, reset } = this.props;
 
         return (
             <Fragment>

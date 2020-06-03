@@ -45,7 +45,8 @@ class MethodCallChart extends React.Component {
         this.colors = ['#6699ff','#22cccc', '#aa77ff', '#ffce03' ];
         this.colorsErr = ['#22cccc','#ff3355', '#6699ff', '#ffce03' ];
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.chartData && nextProps.chartData.methodCall) {
             this.reloadChart(nextProps.chartData, nextProps.lineLimit);
         }
@@ -246,7 +247,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeCity: (data) => { dispatch(actions.changeCity(data)) },
-        handleInjectData: (data) => { dispatch(actions.injectNetworkData(data))},
     };
 };
 
