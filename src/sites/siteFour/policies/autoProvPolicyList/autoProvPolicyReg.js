@@ -245,7 +245,7 @@ class AutoProvPolicyReg extends React.Component {
             let value = parseInt(form.value)
             if(value <= 0)
             {
-                form.error = 'Deploy Client Count must be greater than zero' 
+                form.error = 'Deploy Request Count must be greater than zero' 
                 return false; 
             }
         }
@@ -265,7 +265,7 @@ class AutoProvPolicyReg extends React.Component {
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
                 { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true },
-                { field: fields.deployClientCount, label: 'Deploy Client Count', formType: 'Input', rules: { type: 'number', required: true }, visible: true, dataValidateFunc: this.validatedeployClientCount },
+                { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: true }, visible: true, dataValidateFunc: this.validatedeployClientCount },
                 { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true },
                 { label: 'Create', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
