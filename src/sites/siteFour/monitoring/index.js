@@ -99,6 +99,10 @@ class MonitoringAdmin extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        console.log("20200603 did update == ", prevProps);
+    }
+
 
     onReceiveResult(result) {
         try {
@@ -108,28 +112,26 @@ class MonitoringAdmin extends React.Component {
             } else if (result && result.AppinstList) {
                 this.hasAppinst = this.hasAppinst.concat(result.AppinstList);
                 countApp--;
-            } else if (result && result.ClusterList) {
-                this.hasAppinst = this.hasAppinst.concat(result.ClusterList);
-                countCluster--;
+            } else if (result && result.Clusterinst) {
+                countCluster = 0;
             } else {
                 return;
             }
 
-            if (count <= 0) {
+            if (count <= 0 && result.Cloudlets) {
                 this.setState({
                     compCloudlet: this.hasCloudlets,
                 });
                 count = regionCount;
-            } else if (countApp <= 0) {
+            } else if (countApp <= 0 && result.AppinstList) {
                 this.setState({
                     compAppinst: this.hasAppinst,
                 });
                 countApp = regionCount;
-            } else if (countCluster <= 0) {
+            } else if (countCluster <= 0 && result.Clusterinst) {
                 this.setState({
-                    compClusterinst: this.hasCluster,
+                    compClusterinst: result.Clusterinst,
                 });
-                countApp = regionCount;
             }
         } catch (e) {
             throw e;
@@ -150,10 +152,14 @@ class MonitoringAdmin extends React.Component {
                 await Service.getPrepareList(props, self);
             } else if (props.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
                 const resultClusters = await Service.getPrepareList(props, self);
-                if (resultClusters && resultClusters[0].ClusterList) {
-                    resultClusters.map(mtr => {
-                        self.onReceiveResult(mtr);
+                if (resultClusters) {
+                    const newObject = { Clusterinst: {} };
+                    let newArray = [];
+                    resultClusters.map(cluster => {
+                        newArray = newArray.concat(cluster);
                     });
+                    newObject.Clusterinst = newArray;
+                    self.onReceiveResult(newObject);
                 }
             }
         } catch (e) {
@@ -165,11 +171,19 @@ class MonitoringAdmin extends React.Component {
         this.setState({ currentAuthDepth: depth });
     }
 
+    onHandleApplyFilter = filteredItem => {
+        console.log("20200603 filtering == ", filteredItem);
+        this.setState({ currentAuthDepth: 1 });
+        this.forceUpdate();
+    }
+
     render() {
         const scope = this;
         const containerWidth = this.props.size.width;
         const containerHeight = this.props.size.height;
-        const { compCloudlet, compClusterinst, compAppinst, currentAuthDepth } = this.state;
+        const {
+            compCloudlet, compClusterinst, compAppinst, currentAuthDepth
+        } = this.state;
         return (
             <div
                 style={{
@@ -177,7 +191,15 @@ class MonitoringAdmin extends React.Component {
                     height: "100%"
                 }}
             >
-                <HeaderFiltering title="MONITORING" compCloudlet={compCloudlet} compAppinst={compAppinst} resetAuthDepth={this.resetAuthDepth} regions={regions} selectedRegion={"All"} />
+                <HeaderFiltering title="MONITORING"
+                    compCloudlet={compCloudlet}
+                    compClusterinst={compClusterinst}
+                    compAppinst={compAppinst}
+                    resetAuthDepth={this.resetAuthDepth}
+                    regions={regions}
+                    selectedRegion="All"
+                    onHandleApplyFilter={this.onHandleApplyFilter}
+                />
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
@@ -187,6 +209,7 @@ class MonitoringAdmin extends React.Component {
                                 scope,
                                 this.props,
                                 compCloudlet,
+                                compClusterinst,
                                 compAppinst,
                             )
                             : currentAuthDepth === 1
@@ -194,12 +217,14 @@ class MonitoringAdmin extends React.Component {
                                     scope,
                                     this.props,
                                     compCloudlet,
+                                    compClusterinst,
                                     compAppinst,
                                 )
                                 : generateComponentDeveloper(
                                     scope,
                                     this.props,
                                     compCloudlet,
+                                    compClusterinst,
                                     compAppinst,
                                 )
                     }

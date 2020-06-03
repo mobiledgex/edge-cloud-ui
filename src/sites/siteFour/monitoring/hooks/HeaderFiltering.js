@@ -52,9 +52,9 @@ const HeaderFiltering = props => {
         //
         const groupCategory = groupByItem[selected] ? groupBy(groupByItem[selected], property.depthId) : [];
         const cloudletKeys = Object.keys(groupCategory);
-        const defaultInsert = makeItemFormat([property.default]);
-        return defaultInsert.concat(makeItemFormat(cloudletKeys));
-        // return makeItemFormat(cloudletKeys);
+        //const defaultInsert = makeItemFormat([property.default]);
+        //return defaultInsert.concat(makeItemFormat(cloudletKeys));
+        return makeItemFormat(cloudletKeys);
     };
 
     const onSelectItem = (item, depth) => {
@@ -62,6 +62,9 @@ const HeaderFiltering = props => {
         /** set cloudlts in select items box */
         if (depth === "region") {
             setSelectedRegion(item);
+            setDepthOne([]);
+            setDepthTwo([]);
+            setDepthThree([]);
             if (props.compCloudlet && props.compCloudlet.length > 0) {
                 console.log("20200602 cloudlet info == ", props.compCloudlet);
                 setDepthOne(makeDepthTrees(props.compCloudlet, item, { byId: depth, depthId: "cloudletName", default: "Select Cloudlet" }));
@@ -69,17 +72,24 @@ const HeaderFiltering = props => {
             /** set clusters in select items box */
         } else if (depth === "cloudlet") {
             // setSelectedCloudlet(item);
-            if (props.compCluster && props.compCluster.length > 0) {
-                console.log("20200602 compCluster info == ", props.compCluster);
-                setDepthTwo(makeDepthTrees(props.compCluster, item, { byId: depth, depthId: "clusterName", default: "Select Cluster" }));
+            setDepthTwo([]);
+            setDepthThree([]);
+            if (props.compClusterinst && props.compClusterinst.length > 0) {
+                console.log("20200602 compClusterinst info == ", props.compClusterinst);
+                setDepthTwo(makeDepthTrees(props.compClusterinst, item, { byId: "cloudletName", depthId: "clusterName", default: "Select Cluster" }));
             }
             /** set appinst in select items box */
         } else if (depth === "cluster") {
+            setDepthThree([]);
             if (props.compAppinst && props.compAppinst.length > 0) {
                 console.log("20200602 appinst info == ", props.compAppinst);
-                setDepthTwo(makeDepthTrees(props.compAppinst, item, { byId: depth, depthId: "app", default: "Select Appinstance" }));
+                setDepthThree(makeDepthTrees(props.compAppinst, item, { byId: "clusterName", depthId: "appName", default: "Select Appinstance" }));
             }
         }
+    };
+
+    const onHandleApplyFilter = filteredItem => {
+        props.onHandleApplyFilter(filteredItem);
     };
 
     React.useEffect(() => {
@@ -97,7 +107,7 @@ const HeaderFiltering = props => {
     return (
         <Toolbar className="monitoring_title">
             <label className="content_title_label">Monitoring</label>
-            <FilterMenu regions={regions} depthOne={depthOne} depthTwo={depthTwo} depthThree={depthThree} itemTreeValues={itemTreeValues} onSelectItem={onSelectItem} />
+            <FilterMenu regions={regions} depthOne={depthOne} depthTwo={depthTwo} depthThree={depthThree} itemTreeValues={itemTreeValues} onSelectItem={onSelectItem} onHandleApplyFilter={onHandleApplyFilter} />
         </Toolbar>
     );
 };

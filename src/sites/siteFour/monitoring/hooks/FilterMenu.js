@@ -14,6 +14,8 @@ export default function FilterMenu(defaultProps) {
     const [clusterOptions, setClusterOptions] = React.useState(null);
     const [appinstOptions, setAppinstOptions] = React.useState(null);
     const [valueZero, setValueZero] = React.useState("All");
+    const [enableApply, setEnableApply] = React.useState(false);
+    const [applyMent, setApplyMent] = React.useState("");
 
     const handleClick = event => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -23,10 +25,20 @@ export default function FilterMenu(defaultProps) {
         setAnchorEl(null);
     };
 
+    const handleApply = () => {
+        const filteredList = { region: "", cloudlet: "", cluster: "", appinst: "" };
+        defaultProps.onHandleApplyFilter(filteredList);
+    };
+
     const onChangeSelect = (event, selectItem) => {
         console.log("20200602 on change select == ", selectItem);
         // if (selectItem.id === "region") setValueZero(selectItem.id);
         defaultProps.onSelectItem(selectItem.value, selectItem.id);
+
+        if (selectItem.id) {
+            setEnableApply(true);
+            setApplyMent(selectItem.id);
+        }
     };
 
     React.useEffect(() => {
@@ -126,7 +138,7 @@ export default function FilterMenu(defaultProps) {
                     <div className="page_monitoring_location_Select">
                         <Dropdown
                             className="dropdownName"
-                            placeholder="All"
+                            placeholder="Select cluster"
                             clearable
                             fluid
                             search
@@ -144,7 +156,7 @@ export default function FilterMenu(defaultProps) {
                     <div className="page_monitoring_location_Select">
                         <Dropdown
                             className="dropdownName"
-                            placeholder="All"
+                            placeholder="Select Appinstance"
                             fluid
                             search
                             selection
@@ -154,17 +166,20 @@ export default function FilterMenu(defaultProps) {
                         />
                     </div>
                 </div>
-                <div className="page_monitoring_location_apply">
-                    <Button onClick={handleClose} style={{ backgroundColor: "#6b7487", color: "#fff" }} variant="contained">Apply</Button>
+                <div style={{
+                    display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItem: "center", padding: 5
+                }}
+                >
+                    {enableApply ? <div style={{ fontSize: 16 }}>{`Apply filter of ${applyMent}`}</div> : null}
+                    {enableApply
+                        ? <div className="page_monitoring_location_apply">
+                            <Button onClick={handleApply} style={{ backgroundColor: "#9acd32", color: "#fff" }} variant="contained">Apply</Button>
+                        </div> : null}
+                    <div className="page_monitoring_location_apply">
+                        <Button onClick={handleClose} style={{ backgroundColor: "#6b7487", color: "#fff" }} variant="contained">Cancel</Button>
+                    </div>
                 </div>
             </Popper>
         </div>
     );
 }
-/*
-TODO : 6월 2일 해야 할 일
-@Smith
-모든 appinstance리스트를 가져오게 되면 역순으로
-appinst / clusterinst / cloudlet 의 정보가 포함되어 있음
-이를 분리하여 각 셀렉트 박스에 넣으면 됨
-*/

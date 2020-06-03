@@ -25,7 +25,7 @@ module.exports = {
     ],
     "rules": {
         strict: 0,
-        "indent": ["error", 4],
+        "indent": 0,
         quotes: ["error", "double"],
         "object-curly-spacing": [2, "always"],
         "react/prop-types": [0],
@@ -53,6 +53,7 @@ module.exports = {
         "react/jsx-indent": 0,
         "react/jsx-indent-props": 0,
         "import/prefer-default-export": 0,
-        "array-callback-return": 0
+        "array-callback-return": 0,
+        "react/jsx-wrap-multilines": 0
     }
 };

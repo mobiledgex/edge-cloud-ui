@@ -167,14 +167,14 @@ const getEventCloudlet = async (self, params) => {
 };
 
 export const getPrepareList = async (defaultValue: MetricsParmaType, self: any) => {
-    if (defaultValue.method === serviceMC.getEP().SHOW_CLOUDLET) {
-        const result = await getListCloud(self, defaultValue);
-        return result;
+    let result = null;
+    switch (defaultValue.method) {
+        case serviceMC.getEP().SHOW_CLOUDLET: result = await getListCloud(self, defaultValue); break;
+        case serviceMC.getEP().SHOW_CLUSTER_INST: result = await getListCluster(self, defaultValue); break;
+        case serviceMC.getEP().SHOW_APP_INST: result = await getListAppinst(self, defaultValue); break;
+        default: // ;
     }
-    if (defaultValue.method === serviceMC.getEP().SHOW_APP_INST) {
-        const result = await getListAppinst(self, defaultValue);
-        return result;
-    }
+    return result;
 };
 
 export const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
