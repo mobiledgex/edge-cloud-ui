@@ -475,7 +475,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     zoom: 1,
                     selectedAppInstIndex: -1,
                 });
-
+                clearInterval(this.props.parent.intervalForAppInst)
+                clearInterval(this.props.parent.intervalForCluster)
                 await this.props.parent.handleOnChangeClusterDropdown(undefined);
             } catch (e) {
 

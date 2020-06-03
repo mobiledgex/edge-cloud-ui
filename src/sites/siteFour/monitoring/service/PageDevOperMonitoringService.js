@@ -1295,7 +1295,7 @@ export const makeClusterTreeDropdown = (cloudletList, clusterList, _this) => {
                     title: (
                         <div style={{display: 'flex'}}>
                             <Center style={{width: 15,}}>
-                                {_this.renderDot(clusterOne.colorCodeIndex)}
+                                {_this.renderDot(clusterOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
                                 {clusterOne.cluster}
