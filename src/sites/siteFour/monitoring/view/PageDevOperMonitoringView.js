@@ -2355,16 +2355,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                             />
                             <div style={{marginLeft: 10,}}>
-                                <Button size={'small'} onClick={async () => {
-                                    if (this.state.currentClusterList !== undefined) {
-                                        let selectClusterCloudletList = this.state.currentClusterList
-                                        this.handleOnChangeClusterDropdown(selectClusterCloudletList)
+                                <Button size={'small'}
+                                        onClick={async () => {
+                                            this.applyButton.blur();
+                                            if (this.state.currentClusterList !== undefined) {
+                                                let selectClusterCloudletList = this.state.currentClusterList
+                                                this.handleOnChangeClusterDropdown(selectClusterCloudletList)
 
-                                    } else {
-                                        this.resetLocalData()
-                                    }
+                                            } else {
+                                                this.resetLocalData()
+                                            }
 
-                                }}>
+
+                                        }}
+                                        ref={c => this.applyButton = c}
+                                >
                                     Apply
                                 </Button>
                             </div>

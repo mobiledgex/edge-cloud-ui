@@ -20,12 +20,24 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeClusterUsageOne, TypeLineChartData} from "../../../../shared/Types";
+import type {
+    TypeAppInst,
+    TypeCloudlet,
+    TypeCluster,
+    TypeClusterUsageOne,
+    TypeLineChartData
+} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
+import Chip from "@material-ui/core/Chip";
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -1268,8 +1280,6 @@ export function convertHWType(hwType) {
 }
 
 
-
-
 /**
  *
  * @param cloudletList
@@ -1282,7 +1292,15 @@ export const makeClusterTreeDropdown = (cloudletList, clusterList, _this) => {
         let newCloudletOne = {
             title: (
                 <div>{cloudletOne}&nbsp;&nbsp;
-                    {/*<Tag color="green">Cloudlet</Tag>*/}
+                    <Chip
+                        color="primary"
+                        size="small"
+                        label="Cloudlet"
+                        style={{
+                            color: 'white',
+                            backgroundColor: '#34373E'
+                        }}
+                    />
                 </div>
             ),
             value: cloudletOne,
