@@ -10,7 +10,7 @@ export const keys = [
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
   { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter:true },
   { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter:true },
-  { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Client Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
+  { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Request Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.cloudletCount, label: 'Cloudlet Count', sortable: false, visible: true },
   {
