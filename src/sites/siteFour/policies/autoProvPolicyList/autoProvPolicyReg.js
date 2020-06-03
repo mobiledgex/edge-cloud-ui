@@ -99,7 +99,7 @@ class AutoProvPolicyReg extends React.Component {
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [{ key: region, value: region, text: region }], value: region },
                 { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { disabled: true }, visible: true, options: [{ key: organization, value: organization, text: organization }], value: organization },
                 { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { disabled: true }, visible: true, value: autoPolicyName },
-                { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true },
+                { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: true }, visible: true },
                 { label: `${action}`, formType: 'Button', onClick: this.onAddCloudlets },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
