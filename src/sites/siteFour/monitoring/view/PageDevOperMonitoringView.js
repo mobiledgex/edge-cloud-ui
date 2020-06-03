@@ -254,7 +254,6 @@ type PageDevMonitoringState = {
     showAppInstClient: boolean,
     filteredClusterList: any,
     chartDataForBigModal: any,
-    //usageListForPerformanceSum: any,
     windowDimensions: number,
     currentWidth: number,
     emptyPosXYInGrid: any,
@@ -615,7 +614,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         ////////////////////////////////////////////////////////////////////////////
                         cloudletClusterNameMap = getCloudletClusterNameList(clusterList)
-                        //let newClusterUsageList = this.makeClusterUsageListWithColorCode(allClusterUsageList)
                         dropDownCludsterListOnCloudlet = makeClusterTreeDropdown(uniqBy(cloudletClusterNameMap.cloudletNameList), allClusterUsageList, this)
 
                     } else {//TODO:OPERATOR
@@ -771,13 +769,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             setClusterInterval() {
                 this.intervalForCluster = setInterval(async () => {
-                    this.setState({intervalLoading: true})
                     try {
 
+                        this.setState({intervalLoading: true})
                         source.cancel('Operation canceled by the user.');
 
                         let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT, '', '', this);
-
                         this.setChartDataForBigModal(filteredClusterUsageList)
                         this.setState({
                             intervalLoading: false,
@@ -2429,23 +2426,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </Select>
                     </div>
                 )
-            }
-
-            async filterClusterList(value) {
-
-                let selectedCluster = value.split('|')[0].trim()
-                let selectedCloudlet = value.split('|')[1].trim()
-                let allClusterList = this.state.allClusterList
-                let selectedClusterList = []
-                allClusterList.filter(item => {
-                    if (item.ClusterName === selectedCluster && item.Cloudlet === selectedCloudlet) {
-                        selectedClusterList.push(item);
-                    }
-                })
-
-                await this.setState({
-                    filteredClusterList: selectedClusterList,
-                })
             }
 
             renderDot(index) {
