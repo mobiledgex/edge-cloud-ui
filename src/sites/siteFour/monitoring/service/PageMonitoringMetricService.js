@@ -898,7 +898,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
             return response.data;
         }).catch(e => {
             if (axios.isCancel(e)) {
-                alert('취소!!!!!!!!')
+                //alert('취소!!!!!!!!')
             } else {
                 //showToast(e.toString())
             }
