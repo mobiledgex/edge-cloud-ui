@@ -772,8 +772,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     try {
 
                         this.setState({intervalLoading: true})
-                        source.cancel('Operation canceled by the user.');
-
                         let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT, '', '', this);
                         this.setChartDataForBigModal(filteredClusterUsageList)
                         this.setState({
@@ -1996,6 +1994,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //desc: setStream
                     //desc: ############################
                     if (this.state.isStream) {
+                        clearInterval(this.intervalForAppInst)
+                        clearInterval(this.intervalForCluster)
                         this.setClusterInterval()
 
                     } else {
