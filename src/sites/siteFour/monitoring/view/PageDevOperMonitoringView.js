@@ -2509,7 +2509,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              marginLeft: 10,
                              justifyContent: 'center',
                              alignSelf: 'center',
-                             //display: filteredClusterUsageListLength === 1 ? 'flex' : null,
+                             display: pLegendItemCount === 1 ? 'flex' : null,
                          }}
                     >
                         {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
