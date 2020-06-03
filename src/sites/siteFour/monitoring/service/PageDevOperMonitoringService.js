@@ -20,16 +20,11 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeClusterUsageOne, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
+import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 
 export function getOnlyCloudletName(cloudletOne) {
@@ -355,6 +350,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             let usageSetList = [];
             let dateTimeList = [];
             let series = [];
+            let colorCodeIndexList = [];
 
             hardwareUsageList.map((item, index) => {
                 let usageColumnList = item.columns;
@@ -407,6 +403,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 }
                 levelTypeNameList.push(classificationName);
                 usageSetList.push(usageList);
+                colorCodeIndexList.push(item.colorCodeIndex);
             });
 
             //@desc: cut List with RECENT_DATA_LIMIT_COUNT
@@ -424,6 +421,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 usageSetList,
                 newDateTimeList,
                 hardwareType,
+                colorCodeIndexList,
             }
 
             return _result
@@ -1110,8 +1108,12 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  * @param isOnlyOneData
  * @returns {function(*=): {datasets: [], labels: *}}
  */
-export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false) => {
+export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
     try {
+
+        console.log(`usageSetList===>`, usageSetList);
+        console.log(`sldkfldskflkdsf===>`, levelTypeNameList);
+
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
             let finalSeriesDataSets = [];
@@ -1121,18 +1123,18 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     radius: 0,
                     borderWidth: 3,//todo:라인 두께
                     fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[isOnlyOneData ? _this.state.currentColorIndex : index] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    borderColor: isGradientColor ? gradientList[isOnlyOneData ? _this.state.currentColorIndex : index] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    backgroundColor: isGradientColor ? gradientList[colorCodeIndexList[index]] : _this.state.chartColorList[colorCodeIndexList[index]],
+                    borderColor: isGradientColor ? gradientList[colorCodeIndexList[index]] : _this.state.chartColorList[colorCodeIndexList[index]],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    pointBackgroundColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    pointHoverBackgroundColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    pointHoverBorderColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 2,
@@ -1170,14 +1172,15 @@ export const convertToClassification = (pClassification) => {
 
 export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit) => {
     //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
+
+    let clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
+
     return (
         <div style={{display: 'flex'}}>
             <div>
-                {reduceString(item.cluster, stringLimit)}
+                {reduceString(clusterCloudletName, stringLimit)}
             </div>
-            <div style={{color: 'white'}}>
-                &nbsp;[{reduceString(item.cloudlet, stringLimit)}]
-            </div>
+
         </div>
     )
 }
@@ -1267,19 +1270,11 @@ export function convertHWType(hwType) {
 /**
  *
  * @param cloudletList
- * @param clusterNameList
+ * @param clusterList
  * @returns {[]}
  */
-export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
+export const makeClusterTreeDropdown = (cloudletList, clusterList, _this) => {
     let newCloudletList = []
-    /*newCloudletList.push({
-        title: 'Reset Filter',
-        value: '',
-        disableCheckbox: false,
-        selectable: true,
-        checkable: false,
-        children: []
-    });*/
     cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
@@ -1292,13 +1287,22 @@ export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
             children: []
         };
 
-        clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
-
-
-            if (clusterOne.Cloudlet === cloudletOne) {
+        clusterList.map((clusterOne: TypeClusterUsageOne, innerIndex) => {
+            if (clusterOne.cloudlet === cloudletOne) {
                 newCloudletOne.children.push({
-                    title: clusterOne.ClusterName,
-                    value: clusterOne.ClusterName + " | " + cloudletOne,
+                    //title: clusterOne.ClusterName,
+                    title: (
+                        <div style={{display: 'flex'}}>
+                            <Center style={{width: 15,}}>
+                                {_this.renderDot(clusterOne.colorCodeIndex)}
+                            </Center>
+                            <div style={{marginLeft: 5,}}>
+                                {clusterOne.cluster}
+                            </div>
+
+                        </div>
+                    ),
+                    value: clusterOne.cluster + " | " + cloudletOne,
                     isParent: false,
                 })
             }

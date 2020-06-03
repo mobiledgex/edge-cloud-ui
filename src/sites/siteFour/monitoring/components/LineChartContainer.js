@@ -59,7 +59,8 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let usageSetList = lineChartDataSet.usageSetList;
             let newDateTimeList = lineChartDataSet.newDateTimeList;
             let hardwareType = lineChartDataSet.hardwareType;
-            const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, false)
+            let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
+            const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, false, colorCodeIndexList)
             this.setState({
                 chartDataSet: lineChartDataForRendering,
                 pHardwareType: hwType,

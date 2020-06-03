@@ -141,6 +141,7 @@ export type TypeCluster = {
     State: number,
     Status: any,
     uuid: string,
+    colorCodeIndex: number,
 }
 
 export type TypeAppInstanceUsage2 = {
@@ -210,6 +211,7 @@ export type TypeClusterUsageOne = {
     sumUdpRecvErr: number,
     sumTcpConns: number,
     sumTcpRetrans: number,
+    colorCodeIndex: number,
 
 }
 export type TypeAppInst = {

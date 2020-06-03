@@ -14,6 +14,7 @@ import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/P
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import type {TypeClusterUsageOne} from "../../../../shared/Types";
 
 type Props = {
     filteredUsageList: any,
@@ -120,7 +121,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                             </TableRow>
                         </TableHead>
                         <TableBody padding={'none'} style={{width: 'auto', overflowX: 'scroll'}}>
-                            {props.filteredUsageList !== undefined && props.filteredUsageList.map((item, index) => {
+                            {props.filteredUsageList !== undefined && props.filteredUsageList.map((item:TypeClusterUsageOne, index) => {
                                 return (
                                     <TableRow
                                         key={index}
@@ -140,7 +141,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                 justifyContent: 'center'
                                             }}>
                                                 <div style={{
-                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index],
+                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[item.colorCodeIndex] : props.parent.state.chartColorList[item.colorCodeIndex],
                                                     width: 15,
                                                     height: 15,
                                                     borderRadius: 50,

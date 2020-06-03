@@ -4,7 +4,6 @@ import {FixedSizeList} from "react-window";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import {Center} from "../common/PageMonitoringStyles";
-import Table from "@material-ui/core/Table";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -64,7 +63,6 @@ export default function ClusterEventLogList(props) {
             </thead>
         )
     }
-
     const CLUSTER_COLUMN_INDEX = {
         "time": 0,
         "cluster": 1,
