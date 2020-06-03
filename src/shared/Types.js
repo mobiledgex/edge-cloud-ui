@@ -114,6 +114,7 @@ export type TypeCloudlet = {
     Platform_type: number,
     State: number,
     Progress: string,
+    colorCodeIndex:number,
 }
 
 export type TypeCloudletEventLog = {

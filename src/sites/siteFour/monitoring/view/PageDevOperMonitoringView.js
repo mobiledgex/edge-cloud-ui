@@ -294,6 +294,7 @@ type PageDevMonitoringState = {
     allCloudletEventLogList: any,
     filteredCloudletEventLogList: any,
     currentClusterList: any,
+    currentAppInstNameVersion: string,
 }
 
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
@@ -498,6 +499,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     loadingForClientStatus: false,
                     allCloudletEventLogList: [],
                     filteredCloudletEventLogList: [],
+                    currentAppInstNameVersion: '',
                 };
             }
 
@@ -524,6 +526,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     bubbleChartLoader: false,
                 })
             };
+
+            makeClusterUsageListWithColorCode(allClusterUsageList) {
+                let newClusterUsageList = []
+                allClusterUsageList.map((item, index) => {
+                    item.colorCodeIndex = index;
+                    newClusterUsageList.push(item)
+                })
+
+                return newClusterUsageList;
+            }
 
 
             async loadInitData(isInterval: boolean = false) {
@@ -606,14 +618,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         ////////////////////////////////////////////////////////////////////////////
                         cloudletClusterNameMap = getCloudletClusterNameList(clusterList)
-
-                        let newClusterUsageList = []
-                        allClusterUsageList.map((item, index) => {
-                            item.colorCodeIndex = index;
-                            newClusterUsageList.push(item)
-                        })
-                        console.log(`newClusterUsageList===>`, newClusterUsageList);
-
+                        //let newClusterUsageList = this.makeClusterUsageListWithColorCode(allClusterUsageList)
                         dropDownCludsterListOnCloudlet = makeClusterTreeDropdown(uniqBy(cloudletClusterNameMap.cloudletNameList), allClusterUsageList, this)
 
                     } else {//TODO:OPERATOR
@@ -772,6 +777,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 this.intervalForCluster = setInterval(async () => {
                     this.setState({intervalLoading: true})
                     try {
+
                         let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT);
 
                         this.setChartDataForBigModal(filteredClusterUsageList)
@@ -1582,11 +1588,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async makeDropdownColorChange() {
                 let newClusterList = []
-                this.state.filteredClusterList.map((item, index) => {
+                this.state.filteredClusterUsageList.map((item, index) => {
                     item.colorCodeIndex = index;
                     newClusterList.push(item)
                 })
-
                 let cloudletClusterNameMap = getCloudletClusterNameList(this.state.filteredClusterList)
                 let dropDownCludsterListOnCloudlet = makeClusterTreeDropdown(uniqBy(cloudletClusterNameMap.cloudletNameList), newClusterList, this)
                 await this.setState({
@@ -1829,12 +1834,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     } else {
                                         if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
 
-                                            let newSelectClusterList = []
-                                            this.state.filteredClusterList.map((item, index) => {
-                                                let clusterCloudletOne = item.ClusterName + ' | ' + item.Cloudlet
-                                                newSelectClusterList.push(clusterCloudletOne)
+                                            let filteredClusterCloudletlist = []
+                                            this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, index) => {
+                                                let clusterCloudletOne = item.cluster + ' | ' + item.cloudlet
+                                                filteredClusterCloudletlist.push(clusterCloudletOne)
                                             })
-                                            await this.handleOnChangeClusterDropdown(newSelectClusterList)
+
+
+                                            await this.handleOnChangeClusterDropdown(filteredClusterCloudletlist)
 
                                         } else {
                                             await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
@@ -2065,7 +2072,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             return true;
                         }
                     })
-
                     await this.setState({
                         filteredAppInstEventLogs: filteredAppInstEventLogList,
                         currentTabIndex: 0,
@@ -2073,7 +2079,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstUsageList: appInstUsageList,
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
-                        //currentAppInst: AppName + ' [' + Version + ']',
+                        currentAppInstNameVersion: AppName + ' [' + Version + ']',
                         currentAppInst: fullCurrentAppInst,
                         currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
@@ -2314,7 +2320,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 searchValue={this.state.searchClusterValue}
                                 searchPlaceholder={'Enter the cluster name.'}
                                 placeholder={'Select Cluster'}
-                                dropdownStyle={{maxHeight: 800, overflow: 'auto',}}
+                                dropdownStyle={{
+                                    maxHeight: 800, overflow: 'auto',
+                                }}
                                 treeData={this.state.dropDownCludsterListOnCloudlet}
                                 treeDefaultExpandAll={true}
                                 value={this.state.currentClusterList}
@@ -2412,7 +2420,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{}}
                             style={{width: 350}}
                             disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
-                            value={this.state.currentAppInst}
+                            value={this.state.currentAppInstNameVersion}
                             placeholder={this.state.appInstSelectBoxPlaceholder}
                             onChange={async (value) => {
                                 this.appInstSelect.blur();
@@ -2609,7 +2617,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                 >
                                     <div>
-                                        {this.renderDot(cloudletIndex, pLegendItemCount)}
+                                        {this.renderDot(item.colorCodeIndex, pLegendItemCount)}
                                     </div>
                                     <div style={{marginTop: 0, marginLeft: 5}}>
                                         {reduceString(item.CloudletName, stringLimit, pLegendItemCount)}

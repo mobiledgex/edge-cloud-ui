@@ -771,3 +771,8 @@ tr td {
     justify-content: center;
     text-align: center;
 }
+
+
+.ant-select-tree-checkbox .ant-select-tree-checkbox-checked{
+    background-color: red;
+}

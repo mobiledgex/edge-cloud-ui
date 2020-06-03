@@ -17,6 +17,8 @@ import {
     SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
 
+const Promise = require('bluebird');
+
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
 
@@ -158,7 +160,14 @@ export const fetchAppInstList = async (pRegionList = localStorage.getItem('regio
             return item.AppName !== MEX_PROMETHEUS_APPNAME
         })
 
-        return filteredAppInstList;
+        let resultWithColorCode = []
+        filteredAppInstList.map((item, index) => {
+            item.colorCodeIndex = index;
+            resultWithColorCode.push(item)
+        })
+
+
+        return resultWithColorCode;
     } catch (e) {
         //throw new Error(e)
     }
@@ -206,13 +215,22 @@ export const fetchCloudletList = async () => {
                 }
                 return 0;
             })
-            return result;
+
+
+            let resultWithColorCode = []
+            result.map((item, index) => {
+                item.colorCodeIndex = index;
+                resultWithColorCode.push(item)
+            })
+
+            return resultWithColorCode;
 
         } else {
+
+
             return mergedCloudletList;
         }
 
-        //return mergedCloudletList;
 
     } catch (e) {
         //showToast( e.toString())
@@ -249,18 +267,25 @@ export const fetchClusterList = async () => {
         })
 
 
-        let result = []
+        let finalResult = []
         if (localStorage.getItem('selectRole').includes('Oper')) {
-            result = mergedClusterList;
+            finalResult = mergedClusterList;
         } else {
             //todo: Filter to fetch only those belonging to the current organization
             mergedClusterList.map(item => {
                 if (item.OrganizationName === localStorage.selectOrg) {
-                    result.push(item)
+                    finalResult.push(item)
                 }
             })
         }
-        return result;
+
+        let resultWithColorCode = []
+        finalResult.map((item, index) => {
+            item.colorCodeIndex = index;
+            resultWithColorCode.push(item)
+        })
+
+        return resultWithColorCode;
     } catch (e) {
 
     }
@@ -291,8 +316,13 @@ export const getCloudletListAll = async () => {
             }
         })
 
+        let listWithColorCode = []
+        mergedCloudletList.map((item, index) => {
+            item.colorCodeIndex = index;
+            listWithColorCode.push(item)
+        })
 
-        return mergedCloudletList;
+        return listWithColorCode;
     } catch (e) {
 
     }
@@ -454,7 +484,14 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         })
 
 
-        return allUsageList;
+        let resultWithColorCode = []
+        allUsageList.map((item, index) => {
+            item.colorCodeIndex = index;
+            resultWithColorCode.push(item)
+        })
+
+
+        return resultWithColorCode;
     } catch (e) {
         //throw new Error(e.toString())
     }
@@ -600,7 +637,13 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
         })
 
-        return newClusterLevelUsageList;
+        let newClusterUsageListWithColorCode = []
+        newClusterLevelUsageList.map((item, index) => {
+            item.colorCodeIndex = clusterList[index].colorCodeIndex;
+            newClusterUsageListWithColorCode.push(item)
+        })
+
+        return newClusterUsageListWithColorCode;
     } catch (e) {
         return [];
     }
@@ -787,7 +830,13 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
         });
 
-        return usageList;
+        let usageListWithColorCode = []
+        usageList.map((item, index) => {
+            item.colorCodeIndex = index;
+            usageListWithColorCode.push(item)
+        })
+
+        return usageListWithColorCode;
     } catch (e) {
     }
 

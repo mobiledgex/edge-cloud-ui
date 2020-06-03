@@ -1106,7 +1106,8 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  * @param isGradientColor
  * @param hwType
  * @param isOnlyOneData
- * @returns {function(*=): {datasets: [], labels: *}}
+ * @param colorCodeIndexList
+ * @returns {function(*=): {datasets: *, labels: *}}
  */
 export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
     try {
