@@ -1268,6 +1268,8 @@ export function convertHWType(hwType) {
 }
 
 
+
+
 /**
  *
  * @param cloudletList

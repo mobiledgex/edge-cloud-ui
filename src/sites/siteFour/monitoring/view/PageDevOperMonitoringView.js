@@ -2499,7 +2499,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             renderClusterLegend(pLegendItemCount) {
-                let filteredClusterUsageListLength = this.state.filteredClusterUsageList.length;
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 console.log(`width===>`, this.props.size.width);
 
@@ -2547,7 +2546,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 >
                                     {pLegendItemCount === 1 ?
                                         <Center style={{marginLeft: 100}}>
-                                            {this.renderDot(item.colorCodeIndex, pLegendItemCount)}
+                                            {this.renderDot(item.colorCodeIndex)}
                                             <div style={{display: 'flex', marginLeft: 3,}}>
                                                 <div>
                                                     {item.cluster}
@@ -2613,7 +2612,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                 >
                                     <div>
-                                        {this.renderDot(item.colorCodeIndex, pLegendItemCount)}
+                                        {this.renderDot(item.colorCodeIndex)}
                                     </div>
                                     <div style={{marginTop: 0, marginLeft: 5}}>
                                         {reduceString(item.CloudletName, stringLimit, pLegendItemCount)}
