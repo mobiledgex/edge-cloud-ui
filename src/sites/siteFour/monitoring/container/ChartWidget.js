@@ -101,7 +101,8 @@ class ChartWidget extends React.Component {
 
             if (prevProps.id === DataType.EVENT_CLUSTER) {
                 // TODO : 테이블에 맞게 데이터 포멧 변환 필요
-                const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
+                const updatedata = this.props.data[prevProps.id];
+                // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
         }
