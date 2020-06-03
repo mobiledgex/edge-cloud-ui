@@ -2,7 +2,7 @@
 * setdataPart
 * Format drawing for plotly.js chart
 */
-import * as DataType from "../formatter/dataType";
+import * as DataType from "./dataType";
 import * as Util from "../../../../utils";
 
 const setdataPart = (data, req, cloudlet, cloudletIdx, appinstPath, method, methodIdx) => {
@@ -20,7 +20,9 @@ const setdataPart = (data, req, cloudlet, cloudletIdx, appinstPath, method, meth
         }
     });
 
-    return { x: seriesX, y: seriesY, names, appinsts };
+    return {
+        x: seriesX, y: seriesY, names, appinsts
+    };
 };
 const setdataPartSum = (data, req, cloudlet, cloudletIdx, method, methodIdx) => {
     const seriesX = [];
@@ -114,9 +116,9 @@ export const parseData = (response, id) => {
 
     return resData;
 };
-const parseCloudletData = (response) => {
+const parseCloudletData = response => {
     //
-}
+};
 
 const parseCountCluster = response => {
     let concatData = [];
@@ -124,26 +126,52 @@ const parseCountCluster = response => {
         concatData = concatData.concat(res);
     });
     return Util.groupBy(concatData, "cloudletName");
-}
+};
 
 const parseFindCloudlet = response => {
     const cloudlet = {};
     cloudlet.cloudletLocation = { latitude: 1, longitude: 1 };
     return cloudlet;
-}
+};
 
-export const dataFormatRateRegist = (response, id) => {
-    return parseData(response[0], id);
+const hideKeys = ["dev", "foundOperator", "id", "inf", "oper", "ver"];
+const parseClientList = response => {
+    console.log('20200603 response', response)
+    const clientList = [];
+    const formatObj = {};
+    const keys = response[0].values[0].resColumns;
+    const values = response[0].values[0].resSeries;
+    values.map((resData, i) => {
+        const newData = {};
+        resData.map((res, j) => {
+            if (hideKeys.indexOf(keys[j]) === -1) newData[keys[j]] = res;
+        });
+        clientList.push(newData);
+    });
+    return clientList;
 };
-export const dataFormatCountCloudlet = response => {
-    return setdataPartSum(response);
+
+const parseEventCluster = response => {
+    console.log('20200603 response', response)
+    const clusterList = [];
+
+    /** 작업중 **/
+    // values.map((resData, i) => {
+    //     const newData = {};
+    //     resData.map((res, j) => {
+    //         if (hideKeys.indexOf(keys[j]) === -1) newData[keys[j]] = res;
+    //     });
+    //     clusterList.push(newData);
+    // });
+    return clusterList;
+
+
 };
-export const dataFormatMetricCloudlet = response => {
-    return parseCloudletData(response);
-};
-export const dataFormatCountCluster = response => {
-    return parseCountCluster(response);
-};
-export const dataFormaFindCloudlet = response => {
-    return parseFindCloudlet(response);
-};
+
+export const dataFormatRateRegist = (response, id) => parseData(response[0], id);
+export const dataFormatCountCloudlet = response => setdataPartSum(response);
+export const dataFormatMetricCloudlet = response => parseCloudletData(response);
+export const dataFormatCountCluster = response => parseCountCluster(response);
+export const dataFormaFindCloudlet = response => parseFindCloudlet(response);
+export const dataFormatClientList = response => parseClientList(response);
+export const dataFormatEventCluster = response => parseEventCluster(response);

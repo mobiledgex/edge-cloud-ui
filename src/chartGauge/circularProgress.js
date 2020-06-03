@@ -1,42 +1,70 @@
-import React from 'react';
-import CircularProgressbar from 'react-circular-progressbar';
-import GradientSVG from './gradientSVG';
-import 'react-circular-progressbar/dist/styles.css';
-import './styles.css';
+import React from "react";
+import {
+    CircularProgressbar,
+    CircularProgressbarWithChildren,
+    buildStyles
+} from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import "./styles.css";
 
-class CircularProgress extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            vWidth: 600,
-            vHeight: 300
-        }
-    }
-    componentDidMount() {
+/**
+* Let's go https://github.com/kevinsqi/react-circular-progressbar
+* https://codesandbox.io/s/vymm4oln6y
+* */
 
-    }
+const CircularProgress = defaultProps => {
+    const [percentage, setPercentage] = React.useState(0);
 
-    render() {
-        const percentage = this.props.value;
-        const grdColors = ['#ff0000', '#ffff00', '#00ff00']
-        return (
-            <div className='circular_outer'>
-                <CircularProgressbar
-                    percentage={percentage}
-                    text={`${percentage}`}
-                    styles={{
-                        path: { stroke: `rgba(62, 152, 199, ${percentage})` }
-                    }}
-                >
+    React.useEffect(() => {
+        if (defaultProps.data) setPercentage(defaultProps.data);
+    }, [defaultProps]);
 
-                </CircularProgressbar>
-                <GradientSVG startColor={grdColors[0]} middleColor={grdColors[1]} endColor={grdColors[2]} idCSS="gradientTwo" rotation={0}/>
+    return (
+        <CircularProgressbarWithChildren
+            value={percentage}
+            strokeWidth={20}
+            // text={`${percentage}%`}
+            styles={{
+                // Customize the root svg element
+                root: {},
+                // Customize the path, i.e. the "completed progress"
+                path: {
+                    // Path color
+                    stroke: `rgb(78, 114, 214)`,
+                    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+                    strokeLinecap: 'butt',
+                    // Customize transition animation
+                    transition: 'stroke-dashoffset 0.5s ease 0s',
+                    // Rotate the path
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                },
+                // Customize the circle behind the path, i.e. the "total progress"
+                trail: {
+                    // Trail color
+                    stroke: '#fff',
+                    // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+                    strokeLinecap: 'butt',
+                    // Rotate the trail
+                    transform: 'rotate(0turn)',
+                    transformOrigin: 'center center',
+                },
+                // Customize the text
+                text: {
+                    // Text color
+                    fill: 'fff',
+                    // Text size
+                    fontSize: '16px',
+                },
+                // Customize background - only used when the `background` prop is true
+                background: {
+                },
+            }}
+        >
+            <div style={{ fontSize: 18, marginTop: 0 }}>
+                <p>{`${percentage}%`}</p>
             </div>
-        );
-    }
-}
-CircularProgress.defaultProps = {
-        value: Math.random() * 100
-}
+        </CircularProgressbarWithChildren>
+    );
+};
 export default CircularProgress;
-

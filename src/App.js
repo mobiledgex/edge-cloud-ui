@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter, Route } from "react-router-dom";
+import {HashRouter, Route } from "react-router-dom";
 
 import 'semantic-ui-css/semantic.min.css';
 //redux
@@ -67,9 +67,9 @@ class App extends Component {
                         <Route exact path='/' component={EntranceGlob} />
                         <Route exact path='/site4' component={SiteFour} />
                         <Route exact path='/site4/:pageId' component={SiteFour} />
-                        <Route exact path='/logout' component={EntranceGlob} />
-                        <Route exact path='/passwordreset' component={EntranceGlob} />
-                        <Route exact path='/verify' component={VerifyContent} />
+                        <Route exact path='/logout' component={EntranceGlob}/>
+                        <Route exact path='/passwordreset' component={EntranceGlob}/>
+                        <Route exact path='/verify' component={VerifyContent}/>
                     </div>
                 </HashRouter>
             </ThemeProvider>

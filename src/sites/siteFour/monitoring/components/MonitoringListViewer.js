@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 
-/* 
+/*
 ************** example of columns  ******************
 // Don't care delete me
 const columns = [
@@ -42,12 +42,40 @@ const columns = [
 let parentSize = {};
 const useStyles = makeStyles({
     root: {
-        width: "100%"
+        width: "100%",
+        height: "100%"
     },
     container: {
-        maxHeight: "100%"
+        height: "calc(100% - 45px)",
+        maxHeight: "calc(100% - 45px)"
     }
 });
+
+const StyledTableRow = withStyles(theme => ({
+    root: {
+        "&:nth-of-type(odd)": {
+            backgroundColor: "#1E2123",
+        },
+    },
+}))(TableRow);
+
+const StyleTablePagination = withStyles(theme => ({
+    toolbar: {
+        minHeight: 20
+    }
+}))(TablePagination);
+
+const StyledTableCell = withStyles(theme => ({
+    root: {
+        maxWidth: 250,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        borderBottom: "none",
+        height: 40
+    },
+}))(TableCell);
+
+
 let classes = null;
 export default function MonitoringListViewer(props) {
     parentSize = props.sizeInfo;
@@ -72,9 +100,9 @@ export default function MonitoringListViewer(props) {
     }, [props]);
 
     const makeColumn = list => {
-        let keys = Object.keys(list);
+        const keys = Object.keys(list);
 
-        //////
+        // ////
         return keys.map(key => ({
             id: key,
             label: key,
@@ -95,19 +123,18 @@ export default function MonitoringListViewer(props) {
     };
 
     return (
-        <Paper className={classes.root}>
+        <div className={classes.root}>
             <TableContainer
                 className={classes.container}
-                style={{ height: sizeH }}
             >
-                <Table stickyHeader aria-label="sticky table" size={"small"}>
-                    <TableHead style={{ backgroundColor: "#51555c" }}>
+                <Table stickyHeader aria-labelledby="tableTitle" aria-label="sticky table" size="small">
+                    <TableHead>
                         <TableRow>
                             {columns.map(column => (
                                 <TableCell
                                     key={column.id}
                                     align={column.align}
-                                    style={{ minWidth: column.minWidth, fontWeight: 600 }}
+                                    style={{ minWidth: column.minWidth, fontWeight: 600, backgroundColor: "#2A2C33" }}
                                 >
                                     {column.label.charAt(0).toUpperCase() + column.label.slice(1)}
                                 </TableCell>
@@ -120,35 +147,33 @@ export default function MonitoringListViewer(props) {
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage
                             )
-                            .map(row => {
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        tabIndex={-1}
-                                        key={row.code}
-                                    >
-                                        {columns.map(column => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell
-                                                    key={column.id}
-                                                    align={column.align}
-                                                >
-                                                    {column.format &&
-                                                        typeof value === "number"
-                                                        ? column.format(value)
-                                                        : value}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>
-                                );
-                            })}
+                            .map(row => (
+                                <StyledTableRow
+                                    hover
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={row.code}
+                                >
+                                    {columns.map(column => {
+                                        const value = row[column.id];
+                                        return (
+                                            <StyledTableCell
+                                                key={column.id}
+                                                align={column.align}
+                                            >
+                                                {column.format
+                                                    && typeof value === "number"
+                                                    ? column.format(value)
+                                                    : value}
+                                            </StyledTableCell>
+                                        );
+                                    })}
+                                </StyledTableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
+            <StyleTablePagination
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={rows.length}
@@ -157,6 +182,6 @@ export default function MonitoringListViewer(props) {
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-        </Paper>
+        </div>
     );
 }

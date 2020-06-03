@@ -144,10 +144,11 @@ class MonitoringLayout extends React.Component {
     }
 
     getHeight = () => {
-        return (window.innerHeight - 78 - 41 - 40)/3 //(window Height - header+(margin+padding for container) - title+margin - space for grid)/3
+        return (window.innerHeight - 78 - 41 - 40) / 3 //(window Height - header+(margin+padding for container) - title+margin - space for grid)/3
     }
 
     generateDOM(items) {
+        console.log("20200603 gen dom == ", items);
         return this.state.layouts[this.state.currentBreakpoint].map(
             (l, idx) => (
                 <div

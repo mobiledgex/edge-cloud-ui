@@ -92,6 +92,19 @@ class ChartWidget extends React.Component {
                 const updatedata = this.props.data[prevProps.id];
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
+
+            if (prevProps.id === DataType.METHOD_CLIENT) {
+                // TODO : 테이블에 맞게 데이터 포멧 변환 필요
+                const updatedata = DataFormats.dataFormatClientList(this.props.data[prevProps.id]);
+                setTimeout(() => this.setState({ data: updatedata }), 500);
+            }
+
+            if (prevProps.id === DataType.EVENT_CLUSTER) {
+                // TODO : 테이블에 맞게 데이터 포멧 변환 필요
+                const updatedata = this.props.data[prevProps.id];
+                // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
+                setTimeout(() => this.setState({ data: updatedata }), 500);
+            }
         }
     }
 
@@ -174,6 +187,7 @@ class ChartWidget extends React.Component {
                             id={id}
                             size={resize}
                             type={type}
+                            data={data}
                             chartType={chartType}
                             title={title.value}
                             method={method}

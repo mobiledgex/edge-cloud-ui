@@ -13,7 +13,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton, {IconButtonProps} from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListIcon from '@material-ui/icons/List';
 import { fields } from '../../services/model/format';
@@ -39,6 +39,12 @@ const StyledTableCell = withStyles((theme) => ({
         height:50 
     },
 }))(TableCell);
+
+const StyleTablePagination = withStyles((theme) => ({
+    toolbar: {
+        minHeight: 20
+    }
+}))(TablePagination);
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -145,6 +151,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
+        minHeight: 48
     },
     highlight:
         {
@@ -190,9 +197,13 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
+        height: '100%'
     },
     paper: {
         width: '100%',
+        height: '100%',
+        boxShadow: 'none',
+        backgroundColor: '#2A2C33',
         marginBottom: theme.spacing(2),
     },
     table: {
@@ -328,9 +339,9 @@ export default function EnhancedTable(props) {
 
     return (
         <div className={classes.root}>
-            <Paper style={{ backgroundColor: '#2A2C33' }}>
+            <Paper className={classes.paper}>
                 <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
-                <TableContainer style={{ height: window.innerHeight - (props.isMap ? 500 : 200) }}>
+                <TableContainer style={{ height: props.isMap ? "calc(100% - 393px)" : "calc(100% - 93px)"}}>
                     <Table
                         stickyHeader
                         aria-labelledby="tableTitle"
@@ -400,7 +411,7 @@ export default function EnhancedTable(props) {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <TablePagination
+                <StyleTablePagination
                     rowsPerPageOptions={[25, 50, 75]}
                     component="div"
                     count={props.dataList.length}

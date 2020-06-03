@@ -1,4 +1,4 @@
-import _ from "lodash";
+import orderBy from "lodash/orderBy";
 import * as serverData from "../../../../../services/model/serverData";
 import {
     showCloudlets,
@@ -64,7 +64,7 @@ const onServerResponse = mcRequestList => {
         }
     }
     if (newDataList.length > 0) {
-        newDataList = _.orderBy(newDataList, requestInfo.sortBy);
+        newDataList = orderBy(newDataList, requestInfo.sortBy);
         dataList = [...dataList, ...newDataList];
 
         _self.props.onLoadComplete({ [requestInfo.id]: dataList });
