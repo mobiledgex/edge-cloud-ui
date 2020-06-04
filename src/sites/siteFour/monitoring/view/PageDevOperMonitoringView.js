@@ -737,6 +737,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstDropdown: [],
                     isShowAppInstPopup: !this.state.isShowAppInstPopup,
                     isEnableZoomIn: !this.state.isEnableZoomIn,
+                    legendItemCount: this.state.allClusterUsageList.length,
                 })
             }
 
@@ -2361,33 +2362,35 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                             />
                             <div style={{marginLeft: 10,}}>
-                                <Button size={'small'}
-                                        onClick={async () => {
-                                            this.applyButton.blur();
-                                            if (this.state.currentClusterList !== undefined) {
-                                                let selectClusterCloudletList = this.state.currentClusterList
-                                                this.handleOnChangeClusterDropdown(selectClusterCloudletList)
+                                <Button
+                                    size={'small'}
+                                    onClick={async () => {
+                                        this.applyButton.blur();
+                                        if (this.state.currentClusterList !== undefined) {
+                                            let selectClusterCloudletList = this.state.currentClusterList
+                                            this.handleOnChangeClusterDropdown(selectClusterCloudletList)
 
-                                            } else {
-                                                this.resetLocalData()
-                                            }
+                                        } else {
+                                            this.resetLocalData()
+                                        }
 
 
-                                        }}
-                                        ref={c => this.applyButton = c}
+                                    }}
+                                    ref={c => this.applyButton = c}
                                 >
                                     Apply
                                 </Button>
                             </div>
-                            {/* <div style={{marginLeft: 10,}}>
+                            <div style={{marginLeft: 10,}}>
                                 <Button
+                                    size={'small'}
                                     onClick={() => {
                                         this.resetLocalData();
                                     }}
                                 >
                                     Reset
                                 </Button>
-                            </div>*/}
+                            </div>
                         </div>
                     )
                 } else {
