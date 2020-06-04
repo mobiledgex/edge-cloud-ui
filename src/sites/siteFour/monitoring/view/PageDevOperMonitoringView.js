@@ -2315,7 +2315,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 showSearch={true}
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
-                                style={{width: '500px'}}
+                                style={{width: '500px', height: 30}}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,
