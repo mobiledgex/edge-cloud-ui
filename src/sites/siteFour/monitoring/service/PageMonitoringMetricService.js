@@ -1,11 +1,22 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CLOUDLET_METRIC_COLUMN,
+    MEX_PROMETHEUS_APPNAME,
+    RECENT_DATA_LIMIT_COUNT,
+    USER_TYPE
+} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {
+    isEmpty,
+    makeFormForCloudletLevelMatric,
+    makeFormForClusterLevelMatric,
+    showToast
+} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageDevMonitoring, {source} from "../view/PageDevOperMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -16,6 +27,7 @@ import {
     SHOW_APP_INST_CLIENT_ENDPOINT,
     SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
+
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
     try {
@@ -158,7 +170,14 @@ export const fetchAppInstList = async (pRegionList = localStorage.getItem('regio
             return item.AppName !== MEX_PROMETHEUS_APPNAME
         })
 
-        return filteredAppInstList;
+        let resultWithColorCode = []
+        filteredAppInstList.map((item, index) => {
+            item.colorCodeIndex = index;
+            resultWithColorCode.push(item)
+        })
+
+
+        return resultWithColorCode;
     } catch (e) {
         //throw new Error(e)
     }
@@ -206,13 +225,22 @@ export const fetchCloudletList = async () => {
                 }
                 return 0;
             })
-            return result;
+
+
+            let resultWithColorCode = []
+            result.map((item, index) => {
+                item.colorCodeIndex = index;
+                resultWithColorCode.push(item)
+            })
+
+            return resultWithColorCode;
 
         } else {
+
+
             return mergedCloudletList;
         }
 
-        //return mergedCloudletList;
 
     } catch (e) {
         //showToast( e.toString())
@@ -249,18 +277,25 @@ export const fetchClusterList = async () => {
         })
 
 
-        let result = []
+        let finalResult = []
         if (localStorage.getItem('selectRole').includes('Oper')) {
-            result = mergedClusterList;
+            finalResult = mergedClusterList;
         } else {
             //todo: Filter to fetch only those belonging to the current organization
             mergedClusterList.map(item => {
                 if (item.OrganizationName === localStorage.selectOrg) {
-                    result.push(item)
+                    finalResult.push(item)
                 }
             })
         }
-        return result;
+
+        let resultWithColorCode = []
+        finalResult.map((item, index) => {
+            item.colorCodeIndex = index;
+            resultWithColorCode.push(item)
+        })
+
+        return resultWithColorCode;
     } catch (e) {
 
     }
@@ -291,8 +326,13 @@ export const getCloudletListAll = async () => {
             }
         })
 
+        let listWithColorCode = []
+        mergedCloudletList.map((item, index) => {
+            item.colorCodeIndex = index;
+            listWithColorCode.push(item)
+        })
 
-        return mergedCloudletList;
+        return listWithColorCode;
     } catch (e) {
 
     }
@@ -454,7 +494,14 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         })
 
 
-        return allUsageList;
+        let resultWithColorCode = []
+        allUsageList.map((item, index) => {
+            item.colorCodeIndex = index;
+            resultWithColorCode.push(item)
+        })
+
+
+        return resultWithColorCode;
     } catch (e) {
         //throw new Error(e.toString())
     }
@@ -471,7 +518,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]|Array>}
  */
-export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', _this: PageDevMonitoring) => {
     try {
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -486,11 +533,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
         for (let index = 0; index < instanceBodyList.length; index++) {
             promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
         }
-        let clusterLevelUsageList = await Promise.all(promiseList);
-
+        let promiseClusterLevelUsageList = await Promise.all(promiseList);
 
         let newClusterLevelUsageList = []
-        clusterLevelUsageList.map((item, index) => {
+        promiseClusterLevelUsageList.map((item, index) => {
 
             let sumSendBytes = 0;
             let sumRecvBytes = 0;
@@ -600,30 +646,17 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
         })
 
-        return newClusterLevelUsageList;
+        let newClusterUsageListWithColorCode = []
+        newClusterLevelUsageList.map((item, index) => {
+            item.colorCodeIndex = clusterList[index].colorCodeIndex;
+            newClusterUsageListWithColorCode.push(item)
+        })
+
+        return newClusterUsageListWithColorCode;
     } catch (e) {
         return [];
     }
 }
-
-const CLOUDLET_USAGE_INDEX = {
-    "time": 0,
-    "cloudlet": 1,
-    "cloudletorg": 2,
-    "netSend": 3,
-    "netRecv": 4,
-    "vCpuUsed": 5,
-    "vCpuMax": 6,
-    "memUsed": 7,
-    "memMax": 8,
-    "diskUsed": 9,
-    "diskMax": 10,
-    "floatingIpsUsed": 11,
-    "floatingIpsMax": 12,
-    "ipv4Used": 13,
-    "ipv4Max": 14,
-}
-
 
 /**
  *
@@ -787,7 +820,13 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
         });
 
-        return usageList;
+        let usageListWithColorCode = []
+        usageList.map((item, index) => {
+            item.colorCodeIndex = index;
+            usageListWithColorCode.push(item)
+        })
+
+        return usageListWithColorCode;
     } catch (e) {
     }
 
@@ -808,6 +847,7 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
     }).then(async response => {
         return response.data;
     }).catch(e => {
+
         let tempArray = []
         return tempArray;
     })
@@ -840,6 +880,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
             url: mcURL() + CLUSTER_METRICS_ENDPOINT,
             method: 'post',
             data: serviceBody['params'],
+            cancelToken: source.token,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + pToken
@@ -848,7 +889,9 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
         }).then(async response => {
             return response.data;
         }).catch(e => {
-            //showToast(e.toString())
+            if (axios.isCancel(e)) {
+            } else {
+            }
         })
         return result;
     } catch (e) {

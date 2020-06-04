@@ -552,6 +552,7 @@ tr td {
 .gutterRow {
     display: flex;
     cursor: pointer;
+    marginTop: 20px;
 }
 
 .clusterCloudletBox {
@@ -631,7 +632,7 @@ tr td {
 
 .clientPopup .leaflet-popup-content-wrapper {
     border-radius: 0px;
-    width: 360px !important;
+    width: 420px !important;
     border-color: #00A2FF;
     border-style: groove;
     background-color: black;
@@ -759,15 +760,52 @@ tr td {
 .ant-picker-cell-in-view {
     color: #ebe9f2;
 }
+
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
     color: #fff;
     font-weight: 600;
     background-color: #5c5c58;
 }
 
-.ant-select-selection-item{
+.ant-select-selection-item {
     background-color: #23232E;
     display: flex;
     justify-content: center;
     text-align: center;
+}
+
+/*tresSelectCheckbox*/
+/*tresSelectCheckbox*/
+/*tresSelectCheckbox*/
+.ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner {
+    background-color: lightgrey;
+    border-color: lightgrey;
+}
+
+.ant-select-tree-checkbox-wrapper:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox-input:focus + .ant-select-tree-checkbox-inner {
+    border-color: lightgrey;
+}
+
+.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
+    background-color: lightgrey;
+}
+
+.ant-select-selection-item {
+    font-size: 8pt;
+    text-overflow: ellipsis;
+    width: 105px;
+    padding: 0 5px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ant-select-multiple .ant-select-selection-item {
+
+    background: #17171f;
+    border: 1px solid #17171f;
+
+}
+
+.ant-select-tree-checkbox .ant-select-tree-checkbox-checked {
+    color: red;
 }
