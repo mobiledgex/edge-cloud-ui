@@ -1,9 +1,9 @@
 import React, {createRef} from "react";
 import * as L from 'leaflet';
+import {Map, Marker, Polyline, Popup, TileLayer, Tooltip, CircleMarker} from "react-leaflet";
 import type {TypeAppInst, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import {Map, Marker, Polyline, Popup, TileLayer, Tooltip,} from "react-leaflet";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
@@ -13,12 +13,20 @@ import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageDevOperMonitoringService";
 import MomentTimezone from "moment-timezone";
+import {Circle} from "leaflet";
+import HeatMapLayer from "./HeatMapLayer";
+import {addressPoints} from "./addressPoint";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -351,6 +359,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
                 let locKeys = Object.keys(locationGrpList);
                 let locationGroupedCloudletList = this.makeLocationGroupedCloudletList(locationGrpList, locKeys)
+
+                console.log(`locationGroupedCloudletList====>`, locationGroupedCloudletList);
 
                 this.setState({
                     selectedAppInstIndex: -1,
@@ -747,7 +757,24 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
+
         render() {
+            let city = [
+                {"name": "Tokyo", "coordinates": [139.6917, 35.6895], "population": 37843000},
+                {"name": "Jakarta", "coordinates": [106.8650, -6.1751], "population": 30539000},
+                {"name": "Delhi", "coordinates": [77.1025, 28.7041], "population": 24998000},
+                {"name": "Seoul", "coordinates": [126.9780, 37.5665], "population": 23480000},
+                {"name": "Shanghai", "coordinates": [121.4737, 31.2304], "population": 23416000},
+                {"name": "Karachi", "coordinates": [67.0099, 24.8615], "population": 22123000},
+                {"name": "Beijing", "coordinates": [116.4074, 39.9042], "population": 21009000},
+                {"name": "Mumbai", "coordinates": [72.8777, 19.0760], "population": 17712000},
+                {"name": "Osaka", "coordinates": [135.5022, 34.6937], "population": 17444000},
+                {"name": "Moscow", "coordinates": [37.6173, 55.7558], "population": 16170000},
+                {"name": "Dhaka", "coordinates": [90.4125, 23.8103], "population": 15669000},
+                {"name": "Bangkok", "coordinates": [100.5018, 13.7563], "population": 14998000},
+                {"name": "Kolkata", "coordinates": [88.3639, 22.5726], "population": 14667000},
+                {"name": "Istanbul", "coordinates": [28.9784, 41.0082], "population": 13287000},
+            ];
 
             return (
                 <React.Fragment>
@@ -774,10 +801,59 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     this.map = ref;
                                 }}
                             >
+
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}
                                     style={{zIndex: 1}}
+                                />
+
+                                {/* <CircleMarker
+                                    center={{
+                                        lat: 53.551085,
+                                        lng: 9.993682
+
+                                    }}
+                                    color="blue" radius={10}
+                                    fillOpacity={0.5}
+                                    stroke={false}
+                                />*/}
+                               {/* <HeatMapLayer
+                                    points={[
+                                        //[53.551085, 9.993682, "12312"],
+                                        [36.778259, -119.417931, "123123123123213123"]
+                                    ]}
+                                    longitudeExtractor={m => m[1]}
+                                    latitudeExtractor={m => m[0]}
+                                    intensityExtractor={m => parseFloat(m[2])}
+                                    max={30}
+                                    radius={15}
+                                />*/}
+
+                               {/* <HeatMapLayer
+                                    points={[
+                                        //[53.551085, 9.993682, "12312"],
+                                        [44.000000, -71.500000, "123123"]
+
+                                    ]}
+                                    longitudeExtractor={m => m[1]}
+                                    latitudeExtractor={m => m[0]}
+                                    intensityExtractor={m => parseFloat(m[2])}
+                                    max={5}
+                                    radius={40}
+                                />*/}
+
+                                <HeatMapLayer
+                                    points={addressPoints}
+                                    longitudeExtractor={m => m[1]}
+                                    latitudeExtractor={m => m[0]}
+                                    intensityExtractor={m => parseFloat(m[2])}
+                                    /*max={5}
+                                    radius={40}*/
+                                />
+                                <Marker
+                                    className='marker1'
+                                    position={{lat: 37.7749, lng: 122.4194}}
                                 />
                                 {this.renderMapControl()}
                                 {this.props.isFullScreenMap ?
