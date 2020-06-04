@@ -54,14 +54,7 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -99,12 +92,7 @@ import {UnfoldLess, UnfoldMore} from '@material-ui/icons';
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -2512,8 +2500,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                          style={{
                              flex: .97,
                              marginLeft: 10,
-                             justifyContent: 'center',
-                             alignSelf: 'center',
+                             justifyContent: pLegendItemCount === 1 ? 'center' : null,
+                             alignSelf: pLegendItemCount === 1 ? 'center' : null,
                              display: pLegendItemCount === 1 ? 'flex' : null,
                          }}
                     >

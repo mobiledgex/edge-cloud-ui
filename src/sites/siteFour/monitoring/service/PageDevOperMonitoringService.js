@@ -20,21 +20,10 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import type {
-    TypeAppInst,
-    TypeCloudlet,
-    TypeCluster,
-    TypeClusterUsageOne,
-    TypeLineChartData
-} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeClusterUsageOne, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import Chip from "@material-ui/core/Chip";
@@ -1123,9 +1112,6 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  */
 export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
     try {
-
-        console.log(`usageSetList===>`, usageSetList);
-        console.log(`sldkfldskflkdsf===>`, levelTypeNameList);
 
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
