@@ -5,3 +5,4 @@ export const TICKER = "ticker";
 export const TABLE = "dataTable";
 export const GRAPH = "graph";
 export const GAUGE = "gauge";
+export const COUNTERWITHSPARK = "counterSpark";

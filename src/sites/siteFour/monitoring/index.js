@@ -382,7 +382,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         }),
     ];
 };
-//         dddd
+//  second page -- 2
 const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) => {
     const defaultProp = {
         sizeInfo: infos.size,
@@ -428,9 +428,9 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
             ...defaultProp,
         }),
         generateWidget({
-            id: dataType.REGISTER_CLIENT,
-            method: null,
-            chartType: chartType.GRAPH,
+            id: dataType.METHOD_CLIENT,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            chartType: chartType.COUNTERWITHSPARK,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
             filter: null,

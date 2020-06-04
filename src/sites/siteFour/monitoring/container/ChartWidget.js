@@ -9,6 +9,7 @@ import TimeSeries from "../../../../charts/plotly/timeseries";
 import ContainerHealth from "./ContainerHealth";
 import MatricMapCont from "./MatricMapCont";
 import CounterWidget from "./CounterWidget";
+import ContainerMethod from "./ContainerMethod";
 import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
 import * as DataType from "../formatter/dataType";
@@ -153,8 +154,8 @@ class ChartWidget extends React.Component {
             activeStep, mapData, clusterCnt, data, data2
         } = this.state;
         // const { size } = this.state;
-        let pagerHeight = 12;
-        let resize = { width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height };
+        const pagerHeight = 12;
+        const resize = { width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height };
         return (
             <div style={{ height: "100%" }}>
                 <div
@@ -221,8 +222,10 @@ class ChartWidget extends React.Component {
                             method={method}
                             step={activeStep}
                         />
-                    ) : (
-                                        <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />)}
+                    ) : chartType === ChartType.COUNTERWITHSPARK ? (
+                        <ContainerMethod />
+                    ) : <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />
+                    }
                 </div>
                 {page === "multi"
                     ? (
@@ -365,33 +368,33 @@ class Slider extends React.Component {
 
 const Pager = withStyles({
     dots: {
-        position: 'relative',
+        position: "relative",
         padding: 0
     },
     dotOuter: {
         width: 8,
         height: 8,
-        padding: '0 4px',
-        float: 'left',
-        position: 'absolute'
+        padding: "0 4px",
+        float: "left",
+        position: "absolute"
     },
     dot: {
         width: 8,
         height: 8,
-        background: '#fff',
-        transition: 'all 400ms cubic-bezier(0.4, 0.0, 0.2, 1)',
+        background: "#fff",
+        transition: "all 400ms cubic-bezier(0.4, 0.0, 0.2, 1)",
         borderRadius: 4,
-        marginTop: '0 !important',
+        marginTop: "0 !important",
     }
 })(Dots);
 
 const useStyles = makeStyles({
     root: {
-        display: 'flex',
-        width: '100%',
+        display: "flex",
+        width: "100%",
         marginTop: 4,
         height: 8,
-        justifyContent: 'center'
+        justifyContent: "center"
     }
 });
 
@@ -400,7 +403,7 @@ export const DotsMobileStepper = props => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
 
-    const handleNext = (idObject) => {
+    const handleNext = idObject => {
         setActiveStep(idObject.index);
         props.setActiveStep(idObject.index);
     };
