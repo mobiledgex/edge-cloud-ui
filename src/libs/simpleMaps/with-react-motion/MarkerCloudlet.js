@@ -44,10 +44,6 @@ const MarkerCloudlet = defaultProps => {
     *
     ********************************* */
 
-    const handleCityClick = () => {
-        //
-    };
-
 
 
     const handleLeaveMk = () => {
@@ -93,7 +89,10 @@ const MarkerCloudlet = defaultProps => {
             marker={city}
             key={uuid()}
             coordinates={city.coordinates}
-            onClick={handleCityClick}
+            onClick={() => {
+                defaultProps.onClick(city);
+            }
+            }
             onMouseMove={() => {
                 console.log("20200603 on mouse = ", city.name);
                 defaultProps.handleTooltip(city.name);

@@ -3,7 +3,6 @@
 /* eslint-disable no-useless-catch */
 /* eslint-disable indent */
 import React from "react";
-import _ from "lodash";
 import sizeMe from "react-sizeme";
 import { connect } from "react-redux";
 import MonitoringLayout from "./layout/layout";
@@ -39,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compCloudlet: [],
             compClusterinst: [],
             compAppinst: [],
-            currentAuthDepth: 0
+            currentAuthDepth: 1 // <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -299,6 +298,10 @@ const generateWidget = info => (
         legend={info.legend}
     />
 );
+
+/**
+* TODO : // should make JSON property
+* */
 
 const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
     const defaultProp = {

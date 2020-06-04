@@ -1,12 +1,13 @@
 import React from "react";
-import Plot from "react-plotly.js";
-import ContainerDimensions from "react-container-dimensions";
+// See the list of possible plotly bundles at https://github.com/plotly/plotly.js/blob/master/dist/README.md#partial-bundles or roll your own
+import Plotly from "plotly.js/dist/plotly-cartesian";
 
-import { connect } from "react-redux";
+import createPlotlyComponent from "./CreatePlotlyComponent";
 import "./styles.css";
-import * as actions from "../../actions";
-import serviceMC from "../../sites/siteFour/monitoring/formatter/chartType";
+
 import * as dataType from "../../sites/siteFour/monitoring/formatter/dataType";
+
+const PlotlyComponent = createPlotlyComponent(Plotly);
 
 // https://plot.ly/python/#layout-options
 // https://plot.ly/javascript/axes/#tick-placement-color-and-style
@@ -57,7 +58,7 @@ const trace4 = {
 };
 
 
-const TimeSeries = (props) => {
+const TimeSeries = props => {
     const [vWidth, setVWidth] = React.useState(300);
     const [vHeight, setVHeight] = React.useState(170);
     const [data, setData] = React.useState([]);
@@ -77,38 +78,38 @@ const TimeSeries = (props) => {
         t: 5,
         pad: 0
     });
-    let marginRight = 0;
+    const marginRight = 0;
 
     let revision = 10;
-    let wGab = 10;
+    const wGab = 10;
     let hGab = props.filterInfo ? 40 : 10;
     const colors = ["#22cccc", "#6699ff", "#ff710a", "#ffce03"];
     const colorsErr = ["#22cccc", "#ff3355", "#6699ff", "#ffce03"];
-    let stackAllData = [];
-    let stackData = [];
+    const stackAllData = [];
+    const stackData = [];
     let loadedCount = 0;
     let maxDataCount = 0;
-    let currentPage = 0;
+    const currentPage = 0;
 
 
-    let y2Range = null;
-    let y3Range = null;
-    let y2Position = null;
-    let y3Position = null;
-    let datarevision = 0;
+    const y2Range = null;
+    const y3Range = null;
+    const y2Position = null;
+    const y3Position = null;
+    const datarevision = 0;
 
-    const usePrevious = (value) => {
+    const usePrevious = value => {
         const ref = React.useRef();
         React.useEffect(() => {
             ref.current = value;
         });
         return ref.current;
-    }
+    };
 
     const useCompare = (val: any) => {
-        const prevVal = usePrevious(val)
-        return prevVal !== val
-    }
+        const prevVal = usePrevious(val);
+        return prevVal !== val;
+    };
 
     React.useEffect(() => {
         // const hasVal1Changed = useCompare(props.data);
@@ -137,13 +138,12 @@ const TimeSeries = (props) => {
             setShowLegend(!showLegend);
         }
         if (props.margin) setMargin(props.margin);
-
     }, [props]);
 
     /** chartUpdate ::
     * Stored on the stack whenever data is loaded
     */
-    const chartUpdate = (prevProps) => {
+    const chartUpdate = prevProps => {
         if (prevProps.id === dataType.NETWORK_CLOUDLET) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
@@ -168,11 +168,9 @@ const TimeSeries = (props) => {
                     );
                 });
 
-                //stackAllData.push(Object.assign(shortHand));
+                // stackAllData.push(Object.assign(shortHand));
             }
             // //////////////
-
-
         }
         if (prevProps.id === dataType.REGISTER_CLIENT || prevProps.id === dataType.FIND_CLOUDLET) {
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
@@ -192,7 +190,7 @@ const TimeSeries = (props) => {
                 });
             }
         }
-    }
+    };
 
 
     /** nemes = ["RegisterClient", "FindCloudlet", "VerifyLocation"] */
@@ -237,13 +235,12 @@ const TimeSeries = (props) => {
             loadedCount++;
         }
         setChartData(stackData);
-        revision = (revision + 1)
-
-    }
+        revision += 1;
+    };
 
     const resetData = () => {
         setChartData([]);
-    }
+    };
 
 
     return (
@@ -255,7 +252,7 @@ const TimeSeries = (props) => {
                 overflowX: "auto"
             }}
         >
-            <Plot
+            <PlotlyComponent
                 className="plotly-chart"
                 style={{
                     backgroundColor: "transparent",
@@ -269,7 +266,7 @@ const TimeSeries = (props) => {
                     autosize: true,
                     width: vWidth - wGab,
                     height: vHeight - hGab,
-                    margin: margin,
+                    margin,
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
                     legend: {
@@ -371,7 +368,7 @@ const TimeSeries = (props) => {
             />
         </div>
     );
-}
+};
 
 TimeSeries.defaultProps = {
     margin: {
