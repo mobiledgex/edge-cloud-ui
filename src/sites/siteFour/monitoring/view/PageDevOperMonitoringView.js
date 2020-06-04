@@ -1964,10 +1964,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
                             filteredClusterList: filteredClusterList,
-                        })
-
-                        /////////////////////////////////////////////////////
-                        await this.setState({
                             selectedClientLocationListOnAppInst: [],
                             dropdownRequestLoading: true,
                             selectedAppInstIndex: -1,
