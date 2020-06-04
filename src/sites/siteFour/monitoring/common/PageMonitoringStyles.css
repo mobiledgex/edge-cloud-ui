@@ -552,6 +552,7 @@ tr td {
 .gutterRow {
     display: flex;
     cursor: pointer;
+    marginTop: 20px;
 }
 
 .clusterCloudletBox {
@@ -793,9 +794,9 @@ tr td {
     font-size: 8pt;
     text-overflow: ellipsis;
     width: 105px;
-    padding:0 5px;
-    overflow:hidden;
-    white-space:nowrap;
+    padding: 0 5px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .ant-select-multiple .ant-select-selection-item {
@@ -805,6 +806,6 @@ tr td {
 
 }
 
-.ant-select-tree-checkbox .ant-select-tree-checkbox-checked{
+.ant-select-tree-checkbox .ant-select-tree-checkbox-checked {
     color: red;
 }
