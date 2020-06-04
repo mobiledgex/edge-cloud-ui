@@ -39,18 +39,7 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletEventLog,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterEventLog,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterEventLog, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
 import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
@@ -903,8 +892,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -1016,7 +1005,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             showBigModal = (pHwType, graphType) => {
                 try {
                     let chartDataForBigModal = []
-                    if (graphType.toUpperCase() == GRID_ITEM_TYPE.LINE) {
+                    if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
 
                         let lineChartDataSet = []
                         if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
@@ -1028,7 +1017,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }
                         chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this, this.state.currentColorIndex)
 
-                    } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.MULTI_LINE_CHART) {
+                    } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART) {
 
                         let multiLineChartDataSets = []
                         if (pHwType.length >= 2) {
@@ -1043,7 +1032,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let _resuit = makeMultiLineChartDatas(multiLineChartDataSets)
                         chartDataForBigModal = makeLineChartDataForBigModal(_resuit, this)
 
-                    } else if (graphType.toUpperCase() == GRID_ITEM_TYPE.BAR || graphType.toUpperCase() == GRID_ITEM_TYPE.COLUMN) {
+                    } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
                         let chartDataSet = []
                         if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                             chartDataSet = makeBarChartDataForCloudlet(this.state.filteredCloudletUsageList, pHwType, this, this.state.currentColorIndex)
