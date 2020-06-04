@@ -8,13 +8,13 @@ const ContainerMethod = defaultProps => {
         <div style={{ width: "100%", height: "100%", overflow: "auto" }}>
             <div className="page-monitoring_circle-chart">
                 <div className="page-monitoring_circle-chart_item">
-                    <RateOfMehtods data={data} method={key: 0}/>
+                    <RateOfMehtods data={data} method={{ key: 0 }} />
                 </div>
                 <div className="page-monitoring_circle-chart_item">
-                    <RateOfMehtods data={data} method={key: 1}/>
+                    <RateOfMehtods data={data} method={{ key: 1 }} />
                 </div>
                 <div className="page-monitoring_circle-chart_item">
-                    <RateOfMehtods data={data} method={key: 2}/>
+                    <RateOfMehtods data={data} method={{ key: 2 }} />
                 </div>
             </div>
         </div>

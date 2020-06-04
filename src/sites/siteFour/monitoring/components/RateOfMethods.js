@@ -20,7 +20,7 @@ const usePrevious = (value) => {
 const RateOfMethods = defaultProps => {
     const [data, setData] = React.useState();
     const makeSpark = () => {
-        const ctx = document.getElementById('myChart').getContext('2d');
+        const ctx = document.getElementById(`myChart_${defaultProps.method.key}`).getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 60);
 
         // Add three color stops
@@ -86,8 +86,8 @@ const RateOfMethods = defaultProps => {
             <div className='page-monitoring_circle-chart'>
                 <div className='page-monitoring_circle-chart_item'>
                     <div>Method Name</div>
-                    <div>00</div>
-                    <canvas id="myChart" width="90" height="50" />
+                    <div style={{ fontSize: 20 }}>00</div>
+                    <canvas id={`myChart_${defaultProps.method.key}`} width="90" height="50" />
                 </div>
             </div>
         </div>
