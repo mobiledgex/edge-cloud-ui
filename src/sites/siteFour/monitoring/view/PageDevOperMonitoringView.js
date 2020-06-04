@@ -656,7 +656,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         rowCount = Math.ceil(itemCount / 6);
                     }
 
-                    console.log(`rowHeight====>`, rowCount);
 
                     await this.setState({
                         isExistData: dataCount > 0,
@@ -712,8 +711,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async resetLocalData() {
-                clearInterval(this.intervalForCluster)
-                clearInterval(this.intervalForAppInst)
+                /*clearInterval(this.intervalForCluster)
+                clearInterval(this.intervalForAppInst)*/
                 let markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
                 await this.setState({
                     currentGridIndex: -1,
@@ -2514,11 +2513,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderClusterLegend() {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
-                console.log(`width===>`, this.props.size.width);
-
                 let itemCount = this.state.legendItemCount;
-
-                console.log(`itemCount====>`, itemCount);
 
                 return (
                     <React.Fragment>
