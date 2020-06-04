@@ -114,6 +114,7 @@ export type TypeCloudlet = {
     Platform_type: number,
     State: number,
     Progress: string,
+    colorCodeIndex:number,
 }
 
 export type TypeCloudletEventLog = {
@@ -141,6 +142,7 @@ export type TypeCluster = {
     State: number,
     Status: any,
     uuid: string,
+    colorCodeIndex: number,
 }
 
 export type TypeAppInstanceUsage2 = {
@@ -210,6 +212,7 @@ export type TypeClusterUsageOne = {
     sumUdpRecvErr: number,
     sumTcpConns: number,
     sumTcpRetrans: number,
+    colorCodeIndex: number,
 
 }
 export type TypeAppInst = {

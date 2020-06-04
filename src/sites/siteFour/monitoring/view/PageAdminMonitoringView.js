@@ -463,7 +463,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentRegion: 'ALL',
                 currentCloudLet: '',
-                currentCluster: '',
+                currentClusterList: '',
                 currentAppInst: '',
             })
         }
@@ -561,7 +561,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     dropDownCludsterListOnCloudlet: cloudletSelectBoxList,
                     clusterList: clusterSelectBoxList,
                     currentCloudLet: pCloudLet,
-                    currentCluster: pCluster,
+                    currentClusterList: pCluster,
                 });
 
                 //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX

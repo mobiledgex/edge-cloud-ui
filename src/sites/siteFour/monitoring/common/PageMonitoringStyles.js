@@ -583,11 +583,10 @@ export const LegendOuterDiv = styled.div`
   border-color: dimgrey;
   margin-left: 10px;
   display: flex;
-  height: 25px;
   width: 98.925%;
   margin-right: 5px;
   flex-wrap: wrap;
-  padding: auto;
+  padding: 2px;
 `
 
 export const ChartIconOuterDiv = styled.div`
