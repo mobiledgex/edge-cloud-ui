@@ -1038,30 +1038,30 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
             let levelTypeNameList = lineChartDataSet.levelTypeNameList
             let usageSetList = lineChartDataSet.usageSetList
             let newDateTimeList = lineChartDataSet.newDateTimeList
+            let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
-
                 let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
                 let dataSetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
                     fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
-                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[_colorIndex],
-                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[_colorIndex],
+                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
+                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[_colorIndex],
-                    pointBackgroundColor: _this.state.chartColorList[_colorIndex],
+                    pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[_colorIndex],
-                    pointHoverBorderColor: _this.state.chartColorList[_colorIndex],
+                    pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
