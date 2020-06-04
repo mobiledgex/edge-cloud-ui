@@ -818,7 +818,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     fillOpacity={0.5}
                                     stroke={false}
                                 />*/}
-                               {/* <HeatMapLayer
+                                <HeatMapLayer
                                     points={[
                                         //[53.551085, 9.993682, "12312"],
                                         [36.778259, -119.417931, "123123123123213123"]
@@ -828,9 +828,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     intensityExtractor={m => parseFloat(m[2])}
                                     max={30}
                                     radius={15}
-                                />*/}
+                                />
 
-                               {/* <HeatMapLayer
+                                <HeatMapLayer
                                     points={[
                                         //[53.551085, 9.993682, "12312"],
                                         [44.000000, -71.500000, "123123"]
@@ -841,16 +841,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     intensityExtractor={m => parseFloat(m[2])}
                                     max={5}
                                     radius={40}
-                                />*/}
+                                />
 
-                                <HeatMapLayer
+                              {/*  <HeatMapLayer
                                     points={addressPoints}
                                     longitudeExtractor={m => m[1]}
                                     latitudeExtractor={m => m[0]}
                                     intensityExtractor={m => parseFloat(m[2])}
                                     /*max={5}
                                     radius={40}*/
-                                />
+                                />*/}
                                 <Marker
                                     className='marker1'
                                     position={{lat: 37.7749, lng: 122.4194}}
