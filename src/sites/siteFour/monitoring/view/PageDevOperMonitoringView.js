@@ -634,7 +634,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         dataCount = cloudletList.length
                     }
 
-                    ////////////////////////////////////
+                    /*/////TODO: LEGEND ROW COUNTING///////*/
+                    /*/////TODO: LEGEND ROW COUNTING///////*/
+                    /*/////TODO: LEGEND ROW COUNTING///////*/
                     let itemCount = 0;
                     let rowCount = 0;
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
@@ -678,7 +680,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         legendHeight: legendHeight,
                         legendItemCount: itemCount,
                         legendRowCount: rowCount,
-
                     }, () => {
 
                     });
@@ -2457,7 +2458,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
-
 
                 return (
                     <React.Fragment>
