@@ -638,8 +638,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                     /*/////TODO: LEGEND ROW COUNTING///////*/
-                    /*/////TODO: LEGEND ROW COUNTING///////*/
-                    /*/////TODO: LEGEND ROW COUNTING///////*/
                     let itemCount = 0;
                     let rowCount = 0;
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
@@ -2461,10 +2459,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
-                //@todo:fake json list
-                //let filteredClusterUsageList = cloudletClusterList
-                let height2=Math.ceil(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight
-                //alert(height2)
+
 
                 return (
                     <React.Fragment>
@@ -2531,19 +2526,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 <Center>
                                                     {this.renderDot(item.colorCodeIndex)}
                                                 </Center>
-                                              {/*  <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
-                                                    <div
-                                                        style={{
-                                                            backgroundColor: 'green',
-                                                            width: 10,
-                                                            height: 10,
-                                                            borderRadius: 50,
-                                                        }}
-                                                    >
-                                                    </div>
-                                                </div>*/}
-
-
                                                 <Center className="clusterCloudletBox">
                                                     {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
                                                 </Center>
