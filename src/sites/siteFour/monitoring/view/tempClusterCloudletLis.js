@@ -31,7 +31,7 @@ export const cloudletClusterList = [
     {"cluster": "autoclusteriperf30", "cloudlet": "andycloud29",},
     {"cluster": "autoclusteriperf31", "cloudlet": "andycloud30",},
     {"cluster": "autoclusteriperf32", "cloudlet": "andycloud31",},
-    {"cluster": "autoclusteriperf33", "cloudlet": "andycloud32",},
+  /*  {"cluster": "autoclusteriperf33", "cloudlet": "andycloud32",},
     {"cluster": "autoclusteriperf34", "cloudlet": "andycloud33",},
     {"cluster": "autoclusteriperf35", "cloudlet": "andycloud34",},
     {"cluster": "autoclusteriperf36", "cloudlet": "andycloud35",},
@@ -53,7 +53,7 @@ export const cloudletClusterList = [
     {"cluster": "autoclusteriperf52", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf53", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf54", "cloudlet": "andycloud41",},
-    {"cluster": "autoclusteriperf55", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf55", "cloudlet": "andycloud41",},*/
    /* {"cluster": "autoclusteriperf56", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf57", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf58", "cloudlet": "andycloud41",},
