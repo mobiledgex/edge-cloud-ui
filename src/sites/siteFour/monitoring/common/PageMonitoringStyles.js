@@ -201,6 +201,7 @@ export const PageMonitoringStyles = {
         alignItems: 'center',
         marginLeft: 0,
         marginRight: 5,
+        marginTop: -15,
         cursor: 'pointer',
         backgroundColor: 'transparent',
     },

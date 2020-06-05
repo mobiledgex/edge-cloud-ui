@@ -109,6 +109,8 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
+import AnimateHeight from "react-animate-height";
+import {cloudletClusterList} from "./tempClusterCloudletLis";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -298,6 +300,7 @@ type PageDevMonitoringState = {
     legendHeight: number,
     isFirstLoad: boolean,
     legendRowCount: number,
+    open: boolean,
 }
 
 export const CancelToken = axios.CancelToken;
@@ -511,6 +514,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     legendItemCount: 0,
                     legendHeight: 30,
                     isFirstLoad: true,
+                    open: false,
                 };
             }
 
@@ -633,9 +637,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else {
                         dataCount = cloudletList.length
                     }
-
-
-
 
 
                     /*/////TODO: LEGEND ROW COUNTING///////*/
@@ -2461,10 +2462,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderClusterLegend() {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
-                let filteredClusterUsageList = this.state.filteredClusterUsageList
+                //let filteredClusterUsageList = this.state.filteredClusterUsageList
+                //@desc:fake json list
+                let filteredClusterUsageList = cloudletClusterList
 
                 return (
-                    <React.Fragment>
+                    <AnimateHeight
+                        duration={500}
+                        height={this.state.isLegendExpanded ? 240 : 44}
+                    >
                         <Row gutter={16}
                              style={{
                                  width: '94%',
@@ -2525,9 +2531,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 marginTop: 2.5,
                                                 marginBottom: 2.5
                                             }}>
-                                                <Center>
+                                                {/*<Center>
                                                     {this.renderDot(item.colorCodeIndex)}
-                                                </Center>
+                                                </Center>*/}
+                                                <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                                                    <div
+                                                        style={{
+                                                            backgroundColor: 'green',
+                                                            width: 10,
+                                                            height: 10,
+                                                            borderRadius: 50,
+                                                        }}
+                                                    >
+                                                    </div>
+                                                </div>
                                                 <Center className="clusterCloudletBox">
                                                     {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
                                                 </Center>
@@ -2559,7 +2576,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <UnfoldLess style={{fontSize: 18}}/>
                             }
                         </div>
-                    </React.Fragment>
+                    </AnimateHeight>
                 )
             }
 
@@ -2663,7 +2680,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     width: '100%',
-
                                 }}>
                                     <ColorLinearProgress
                                         variant={'query'}
