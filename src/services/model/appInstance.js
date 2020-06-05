@@ -32,6 +32,7 @@ export const keys = () => ([
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_JSON },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
+  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true},  
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -192,6 +193,7 @@ const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
+  value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
   value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
 }
 

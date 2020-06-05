@@ -117,7 +117,8 @@ export const fields = {
     tls:'tls',
     userList:'userList',
     userName:'userName',
-    userRole:'userRole'
+    userRole:'userRole',
+    healthCheck:'healthCheck'
 }
 
 export const getUserRole = () => {

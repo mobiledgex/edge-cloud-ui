@@ -61,6 +61,12 @@ export const POWER_STATE_REBOOTING = 'Rebooting'
 export const POWER_STATE_REBOOT = 'Reboot'
 export const POWER_STATE_ERROR = 'Error'
 
+
+export const HEALTH_CHECK_UNKNOWN = 'Unknown'
+export const HEALTH_CHECK_FAIL_ROOTLB_OFFLINE = 'Rootlb Offline'
+export const HEALTH_CHECK_FAIL_SERVER_FAIL = 'Server Fail'
+export const HEALTH_CHECK_OK = 'OK'
+
 export const PAGE_ORGANIZATIONS = 'Organizations'
 export const PAGE_USER_ROLES = 'UserRoles'
 export const PAGE_ACCOUNTS = 'Accounts'
@@ -166,6 +172,29 @@ export const accessType = (id) => {
             return 1
         case ACCESS_TYPE_LOAD_BALANCER:
             return 2
+        default:
+            return id
+    }
+}
+
+export const healthCheck = (id) => {
+    switch (id) {
+        case 0:
+            return HEALTH_CHECK_UNKNOWN
+        case HEALTH_CHECK_UNKNOWN:
+            return 0
+        case 1:
+            return HEALTH_CHECK_FAIL_ROOTLB_OFFLINE
+        case HEALTH_CHECK_FAIL_ROOTLB_OFFLINE:
+            return 1
+        case 2:
+            return HEALTH_CHECK_FAIL_SERVER_FAIL
+        case HEALTH_CHECK_FAIL_SERVER_FAIL:
+            return 2
+        case 3:
+            return HEALTH_CHECK_OK
+        case HEALTH_CHECK_OK:
+            return 3
         default:
             return id
     }
