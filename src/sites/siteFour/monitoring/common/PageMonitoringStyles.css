@@ -774,9 +774,10 @@ tr td {
     text-align: center;
 }
 
-/*tresSelectCheckbox*/
-/*tresSelectCheckbox*/
-/*tresSelectCheckbox*/
+
+/*todo:tresSelectCheckbox*/
+/*todo:tresSelectCheckbox*/
+/*todo:tresSelectCheckbox*/
 .ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner {
     background-color: lightgrey;
     border-color: lightgrey;
@@ -808,4 +809,38 @@ tr td {
 
 .ant-select-tree-checkbox .ant-select-tree-checkbox-checked {
     color: red;
+}
+
+
+/*.MuiCard-root {
+    overflow-y: auto;
+}
+
+.react-grid-layout {
+    position: relative;
+    transition: height 200ms ease;
+    background-color: #292c33;
+    overflow-y: auto;
+}*/
+
+.react-grid-layout {
+    position: relative;
+    transition: height 200ms ease;
+    background-color: #292c33;
+    overflow-y: auto;
+    padding-bottom: 50px;
+    padding-right: 10px;
+    margin-right: 0px;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    border-right: 3px lightslategrey solid;
+    border-left: 3px lightslategrey solid;
+    background-clip: padding-box;
 }

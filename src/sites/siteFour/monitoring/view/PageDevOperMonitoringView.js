@@ -29,7 +29,7 @@ import {
     ADD_ITEM_LIST,
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_LIST,
-    CLASSIFICATION,
+    CLASSIFICATION, gridItemOneHeight,
     HARDWARE_OPTIONS_FOR_APPINST,
     HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_OPTIONS_FOR_CLUSTER,
@@ -132,6 +132,8 @@ import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
+import {cloudletClusterList, cloudletClusterList2} from "./tempClusterCloudletLis";
+import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -319,6 +321,8 @@ type PageDevMonitoringState = {
     prevPromise: any,
     legendItemCount: number,
     legendHeight: number,
+    isFirstLoad: boolean,
+    legendRowCount: number,
 }
 
 export const CancelToken = axios.CancelToken;
@@ -531,6 +535,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     prevPromise: undefined,
                     legendItemCount: 0,
                     legendHeight: 30,
+                    isFirstLoad: true,
                 };
             }
 
@@ -662,11 +667,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         rowCount = Math.ceil(itemCount / 8);
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                         itemCount = clusterList.length;
-                        rowCount = Math.ceil(itemCount / 4);
+                        rowCount = Math.ceil(itemCount / 6);
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         itemCount = appInstList.length;
                         rowCount = Math.ceil(itemCount / 6);
                     }
+
+                    let legendHeight = Math.round(cloudletClusterList.length / 4) * gridItemOneHeight
 
 
                     await this.setState({
@@ -693,8 +700,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allCloudletUsageList: allCloudletUsageList,
                         filteredCloudletUsageList: allCloudletUsageList,
                         cloudletDropdownList: cloudletDropdownList,
-                        legendHeight: rowCount * 30,
-                        legendItemCount: itemCount
+                        legendHeight: legendHeight,
+                        legendItemCount: itemCount,
+                        legendRowCount: rowCount,
+
+                    }, () => {
 
                     });
                 } catch (e) {
@@ -1369,107 +1379,59 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderGridLayoutForCluster() {
                 try {
-                    if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                        return (
-                            <ResponsiveReactGridLayout
-                                isResizable={true}
-                                draggableHandle=".draggable"
-                                verticalCompact={true}
-                                compactType={'vertical'}
-                                preventCollision={true}
-                                isDraggable={true}
-                                autoSize={true}
-                                style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
-                                className='layout page_monitoring_layout_dev_oper'
-                                cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                                layout={this.state.layoutCluster}
-                                rowHeight={this.gridItemHeight}
-                                onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                    let width = newItem.w;
-                                    this.setState({
-                                        isResizeComplete: !this.state.isResizeComplete,
-                                        currentWidgetWidth: width,
-                                    })
-                                }}
-                                onLayoutChange={async (layout) => {
-                                    this.setState({
-                                        layoutCluster: layout,
-                                    }, async () => {
-                                        await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
-                                        reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, layout)
-                                    });
+                    return (
+                        <ResponsiveReactGridLayout
+                            ref={c => this.clusterGridlayout = c}
+                            isResizable={true}
+                            draggableHandle=".draggable"
+                            verticalCompact={true}
+                            compactType={'vertical'}
+                            preventCollision={true}
+                            isDraggable={true}
+                            autoSize={true}
+                            style={{
+                                backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null,
+                                overflowY: this.state.isLegendExpanded ? 'auto' : null,
 
-                                }}
-                                {...this.props}
-                            >
-                                {this.state.layoutCluster.map((item, loopIndex) => {
+                            }}
+                            className='layout page_monitoring_layout_dev_oper'
+                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
+                            layout={this.state.layoutCluster}
+                            rowHeight={this.gridItemHeight}
+                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                                let width = newItem.w;
+                                this.setState({
+                                    isResizeComplete: !this.state.isResizeComplete,
+                                    currentWidgetWidth: width,
+                                })
+                            }}
+                            onLayoutChange={async (layout) => {
+                                this.setState({
+                                    layoutCluster: layout,
+                                }, async () => {
+                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
+                                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, layout)
+                                });
 
-                                    const uniqueIndex = item.i;
-                                    let hwType = HARDWARE_TYPE.CPU
-                                    let graphType = GRID_ITEM_TYPE.LINE;
-                                    if (!isEmpty(this.state.layoutMapperCluster.find(x => x.id === uniqueIndex))) {
-                                        hwType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).hwType
-                                        graphType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).graphType
-                                        graphType = graphType.toUpperCase()
-                                    }
-                                    return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                                })}
+                            }}
+                            {...this.props}
+                        >
+                            {this.state.layoutCluster.map((item, loopIndex) => {
 
-                            </ResponsiveReactGridLayout>
+                                const uniqueIndex = item.i;
+                                let hwType = HARDWARE_TYPE.CPU
+                                let graphType = GRID_ITEM_TYPE.LINE;
+                                if (!isEmpty(this.state.layoutMapperCluster.find(x => x.id === uniqueIndex))) {
+                                    hwType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).hwType
+                                    graphType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).graphType
+                                    graphType = graphType.toUpperCase()
+                                }
+                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                            })}
 
-                        )
-                    } else {
-                        return (
-                            <ResponsiveReactGridLayout
-                                isResizable={true}
-                                draggableHandle=".draggable"
-                                verticalCompact={true}
-                                compactType={'vertical'}
-                                preventCollision={true}
-                                isDraggable={true}
-                                autoSize={true}
-                                style={{backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null}}
-                                className='layout page_monitoring_layout_dev_oper'
-                                cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                                layout={this.state.layoutClusterForOper}
-                                rowHeight={this.gridItemHeight}
-                                onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                    let width = newItem.w;
-                                    this.setState({
-                                        isResizeComplete: !this.state.isResizeComplete,
-                                        currentWidgetWidth: width,
-                                    })
-                                }}
-                                onLayoutChange={async (layout) => {
-                                    this.setState({
-                                        layoutClusterForOper: layout,
-                                    }, async () => {
-                                        await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterForOper);
-                                        reactLocalStorage.setObject(getUserId() + CLUSTER_FOR_OPER_LAYOUT_KEY, layout)
-                                    });
+                        </ResponsiveReactGridLayout>
 
-                                }}
-                                {...this.props}
-                            >
-                                {this.state.layoutClusterForOper.map((item, loopIndex) => {
-                                    const uniqueIndex = item.i;
-                                    let hwType = HARDWARE_TYPE.CPU
-                                    let graphType = GRID_ITEM_TYPE.LINE;
-                                    let hwTypeLength = 0;
-                                    if (!isEmpty(this.state.layoutMapperClusterForOper.find(x => x.id === uniqueIndex))) {
-                                        hwType = this.state.layoutMapperClusterForOper.find(x => x.id === uniqueIndex).hwType
-                                        graphType = this.state.layoutMapperClusterForOper.find(x => x.id === uniqueIndex).graphType
-                                        graphType = graphType.toUpperCase()
-                                    }
-
-
-                                    return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                                })}
-
-                            </ResponsiveReactGridLayout>
-                        )
-
-                    }
+                    )
                 } catch (e) {
                     showToast(e.toString())
                 }
@@ -2524,6 +2486,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
 
+                console.log(`filteredClusterUsageList====>`, this.state.filteredClusterUsageList);
+
+                //let filteredClusterUsageList = this.state.filteredClusterUsageList
+                //
+                let filteredClusterUsageList = cloudletClusterList
+
+                let totalRows = Math.round(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24))
+
                 return (
                     <React.Fragment>
                         <Row gutter={16}
@@ -2536,7 +2506,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
-                            {this.state.filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
+                            {filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col
                                         key={clusterIndex}
@@ -2546,7 +2516,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 currentClassification: CLASSIFICATION.CLUSTER
                                             })
                                             let clusterCloudletList = []
-                                            if (this.state.filteredClusterUsageList.length > 1) {
+                                            if (filteredClusterUsageList > 1) {
 
                                                 let clusterOne = item.cluster + " | " + item.cloudlet;
                                                 clusterCloudletList.push(clusterOne)
@@ -2555,12 +2525,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                             } else {
                                                 clearInterval(this.intervalForCluster)
-                                                await this.setState({legendItemCount: this.state.allClusterUsageList.length})
+                                                await this.setState({legendItemCount: filteredClusterUsageList.length})
                                                 await this.handleOnChangeClusterDropdown(undefined)
                                             }
-
                                         }}
-                                        span={itemCount === 1 ? 24 : 6}
+                                        span={itemCount === 1 ? 24 : this.state.isLegendExpanded ? 6 : 1}
                                         title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                         style={{
                                             justifyContent: itemCount === 1 ? 'center' : null,
@@ -2587,10 +2556,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 marginBottom: 2.5
                                             }}>
                                                 <Center>
-                                                    {this.renderDot(item.colorCodeIndex)}
+                                                    {/*{this.renderDot(item.colorCodeIndex)}*/}
+                                                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                                                        <div
+                                                            style={{
+                                                                backgroundColor: 'green',
+                                                                width: 10,
+                                                                height: 10,
+                                                                borderRadius: 50,
+                                                            }}
+                                                        >
+                                                        </div>
+                                                    </div>
                                                 </Center>
                                                 <Center className="clusterCloudletBox">
-                                                    {reduceLegendClusterCloudletName(item, this, stringLimit)}
+                                                    {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
                                                 </Center>
                                             </div>
 
@@ -2599,6 +2579,32 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 )
                             })}
                         </Row>
+                        <div
+                            style={PageMonitoringStyles.expandIconDiv}
+                            onClick={() => {
+                                this.setState({
+                                    isLegendExpanded: !this.state.isLegendExpanded,
+                                    isFirstLoad: false,
+                                }, () => {
+                                    this.setState({
+                                        legendHeight: Math.round(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight,
+                                        legendRowCount: Math.round(this.state.filteredClusterList.length / 4)
+                                    }, () => {
+
+                                        showToast(this.state.legendRowCount)
+
+                                        /*showToast(window.innerHeight)
+                                        showToast(this.state.legendHeight.toString())*/
+                                    })
+                                })
+                            }}
+                        >
+                            {!this.state.isLegendExpanded ?
+                                <UnfoldMore style={{fontSize: 18}}/>
+                                :
+                                <UnfoldLess style={{fontSize: 18}}/>
+                            }
+                        </div>
                     </React.Fragment>
                 )
             }
@@ -2725,17 +2731,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 style={{
                                     //height: this.state.legendHeight,
                                     marginTop: 4,
-                                    width: '98%'
+                                    width: '98.8%'
                                 }}>
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                    this.renderClusterLegend()
-                                    ://@desc: When Cloudlet Level Legend
-                                    this.state.currentClassification === CLASSIFICATION.CLOUDLET ?
-                                        this.renderCloudletLegend(this.state.legendItemCount)
-                                        //@desc: When AppLevel Legend
-                                        : this.state.currentClassification === CLASSIFICATION.APPINST &&
-                                        this.renderAppLegend(this.state.legendItemCount)
-
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderClusterLegend()
+                                    : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderCloudletLegend(this.state.legendItemCount)
+                                        : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderAppLegend(this.state.legendItemCount)
                                 }
                             </LegendOuterDiv>
                         )
@@ -2834,6 +2834,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
+            calcGridHeight() {
+                let gridHeight = 0;
+                if (!this.state.loading && this.state.isLegendExpanded) {
+                    gridHeight = window.innerHeight - (this.state.legendHeight)
+                    //showToast(gridHeight.toString())
+                    return gridHeight + 25;
+                } else if (!this.state.loading && !this.state.isLegendExpanded) {
+                    gridHeight = window.innerHeight - (this.state.legendHeight)
+                    //showToast(gridHeight.toString())
+                    return gridHeight - 100;
+                }
+            }
+
             render() {
                 if (!this.state.isExistData) {
                     return (
@@ -2889,7 +2902,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <div className="page_monitoring"
                                      style={{
                                          overflowY: 'auto',
-                                         height: 'calc(100% - 135px)',
+                                         height: this.calcGridHeight(),
                                          marginTop: 0,
                                          marginRight: 50,
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null

@@ -3,11 +3,11 @@
     width: 100%;
     height: 100%;
     flex-direction: column;
-    /*padding: 20px;*/
+    margin-right: 0px;
     background: #292c33;
 }
 
-@media screen and (max-width: 1150px) {
+@media screen and (max-width: 1120px) {
     .page_monitoring {
         overflow-y: scroll;
     }
@@ -164,8 +164,8 @@ page_monitoring_dashboard_dev {
 
 .page_monitoring_layout_dev_oper {
     width: 100% !important;
-    /*max-height: 100% !important;*/
-    /*overflow: auto !important;*/
+    /*max-height: 100% !important;
+    overflow: auto !important;*/
 }
 
 .page_monitoring_layout_item {
@@ -894,6 +894,7 @@ page_monitoring_dashboard_dev {
     min-height: 36px !important;
     margin: 0 0 5px 0;
 }
+
 .monitoring_title .page_monitoring_select_area .page_monitoring_dropdown_label,
 .monitoring_title .page_monitoring_select_area .ui.selection.dropdown {
     margin-bottom: 0;
