@@ -2469,7 +2469,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return (
                     <AnimateHeight
                         duration={500}
-                        height={this.state.isLegendExpanded ? 240 : 44}
+                        height={this.state.isLegendExpanded ? 190 : 44}
                     >
                         <Row gutter={16}
                              style={{
