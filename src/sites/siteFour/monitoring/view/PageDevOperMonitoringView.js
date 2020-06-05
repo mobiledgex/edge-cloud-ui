@@ -2463,14 +2463,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
                 //let filteredClusterUsageList = this.state.filteredClusterUsageList
-                //@desc:fake json list
+                //@todo:fake json list
                 let filteredClusterUsageList = cloudletClusterList
+                let height2=Math.ceil(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight
+                //alert(height2)
 
                 return (
                     <AnimateHeight
-                        duration={350}
+                        duration={500}
                         //easing={'easeOutBounce'}
-                        height={this.state.isLegendExpanded ? 190 : 44}
+                        height={height2}
                     >
                         <Row gutter={16}
                              style={{
@@ -2564,8 +2566,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     isFirstLoad: false,
                                 }, () => {
                                     this.setState({
-                                        legendHeight: Math.round(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight,
-                                        legendRowCount: Math.round(this.state.filteredClusterList.length / 4)
+                                        legendHeight: Math.ceil(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight,
+                                        legendRowCount: Math.ceil(this.state.filteredClusterList.length / 4)
                                     }, () => {
                                     })
                                 })
