@@ -2838,12 +2838,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let gridHeight = 0;
                 if (!this.state.loading && this.state.isLegendExpanded) {
                     gridHeight = window.innerHeight - (this.state.legendHeight)
-                    //showToast(gridHeight.toString())
                     return gridHeight - 120;
                 } else if (!this.state.loading && !this.state.isLegendExpanded) {
                     gridHeight = window.innerHeight - (this.state.legendHeight)
-                    //showToast(gridHeight.toString())
-                    return gridHeight - 120;
+                    return gridHeight - 140;
                 }
             }
 
