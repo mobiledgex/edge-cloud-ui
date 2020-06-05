@@ -151,27 +151,9 @@ const parseClientList = response => {
     return clientList;
 };
 
-const parseEventCluster = response => {
-    console.log('20200603 response', response)
-    const clusterList = [];
-
-    /** 작업중 **/
-    // values.map((resData, i) => {
-    //     const newData = {};
-    //     resData.map((res, j) => {
-    //         if (hideKeys.indexOf(keys[j]) === -1) newData[keys[j]] = res;
-    //     });
-    //     clusterList.push(newData);
-    // });
-    return clusterList;
-
-
-};
-
 export const dataFormatRateRegist = (response, id) => parseData(response[0], id);
 export const dataFormatCountCloudlet = response => setdataPartSum(response);
 export const dataFormatMetricCloudlet = response => parseCloudletData(response);
 export const dataFormatCountCluster = response => parseCountCluster(response);
 export const dataFormaFindCloudlet = response => parseFindCloudlet(response);
 export const dataFormatClientList = response => parseClientList(response);
-export const dataFormatEventCluster = response => parseEventCluster(response);

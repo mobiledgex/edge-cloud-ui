@@ -19,12 +19,14 @@ const usePrevious = (value) => {
 
 const RateOfMethods = defaultProps => {
     const [data, setData] = React.useState();
+    const [size, setsize] = React.useState({width:90, height:50});
+
     const makeSpark = () => {
         const ctx = document.getElementById(`myChart_${defaultProps.method.key}`).getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 60);
 
         // Add three color stops
-        gradient.addColorStop(0, '#7ed8ff');
+        gradient.addColorStop(0, '#6498FF');
         gradient.addColorStop(1, 'rgba(0,0,0,0)');
         const chart = new Chart(ctx, {
             type: 'line',
@@ -44,7 +46,7 @@ const RateOfMethods = defaultProps => {
                 },
                 elements: {
                     line: {
-                        borderColor: '#7ed8ff',
+                        borderColor: '#6498FF',
                         borderWidth: 1
                     },
                     point: {
@@ -82,13 +84,11 @@ const RateOfMethods = defaultProps => {
         setData(defaultProps.data);
     }, [defaultProps]);
     return (
-        <div style={{ width: "100%", height: "100%", overflow: 'auto' }}>
-            <div className='page-monitoring_circle-chart'>
-                <div className='page-monitoring_circle-chart_item'>
-                    <div>Method Name</div>
-                    <div style={{ fontSize: 20 }}>00</div>
-                    <canvas id={`myChart_${defaultProps.method.key}`} width="90" height="50" />
-                </div>
+        <div className='page_monitoring_rate_grid_contain'>
+            <div className='page_monitoring_rate_label'>Method Name</div>
+            <div className='page_monitoring_rate_count'>00</div>
+            <div className='page_monitoring_rate_chart'>
+                <canvas id={`myChart_${defaultProps.method.key}`} color="#6498FF" width="90" height="50" />
             </div>
         </div>
     );

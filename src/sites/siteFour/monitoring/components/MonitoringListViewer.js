@@ -136,7 +136,7 @@ export default function MonitoringListViewer(props) {
                                     align={column.align}
                                     style={{ minWidth: column.minWidth, fontWeight: 600, backgroundColor: "#2A2C33" }}
                                 >
-                                    {column.label.charAt(0).toUpperCase() + column.label.slice(1)}
+                                    {column.label !== 'vCPU' ? column.label.charAt(0).toUpperCase() + column.label.slice(1) : column.label}
                                 </TableCell>
                             ))}
                         </TableRow>

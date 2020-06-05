@@ -4,6 +4,7 @@ import * as Metrics from "./model/metrics";
 import * as Appinst from "./model/appinst";
 import * as Client from "./model/client";
 import * as Events from "./model/events";
+import * as EventsCluster from "./model/eventsCluster";
 
 const savedCloudletData = [];
 const savedAppinstData = [];
@@ -214,7 +215,7 @@ const getEventCluster = async (self, params) => {
 
     // TODO : 페이지 개수만큼 데이터 호출
     return Promise.all(
-        params.clusters.map(async cluster => Events.getClusterEvent(
+        params.clusters.map(async cluster => EventsCluster.getClusterEvent(
             self,
             requestData(cluster),
             params.chartType,

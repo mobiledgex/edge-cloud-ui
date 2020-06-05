@@ -1050,7 +1050,7 @@ page_monitoring_dashboard_dev {
 }
 
 
-.page-monitoring_circle-chart {
+.page_monitoring_circle_chart {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -1059,16 +1059,71 @@ page_monitoring_dashboard_dev {
     padding: 10px;
 }
 
-.page-monitoring_circle-chart_item {
+.page_monitoring_circle_chart_item {
     flex:1;
     width:33.33%;
     padding: 10px;
 
 }
 
-.page-monitoring_circle-chart_label {
+.page_monitoring_circle_chart_label {
     margin-top: 10px;
     width: 100%;
     text-align: center;
     font-size: 16px;
+}
+
+.page_monitoring_rate_grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.page_monitoring_rate_grid_item {
+    flex:1;
+    width:33.33%;
+    height: 100%;
+    margin-right: 10px;
+    background-color: #202329;
+
+}
+
+.page_monitoring_rate_grid_item:last-child {
+    margin-right: 0px;
+
+}
+.page_monitoring_rate_grid_contain {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+}
+
+.page_monitoring_rate_label{
+    height: 33.33%;
+    padding: 10px;
+    font-size: 14px;
+    justify-content: flex-start;
+    text-align: center;
+    align-items: center;
+
+}
+.page_monitoring_rate_count{
+    padding: 10px;
+    height: 33.33%;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    color: #6498FF;
+
+}
+.page_monitoring_rate_chart{
+    padding: 10px;
+    height: 33.33%;
+    justify-content: flex-end;
+    align-items: center;
 }

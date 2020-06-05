@@ -24,22 +24,22 @@ const ContainerHealth = defaultProps => {
 
     return (
         <div style={{width:"100%", height:"100%", overflow:'auto'}}>
-            <div className='page-monitoring_circle-chart'>
-                <div className='page-monitoring_circle-chart_item'>
+            <div className='page_monitoring_circle_chart'>
+                <div className='page_monitoring_circle_chart_item'>
                     <CircularProgress data={cpuUsed} />
-                    <div className='page-monitoring_circle-chart_label'>
+                    <div className='page_monitoring_circle_chart_label'>
                         vCPU
                     </div>
                 </div>
-                <div className='page-monitoring_circle-chart_item'>
+                <div className='page_monitoring_circle_chart_item'>
                     <CircularProgress data={memoryUsed} />
-                    <div className='page-monitoring_circle-chart_label'>
+                    <div className='page_monitoring_circle_chart_label'>
                         MEM
                     </div>
                 </div>
-                <div className='page-monitoring_circle-chart_item'>
+                <div className='page_monitoring_circle_chart_item'>
                     <CircularProgress data={diskUsed} />
-                    <div className='page-monitoring_circle-chart_label'>
+                    <div className='page_monitoring_circle_chart_label'>
                         DISK
                     </div>
                 </div>
