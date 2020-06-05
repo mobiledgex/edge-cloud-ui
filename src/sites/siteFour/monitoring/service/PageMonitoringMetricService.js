@@ -1,9 +1,20 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CLOUDLET_METRIC_COLUMN,
+    MEX_PROMETHEUS_APPNAME,
+    RECENT_DATA_LIMIT_COUNT,
+    USER_TYPE
+} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {
+    isEmpty,
+    makeFormForCloudletLevelMatric,
+    makeFormForClusterLevelMatric,
+    showToast
+} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
 import PageDevMonitoring, {source} from "../view/PageDevOperMonitoringView";
 import {
