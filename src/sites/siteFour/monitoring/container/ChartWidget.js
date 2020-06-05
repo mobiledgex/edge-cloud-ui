@@ -29,7 +29,8 @@ class ChartWidget extends React.Component {
             data: null,
             stackedData: [],
             dataRaw: [],
-            resId: ""
+            resId: "",
+            chartType: ""
         };
         this.id = null;
         scope = this;
@@ -53,6 +54,11 @@ class ChartWidget extends React.Component {
     * 두번째 인자(prevState) 는 렌더링되기 이전의 state 객체다.
     */
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("20200605 change props ==>>>>>>>>", nextProps.chartType, ":", prevState.chartType);
+        if (prevState.chartType !== nextProps.chartType) {
+            // TODO: 20200605 차트가 교체될 수 있도록
+            return { chartType: nextProps.chartType };
+        }
         if (prevState.data !== nextProps.data) {
             if (nextProps.id === DataType.NETWORK_CLOUDLET) {
                 if (nextProps.data && nextProps.data[nextProps.id] && nextProps.data[nextProps.id].length > 0) {
@@ -72,6 +78,7 @@ class ChartWidget extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.data !== this.props.data) {
+
             if (prevProps.id === DataType.COUNT_CLUSTER) {
                 const updatedata = this.props.data[prevProps.id];
                 setTimeout(() => this.setState({ data: updatedata }), 500);
@@ -107,6 +114,7 @@ class ChartWidget extends React.Component {
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
         }
+
     }
 
     updateMetricData = uData => {
@@ -148,12 +156,13 @@ class ChartWidget extends React.Component {
 
     render() {
         const {
-            chartType, type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets
+            type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets
         } = this.props;
         const {
-            activeStep, mapData, clusterCnt, data, data2
+            activeStep, mapData, clusterCnt, data, data2, chartType
         } = this.state;
         // const { size } = this.state;
+        console.log("20200605 chart type == ", chartType, ":", this.props.chartType)
         const pagerHeight = 12;
         const resize = { width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height };
         return (

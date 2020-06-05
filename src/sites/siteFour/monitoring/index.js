@@ -9,7 +9,6 @@ import MonitoringLayout from "./layout/layout";
 import * as actions from "../../../actions";
 //
 import * as Service from "./services";
-import ChartWidget from "./container/ChartWidget";
 import * as serviceMC from "../../../services/model/serviceMC";
 import * as chartType from "./formatter/chartType";
 import * as dataType from "./formatter/dataType";
@@ -99,7 +98,7 @@ class MonitoringAdmin extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log("20200603 did update == ", prevProps, ":autho depth = ", this.state.currentAuthDepth);
+        console.log("20200605 did update == ", prevProps, ":autho depth = ", this.state.currentAuthDepth);
     }
 
 
@@ -167,13 +166,25 @@ class MonitoringAdmin extends React.Component {
     }
 
     resetAuthDepth = depth => {
+        console.log("20200605 reset authdepth == ", depth);
         this.setState({ currentAuthDepth: depth });
     }
 
     onHandleApplyFilter = filteredItem => {
-        console.log("20200603 filtering == ", filteredItem);
-        this.setState({ currentAuthDepth: 1 });
+        console.log("20200605 filtering == ", filteredItem);
+        this.setState({ currentAuthDepth: 2 });
         this.forceUpdate();
+    }
+
+    getCurrentItem = (depth, scope, props, compCloudlet, compClusterinst, compAppinst) => {
+        let currentItm = null;
+        switch (depth) {
+            case 0: currentItm = generateComponentAdmin(scope, props, compCloudlet, compClusterinst, compAppinst); break;
+            case 1: currentItm = generateComponentOperator(scope, props, compCloudlet, compClusterinst, compAppinst); break;
+            case 2: currentItm = generateComponentDeveloper(scope, props, compCloudlet, compClusterinst, compAppinst); break;
+            default: currentItm;
+        }
+        return currentItm;
     }
 
     render() {
@@ -183,7 +194,7 @@ class MonitoringAdmin extends React.Component {
         const {
             compCloudlet, compClusterinst, compAppinst, currentAuthDepth
         } = this.state;
-        console.log("20200603 render =", currentAuthDepth);
+        console.log("20200605 render =", currentAuthDepth);
         return (
             <div
                 style={{
@@ -191,7 +202,8 @@ class MonitoringAdmin extends React.Component {
                     height: "100%"
                 }}
             >
-                <HeaderFiltering title="MONITORING"
+                <HeaderFiltering
+                    title="MONITORING"
                     compCloudlet={compCloudlet}
                     compClusterinst={compClusterinst}
                     compAppinst={compAppinst}
@@ -203,31 +215,7 @@ class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
-                    items={
-                        currentAuthDepth === 0
-                            ? generateComponentAdmin(
-                                scope,
-                                this.props,
-                                compCloudlet,
-                                compClusterinst,
-                                compAppinst,
-                            )
-                            : currentAuthDepth === 1
-                                ? generateComponentOperator(
-                                    scope,
-                                    this.props,
-                                    compCloudlet,
-                                    compClusterinst,
-                                    compAppinst,
-                                )
-                                : generateComponentDeveloper(
-                                    scope,
-                                    this.props,
-                                    compCloudlet,
-                                    compClusterinst,
-                                    compAppinst,
-                                )
-                    }
+                    items={this.getCurrentItem(currentAuthDepth, scope, this.props, compCloudlet, compClusterinst, compAppinst)}
                 />
             </div>
         );
@@ -278,31 +266,11 @@ export default connect(
     mapDispatchProps,
 )(sizeMe({ monitorHeight: true, refreshMode: "debounce" })(MonitoringAdmin));
 
-const makeFilterComponent = info => {
-
-};
-const generateWidget = info => (
-    <ChartWidget
-        id={info.id}
-        title={info.title}
-        filter={info.filter}
-        method={info.method}
-        chartType={info.chartType}
-        type={info.type}
-        size={info.sizeInfo}
-        cloudlets={info.cloudlets}
-        appinsts={info.appinsts}
-        clusters={info.clusters}
-        page={info.page}
-        itemCount={info.itemCount}
-        legend={info.legend}
-    />
-);
 
 /**
 * TODO : // should make JSON property
 * */
-
+//  second page -- 0
 const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
     const defaultProp = {
         sizeInfo: infos.size,
@@ -312,7 +280,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         clusters
     };
     return [
-        generateWidget({
+        {
             id: dataType.COUNT_CLUSTER,
             method: serviceMC.getEP().COUNT_CLUSTER,
             chartType: chartType.COUNTER,
@@ -323,8 +291,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             itemCount: 3,
             legend: false,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.NETWORK_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: chartType.GRAPH,
@@ -335,8 +303,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             itemCount: 3,
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.FIND_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.MAP,
@@ -346,8 +314,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.REGISTER_CLIENT,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
@@ -357,8 +325,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.FIND_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
@@ -368,8 +336,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.METHOD_CLIENT,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.TABLE,
@@ -379,10 +347,10 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
+        },
     ];
 };
-//  second page -- 2
+//  second page -- 1
 const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) => {
     const defaultProp = {
         sizeInfo: infos.size,
@@ -392,7 +360,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
         clusters
     };
     return [
-        generateWidget({
+        {
             id: dataType.NETWORK_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: chartType.GAUGE,
@@ -403,8 +371,8 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
             itemCount: 3,
             legend: false,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.NETWORK_CLOUDLET,
             method: null,
             chartType: chartType.GRAPH,
@@ -415,8 +383,8 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
             itemCount: 3,
             legend: false,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.FIND_CLOUDLET,
             method: null,
             chartType: chartType.MAP,
@@ -426,8 +394,8 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.METHOD_CLIENT,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.COUNTERWITHSPARK,
@@ -437,8 +405,8 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.FIND_CLOUDLET,
             method: null,
             chartType: chartType.GRAPH,
@@ -448,8 +416,8 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.EVENT_CLOUDLET,
             method: serviceMC.getEP().EVENT_CLOUDLET,
             chartType: chartType.TABLE,
@@ -459,10 +427,10 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
+        },
     ];
 };
-//
+// third page -- 2
 const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) => {
     const defaultProp = {
         sizeInfo: infos.size,
@@ -472,64 +440,64 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
         clusters
     };
     return [
-        generateWidget({
+        {
             id: dataType.COUNT_CLUSTER,
             method: serviceMC.getEP().COUNT_CLUSTER,
             chartType: chartType.COUNTER,
             type: "counter",
-            title: { value: "Count of Clusters", align: "left" },
+            title: { value: "Health of Clusters", align: "left" },
             filter: null,
             page: "multi",
             itemCount: 3,
             legend: false,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.NETWORK_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: chartType.GRAPH,
             type: "scatter",
-            title: { value: "Health of Cloudlets", align: "left" },
+            title: { value: "Connections of Cluster", align: "left" },
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
             page: "single",
             itemCount: 3,
             legend: false,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.FIND_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.MAP,
             type: "scatter",
-            title: { value: "Find Cloudlets", align: "left" },
+            title: { value: "Structure of cluster", align: "left" },
             filter: null,
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.REGISTER_CLIENT,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
             type: "scatter",
-            title: { value: "Rate of Register Client", align: "left" },
+            title: { value: "Infomation of node", align: "left" },
             filter: null,
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.FIND_CLOUDLET,
             method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
             type: "bar",
-            title: { value: "Count of Find Cloudlet", align: "left" },
+            title: { value: "Type of Cluster", align: "left" },
             filter: null,
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
-        generateWidget({
+        },
+        {
             id: dataType.EVENT_CLUSTER,
             method: serviceMC.getEP().EVENT_CLUSTER,
             chartType: chartType.TABLE,
@@ -539,6 +507,6 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
             page: "single",
             legend: true,
             ...defaultProp,
-        }),
+        },
     ];
 };

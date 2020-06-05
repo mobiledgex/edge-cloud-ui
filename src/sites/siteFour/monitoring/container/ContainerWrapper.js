@@ -51,6 +51,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("20200605 wrapper props ===== ", nextProps, ":", prevState);
         if (_.isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             return { cloudlets: nextProps.cloudlets };
         }
