@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { withRouter } from 'react-router-dom';
-import { Item, Step, Grid, Card, List, Form, Header, Button } from 'semantic-ui-react';
+import { Item, Step, Grid, Card, Form, Header, Button } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
 import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer'
@@ -15,6 +15,7 @@ import { keys, createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { } from '../../../services/model/cloudlet';
 import {organizationTutor} from "../../../tutorial";
+import { List, ListItem } from "@material-ui/core";
 
 const orgaSteps = organizationTutor();
 
@@ -140,16 +141,11 @@ class OrganizationReg extends React.Component {
     makeRoleList = (selectedType, i) => {
         return (
             <List divided verticalAlign='middle'>
-                <List.Item>
-                    <List.Content>
-                        {
-                            Object.keys(roles[selectedType][i]).map((key) => (
-                                <List.Header key={key}><div style={{ color: ((roles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (roles[selectedType][i][key])}</div></List.Header>
-                            ))
-                        }
-
-                    </List.Content>
-                </List.Item>
+                {
+                    Object.keys(roles[selectedType][i]).map((key) => (
+                        <div key={i} style={{ color: ((roles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (roles[selectedType][i][key])}</div>
+                    ))
+                }
             </List>
         )
     }
@@ -158,8 +154,7 @@ class OrganizationReg extends React.Component {
         <Grid.Row key={i}>
             <Card style={{ backgroundColor: '#18191E' }}>
                 <Card.Content>
-                    <Card.Header style={{ color: '#A3A3A5' }}>{item['header']}</Card.Header>
-                    <Card.Meta style={{ color: '#A3A3A5' }}>{type}</Card.Meta>
+                    <h5 style={{ color: '#A3A3A5', border:'none' }}>{type} {item['header']}</h5>
                     <Card.Description>
                         {this.makeRoleList(type, i)}
                     </Card.Description>
