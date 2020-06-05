@@ -41,7 +41,7 @@ export const cloudletClusterList = [
     {"cluster": "autoclusteriperf40", "cloudlet": "andycloud39",},
     {"cluster": "autoclusteriperf41", "cloudlet": "andycloud40",},
     {"cluster": "autoclusteriperf42", "cloudlet": "andycloud41",},
-    /*{"cluster": "autoclusteriperf43", "cloudlet": "andycloud40",},
+    {"cluster": "autoclusteriperf43", "cloudlet": "andycloud40",},
     {"cluster": "autoclusteriperf44", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf45", "cloudlet": "andycloud40",},
     {"cluster": "autoclusteriperf46", "cloudlet": "andycloud41",},
@@ -49,6 +49,23 @@ export const cloudletClusterList = [
     {"cluster": "autoclusteriperf48", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf49", "cloudlet": "andycloud40",},
     {"cluster": "autoclusteriperf50", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf51", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf52", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf53", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf54", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf55", "cloudlet": "andycloud41",},
+   /* {"cluster": "autoclusteriperf56", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf57", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf58", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf59", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf60", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf61", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf62", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf63", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf64", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf65", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf66", "cloudlet": "andycloud41",},
+    {"cluster": "autoclusteriperf67", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf51", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf52", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf53", "cloudlet": "andycloud41",},
@@ -66,7 +83,6 @@ export const cloudletClusterList = [
     {"cluster": "autoclusteriperf65", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf66", "cloudlet": "andycloud41",},
     {"cluster": "autoclusteriperf67", "cloudlet": "andycloud41",},*/
-
 ]
 
 

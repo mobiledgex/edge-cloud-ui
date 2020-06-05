@@ -175,7 +175,7 @@ export const CLASSIFICATION = {
     REGION: 'Region',
 }
 
-export const gridItemOneHeight = 31.6;
+export const gridItemOneHeight = 22.3;
 
 export const MEX_PROMETHEUS_APPNAME = 'MEXPrometheusAppName'
 

@@ -2717,7 +2717,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         variant={'query'}
                                         style={{
                                             marginLeft: -10,
-                                            width: '7%',
+                                            width: '15%',
                                             alignContent: 'center',
                                             justifyContent: 'center',
                                         }}
@@ -2839,11 +2839,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (!this.state.loading && this.state.isLegendExpanded) {
                     gridHeight = window.innerHeight - (this.state.legendHeight)
                     //showToast(gridHeight.toString())
-                    return gridHeight + 25;
+                    return gridHeight - 120;
                 } else if (!this.state.loading && !this.state.isLegendExpanded) {
                     gridHeight = window.innerHeight - (this.state.legendHeight)
                     //showToast(gridHeight.toString())
-                    return gridHeight - 100;
+                    return gridHeight - 120;
                 }
             }
 
