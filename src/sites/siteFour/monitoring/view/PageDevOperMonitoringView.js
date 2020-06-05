@@ -109,8 +109,6 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
-import AnimateHeight from "react-animate-height";
-import {cloudletClusterList} from "./tempClusterCloudletLis";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -2462,18 +2460,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderClusterLegend() {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
-                //let filteredClusterUsageList = this.state.filteredClusterUsageList
+                let filteredClusterUsageList = this.state.filteredClusterUsageList
                 //@todo:fake json list
-                let filteredClusterUsageList = cloudletClusterList
+                //let filteredClusterUsageList = cloudletClusterList
                 let height2=Math.ceil(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight
                 //alert(height2)
 
                 return (
-                    <AnimateHeight
-                        duration={500}
-                        //easing={'easeOutBounce'}
-                        height={height2}
-                    >
+                    <React.Fragment>
                         <Row gutter={16}
                              style={{
                                  width: '94%',
@@ -2534,10 +2528,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 marginTop: 2.5,
                                                 marginBottom: 2.5
                                             }}>
-                                                {/*<Center>
+                                                <Center>
                                                     {this.renderDot(item.colorCodeIndex)}
-                                                </Center>*/}
-                                                <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                                                </Center>
+                                              {/*  <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                                                     <div
                                                         style={{
                                                             backgroundColor: 'green',
@@ -2547,7 +2541,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                         }}
                                                     >
                                                     </div>
-                                                </div>
+                                                </div>*/}
+
+
                                                 <Center className="clusterCloudletBox">
                                                     {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
                                                 </Center>
@@ -2579,7 +2575,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <UnfoldLess style={{fontSize: 18}}/>
                             }
                         </div>
-                    </AnimateHeight>
+                    </React.Fragment>
                 )
             }
 
