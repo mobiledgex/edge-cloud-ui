@@ -634,6 +634,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         dataCount = cloudletList.length
                     }
 
+
+
+
+
                     /*/////TODO: LEGEND ROW COUNTING///////*/
                     /*/////TODO: LEGEND ROW COUNTING///////*/
                     /*/////TODO: LEGEND ROW COUNTING///////*/
