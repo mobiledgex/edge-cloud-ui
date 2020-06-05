@@ -30,7 +30,7 @@ const CircularProgress = defaultProps => {
                 // Customize the path, i.e. the "completed progress"
                 path: {
                     // Path color
-                    stroke: `rgb(78, 114, 214)`,
+                    stroke: `#6498FF`,
                     // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
                     strokeLinecap: 'butt',
                     // Customize transition animation

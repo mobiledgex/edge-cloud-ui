@@ -162,7 +162,8 @@ class ChartWidget extends React.Component {
                     className="chart-widget"
                     style={{
                         height: resize.height,
-                        backgroundColor: chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE ? "#202329" : "transparent",
+                        backgroundColor:
+                            chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE && chartType !== ChartType.COUNTERWITHSPARK  ? "#202329" : "transparent",
                     }}
                 >
                     {(filter) ? (
@@ -223,7 +224,7 @@ class ChartWidget extends React.Component {
                             step={activeStep}
                         />
                     ) : chartType === ChartType.COUNTERWITHSPARK ? (
-                        <ContainerMethod />
+                        <ContainerMethod size={resize} />
                     ) : <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />
                     }
                 </div>
