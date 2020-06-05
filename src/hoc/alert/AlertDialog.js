@@ -19,7 +19,7 @@ const MexAlert = (props) => {
             }}
             onClose={handleClose}
             open={props.data !== undefined}
-            autoHideDuration={60}
+            autoHideDuration={20000}
         >
             <Alert onClose={handleClose} severity={props.data.severity}>
                 {props.data.msg}
