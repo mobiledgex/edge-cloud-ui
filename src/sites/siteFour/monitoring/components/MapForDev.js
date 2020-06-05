@@ -13,12 +13,7 @@ import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -356,8 +351,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
                 let locKeys = Object.keys(locationGrpList);
                 let locationGroupedCloudletList = this.makeLocationGroupedCloudletList(locationGrpList, locKeys)
-
-                console.log(`locationGroupedCloudletList====>`, locationGroupedCloudletList);
 
                 this.setState({
                     selectedAppInstIndex: -1,
