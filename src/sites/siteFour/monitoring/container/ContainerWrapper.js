@@ -2,7 +2,7 @@ import React from "react";
 import { SizeMe } from "react-sizeme";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import * as actions from "../../../../actions";
 import * as Service from "../services";
 import * as serviceMC from "../../../../services/model/serviceMC";
@@ -52,31 +52,33 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log("20200605 wrapper props ===== ", nextProps, ":", prevState);
-        if (_.isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
-            return { cloudlets: nextProps.cloudlets };
+        const update = {};
+        if (isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
+            update.cloudlets = nextProps.cloudlets;
         }
-        if (_.isEqual(prevState.appinsts, nextProps.appinsts) === false) {
-            return { appinsts: nextProps.appinsts };
+        if (isEqual(prevState.appinsts, nextProps.appinsts) === false) {
+            update.appinsts = nextProps.appinsts;
         }
-        if (_.isEqual(prevState.clusters, nextProps.clusters) === false) {
-            return { clusters: nextProps.clusters };
+        if (isEqual(prevState.clusters, nextProps.clusters) === false) {
+            update.clusters = nextProps.clusters;
         }
         if (prevState.method !== nextProps.method) {
-            return { method: nextProps.method };
+            update.method = nextProps.method;
         }
         if (prevState.id !== nextProps.id) {
-            return { id: nextProps.id };
+            update.id = nextProps.id;
         }
-        if (nextProps.panelInfo) {
-            //if (nextProps.panelInfo.title.value === prevState.title.value) {
-            return { legendShow: nextProps.panelInfo };
-            //}
+        if (prevState.panelInfo !== nextProps.panelInfo) {
+            update.legendShow = nextProps.panelInfo ? nextProps.panelInfo.legendShow : false;
         }
-        if (nextProps.id) {
-            return { id: nextProps.id };
+        if (prevState.id !== nextProps.id) {
+            update.id = nextProps.id;
+        }
+        if (prevState.chartType !== nextProps.chartType) {
+            update.chartType = nextProps.chartType;
         }
 
-        return null;
+        return Object.keys(update).length ? update : null;
     }
 
     componentDidMount() {

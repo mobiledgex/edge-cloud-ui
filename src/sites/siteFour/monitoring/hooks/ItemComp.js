@@ -4,8 +4,10 @@ import ChartWidget from "../container/ChartWidget";
 const ItemComponent = defaultValue => {
     const [item, setItem] = React.useState(defaultValue.item);
     const [panelInfo, setPanelInfo] = React.useState(defaultValue.panelInfo);
-
-    return (
+    React.useEffect(() => {
+        if (defaultValue.item) setItem(defaultValue.item);
+    }, [defaultValue]);
+    const makeComponent = item => (
         <ChartWidget
             id={item.id}
             title={item.title}
@@ -20,6 +22,13 @@ const ItemComponent = defaultValue => {
             page={item.page}
             itemCount={item.itemCount}
             legend={item.legend}
+        />
+    );
+
+    return (
+        <ChartWidget
+            {...item}
+            panelInfo={{ legendShow: false }}
         />
     );
 };
