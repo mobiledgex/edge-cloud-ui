@@ -2460,6 +2460,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
 
+                //@fixme:fake json list
+                //let filteredClusterUsageList = cloudletClusterList
+
 
                 return (
                     <React.Fragment>
