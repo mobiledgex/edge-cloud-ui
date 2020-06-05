@@ -5,7 +5,8 @@
     "@comment dependencies": [
         "These are the comments for the `dependencies` section.",
         "echarts-for-react",
-        "echarts"
+        "echarts",
+        "react-animate-height"
     ],
     "dependencies": {
         "@craco/craco": "^5.6.3",
@@ -46,7 +47,6 @@
         "public-ip": "^4.0.0",
         "randomcolor": "^0.5.4",
         "react": "^16.13.1",
-        "react-animate-height": "^2.0.21",
         "react-calendar-timeline": "^0.26.6",
         "react-chartjs-2": "^2.9.0",
         "react-circular-progressbar": "^1.0.0",
@@ -54,7 +54,6 @@
         "react-dom": "^16.13.0",
         "react-draggable": "^4.2.0",
         "react-dual-listbox": "^2.0.0",
-        "react-expand-animated": "^1.0.2",
         "react-faux-dom": "^4.1.0",
         "react-fontawesome": "^1.7.1",
         "react-google-charts": "^3.0.15",
