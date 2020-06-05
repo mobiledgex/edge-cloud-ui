@@ -13,9 +13,8 @@ import { fields } from '../../../services/model/format';
 //model
 import { keys, createOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
-import { } from '../../../services/model/cloudlet';
 import {organizationTutor} from "../../../tutorial";
-import { List, ListItem } from "@material-ui/core";
+import { List } from "@material-ui/core";
 
 const orgaSteps = organizationTutor();
 
@@ -154,7 +153,7 @@ class OrganizationReg extends React.Component {
         <Grid.Row key={i}>
             <Card style={{ backgroundColor: '#18191E' }}>
                 <Card.Content>
-                    <h5 style={{ color: '#A3A3A5', border:'none' }}>{type} {item['header']}</h5>
+                    <h4 style={{ color: '#A3A3A5', border:'none', fontWeight:700 }}>{type} {item['header']}</h4>
                     <Card.Description>
                         {this.makeRoleList(type, i)}
                     </Card.Description>
