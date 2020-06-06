@@ -20,13 +20,7 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import type {
-    TypeAppInst,
-    TypeCloudlet,
-    TypeCluster,
-    TypeClusterUsageOne,
-    TypeLineChartData
-} from "../../../../shared/Types";
+import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
@@ -37,7 +31,9 @@ import {
 } from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
+import uniqBy from "lodash/uniqBy";
 import Chip from "@material-ui/core/Chip";
+//import _ from 'lodash';
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -217,7 +213,15 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
  */
 export function getCloudletClusterNameList(clusterList: TypeCluster) {
     let cloudletNameList = []
-    clusterList.map(item => (cloudletNameList.push(item.Cloudlet)))
+    clusterList.map(item => {
+        cloudletNameList.push({
+            CloudletName: item.Cloudlet,
+            Region: item.Region,
+        })
+    })
+
+    let uniqCloudletNameList = uniqBy(cloudletNameList, 'CloudletName')
+
     let clusterNameList = [];
     clusterList.map((item: TypeCluster, index) => {
         clusterNameList.push({
@@ -226,10 +230,12 @@ export function getCloudletClusterNameList(clusterList: TypeCluster) {
         })
     })
 
-    return {
-        cloudletNameList,
-        clusterNameList
+    let result = {
+        cloudletNameList: uniqCloudletNameList,
+        clusterNameList: clusterNameList,
     }
+
+    return result
 }
 
 /**
@@ -1196,7 +1202,6 @@ export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, 
 }
 
 
-
 export const tempClusterList = [
     {
         cluster: 'autoclustermobiledgexsdkdemo',
@@ -1284,12 +1289,13 @@ export function convertHWType(hwType) {
  * @param clusterList
  * @returns {[]}
  */
-export const makeClusterTreeDropdown = (cloudletList, clusterList, _this) => {
-    let newCloudletList = []
+export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this) => {
+
+    let treeCloudletList = []
     cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
-                <div>{cloudletOne}&nbsp;&nbsp;
+                <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
                     <Chip
                         color="primary"
                         size="small"
@@ -1301,15 +1307,16 @@ export const makeClusterTreeDropdown = (cloudletList, clusterList, _this) => {
                     />
                 </div>
             ),
-            value: cloudletOne,
-            selectable: false,
-            children: []
+
+            value: cloudletOne.CloudletName,
+            //selectable: false,
+            children: [],
+            region: cloudletOne.Region
         };
 
-        clusterList.map((clusterOne: TypeClusterUsageOne, innerIndex) => {
-            if (clusterOne.cloudlet === cloudletOne) {
+        clusterList.map((clusterOne, innerIndex) => {
+            if (clusterOne.cloudlet === cloudletOne.CloudletName) {
                 newCloudletOne.children.push({
-                    //title: clusterOne.ClusterName,
                     title: (
                         <div style={{display: 'flex'}}>
                             <Center style={{width: 15,}}>
@@ -1321,16 +1328,41 @@ export const makeClusterTreeDropdown = (cloudletList, clusterList, _this) => {
 
                         </div>
                     ),
-                    value: clusterOne.cluster + " | " + cloudletOne,
+                    value: clusterOne.cluster + " | " + cloudletOne.CloudletName,
                     isParent: false,
                 })
             }
         })
 
-        newCloudletList.push(newCloudletOne);
+        treeCloudletList.push(newCloudletOne);
     })
 
-    return newCloudletList;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+
+    let newRegionTreeList = []
+    allRegionList.map((regionOne, regionIndex) => {
+        let regionMapOne = {
+            title: regionOne,
+            value: regionOne,
+            //selectable: false,
+            children: []
+        };
+
+        let newTreeCloudletList = []
+        treeCloudletList.map((innerItem, innerIndex) => {
+            if (regionOne === innerItem.region) {
+                regionMapOne.children.push(innerItem)
+            }
+        })
+        newRegionTreeList.push(regionMapOne)
+    })
+
+    console.log(`newRegionTreeList====>`, newRegionTreeList);
+
+    return newRegionTreeList;
 }
 
 

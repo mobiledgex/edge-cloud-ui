@@ -1,0 +1,94 @@
+[
+    {
+        "title": "ALL",
+        "value": "ALL",
+        "selectable": false,
+        "children": []
+    },
+    {
+        "title": "EU",
+        "value": "EU",
+        "selectable": false,
+        "children": [
+            {
+                "title": "automationDusseldorfCloudlet",
+                "value": "automationDusseldorfCloudlet",
+                "selectable": false,
+                "children": [
+                    {
+                        "title": "dockerdedicated",
+                        "value": "dockerdedicated | automationDusseldorfCloudlet",
+                        "isParent": false
+                    },
+                    {
+                        "title": "k8sdedicated",
+                        "value": "k8sdedicated | automationDusseldorfCloudlet",
+                        "isParent": false
+                    }
+                ],
+                "region": "EU"
+            },
+            {
+                "title": "automationHamburgCloudlet",
+                "value": "automationHamburgCloudlet",
+                "selectable": false,
+                "children": [
+                    {
+                        "title": "docker",
+                        "value": "docker | automationHamburgCloudlet",
+                        "isParent": false
+                    },
+                    {
+                        "title": "k8s",
+                        "value": "k8s | automationHamburgCloudlet",
+                        "isParent": false
+                    }
+                ],
+                "region": "EU"
+            }
+        ]
+    },
+    {
+        "title": "US",
+        "value": "US",
+        "selectable": false,
+        "children": [
+            {
+                "title": "andycloud",
+                "value": "andycloud",
+                "selectable": false,
+                "children": [
+                    {
+                        "title": "autoclusteriperf4",
+                        "value": "autoclusteriperf4 | andycloud",
+                        "isParent": false
+                    },
+                    {
+                        "title": "autoclusterk8sangshu",
+                        "value": "autoclusterk8sangshu | andycloud",
+                        "isParent": false
+                    }
+                ],
+                "region": "US"
+            },
+            {
+                "title": "packetcloudlet",
+                "value": "packetcloudlet",
+                "selectable": false,
+                "children": [
+                    {
+                        "title": "k8sdedicated",
+                        "value": "k8sdedicated | packetcloudlet",
+                        "isParent": false
+                    },
+                    {
+                        "title": "packetdocker",
+                        "value": "packetdocker | packetcloudlet",
+                        "isParent": false
+                    }
+                ],
+                "region": "US"
+            }
+        ]
+    }
+]

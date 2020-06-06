@@ -40,10 +40,28 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterEventLog, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeCloudlet,
+    TypeCloudletEventLog,
+    TypeCloudletUsage,
+    TypeCluster,
+    TypeClusterEventLog,
+    TypeClusterUsageOne,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -80,7 +98,12 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -267,7 +290,7 @@ type PageDevMonitoringState = {
     legendColSize: number,
     currentAppVersion: number,
     isEnableZoomIn: boolean,
-    dropDownCludsterListOnCloudlet: any,
+    //dropDownCludsterListOnCloudlet: any,
     searchClusterValue: string,
     filteredCloudletList: any,
     allCloudletUsageList: any,
@@ -299,6 +322,7 @@ type PageDevMonitoringState = {
     isFirstLoad: boolean,
     legendRowCount: number,
     open: boolean,
+    clusterTreeDropdownList: any,
 }
 
 export const CancelToken = axios.CancelToken;
@@ -409,7 +433,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     connectionsTabIndex: 0,
                     tcpTabIndex: 0,
                     udpTabIndex: 0,
-                    dropDownCludsterListOnCloudlet: undefined,
+                    clusterTreeDropdownList: undefined,
                     allUsageList: [],
                     maxCpu: 0,
                     maxMem: 0,
@@ -603,7 +627,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                     let cloudletClusterNameMap = {}
-                    let dropDownCludsterListOnCloudlet = []
+                    let clusterTreeDropdownList = []
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
                     //@desc:#########################################################################
@@ -621,7 +645,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         ////////////////////////////////////////////////////////////////////////////
                         cloudletClusterNameMap = getCloudletClusterNameList(clusterList)
-                        dropDownCludsterListOnCloudlet = makeClusterTreeDropdown(uniqBy(cloudletClusterNameMap.cloudletNameList), allClusterUsageList, this)
+                        let allRegionList = localStorage.getItem('regions').split(",")
+
+                        //fixme:fake json
+                        //clusterTreeDropdownList = require('./doprdownJSON')
+
+                        //fixme: real data
+                        clusterTreeDropdownList = makeClusterTreeDropdown(allRegionList, uniqBy(cloudletClusterNameMap.cloudletNameList), allClusterUsageList, this)
+
 
                     } else {//TODO:OPERATOR
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
@@ -662,7 +693,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        dropDownCludsterListOnCloudlet: dropDownCludsterListOnCloudlet,//@fixme
+                        clusterTreeDropdownList: clusterTreeDropdownList,//@fixme
                         allClusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -902,8 +933,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                /*todo:CLUSTER*/
-                /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -1566,9 +1597,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     newClusterList.push(item)
                 })
                 let cloudletClusterNameMap = getCloudletClusterNameList(this.state.filteredClusterList)
-                let dropDownCludsterListOnCloudlet = makeClusterTreeDropdown(uniqBy(cloudletClusterNameMap.cloudletNameList), newClusterList, this)
+                let clusterTreeDropdownList = makeClusterTreeDropdown(uniqBy(cloudletClusterNameMap.cloudletNameList), newClusterList, this)
                 await this.setState({
-                    dropDownCludsterListOnCloudlet: dropDownCludsterListOnCloudlet,
+                    clusterTreeDropdownList: clusterTreeDropdownList,
                 })
             }
 
@@ -2292,7 +2323,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 dropdownStyle={{
                                     maxHeight: 800, overflow: 'auto',
                                 }}
-                                treeData={this.state.dropDownCludsterListOnCloudlet}
+                                treeData={this.state.clusterTreeDropdownList}
                                 treeDefaultExpandAll={true}
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
