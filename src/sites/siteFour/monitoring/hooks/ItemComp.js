@@ -7,23 +7,6 @@ const ItemComponent = defaultValue => {
     React.useEffect(() => {
         if (defaultValue.item) setItem(defaultValue.item);
     }, [defaultValue]);
-    const makeComponent = item => (
-        <ChartWidget
-            id={item.id}
-            title={item.title}
-            filter={item.filter}
-            method={item.method}
-            chartType={item.chartType}
-            type={item.type}
-            size={item.sizeInfo}
-            cloudlets={item.cloudlets}
-            appinsts={item.appinsts}
-            clusters={item.clusters}
-            page={item.page}
-            itemCount={item.itemCount}
-            legend={item.legend}
-        />
-    );
 
     return (
         <ChartWidget

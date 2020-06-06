@@ -25,10 +25,10 @@ const makeItemFormat = items => (
 );
 
 const useCompare = (val: any) => {
-    const prevVal = usePrevious(val)
-    return prevVal !== val
+    const prevVal = usePrevious(val);
+    return prevVal !== val;
 };
-const usePrevious = (value) => {
+const usePrevious = value => {
     const ref = useRef();
     useEffect(() => {
         ref.current = value;
@@ -52,38 +52,39 @@ const HeaderFiltering = props => {
         //
         const groupCategory = groupByItem[selected] ? groupBy(groupByItem[selected], property.depthId) : [];
         const cloudletKeys = Object.keys(groupCategory);
-        //const defaultInsert = makeItemFormat([property.default]);
-        //return defaultInsert.concat(makeItemFormat(cloudletKeys));
+        // const defaultInsert = makeItemFormat([property.default]);
+        // return defaultInsert.concat(makeItemFormat(cloudletKeys));
         return makeItemFormat(cloudletKeys);
     };
 
-    const onSelectItem = (item, depth) => {
-        console.log("20200602 on selectd == ", item, ": depth= ", depth);
+    const onSelectItem = params => {
+        const { depth, id, value } = params;
+        console.log("20200602 on selectd == ", params, ": depth= ", depth, "id=", id);
         /** set cloudlts in select items box */
-        if (depth === "region") {
-            setSelectedRegion(item);
+        if (id === "region") {
+            setSelectedRegion(params);
             setDepthOne([]);
             setDepthTwo([]);
             setDepthThree([]);
             if (props.compCloudlet && props.compCloudlet.length > 0) {
                 console.log("20200602 cloudlet info == ", props.compCloudlet);
-                setDepthOne(makeDepthTrees(props.compCloudlet, item, { byId: depth, depthId: "cloudletName", default: "Select Cloudlet" }));
+                setDepthOne(makeDepthTrees(props.compCloudlet, value, { byId: id, depthId: "cloudletName", default: "Select Cloudlet" }));
             }
             /** set clusters in select items box */
-        } else if (depth === "cloudlet") {
-            // setSelectedCloudlet(item);
+        } else if (id === "cloudlet") {
+            // setSelectedCloudlet(params);
             setDepthTwo([]);
             setDepthThree([]);
             if (props.compClusterinst && props.compClusterinst.length > 0) {
                 console.log("20200602 compClusterinst info == ", props.compClusterinst);
-                setDepthTwo(makeDepthTrees(props.compClusterinst, item, { byId: "cloudletName", depthId: "clusterName", default: "Select Cluster" }));
+                setDepthTwo(makeDepthTrees(props.compClusterinst, value, { byId: "cloudletName", depthId: "clusterName", default: "Select Cluster" }));
             }
             /** set appinst in select items box */
-        } else if (depth === "cluster") {
+        } else if (id === "cluster") {
             setDepthThree([]);
             if (props.compAppinst && props.compAppinst.length > 0) {
                 console.log("20200602 appinst info == ", props.compAppinst);
-                setDepthThree(makeDepthTrees(props.compAppinst, item, { byId: "clusterName", depthId: "appName", default: "Select Appinstance" }));
+                setDepthThree(makeDepthTrees(props.compAppinst, value, { byId: "clusterName", depthId: "appName", default: "Select Appinstance" }));
             }
         }
     };

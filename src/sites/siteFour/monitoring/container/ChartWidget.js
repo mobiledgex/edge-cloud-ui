@@ -122,7 +122,6 @@ class ChartWidget extends React.Component {
     }
 
     updateClientData = async uData => {
-        console.log("20200521 container widget   == 77 77  ==", uData);
         setTimeout(() => this.setState({ data: uData }), 500);
     }
 
@@ -172,7 +171,7 @@ class ChartWidget extends React.Component {
                     style={{
                         height: resize.height,
                         backgroundColor:
-                            chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE && chartType !== ChartType.COUNTERWITHSPARK  ? "#202329" : "transparent",
+                            chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE && chartType !== ChartType.COUNTERWITHSPARK ? "#202329" : "transparent",
                     }}
                 >
                     {(filter) ? (

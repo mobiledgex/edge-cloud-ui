@@ -48,7 +48,6 @@ const ClusterMap = props => {
         const initialData = (props.dataList) ? props.dataList : props.locData;
         const data = props.locData ? initialData : initialData.length > 0 ? initialData.filter(item => item.state === 5) : [];
         const methodCount = 0;
-        console.log("20200521 container widget   == 101010 =", initialData, ":", methodCount);
 
         function reduceUp(value) {
             return Math.round(value);
@@ -129,7 +128,6 @@ const ClusterMap = props => {
             return;
         }
         zoomControls.zoom++;
-        console.log("20200603 zoom in  postion = ", zoomControls.zoom);
         setToggle(true);
         setZoom(zoomControls.zoom);
     };
@@ -140,7 +138,6 @@ const ClusterMap = props => {
             return;
         }
         zoomControls.zoom--;
-        console.log("20200603 zoom out  postion = ", zoomControls.zoom);
         setToggle(true);
         setZoom(zoomControls.zoom);
     };

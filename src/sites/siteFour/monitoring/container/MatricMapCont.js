@@ -22,7 +22,6 @@ const MatricMapCont = props => {
         //
     };
     React.useEffect(() => {
-        console.log("20200521 container widget   == 9999   ", props.cloudlets, ":", props.data);
         if (props.cloudlets && props.data) {
             let findCountTotal = 0;
             props.data.map(data => {

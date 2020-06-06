@@ -16,6 +16,7 @@ export default function FilterMenu(defaultProps) {
     const [valueZero, setValueZero] = React.useState("All");
     const [enableApply, setEnableApply] = React.useState(false);
     const [applyMent, setApplyMent] = React.useState("");
+    const [selectedFilterObj, setSelectedFilterObj] = React.useState({});
 
     const handleClick = event => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -25,19 +26,25 @@ export default function FilterMenu(defaultProps) {
         setAnchorEl(null);
     };
 
-    const handleApply = () => {
-        const filteredList = { region: "", cloudlet: "", cluster: "", appinst: "" };
-        defaultProps.onHandleApplyFilter(filteredList);
+    const handleApply = (event) => {
+        defaultProps.onHandleApplyFilter(selectedFilterObj);
     };
 
     const onChangeSelect = (event, selectItem) => {
         console.log("20200602 on change select == ", selectItem);
         // if (selectItem.id === "region") setValueZero(selectItem.id);
-        defaultProps.onSelectItem(selectItem.value, selectItem.id);
+        const newObj = selectedFilterObj;
+        if (selectItem.value === "") {
+            delete newObj[selectItem.id];
+        } else {
+            newObj[selectItem.id] = { depth: selectItem.depth, value: selectItem.value };
+        }
+        setSelectedFilterObj(newObj);
+        defaultProps.onSelectItem(selectItem);
 
         if (selectItem.id) {
-            setEnableApply(true);
-            setApplyMent(selectItem.id);
+            setEnableApply(true); // visilbe apply button
+            setApplyMent(selectItem.id); // lead to skip next depth click
         }
     };
 
@@ -107,6 +114,7 @@ export default function FilterMenu(defaultProps) {
                             fluid
                             search
                             selection
+                            depth={0}
                             id="region"
                             options={regionOptions}
                             onChange={onChangeSelect}
@@ -125,6 +133,7 @@ export default function FilterMenu(defaultProps) {
                             fluid
                             search
                             selection
+                            depth={1}
                             id="cloudlet"
                             options={cloudletOptions}
                             onChange={onChangeSelect}
@@ -143,6 +152,7 @@ export default function FilterMenu(defaultProps) {
                             fluid
                             search
                             selection
+                            depth={2}
                             id="cluster"
                             options={clusterOptions}
                             onChange={onChangeSelect}
@@ -160,6 +170,7 @@ export default function FilterMenu(defaultProps) {
                             fluid
                             search
                             selection
+                            depth={3}
                             id="appinst"
                             options={appinstOptions}
                             onChange={onChangeSelect}

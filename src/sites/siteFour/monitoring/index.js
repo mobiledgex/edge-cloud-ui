@@ -37,7 +37,8 @@ class MonitoringAdmin extends React.Component {
             compCloudlet: [],
             compClusterinst: [],
             compAppinst: [],
-            currentAuthDepth: 1 // <<<===== change depth
+            filteringItems: {},
+            currentAuthDepth: 0 // <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -165,18 +166,28 @@ class MonitoringAdmin extends React.Component {
         }
     }
 
-    resetAuthDepth = depth => {
-        console.log("20200605 reset authdepth == ", depth);
-        this.setState({ currentAuthDepth: depth });
-    }
-
+    /*
+    * depth
+    0 : filtering the regions
+    1 : go to page that the cloudlets
+    2 : go to page that the clusterinstances
+    3 : go to page that the appinstances
+    */
     onHandleApplyFilter = filteredItem => {
         console.log("20200605 filtering == ", filteredItem);
-        this.setState({ currentAuthDepth: 2 });
+        /* example
+        {region: {depth:0 , value:"EU"}}
+        */
+        const filteredDepth = Object.keys(filteredItem).length - 1;
+
+
+        // 잠시 막음
+        this.setState({ currentAuthDepth: filteredDepth, filteringItems: filteredItem });
         this.forceUpdate();
     }
 
     getCurrentItem = (depth, scope, props, compCloudlet, compClusterinst, compAppinst) => {
+        // TODO : 20200606 should have filtering compCloudlet & compClusterinst, comAppinst
         let currentItm = null;
         switch (depth) {
             case 0: currentItm = generateComponentAdmin(scope, props, compCloudlet, compClusterinst, compAppinst); break;
@@ -207,7 +218,6 @@ class MonitoringAdmin extends React.Component {
                     compCloudlet={compCloudlet}
                     compClusterinst={compClusterinst}
                     compAppinst={compAppinst}
-                    resetAuthDepth={this.resetAuthDepth}
                     regions={regions}
                     selectedRegion="All"
                     onHandleApplyFilter={this.onHandleApplyFilter}
@@ -277,7 +287,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         self,
         cloudlets,
         appinsts,
-        clusters
+        clusters,
+        ...self.state.filteringItems
     };
     return [
         {
