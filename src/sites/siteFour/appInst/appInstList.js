@@ -13,7 +13,7 @@ import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
-import { Icon } from 'semantic-ui-react';
+import { Icon, Popup } from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
 
 
@@ -89,7 +89,7 @@ class AppInstList extends React.Component {
             { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
             { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
             { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader },
+            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, dialogNote:'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance' },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
             { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
@@ -141,6 +141,25 @@ class AppInstList extends React.Component {
         }
     }
 
+    showHealthCheck = (data, isDetailView) => {
+        if (isDetailView) {
+            return constant.healthCheck(data)
+        }
+        else {
+            let icon = null;
+            switch (data[fields.healthCheck]) {
+                case 3:
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
+                    break;
+                default:
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
+            }
+            return (
+                icon
+            )
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -152,6 +171,9 @@ class AppInstList extends React.Component {
             }
             if (key.field === fields.powerState) {
                 key.customizedData = this.showPowerState
+            }
+            if (key.field === fields.healthCheck) {
+                key.customizedData = this.showHealthCheck
             }
         }
     }
