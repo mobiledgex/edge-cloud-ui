@@ -89,7 +89,7 @@ class AppInstList extends React.Component {
             { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
             { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
             { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader },
+            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, dialogNote:'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance' },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
             { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },

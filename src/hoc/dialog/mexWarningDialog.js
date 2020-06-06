@@ -28,6 +28,10 @@ const MexMessageDialog = (props) => {
                     <Typography style={{ color: '#FFF' }}>
                         {message}
                     </Typography>
+                    {props.messageInfo.action.dialogNote ?
+                        <Typography style={{ color: '#FF5252', marginTop: 20, fontSize: 12 }}>
+                            {props.messageInfo.action.dialogNote}
+                        </Typography> : null}
                 </DialogContent>
                 <DialogActions style={{ background: '#616161' }}>
                     <Button onClick={() => { props.onClick(false) }} style={{color:'#D3D3D3'}}>
