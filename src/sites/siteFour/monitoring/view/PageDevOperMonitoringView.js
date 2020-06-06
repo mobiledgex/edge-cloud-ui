@@ -1594,7 +1594,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 let cloudletClusterNameMap = getCloudletClusterNameList(this.state.filteredClusterList)
                 let allRegionList = localStorage.getItem('regions').split(",")
-                clusterTreeDropdownList = makeClusterTreeDropdown(allRegionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
+                clusterTreeDropdownList = makeClusterTreeDropdown(allRegionList, cloudletClusterNameMap.cloudletNameList, allClusterUsageList, this)
 
                 await this.setState({
                     clusterTreeDropdownList: clusterTreeDropdownList,
