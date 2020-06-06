@@ -1,7 +1,8 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Table, Icon} from "semantic-ui-react";
+import {Divider, Modal, Grid, Table} from "semantic-ui-react";
 import TextareaAutosize from "react-textarea-autosize";
-
+import CloseIcon from '@material-ui/icons/Close';
+import { IconButton } from '@material-ui/core';
 
 const menuItem = ['Users & Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances', 'Policies', 'Monitoring', 'Audit Logs'];
 const roles =
@@ -203,15 +204,14 @@ export default class PopLegendViewer extends React.Component {
         let { orgType } = this.state;
         return (
             <Modal style={{width: '450px'}} className="modal_role" open={this.state.open}>
-                <Modal.Header >Permissions of Role</Modal.Header>
+                <Modal.Content >
+                    <h3 style={{ display: 'inline', top:20, position: 'absolute'}}>Permissions of Role</h3>
+                    <button onClick={() => this.close()} style={{ display: 'inline', right: 5, position: 'fixed', backgroundColor:'transparent', border:'none' }}>
+                        <CloseIcon />
+                    </button>
+                </Modal.Content>
                 <Modal.Content scrolling>
                     <Modal.Description>
-                        <Grid divided>
-                            <div role={"list"}>
-
-                            </div>
-
-                        </Grid>
                         <Grid className="stepOrgDeveloper2">
                             <Grid.Row columns={2} onClick={this.orgTypeLegendShow}>
                                 <Grid.Column width={5}>
@@ -264,11 +264,6 @@ export default class PopLegendViewer extends React.Component {
                         </Grid>
                     </Modal.Description>
                 </Modal.Content>
-                <Modal.Actions>
-                    <Button onClick={() => this.close()}>
-                        Close
-                    </Button>
-                </Modal.Actions>
             </Modal>
         )
     }
