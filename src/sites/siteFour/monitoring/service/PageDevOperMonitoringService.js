@@ -20,10 +20,21 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeClusterUsageOne, TypeLineChartData} from "../../../../shared/Types";
+import type {
+    TypeAppInst,
+    TypeCloudlet,
+    TypeCluster,
+    TypeClusterUsageOne,
+    TypeLineChartData
+} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import Chip from "@material-ui/core/Chip";
@@ -1169,7 +1180,7 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit) => {
+export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit, isLegendExpanded = true) => {
     //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
 
     let clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
@@ -1177,12 +1188,13 @@ export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, 
     return (
         <div style={{display: 'flex'}}>
             <div>
-                {reduceString(clusterCloudletName, stringLimit)}
+                {reduceString(clusterCloudletName, isLegendExpanded ? stringLimit : 3)}
             </div>
 
         </div>
     )
 }
+
 
 
 export const tempClusterList = [

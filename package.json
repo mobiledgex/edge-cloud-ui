@@ -5,7 +5,8 @@
     "@comment dependencies": [
         "These are the comments for the `dependencies` section.",
         "echarts-for-react",
-        "echarts"
+        "echarts",
+        "react-animate-height"
     ],
     "dependencies": {
         "@craco/craco": "^5.6.3",
