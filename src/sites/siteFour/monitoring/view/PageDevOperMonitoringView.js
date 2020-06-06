@@ -642,8 +642,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
-                        //fixme:fake json
-                        //clusterTreeDropdownList = require('./doprdownJSON')
+
+                        //clusterTreeDropdownList = require('./doprdownJSON')//fixme:fake json
                         ////////////////////////////////////////////////////////////////////////////
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let allRegionList = localStorage.getItem('regions').split(",")
@@ -663,8 +663,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         dataCount = cloudletList.length
                     }
 
-
-                    /*/////TODO: LEGEND ROW COUNTING///////*/
+                    /*TODO: LEGEND ROW COUNTING*/
                     let itemCount = 0;
                     let rowCount = 0;
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {

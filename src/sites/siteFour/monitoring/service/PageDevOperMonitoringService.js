@@ -1285,11 +1285,12 @@ export function convertHWType(hwType) {
     }
 }
 
-
 /**
  *
+ * @param allRegionList
  * @param cloudletList
  * @param clusterList
+ * @param _this
  * @returns {[]}
  */
 export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this) => {
@@ -1312,7 +1313,6 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
             ),
 
             value: cloudletOne.CloudletName,
-            //selectable: false,
             children: [],
             region: cloudletOne.Region
         };
@@ -1341,24 +1341,10 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
     })
 
     //todo://////////////////////////////////////////////////////////////////////////////
-    //todo://////////////////////////////<ReactCountryFlag countryCode="US" />////////////////////////////////////////////////
-    //todo://////////////////////////////////////////////////////////////////////////////
-
     let newRegionTreeList = []
     allRegionList.map((regionOne, regionIndex) => {
         let regionMapOne = {
-            title: (
-                <div style={{display: 'flex'}}>
-
-                    <div style={{marginLeft: 5,}}>
-                        {regionOne}
-                    </div>
-                    <Center style={{marginLeft: 9}}>
-                        <img src={require(`../images/${regionOne}.png`)} style={{width: 25, height: 25}}/>
-                    </Center>
-
-                </div>
-            ),
+            title: regionOne,
             value: regionOne,
             children: []
         };
