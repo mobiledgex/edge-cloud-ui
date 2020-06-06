@@ -842,8 +842,8 @@ tr td {
 }
 
 ::-webkit-scrollbar-thumb {
-    border-right: 3px #343b43 solid;
-    border-left: 3px #343b43 solid;
+    border-right: 3px #55616b solid;
+    border-left: 3px #55616b solid;
     background-clip: padding-box;
 }
 
