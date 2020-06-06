@@ -92,62 +92,6 @@ function responseError(self, request, response, callback) {
     }
 }
 
-
-export function sendWSRequest(request, callback) {
-    const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
-    ws.onopen = () => {
-        sockets.push({uuid: request.uuid, socket: ws, isClosed: false});
-        ws.send(`{"token": "${request.token}"}`);
-        ws.send(JSON.stringify(request.data));
-    }
-    ws.onmessage = evt => {
-        let data = JSON.parse(evt.data);
-        let response = {};
-        response.data = data;
-        callback({request: request, response: response, socket:ws});
-    }
-
-    ws.onclose = evt => {
-        sockets.map((item, i) => {
-            if (item.uuid === request.uuid) {
-                if (item.isClosed === false && evt.code === 1000) {
-                    callback({request: request})
-                }
-                sockets.splice(i, 1)
-            }
-        })
-    }
-}
-
-
-export function sendMultiRequest(self, requestDataList, callback) {
-    if (requestDataList && requestDataList.length > 0) {
-        let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
-        showSpinner(self, isSpinner)
-        let promise = [];
-        let resResults = [];
-        requestDataList.map((request) => {
-            promise.push(axios.post(getHttpURL(request), request.data,
-                {
-                    headers: getHeader(request)
-                }))
-
-        })
-        axios.all(promise)
-            .then(responseList => {
-                responseList.map((response, i) => {
-                    resResults.push(EP.formatData(requestDataList[i], response));
-                })
-
-                showSpinner(self, false)
-                callback(resResults);
-
-            }).catch(error => {
-                responseError(self, requestDataList[0], error.response, callback)
-            })
-    }
-}
-
 export const sendSyncRequest = async (self, request) => {
     try {
         request.showSpinner === undefined && showSpinner(self, true)
@@ -162,22 +106,4 @@ export const sendSyncRequest = async (self, request) => {
             responseError(self, request, error.response)
         }
     }
-}
-
-export function sendRequest(self, request, callback) {
-    let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
-    showSpinner(self, isSpinner)
-    axios.post(getHttpURL(request), request.data,
-        {
-            headers: getHeader(request)
-        })
-        .then(function (response) {
-            showSpinner(self, false)
-            callback(EP.formatData(request, response));
-        })
-        .catch(function (error) {
-            if (error.response) {
-                responseError(self, request, error.response, callback)
-            }
-        })
 }
