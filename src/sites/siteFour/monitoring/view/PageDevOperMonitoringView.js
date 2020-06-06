@@ -2285,123 +2285,86 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderClusterDropdown() {
 
-                if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                    return (
-                        <div className="page_monitoring_dropdown_box"
-                             style={{alignSelf: 'center', justifyContent: 'center'}}>
-                            <div
-                                className="page_monitoring_dropdown_label"
-                                style={{
-                                    marginLeft: this.state.isShowFilter ? 0 : 10
-                                }}
-                            >
-                                Cluster
-                            </div>
-                            <TreeSelect
-                                showArrow={true}
-                                maxTagCount={3}
-                                disabled={this.state.loading}
-                                size={'middle'}
-                                allowClear={true}
-                                showSearch={true}
-                                treeCheckable={true}
-                                showCheckedStrategy={'SHOW_CHILD'}
-                                style={{width: '500px', height: 30}}
-                                onSearch={(value) => {
-                                    this.setState({
-                                        searchClusterValue: value,
-                                    });
-                                }}
-                                ref={c => this.treeSelect = c}
-                                listHeight={520}
-                                searchValue={this.state.searchClusterValue}
-                                searchPlaceholder={'Enter the cluster name.'}
-                                placeholder={'Select Cluster'}
-                                dropdownStyle={{
-                                    maxHeight: 800, overflow: 'auto',
-                                }}
-                                treeData={this.state.clusterTreeDropdownList}
-                                treeDefaultExpandAll={true}
-                                value={this.state.currentClusterList}
-                                onChange={async (value, label, extra) => {
-                                    if (!isEmpty(value)) {
-                                        this.setState({currentClusterList: value});
+                return (
+                    <div className="page_monitoring_dropdown_box"
+                         style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div
+                            className="page_monitoring_dropdown_label"
+                            style={{
+                                marginLeft: this.state.isShowFilter ? 0 : 10,
+                            }}
+                        >
+                            Cluster
+                        </div>
+                        <TreeSelect
+                            showArrow={true}
+                            maxTagCount={3}
+                            disabled={this.state.loading}
+                            size={'middle'}
+                            allowClear={true}
+                            showSearch={true}
+                            treeCheckable={true}
+                            showCheckedStrategy={'SHOW_CHILD'}
+                            style={{width: '500px', height: 30}}
+                            onSearch={(value) => {
+                                this.setState({
+                                    searchClusterValue: value,
+                                });
+                            }}
+                            ref={c => this.treeSelect = c}
+                            listHeight={520}
+                            searchValue={this.state.searchClusterValue}
+                            searchPlaceholder={'Enter the cluster name.'}
+                            placeholder={'Select Cluster'}
+                            dropdownStyle={{
+                                maxHeight: 800, overflow: 'auto',
+                            }}
+                            treeData={this.state.clusterTreeDropdownList}
+                            treeDefaultExpandAll={true}
+                            value={this.state.currentClusterList}
+                            onChange={async (value, label, extra) => {
+                                if (!isEmpty(value)) {
+                                    this.setState({currentClusterList: value});
+                                } else {
+                                    this.resetLocalData()
+                                }
+
+                            }}
+                        />
+                        <div style={{marginLeft: 10,}}>
+                            <Button
+                                size={'small'}
+                                onClick={async () => {
+                                    this.applyButton.blur();
+                                    if (this.state.currentClusterList !== undefined) {
+                                        let selectClusterCloudletList = this.state.currentClusterList
+                                        this.handleOnChangeClusterDropdown(selectClusterCloudletList)
+
                                     } else {
                                         this.resetLocalData()
                                     }
 
+
                                 }}
-                            />
-                            <div style={{marginLeft: 10,}}>
-                                <Button
-                                    size={'small'}
-                                    onClick={async () => {
-                                        this.applyButton.blur();
-                                        if (this.state.currentClusterList !== undefined) {
-                                            let selectClusterCloudletList = this.state.currentClusterList
-                                            this.handleOnChangeClusterDropdown(selectClusterCloudletList)
-
-                                        } else {
-                                            this.resetLocalData()
-                                        }
-
-
-                                    }}
-                                    ref={c => this.applyButton = c}
-                                >
-                                    Apply
-                                </Button>
-                            </div>
-                            <div style={{marginLeft: 10,}}>
-                                <Button
-                                    size={'small'}
-                                    onClick={() => {
-                                        this.resetLocalData();
-                                    }}
-                                >
-                                    Reset
-                                </Button>
-                            </div>
+                                ref={c => this.applyButton = c}
+                            >
+                                Apply
+                            </Button>
                         </div>
-                    )
-                } else {
-                    //@todo: ####################################3
-                    //@todo: When Operator
-                    //@todo: ####################################3
-                    return (
-                        <div className="page_monitoring_dropdown_box"
-                             style={{alignSelf: 'center', justifyContent: 'center'}}>
-                            <div className="page_monitoring_dropdown_label">
-                                Cluster
-                            </div>
-                            <Select
-                                ref={c => this.clusterSelectForOper = c}
-                                showSearch={true}
-                                dropdownStyle={{}}
-                                notFoundContent={<div
-                                    style={{color: 'orange', marginLeft: 5, fontWeight: 'bold', fontStyle: 'italic'}}>No
-                                    Cluster</div>}
-                                listHeight={512}
-                                style={{width: 250, maxHeight: '512px !important'}}
-                                disabled={this.state.currentCloudLet === undefined && this.state.filteredClusterList.length === 0}
-                                value={this.state.currentClusterList}
-                                placeholder={'Select Cluster'}
-                                onChange={async (value) => {
-
-                                    this.handleOnChangeClusterDropdown(value)
-                                    this.clusterSelectForOper.blur();
+                        <div style={{marginLeft: 10,}}>
+                            <Button
+                                ref={c => this.resetBtn = c}
+                                size={'small'}
+                                onClick={() => {
+                                    this.resetBtn.blur();
+                                    this.resetLocalData();
                                 }}
                             >
-                                {this.state.filteredClusterList.map((item: TypeCluster, index) => {
-                                    return (
-                                        <Option key={index}
-                                                value={item.ClusterName + " | " + item.Cloudlet}>{item.ClusterName}</Option>
-                                    )
-                                })}
-                            </Select>
+                                Reset
+                            </Button>
                         </div>
-                    )
-                }
+                    </div>
+                )
 
 
             }
@@ -2410,7 +2373,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderAppInstDropdown() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label" style={{width: 50,}}>
+                        <div className="page_monitoring_dropdown_label" style={{width: 50}}>
                             App Inst
                         </div>
                         <Select

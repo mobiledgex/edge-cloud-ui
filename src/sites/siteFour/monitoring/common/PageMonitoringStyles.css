@@ -833,14 +833,21 @@ tr td {
     margin-right: 0px;
     width: 100%;
     overflow-x: hidden;
+    scrollbar-width: thin;
 }
 
 ::-webkit-scrollbar {
     width: 6px !important;
+
 }
 
 ::-webkit-scrollbar-thumb {
-    border-right: 3px lightslategrey solid;
-    border-left: 3px lightslategrey solid;
+    border-right: 3px #343b43 solid;
+    border-left: 3px #343b43 solid;
     background-clip: padding-box;
 }
+
+.thinScrBar {
+    scrollbar-width: thin !important;
+}
+
