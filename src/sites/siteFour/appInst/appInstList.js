@@ -13,7 +13,7 @@ import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
-import { Icon } from 'semantic-ui-react';
+import { Icon, Popup } from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
 
 
@@ -141,6 +141,25 @@ class AppInstList extends React.Component {
         }
     }
 
+    showHealthCheck = (data, isDetailView) => {
+        if (isDetailView) {
+            return constant.healthCheck(data)
+        }
+        else {
+            let icon = null;
+            switch (data[fields.healthCheck]) {
+                case 3:
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
+                    break;
+                default:
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
+            }
+            return (
+                icon
+            )
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -152,6 +171,9 @@ class AppInstList extends React.Component {
             }
             if (key.field === fields.powerState) {
                 key.customizedData = this.showPowerState
+            }
+            if (key.field === fields.healthCheck) {
+                key.customizedData = this.showHealthCheck
             }
         }
     }
