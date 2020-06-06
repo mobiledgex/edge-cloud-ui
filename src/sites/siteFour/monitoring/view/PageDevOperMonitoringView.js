@@ -4,8 +4,8 @@ import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import {Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+import {CircularProgress, Dialog, Toolbar} from '@material-ui/core'
+import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect, Skeleton} from 'antd';
 import {
     filterByClassification,
     getCloudletClusterNameList,
@@ -2656,11 +2656,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignItems: 'center',
                                     width: '100%',
                                 }}>
-                                    <ColorLinearProgress
+                                     <ColorLinearProgress
                                         variant={'query'}
                                         style={{
-                                            marginLeft: -10,
-                                            width: '15%',
+                                            marginLeft: -20,
+                                            width: '9%',
                                             alignContent: 'center',
                                             justifyContent: 'center',
                                         }}
