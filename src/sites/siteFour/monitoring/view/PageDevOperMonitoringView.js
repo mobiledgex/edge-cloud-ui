@@ -626,7 +626,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     });
 
 
-                    let cloudletClusterNameMap = {}
+                    let cloudletClusterListMap = {}
                     let clusterTreeDropdownList = []
                     //@desc:#########################################################################
                     //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
@@ -642,16 +642,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
-
-                        ////////////////////////////////////////////////////////////////////////////
-                        cloudletClusterNameMap = getCloudletClusterNameList(clusterList)
-                        let allRegionList = localStorage.getItem('regions').split(",")
-
                         //fixme:fake json
                         //clusterTreeDropdownList = require('./doprdownJSON')
-
-                        //fixme: real data
-                        clusterTreeDropdownList = makeClusterTreeDropdown(allRegionList, uniqBy(cloudletClusterNameMap.cloudletNameList), allClusterUsageList, this)
+                        ////////////////////////////////////////////////////////////////////////////
+                        cloudletClusterListMap = getCloudletClusterNameList(clusterList)
+                        let allRegionList = localStorage.getItem('regions').split(",")
+                        clusterTreeDropdownList = makeClusterTreeDropdown(allRegionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
 
 
                     } else {//TODO:OPERATOR
@@ -1597,7 +1593,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     newClusterList.push(item)
                 })
                 let cloudletClusterNameMap = getCloudletClusterNameList(this.state.filteredClusterList)
-                let clusterTreeDropdownList = makeClusterTreeDropdown(uniqBy(cloudletClusterNameMap.cloudletNameList), newClusterList, this)
+                let allRegionList = localStorage.getItem('regions').split(",")
+                clusterTreeDropdownList = makeClusterTreeDropdown(allRegionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
+
                 await this.setState({
                     clusterTreeDropdownList: clusterTreeDropdownList,
                 })
