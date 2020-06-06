@@ -26,9 +26,9 @@ import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
     convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
+    convertToMegaGigaForNumber, isEmpty,
     makeBubbleChartDataForCluster,
-    renderUsageByType
+    renderUsageByType, showToast
 } from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
@@ -358,6 +358,8 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
  */
 export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
+
+        console.log(`hardwareUsageList====>`, hardwareUsageList);
 
         if (hardwareUsageList.length === 0) {
             return (
@@ -1163,12 +1165,21 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 };
                 finalSeriesDataSets.push(datasetsOne)
             }
+            console.log(`finalSeriesDataSets=====>${hwType}>`, finalSeriesDataSets[0].data);
+            let isNoData = false
+            if (isEmpty(finalSeriesDataSets[0].data)) {
+                //showToast('NO data!!!')
+                isNoData = true;
+            }
 
-            let _result = {
+            let chartDataSet = {
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
+                isNoData: isNoData,
             }
-            return _result;
+
+
+            return chartDataSet;
         };
 
         return lineChartData;

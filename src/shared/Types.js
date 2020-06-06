@@ -255,6 +255,12 @@ export type TypeLineChartData = {
     hardwareType: string,
 }
 
+export type TypeChartDataSet ={
+    labels: any,
+    datasets:any,
+    isNoData: boolean
+}
+
 export type TypeClusterEventLog = {
     "time": string,
     "cluster": string,

@@ -763,6 +763,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentAppInstNameVersion: undefined,
                 })
+
+                await this.setState({
+                    selectedClientLocationListOnAppInst: [],
+                })
             }
 
             async reloadDataFromRemote() {
@@ -2656,7 +2660,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignItems: 'center',
                                     width: '100%',
                                 }}>
-                                     <ColorLinearProgress
+                                    <ColorLinearProgress
                                         variant={'query'}
                                         style={{
                                             marginLeft: -20,

@@ -1,10 +1,15 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
+import {
+    convertToClassification,
+    makeGradientLineChartData,
+    makeLineChartOptions
+} from "../service/PageDevOperMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import type {TypeChartDataSet, TypeLineChartData} from "../../../../shared/Types";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -19,6 +24,7 @@ type State = {
     chartDataSet: any,
     pHardwareType: string,
     isResizeComplete: boolean,
+    isNoData: boolean,
 };
 
 export default class LineChartContainer extends React.Component<Props, State> {
@@ -30,9 +36,12 @@ export default class LineChartContainer extends React.Component<Props, State> {
             themeTitle: '',
             chartDataSet: {
                 datasets: [],
-                labels: []
+                labels: [],
+                isNoData: false,
             },
             graphType: '',
+            isNoData: false,
+
         }
     }
 
@@ -60,11 +69,15 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let newDateTimeList = lineChartDataSet.newDateTimeList;
             let hardwareType = lineChartDataSet.hardwareType;
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
-            const lineChartDataForRendering = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, false, colorCodeIndexList)
+            const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, false, colorCodeIndexList)
+
+            console.log(`chartDataSet====>`, chartDataSet.isNoData);
+
             this.setState({
-                chartDataSet: lineChartDataForRendering,
+                chartDataSet: chartDataSet,
                 pHardwareType: hwType,
                 graphType: graphType,
+                isNoData: chartDataSet.isNoData,
             })
         } catch (e) {
 
@@ -116,21 +129,31 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             {convertToClassification(this.props.currentClassification)} {this.props.pHardwareType !== undefined && this.makeToShortTitle(this.props.pHardwareType)}
                         </div>
                     </div>
-                    <div className='page_monitoring_container'>
-                        <div style={{
-                            position: 'relative',
-                            width: '99%',
-                            height: '99%'
-                        }}>
-                            {this.props.parent.state.loading ? renderPlaceHolderLoader()
-                                : <Line
-                                    data={this.state.chartDataSet}
-                                    options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
-                                    //options={simpleGraphOptions}
-                                />
-                            }
+                    {this.state.chartDataSet !== undefined ?
+                        <div className='page_monitoring_container'>
+                            <div style={{
+                                position: 'relative',
+                                width: '99%',
+                                height: '99%'
+                            }}>
+                                {this.props.parent.state.loading ? renderPlaceHolderLoader()
+                                    : !this.state.isNoData ?
+                                        <Line
+                                            data={this.state.chartDataSet}
+                                            options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
+                                            //options={simpleGraphOptions}
+                                        />
+                                        :
+                                        <div style={{zIndex: 99999}}>
+                                            no Data!!
+                                        </div>
+                                }
+                            </div>
                         </div>
-                    </div>
+                        :
+                        <div> no data</div>
+                    }
+
                 </div>
             </div>
 
