@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactCountryFlag from "react-country-flag"
 import '../common/PageMonitoringStyles.css';
 import {
     CHART_COLOR_APPLE,
@@ -33,6 +34,8 @@ import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
 import Chip from "@material-ui/core/Chip";
+import {Image} from "semantic-ui-react";
+
 //import _ from 'lodash';
 
 export function getOnlyCloudletName(cloudletOne) {
@@ -1337,21 +1340,29 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
         treeCloudletList.push(newCloudletOne);
     })
 
-
-    ////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////
+    //todo://////////////////////////////////////////////////////////////////////////////
+    //todo://////////////////////////////<ReactCountryFlag countryCode="US" />////////////////////////////////////////////////
+    //todo://////////////////////////////////////////////////////////////////////////////
 
     let newRegionTreeList = []
     allRegionList.map((regionOne, regionIndex) => {
         let regionMapOne = {
-            title: regionOne,
+            title: (
+                <div style={{display: 'flex'}}>
+
+                    <div style={{marginLeft: 5,}}>
+                        {regionOne}
+                    </div>
+                    <Center style={{marginLeft: 9}}>
+                        <img src={require(`../images/${regionOne}.png`)} style={{width: 25, height: 25}}/>
+                    </Center>
+
+                </div>
+            ),
             value: regionOne,
-            //selectable: false,
             children: []
         };
 
-        let newTreeCloudletList = []
         treeCloudletList.map((innerItem, innerIndex) => {
             if (regionOne === innerItem.region) {
                 regionMapOne.children.push(innerItem)
@@ -1359,8 +1370,6 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
         })
         newRegionTreeList.push(regionMapOne)
     })
-
-    console.log(`newRegionTreeList====>`, newRegionTreeList);
 
     return newRegionTreeList;
 }
