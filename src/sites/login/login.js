@@ -387,7 +387,7 @@ class Login extends Component {
                 this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
             }
         }
-        else {
+        else if(mcRequest && mcRequest.error) {
             this.props.handleAlertInfo('error', 'Invalid username/password')
         }
     }
