@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactCountryFlag from "react-country-flag"
 import '../common/PageMonitoringStyles.css';
 import {
     CHART_COLOR_APPLE,
@@ -21,20 +20,20 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
     convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber, isEmpty,
+    convertToMegaGigaForNumber,
+    isEmpty,
     makeBubbleChartDataForCluster,
-    renderUsageByType, showToast
+    renderUsageByType
 } from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
 import Chip from "@material-ui/core/Chip";
-import {Image} from "semantic-ui-react";
+import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 
 //import _ from 'lodash';
 
