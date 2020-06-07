@@ -1,5 +1,5 @@
 import React from "react";
-import Chart from "chart.js";
+import { Line, Bar } from 'react-chartjs-2';
 import { generateUniqueId } from "../services/serviceMC";
 
 const ChartJSComponent = defaultProps => {
@@ -8,18 +8,15 @@ const ChartJSComponent = defaultProps => {
     const [data, setData] = React.useState();
     const [vWidth, setVWidth] = React.useState(defaultProps.width);
     const [vHeight, setVHeight] = React.useState(defaultProps.height);
-    const [type, setType] = React.useState(defaultProps.type);
-
-    const initialize = (_id, _data) => {
-        const chartData = [];
-        const ctx = document.getElementById("chartCanv_" + idx).getContext("2d");
-        const myChart = new Chart(ctx, {
-            type: type === "scatter" ? "line" : type,
+    const initialize = (_idx, id) => {
+        console.log("20200607 idx=", _idx, ": id=", id);
+        const myChart = {
+            type: "bar",
             data: {
-                labels: _data[0].x,
+                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
                 datasets: [{
                     label: "# of Votes",
-                    data: _data[0].y,
+                    data: [12, 19, 3, 5, 2, 3],
                     backgroundColor: [
                         "rgba(255, 99, 132, 0.2)",
                         "rgba(54, 162, 235, 0.2)",
@@ -48,23 +45,26 @@ const ChartJSComponent = defaultProps => {
                     }]
                 },
             }
-        });
+        };
+        setData(myChart.data);
     };
 
     React.useEffect(() => {
-        console.log("20200607 defaultProps.type =", defaultProps.type, ":    id = ", id, ":w=", defaultProps.width, ":h=", defaultProps.height);
         if (defaultProps.data !== data) {
-            setData(defaultProps.data);
-            setTimeout(() => initialize(defaultProps.id, defaultProps.data, defaultProps.type), 500);
+            // setVHeight(defaultProps.height);
+            // setVWidth(defaultProps.width);
+            setTimeout(() => initialize(idx, defaultProps.id, defaultProps.data), 1000);
         }
-        // setVWidth(defaultProps.width);
-        // setVHeight(defaultProps.height);
-        setId(defaultProps.id);
-        setType(defaultProps.type);
+        setId(defaultProps.data);
     }, [defaultProps]);
 
     return (
-        <canvas id={`chartCanv_${idx}`} width={vWidth} height={vHeight} />
+        <Bar
+            data={data}
+            width={vWidth}
+            height={vHeight}
+            options={{ maintainAspectRatio: false }}
+        />
     );
 };
 export default ChartJSComponent;
