@@ -155,13 +155,13 @@ class ChartWidget extends React.Component {
 
     render() {
         const {
-            type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets
+            type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets, calculate
         } = this.props;
         const {
             activeStep, mapData, clusterCnt, data, data2, chartType
         } = this.state;
         // const { size } = this.state;
-        console.log("20200605 chart type == ", chartType, ":", this.props.chartType)
+        console.log("20200607 chart type == ", chartType, ":", this.props);
         const pagerHeight = 12;
         const resize = { width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height };
         return (
@@ -191,6 +191,7 @@ class ChartWidget extends React.Component {
                             filterInfo={filter}
                             divide={4}
                             step={activeStep}
+                            calculate={calculate}
                         />
                     ) : chartType === ChartType.GAUGE ? (
                         <ContainerHealth

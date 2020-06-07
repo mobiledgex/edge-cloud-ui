@@ -5,6 +5,8 @@ import Plotly from "plotly.js/dist/plotly-cartesian";
 import createPlotlyComponent from "./CreatePlotlyComponent";
 import "./styles.css";
 
+import ChartJSComponent from "../ChartJSComponent";
+
 import * as dataType from "../../sites/siteFour/monitoring/formatter/dataType";
 
 const PlotlyComponent = createPlotlyComponent(Plotly);
@@ -126,13 +128,20 @@ const TimeSeries = props => {
         }
         if (props.id) setPrevPropsId(props.id);
         if (props.divide) maxDataCount = props.divide;
+        if (props.type) setType(props.type);
         // cloudlet
         if (props.data && (props.data !== data) && props.data[props.id]) {
-            chartUpdate({ data: props.data, id: props.id, type: props.type });
+            chartUpdate({
+                data: props.data, id: props.id, type: props.type, calculate: props.calculate
+            });
         }
         // client
         if (props.id === dataType.REGISTER_CLIENT || props.id === dataType.FIND_CLOUDLET) {
-            if (props.data && props.data.length) chartUpdate({ data: props.data[0], id: props.id, type: props.type });
+            if (props.data && props.data.length) {
+                chartUpdate({
+                    data: props.data[0], id: props.id, type: props.type, calculate: props.calculate
+                });
+            }
         }
         if (props.showLegend) {
             setShowLegend(!showLegend);
@@ -153,8 +162,6 @@ const TimeSeries = props => {
                     selectedItem = "diskUsed";
                 }
 
-                const { type, id } = prevProps;
-
                 shortHand.map(data => {
                     const times = data[0].times[0]; // not use
                     const datas = data[0].resData_util[0].diskUsed; // as x & y
@@ -164,7 +171,7 @@ const TimeSeries = props => {
                         { [methods[0]]: datas },
                         methods[0],
                         type,
-                        id
+                        prevProps.id
                     );
                 });
 
@@ -176,25 +183,32 @@ const TimeSeries = props => {
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
 
-                const { type, id } = prevProps;
-
                 shortHand.map(data => {
                     const keys = Object.keys(data);
                     const methods = keys;
-                    reloadChart(
-                        { [methods[0]]: data[methods[0]] },
-                        methods[0],
-                        type,
-                        id
-                    );
+                    if (keys.indexOf("null") === -1) {
+                        reloadChart(
+                            { [methods[0]]: data[methods[0]] },
+                            methods[0],
+                            type,
+                            prevProps.id,
+                            prevProps.calculate ? "summ" : null
+                        );
+                    }
                 });
             }
         }
     };
 
-
+    const summaryArray = items => {
+        let added = 0;
+        items.map(item => {
+            added += item;
+        });
+        return added;
+    };
     /** nemes = ["RegisterClient", "FindCloudlet", "VerifyLocation"] */
-    const reloadChart = (data, cloudlet, type, id) => {
+    const reloadChart = (data, cloudlet, _type, id, calculate) => {
         let seriesData = null;
         const xAxis = data[cloudlet].x;
         const xCloudlet = data[cloudlet].names;
@@ -204,11 +218,23 @@ const TimeSeries = props => {
         const unit = (id === dataType.NETWORK_CLOUDLET) ? "GBs" : "Count";
         const appinst = data[cloudlet].names[0];
         const time = (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? "Time" : "";
+        const summaryX = xCloudlet[0];
+        const summaryY = summaryArray(data[cloudlet].y);
+        let xValues = [];
+        let yValues = [];
+        console.log("20200607 calculate = ", calculate);
+        if (calculate === "summ") {
+            xValues = [summaryX];
+            yValues = [summaryY];
+        } else {
+            xValues = xCloudlet;
+            yValues = data[cloudlet].y[0];
+        }
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
-            type: type || "line",
-            x: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? xAxis : xCloudlet,
-            y: data[cloudlet].y,
+            type: _type,
+            x: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? xAxis : xValues,
+            y: yValues,
             yaxis: "y",
             text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? cloudletName : cloudletName,
             name: data[cloudlet].names[0], // legend lable
@@ -252,6 +278,7 @@ const TimeSeries = props => {
                 overflowX: "auto"
             }}
         >
+            {/* 
             <PlotlyComponent
                 className="plotly-chart"
                 style={{
@@ -365,7 +392,8 @@ const TimeSeries = props => {
                     datarevision: datarevision + 1
                 }}
                 revision={revision}
-            />
+            /> */}
+            <ChartJSComponent id={prevPropsId} width={vWidth - wGab} height={vHeight - hGab} data={chartData} type={type} />
         </div>
     );
 };

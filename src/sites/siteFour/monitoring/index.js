@@ -167,18 +167,18 @@ class MonitoringAdmin extends React.Component {
     }
 
     /*
-    * depth
-    0 : filtering the regions
-    1 : go to page that the cloudlets
-    2 : go to page that the clusterinstances
-    3 : go to page that the appinstances
+    * filter item length
+    length = 0 : Data is filtered by the selected region
+    length = 1 : go to page of the cloudlets / currentAuthDepth = 0
+    length = 2 : go to page of the clusterinstances / currentAuthDepth = 1
+    length = 3 : go to page of the appinstances / currentAuthDepth = 2
     */
     onHandleApplyFilter = filteredItem => {
         console.log("20200605 filtering == ", filteredItem);
         /* example
         {region: {depth:0 , value:"EU"}}
         */
-        const filteredDepth = Object.keys(filteredItem).length - 1;
+        const filteredDepth = Object.keys(filteredItem).length;
 
 
         // 잠시 막음
@@ -346,6 +346,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             filter: null,
             page: "single",
             legend: true,
+            calculate: "summ",
             ...defaultProp,
         },
         {
