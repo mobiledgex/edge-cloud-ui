@@ -34,6 +34,7 @@ import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUti
 import uniqBy from "lodash/uniqBy";
 import Chip from "@material-ui/core/Chip";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
+import {Tag} from 'antd'
 
 //import _ from 'lodash';
 
@@ -1350,11 +1351,16 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
         treeCloudletList.push(newCloudletOne);
     })
 
-    //todo://////////////////////////////////////////////////////////////////////////////
+    //todo:///////////////////////////////// RegionList /////////////////////////////////////////////
     let newRegionTreeList = []
     allRegionList.map((regionOne, regionIndex) => {
         let regionMapOne = {
-            title: regionOne,
+            //title: regionOne,
+            title: (
+                <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
+                    {regionOne}
+                </div>
+            ),
             value: regionOne,
             children: []
         };
