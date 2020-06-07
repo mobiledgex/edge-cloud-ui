@@ -1,15 +1,15 @@
 import React from "react";
 // See the list of possible plotly bundles at https://github.com/plotly/plotly.js/blob/master/dist/README.md#partial-bundles or roll your own
-import Plotly from "plotly.js/dist/plotly-cartesian";
+// import Plotly from "plotly.js/dist/plotly-cartesian";
 
-import createPlotlyComponent from "./CreatePlotlyComponent";
+// import createPlotlyComponent from "./CreatePlotlyComponent";
 import "./styles.css";
 
 import ChartJSComponent from "../ChartJSComponent";
 
 import * as dataType from "../../sites/siteFour/monitoring/formatter/dataType";
 
-const PlotlyComponent = createPlotlyComponent(Plotly);
+// const PlotlyComponent = createPlotlyComponent(Plotly);
 
 // https://plot.ly/python/#layout-options
 // https://plot.ly/javascript/axes/#tick-placement-color-and-style
