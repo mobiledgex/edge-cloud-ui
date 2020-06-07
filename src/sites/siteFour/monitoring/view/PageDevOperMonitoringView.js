@@ -762,11 +762,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     legendItemCount: this.state.allClusterUsageList.length,
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentAppInstNameVersion: undefined,
-                })
-
-                await this.setState({
                     selectedClientLocationListOnAppInst: [],
                 })
+
             }
 
             async reloadDataFromRemote() {
