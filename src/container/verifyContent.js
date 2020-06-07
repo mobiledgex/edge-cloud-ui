@@ -20,11 +20,13 @@ class VerifyContent extends Component {
         let token = this.props.location.search
         token = token.substring(token.indexOf('token=') + 6)
         let mcRequest = await serverData.verifyEmail(this, { token: token });
-        let alertInfo = { msg: 'Oops, this link is expired', severity: 'error' }
-        if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            alertInfo = { msg: mcRequest.response.data.message, severity: 'success' }
+        if (mcRequest && (mcRequest.response || mcRequest.error)) {
+            let alertInfo = { msg: 'Oops, this link is expired', severity: 'error' }
+            if (mcRequest && mcRequest.response && mcRequest.response.data) {
+                alertInfo = { msg: mcRequest.response.data.message, severity: 'success' }
+            }
+            this.setState({ mexAlertMessage: alertInfo })
         }
-        this.setState({ mexAlertMessage: alertInfo })
     }
 
     onAlertClose = ()=>
