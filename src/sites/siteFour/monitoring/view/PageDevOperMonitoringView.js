@@ -4,8 +4,8 @@ import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
-import {CircularProgress, Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect, Skeleton} from 'antd';
+import {Dialog, Toolbar} from '@material-ui/core'
+import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 import {
     filterByClassification,
     getCloudletClusterNameList,
@@ -54,14 +54,7 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -81,7 +74,6 @@ import MiniModalGraphContainer from "../components/MiniModalGraphContainer";
 import {reactLocalStorage} from "reactjs-localstorage";
 import MapForDev from "../components/MapForDev";
 import {Responsive, WidthProvider} from "react-grid-layout";
-import uniqBy from 'lodash/uniqBy';
 import maxBy from 'lodash/maxBy';
 import reject from 'lodash/reject';
 import BigModalGraphContainer from "../components/BigModalGraphContainer";
@@ -98,12 +90,7 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -643,11 +630,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
 
-                        //clusterTreeDropdownList = require('./doprdownJSON')//fixme:fake json
-                        ////////////////////////////////////////////////////////////////////////////
+
+
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
-                        let allRegionList = localStorage.getItem('regions').split(",")
-                        clusterTreeDropdownList = makeClusterTreeDropdown(allRegionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
+                        let regionList = localStorage.getItem('regions').split(",")
+                        clusterTreeDropdownList = makeClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
 
 
                     } else {//TODO:OPERATOR

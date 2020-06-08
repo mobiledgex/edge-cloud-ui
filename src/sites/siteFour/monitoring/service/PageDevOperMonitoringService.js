@@ -1278,11 +1278,10 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
         treeCloudletList.push(newCloudletOne);
     })
 
-    //todo:///////////////////////////////// RegionList /////////////////////////////////////////////
-    let newRegionTreeList = []
+    //@desc:RegionList
+    let regionTreeList = []
     allRegionList.map((regionOne, regionIndex) => {
         let regionMapOne = {
-            //title: regionOne,
             title: (
                 <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
                     {regionOne}
@@ -1297,10 +1296,10 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
                 regionMapOne.children.push(innerItem)
             }
         })
-        newRegionTreeList.push(regionMapOne)
+        regionTreeList.push(regionMapOne)
     })
 
-    return newRegionTreeList;
+    return regionTreeList;
 }
 
 
