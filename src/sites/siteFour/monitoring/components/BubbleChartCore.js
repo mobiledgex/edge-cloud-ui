@@ -411,10 +411,8 @@ BubbleChartCore.defaultProps = {
         weight: 'normal',
     },
     bubbleClickFun: (label, index) => {
-        console.log(`Bubble ${label} is clicked ...`)
     },
     legendClickFun: (label, index) => {
-        console.log(`Legend ${label} is clicked ...`)
     },
     themeTitle: 'EUNDEW'
 }

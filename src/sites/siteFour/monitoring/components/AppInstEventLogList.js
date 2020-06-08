@@ -6,6 +6,7 @@ import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageDevOperMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -129,14 +130,15 @@ export default function AppInstEventLogList(props) {
         <div>
             {renderTitle()}
             {props.loading ? <div style={{marginTop: 75}}>{renderPlaceHolderLoader()}</div> :
-                <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
+                <table size="small" aria-label="a dense table "
+                       style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
                        stickyheader={true.toString()}>
 
                     {renderHeader()}
                     {/*todo:tableBody*/}
                     {/*todo:tableBody*/}
                     <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
-                    {props.eventLogList.length > 0 ?
+                    {!props.loading && props.eventLogList.length > 0 ?
                         <FixedSizeList
                             height={179}
                             itemCount={props.eventLogList.length}
@@ -240,9 +242,7 @@ export default function AppInstEventLogList(props) {
 
                         </FixedSizeList>
                         :
-                        <div style={{marginTop: 70}}>
-                            {renderPlaceHolderLoader()}
-                        </div>
+                        null
                     }
                     </tbody>
                     {!props.loading && props.eventLogList.length === 0 && <div style={{
@@ -252,7 +252,7 @@ export default function AppInstEventLogList(props) {
                         fontSize: 15,
                         display: 'flex'
                     }}>
-                        <div style={{color: 'orange'}}>
+                        <div style={PageMonitoringStyles.miniTableNoData}>
                             No Data
                         </div>
                     </div>
