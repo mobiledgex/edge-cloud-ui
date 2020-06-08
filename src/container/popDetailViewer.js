@@ -37,7 +37,7 @@ const jsonView = (data, position) => {
     return (
         <div style={{ width: '100%', flexDirection: 'column' }}>
             <SyntaxHighlighter language="json" style={allyDark}>
-                {JSON.stringify(jsonObj, null, 1)}
+                {JSON.stringify(jsonObj !== undefined ? jsonObj : {}, null, 1)}
             </SyntaxHighlighter>
         </div>
     )
