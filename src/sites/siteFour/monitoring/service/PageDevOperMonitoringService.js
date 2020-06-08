@@ -1203,66 +1203,6 @@ export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, 
 }
 
 
-export const tempClusterList = [
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-
-]
-
 export function convertHWType(hwType) {
     if (hwType === HARDWARE_TYPE.VCPU_USED) {
         return 'vCPU';
