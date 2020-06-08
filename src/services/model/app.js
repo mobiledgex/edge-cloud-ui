@@ -7,6 +7,11 @@ import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 
 let fields = formatter.fields
 
+export const configs = [
+    { field: fields.kind, serverField: 'kind', label: 'Kind' },
+    { field: fields.config, serverField: 'config', label: 'Config', dataType: TYPE_YAML }
+  ]
+
 export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
     { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter:true },
@@ -27,7 +32,7 @@ export const keys = () => ([
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
-    { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
+    { field: fields.configs, serverField: 'configs', label: 'Configs', keys:configs },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }

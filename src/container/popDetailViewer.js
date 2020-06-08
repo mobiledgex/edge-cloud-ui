@@ -1,41 +1,83 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid} from "semantic-ui-react";
-import * as moment from 'moment';
-import {ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Dialog, DialogTitle, DialogContent, DialogActions, Paper} from "@material-ui/core";
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ReactJson from "react-json-view";
-import Draggable from "react-draggable";
+import { Dialog, DialogContent, DialogTitle as MuiDialogTitle, Chip, Card } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
+import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import CloseIcon from '@material-ui/icons/Close';
+import cloneDeep from 'lodash/cloneDeep'
+import { withStyles } from '@material-ui/styles';
+SyntaxHighlighter.registerLanguage('json', json);
 
-
-const jsonView = (jsonObj, self) => {
-    return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
+const jsonParse = (data) => {
+    try {
+        return JSON.parse(data)
+    }
+    catch (err) {
+        return data
+    }
 }
+
+const jsonView = (data, position) => {
+    let jsonObj = cloneDeep(data)
+    if (jsonObj.request) {
+        jsonObj.request = jsonParse(jsonObj.request)
+    }
+
+    if (jsonObj.response) {
+        jsonObj.response = jsonParse(jsonObj.response)
+    }
+
+    if (position === 1) {
+        jsonObj = jsonObj.request
+    }
+    else if (position === 2) {
+        jsonObj = jsonObj.response
+    }
+    return (
+        <div style={{ width: '100%', flexDirection: 'column' }}>
+            <SyntaxHighlighter language="json" style={allyDark}>
+                {JSON.stringify(jsonObj, null, 1)}
+            </SyntaxHighlighter>
+        </div>
+    )
+}
+
+const styles = (theme) => ({
+    root: {
+        margin: 0,
+        padding: theme.spacing(2),
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
+});
+
+const DialogTitle = withStyles(styles)((props) => {
+    const { children, classes, onClose } = props;
+    return (
+        <MuiDialogTitle className={classes.root}>
+            {children}
+            {onClose ? (
+                <IconButton aria-label="close" onClick={onClose} className={classes.closeButton}>
+                    <CloseIcon />
+                </IconButton>
+            ) : null}
+        </MuiDialogTitle>
+    );
+});
+
 let _self = null;
 export default class PopDetailViewer extends React.Component {
     constructor() {
         super();
         this.state = {
-            open:false,
-            dimmer:'',
-            expanded: 0
+            open: false,
+            viewIndex: 0
         }
-        this.jsonViewProps = {
-            name: null,
-            theme: "monokai",
-            collapsed: false,
-            collapseStringsAfter: 15,
-            onAdd: false,
-            onEdit: false,
-            onDelete: false,
-            displayObjectSize: true,
-            enableClipboard: true,
-            indentWidth: 4,
-            displayDataTypes: false,
-            iconStyle: "triangle"
-        }
-
         _self = this;
     }
 
@@ -43,14 +85,10 @@ export default class PopDetailViewer extends React.Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
+        if (nextProps.open) {
+            this.setState({ open: nextProps.open});
         }
     }
-
-    handleExpandedChange = (panel) => (event, newExpanded) => {
-        this.setState({expanded: newExpanded ? panel : false});
-    };
 
     close(mode) {
         this.setState({ open: false })
@@ -66,12 +104,18 @@ export default class PopDetailViewer extends React.Component {
         this.props.close();
     }
 
-    paperComponent(props) {
+    expansionPanelView = (position, data) => {
         return (
-            <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-                <Paper {...props} />
-            </Draggable>
-        );
+            <Card className="audit_popup_panel">
+                {(data) ? jsonView(data, position) : null}
+            </Card>
+        )
+    }
+
+    getChipStyle = (position)=>
+    {
+        let color = this.state.viewIndex === position ? '#77BD06' :'#6F7074'
+        return {backgroundColor: color, marginRight:5}
     }
 
     render() {
@@ -81,59 +125,18 @@ export default class PopDetailViewer extends React.Component {
                 open={this.state.open}
                 onOpen={this.handleOpen}
                 onClose={this.handleClose}
-                PaperComponent={this.paperComponent}
                 aria-labelledby="draggable-dialog-title"
-                style={{zIndex: 1901}} // It should be higher than Audit Timeline Popup(= z-index:1900)
+                style={{ zIndex: 1901 }} // It should be higher than Audit Timeline Popup(= z-index:1900)
             >
-                <DialogTitle className="audit_popup_title" style={{ cursor: 'move' }} id="draggable-dialog-title">
-                    Detail
+                <DialogTitle onClose={this.handleClose}>
+                    <Chip label="Raw Viewer" onClick={() => this.setState({ viewIndex: 0 })} style={this.getChipStyle(0)}/>
+                    <Chip label="Request" onClick={() => this.setState({ viewIndex: 1 })} style={this.getChipStyle(1)}/>
+                    <Chip label="Response" onClick={() => this.setState({ viewIndex: 2 })} style={this.getChipStyle(2)}/>
                 </DialogTitle>
                 <DialogContent>
-                    <ExpansionPanel className="audit_popup_panel" square expanded={this.state.expanded === 0} onChange={this.handleExpandedChange(0)}>
-                        <ExpansionPanelSummary
-                            className="audit_popup_panel_header"
-                            id="panel1a-header"
-                        >
-                            <div>RAW Viewer</div>
-                            {this.state.expanded === 0 ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            {(this.props.rawViewData) ? jsonView(this.props.rawViewData, this) : null}
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-
-                    <ExpansionPanel className="audit_popup_panel"  square expanded={this.state.expanded === 1} onChange={this.handleExpandedChange(1)}>
-                        <ExpansionPanelSummary
-                            id="panel1a-header"
-                        >
-                            <div>Request</div>
-                            <div>{this.state.expanded === 1 ? <ExpandLessIcon/> : <ExpandMoreIcon/>}</div>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            {(this.props.requestData) ? jsonView(this.props.requestData, this) : null}
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-
-                    <ExpansionPanel className="audit_popup_panel"  square expanded={this.state.expanded === 2} onChange={this.handleExpandedChange(2)}>
-                        <ExpansionPanelSummary
-                            id="panel1a-header"
-                        >
-                            <div>Response</div>
-                            <div>{this.state.expanded === 2 ? <ExpandLessIcon/> : <ExpandMoreIcon/>}</div>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            {(this.props.responseData) ? jsonView(this.props.responseData, this) : null}
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                    {this.expansionPanelView(this.state.viewIndex, this.props.rawViewData)}
                 </DialogContent>
-                <DialogActions>
-                    <IconButton onClick={this.handleClose} >
-                        CLOSE
-                    </IconButton>
-                </DialogActions>
             </Dialog>
         )
     }
 }
-
-
