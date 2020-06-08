@@ -1,15 +1,11 @@
 // @flow
 import * as React from 'react';
-import {
-    convertToClassification,
-    makeGradientLineChartData,
-    makeLineChartOptions
-} from "../service/PageDevOperMonitoringService";
+import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {isEmpty, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import type {TypeChartDataSet, TypeLineChartData} from "../../../../shared/Types";
+import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import type {TypeChartDataSet} from "../../../../shared/Types";
 
 type Props = {
     parent: PageDevMonitoring,
@@ -71,7 +67,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
             const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, false, colorCodeIndexList)
 
-            console.log(`chartDataSet====>`, chartDataSet.isNoData);
 
             this.setState({
                 chartDataSet: chartDataSet,

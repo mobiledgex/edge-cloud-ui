@@ -22,19 +22,12 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, isEmpty, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
 import Chip from "@material-ui/core/Chip";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
-import {Tag} from 'antd'
 
 //import _ from 'lodash';
 
@@ -359,7 +352,6 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
 export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
 
-        console.log(`hardwareUsageList====>`, hardwareUsageList);
 
         if (hardwareUsageList.length === 0) {
             return (
@@ -1165,20 +1157,15 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 };
                 finalSeriesDataSets.push(datasetsOne)
             }
-            console.log(`finalSeriesDataSets=====>${hwType}>`, finalSeriesDataSets[0].data);
             let isNoData = false
             if (isEmpty(finalSeriesDataSets[0].data)) {
-                //showToast('NO data!!!')
                 isNoData = true;
             }
-
             let chartDataSet = {
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
                 isNoData: isNoData,
             }
-
-
             return chartDataSet;
         };
 
