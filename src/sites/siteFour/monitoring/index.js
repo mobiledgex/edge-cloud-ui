@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 0 // <<<===== change depth
+            currentAuthDepth: 2// <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -488,9 +488,9 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
             ...defaultProp,
         },
         {
-            id: dataType.REGISTER_CLIENT,
-            method: serviceMC.getEP().METRICS_CLIENT,
-            chartType: chartType.GRAPH,
+            id: dataType.NODE_INFO,
+            method: null,
+            chartType: chartType.BUBBLECHART,
             type: "scatter",
             title: { value: "Infomation of node", align: "left" },
             filter: null,
