@@ -485,7 +485,15 @@ export const PageMonitoringStyles = {
     gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 
 
+    miniTableGrid: {width: '100%', overflowX: 'scroll', marginTop: -5, scrollbarWidth: 'thin'},
     appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
+    miniTableNoData:{
+        color: 'orange',
+        marginTop: 25,
+        fontSize: 18,
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
     appInstGridTableData2: {flex: .083, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 }
 

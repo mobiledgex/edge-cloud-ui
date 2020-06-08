@@ -52,6 +52,9 @@
     align-items: center;
     color: rgba(255, 255, 255, 1.0);
     margin-right: 10px;
+    align-self: center;
+    margin-top: 3px;
+    font-weight: normal;
     margin-bottom: 10px;
     /*z-index: 10;*/
 }
@@ -219,6 +222,7 @@ page_monitoring_dashboard_dev {
     border: 1px solid #4b4d52;
     border-radius: 5px;
     padding: 0px 2px 2px 2px;
+    scrollbar-width: thin;
     /*max-height: 475px;*/
 }
 
