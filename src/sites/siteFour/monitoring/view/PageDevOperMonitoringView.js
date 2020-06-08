@@ -269,7 +269,6 @@ type PageDevMonitoringState = {
     toastMessage: string,
     isToastOpen: boolean,
     mapLoading: boolean,
-
     isLegendExpanded: boolean,
     chunkedSize: number,
     selectedAppInstIndex: number,
@@ -277,7 +276,6 @@ type PageDevMonitoringState = {
     legendColSize: number,
     currentAppVersion: number,
     isEnableZoomIn: boolean,
-    //dropDownCludsterListOnCloudlet: any,
     searchClusterValue: string,
     filteredCloudletList: any,
     allCloudletUsageList: any,
@@ -629,7 +627,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
-
 
 
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
