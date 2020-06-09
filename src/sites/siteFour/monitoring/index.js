@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 2// <<<===== change depth
+            currentAuthDepth: 0// <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];

@@ -1,37 +1,27 @@
 import React from "react";
 import { Line, Bar } from "react-chartjs-2";
+import { sumBy, isEqual, sortBy } from "lodash";
 import { generateUniqueId } from "../services/serviceMC";
 import { removeDuplicate } from "../utils";
+import randomColor from "../libs/randomColor";
 
-const randomColors = [];
-const getRandomColorHex = (count) => {
-    const hex = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 1; i <= count; i++) {
-        color += hex[Math.floor(Math.random() * 16)];
-        randomColors.push(color);
-    }
-    console.log("20200608 random colors = ", randomColors);
-    return color;
+export const valueAsPercentage = (value, total) => `${(value / total) * 100}%`;
+
+const getRandomColors = _count => {
+    const colors = randomColor({ hue: "blue", count: _count });
+    console.log("20200608 random colors = ", colors);
+    return colors;
 };
-const backgroundColor = [
-    "rgba(255, 99, 132, 0.2)",
-    "rgba(54, 162, 235, 0.2)",
-    "rgba(255, 206, 86, 0.2)",
-    "rgba(75, 192, 192, 0.2)",
-    "rgba(153, 102, 255, 0.2)",
-    "rgba(255, 159, 64, 0.2)"
-];
-const borderColor = [
-    "rgba(255, 99, 132, 1)",
-    "rgba(54, 162, 235, 1)",
-    "rgba(255, 206, 86, 1)",
-    "rgba(75, 192, 192, 1)",
-    "rgba(153, 102, 255, 1)",
-    "rgba(255, 159, 64, 1)"
-];
 
-const getOptions = (params) => ({
+const listItemStyle = {
+    color: "#333",
+    listStyle: "none",
+    textAlign: "left",
+    display: "flex",
+    flexDirection: "row",
+    margin: "8px"
+};
+const getOptions = params => ({
     scales: {
         yAxes: [{
             ticks: {
@@ -50,20 +40,23 @@ const getOptions = (params) => ({
         }]
     },
     legend: {
-        display: params.displayLegend
-    }
+        display: false
+    },
 });
 
-
+let myRef = null;
 const ChartJSComponent = defaultProps => {
     const [id, setId] = React.useState();
     const [idx, setIdx] = React.useState(generateUniqueId());
-    const [data, setData] = React.useState();
+    const [data, setData] = React.useState([]);
+    const [initData, setInitData] = React.useState(false);
     const [vWidth, setVWidth] = React.useState(defaultProps.width);
     const [vHeight, setVHeight] = React.useState(defaultProps.height);
     const [type, setType] = React.useState(defaultProps.type);
     const [options, setOptions] = React.useState();
     const [legendDisplay, setLegendDisplay] = React.useState(false);
+    const [randomColors, setRandomColors] = React.useState(getRandomColors(200));
+    const [legend, setLegend] = React.useState({ legend: <>no legend</> });
 
     const getInterpolate = (items, series) => {
         const interpoldata = [];
@@ -79,8 +72,8 @@ const ChartJSComponent = defaultProps => {
         data.map((item, i) => ({
             label: item.name,
             data: getInterpolate(item, series),
-            backgroundColor: backgroundColor[i],
-            borderColor: borderColor[i],
+            backgroundColor: randomColors[i],
+            borderColor: randomColors[i],
             borderWidth: 1
         }))
     );
@@ -94,9 +87,15 @@ const ChartJSComponent = defaultProps => {
         return removedDupl;
     };
 
+    const setChartRef = element => {
+        myRef = element;
+    };
+
+    const createMarkup = () => ({ __html: legend });
+
     const initialize = (_id, _data, _type) => {
         console.log("20200607 _id = ", _id, ": _data = ", _data);
-        getRandomColorHex(_data.length);
+        setRandomColors(getRandomColors(_data.length));
         const myChart = {
             type: "bar",
             cubicInterpolationMode: "monotone",
@@ -111,25 +110,87 @@ const ChartJSComponent = defaultProps => {
     };
 
     React.useEffect(() => {
-        if (defaultProps.data !== data) {
-            console.log("20200608 defaultProps.data = ", defaultProps.data, ":", defaultProps.data[0], ": x length = ", defaultProps.data[0].x.length);
-            if (defaultProps.data[0].x.length > 0) {
-                setData(defaultProps.data);
-                setTimeout(() => initialize(defaultProps.id, defaultProps.data, defaultProps.type), 500);
-            }
+        if (isEqual(defaultProps.legendShow, legendDisplay) === false) {
+            //
+            setTimeout(() => {
+                setLegendDisplay(defaultProps.legendShow);
+                // const leg = generateLegend();
+                // setLegend({ legend: leg });
+                const legend = myRef.chartInstance.legend.legendItems;
+                setLegend(legend);
+            }, 500);
         }
+
         setId(defaultProps.id);
         setType(defaultProps.type);
         setLegendDisplay(defaultProps.legendShow);
-    }, [defaultProps]);
+    }, [defaultProps.id, defaultProps.type, defaultProps.legendShow]);
+
+    React.useEffect(() => {
+        console.log("20200608 defaultProps.data isEqual == == ==  = default data = ", defaultProps.data, ": id = ", defaultProps.id);
+        let propData = defaultProps.data && defaultProps.data[defaultProps.id];
+        if ((propData && propData.length > 0) && !initData) {
+            console.log("20200608 propData = ", propData);
+            if (propData[0].x.length > 0) {
+                setTimeout(() => {
+                    setData(propData);
+                    initialize(defaultProps.id, propData, defaultProps.type);
+                }, 1000);
+            }
+            setInitData(true);
+        }
+        // setData(defaultProps.data);
+    }, [defaultProps.id, defaultProps.data]);
 
     return (
-        <Line
-            data={data}
-            width={vWidth}
-            height={vHeight}
-            options={options || { maintainAspectRatio: false }}
-        />
+        <>
+            <Line
+                ref={element => setChartRef(element)}
+                data={data}
+                width={vWidth}
+                height={vHeight}
+                options={options || { maintainAspectRatio: false }}
+            />
+            {legendDisplay
+                ? <div style={{ position: "absolute", left: 20, backgroundColor: "#4c4c4cdd", height: "300px" }}>
+                    <ul className="mt-8">
+                        {legend.length
+                            && legend.map(item => (
+                                <li key={item.text} style={listItemStyle}>
+                                    <div
+                                        style={{
+                                            marginRight: "8px",
+                                            width: "20px",
+                                            height: "20px",
+                                            backgroundColor: item.fillStyle
+                                        }}
+                                    />
+                                    {item.text}
+                                </li>
+                            ))}
+                    </ul>
+                </div>
+                : null}
+        </>
     );
 };
 export default ChartJSComponent;
+
+/*
+const backgroundColor = [
+    "rgba(255, 99, 132, 0.2)",
+    "rgba(54, 162, 235, 0.2)",
+    "rgba(255, 206, 86, 0.2)",
+    "rgba(75, 192, 192, 0.2)",
+    "rgba(153, 102, 255, 0.2)",
+    "rgba(255, 159, 64, 0.2)"
+];
+const borderColor = [
+    "rgba(255, 99, 132, 1)",
+    "rgba(54, 162, 235, 1)",
+    "rgba(255, 206, 86, 1)",
+    "rgba(75, 192, 192, 1)",
+    "rgba(153, 102, 255, 1)",
+    "rgba(255, 159, 64, 1)"
+];
+*/

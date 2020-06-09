@@ -260,7 +260,7 @@ const TimeSeries = props => {
             }
             loadedCount++;
         }
-        setChartData(stackData);
+        setChartData({ [id]: stackData });
         revision += 1;
     };
 
