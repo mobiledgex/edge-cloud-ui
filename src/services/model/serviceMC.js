@@ -98,6 +98,19 @@ function responseError(self, request, error, callback) {
     }
 }
 
+function responseStatus(self, status)
+{
+    let valid = true
+    switch(status)
+    {
+        case 504:
+            valid = false
+            self.props.handleAlertInfo('error', '504 Gateway Timeout')
+            break;
+    }
+    return valid
+}
+
 export function sendWSRequest(request, callback) {
     const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
@@ -147,7 +160,9 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
-                responseError(self, requestDataList[0], error, callback)
+                if (responseStatus(self, error.response.status)) {
+                    responseError(self, requestDataList[0], error, callback)
+                }
             })
     }
 }
@@ -163,7 +178,9 @@ export const sendSyncRequest = async (self, request) => {
         showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        responseError(self, request, error)
+        if (responseStatus(self, error.response.status)) {
+            responseError(self, request, error)
+        }
     }
 }
 
@@ -177,7 +194,9 @@ export const sendSyncRequestWithError = async (self, request) => {
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        return { request: request, error: error }
+        if (responseStatus(self, error.response.status)) {
+            return { request: request, error: error }
+        }
     }
 }
 
@@ -194,7 +213,7 @@ export function sendRequest(self, request, callback) {
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
-            if (error.response) {
+            if (responseStatus(self, error.response.status)) {
                 responseError(self, request, error, callback)
             }
         })

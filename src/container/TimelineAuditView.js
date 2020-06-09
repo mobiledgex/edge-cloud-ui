@@ -2,7 +2,6 @@ import 'react-hot-loader'
 import React from 'react';
 import {Button, Dropdown, Modal, Icon} from 'semantic-ui-react';
 import * as moment from 'moment';
-import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import 'semantic-ui-css/semantic.min.css'
 import PopSendEmailView from './popSendEmailView';
@@ -15,18 +14,47 @@ import { hot } from "react-hot-loader/root";
 import {IconButton, Toolbar, ButtonGroup, Button as ButtonM} from '@material-ui/core';
 import OfflinePinIcon from '@material-ui/icons/OfflinePin';
 import RefreshIcon from '@material-ui/icons/Refresh';
-
-const countryOptions = [
-    { key: '24', value: 24, flag: '24', text: 'Last 24 hours' },
-    { key: '18', value: 18, flag: '18', text: 'Last 18 hours' },
-    { key: '12', value: 12, flag: '12', text: 'Last 12 hours' },
-    { key: '6', value: 6, flag: '6', text: 'Last 6 hours' },
-    { key: '1', value: 1, flag: '1', text: 'Last hour' },
-]
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
+import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import cloneDeep from 'lodash/cloneDeep'
 
 let _self = null;
-const jsonView = (jsonObj, self) => {
-    return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{ width: '100%' }} />
+
+SyntaxHighlighter.registerLanguage('json', json);
+
+const jsonParse = (data) => {
+    try {
+        return JSON.parse(data)
+    }
+    catch (err) {
+        return data
+    }
+}
+
+const jsonView = (data, position) => {
+    let jsonObj = cloneDeep(data)
+    if (jsonObj.request) {
+        jsonObj.request = jsonParse(jsonObj.request)
+    }
+
+    if (jsonObj.response) {
+        jsonObj.response = jsonParse(jsonObj.response)
+    }
+
+    if (position === 1) {
+        jsonObj = jsonObj.request
+    }
+    else if (position === 2) {
+        jsonObj = jsonObj.response
+    }
+    return (
+        <div style={{ width: '100%', flexDirection: 'column', overflowY:'auto' }}>
+            <SyntaxHighlighter language="json" style={allyDark}>
+                {JSON.stringify(jsonObj !== undefined ? jsonObj : {}, null, 1)}
+            </SyntaxHighlighter>
+        </div>
+    )
 }
 
 const mapStateToProps = (state) => {
@@ -34,7 +62,6 @@ const mapStateToProps = (state) => {
     let submitContent = null;
     let submitValues = null;
     if (state.form.fieldLevelValidation) {
-        console.log('20191030 redux props.. ', state.form.fieldLevelValidation)
         if (state.form.fieldLevelValidation.submitSucceeded) {
             submitSuccess = true;
             submitContent = state.form.fieldLevelValidation.registeredFields;
@@ -68,9 +95,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             value: 0,
             dates: [],
             rawAllData: [],
-            rawViewData: [],
-            requestData: [],
-            responseData: [],
+            rawViewData: {},
+            requestData: {},
+            responseData: {},
             currentTraceid: 'traceId',
             selectedIndex: 0,
             auditCount: 0,
@@ -823,7 +850,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     </FlexBox>
                                     }
                                     <div className="page_audit_code_rawviewer_codebox">
-                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
+                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, 0) : null}
                                     </div>
                                 </div>
                             </div>
@@ -833,7 +860,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         Request
                                     </div>
                                     <div className="page_audit_code_request_codebox">
-                                        {(this.state.requestData) ? jsonView(this.state.requestData, this) : null}
+                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, 1) : null}
                                     </div>
                                 </div>
                                 <div className="page_audit_code_response">
@@ -841,7 +868,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                         Response
                                     </div>
                                     <div className="page_audit_code_response_codebox">
-                                        {(this.state.responseData) ? jsonView(this.state.responseData, this) : null}
+                                        {(this.state.rawViewData) ? jsonView(this.state.rawViewData, 2) : null}
                                     </div>
                                 </div>
                             </div>
