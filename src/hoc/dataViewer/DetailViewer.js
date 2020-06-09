@@ -1,28 +1,14 @@
 import React from 'react';
-import ReactJson from 'react-json-view';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import * as constant from '../../constant'
 import {getUserRole} from '../../services/model/format';
 import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
-import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import yaml from 'react-syntax-highlighter/dist/esm/languages/hljs/yaml';
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 
-SyntaxHighlighter.registerLanguage('javascript', js);
-
-const jsonViewProps = {
-    name: null,
-    theme: "monokai",
-    collapsed: false,
-    collapseStringsAfter: 15,
-    onAdd: false,
-    onEdit: false,
-    onDelete: false,
-    displayObjectSize: true,
-    enableClipboard: true,
-    indentWidth: 4,
-    displayDataTypes: false,
-    iconStyle: "triangle"
-}
+SyntaxHighlighter.registerLanguage('yaml', yaml);
+SyntaxHighlighter.registerLanguage('json', json);
 
 const checkRole = (form) => {
     let roles = form.roles
@@ -41,7 +27,13 @@ const checkRole = (form) => {
 }
 
 const getJSON = (data) => {
-    return <ReactJson src={data} {...jsonViewProps} />
+    return (
+        <div style={{flex: 1, width: '100%', flexDirection: 'column'}}>
+            <SyntaxHighlighter language="json" style={allyDark} className='yamlDiv'>
+                {JSON.stringify(data, null, '\t')}
+            </SyntaxHighlighter>
+        </div>
+    )
 }
 
 const getYAML = (data) => {
@@ -59,7 +51,7 @@ const getData = (data, item) => (
         getJSON(data) :
         item.dataType === constant.TYPE_YAML ?
             getYAML(data) :
-            <p style={{wordBreak: 'break-all'}}>{item.customizedData ? item.customizedData(data, true) : data}</p>
+                <p style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</p>
 )
 
 
