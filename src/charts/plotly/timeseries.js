@@ -72,7 +72,7 @@ const TimeSeries = props => {
     const [type, setType] = React.useState("scatter");
     const [size, setSize] = React.useState({});
     const [showLegend, setShowLegend] = React.useState(false);
-    const [prevPropsId, setPrevPropsId] = React.useState();
+    const [prevPropsId, setPrevPropsId] = React.useState(props.id);
     const [margin, setMargin] = React.useState({
         l: 45,
         r: 3,
@@ -228,7 +228,7 @@ const TimeSeries = props => {
             yValues = [summaryY];
         } else {
             xValues = xCloudlet;
-            yValues = data[cloudlet].y[0];
+            yValues = data[cloudlet].y;
         }
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
@@ -393,7 +393,7 @@ const TimeSeries = props => {
                 }}
                 revision={revision}
             /> */}
-            <ChartJSComponent id={prevPropsId} width={vWidth - wGab} height={vHeight - hGab} data={chartData} type={type} />
+            <ChartJSComponent id={prevPropsId} width={vWidth - wGab} height={vHeight - hGab} data={chartData} type={type} legendShow={showLegend} />
         </div>
     );
 };

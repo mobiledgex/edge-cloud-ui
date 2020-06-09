@@ -61,8 +61,9 @@ class MonitoringLayout extends React.Component {
             headerSize: 30,
             padding: 3,
             items: [],
-            renderItems: []
+            renderItems: [],
         };
+        this.toggle = false;
     }
 
     componentDidMount() {

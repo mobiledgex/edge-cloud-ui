@@ -328,7 +328,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         },
         {
             id: dataType.REGISTER_CLIENT,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
+            method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
@@ -339,7 +340,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         },
         {
             id: dataType.FIND_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
+            method: null,
             chartType: chartType.GRAPH,
             type: "bar",
             title: { value: "Count of Find Cloudlet", align: "left" },

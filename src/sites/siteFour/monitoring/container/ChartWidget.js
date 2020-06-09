@@ -189,7 +189,7 @@ class ChartWidget extends React.Component {
                             method={method}
                             selectedMethod={selectedIndex}
                             filterInfo={filter}
-                            divide={4}
+                            divide={10}
                             step={activeStep}
                             calculate={calculate}
                         />
