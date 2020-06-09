@@ -41,6 +41,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             chartMethod: "",
             title: null,
             legendShow: false,
+            legendTarget: null,
             page: "single",
             selectedIndex: 0,
             id: null,
@@ -78,6 +79,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             */
             if (nextProps.panelInfo && nextProps.panelInfo.info === "info" && nextProps.panelInfo.title.value === nextProps.title.value) {
                 update.legendShow = !prevState.legendShow;
+                update.legendTarget = nextProps.panelInfo.target
             }
             update.panelInfo = nextProps.panelInfo;
         }
@@ -187,7 +189,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     render() {
-        const { data, chartType, legendShow, selectedIndex, cloudlets } = this.state;
+        const { data, chartType, legendShow, legendTarget, selectedIndex, cloudlets } = this.state;
         return (
             <SizeMe monitorHeight>
                 {({ size }) => (
@@ -198,6 +200,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                         chartType={chartType}
                         size={size}
                         legendShow={legendShow}
+                        legendTarget={legendTarget}
                         selectedIndex={selectedIndex}
                     />
                 )}

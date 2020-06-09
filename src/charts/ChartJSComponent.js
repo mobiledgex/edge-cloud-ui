@@ -4,6 +4,7 @@ import { sumBy, isEqual, sortBy } from "lodash";
 import { generateUniqueId } from "../services/serviceMC";
 import { removeDuplicate } from "../utils";
 import randomColor from "../libs/randomColor";
+import Popper from '@material-ui/core/Popper';
 
 export const valueAsPercentage = (value, total) => `${(value / total) * 100}%`;
 
@@ -14,7 +15,7 @@ const getRandomColors = _count => {
 };
 
 const listItemStyle = {
-    color: "#333",
+    color: "#fff",
     listStyle: "none",
     textAlign: "left",
     display: "flex",
@@ -57,6 +58,7 @@ const ChartJSComponent = defaultProps => {
     const [legendDisplay, setLegendDisplay] = React.useState(false);
     const [randomColors, setRandomColors] = React.useState(getRandomColors(200));
     const [legend, setLegend] = React.useState({ legend: <>no legend</> });
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
     const getInterpolate = (items, series) => {
         const interpoldata = [];
@@ -124,6 +126,8 @@ const ChartJSComponent = defaultProps => {
         setId(defaultProps.id);
         setType(defaultProps.type);
         setLegendDisplay(defaultProps.legendShow);
+        console.log('20200609', defaultProps.legendTarget)
+        setAnchorEl(legendDisplay ? null : defaultProps.legendTarget);
     }, [defaultProps.id, defaultProps.type, defaultProps.legendShow]);
 
     React.useEffect(() => {
@@ -142,8 +146,10 @@ const ChartJSComponent = defaultProps => {
         // setData(defaultProps.data);
     }, [defaultProps.id, defaultProps.data]);
 
+    const open = Boolean(anchorEl);
+
     return (
-        <>
+        <div style={{position: 'relative', height:'100%', width:'100%'}}>
             <Line
                 ref={element => setChartRef(element)}
                 data={data}
@@ -152,7 +158,8 @@ const ChartJSComponent = defaultProps => {
                 options={options || { maintainAspectRatio: false }}
             />
             {legendDisplay
-                ? <div style={{ position: "absolute", left: 20, backgroundColor: "#4c4c4cdd", height: "300px" }}>
+                ? <Popper className='chart-legend'
+                          id={open ? 'simple-popper' : undefined} open={open} anchorEl={anchorEl}>
                     <ul className="mt-8">
                         {legend.length
                             && legend.map(item => (
@@ -169,9 +176,9 @@ const ChartJSComponent = defaultProps => {
                                 </li>
                             ))}
                     </ul>
-                </div>
+                </Popper>
                 : null}
-        </>
+        </div>
     );
 };
 export default ChartJSComponent;

@@ -1164,3 +1164,14 @@ page_monitoring_dashboard_dev {
     color: #6498FF;
 
 }
+
+.chart-legend {
+    background-color: #000;
+    border-radius:4px;
+    height: fit-content;
+    max-height:200px;
+    overflow: auto;
+    resize: none;
+    border: 1px solid #96C8DA;
+    color: #fff;
+}

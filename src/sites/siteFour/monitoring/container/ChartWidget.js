@@ -163,7 +163,7 @@ class ChartWidget extends React.Component {
 
     render() {
         const {
-            type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets, calculate, itemCount
+            type, size, title, legendShow, legendTarget, filter, method, page, id, selectedIndex, cloudlets, calculate, itemCount
         } = this.props;
         const {
             activeStep, mapData, clusterCnt, data, data2, chartType
@@ -195,6 +195,7 @@ class ChartWidget extends React.Component {
                             data={data}
                             title={title.value}
                             showLegend={legendShow}
+                            legendTarget={legendTarget}
                             method={method}
                             selectedMethod={selectedIndex}
                             filterInfo={filter}
@@ -430,6 +431,7 @@ export const DotsMobileStepper = props => {
         props.setActiveStep(idObject.index);
     };
     React.useEffect(() => {
+        console.log('20200609', props.data)
         let stepData = props.data // <----- data form edit
 
         if (Array.isArray(stepData) && props.itemCount) {
