@@ -22,7 +22,13 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, isEmpty, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
@@ -677,7 +683,7 @@ export const covertUnits = (value, hardwareType, _this) => {
 
         } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
             if (hardwareType === HARDWARE_TYPE.CPU) {
-                return value.toString().substring(0, 9) + " %";
+                return value.toFixed(4) + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 return convertByteToMegaGigaByte(value)
             } else {
@@ -800,8 +806,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: isBig ? 20 : 7,//@desc: maxTicksLimit
-                        fontSize: 11,
+                        maxTicksLimit: isBig ? 20 : 5,//@desc: maxTicksLimit
+                        fontSize: 9,
                         fontColor: 'white',
                         //maxRotation: 0.05,
                         autoSkip: isBig ? false : true,
