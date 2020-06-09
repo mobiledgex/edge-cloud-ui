@@ -243,8 +243,12 @@ class Login extends Component {
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
             this.props.history.push({ pathname: '/logout' })
             this.props.handleAlertInfo('success', mcRequest.response.data.message)
-            self.props.handleChangeLoginMode('forgotMessage')
             setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
+        }
+        else if(mcRequest && mcRequest.error) {
+            this.props.history.push({ pathname: '/logout' })
+            this.props.handleAlertInfo('error', mcRequest.error.response.data.message)
+            self.props.handleChangeLoginMode('login');
         }
     }
 
