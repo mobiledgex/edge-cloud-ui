@@ -1974,13 +1974,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             })
                         })
 
-
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
-
-
-                        //todo:////////////////////////////////////filteredClientStatus//////////////////////////
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
+
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
                             bubbleChartData: bubbleChartData,
