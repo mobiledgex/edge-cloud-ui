@@ -1127,3 +1127,40 @@ page_monitoring_dashboard_dev {
     justify-content: flex-end;
     align-items: center;
 }
+
+.page_monitoring_node_contain {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height:calc(50% - 5px);
+    background-color:#202329;
+    margin-bottom:10px;
+    padding: 5px;
+    overflow: auto;
+
+}
+
+.page_monitoring_node_contain:last-child {
+    margin-bottom: 0;
+}
+.page_monitoring_node_label{
+    display: flex;
+    height: 18px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    justify-content: flex-start;
+    text-align: center;
+    align-items: center;
+
+}
+.page_monitoring_node_count{
+    display: flex;
+    flex:1;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    color: #6498FF;
+
+}

@@ -139,8 +139,8 @@ const parseClientList = response => {
     console.log('20200603 response', response)
     const clientList = [];
     const formatObj = {};
-    const keys = response[0].values[0].resColumns;
-    const values = response[0].values[0].resSeries;
+    const keys = response[0] ? response[0].values[0].resColumns : [];
+    const values = response[0] ? response[0].values[0].resSeries : [];
     values.map((resData, i) => {
         const newData = {};
         resData.map((res, j) => {

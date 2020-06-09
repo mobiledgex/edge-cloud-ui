@@ -10,6 +10,7 @@ import ContainerHealth from "./ContainerHealth";
 import MatricMapCont from "./MatricMapCont";
 import CounterWidget from "./CounterWidget";
 import ContainerMethod from "./ContainerMethod";
+import BubbleChart from "./BubbleChart";
 import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
 import * as DataType from "../formatter/dataType";
@@ -171,7 +172,8 @@ class ChartWidget extends React.Component {
                     style={{
                         height: resize.height,
                         backgroundColor:
-                            chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE && chartType !== ChartType.COUNTERWITHSPARK ? "#202329" : "transparent",
+                            chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE &&
+                            chartType !== ChartType.COUNTERWITHSPARK && chartType !== ChartType.BUBBLECHART ? "#202329" : "transparent",
                     }}
                 >
                     {(filter) ? (
@@ -234,6 +236,8 @@ class ChartWidget extends React.Component {
                         />
                     ) : chartType === ChartType.COUNTERWITHSPARK ? (
                         <ContainerMethod size={resize} />
+                    ) : chartType === ChartType.BUBBLECHART ? (
+                        <BubbleChart size={resize} />
                     ) : <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />
                     }
                 </div>
