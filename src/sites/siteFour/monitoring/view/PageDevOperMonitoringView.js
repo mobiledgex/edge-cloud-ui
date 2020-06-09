@@ -770,6 +770,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentAppInstNameVersion: undefined,
                     selectedClientLocationListOnAppInst: [],
+                    filteredClientStatusList: this.state.allClientStatusList,
                 })
 
             }
