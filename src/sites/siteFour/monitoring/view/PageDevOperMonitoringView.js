@@ -545,20 +545,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             componentDidMount = async () => {
-                this.setState({
-                    loading: true,
-                    bubbleChartLoader: true,
-                    selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
-                    mapLoading: true,
-                    dropdownRequestLoading: true,
-                    loadingForClientStatus: true,
+                try {
+                    this.setState({
+                        loading: true,
+                        bubbleChartLoader: true,
+                        selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
+                        mapLoading: true,
+                        dropdownRequestLoading: true,
+                        loadingForClientStatus: true,
 
-                })
-                await this.loadInitData();
-                this.setState({
-                    loading: false,
-                    bubbleChartLoader: false,
-                })
+                    })
+                    await this.loadInitData();
+                    this.setState({
+                        loading: false,
+                        bubbleChartLoader: false,
+                    })
+                } catch (e) {
+
+                }
             };
 
 
