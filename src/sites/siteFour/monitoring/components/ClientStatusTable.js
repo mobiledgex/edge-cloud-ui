@@ -29,7 +29,8 @@ export default function ClientStatusTable(props) {
                     height: 30,
                 }}
             >
-                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
+                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}}
+                           colSpan={7}>
                     <div style={{fontSize: 28, color: 'orange'}}> No Data</div>
                 </TableCell>
             </TableRow>
@@ -45,7 +46,8 @@ export default function ClientStatusTable(props) {
                     height: 30,
                 }}
             >
-                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}} colSpan={7}>
+                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}}
+                           colSpan={7}>
                     {renderPlaceHolderLoader('sk')}
                 </TableCell>
             </TableRow>
@@ -86,7 +88,8 @@ export default function ClientStatusTable(props) {
                        stickyheader={true.toString()}>
 
 
-                    <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
+                    <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}}
+                               fixedheader={true.toString()}>
                         <TableRow>
                             <TableCell padding={'none'} align="center" style={{}}>
                                 App Inst
@@ -182,7 +185,7 @@ export default function ClientStatusTable(props) {
                                 </TableRow>
                             )
                         })}
-                        {props.parent.state.loadingForClientStatus ? renderTableLoader()
+                        {props.loadingForClientStatus ? renderTableLoader()
                             : props.clientStatusList.length === 0 ? renderEmptyTable() : null
                         }
                     </TableBody>

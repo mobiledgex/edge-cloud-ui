@@ -54,7 +54,14 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartDataForCluster,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -90,7 +97,12 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -574,12 +586,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //TODO:###############################################
                     //todo:DEVELOPER
                     //TODO:###############################################
+
+                    let clientStatusList = []
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
                         let newPromiseList = await Promise.all(promiseList);
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
+                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                     } else {
                         //TODO:###############################################
                         //TODO:OPERATOR
@@ -588,16 +603,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let allCloudletEventLogList = []
                         allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
                         appInstList = await fetchAppInstList()
-                        let clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
-                            allClientStatusList: clientStatusList,
-                            filteredClientStatusList: clientStatusList,
                             loadingForClientStatus: false,
                             allCloudletEventLogList: allCloudletEventLogList,
                             filteredCloudletEventLogList: allCloudletEventLogList,
 
                         })
                     }
+
+                    await this.setState({
+                        allClientStatusList: clientStatusList,
+                        filteredClientStatusList: clientStatusList,
+                        loadingForClientStatus: false,
+                    })
 
                     let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     //@desc:#########################################################################
@@ -1293,6 +1312,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             parent={this}
                             clientStatusList={this.state.filteredClientStatusList}
                             chartColorList={this.state.chartColorList}
+                            loadingForClientStatus={this.state.loadingForClientStatus}
                         />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG) {
@@ -1937,7 +1957,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredAppInstList = []
                         this.state.appInstList.map((appInstOne, index) => {
                             selectClusterCloudletList.map((innerItem, innerIndex) => {
-
                                 if (appInstOne.ClusterInst === innerItem.split("|")[0].trim() && appInstOne.Cloudlet === innerItem.split("|")[1].trim()) {
                                     filteredAppInstList.push(appInstOne)
                                 }
@@ -1958,7 +1977,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+
+
+                        //todo:////////////////////////////////////filteredClientStatus//////////////////////////
+                        let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
                         await this.setState({
+                            filteredClientStatusList: filteredClientStatusList,
                             bubbleChartData: bubbleChartData,
                             currentClusterList: selectClusterCloudletList,
                             currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_OPER,
