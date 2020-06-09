@@ -241,7 +241,7 @@ class Login extends Component {
         token = token.substring(token.indexOf('token=') + 6)
         let mcRequest = await serverData.resetPassword(self, { token: token, password: password })
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            this.props.history.push({ pathname: '/' })
+            this.props.history.push({ pathname: '/logout' })
             this.props.handleAlertInfo('success', mcRequest.response.data.message)
             self.props.handleChangeLoginMode('forgotMessage')
             setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
