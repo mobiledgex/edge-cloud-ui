@@ -56,21 +56,22 @@ const CounterWidget = forwardRef((props, ref) => {
             setStep(props.step);
             setData(null);
         }
-        if (isEqual(props.data, data) === false && !initial) {
-            setInitial(true);
-            const formatedData = dataFormatCountCluster(props.data);
-            const containerData = [];
-            const keys = Object.keys(formatedData);
-            keys.map(key => {
-                containerData.push({
-                    data: formatedData[key], count: formatedData[key].length, region: formatedData[key][0].region, cloudlet: key, clusters: formatedData[key]
-                });
-            });
-            setClusterCnt(containerData);
-            setClusterList(containerData);
+        if (isEqual(props.data, data) === false) {
+            // setInitial(true);
+            // const formatedData = dataFormatCountCluster(props.data);
+            // const containerData = [];
+            // const keys = Object.keys(formatedData);
+            // keys.map(key => {
+            //     containerData.push({
+            //         data: formatedData[key], count: formatedData[key].length, region: formatedData[key][0].region, cloudlet: key, clusters: formatedData[key]
+            //     });
+            // });
+            setClusterCnt(props.data);
+            setClusterList(props.data);
             setTimeout(() => setInitial(false), 500);
         }
         setData(props.data);
+        // console.log('20200609', props.data)
     }, [props]);
 
     let index = [0, 1, 2, 3, 4, 5]
@@ -81,7 +82,7 @@ const CounterWidget = forwardRef((props, ref) => {
                 {index.map(i => (
                     <Grid className={classes.layout} item xs={4}>
                         <div className={classes.item}>
-                            {makeContainer(clusterCnt, (step * gridCnt) + i, step)}
+                            {makeContainer(clusterCnt, (step * gridCnt) + i)}
                         </div>
                     </Grid>
                 ))}
@@ -92,17 +93,15 @@ const CounterWidget = forwardRef((props, ref) => {
 
 export default CounterWidget;
 
-const makeContainer = (clusterData, index, step) => (
+const makeContainer = (clusterData, index) => (
     <div style={{ width: "100%", height: "100%" }}>
         {(clusterData[index])
             ? (
-                <div className='page_monitoring_cnt_box'
-
-                >
+                <div className='page_monitoring_cnt_box'>
                     <div className='page_monitoring_cnt_region'>{clusterData[index].region}</div>
-                    <div className='page_monitoring_cnt_name'>{clusterData[index].cloudlet}</div>
+                    <div className='page_monitoring_cnt_name'>{clusterData[index].cloudlet? clusterData[index].cloudlet : 0}</div>
                     <div className='page_monitoring_cnt_num'>
-                        <CountUp isCounting end={clusterData[index].count} duration={3.2} />
+                        <CountUp isCounting end={clusterData[index].count? clusterData[index].count : '0'} duration={3.2} />
                     </div>
                 </div>
             ) : null}

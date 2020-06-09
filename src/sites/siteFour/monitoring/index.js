@@ -299,7 +299,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             title: { value: "Count of Clusters", align: "left" },
             filter: null,
             page: "multi",
-            itemCount: 3,
+            itemCount: 6,
             legend: false,
             ...defaultProp,
         },
