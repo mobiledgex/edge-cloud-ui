@@ -178,7 +178,7 @@ class MonitoringAdmin extends React.Component {
         /* example
         {region: {depth:0 , value:"EU"}}
         */
-        const filteredDepth = Object.keys(filteredItem).length;
+        const filteredDepth = Object.keys(filteredItem).length - 1;
 
 
         // 잠시 막음
@@ -374,7 +374,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
     return [
         {
             id: dataType.NETWORK_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLOUDLET,
+            // method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: chartType.GAUGE,
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
@@ -409,7 +409,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) =
         },
         {
             id: dataType.METHOD_CLIENT,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.COUNTERWITHSPARK,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
@@ -454,7 +454,7 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
     return [
         {
             id: dataType.COUNT_CLUSTER,
-            method: serviceMC.getEP().COUNT_CLUSTER,
+            // method: serviceMC.getEP().COUNT_CLUSTER,
             chartType: chartType.COUNTER,
             type: "counter",
             title: { value: "Health of Clusters", align: "left" },
@@ -466,7 +466,7 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
         },
         {
             id: dataType.NETWORK_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLOUDLET,
+            // method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Connections of Cluster", align: "left" },
@@ -478,7 +478,7 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
         },
         {
             id: dataType.FIND_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.MAP,
             type: "scatter",
             title: { value: "Structure of cluster", align: "left" },
@@ -500,7 +500,7 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
         },
         {
             id: dataType.FIND_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
             chartType: chartType.GRAPH,
             type: "bar",
             title: { value: "Type of Cluster", align: "left" },
