@@ -3,6 +3,7 @@ import { SizeMe } from "react-sizeme";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import isEqual from "lodash/isEqual";
+import uniq from "lodash/uniq";
 import * as actions from "../../../../actions";
 import * as Service from "../services";
 import * as serviceMC from "../../../../services/model/serviceMC";
@@ -51,7 +52,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200605 wrapper props ===== ", nextProps, ":", prevState);
+        console.log("20200608 wrapper props ===== ", nextProps, ":", prevState);
         const update = {};
         if (isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             update.cloudlets = nextProps.cloudlets;
@@ -69,7 +70,16 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             update.id = nextProps.id;
         }
         if (prevState.panelInfo !== nextProps.panelInfo) {
-            update.legendShow = nextProps.panelInfo ? nextProps.panelInfo.legendShow : false;
+            console.log("20200608 panel info == ", nextProps.panelInfo);
+            /* 
+            info:
+            info: "info"
+            title: {value: "Health of Cloudlets", align: "left"}
+            */
+            if (nextProps.panelInfo && nextProps.panelInfo.info === "info" && nextProps.panelInfo.title.value === nextProps.title.value) {
+                update.legendShow = !prevState.legendShow;
+            }
+            update.panelInfo = nextProps.panelInfo;
         }
         if (prevState.id !== nextProps.id) {
             update.id = nextProps.id;
@@ -138,7 +148,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 }
             });
         }
-        return _.uniq(filterItem, "path");
+        return uniq(filterItem, "path");
     }
 
     async initialize(props: MetricsParmaType, self: any) {

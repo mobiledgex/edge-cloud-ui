@@ -1,3 +1,4 @@
+import moment from "moment";
 import orderBy from "lodash/orderBy";
 import * as serverData from "../../../../../services/model/serverData";
 import {
@@ -15,6 +16,22 @@ let _self = null;
 const REGION_ALL = 1;
 let requestCount = 2;
 let regions = localStorage.regions ? localStorage.regions.split(",") : [];
+
+const selectedTimeRange = "today"; // TODO: selected time form toolbar
+const yesterdayWithCurrent = moment().subtract(1, "days").toString();
+const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
+const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
+
+const makeUTC = time => moment(time).utc();
+const rangeTime = range => {
+    let time = null;
+    if (range === "start") {
+        time = makeUTC(yesterdayWithCurrent);
+    } else {
+        time = makeUTC(moment());
+    }
+    return time;
+};
 
 const _requestInfo = () => {
     return {
@@ -245,6 +262,8 @@ const metricFromServer = async (self, data) => {
                 organization: data.selectOrg,
                 name: data.cloudletSelectedOne
             },
+            // starttime: rangeTime("start"),
+            // endtime: rangeTime("end"),
             last: data.last,
             selector: "*"
         }

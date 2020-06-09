@@ -31,7 +31,7 @@ const HeaderComponent = (defaultValue) => {
                 </div>
                 <div className='page_monitoring_title_button'>
                     {info.legend &&
-                        <div
+                        <div style={{ cursor: "pointer" }}
                             onClick={() => value.onClick("info", info.title)}
                         >
                             <MoreIcon fontSize={'small'} />
