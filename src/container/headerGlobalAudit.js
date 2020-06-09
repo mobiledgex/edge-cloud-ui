@@ -229,14 +229,6 @@ class headerGlobalAudit extends React.Component {
                     open={this.state.openDetail}
                     close={this.closeDetail}
                 />
-                {/*<PopDetailViewer // ********* multi window next version ************/}
-                {/*    rawViewData={this.state.secondRawViewData}*/}
-                {/*    requestData={this.state.secondRequestData}*/}
-                {/*    responseData={this.state.secondResponseData}*/}
-                {/*    dimmer={false}*/}
-                {/*    open={this.state.secondOpenDetail}*/}
-                {/*    close={this.secondCloseDetail}*/}
-                {/*/>*/}
             </div >
         )
     }
