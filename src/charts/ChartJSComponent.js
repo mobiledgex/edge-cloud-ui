@@ -7,8 +7,8 @@ import randomColor from "../libs/randomColor";
 
 export const valueAsPercentage = (value, total) => `${(value / total) * 100}%`;
 
-const getRandomColors = _count => {
-    const colors = randomColor({ hue: "blue", count: _count });
+const getRandomColors = (_count, _alpha) => {
+    const colors = randomColor({ hue: "blue", count: _count, alpha: _alpha });
     console.log("20200608 random colors = ", colors);
     return colors;
 };
@@ -19,7 +19,8 @@ const listItemStyle = {
     textAlign: "left",
     display: "flex",
     flexDirection: "row",
-    margin: "8px"
+    margin: "8px",
+    cursor: "pointer"
 };
 const getOptions = params => ({
     scales: {
@@ -55,7 +56,8 @@ const ChartJSComponent = defaultProps => {
     const [type, setType] = React.useState(defaultProps.type);
     const [options, setOptions] = React.useState();
     const [legendDisplay, setLegendDisplay] = React.useState(false);
-    const [randomColors, setRandomColors] = React.useState(getRandomColors(200));
+    const [randomColors, setRandomColors] = React.useState(getRandomColors(200, 0.5));
+    const [randomColorsB, setRandomColorsB] = React.useState(getRandomColors(200, 1));
     const [legend, setLegend] = React.useState({ legend: <>no legend</> });
 
     const getInterpolate = (items, series) => {
@@ -73,7 +75,7 @@ const ChartJSComponent = defaultProps => {
             label: item.name,
             data: getInterpolate(item, series),
             backgroundColor: randomColors[i],
-            borderColor: randomColors[i],
+            borderColor: randomColorsB[i],
             borderWidth: 1
         }))
     );
@@ -91,13 +93,19 @@ const ChartJSComponent = defaultProps => {
         myRef = element;
     };
 
-    const createMarkup = () => ({ __html: legend });
+    const handleLegendClick = (datasetIndex) => {
+        const chart = myRef.chartInstance;
+        chart.getDatasetMeta(datasetIndex).hidden =
+            chart.getDatasetMeta(datasetIndex).hidden === null ? true : !chart.getDatasetMeta(datasetIndex).hidden;
+        chart.update(); // re-draw chart to hide dataset
+    };
 
     const initialize = (_id, _data, _type) => {
         console.log("20200607 _id = ", _id, ": _data = ", _data);
-        setRandomColors(getRandomColors(_data.length));
+        setRandomColors(getRandomColors(_data.length, 0.5));
+        setRandomColorsB(getRandomColors(_data.length, 1));
         const myChart = {
-            type: "bar",
+            type: (_type === "scatter") ? "line" : "bar",
             cubicInterpolationMode: "monotone",
             data: {
                 labels: getSeriesLabels(_data),
@@ -127,36 +135,49 @@ const ChartJSComponent = defaultProps => {
     }, [defaultProps.id, defaultProps.type, defaultProps.legendShow]);
 
     React.useEffect(() => {
-        console.log("20200608 defaultProps.data isEqual == == ==  = default data = ", defaultProps.data, ": id = ", defaultProps.id);
-        let propData = defaultProps.data && defaultProps.data[defaultProps.id];
-        if ((propData && propData.length > 0) && !initData) {
+        console.log("20200608 propData defaultProps.data isEqual == == ==  = default data = ", defaultProps.data, ": id = ", defaultProps.id);
+        const propData = defaultProps.data && defaultProps.data[defaultProps.id];
+        if ((propData && propData.length > 0)) {
             console.log("20200608 propData = ", propData);
-            if (propData[0].x.length > 0) {
+            if (propData[0].x.length > 0 && !initData) {
+                setData(propData);
+                setInitData(true);
                 setTimeout(() => {
-                    setData(propData);
                     initialize(defaultProps.id, propData, defaultProps.type);
-                }, 1000);
+                }, 2000);
             }
-            setInitData(true);
         }
-        // setData(defaultProps.data);
     }, [defaultProps.id, defaultProps.data]);
 
     return (
         <>
-            <Line
-                ref={element => setChartRef(element)}
-                data={data}
-                width={vWidth}
-                height={vHeight}
-                options={options || { maintainAspectRatio: false }}
-            />
+            {(type === "bar")
+                ?
+                <Bar
+                    ref={element => setChartRef(element)}
+                    data={data}
+                    width={vWidth}
+                    height={vHeight}
+                    options={options || { maintainAspectRatio: false }}
+                />
+                :
+                <Line
+                    ref={element => setChartRef(element)}
+                    data={data}
+                    width={vWidth}
+                    height={vHeight}
+                    options={options || { maintainAspectRatio: false }}
+                />
+            }
             {legendDisplay
                 ? <div style={{ position: "absolute", left: 20, backgroundColor: "#4c4c4cdd", height: "300px" }}>
                     <ul className="mt-8">
                         {legend.length
                             && legend.map(item => (
-                                <li key={item.text} style={listItemStyle}>
+                                <li
+                                    key={item.datasetIndex}
+                                    style={listItemStyle}
+                                    onClick={() => handleLegendClick(item.datasetIndex)}>
                                     <div
                                         style={{
                                             marginRight: "8px",
