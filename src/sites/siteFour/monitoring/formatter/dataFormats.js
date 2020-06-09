@@ -4,6 +4,7 @@
 */
 import * as DataType from "./dataType";
 import * as Util from "../../../../utils";
+import isEqual from "lodash/isEqual";
 
 const setdataPart = (data, req, cloudlet, cloudletIdx, appinstPath, method, methodIdx) => {
     const seriesX = [];
@@ -136,7 +137,6 @@ const parseFindCloudlet = response => {
 
 const hideKeys = ["dev", "foundOperator", "id", "inf", "oper", "ver"];
 const parseClientList = response => {
-    console.log('20200603 response', response)
     const clientList = [];
     const formatObj = {};
     const keys = response[0] ? response[0].values[0].resColumns : [];
@@ -151,9 +151,26 @@ const parseClientList = response => {
     return clientList;
 };
 
+
+const parseCounterCluster = response => {
+    const formatedData = dataFormatCountCluster(response);
+    const containerData = [];
+    const keys = Object.keys(formatedData);
+    keys.map(key => {
+        containerData.push({
+            data: formatedData[key], count: formatedData[key].length, region: formatedData[key][0].region, cloudlet: key, clusters: formatedData[key]
+        });
+    });
+
+    return containerData;
+
+};
+
+
 export const dataFormatRateRegist = (response, id) => parseData(response[0], id);
 export const dataFormatCountCloudlet = response => setdataPartSum(response);
 export const dataFormatMetricCloudlet = response => parseCloudletData(response);
 export const dataFormatCountCluster = response => parseCountCluster(response);
 export const dataFormaFindCloudlet = response => parseFindCloudlet(response);
 export const dataFormatClientList = response => parseClientList(response);
+export const dataFormatCounterCluster = response => parseCounterCluster(response);

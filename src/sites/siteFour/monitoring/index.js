@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 2// <<<===== change depth
+            currentAuthDepth: 0// <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -299,7 +299,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
             title: { value: "Count of Clusters", align: "left" },
             filter: null,
             page: "multi",
-            itemCount: 3,
+            itemCount: 6,
             legend: false,
             ...defaultProp,
         },

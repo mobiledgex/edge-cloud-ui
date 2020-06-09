@@ -114,6 +114,13 @@ class ChartWidget extends React.Component {
                 // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
+
+            if (prevProps.id === DataType.COUNT_CLUSTER) {
+                // TODO : 테이블에 맞게 데이터 포멧 변환 필요
+                const updatedata = DataFormats.dataFormatCounterCluster(this.props.data[prevProps.id]);
+                // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
+                setTimeout(() => this.setState({ data: updatedata }), 500);
+            }
         }
 
     }
@@ -156,7 +163,7 @@ class ChartWidget extends React.Component {
 
     render() {
         const {
-            type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets, calculate
+            type, size, title, legendShow, filter, method, page, id, selectedIndex, cloudlets, calculate, itemCount
         } = this.props;
         const {
             activeStep, mapData, clusterCnt, data, data2, chartType
@@ -244,7 +251,7 @@ class ChartWidget extends React.Component {
                 {page === "multi"
                     ? (
                         <div style={{ height: pagerHeight }}>
-                            <DotsMobileStepper id={id} data={data} setActiveStep={this.setActiveStep} />
+                            <DotsMobileStepper id={id} data={data} itemCount={itemCount? itemCount : null} setActiveStep={this.setActiveStep} />
                         </div>
                     ) : null}
             </div>
@@ -416,17 +423,26 @@ const useStyles = makeStyles({
 export const DotsMobileStepper = props => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
+    const [step, setStep] = React.useState(1);
 
     const handleNext = idObject => {
         setActiveStep(idObject.index);
         props.setActiveStep(idObject.index);
     };
+    React.useEffect(() => {
+        let stepData = props.data // <----- data form edit
+
+        if (Array.isArray(stepData) && props.itemCount) {
+            setStep(Math.ceil(props.data.length / props.itemCount))
+        }
+
+    }, [props]);
 
     return (
         <div className={classes.root}>
             <Pager
                 index={activeStep}
-                count={5}
+                count={step}
                 onDotClick={index => handleNext({ index })}
 
             />

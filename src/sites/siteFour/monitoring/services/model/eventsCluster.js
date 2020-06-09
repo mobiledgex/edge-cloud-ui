@@ -38,7 +38,6 @@ const parseData = (response, type) => {
         console.log(" ERROR ::::::::::::::: Faile to request data")
         return resData;
     }
-    console.log('20200605 data', resSeries)
     /** events of the cloudlets */
     if (type === ChartType.TABLE) {
         resData = response
@@ -57,7 +56,6 @@ const parseData = (response, type) => {
             )
             : null;
     }
-    console.log('20200605 data', resData)
     return resData;
 };
 

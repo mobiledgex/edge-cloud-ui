@@ -20,9 +20,9 @@ const NodeInformation = defaultProps => {
     const sampleData = {
         "children":
             [
-                { name: "Master", pop: 13, color:'#91ec4c' },
-                { name: "Node", pop: 5, color:'#555'  },
-                { name: "Node", pop: 5, color: '#555' },
+                { name: "Master", pop: 13, color:'#88DD00' },
+                { name: "Node", pop: 5, color:'#6A6A6A'  },
+                { name: "Node", pop: 5, color:'#6A6A6A'  },
             ]
     };
 
@@ -60,6 +60,7 @@ const NodeInformation = defaultProps => {
             <text
                 y={emojiSize/2.3}
                 style={{fontSize: `${emojiSize}px`, textAnchor: 'middle'}}
+                fill="#fff"
             >
                 {leaf.data.name}
             </text>
