@@ -19,6 +19,7 @@ let regions = localStorage.regions ? localStorage.regions.split(",") : [];
 
 const selectedTimeRange = "today"; // TODO: selected time form toolbar
 const yesterdayWithCurrent = moment().subtract(1, "days").toString();
+const oneHourWithCurrent = moment().subtract(1, "minutes").toString();
 const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
 const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
 
@@ -26,7 +27,7 @@ const makeUTC = time => moment(time).utc();
 const rangeTime = range => {
     let time = null;
     if (range === "start") {
-        time = makeUTC(yesterdayWithCurrent);
+        time = makeUTC(oneHourWithCurrent);
     } else {
         time = makeUTC(moment());
     }
@@ -262,9 +263,9 @@ const metricFromServer = async (self, data) => {
                 organization: data.selectOrg,
                 name: data.cloudletSelectedOne
             },
-            // starttime: rangeTime("start"),
-            // endtime: rangeTime("end"),
-            last: data.last,
+            starttime: rangeTime("start"),
+            endtime: rangeTime("end"),
+            // last: data.last,
             selector: "*"
         }
     };

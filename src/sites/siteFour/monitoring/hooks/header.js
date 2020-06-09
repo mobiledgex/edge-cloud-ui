@@ -32,7 +32,8 @@ const HeaderComponent = (defaultValue) => {
                 <div className='page_monitoring_title_button'>
                     {info.legend &&
                         <div style={{ cursor: "pointer" }}
-                            onClick={() => value.onClick("info", info.title)}
+                             aria-describedby={'simple-popper'}
+                            onClick={(event) => value.onClick("info", info.title, event.currentTarget)}
                         >
                             <MoreIcon fontSize={'small'} />
                         </div>

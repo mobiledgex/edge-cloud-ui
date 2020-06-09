@@ -1,6 +1,7 @@
 import React from "react";
 import { Line, Bar } from "react-chartjs-2";
 import { sumBy, isEqual, sortBy } from "lodash";
+import Popper from "@material-ui/core/Popper";
 import { generateUniqueId } from "../services/serviceMC";
 import { removeDuplicate } from "../utils";
 import randomColor from "../libs/randomColor";
@@ -14,7 +15,7 @@ const getRandomColors = (_count, _alpha) => {
 };
 
 const listItemStyle = {
-    color: "#333",
+    color: "#fff",
     listStyle: "none",
     textAlign: "left",
     display: "flex",
@@ -26,7 +27,7 @@ const getOptions = params => ({
     scales: {
         yAxes: [{
             ticks: {
-                beginAtZero: true
+                beginAtZero: false
             }
         }],
         xAxes: [{
@@ -37,6 +38,18 @@ const getOptions = params => ({
                     second: "hh:mm:ss"
                 },
                 stepSize: 2
+            }
+        }]
+    },
+    legend: {
+        display: false
+    },
+});
+const getOptionsBar = params => ({
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: false
             }
         }]
     },
@@ -59,6 +72,7 @@ const ChartJSComponent = defaultProps => {
     const [randomColors, setRandomColors] = React.useState(getRandomColors(200, 0.5));
     const [randomColorsB, setRandomColorsB] = React.useState(getRandomColors(200, 1));
     const [legend, setLegend] = React.useState({ legend: <>no legend</> });
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
     const getInterpolate = (items, series) => {
         const interpoldata = [];
@@ -93,15 +107,14 @@ const ChartJSComponent = defaultProps => {
         myRef = element;
     };
 
-    const handleLegendClick = (datasetIndex) => {
+    const handleLegendClick = datasetIndex => {
         const chart = myRef.chartInstance;
-        chart.getDatasetMeta(datasetIndex).hidden =
-            chart.getDatasetMeta(datasetIndex).hidden === null ? true : !chart.getDatasetMeta(datasetIndex).hidden;
+        chart.getDatasetMeta(datasetIndex).hidden = chart.getDatasetMeta(datasetIndex).hidden === null ? true : !chart.getDatasetMeta(datasetIndex).hidden;
         chart.update(); // re-draw chart to hide dataset
     };
 
     const initialize = (_id, _data, _type) => {
-        console.log("20200607 _id = ", _id, ": _data = ", _data);
+
         setRandomColors(getRandomColors(_data.length, 0.5));
         setRandomColorsB(getRandomColors(_data.length, 1));
         const myChart = {
@@ -111,10 +124,12 @@ const ChartJSComponent = defaultProps => {
                 labels: getSeriesLabels(_data),
                 datasets: getDataSet(_data, getSeriesLabels(_data))
             },
-            options: getOptions({ displayLegend: legendDisplay })
+            options: (_type === "scatter") ? getOptions({ displayLegend: legendDisplay }) : getOptionsBar({ displayLegend: legendDisplay })
         };
-        setData(myChart.data);
+        console.log("20200607 make chart data  = ", myChart);
         setOptions(myChart.options);
+        setData(myChart.data);
+
     };
 
     React.useEffect(() => {
@@ -132,6 +147,8 @@ const ChartJSComponent = defaultProps => {
         setId(defaultProps.id);
         setType(defaultProps.type);
         setLegendDisplay(defaultProps.legendShow);
+        console.log("20200609", defaultProps.legendTarget);
+        setAnchorEl(legendDisplay ? null : defaultProps.legendTarget);
     }, [defaultProps.id, defaultProps.type, defaultProps.legendShow]);
 
     React.useEffect(() => {
@@ -140,7 +157,6 @@ const ChartJSComponent = defaultProps => {
         if ((propData && propData.length > 0)) {
             console.log("20200608 propData = ", propData);
             if (propData[0].x.length > 0 && !initData) {
-                setData(propData);
                 setInitData(true);
                 setTimeout(() => {
                     initialize(defaultProps.id, propData, defaultProps.type);
@@ -149,35 +165,42 @@ const ChartJSComponent = defaultProps => {
         }
     }, [defaultProps.id, defaultProps.data]);
 
+    const open = Boolean(anchorEl);
+
     return (
-        <>
+        <div style={{ position: "relative", height: "100%", width: "100%" }}>
             {(type === "bar")
-                ?
-                <Bar
+                ? <Bar
+                    id="typeisBar"
                     ref={element => setChartRef(element)}
                     data={data}
                     width={vWidth}
                     height={vHeight}
                     options={options || { maintainAspectRatio: false }}
                 />
-                :
-                <Line
+                : <Line
+                    id="typeisLine"
                     ref={element => setChartRef(element)}
                     data={data}
                     width={vWidth}
                     height={vHeight}
                     options={options || { maintainAspectRatio: false }}
-                />
-            }
+                />}
             {legendDisplay
-                ? <div style={{ position: "absolute", left: 20, backgroundColor: "#4c4c4cdd", height: "300px" }}>
+                ? <Popper
+                    className="chart-legend"
+                    id={open ? "simple-popper" : undefined}
+                    open={open}
+                    anchorEl={anchorEl}
+                >
                     <ul className="mt-8">
                         {legend.length
                             && legend.map(item => (
                                 <li
                                     key={item.datasetIndex}
                                     style={listItemStyle}
-                                    onClick={() => handleLegendClick(item.datasetIndex)}>
+                                    onClick={() => handleLegendClick(item.datasetIndex)}
+                                >
                                     <div
                                         style={{
                                             marginRight: "8px",
@@ -190,13 +213,28 @@ const ChartJSComponent = defaultProps => {
                                 </li>
                             ))}
                     </ul>
-                </div>
+                </Popper>
                 : null}
-        </>
+        </div>
     );
 };
 export default ChartJSComponent;
 
+
+const testdata = {
+    labels: ['January'],
+    datasets: [
+        {
+            label: 'January',
+            backgroundColor: 'rgba(255,99,132,0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+            hoverBorderColor: 'rgba(255,99,132,1)',
+            data: [65]
+        }
+    ]
+};
 /*
 const backgroundColor = [
     "rgba(255, 99, 132, 0.2)",
