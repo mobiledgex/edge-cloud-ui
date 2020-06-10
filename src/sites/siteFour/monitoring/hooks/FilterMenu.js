@@ -26,7 +26,7 @@ export default function FilterMenu(defaultProps) {
         setAnchorEl(null);
     };
 
-    const handleApply = (event) => {
+    const handleApply = event => {
         defaultProps.onHandleApplyFilter(selectedFilterObj);
     };
 
@@ -68,7 +68,7 @@ export default function FilterMenu(defaultProps) {
                 <RoomIcon style={{ color: "rgb(118, 255, 3)" }} />
             </Button>
             <div className="page_monitoring_location_text">
-                All
+                <BreadCrum data={selectedFilterObj} handleApply={handleApply} />
             </div>
             <Popper
                 elevation={0}
@@ -194,3 +194,30 @@ export default function FilterMenu(defaultProps) {
         </div>
     );
 }
+
+export const BreadCrum = defaultProps => {
+    const [category, setCategory] = React.useState("ALL");
+    const onHandleClick = (value) => {
+        // send selected info to handler
+        let selectedCrumObj = value;
+        defaultProps.handleApply(selectedCrumObj);
+    };
+
+    React.useEffect(() => {
+        if (defaultProps.data) {
+            const keys = Object.keys(defaultProps.data);
+            if (keys.length > 0) {
+                const crums = keys.map(key => (
+                    <span style={{ cursor: "pointer" }} onClick={() => onHandleClick(defaultProps.data[key])} value={defaultProps.data[key].value}>{`${defaultProps.data[key].value} / `}</span>
+                ));
+                setCategory(crums);
+            }
+        }
+    }, [defaultProps]);
+
+    return (
+        <div>
+            {category}
+        </div>
+    );
+};

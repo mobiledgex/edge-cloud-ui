@@ -23,24 +23,24 @@ const ContainerHealth = defaultProps => {
     }, [defaultProps]);
 
     return (
-        <div style={{width:"100%", height:"100%", overflow:'auto'}}>
+        <div style={{ width: "100%", height: "100%", overflow: 'auto' }}>
             <div className='page_monitoring_circle_chart'>
                 <div className='page_monitoring_circle_chart_item'>
                     <CircularProgress data={cpuUsed} />
                     <div className='page_monitoring_circle_chart_label'>
-                        vCPU
+                        vCPU(Count)
                     </div>
                 </div>
                 <div className='page_monitoring_circle_chart_item'>
                     <CircularProgress data={memoryUsed} />
                     <div className='page_monitoring_circle_chart_label'>
-                        MEM
+                        MEM(MBs)
                     </div>
                 </div>
                 <div className='page_monitoring_circle_chart_item'>
                     <CircularProgress data={diskUsed} />
                     <div className='page_monitoring_circle_chart_label'>
-                        DISK
+                        DISK(GBs)
                     </div>
                 </div>
             </div>

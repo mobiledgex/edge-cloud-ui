@@ -174,14 +174,13 @@ class MonitoringAdmin extends React.Component {
     length = 3 : go to page of the appinstances / currentAuthDepth = 2
     */
     onHandleApplyFilter = filteredItem => {
-        console.log("20200605 filtering == ", filteredItem);
+        console.log("20200610 filtering == ", filteredItem);
         /* example
         {region: {depth:0 , value:"EU"}}
         */
         const filteredDepth = Object.keys(filteredItem).length - 1;
 
-
-        // 잠시 막음
+        // 
         this.setState({ currentAuthDepth: filteredDepth, filteringItems: filteredItem });
         this.forceUpdate();
     }
@@ -191,10 +190,11 @@ class MonitoringAdmin extends React.Component {
         let currentItm = null;
         switch (depth) {
             case 0: currentItm = generateComponentAdmin(scope, props, compCloudlet, compClusterinst, compAppinst); break;
-            case 1: currentItm = generateComponentOperator(scope, props, compCloudlet, compClusterinst, compAppinst); break;
+            case 1: currentItm = generateComponentOperator(scope, props, compCloudlet, compClusterinst, compAppinst, scope.state.filteringItems); break;
             case 2: currentItm = generateComponentDeveloper(scope, props, compCloudlet, compClusterinst, compAppinst); break;
             default: currentItm;
         }
+        console.log("20200610 currentitem == ", currentItm);
         return currentItm;
     }
 
@@ -293,7 +293,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
     return [
         {
             id: dataType.COUNT_CLUSTER,
-            method: serviceMC.getEP().COUNT_CLUSTER,
+            // method: serviceMC.getEP().COUNT_CLUSTER,
+            method: null,
             chartType: chartType.COUNTER,
             type: "counter",
             title: { value: "Count of Clusters", align: "left" },
@@ -305,7 +306,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         },
         {
             id: dataType.NETWORK_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLOUDLET,
+            // method: serviceMC.getEP().METRICS_CLOUDLET,
+            method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
@@ -317,7 +319,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         },
         {
             id: dataType.FIND_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
+            method: null,
             chartType: chartType.MAP,
             type: "scatter",
             title: { value: "Find Cloudlets", align: "left" },
@@ -328,7 +331,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         },
         {
             id: dataType.REGISTER_CLIENT,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
+            method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
@@ -339,7 +343,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
         },
         {
             id: dataType.FIND_CLOUDLET,
-            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: serviceMC.getEP().METRICS_CLIENT,
+            method: null,
             chartType: chartType.GRAPH,
             type: "bar",
             title: { value: "Count of Find Cloudlet", align: "left" },
@@ -363,13 +368,14 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
     ];
 };
 //  second page -- 1
-const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters) => {
+const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters, filteringItems) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
         cloudlets,
         appinsts,
-        clusters
+        clusters,
+        filteringItems
     };
     return [
         {
@@ -449,7 +455,8 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
         self,
         cloudlets,
         appinsts,
-        clusters
+        clusters,
+        ...self.state.filteringItems
     };
     return [
         {
@@ -511,7 +518,7 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) 
         },
         {
             id: dataType.EVENT_CLUSTER,
-            method: serviceMC.getEP().EVENT_CLUSTER,
+            // method: serviceMC.getEP().EVENT_CLUSTER,
             chartType: chartType.TABLE,
             type: "alarm",
             title: { value: "Events of Cluster", align: "center" },

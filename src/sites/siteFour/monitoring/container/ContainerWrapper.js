@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import isEqual from "lodash/isEqual";
 import uniq from "lodash/uniq";
+import cloneDeep from "lodash/cloneDeep";
 import * as actions from "../../../../actions";
 import * as Service from "../services";
 import * as serviceMC from "../../../../services/model/serviceMC";
@@ -26,7 +27,7 @@ type MetricsParmaType = {
     self: any
 };
 
-const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchProps), (WrapperComponent) => class extends React.Component {
+const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProps), WrapperComponent => class extends React.Component {
     constructor() {
         super();
         _self = this;
@@ -45,15 +46,16 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             page: "single",
             selectedIndex: 0,
             id: null,
-            method: null,
+            method: "",
             cloudlets: [],
             appinsts: [],
-            clusters: []
+            clusters: [],
+            panelInfo: null
         };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200608 wrapper props ===== ", nextProps, ":", prevState);
+        console.log("20200610 wrapper props ===== ", nextProps, ":", prevState.method);
         const update = {};
         if (isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             update.cloudlets = nextProps.cloudlets;
@@ -66,20 +68,22 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
         }
         if (prevState.method !== nextProps.method) {
             update.method = nextProps.method;
+        } else {
+            update.method = null;
         }
         if (prevState.id !== nextProps.id) {
             update.id = nextProps.id;
         }
         if (prevState.panelInfo !== nextProps.panelInfo) {
-            console.log("20200608 panel info == ", nextProps.panelInfo);
-            /* 
+            console.log("20200610 panel info == ", nextProps.panelInfo);
+            /*
             info:
             info: "info"
             title: {value: "Health of Cloudlets", align: "left"}
             */
             if (nextProps.panelInfo && nextProps.panelInfo.info === "info" && nextProps.panelInfo.title.value === nextProps.title.value) {
                 update.legendShow = !prevState.legendShow;
-                update.legendTarget = nextProps.panelInfo.target
+                update.legendTarget = nextProps.panelInfo.target;
             }
             update.panelInfo = nextProps.panelInfo;
         }
@@ -94,33 +98,23 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     componentDidMount() {
-        this.setState({ chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id });
+        this.setState({
+            chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id, method: this.props.method
+        });
     }
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
-
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        console.log("20200610 check filtered item == >>>>>  prevProps = ", prevProps.method, ": this props = ", this.props.method, ": this state = ", this.state.method);
+        if (prevProps.method !== this.state.method) {
+            this.initialize(prevProps, this);
+            return true;
+        }
+        return null;
+    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.cloudlets !== this.state.cloudlets && this.state.method) {
-            // TODO: 20200509 //데이터가 갱신될 경우 id는 새로 갱신되어 들어온다
-            /** *******************************************
-            * STEP # 1
-            * necessary to get cloudlets from the parent
-            ******************************************** */
-            if (this.state.cloudlets && this.state.cloudlets.length > 0 && this.state.method) {
-                this.initialize(this.state, this);
-            }
-        }
-        if (prevProps.appinsts !== this.state.appinsts && this.state.method) {
-            if (this.state.appinsts && this.state.appinsts.length > 0 && this.state.method) {
-                this.initialize(this.state, this);
-            }
-        }
-        if (prevProps.clusters !== this.state.clusters && this.state.method) {
-            if (this.state.clusters && this.state.clusters.length > 0 && this.state.method) {
-                this.initialize(this.state, this);
-            }
-        }
+
     }
 
     onReceiveResult(result, self) {
@@ -129,7 +123,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
             /** filtering data */
             const groupByData = result;
             if (result && result.length > 0) {
-                console.log("20200521 container widget   == 55 == ", result, ":", self.state.id);
+                console.log("20200610 container widget   == 55 == ", result, ":", self.state.id);
             }
             this.setState({ data: { [self.state.id]: result } });
         } catch (e) { }
@@ -154,12 +148,13 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     async initialize(props: MetricsParmaType, self: any) {
+        console.log("20200610 initialize props = ", props.method);
         try {
             if (props.method === serviceMC.getEP().COUNT_CLUSTER) {
                 // count cluster in cloudlet
                 const result = await Service.MetricsService(props, self);
                 this.onReceiveResult(result, self);
-                //this.onReceiveResult(props.cloudlets, self);
+                // this.onReceiveResult(props.cloudlets, self);
             }
             if (props.method === serviceMC.getEP().METRICS_CLOUDLET) {
                 const result = await Service.MetricsService(props, self);
@@ -176,7 +171,18 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
                 }
             }
             if (props.method === serviceMC.getEP().EVENT_CLOUDLET) {
-                const result = await Service.MetricsService(props, self);
+                console.log("20200610 filtered === ", props.filteringItems);
+                // filtering
+                let findIdx = null;
+                const newProps = cloneDeep(props);
+                if (props.filteringItems.cloudlet && props.filteringItems.cloudlet.value) {
+                    findIdx = props.cloudlets.findIndex(x => x.cloudletName === props.filteringItems.cloudlet.value);
+                    newProps.cloudlets = [];
+                    console.log("20200610 props new pro === ", findIdx, ":", props.cloudlets[findIdx], ":", newProps);
+                    if (props.cloudlets[findIdx]) newProps.cloudlets = [props.cloudlets[findIdx]];
+                }
+                console.log("20200610 props new newProps === ", newProps);
+                const result = await Service.MetricsService(newProps || props, self);
                 this.onReceiveResult(result, self);
             }
             if (props.method === serviceMC.getEP().EVENT_CLUSTER) {
@@ -189,7 +195,9 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 
     render() {
-        const { data, chartType, legendShow, legendTarget, selectedIndex, cloudlets } = this.state;
+        const {
+            data, chartType, legendShow, legendTarget, selectedIndex, cloudlets
+        } = this.state;
         return (
             <SizeMe monitorHeight>
                 {({ size }) => (
@@ -209,7 +217,7 @@ const ContainerWrapper = (obj) => compose(connect(mapStateToProps, mapDispatchPr
     }
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     const regionInfo = state.regionInfo ? state.regionInfo : null;
     const panelInfo = state.infoPanelReducer ? state.infoPanelReducer : null;
     return {
@@ -217,17 +225,17 @@ const mapStateToProps = (state) => {
         panelInfo: panelInfo.info,
     };
 };
-const mapDispatchProps = (dispatch) => ({
+const mapDispatchProps = dispatch => ({
     handleAlertInfo: (mode, msg) => {
         dispatch(actions.alertInfo(mode, msg));
     },
     // handleLoadingSpinner: (data) => {
     //     dispatch(actions.loadingSpinner(data));
     // },
-    onLoadComplete: (data) => {
+    onLoadComplete: data => {
         _self.onReceiveResult(data);
     },
-    handleSavedData: (data) => {
+    handleSavedData: data => {
         dispatch(actions.saveMetricData(data));
     }
 });

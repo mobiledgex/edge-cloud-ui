@@ -88,17 +88,6 @@ export default function MonitoringListViewer(props) {
     const [columns, setColumns] = React.useState([]);
     const [rows, setRows] = React.useState([]);
 
-    React.useEffect(() => {
-        parentSize = props.sizeInfo;
-        if (classes && parentSize) {
-            setSizeH(parentSize.height - 50);
-        }
-        if (props.data && props.data.length > 0) {
-            setColumns(makeColumn(props.data[0]));
-            setRows(props.data);
-        }
-    }, [props]);
-
     const makeColumn = list => {
         const keys = Object.keys(list);
 
@@ -121,6 +110,17 @@ export default function MonitoringListViewer(props) {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    React.useEffect(() => {
+        parentSize = props.sizeInfo;
+        if (classes && parentSize) {
+            setSizeH(parentSize.height - 50);
+        }
+        if (props.data && props.data.length > 0) {
+            setColumns(makeColumn(props.data[0]));
+            setRows(props.data);
+        }
+    }, [props]);
 
     return (
         <div className={classes.root}>
