@@ -204,8 +204,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         )
     }
 
-    renderEventLogRadio() {
-
+    renderTableRadio() {
         return (
             <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                 <div
@@ -476,7 +475,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                     {this.renderLineChartRadio()}
                                     {this.renderBarChartRadio()}
                                     {this.renderColumnChartRadio()}
-                                    {this.renderEventLogRadio()}
+                                    {this.renderTableRadio()}
                                     {this.renderMapRadio()}
                                     {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
                                 </div>
