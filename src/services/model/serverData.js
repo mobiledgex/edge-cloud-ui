@@ -126,7 +126,7 @@ export const settingLock = async (self, data) => {
 }
 
 export const resetPassword = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESET_PASSWORD, data: data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: RESET_PASSWORD, data: data })
     return mcRequest
 }
 
