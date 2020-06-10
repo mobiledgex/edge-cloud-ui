@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy } from 'react';
-import {HashRouter, Route } from "react-router-dom";
+import {HashRouter, Route, Switch } from "react-router-dom";
 
 import 'semantic-ui-css/semantic.min.css';
 //redux
@@ -59,32 +59,26 @@ class App extends Component {
         this.getControllers()
     }
 
-    loader = () => {
-        return (
-            <div>
-                <GridLoader
-                    sizeUnit={"px"}
-                    size={20}
-                    color={'#70b2bc'}
-                    loading={true}
-                />
-            </div>
-        )
-    }
-
     render() {
         return (
             <ThemeProvider theme={this.props.themeType === THEME_TYPE.DARK ? getDarkTheme() : getLightTheme()}>
                 <HashRouter>
-                    <Suspense fallback={this.loader}>
-                        <div style={{ width: '100%', height: '100%' }}>
+                <Suspense fallback={<div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
+                        <GridLoader
+                            sizeUnit={"px"}
+                            size={25}
+                            color={'#70b2bc'}
+                            loading={true}
+                        />
+                    </div>}>
+                        <Switch>
                             <Route exact path='/' component={EntranceGlob} />
                             <Route exact path='/site4' component={SiteFour} />
                             <Route exact path='/site4/:pageId' component={SiteFour} />
                             <Route exact path='/logout' component={EntranceGlob} />
                             <Route exact path='/passwordreset' component={EntranceGlob} />
                             <Route exact path='/verify' component={VerifyContent} />
-                        </div>
+                        </Switch>
                     </Suspense>
                 </HashRouter>
             </ThemeProvider>
