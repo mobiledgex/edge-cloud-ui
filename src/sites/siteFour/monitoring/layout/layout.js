@@ -157,8 +157,8 @@ class MonitoringLayout extends React.Component {
         });
     };
 
-    onClickMenu = (info, title, target) => {
-        this.props.handleClickPanelInfo({ info, title, target });
+    onClickMenu = (info, id, open, target, title) => {
+        this.props.handleClickPanelInfo({ info, id, open, target, title});
     }
 
     getHeight = () => (window.innerHeight - 78 - 41 - 40) / 3 // (window Height - header+(margin+padding for container) - title+margin - space for grid)/3

@@ -20,7 +20,8 @@ const listItemStyle = {
     textAlign: "left",
     display: "flex",
     flexDirection: "row",
-    margin: "8px",
+    alignItems:"center",
+    padding: "10px 20px",
     cursor: "pointer"
 };
 const getOptions = params => ({
@@ -69,6 +70,8 @@ const ChartJSComponent = defaultProps => {
     const [type, setType] = React.useState(defaultProps.type);
     const [options, setOptions] = React.useState();
     const [legendDisplay, setLegendDisplay] = React.useState(false);
+    const [legendId, setLegendId] = React.useState('');
+    const [legendOpen, setLegendOpen] = React.useState(false);
     const [randomColors, setRandomColors] = React.useState(getRandomColors(200, 0.5));
     const [randomColorsB, setRandomColorsB] = React.useState(getRandomColors(200, 1));
     const [legend, setLegend] = React.useState({ legend: <>no legend</> });
@@ -133,6 +136,7 @@ const ChartJSComponent = defaultProps => {
     };
 
     React.useEffect(() => {
+
         if (isEqual(defaultProps.legendShow, legendDisplay) === false) {
             //
             setTimeout(() => {
@@ -143,13 +147,20 @@ const ChartJSComponent = defaultProps => {
                 setLegend(legend);
             }, 500);
         }
-
+        //
         setId(defaultProps.id);
         setType(defaultProps.type);
-        setLegendDisplay(defaultProps.legendShow);
-        console.log("20200609", defaultProps.legendTarget);
-        setAnchorEl(legendDisplay ? null : defaultProps.legendTarget);
     }, [defaultProps.id, defaultProps.type, defaultProps.legendShow]);
+
+    React.useEffect(() => {
+        setLegendId(defaultProps.legendInfo.id);
+        if(id === legendId) {
+            setLegendOpen(defaultProps.legendInfo.open);
+            setAnchorEl(legendOpen? defaultProps.legendInfo.target : null)
+            console.log('20200610 legend', legendId, legendOpen, anchorEl)
+        }
+
+    }, [defaultProps.legendInfo]);
 
     React.useEffect(() => {
         console.log("20200608 propData defaultProps.data isEqual == == ==  = default data = ", defaultProps.data, ": id = ", defaultProps.id);
@@ -165,7 +176,7 @@ const ChartJSComponent = defaultProps => {
         }
     }, [defaultProps.id, defaultProps.data]);
 
-    const open = Boolean(anchorEl);
+    const idLegend = legendOpen ? "legend-popper-" + legendId : undefined;
 
     return (
         <div style={{ position: "relative", height: "100%", width: "100%" }}>
@@ -186,35 +197,32 @@ const ChartJSComponent = defaultProps => {
                     height={vHeight}
                     options={options || { maintainAspectRatio: false }}
                 />}
-            {legendDisplay
-                ? <Popper
-                    className="chart-legend"
-                    id={open ? "simple-popper" : undefined}
-                    open={open}
+                <Popper
+                    className="chart_legend"
+                    id={idLegend}
+                    open={Boolean(anchorEl)}
                     anchorEl={anchorEl}
                 >
-                    <ul className="mt-8">
+                    <div className="mt-8">
                         {legend.length
                             && legend.map(item => (
-                                <li
+                                <div
                                     key={item.datasetIndex}
-                                    style={listItemStyle}
+                                    className="chart_legend_item"
+                                    // style={listItemStyle}
                                     onClick={() => handleLegendClick(item.datasetIndex)}
                                 >
                                     <div
+                                        className="chart_legend_item_color"
                                         style={{
-                                            marginRight: "8px",
-                                            width: "20px",
-                                            height: "20px",
                                             backgroundColor: item.fillStyle
                                         }}
                                     />
                                     {item.text}
-                                </li>
+                                </div>
                             ))}
-                    </ul>
+                    </div>
                 </Popper>
-                : null}
         </div>
     );
 };

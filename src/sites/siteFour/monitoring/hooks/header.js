@@ -6,12 +6,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 const HeaderComponent = (defaultValue) => {
     const [value, setValue] = useState(defaultValue);
     const [info, setInfo] = useState(defaultValue.panelInfo);
+    const [open, setOpen] = useState(false);
     React.useEffect(() => {
         if (defaultValue.panelInfo) setInfo(defaultValue.panelInfo);
     }, [defaultValue]);
     const onHandleClick = (a, b) => {
         console.log("20200507 on click ...", a, ":", b)
     };
+
+
     return (
         <div className='page_monitoring_title_area'>
             <div className='page_monitoring_title_row'>
@@ -32,8 +35,8 @@ const HeaderComponent = (defaultValue) => {
                 <div className='page_monitoring_title_button'>
                     {info.legend &&
                         <div style={{ cursor: "pointer" }}
-                             aria-describedby={'simple-popper'}
-                            onClick={(event) => value.onClick("info", info.title, event.currentTarget)}
+                             onClick={(event) => {setOpen(!open); value.onClick("info", info.id, open, event.currentTarget, info.title)}}
+                             aria-describedby={open? 'legend-popper-'+info.id : undefined}
                         >
                             <MoreIcon fontSize={'small'} />
                         </div>
