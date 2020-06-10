@@ -20,7 +20,6 @@ class OrganizationList extends React.Component {
         this.state = {
             currentView: null
         }
-
         this.action = '';
         this.data = {}
         this.keys = keys()
@@ -37,8 +36,7 @@ class OrganizationList extends React.Component {
 
     /**Action menu block */
     onAudit = (action, data) => {
-        let orgName = data[fields.organizationName];
-        this.props.subPage(`pg=AuditLog&org=${orgName}`)
+        this.props.handleShowAuditLog(data[fields.organizationName])
     }
 
     onDelete = (data, success) => {
@@ -180,7 +178,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
+        handleShowAuditLog: (data) => {dispatch(actions.showAuditLog(data))},
     };
 };
 

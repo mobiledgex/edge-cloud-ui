@@ -25,8 +25,6 @@ class App extends Component {
     constructor() {
         super();
         self = this;
-        this.clickTab = false;
-        this.routeCnt = 0;
     }
 
     getControllers = async () => {
@@ -81,10 +79,6 @@ class App extends Component {
 const mapStateToProps = (state) => {
 
     return {
-        siteName: (state.siteChanger) ? state.siteChanger.site : null,
-        tab: (state.tabChanger.tab) ? state.tabChanger.tab : null,
-        clickTab: (state.tabClick.clickTab) ? state.tabClick.clickTab : null,
-        loadingSpinner: state.loadingSpinner.creating ? state.loadingSpinner.creating : null,
         themeType: state.ThemeReducer.themeType,
     };
 };
@@ -93,9 +87,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleRegionInfo: (data) => {
             dispatch(actions.regionInfo(data))
-        },
-        handleUserInfo: (data) => {
-            dispatch(actions.userInfo(data))
         },
         toggleTheme: (data) => {
             dispatch(actions.toggleTheme(data))

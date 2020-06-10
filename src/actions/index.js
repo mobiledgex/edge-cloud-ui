@@ -384,6 +384,18 @@ export function setCheckedAudit(data) {
 }
 
 /**
+ * audit
+ * @param data
+ * @returns {{data: *, type: string}}
+ */
+export function showAuditLog(data) {
+    return {
+        type: types.SHOW_AUDIT,
+        data
+    }
+}
+
+/**
  *
  **/
 export function stateStream(data) {
