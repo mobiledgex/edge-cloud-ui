@@ -163,7 +163,7 @@ class ChartWidget extends React.Component {
 
     render() {
         const {
-            type, size, title, legendShow, legendTarget, filter, method, page, id, selectedIndex, cloudlets, calculate, itemCount
+            type, size, title, legendShow, legendInfo, filter, method, page, id, selectedIndex, cloudlets, calculate, itemCount
         } = this.props;
         const {
             activeStep, mapData, clusterCnt, data, data2, chartType
@@ -195,7 +195,7 @@ class ChartWidget extends React.Component {
                             data={data}
                             title={title.value}
                             showLegend={legendShow}
-                            legendTarget={legendTarget}
+                            legendInfo={legendInfo}
                             method={method}
                             selectedMethod={selectedIndex}
                             filterInfo={filter}
