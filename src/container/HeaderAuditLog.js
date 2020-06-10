@@ -256,7 +256,7 @@ class HeaderAuditLog extends React.Component {
         return (
 
             data.operationname ?
-                <ExpansionPanel square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)}>
+                <ExpansionPanel key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)}>
                     <ExpansionPanelSummary
                         id="panel1a-header"
                     >
@@ -386,7 +386,7 @@ class HeaderAuditLog extends React.Component {
         return (
             <div className='audit_container' style={{height:window.innerHeight - 48}}>
                 <div className='audit_title'>
-                    <div class="audit_title_label">Audit Logs</div>
+                    <div className="audit_title_label">Audit Logs</div>
                     <div className='audit_filter'>
                         <Dropdown
                             placeholder='Individual'

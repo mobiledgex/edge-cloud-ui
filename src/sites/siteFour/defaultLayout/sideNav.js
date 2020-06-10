@@ -128,16 +128,8 @@ const setNavState = (flag) => {
 
 export default function MiniDrawer(props) {
 
-    const subPage = (path) => {
-        props.history.push({pathname:`/site4/${path}`})
-        if(path.includes(constant.PAGE_AUDIT_LOGS))
-        {
-            setPage(<SiteFourPageAudits/>)
-        }
-    }
-
     const options = [
-        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization subPage={subPage}/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
         { divider: true },
