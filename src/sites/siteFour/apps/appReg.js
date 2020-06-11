@@ -724,6 +724,7 @@ class AppReg extends React.Component {
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service', advance: false },
+            { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: true, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
         ]
     }
 

@@ -116,10 +116,11 @@ export const fields = {
     powerState:'powerState',
     tls:'tls',
     userList:'userList',
-    userName:'userName',
-    userRole:'userRole',
+    userName: 'userName',
+    userRole: 'userRole',
     healthCheck: 'healthCheck',
-    skipHCPorts: 'skipHCPorts'
+    skipHCPorts: 'skipHCPorts',
+    templateDelimiter: 'templateDelimiter'
 }
 
 export const getUserRole = () => {

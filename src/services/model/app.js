@@ -35,6 +35,7 @@ export const keys = () => ([
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys:configs },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
+    { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
@@ -89,6 +90,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.configs]) {
             app.configs = data[fields.configs]
+        }
+        if (data[fields.templateDelimiter]) {
+            app.template_delimiter = data[fields.templateDelimiter]
         }
     }
     return ({
@@ -202,6 +206,10 @@ export const updateApp = async (self, data, originalData) => {
     if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
     {
         updateFields.push('30')
+    }
+    if(!compareObjects(data[fields.templateDelimiter], originalData[fields.templateDelimiter]))
+    {
+        updateFields.push('33')
     }
     if(!compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts]))
     {
