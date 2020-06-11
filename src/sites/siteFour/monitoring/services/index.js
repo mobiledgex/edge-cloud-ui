@@ -137,6 +137,7 @@ const getMetricsClient = async (self, params) => {
     //     console.log("20200521 client >>>> response for get metrics client... ", response, ": method = ", params.method);
     //     self.onReceiveResultClient(response, self);
     // });
+    console.log("20200610 request getMetricsClient ==", params.appinsts);
 
     // TODO : 페이지 개수만큼 데이터 호출
     return Promise.all(
@@ -250,15 +251,38 @@ export const getPrepareList = async (defaultValue: MetricsParmaType, self: any) 
 
 export const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
     let result = null;
+    console.log("20200610 request service index == ", defaultValue.method)
     // this.props.handleLoadingSpinner(true);
-    switch (defaultValue.method) {
-        case serviceMC.getEP().COUNT_CLUSTER: result = await getListCluster(self, defaultValue); return result;
-        case serviceMC.getEP().EVENT_CLOUDLET: result = await getEventCloudlet(self, defaultValue); return result;
-        case serviceMC.getEP().EVENT_CLUSTER: result = await getEventCluster(self, defaultValue); return result;
-        case serviceMC.getEP().METRICS_CLOUDLET: result = await getMetricsCloudlet(self, defaultValue); return result;
-        case serviceMC.getEP().METRICS_CLIENT: result = await getMetricsClient(self, defaultValue); return result;
-        default: return null;
+    // switch (defaultValue.method) {
+    //     case serviceMC.getEP().COUNT_CLUSTER: result = await getListCluster(self, defaultValue); return result;
+    //     case serviceMC.getEP().EVENT_CLOUDLET: result = await getEventCloudlet(self, defaultValue); return result;
+    //     case serviceMC.getEP().EVENT_CLUSTER: result = await getEventCluster(self, defaultValue); return result;
+    //     case serviceMC.getEP().METRICS_CLOUDLET: result = await getMetricsCloudlet(self, defaultValue); return result;
+    //     case serviceMC.getEP().METRICS_CLIENT: result = await getMetricsClient(self, defaultValue); return result;
+    //     default: return null;
+    // }
+
+    if (defaultValue.method === serviceMC.getEP().COUNT_CLUSTER) {
+        result = await getListCluster(self, defaultValue);
+        return result;
     }
+    if (defaultValue.method === serviceMC.getEP().EVENT_CLOUDLET) {
+        result = await getEventCloudlet(self, defaultValue);
+        return result;
+    }
+    if (defaultValue.method === serviceMC.getEP().EVENT_CLUSTER) {
+        result = await getListCluster(self, defaultValue);
+        return result;
+    }
+    if (defaultValue.method === serviceMC.getEP().METRICS_CLOUDLET) {
+        result = await getMetricsCloudlet(self, defaultValue);
+        return result;
+    }
+    if (defaultValue.method === serviceMC.getEP().METRICS_CLIENT) {
+        result = await getMetricsClient(self, defaultValue);
+        return result;
+    }
+
 };
 
 

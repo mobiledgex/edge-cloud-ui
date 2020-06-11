@@ -52,15 +52,17 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
             clusters: [],
             panelInfo: null
         };
+        this.initMethod = "";
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200610 wrapper props ===== ", nextProps, ":", prevState.method);
+        console.log("20200610 request wrapper props ===== ", nextProps.appinsts, ":", prevState.appinsts);
         const update = {};
         if (isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             update.cloudlets = nextProps.cloudlets;
         }
-        if (isEqual(prevState.appinsts, nextProps.appinsts) === false) {
+        if (nextProps.appinsts && (isEqual(prevState.appinsts, nextProps.appinsts) === false)) {
+            console.log("20200610 request get appinst  ===== ", nextProps.appinsts);
             update.appinsts = nextProps.appinsts;
         }
         if (isEqual(prevState.clusters, nextProps.clusters) === false) {
@@ -68,8 +70,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
         }
         if (prevState.method !== nextProps.method) {
             update.method = nextProps.method;
-        } else {
-            update.method = null;
         }
         if (prevState.id !== nextProps.id) {
             update.id = nextProps.id;
@@ -94,20 +94,25 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
             update.chartType = nextProps.chartType;
         }
 
-        return Object.keys(update).length ? update : null;
+        return Object.keys(update).length > 0 ? update : null;
     }
 
     componentDidMount() {
         this.setState({
-            chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id, method: this.props.method
+            chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id, method: this.props.method, appinsts: this.props.appinsts
         });
     }
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        console.log("20200610 check filtered item == >>>>>  prevProps = ", prevProps.method, ": this props = ", this.props.method, ": this state = ", this.state.method);
-        if (prevProps.method !== this.state.method) {
-            this.initialize(prevProps, this);
+        console.log("20200610 request 000 == >>>>>  ", this.state.appinsts, ":", prevState.appinsts);
+        console.log("20200610 request 111 check filtered item == >>>>>  prevProps, prevState = ", prevProps.method, ":", prevState.method);
+        console.log("20200610 request 222 check filtered item == >>>>>  this props = ", this.props.method, ": this state = ", this.state.method);
+        if (prevState.method && (prevState.method !== this.initMethod) && this.state.appinsts) {
+            this.initMethod = prevState.method;
+
+            console.log("20200610 request 333 == >>>>>  init  ");
+            this.initialize(this.state, this);
             return true;
         }
         return null;
@@ -117,15 +122,17 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
 
     }
 
-    onReceiveResult(result, self) {
+    onReceiveResult(result, self, method) {
         try {
             // TODO: 20200507 필터가 있는지 확인 후 데이터 가공
             /** filtering data */
             const groupByData = result;
             if (result && result.length > 0) {
-                console.log("20200610 container widget   == 55 == ", result, ":", self.state.id);
+                console.log("20200610 container widget   == 55 == ", result, ":", self.state.id, self.state.method, ": m =", method, ": this state = ", this.state.id);
+                if (self.state.id === this.state.id) {
+                    this.setState({ data: { [self.state.id]: result, method } });
+                }
             }
-            this.setState({ data: { [self.state.id]: result } });
         } catch (e) { }
     }
 
@@ -148,26 +155,26 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
     }
 
     async initialize(props: MetricsParmaType, self: any) {
-        console.log("20200610 initialize props = ", props.method);
+        console.log("20200610 request initialize props = ", props.method, ":", props.appinsts);
         try {
             if (props.method === serviceMC.getEP().COUNT_CLUSTER) {
                 // count cluster in cloudlet
                 const result = await Service.MetricsService(props, self);
-                this.onReceiveResult(result, self);
+                this.onReceiveResult(result, self, props.method);
                 // this.onReceiveResult(props.cloudlets, self);
             }
             if (props.method === serviceMC.getEP().METRICS_CLOUDLET) {
                 const result = await Service.MetricsService(props, self);
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result);
-                    this.onReceiveResult(reduceResult, self);
+                    this.onReceiveResult(reduceResult, self, props.method);
                 }
             }
             if (props.method === serviceMC.getEP().METRICS_CLIENT) {
                 const result = await Service.MetricsService(props, self);
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result, "values");
-                    this.onReceiveResult(reduceResult, self);
+                    this.onReceiveResult(reduceResult, self, props.method);
                 }
             }
             if (props.method === serviceMC.getEP().EVENT_CLOUDLET) {
@@ -183,11 +190,11 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 }
                 console.log("20200610 props new newProps === ", newProps);
                 const result = await Service.MetricsService(newProps || props, self);
-                this.onReceiveResult(result, self);
+                this.onReceiveResult(result, self, props.method);
             }
             if (props.method === serviceMC.getEP().EVENT_CLUSTER) {
                 const result = await Service.MetricsService(props, self);
-                this.onReceiveResult(result, self);
+                this.onReceiveResult(result, self, props.method);
             }
         } catch (e) {
             console.log(e);

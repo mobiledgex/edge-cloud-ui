@@ -189,9 +189,9 @@ class MonitoringAdmin extends React.Component {
         // TODO : 20200606 should have filtering compCloudlet & compClusterinst, comAppinst
         let currentItm = null;
         switch (depth) {
-            case 0: currentItm = generateComponentAdmin(scope, props, compCloudlet, compClusterinst, compAppinst); break;
+            case 0: currentItm = generateComponentAdmin(scope, props, compCloudlet, compClusterinst, compAppinst, scope.state.filteringItems); break;
             case 1: currentItm = generateComponentOperator(scope, props, compCloudlet, compClusterinst, compAppinst, scope.state.filteringItems); break;
-            case 2: currentItm = generateComponentDeveloper(scope, props, compCloudlet, compClusterinst, compAppinst); break;
+            case 2: currentItm = generateComponentDeveloper(scope, props, compCloudlet, compClusterinst, compAppinst, scope.state.filteringItems); break;
             default: currentItm;
         }
         console.log("20200610 currentitem == ", currentItm);
@@ -225,6 +225,7 @@ class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
+                    appinsts={compAppinst}
                     items={this.getCurrentItem(currentAuthDepth, scope, this.props, compCloudlet, compClusterinst, compAppinst)}
                 />
             </div>
@@ -281,14 +282,14 @@ export default connect(
 * TODO : // should make JSON property
 * */
 //  second page -- 0
-const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters) => {
+const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filteringItems) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
         cloudlets,
         appinsts,
         clusters,
-        ...self.state.filteringItems
+        filteringItems
     };
     return [
         {
@@ -381,6 +382,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters, f
         {
             id: dataType.NETWORK_CLOUDLET,
             // method: serviceMC.getEP().METRICS_CLOUDLET,
+            method: null,
             chartType: chartType.GAUGE,
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
@@ -416,6 +418,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters, f
         {
             id: dataType.METHOD_CLIENT,
             // method: serviceMC.getEP().METRICS_CLIENT,
+            method: null,
             chartType: chartType.COUNTERWITHSPARK,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
@@ -449,14 +452,14 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters, f
     ];
 };
 // third page -- 2
-const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters) => {
+const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters, filteringItems) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
         cloudlets,
         appinsts,
         clusters,
-        ...self.state.filteringItems
+        filteringItems
     };
     return [
         {

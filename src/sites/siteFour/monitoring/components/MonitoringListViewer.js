@@ -119,6 +119,9 @@ export default function MonitoringListViewer(props) {
         if (props.data && props.data.length > 0) {
             setColumns(makeColumn(props.data[0]));
             setRows(props.data);
+        } else {
+            setColumns(makeColumn({ Loading: [] }));
+            setRows([]);
         }
     }, [props]);
 

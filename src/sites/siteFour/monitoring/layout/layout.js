@@ -5,7 +5,8 @@ import range from "lodash/range";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { connect } from "react-redux";
 import HeaderComponent from "../hooks/header";
-import ItemComponent from "../hooks/ItemComp";
+// import ItemComponent from "../hooks/ItemComp";
+import ChartWidget from "../container/ChartWidget";
 import * as actions from "../../../../actions";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -79,6 +80,9 @@ class MonitoringLayout extends React.Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log("20200605 nextProps in layout ==", nextProps.items, ":", prevState.items, ": is equal = ", isEqual(nextProps.items, prevState.items));
+        if (nextProps.appinsts && nextProps.appinsts.length > 0) {
+            return { appinsts: nextProps.appinsts };
+        }
         if (!isEqual(nextProps.items, prevState.items)) {
             return { items: nextProps.items };
         }
@@ -158,7 +162,7 @@ class MonitoringLayout extends React.Component {
     };
 
     onClickMenu = (info, id, open, target, title) => {
-        this.props.handleClickPanelInfo({ info, id, open, target, title});
+        this.props.handleClickPanelInfo({ info, id, open, target, title });
     }
 
     getHeight = () => (window.innerHeight - 78 - 41 - 40) / 3 // (window Height - header+(margin+padding for container) - title+margin - space for grid)/3
@@ -168,8 +172,8 @@ class MonitoringLayout extends React.Component {
 
     }
 
-    generateDOM(items) {
-        console.log("20200610 gen dom == ", items, ": this.state.currentBreakpoint =", this.state.currentBreakpoint);
+    generateDOM(items, appinsts) {
+        console.log("20200611 render == ", items, ": appinsts =", appinsts);
         return this.state.layouts[this.state.currentBreakpoint].map(
             (l, idx) => (
                 <div
@@ -192,7 +196,7 @@ class MonitoringLayout extends React.Component {
                             height: 0
                         }}
                     >
-                        <ItemComponent item={items[idx]} panelInfo={items[idx]} />
+                        <ChartWidget {...items[idx]} panelInfo={items[idx]} appinsts={appinsts} />
                     </div>
                 </div>
             )
@@ -201,7 +205,7 @@ class MonitoringLayout extends React.Component {
 
     render() {
         const {
-            toolbox, currentBreakpoint, layouts, items
+            toolbox, currentBreakpoint, layouts, items, appinsts
         } = this.state;
         return (
             <div>
@@ -233,7 +237,7 @@ class MonitoringLayout extends React.Component {
                     rowHeight={this.getHeight()} // TODO : value 70 is maby height of header
                     draggableHandle="#react-grid-dragHandleExample"
                 >
-                    {(items && items.length > 0) ? this.generateDOM(items) : null}
+                    {(items && items.length > 0) ? this.generateDOM(items, appinsts) : null}
                 </ResponsiveReactGridLayout>
             </div>
         );

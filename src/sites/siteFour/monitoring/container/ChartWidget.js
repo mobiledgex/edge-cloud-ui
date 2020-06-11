@@ -40,6 +40,7 @@ class ChartWidget extends React.Component {
     componentDidMount() {
         this.id = this.props.id;
         this.setState({ id: this.props.id });
+        this.setState({ data: [] });
         // this.divRef = React.createRef();
         // setTimeout(() => {
         //     if (this.divRef.current) this.divRef.current.setDataToWidget(this.getData());
@@ -70,14 +71,8 @@ class ChartWidget extends React.Component {
         return null;
     }
 
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     // 랜더링 조건을 여기에 추가한다. data 값이 같으면 랜더링 하지 않음
-    //     console.log('shouldComponentUpdate');
-    //     if (nextState.data === nextProps.data) return false;
-    //     return true;
-    // }
-
-    componentDidUpdate(prevProps, prevState) {
+    /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
+    getSnapshotBeforeUpdate(prevProps, prevState) {
         if (prevProps.data !== this.props.data) {
 
             if (prevProps.id === DataType.COUNT_CLUSTER) {
@@ -99,13 +94,13 @@ class ChartWidget extends React.Component {
             //
             if (prevProps.id === DataType.EVENT_CLOUDLET) {
                 const updatedata = this.props.data[prevProps.id];
-                // 잠시 막음 20200610
-                console.log("20200610 updatedata == ", updatedata);
-                // setTimeout(() => this.setState({ data: updatedata }), 500);
+                // 잠시 막음 20200610 ==>> TODO : 테이블에 맞게 데이터 포멧 변환 필요
+                console.log("20200610 updatedata == ", updatedata, ":", this.props.data);
+                // this.setState({ data: [] });
+                //setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
             if (prevProps.id === DataType.METHOD_CLIENT) {
-                // TODO : 테이블에 맞게 데이터 포멧 변환 필요
                 const updatedata = DataFormats.dataFormatClientList(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
@@ -124,6 +119,19 @@ class ChartWidget extends React.Component {
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
         }
+        return null;
+    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     // 랜더링 조건을 여기에 추가한다. data 값이 같으면 랜더링 하지 않음
+    //     console.log('shouldComponentUpdate');
+    //     if (nextState.data === nextProps.data) return false;
+    //     return true;
+    // }
+
+    componentDidUpdate(prevProps, prevState) {
+
+        /* TODO: 20200610 It will move code to getSnapshotBeforeUpdate */
+
 
     }
 
@@ -248,7 +256,7 @@ class ChartWidget extends React.Component {
                         <ContainerMethod size={resize} />
                     ) : chartType === ChartType.BUBBLECHART ? (
                         <BubbleChart size={resize} />
-                    ) : <MonitoringListViewer id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />
+                    ) : <MonitoringListViewer id={id} size={resize} type={type} chartType={chartType} data={data} title={title} method={method} />
                     }
                 </div>
                 {page === "multi"

@@ -25,8 +25,8 @@ const ClusterMap = props => {
     const [position, setPosition] = React.useState({ coordinates: [0, 0], zoom: 1 });
 
     const [clients, setClients] = React.useState([]);
-    const [center] = React.useState(zoomControls.center);
-    const [zoom] = React.useState(zoomControls.zoom);
+    const [center, setCenter] = React.useState(zoomControls.center);
+    const [zoom, setZoom] = React.useState(zoomControls.zoom);
     const [cities, setCities] = React.useState([]);
     const [countries] = React.useState([]);
     const [citiesSecond] = React.useState([]);
@@ -92,8 +92,8 @@ const ClusterMap = props => {
 
         if (!isEqual(locationData, cities)) {
             const clickMarker = [];
-            let zoom = props.locData ? zoom : 3;
-            let center = props.locData ? center : zoomControls.center;
+            setZoom(props.locData ? zoom : 3);
+            setCenter(props.locData ? center : zoomControls.center);
 
             if (props.mapDetails) {
                 if (selectAll(".rsm-markers").selectAll(".levelFive")) {
@@ -109,8 +109,8 @@ const ClusterMap = props => {
                     });
                 });
 
-                zoom = 4;
-                center = props.mapDetails.coordinates;
+                setZoom(4);
+                setCenter(props.mapDetails.coordinates);
             }
             setCities(locationData);
             setClients(clientLocations);

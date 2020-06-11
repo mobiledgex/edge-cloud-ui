@@ -10,7 +10,6 @@ export const valueAsPercentage = (value, total) => `${(value / total) * 100}%`;
 
 const getRandomColors = (_count, _alpha) => {
     const colors = randomColor({ hue: "blue", count: _count, alpha: _alpha });
-    console.log("20200608 random colors = ", colors);
     return colors;
 };
 
@@ -20,7 +19,7 @@ const listItemStyle = {
     textAlign: "left",
     display: "flex",
     flexDirection: "row",
-    alignItems:"center",
+    alignItems: "center",
     padding: "10px 20px",
     cursor: "pointer"
 };
@@ -154,9 +153,9 @@ const ChartJSComponent = defaultProps => {
 
     React.useEffect(() => {
         setLegendId(defaultProps.legendInfo.id);
-        if(id === legendId) {
+        if (id === legendId) {
             setLegendOpen(defaultProps.legendInfo.open);
-            setAnchorEl(legendOpen? defaultProps.legendInfo.target : null)
+            setAnchorEl(legendOpen ? defaultProps.legendInfo.target : null)
             console.log('20200610 legend', legendId, legendOpen, anchorEl)
         }
 
@@ -197,32 +196,32 @@ const ChartJSComponent = defaultProps => {
                     height={vHeight}
                     options={options || { maintainAspectRatio: false }}
                 />}
-                <Popper
-                    className="chart_legend"
-                    id={idLegend}
-                    open={Boolean(anchorEl)}
-                    anchorEl={anchorEl}
-                >
-                    <div className="mt-8">
-                        {legend.length
-                            && legend.map(item => (
+            <Popper
+                className="chart_legend"
+                id={idLegend}
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+            >
+                <div className="mt-8">
+                    {legend.length
+                        && legend.map(item => (
+                            <div
+                                key={item.datasetIndex}
+                                className="chart_legend_item"
+                                // style={listItemStyle}
+                                onClick={() => handleLegendClick(item.datasetIndex)}
+                            >
                                 <div
-                                    key={item.datasetIndex}
-                                    className="chart_legend_item"
-                                    // style={listItemStyle}
-                                    onClick={() => handleLegendClick(item.datasetIndex)}
-                                >
-                                    <div
-                                        className="chart_legend_item_color"
-                                        style={{
-                                            backgroundColor: item.fillStyle
-                                        }}
-                                    />
-                                    {item.text}
-                                </div>
-                            ))}
-                    </div>
-                </Popper>
+                                    className="chart_legend_item_color"
+                                    style={{
+                                        backgroundColor: item.fillStyle
+                                    }}
+                                />
+                                {item.text}
+                            </div>
+                        ))}
+                </div>
+            </Popper>
         </div>
     );
 };
