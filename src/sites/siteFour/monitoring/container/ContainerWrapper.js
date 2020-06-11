@@ -35,77 +35,21 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
         this.stackData = [];
         this.groupData = [];
         this.allData = [];
-        this.state = {
-            data: [],
-            dataRaw: [],
-            chartType: "",
-            chartMethod: "",
-            title: null,
-            legendShow: false,
-            legendInfo: { id: '', open: false, target: null },
-            page: "single",
-            selectedIndex: 0,
-            id: null,
-            method: "",
-            cloudlets: [],
-            appinsts: [],
-            clusters: [],
-            panelInfo: null
-        };
         this.initMethod = "";
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200610 request wrapper props ===== ", nextProps, ":", prevState);
+        console.log("20200611 did request wrapper props ===== ", nextProps, ":", prevState);
         const update = {};
-        if (isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
-            update.cloudlets = nextProps.cloudlets;
-        }
-        if (nextProps.appinsts && (isEqual(prevState.appinsts, nextProps.appinsts) === false)) {
-            console.log("20200610 request get appinst  ===== ", nextProps.appinsts);
-            update.appinsts = nextProps.appinsts;
-        }
-        if (isEqual(prevState.clusters, nextProps.clusters) === false) {
-            update.clusters = nextProps.clusters;
-        }
-        if (prevState.method !== nextProps.method) {
-            update.method = nextProps.method;
-        }
-        if (prevState.id !== nextProps.id) {
-            update.id = nextProps.id;
-        }
-        if (prevState.panelInfo !== nextProps.panelInfo) {
-            console.log("20200610 panel info == ", nextProps.panelInfo);
-            /*
-            info:
-            info: "info"
-            title: {value: "Health of Cloudlets", align: "left"}
-            */
-            if (nextProps.panelInfo && nextProps.panelInfo.info === "info" && nextProps.panelInfo.title.value === nextProps.title.value) {
-                update.legendShow = !prevState.legendShow;
-                update.legendInfo = { id: nextProps.panelInfo.id, open: nextProps.panelInfo.open, target: nextProps.panelInfo.target }
-            }
-            update.panelInfo = nextProps.panelInfo;
-        }
-        if (prevState.id !== nextProps.id) {
-            update.id = nextProps.id;
-        }
-        if (prevState.chartType !== nextProps.chartType) {
-            update.chartType = nextProps.chartType;
-        }
 
-        return Object.keys(update).length > 0 ? update : null;
+
+        return nextProps;
     }
 
-    componentDidMount() {
-        this.setState({
-            // chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id, method: this.props.method, appinsts: this.props.appinsts
-        });
-    }
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        console.log("20200610 request 000 == >>>>>  ", prevProps, ":", prevState);
+        console.log("20200611 did request 000 == >>>>>  ", prevProps, ":", prevState);
         console.log("20200610 request 111 check filtered item == >>>>>  prevProps, prevState = ", prevProps.method, ":", prevState.method);
         console.log("20200610 request 222 check filtered item == >>>>>  this props = ", this.props.method, ": this state = ", this.state.method);
         if (prevState.method && (prevState.method !== this.initMethod) && this.state.appinsts) {

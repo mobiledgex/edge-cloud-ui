@@ -302,8 +302,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filt
     return [
         {
             id: dataType.COUNT_CLUSTER,
-            // method: serviceMC.getEP().COUNT_CLUSTER,
-            method: null,
+            method: serviceMC.getEP().COUNT_CLUSTER,
+            // method: null,
             chartType: chartType.COUNTER,
             type: "counter",
             title: { value: "Count of Clusters", align: "left" },
@@ -315,8 +315,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filt
         },
         {
             id: dataType.NETWORK_CLOUDLET,
-            // method: serviceMC.getEP().METRICS_CLOUDLET,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLOUDLET,
+            // method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
@@ -328,8 +328,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filt
         },
         {
             id: dataType.FIND_CLOUDLET,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: null,
             chartType: chartType.MAP,
             type: "scatter",
             title: { value: "Find Cloudlets", align: "left" },
@@ -340,8 +340,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filt
         },
         {
             id: dataType.REGISTER_CLIENT,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
@@ -352,8 +352,8 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filt
         },
         {
             id: dataType.FIND_CLOUDLET,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: null,
             chartType: chartType.GRAPH,
             type: "bar",
             title: { value: "Count of Find Cloudlet", align: "left" },
