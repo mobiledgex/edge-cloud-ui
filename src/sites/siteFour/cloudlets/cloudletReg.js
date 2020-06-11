@@ -32,6 +32,7 @@ class ClusterInstReg extends React.Component {
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.infraApiAccessList = [constant.INFRA_API_ACCESS_DIRECT, constant.INFRA_API_ACCESS_RESTRICTED]
         //To avoid refecthing data from server
         this.requestedRegionList = [];
         this.operatorList = []
@@ -254,6 +255,10 @@ class ClusterInstReg extends React.Component {
                         case fields.platformType:
                             form.options = [constant.PLATFORM_TYPE_OPEN_STACK];
                             break;
+                        case fields.infraApiAccess:
+                            form.options = this.infraApiAccessList;
+                            form.value = constant.INFRA_API_ACCESS_DIRECT;
+                            break;
                         default:
                             form.options = undefined;
                     }
@@ -290,8 +295,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
-
-
+            { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network'},
         ]
     }
 
