@@ -94,10 +94,8 @@ class ChartWidget extends React.Component {
             //
             if (prevProps.id === DataType.EVENT_CLOUDLET) {
                 const updatedata = this.props.data[prevProps.id];
-                // 잠시 막음 20200610 ==>> TODO : 테이블에 맞게 데이터 포멧 변환 필요
                 console.log("20200610 updatedata == ", updatedata, ":", this.props.data);
-                // this.setState({ data: [] });
-                //setTimeout(() => this.setState({ data: updatedata }), 500);
+                setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
             if (prevProps.id === DataType.METHOD_CLIENT) {

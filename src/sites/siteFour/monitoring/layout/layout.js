@@ -67,6 +67,7 @@ class MonitoringLayout extends React.Component {
             renderItems: [],
         };
         this.toggle = false;
+        this.initMethod = "";
     }
 
     componentDidMount() {
@@ -74,17 +75,29 @@ class MonitoringLayout extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log("20200605 prevProps in layout ==", prevProps);
         this.refreshRender(prevProps.items);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200605 nextProps in layout ==", nextProps.items, ":", prevState.items, ": is equal = ", isEqual(nextProps.items, prevState.items));
+        console.log("20200611 render nextProps in layout ==", nextProps.items, ":", prevState.items, ": is equal = ", isEqual(nextProps.items, prevState.items));
         if (nextProps.appinsts && nextProps.appinsts.length > 0) {
             return { appinsts: nextProps.appinsts };
         }
         if (!isEqual(nextProps.items, prevState.items)) {
             return { items: nextProps.items };
+        }
+        return null;
+    }
+
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        console.log("20200611 render updagte  000 == >>>>>  ", prevProps.items, ":", prevState.items);
+        console.log("20200611 render updagte  111 == >>>>>  ", this.props.items, ":", this.state.items, ":", prevState.method);
+        if (prevState.items !== this.props.items) {
+            this.initMethod = prevState.method;
+
+            console.log("20200611 render 333 == >>>>>  init  ");
+            this.setState({ items: this.props.items });
+            return true;
         }
         return null;
     }
@@ -173,7 +186,7 @@ class MonitoringLayout extends React.Component {
     }
 
     generateDOM(items, appinsts) {
-        console.log("20200611 render == ", items, ": appinsts =", appinsts);
+        console.log("20200611 render gen dom == ", items, ": appinsts =", appinsts);
         return this.state.layouts[this.state.currentBreakpoint].map(
             (l, idx) => (
                 <div

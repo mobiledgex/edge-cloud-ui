@@ -199,9 +199,9 @@ class MonitoringAdmin extends React.Component {
     }
 
     resetLayout = (e) => {
-       if(e) {
+        if (e) {
 
-       }
+        }
 
     }
 
@@ -529,7 +529,7 @@ const generateComponentDeveloper = (self, infos, cloudlets, appinsts, clusters, 
         },
         {
             id: dataType.EVENT_CLUSTER,
-            // method: serviceMC.getEP().EVENT_CLUSTER,
+            method: serviceMC.getEP().EVENT_CLUSTER,
             chartType: chartType.TABLE,
             type: "alarm",
             title: { value: "Events of Cluster", align: "center" },

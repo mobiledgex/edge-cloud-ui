@@ -56,7 +56,7 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200610 request wrapper props ===== ", nextProps.appinsts, ":", prevState.appinsts);
+        console.log("20200610 request wrapper props ===== ", nextProps, ":", prevState);
         const update = {};
         if (isEqual(prevState.cloudlets, nextProps.cloudlets) === false) {
             update.cloudlets = nextProps.cloudlets;
@@ -99,20 +99,27 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
 
     componentDidMount() {
         this.setState({
-            chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id, method: this.props.method, appinsts: this.props.appinsts
+            // chartType: this.props.chartType, title: this.props.title, page: this.props.page, id: this.props.id, method: this.props.method, appinsts: this.props.appinsts
         });
     }
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        console.log("20200610 request 000 == >>>>>  ", this.state.appinsts, ":", prevState.appinsts);
+        console.log("20200610 request 000 == >>>>>  ", prevProps, ":", prevState);
         console.log("20200610 request 111 check filtered item == >>>>>  prevProps, prevState = ", prevProps.method, ":", prevState.method);
         console.log("20200610 request 222 check filtered item == >>>>>  this props = ", this.props.method, ": this state = ", this.state.method);
         if (prevState.method && (prevState.method !== this.initMethod) && this.state.appinsts) {
             this.initMethod = prevState.method;
 
-            console.log("20200610 request 333 == >>>>>  init  ");
+            console.log("20200611 request 333 == >>>>>  init  ", this.state);
             this.initialize(this.state, this);
+            return true;
+        }
+        if (prevState.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
+            this.initMethod = prevProps.method;
+
+            console.log("20200611 request 444 == >>>>>  init  ", this.state, "    filteringItems = ", prevProps, ":", this.props);
+            this.initialize(this.props, this);
             return true;
         }
         return null;
