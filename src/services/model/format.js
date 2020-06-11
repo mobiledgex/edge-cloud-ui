@@ -118,7 +118,8 @@ export const fields = {
     userList:'userList',
     userName:'userName',
     userRole:'userRole',
-    healthCheck:'healthCheck'
+    healthCheck: 'healthCheck',
+    skipHCPorts: 'skipHCPorts'
 }
 
 export const getUserRole = () => {

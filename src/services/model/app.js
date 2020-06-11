@@ -25,6 +25,7 @@ export const keys = () => ([
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
     { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true, filter:true },
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports' },
+    { field: fields.skipHCPorts, serverField: 'skip_hc_ports', label: 'Skip Health Check' },
     { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster' },
@@ -55,6 +56,9 @@ export const getKey = (data, isCreate) => {
         app.image_path = data[fields.imagePath]
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts].toLowerCase()
+        }
+        if (data[fields.skipHCPorts]) {
+            app.skip_hc_ports = data[fields.skipHCPorts].toLowerCase()
         }
         if (data[fields.annotations]) {
             app.annotations = data[fields.annotations]
@@ -198,6 +202,10 @@ export const updateApp = async (self, data, originalData) => {
     if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
     {
         updateFields.push('30')
+    }
+    if(!compareObjects(data[fields.healthCheck], originalData[fields.healthCheck]))
+    {
+        updateFields.push('34')
     }
     requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }

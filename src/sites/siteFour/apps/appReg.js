@@ -101,7 +101,8 @@ class AppReg extends React.Component {
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1},
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm, update: true }
+        { field: fields.healthCheck, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 1},
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
     ])
 
     getPortForm = (form) => {
@@ -124,7 +125,8 @@ class AppReg extends React.Component {
         { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1 },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm, update: true }
+        { field: fields.healthCheck, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 1},
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
     ])
 
     getMultiPortForm = (form) => {
@@ -268,7 +270,7 @@ class AppReg extends React.Component {
         let childForms = currentForm.parent.form.forms
         for (let i = 0; i < childForms.length; i++) {
             let form = childForms[i]
-            if (form.field === fields.tls) {
+            if (form.field === fields.tls || form.field === fields.healthCheck) {
                 form.visible = currentForm.value === 'tcp'
             }
         }
@@ -413,6 +415,7 @@ class AppReg extends React.Component {
         if (data) {
             let forms = this.state.forms;
             let ports = ''
+            let skipHCPorts = ''
             let annotations = ''
             let configs = []
             for (let i = 0; i < forms.length; i++) {
@@ -423,13 +426,21 @@ class AppReg extends React.Component {
                     if (multiFormData) {
                         if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
-                            ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
+                            let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
+                            ports = ports + newPort
                             ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
+
+                            skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                            skipHCPorts = skipHCPorts + (multiFormData[fields.healthCheck] ? '' : newPort)
                         }
                         else if (multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
-                            ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                            let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                            ports = ports + newPort
                             ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
+
+                            skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                            skipHCPorts = skipHCPorts + (multiFormData[fields.healthCheck] ? '' : newPort)
                         }
                         else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
                             data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()
@@ -449,13 +460,16 @@ class AppReg extends React.Component {
                 if (ports.length > 0) {
                     data[fields.accessPorts] = ports
 
+                    if(skipHCPorts.length > 0)
+                    {
+                        data[fields.skipHCPorts] = skipHCPorts
+                    }
                     if (annotations.length > 0) {
                         data[fields.annotations] = annotations
                     }
                     if (configs.length > 0) {
                         data[fields.configs] = configs
                     }
-
                     if (this.isUpdate) {
                         if (await updateApp(this, data, this.originalData)) {
                             this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
@@ -596,11 +610,13 @@ class AppReg extends React.Component {
             let multiFormCount = 0
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
+                let skipHCPortArray = data[fields.skipHCPorts] ? data[fields.skipHCPorts].split(',') : []
                 for (let i = 0; i < portArray.length; i++) {
                     let portInfo = portArray[i].split(':')
                     let protocol = portInfo[0].toLowerCase();
                     let portMaxNo = portInfo[1];
                     let tls = false
+                    let skipHCPort = skipHCPortArray.includes(portArray[i])
                     if(portInfo.length === 3 && portInfo[2] === 'tls')
                     {
                         tls = true
@@ -630,6 +646,10 @@ class AppReg extends React.Component {
                         else if (portForm.field === fields.tls) {
                             portForm.visible = protocol === 'tcp'
                             portForm.value = tls
+                        }
+                        else if (portForm.field === fields.healthCheck) {
+                            portForm.visible = protocol === 'tcp'
+                            portForm.value = !skipHCPort
                         }
                     }
                     forms.splice(13 + multiFormCount, 0, this.getPortForm(portForms))
