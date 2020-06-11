@@ -203,7 +203,7 @@ export const updateApp = async (self, data, originalData) => {
     {
         updateFields.push('30')
     }
-    if(!compareObjects(data[fields.healthCheck], originalData[fields.healthCheck]))
+    if(!compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts]))
     {
         updateFields.push('34')
     }
