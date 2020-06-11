@@ -1,5 +1,7 @@
 import React from "react";
 import isEqual from "lodash/isEqual";
+import map from "lodash/map";
+import range from "lodash/range";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { connect } from "react-redux";
 import HeaderComponent from "../hooks/header";
@@ -167,7 +169,7 @@ class MonitoringLayout extends React.Component {
     }
 
     generateDOM(items) {
-        console.log("20200605 gen dom == ", items, ": this.state.currentBreakpoint =", this.state.currentBreakpoint);
+        console.log("20200610 gen dom == ", items, ": this.state.currentBreakpoint =", this.state.currentBreakpoint);
         return this.state.layouts[this.state.currentBreakpoint].map(
             (l, idx) => (
                 <div
@@ -252,10 +254,10 @@ export default connect(mapStateToProps, mapDispatchProps)(MonitoringLayout);
 
 
 function generateLayout() {
-    return _.map(_.range(0, 25), function (item, i) {
+    return map(range(0, 25), function (item, i) {
         const y = Math.ceil(Math.random() * 4) + 1;
         return {
-            x: (_.random(0, 5) * 2) % 12,
+            x: (Math.random(0, 5) * 2) % 12,
             y: Math.floor(i / 6) * y,
             w: 2,
             h: y,

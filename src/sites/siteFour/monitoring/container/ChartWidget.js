@@ -99,7 +99,9 @@ class ChartWidget extends React.Component {
             //
             if (prevProps.id === DataType.EVENT_CLOUDLET) {
                 const updatedata = this.props.data[prevProps.id];
-                setTimeout(() => this.setState({ data: updatedata }), 500);
+                // 잠시 막음 20200610
+                console.log("20200610 updatedata == ", updatedata);
+                // setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
             if (prevProps.id === DataType.METHOD_CLIENT) {
@@ -180,7 +182,7 @@ class ChartWidget extends React.Component {
                         height: resize.height,
                         backgroundColor:
                             chartType !== ChartType.COUNTER && chartType !== ChartType.TABLE &&
-                            chartType !== ChartType.COUNTERWITHSPARK && chartType !== ChartType.BUBBLECHART ? "#202329" : "transparent",
+                                chartType !== ChartType.COUNTERWITHSPARK && chartType !== ChartType.BUBBLECHART ? "#202329" : "transparent",
                     }}
                 >
                     {(filter) ? (
@@ -246,13 +248,13 @@ class ChartWidget extends React.Component {
                         <ContainerMethod size={resize} />
                     ) : chartType === ChartType.BUBBLECHART ? (
                         <BubbleChart size={resize} />
-                    ) : <DataGrid id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />
+                    ) : <MonitoringListViewer id={id} size={resize} type={type} chartType={chartType} data={data} title={title.value} method={method} />
                     }
                 </div>
                 {page === "multi"
                     ? (
                         <div style={{ height: pagerHeight }}>
-                            <DotsMobileStepper id={id} data={data} itemCount={itemCount? itemCount : null} setActiveStep={this.setActiveStep} />
+                            <DotsMobileStepper id={id} data={data} itemCount={itemCount ? itemCount : null} setActiveStep={this.setActiveStep} />
                         </div>
                     ) : null}
             </div>
@@ -265,26 +267,6 @@ ChartWidget.defaultProps = {
 
 export default ContainerWrapper()(ChartWidget);
 
-class DataGrid extends React.Component {
-    state = {
-        data: null,
-        size: null
-    };
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({ data: nextProps.data, size: nextProps.size });
-    }
-
-    render() {
-        const { data, size } = this.state;
-        return (
-            <MonitoringListViewer
-                sizeInfo={size}
-                data={data}
-            />
-        );
-    }
-}
 
 /** ****************************************
  * SLIDER (carousel)
@@ -330,7 +312,7 @@ class Slider extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         const _self = this;
         const checkInt = setInterval(() => {
             // console.log(
