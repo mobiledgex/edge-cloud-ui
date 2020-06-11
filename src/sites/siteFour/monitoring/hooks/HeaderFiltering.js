@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Toolbar, Grid } from "@material-ui/core";
+import {Toolbar, Grid, IconButton, withStyles} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import FilterMenu from "./FilterMenu";
 import { groupBy, groupByCompare } from "../../../../utils";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -14,6 +15,14 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.text.secondary,
     },
 }));
+
+const StyleToolbar = withStyles((theme) => ({
+    regular: {
+        minHeight: 48,
+        paddingRight:0
+    }
+}))(Toolbar);
+
 const makeItemFormat = items => (
     items.map(item => (
         {
@@ -93,6 +102,9 @@ const HeaderFiltering = props => {
         props.onHandleApplyFilter(filteredItem);
     };
 
+    const onRefresh = () => {
+    };
+
     React.useEffect(() => {
         if (props.compCloudlet && props.compCloudlet.length > 0) {
             const groupRegion = groupBy(props.compCloudlet, "region");
@@ -106,10 +118,23 @@ const HeaderFiltering = props => {
     }, [props]);
 
     return (
-        <Toolbar className="monitoring_title">
+        <StyleToolbar className="monitoring_title">
             <label className="content_title_label">Monitoring</label>
-            <FilterMenu regions={regions} depthOne={depthOne} depthTwo={depthTwo} depthThree={depthThree} itemTreeValues={itemTreeValues} onSelectItem={onSelectItem} onHandleApplyFilter={onHandleApplyFilter} />
-        </Toolbar>
+            <FilterMenu
+                regions={regions}
+                depthOne={depthOne}
+                depthTwo={depthTwo}
+                depthThree={depthThree}
+                itemTreeValues={itemTreeValues}
+                onSelectItem={onSelectItem}
+                onHandleApplyFilter={onHandleApplyFilter}
+            />
+            <div className="monitoring_title_tool">
+                <IconButton aria-label="refresh" onClick={(event) => { props.onRefresh(event) }} style={{marginLeft:10}}>
+                    <RefreshIcon style={{ color: '#76ff03' }} />
+                </IconButton>
+            </div>
+        </StyleToolbar>
     );
 };
 export default HeaderFiltering;

@@ -70,6 +70,7 @@ const ChartJSComponent = defaultProps => {
     const [type, setType] = React.useState(defaultProps.type);
     const [options, setOptions] = React.useState();
     const [legendDisplay, setLegendDisplay] = React.useState(false);
+    const [legendList, setLegendList] = React.useState({});
     const [legendId, setLegendId] = React.useState('');
     const [legendOpen, setLegendOpen] = React.useState(false);
     const [randomColors, setRandomColors] = React.useState(getRandomColors(200, 0.5));
@@ -136,6 +137,8 @@ const ChartJSComponent = defaultProps => {
     };
 
     React.useEffect(() => {
+        setId(defaultProps.id);
+        setType(defaultProps.type);
 
         if (isEqual(defaultProps.legendShow, legendDisplay) === false) {
             //
@@ -148,8 +151,6 @@ const ChartJSComponent = defaultProps => {
             }, 500);
         }
         //
-        setId(defaultProps.id);
-        setType(defaultProps.type);
     }, [defaultProps.id, defaultProps.type, defaultProps.legendShow]);
 
     React.useEffect(() => {
@@ -157,7 +158,7 @@ const ChartJSComponent = defaultProps => {
         if(id === legendId) {
             setLegendOpen(defaultProps.legendInfo.open);
             setAnchorEl(legendOpen? defaultProps.legendInfo.target : null)
-            console.log('20200610 legend', legendId, legendOpen, anchorEl)
+            // console.log('20200610 legend', legendId, legendOpen, anchorEl)
         }
 
     }, [defaultProps.legendInfo]);

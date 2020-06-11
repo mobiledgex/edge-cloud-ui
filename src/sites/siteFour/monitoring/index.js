@@ -198,6 +198,13 @@ class MonitoringAdmin extends React.Component {
         return currentItm;
     }
 
+    resetLayout = (e) => {
+       if(e) {
+
+       }
+
+    }
+
     render() {
         const scope = this;
         const containerWidth = this.props.size.width;
@@ -221,6 +228,7 @@ class MonitoringAdmin extends React.Component {
                     regions={regions}
                     selectedRegion="All"
                     onHandleApplyFilter={this.onHandleApplyFilter}
+                    onRefresh={this.resetLayout}
                 />
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
