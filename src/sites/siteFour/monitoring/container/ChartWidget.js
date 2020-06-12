@@ -104,18 +104,21 @@ class ChartWidget extends React.Component {
             }
 
             if (prevProps.id === DataType.EVENT_CLUSTER) {
-                // TODO : 테이블에 맞게 데이터 포멧 변환 필요
                 const updatedata = this.props.data[prevProps.id];
-                // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
             if (prevProps.id === DataType.COUNT_CLUSTER) {
-                // TODO : 테이블에 맞게 데이터 포멧 변환 필요
                 const updatedata = DataFormats.dataFormatCounterCluster(this.props.data[prevProps.id]);
-                // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
+
+            if (prevProps.id === DataType.HEALTH_CLOUDLET) {
+                const updatedata = DataFormats.dataFormatHealthCloudlet(this.props.data[prevProps.id]);
+                setTimeout(() => this.setState({ data: updatedata }), 500);
+            }
+
+
         }
         return null;
     }

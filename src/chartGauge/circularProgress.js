@@ -62,7 +62,7 @@ const CircularProgress = defaultProps => {
             }}
         >
             <div style={{ fontSize: 18, marginTop: 0 }}>
-                <p>{`${percentage}`}</p>
+                <p>{`${percentage}`}{'%'}</p>
             </div>
         </CircularProgressbarWithChildren>
     );

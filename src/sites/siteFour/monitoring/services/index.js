@@ -29,7 +29,8 @@ const getArgs = info => {
             },
             last: info.last,
         };
-    } if (info.method === serviceMC.getEP().METRICS_CLOUDLET) {
+    }
+    if (info.method === serviceMC.getEP().METRICS_CLOUDLET) {
         return {
             token,
             params: {
@@ -156,7 +157,6 @@ const getMetricsClient = async (self, params) => {
 const getEventCloudlet = async (self, params) => {
     /* Continue, get events of cloudlets */
     // alert(JSON.stringify(params))
-    console.log('20200610 params', params)
     const execrequest = cloudletInfo => getArgs({
         pRegion: cloudletInfo.region,
         selectOrg: cloudletInfo.operatorName,
@@ -187,7 +187,6 @@ const getEventCloudlet = async (self, params) => {
  * EVENT CLUSTER
  *********************************** */
 const getEventCluster = async (self, params) => {
-    console.log('params', params)
 
     const execrequest = clusterInfo => getCluster({
         pRegion: clusterInfo.region,

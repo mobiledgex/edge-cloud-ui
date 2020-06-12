@@ -1065,6 +1065,7 @@ page_monitoring_dashboard_dev {
     align-items: center;
     height: 100%;
     padding: 10px;
+    color:rgba(255,255,255,.7);
 }
 
 .page_monitoring_circle_chart_item {
@@ -1075,10 +1076,20 @@ page_monitoring_dashboard_dev {
 }
 
 .page_monitoring_circle_chart_label {
-    margin-top: 10px;
+    margin-bottom: 10px;
     width: 100%;
     text-align: center;
     font-size: 16px;
+}
+
+.page_monitoring_circle_chart_text{
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.2;
+    min-height: 30px;
+
 }
 
 .page_monitoring_rate_grid {
