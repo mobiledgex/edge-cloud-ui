@@ -1222,6 +1222,11 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
     let ver = appInst.Version
 
 
+
+
+
+
+
     seriesValues.map(item => {
         let methodType = item[17];
         if (methodType === "RegisterClient") {
