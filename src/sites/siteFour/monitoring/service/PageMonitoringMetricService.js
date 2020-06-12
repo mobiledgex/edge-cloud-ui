@@ -1223,10 +1223,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 
 
-
-
-
-
     seriesValues.map(item => {
         let methodType = item[17];
         if (methodType === "RegisterClient") {
@@ -1266,6 +1262,8 @@ export const getClientStatusList = async (appInstList, startTime, endTime) => {
         promiseList.push(getClientStateOne(appInstOne, startTime, endTime))
     })
     let newPromiseList = await Promise.all(promiseList);
+
+    console.log('getClientStatusList====>', newPromiseList.length);
 
     let mergedClientStatusList = []
     newPromiseList.map((item, index) => {
