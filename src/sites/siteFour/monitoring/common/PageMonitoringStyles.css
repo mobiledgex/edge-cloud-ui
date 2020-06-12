@@ -828,5 +828,12 @@ tr td {
 .thinScrBar {
     scrollbar-width: thin !important;
 }
+.ant-select-selector{
+    height: 30px !important;
+}
+
+.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
+    background-color: #F4F9EF;
+}
 
 
