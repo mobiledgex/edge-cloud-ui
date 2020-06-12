@@ -1,6 +1,7 @@
 import cloneDeep from "lodash/cloneDeep";
 import * as serviceMC from "../../../../services/model/serviceMC";
 import * as Cloudlet from "./model/cloudlet";
+import * as Cluster from "./model/cluster";
 import * as Metrics from "./model/metrics";
 import * as Appinst from "./model/appinst";
 import * as Client from "./model/client";
@@ -165,6 +166,34 @@ const getMetricsClient = async (self, params) => {
 
 
 /** *********************************
+ * METRICS CLUSTER
+ * store : will be change to @Rahul's framwork
+ * token :
+ *********************************** */
+const getMetricsCluster = async (self, params) => {
+    console.log("20200611 metic cluster param ", params.clusters)
+    /**
+     * Continue, get events of cloudlets */
+    const requestData = clusterInfo => ({
+        token,
+        pRegion: clusterInfo.region,
+        selectOrg: clusterInfo.organizationName,
+        method: serviceMC.getEP().METRICS_CLUSTER,
+        clusterSelectedOne: clusterInfo.clusterName,
+        last: 10,
+    });
+
+    // TODO : 페이지 개수만큼 데이터 호출
+    return Promise.all(
+        params.clusters.map(async cluster => Cluster.getClusterMetrics(
+            self,
+            requestData(cluster),
+            params.chartType,
+        )),
+    );
+};
+
+/** *********************************
  * EVENT CLOUDLET
  *********************************** */
 const getEventCloudlet = async (self, params) => {
@@ -259,7 +288,7 @@ export const getPrepareList = async (defaultValue: MetricsParmaType, self: any) 
 
 export const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
     let result = null;
-    console.log("20200612 request service index == ", defaultValue)
+    console.log("20200612 request service index == ", defaultValue.method)
     // this.props.handleLoadingSpinner(true);
     // switch (defaultValue.method) {
     //     case serviceMC.getEP().COUNT_CLUSTER: result = await getListCluster(self, defaultValue); return result;
@@ -288,6 +317,10 @@ export const MetricsService = async (defaultValue: MetricsParmaType, self: any) 
     }
     if (defaultValue.method === serviceMC.getEP().METRICS_CLIENT) {
         result = await getMetricsClient(self, defaultValue);
+        return result;
+    }
+    if (defaultValue.method === serviceMC.getEP().METRICS_CLUSTER) {
+        result = await getMetricsCluster(self, defaultValue);
         return result;
     }
 

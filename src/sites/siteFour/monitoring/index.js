@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 0// <<<===== change depth
+            currentAuthDepth: 2// <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -112,6 +112,7 @@ class MonitoringAdmin extends React.Component {
                 this.hasAppinst = this.hasAppinst.concat(result.AppinstList);
                 countApp--;
             } else if (result && result.Clusterinst) {
+                this.hasCluster = this.hasCluster.concat(result.Clusterinst);
                 countCluster = 0;
             } else {
                 return;
@@ -129,7 +130,7 @@ class MonitoringAdmin extends React.Component {
                 countApp = regionCount;
             } else if (countCluster <= 0 && result.Clusterinst) {
                 this.setState({
-                    compClusterinst: result.Clusterinst,
+                    compClusterinst: this.hasCluster,
                 });
             }
         } catch (e) {
@@ -233,6 +234,7 @@ class MonitoringAdmin extends React.Component {
                 <MonitoringLayout
                     initialLayout={generateLayout(this.props)}
                     sizeInfo={this.props.size}
+                    clusters={compClusterinst}
                     appinsts={compAppinst}
                     items={this.getCurrentItem(currentAuthDepth, scope, this.props, compCloudlet, compClusterinst, compAppinst)}
                 />
@@ -290,7 +292,7 @@ export default connect(
 * TODO : // should make JSON property
 * */
 //  second page -- 0
-const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filteringItems) => {
+const generateComponentAdmin = (self, infos, cloudlets, clusters, appinsts, filteringItems) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
@@ -377,7 +379,7 @@ const generateComponentAdmin = (self, infos, cloudlets, appinsts, clusters, filt
     ];
 };
 //  second page -- 1
-const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters, filteringItems) => {
+const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, filteringItems) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
@@ -459,7 +461,7 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters, f
     ];
 };
 // third page -- 2
-const generateComponentCluster = (self, infos, cloudlets, appinsts, clusters, filteringItems) => {
+const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, filteringItems) => {
     const defaultProp = {
         sizeInfo: infos.size,
         self,
@@ -467,17 +469,16 @@ const generateComponentCluster = (self, infos, cloudlets, appinsts, clusters, fi
         appinsts,
         clusters,
         filteringItems
-    };
+};
     return [
         {
-            id: dataType.COUNT_CLUSTER,
-            // method: serviceMC.getEP().COUNT_CLUSTER,
-            method: null,
-            chartType: chartType.COUNTER,
-            type: "counter",
+            id: dataType.HEALTH_CLUSTER,
+            method: serviceMC.getEP().METRICS_CLUSTER,
+            chartType: chartType.GAUGE,
+            type: "scatter",
             title: { value: "Health of Clusters", align: "left" },
             filter: null,
-            page: "multi",
+            page: "single",
             itemCount: 3,
             legend: false,
             ...defaultProp,
@@ -532,7 +533,8 @@ const generateComponentCluster = (self, infos, cloudlets, appinsts, clusters, fi
         },
         {
             id: dataType.EVENT_CLUSTER,
-            method: serviceMC.getEP().EVENT_CLUSTER,
+            // method: serviceMC.getEP().EVENT_CLUSTER,
+            method: null,
             chartType: chartType.TABLE,
             type: "alarm",
             title: { value: "Events of Cluster", align: "center" },

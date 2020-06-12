@@ -88,7 +88,7 @@ export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 /** ADMIN MONITORING added by @Smith */
 export const EVENT_CLOUDLET = "CloudletLevelEvents";
 export const METRICS_CLOUDLET = "cloudlet";
-export const METRICS_CLUSTER = "cluster";
+export const METRICS_CLUSTER = "clusterMetrics";
 export const METRICS_CLIENT = "client";
 export const COUNT_CLUSTER = "cluster";
 export const EVENT_CLUSTER = "ClusterLevelEvents";
@@ -181,6 +181,7 @@ export function getPath(request) {
 
         /** @Smith */
         case METRICS_CLUSTER:
+            return `/api/v1/auth/metrics/cluster`;
         case METRICS_CLOUDLET:
         case METRICS_CLIENT:
             return `/api/v1/auth/metrics/${request.method}`;
