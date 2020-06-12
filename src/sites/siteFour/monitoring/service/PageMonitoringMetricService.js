@@ -1217,7 +1217,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
     let app = appInst.AppName
     let apporg = appInst.OrganizationName
-    let cellID = '';
     let cloudlet = appInst.Cloudlet
     let cloudletorg = appInst.OrganizationName
     let ver = appInst.Version
