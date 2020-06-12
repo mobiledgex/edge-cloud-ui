@@ -85,8 +85,7 @@ export default function ClientStatusTable(props) {
                 }}
             >
                 <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
-                       stickyheader={true.toString()}>
-
+                       stickyHeader={true}>
 
                     <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}}
                                fixedheader={true.toString()}>
