@@ -23,11 +23,6 @@ class headerGlobalMini extends React.Component {
     }
 
     logout(path) {
-        if (path === '/logout') {
-            localStorage.removeItem('selectOrg');
-            localStorage.removeItem('selectRole')
-            localStorage.removeItem('selectMenu')
-        }
         this.props.history.push({
             pathname: path,
             userInfo: { info: null }

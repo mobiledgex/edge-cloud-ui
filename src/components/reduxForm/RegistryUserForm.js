@@ -54,9 +54,6 @@ class RegistryUserForm extends React.Component{
     constructor() {
         super();
         _self = this;
-        this.state = {
-            lastProps: {}
-        }
         this.username = 'Username';
         this.email = 'Email';
         this.usernameValue = null;
@@ -78,20 +75,10 @@ class RegistryUserForm extends React.Component{
         },1000);
 
     }
+
     onChangeField =(a, b) => {
         if(a.target.name === 'username') this.usernameValue = null;
         if(a.target.name === 'email') this.emailValue = null;
-        localStorage.setItem('userInfo',null);
-    }
-    
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({lastProps:nextProps})
-        let userInfo = localStorage.getItem('userInfo');
-        let userInfoObj = (userInfo)?JSON.parse(userInfo):null;
-        if(userInfoObj) {
-            this.usernameValue = userInfoObj.username;
-            this.emailValue = userInfoObj.email;
-        }
     }
 
     render() {
