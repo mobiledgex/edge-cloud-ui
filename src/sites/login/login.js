@@ -212,16 +212,7 @@ class Login extends Component {
     }
 
     componentDidMount() {
-
-        let getUserInfo = localStorage.getItem('userInfo')
-        let oldUserInfo = getUserInfo ? JSON.parse(getUserInfo) : null;
-        if (oldUserInfo) {
-            if (oldUserInfo.date && moment().diff(oldUserInfo.date, 'minute') >= 60) {
-                localStorage.setItem('userInfo', null)
-            }
-        }
-
-        /**********************
+         /**********************
          * Get info of client system : OS, browser
          * @type {UAParser}
          */
@@ -256,8 +247,6 @@ class Login extends Component {
         if (nextProps.values) {
             if (nextProps.submitSucceeded) {
                 this.setState({ email: nextProps.values.email, username: nextProps.values.username })
-
-                localStorage.setItem('userInfo', JSON.stringify({ email: nextProps.values.email, username: nextProps.values.username, date: new Date() }))
                 if (nextProps.loginMode === 'resetPass') {
                     this.resetPassword(nextProps.values.password)
                 } else {
@@ -283,7 +272,6 @@ class Login extends Component {
         } else if (nextProps.loginMode === 'resetPass') {
             this.setState({ successCreate: false, loginMode: 'resetPass', forgotMessage: false, forgotPass: false });
         } else if (nextProps.loginMode === 'signuped' && nextProps.createSuccess) {
-            localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Welcome to the Edge! Thank you for signing up.
                             To login to your account, you must first validate your email address.
@@ -379,15 +367,26 @@ class Login extends Component {
         }
     }
 
+    validateUserName = (username)=>
+    {
+        if(username !== localStorage.getItem('userInfo'))
+        {
+            localStorage.setItem('userInfo', self.state.username) 
+            localStorage.removeItem('selectOrg')
+            localStorage.removeItem('selectRole')
+        }
+    }
 
     requestToken = async (self) => {
-        let mcRequest = await serverData.login(self, { username: self.state.username, password: self.state.password })
+        let username = self.state.username
+        let mcRequest = await serverData.login(self, { username: username, password: self.state.password })
         if (mcRequest && mcRequest.response) {
             let response = mcRequest.response;
             if (response.data.token) {
                 self.params['userToken'] = response.data.token
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
+                this.validateUserName(username)
                 this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
             }
         }
