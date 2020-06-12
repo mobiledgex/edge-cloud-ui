@@ -155,19 +155,21 @@ function createData(time: string, cloudlet: string, cloudletorg: string, event: 
 function createDataUtilization() {
 
 }
-const setdataPart = (data, name, columns) => {
+const setdataPart = (data, name, max, columns) => {
     let setted = {};
     let seriesX = [];
     let seriesY = [];
+    let seriesMax = [];
     data.map((item, i) => {
         seriesX.push(item[0]);
-        seriesY.push(item[columns.indexOf(name)])
+        seriesY.push(item[columns.indexOf(name)]);
+        seriesMax.push(item[columns.indexOf(max)]);
     })
     let array =
     {
         x: seriesX,
         y: seriesY,
-        max: [],
+        max: seriesMax,
         mode: 'lines',
         name: 'Solid',
         line: {
@@ -225,15 +227,15 @@ const parseData = (response, type) => {
                     times: times,
                     resData_util: [
                         {
-                            [VCPU]: setdataPart(resSeries_utilize.values, VCPU, columns_utilize),
-                            [MEM]: setdataPart(resSeries_utilize.values, MEM, columns_utilize),
-                            [DISK]: setdataPart(resSeries_utilize.values, DISK, columns_utilize)
+                            [VCPU]: setdataPart(resSeries_utilize.values, VCPU, VCPUMAX, columns_utilize),
+                            [MEM]: setdataPart(resSeries_utilize.values, MEM, MEMMAX, columns_utilize),
+                            [DISK]: setdataPart(resSeries_utilize.values, DISK, DISKMAX, columns_utilize)
                         }
                     ],
                     resData_ip: [
                         {
-                            [IP]: setdataPart(resSeries_ipuse.values, IP, columns_ipus),
-                            [IPV4]: setdataPart(resSeries_ipuse.values, IPV4, columns_ipus)
+                            [IP]: setdataPart(resSeries_ipuse.values, IP, IPMAX, columns_ipus),
+                            [IPV4]: setdataPart(resSeries_ipuse.values, IPV4, IPV4MAX, columns_ipus)
                         }
                     ]
                 }

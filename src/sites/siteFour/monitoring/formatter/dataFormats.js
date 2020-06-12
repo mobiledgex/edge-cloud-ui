@@ -167,6 +167,20 @@ const parseCounterCluster = response => {
 };
 
 
+const parseHealthCloudlet = response => {
+    let selectedCloudlet = response[0]; // <----- 필터된 클라우드와 비교해서 데이터 select 하도록 해야함.
+    const formatedData = selectedCloudlet[0].resData_util[0];
+    const vCpuData = {max: formatedData.vCpuUsed.max[0], current: formatedData.vCpuUsed.y[0]}
+    const memData = {max: formatedData.memUsed.max[0], current: formatedData.memUsed.y[0]}
+    const diskData = {max: formatedData.diskUsed.max[0], current: formatedData.diskUsed.y[0]}
+    const containerdata = {vCpu: vCpuData, mem: memData, disk: diskData}
+
+
+   return containerdata;
+
+};
+
+
 export const dataFormatRateRegist = (response, id) => parseData(response[0], id);
 export const dataFormatCountCloudlet = response => setdataPartSum(response);
 export const dataFormatMetricCloudlet = response => parseCloudletData(response);
@@ -174,3 +188,4 @@ export const dataFormatCountCluster = response => parseCountCluster(response);
 export const dataFormaFindCloudlet = response => parseFindCloudlet(response);
 export const dataFormatClientList = response => parseClientList(response);
 export const dataFormatCounterCluster = response => parseCounterCluster(response);
+export const dataFormatHealthCloudlet = response => parseHealthCloudlet(response);

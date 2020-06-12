@@ -388,9 +388,8 @@ const generateComponentOperator = (self, infos, cloudlets, appinsts, clusters, f
     };
     return [
         {
-            id: dataType.NETWORK_CLOUDLET,
-            // method: serviceMC.getEP().METRICS_CLOUDLET,
-            method: null,
+            id: dataType.HEALTH_CLOUDLET,
+            method: serviceMC.getEP().METRICS_CLOUDLET,
             chartType: chartType.GAUGE,
             type: "scatter",
             title: { value: "Health of Cloudlets", align: "left" },
