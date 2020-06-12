@@ -1263,8 +1263,6 @@ export const getClientStatusList = async (appInstList, startTime, endTime) => {
     })
     let newPromiseList = await Promise.all(promiseList);
 
-    console.log('getClientStatusList====>', newPromiseList.length);
-
     let mergedClientStatusList = []
     newPromiseList.map((item, index) => {
         if (item !== undefined) {
