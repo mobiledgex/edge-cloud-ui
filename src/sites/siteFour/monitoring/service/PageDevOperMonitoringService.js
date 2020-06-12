@@ -25,7 +25,6 @@ import PageDevMonitoring from "../view/PageDevOperMonitoringView";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
-    isEmpty,
     makeBubbleChartDataForCluster,
     renderUsageByType
 } from "./PageMonitoringCommonService";
@@ -1141,7 +1140,7 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3,//todo:라인 두께
-                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
+                    fill: isGradientColor,// @desc:fill
                     backgroundColor: isGradientColor ? gradientList[colorCodeIndexList[index]] : _this.state.chartColorList[colorCodeIndexList[index]],
                     borderColor: isGradientColor ? gradientList[colorCodeIndexList[index]] : _this.state.chartColorList[colorCodeIndexList[index]],
                     lineTension: 0.5,
@@ -1163,6 +1162,9 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 };
                 finalSeriesDataSets.push(datasetsOne)
             }
+
+
+
 
             let chartDataSet = {
                 labels: newDateTimeList,
