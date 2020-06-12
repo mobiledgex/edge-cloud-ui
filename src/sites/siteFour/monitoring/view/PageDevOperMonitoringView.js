@@ -1132,10 +1132,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:############################*/}
                             {graphType.toUpperCase() !== GRID_ITEM_TYPE.PERFORMANCE_SUM
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.BUBBLE
-                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
-                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.METHOD_USAGE_COUNT
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.DONUTS
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLIENT_STATUS_TABLE
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
                             && <div className="maxize page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
@@ -1159,14 +1161,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this._______makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this._____makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
 
-            _______makeGridItemOneBody(pHwType, graphType) {
+            _____makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
