@@ -55,8 +55,9 @@ class EntranceGlobe extends Component {
             props.handleAlertInfo(undefined, undefined);
             return {mexAlertMessage: alertInfo}
         }
-
-        if (props.loginMode && props.loginMode === 'resetPass') {
+        
+        if (props.match.path === '/passwordreset') {
+            return { modalOpen: true}
         }
         else if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
             props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)

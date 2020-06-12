@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
     ScrollView,
-    StyleSheet,
-    Text,
     View,
 } from 'react-native-web';
 import moment from 'moment';
@@ -10,6 +8,8 @@ import type Moment from 'moment';
 import Dates from './Dates';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
+import { IconButton } from '@material-ui/core';
 
 const { width: screenWidth } = window.screen
 const formatMonth = (date: Moment): string => date.format('MMMM');
@@ -312,7 +312,7 @@ export default class Calendar extends PureComponent {
                 <View>
                     <div className='audit_calendar_month'>
                         {visibleMonthAndYear}
-                        <button className='audit_calendar_button_today' onClick={this.onClickCurrentButton}>Current</button>
+                        <IconButton onClick={this.onClickCurrentButton}><UpdateOutlinedIcon/></IconButton>
                     </div>
                     <div>
                         <div className='audit_calendar_days'  style={{display:'flex', flexDirection:'row'}}>

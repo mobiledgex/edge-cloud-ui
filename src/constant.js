@@ -79,7 +79,6 @@ export const PAGE_APP_INSTANCES = 'AppInstances'
 export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
 export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
 export const PAGE_MONITORING = 'Monitoring'
-export const PAGE_AUDIT_LOGS = 'AuditLog'
 
 export const PowerState = (id) => {
     switch (id) {

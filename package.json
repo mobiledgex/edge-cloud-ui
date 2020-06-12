@@ -27,7 +27,6 @@
         "d3-scale": "^3.2.1",
         "datamaps": "^0.5.9",
         "faker": "^4.1.0",
-        "flexbox-react": "^4.4.0",
         "font-awesome": "^4.7.0",
         "history": "^4.7.2",
         "http-proxy-middleware": "^0.20.0",

@@ -25,6 +25,7 @@ export const keys = () => ([
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
     { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true, filter:true },
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports' },
+    { field: fields.skipHCPorts, serverField: 'skip_hc_ports', label: 'Skip Health Check' },
     { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster' },
@@ -34,6 +35,7 @@ export const keys = () => ([
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys:configs },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
+    { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
@@ -55,6 +57,9 @@ export const getKey = (data, isCreate) => {
         app.image_path = data[fields.imagePath]
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts].toLowerCase()
+        }
+        if (data[fields.skipHCPorts]) {
+            app.skip_hc_ports = data[fields.skipHCPorts].toLowerCase()
         }
         if (data[fields.annotations]) {
             app.annotations = data[fields.annotations]
@@ -85,6 +90,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.configs]) {
             app.configs = data[fields.configs]
+        }
+        if (data[fields.templateDelimiter]) {
+            app.template_delimiter = data[fields.templateDelimiter]
         }
     }
     return ({
@@ -198,6 +206,14 @@ export const updateApp = async (self, data, originalData) => {
     if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
     {
         updateFields.push('30')
+    }
+    if(!compareObjects(data[fields.templateDelimiter], originalData[fields.templateDelimiter]))
+    {
+        updateFields.push('33')
+    }
+    if(!compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts]))
+    {
+        updateFields.push('34')
     }
     requestData.app.fields = updateFields
     let request = { method: UPDATE_APP, data: requestData }

@@ -1163,14 +1163,10 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 };
                 finalSeriesDataSets.push(datasetsOne)
             }
-            let isNoData = false
-            if (isEmpty(finalSeriesDataSets[0].data)) {
-                isNoData = true;
-            }
+
             let chartDataSet = {
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
-                isNoData: isNoData,
             }
             return chartDataSet;
         };

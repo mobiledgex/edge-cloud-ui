@@ -41,7 +41,6 @@ import SiteFourPageFlavor from '../flavors/flavorList';
 import SiteFourPageApps from '../apps/appList';
 import SiteFourPageAppInst from '../appInst/appInstList';
 import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
-import SiteFourPageAudits from '../audits/auditLogs';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import PageMonitoringMain from '../monitoring/common/PageMonitoringMain'
@@ -129,16 +128,8 @@ const setNavState = (flag) => {
 
 export default function MiniDrawer(props) {
 
-    const subPage = (path) => {
-        props.history.push({pathname:`/site4/${path}`})
-        if(path.includes(constant.PAGE_AUDIT_LOGS))
-        {
-            setPage(<SiteFourPageAudits/>)
-        }
-    }
-
     const options = [
-        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization subPage={subPage}/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
         { divider: true },
@@ -154,8 +145,7 @@ export default function MiniDrawer(props) {
                 { label: 'Privacy Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_PRIVACY_POLICY, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
             ]
         },
-        { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-        { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', pageId: constant.PAGE_AUDIT_LOGS, page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
+        { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
     ]
 
     const classes = useStyles();
