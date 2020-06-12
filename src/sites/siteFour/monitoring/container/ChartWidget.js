@@ -94,7 +94,6 @@ class ChartWidget extends React.Component {
             //
             if (prevProps.id === DataType.EVENT_CLOUDLET) {
                 const updatedata = this.props.data[prevProps.id];
-                console.log("20200610 updatedata == ", updatedata, ":", this.props.data);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
@@ -106,6 +105,7 @@ class ChartWidget extends React.Component {
             if (prevProps.id === DataType.EVENT_CLUSTER) {
                 // TODO : 테이블에 맞게 데이터 포멧 변환 필요
                 const updatedata = this.props.data[prevProps.id];
+                console.log("20200610 updatedata == ", updatedata, ":", this.props.data);
                 // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }

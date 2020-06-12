@@ -19,7 +19,7 @@ function createData(
     time: string,
     cluster: string,
     organization: string,
-    cloudlet:  string,
+    cloudlet: string,
     operator: string,
     flavor: string,
     vCPU: number,
@@ -38,7 +38,7 @@ const parseData = (response, type) => {
         console.log(" ERROR ::::::::::::::: Faile to request data")
         return resData;
     }
-    /** events of the cloudlets */
+    /** events of the  */
     if (type === ChartType.TABLE) {
         resData = response
             ? createData(
@@ -60,7 +60,7 @@ const parseData = (response, type) => {
 };
 
 export const getClusterEvent = async (self, cluster, chartType) => {
-    let response = await serviceMC.sendSyncRequest(self, cluster);
+    const response = await serviceMC.sendSyncRequest(self, cluster);
     return parseData(response, chartType);
 };
 

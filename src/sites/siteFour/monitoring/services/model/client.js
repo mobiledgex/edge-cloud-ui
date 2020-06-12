@@ -21,8 +21,8 @@ HTTP/1.1 200 OK
   "last": 1
 }
 */
-
 import moment from "moment";
+import { yesterdayWithCurrent } from "../../hooks/timeRangeFilter";
 import * as serverData from "../../../../../services/model/serverData";
 
 let scope = null;
@@ -78,10 +78,7 @@ moment().subtract(1, 'days').startOf('day').toString()
 moment().subtract(1, 'days').endOf('day').toString()
 */
 const metricFromServer = async (self, data) => {
-    const selectedTimeRange = "today"; // TODO: selected time form toolbar
-    const yesterdayWithCurrent = moment().subtract(1, "days").toString();
-    const yesterdayOfStartDay = moment().subtract(1, "days").startOf("day").toString();
-    const yesterdayOfEndDay = moment().subtract(1, "days").endOf("day").toString();
+
     console.log("20200610 request smetricFromServer === ");
     const makeUTC = time => moment(time).utc();
     const rangeTime = range => {

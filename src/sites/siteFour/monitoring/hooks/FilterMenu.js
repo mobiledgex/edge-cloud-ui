@@ -7,6 +7,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import RoomIcon from "@material-ui/icons/Room";
 import { Dropdown } from "semantic-ui-react";
 
+let _selectedFilterObj = null;
+
 export default function FilterMenu(defaultProps) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [regionOptions, setRegionOptions] = React.useState(null);
@@ -27,6 +29,7 @@ export default function FilterMenu(defaultProps) {
     };
 
     const handleApply = event => {
+        setApplyFilter(selectedFilterObj);
         defaultProps.onHandleApplyFilter(selectedFilterObj);
     };
 
@@ -197,9 +200,9 @@ export default function FilterMenu(defaultProps) {
 
 export const BreadCrum = defaultProps => {
     const [category, setCategory] = React.useState("ALL");
-    const onHandleClick = (value) => {
+    const onHandleClick = value => {
         // send selected info to handler
-        let selectedCrumObj = value;
+        const selectedCrumObj = value;
         defaultProps.handleApply(selectedCrumObj);
     };
 
@@ -221,3 +224,10 @@ export const BreadCrum = defaultProps => {
         </div>
     );
 };
+
+export const setApplyFilter = selectedFilterObj => {
+    _selectedFilterObj = selectedFilterObj;
+};
+export const getApplyFilter = () => (
+    _selectedFilterObj
+);
