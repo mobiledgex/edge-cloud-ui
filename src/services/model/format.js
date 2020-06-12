@@ -120,7 +120,13 @@ export const fields = {
     userRole: 'userRole',
     healthCheck: 'healthCheck',
     skipHCPorts: 'skipHCPorts',
-    templateDelimiter: 'templateDelimiter'
+    templateDelimiter: 'templateDelimiter',
+    autoScalePolicyName: 'autoScalePolicyName',
+    minimumNodes: 'minimumNodes',
+    maximumNodes: 'maximumNodes',
+    scaleUpCPUThreshold: 'scaleUpCPUThreshold',
+    scaleDownCPUThreshold: 'scaleDownCPUThreshold',
+    triggerTime: 'triggerTime'
 }
 
 export const getUserRole = () => {
