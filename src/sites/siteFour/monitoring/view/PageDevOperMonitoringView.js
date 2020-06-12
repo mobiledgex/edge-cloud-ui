@@ -938,8 +938,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -2603,11 +2603,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }
                                     }}
                                 >
-                                    <div>
-                                        {this.renderDot(item.colorCodeIndex)}
-                                    </div>
-                                    <div style={{marginTop: 0, marginLeft: 5}}>
-                                        {reduceString(item.CloudletName, stringLimit, pLegendItemCount)}
+                                    <div style={{display: 'flex'}}>
+                                        <div>
+                                            {this.renderDot(item.colorCodeIndex)}
+                                        </div>
+                                        <div style={{marginTop: 0, marginLeft: 5}}>
+                                            {reduceString(item.CloudletName, stringLimit, pLegendItemCount)}
+                                        </div>
                                     </div>
 
                                 </Col>

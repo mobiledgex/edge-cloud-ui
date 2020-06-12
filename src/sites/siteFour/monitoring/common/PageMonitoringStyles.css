@@ -765,12 +765,12 @@ tr td {
 }
 
 
+/*todo:####################*/
 /*todo:tresSelectCheckbox*/
-/*todo:tresSelectCheckbox*/
-/*todo:tresSelectCheckbox*/
+/*todo:####################*/
 .ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner {
-    background-color: lightgrey;
-    border-color: lightgrey;
+    background-color: lightgrey !important;
+    border-color: lightgrey !important;
 }
 
 .ant-select-tree-checkbox-wrapper:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox-input:focus + .ant-select-tree-checkbox-inner {
@@ -828,4 +828,5 @@ tr td {
 .thinScrBar {
     scrollbar-width: thin !important;
 }
+
 
