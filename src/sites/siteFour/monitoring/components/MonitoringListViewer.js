@@ -12,31 +12,25 @@ import TableRow from "@material-ui/core/TableRow";
 /*
 ************** example of columns  ******************
 // Don't care delete me
-const columns = [
-    { id: "name", label: "Name", minWidth: 170 },
-    { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
-    {
-        id: "population",
-        label: "Population",
-        minWidth: 170,
-        align: "right",
-        format: (value: number) => value.toLocaleString()
-    },
-    {
-        id: "size",
-        label: "Size\u00a0(km\u00b2)",
-        minWidth: 170,
-        align: "right",
-        format: (value: number) => value.toLocaleString()
-    },
-    {
-        id: "density",
-        label: "Density",
-        minWidth: 170,
-        align: "right",
-        format: (value: number) => value.toFixed(2)
-    }
-];
+columns: [
+      { title: 'Name', field: 'name' },
+      { title: 'Surname', field: 'surname' },
+      { title: 'Birth Year', field: 'birthYear', type: 'numeric' },
+      {
+        title: 'Birth Place',
+        field: 'birthCity',
+        lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
+      },
+    ],
+data: [
+      { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
+      {
+        name: 'Zerya Betül',
+        surname: 'Baran',
+        birthYear: 2017,
+        birthCity: 34,
+      },
+    ],
 ********************************************************** */
 
 let parentSize = {};

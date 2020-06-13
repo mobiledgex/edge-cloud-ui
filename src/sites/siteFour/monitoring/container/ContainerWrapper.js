@@ -52,15 +52,15 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
         console.log("20200611 did request 000 == >>>>>  ", prevProps, ":", prevState);
         console.log("20200610 request 111 check filtered item == >>>>>  prevProps, prevState = ", prevProps.method, ":", prevState.method);
         console.log("20200610 request 222 check filtered item == >>>>>  this props = ", this.props.method, ": this state = ", this.state.method);
-        if (prevState.method && (prevState.method !== this.initMethod) && this.state.appinsts) {
-            this.initMethod = prevState.method;
+        // if (prevState.method && (prevState.method !== this.initMethod) && this.state.appinsts) {
+        //     this.initMethod = prevState.method;
 
-            console.log("20200611 request 333 == >>>>>  init  ", this.state);
-            this.initialize(this.state, this);
-            return true;
-        }
-        if (prevState.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
-            this.initMethod = prevProps.method;
+        //     console.log("20200611 request 333 == >>>>>  init  ", this.state);
+        //     this.initialize(this.state, this);
+        //     return true;
+        // }
+        if (prevState.method && this.props.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
+            this.initMethod = this.props.method;
 
             console.log("20200611 request 444 == >>>>>  init  ", this.state, "    filteringItems = ", prevProps, ":", this.props);
             this.initialize(this.props, this);
@@ -141,11 +141,27 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 }
                 console.log("20200610 props new newProps === ", newProps);
                 const result = await Service.MetricsService(newProps || props, self);
-                this.onReceiveResult(result, self, props.method);
+                if (result && result.length > 0) {
+                    // const reduceResult = this.removeEmptyResult(result, "cloudletName");
+                    this.onReceiveResult(result, self, props.method);
+                }
             }
             if (props.method === serviceMC.getEP().EVENT_CLUSTER) {
-                const result = await Service.MetricsService(props, self);
-                this.onReceiveResult(result, self, props.method);
+                // filtering
+                let findIdx = null;
+                const newProps = cloneDeep(props);
+                if (props.filteringItems.cluster && props.filteringItems.cluster.value) {
+                    findIdx = props.clusters.findIndex(x => x.clusterName === props.filteringItems.cluster.value);
+                    newProps.clusters = [];
+                    console.log("20200610 props new pro === ", findIdx, ":", props.clusters[findIdx], ":", newProps);
+                    if (props.clusters[findIdx]) newProps.clusters = [props.clusters[findIdx]];
+                }
+                console.log("20200610 props new newProps === ", newProps);
+                const result = await Service.MetricsService(newProps || props, self);
+                if (result && result.length > 0) {
+                    // const reduceResult = this.removeEmptyResult(result, "values");
+                    this.onReceiveResult(result, self, props.method);
+                }
             }
         } catch (e) {
             console.log(e);

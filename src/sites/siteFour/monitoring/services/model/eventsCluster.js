@@ -31,23 +31,32 @@ interface eventData {
 //     return { time, cluster, organization, cloudlet, operator, flavor, vCPU, ram, disk, event, status };
 // }
 
-const createData = (columns, series) => (
-    columns.map((col, i) => ({ [col]: series[i] }))
-);
+const createData = (series, columns) => {
+    const newSeries = [];
+    series.map(seri => {
+        const itemObj = {};
+        columns.map((column, i) => {
+            itemObj[column] = seri[i];
+        });
+        newSeries.push(itemObj);
+    });
+
+    return newSeries;
+};
 
 const parseData = (response, type) => {
     let resData = {};
     const resSeries = (response && response.response && response.response.data.data[0].Series) ? response.response.data.data[0].Series[0] : null;
     if (!resSeries) {
-        console.log(" ERROR ::::::::::::::: Faile to request data")
+        console.log(" ERROR ::::::::::::::: Faile to request data");
         return resData;
     }
     /** events of the  */
     if (type === ChartType.TABLE) {
         resData = response
-            ? resSeries.values.map(value => createData(
-                resSeries.columns, value
-            ))
+            ? createData(
+                resSeries.values, resSeries.columns
+            )
             : null;
     }
     return resData;

@@ -94,7 +94,7 @@ class ChartWidget extends React.Component {
             //
             if (prevProps.id === DataType.EVENT_CLOUDLET) {
                 const updatedata = this.props.data[prevProps.id];
-                setTimeout(() => this.setState({ data: updatedata }), 500);
+                setTimeout(() => this.setState({ data: updatedata[0] }), 500);
             }
 
             if (prevProps.id === DataType.METHOD_CLIENT) {
@@ -104,9 +104,9 @@ class ChartWidget extends React.Component {
 
             if (prevProps.id === DataType.EVENT_CLUSTER) {
                 const updatedata = this.props.data[prevProps.id];
-                console.log("20200610 updatedata == ", updatedata, ":", this.props.data);
+                console.log("20200612 updatedata == ", updatedata, ":", this.props.data);
                 // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
-                setTimeout(() => this.setState({ data: updatedata }), 500);
+                setTimeout(() => this.setState({ data: updatedata[0] }), 500);
             }
 
             if (prevProps.id === DataType.COUNT_CLUSTER) {
