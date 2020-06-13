@@ -2195,8 +2195,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div
                             style={{
                                 backgroundColor: this.state.cloudletDropdownList.length === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index - 1],
-                                width: 15,
-                                height: 15,
+                                width: 10,
+                                height: 10,
                                 borderRadius: 50,
                             }}
                         >
