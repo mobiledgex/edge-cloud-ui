@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { Container, Button, Grid, Input } from 'semantic-ui-react'
-import * as moment from 'moment';
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';

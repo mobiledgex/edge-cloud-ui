@@ -78,6 +78,7 @@ export const PAGE_APPS = 'Apps'
 export const PAGE_APP_INSTANCES = 'AppInstances'
 export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
 export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
+export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
 
 export const PowerState = (id) => {
