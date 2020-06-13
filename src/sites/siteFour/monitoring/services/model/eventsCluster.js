@@ -15,21 +15,25 @@ interface eventData {
     status: number;
 }
 
-function createData(
-    time: string,
-    cluster: string,
-    organization: string,
-    cloudlet: string,
-    operator: string,
-    flavor: string,
-    vCPU: number,
-    ram: number,
-    disk: number,
-    event: string,
-    status: number
-): eventData {
-    return { time, cluster, organization, cloudlet, operator, flavor, vCPU, ram, disk, event, status };
-}
+// function createData(
+//     time: string,
+//     cluster: string,
+//     organization: string,
+//     cloudlet: string,
+//     operator: string,
+//     flavor: string,
+//     vCPU: number,
+//     ram: number,
+//     disk: number,
+//     event: string,
+//     status: number
+// ): eventData {
+//     return { time, cluster, organization, cloudlet, operator, flavor, vCPU, ram, disk, event, status };
+// }
+
+const createData = (columns, series) => (
+    columns.map((col, i) => ({ [col]: series[i] }))
+);
 
 const parseData = (response, type) => {
     let resData = {};
@@ -41,19 +45,9 @@ const parseData = (response, type) => {
     /** events of the  */
     if (type === ChartType.TABLE) {
         resData = response
-            ? createData(
-                resSeries.values[0][0],
-                resSeries.values[0][1],
-                resSeries.values[0][2],
-                resSeries.values[0][3],
-                resSeries.values[0][4],
-                resSeries.values[0][5],
-                resSeries.values[0][6],
-                resSeries.values[0][7],
-                resSeries.values[0][8],
-                resSeries.values[0][10],
-                resSeries.values[0][11]
-            )
+            ? resSeries.values.map(value => createData(
+                resSeries.columns, value
+            ))
             : null;
     }
     return resData;

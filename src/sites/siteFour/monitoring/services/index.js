@@ -209,7 +209,7 @@ const getEventCluster = async (self, params) => {
     const cloneParams = cloneDeep(params);
     if (selectedCluster !== "") {
         const findIdx = cloneParams.clusters.findIndex(x => x.clusterName === selectedCluster);
-        cloneParams.clusters = [cloneParams.clusters[findIdx]];
+        cloneParams.clusters = [cloneParams.clusters[findIdx > 0 ? findIdx : 0]];
     }
 
 
