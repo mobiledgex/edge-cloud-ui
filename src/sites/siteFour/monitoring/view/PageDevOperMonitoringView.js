@@ -938,8 +938,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                /*todo:CLUSTER*/
-                /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -2319,7 +2319,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             showSearch={true}
                             treeCheckable={true}
                             showCheckedStrategy={'SHOW_CHILD'}
-                            style={{width: '500px', height: '30px !important' }}
+                            style={{width: '500px', height: '30px !important'}}
                             onSearch={(value) => {
                                 this.setState({
                                     searchClusterValue: value,
@@ -2605,7 +2605,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }
                                     }}
                                 >
-                                    <div style={{display: 'flex'}}>
+                                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                         <div>
                                             {this.renderDot(item.colorCodeIndex)}
                                         </div>
