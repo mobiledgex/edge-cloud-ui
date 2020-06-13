@@ -72,7 +72,7 @@ const TimeSeries = props => {
     const [type, setType] = React.useState("scatter");
     const [size, setSize] = React.useState({});
     const [showLegend, setShowLegend] = React.useState(false);
-    const [legendInfo, setLegendInfo] = React.useState({id:'', open: false, target:null});
+    const [legendInfo, setLegendInfo] = React.useState({ id: '', open: false, target: null });
     const [prevPropsId, setPrevPropsId] = React.useState(props.id);
     const [margin, setMargin] = React.useState({
         l: 45,
@@ -85,7 +85,7 @@ const TimeSeries = props => {
 
     let revision = 10;
     const wGab = 10;
-    let hGab = props.filterInfo ? 40 : 10;
+    let hGab = props.filterInfo ? 40 : 30;
     const colors = ["#22cccc", "#6699ff", "#ff710a", "#ffce03"];
     const colorsErr = ["#22cccc", "#ff3355", "#6699ff", "#ffce03"];
     const stackAllData = [];
@@ -125,7 +125,7 @@ const TimeSeries = props => {
         if (props.filterInfo) {
             hGab = 40;
         } else {
-            hGab = 10;
+            hGab = 30;
         }
         if (props.id) setPrevPropsId(props.id);
         if (props.divide) maxDataCount = props.divide;
@@ -275,15 +275,35 @@ const TimeSeries = props => {
 
 
     return (
-        <div
-            className="plotContainer"
-            style={{
-                display: "flex",
-                overflowY: "hidden",
-                overflowX: "auto"
-            }}
-        >
-            {/* 
+        <ChartJSComponent id={prevPropsId} width={vWidth - wGab} height={vHeight - hGab} data={chartData} type={type} legendShow={showLegend} legendInfo={legendInfo} />
+    );
+};
+
+TimeSeries.defaultProps = {
+    margin: {
+        l: 45,
+        r: 3,
+        b: 35,
+        t: 5,
+        pad: 0
+    },
+    marginRight: 0,
+    showLegend: false,
+    y2Range: null,
+    y3Range: null,
+    y2Position: null,
+    y3Position: null
+};
+
+//
+
+
+export default TimeSeries;
+
+
+
+/*
+
             <PlotlyComponent
                 className="plotly-chart"
                 style={{
@@ -397,29 +417,5 @@ const TimeSeries = props => {
                     datarevision: datarevision + 1
                 }}
                 revision={revision}
-            /> */}
-            <ChartJSComponent id={prevPropsId} width={vWidth - wGab} height={vHeight - hGab} data={chartData} type={type} legendShow={showLegend} legendInfo={legendInfo} />
-        </div>
-    );
-};
-
-TimeSeries.defaultProps = {
-    margin: {
-        l: 45,
-        r: 3,
-        b: 35,
-        t: 5,
-        pad: 0
-    },
-    marginRight: 0,
-    showLegend: false,
-    y2Range: null,
-    y3Range: null,
-    y2Position: null,
-    y3Position: null
-};
-
-//
-
-
-export default TimeSeries;
+            />
+            */

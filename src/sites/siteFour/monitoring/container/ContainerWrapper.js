@@ -121,6 +121,13 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                     this.onReceiveResult(reduceResult, self, props.method);
                 }
             }
+            if (props.method === serviceMC.getEP().METRICS_CLUSTER) {
+                const result = await Service.MetricsService(props, self);
+                if (result && result.length > 0) {
+                    const reduceResult = this.removeEmptyResult(result);
+                    this.onReceiveResult(reduceResult, self, props.method);
+                }
+            }
             if (props.method === serviceMC.getEP().METRICS_CLIENT) {
                 const result = await Service.MetricsService(props, self);
                 if (result && result.length > 0) {

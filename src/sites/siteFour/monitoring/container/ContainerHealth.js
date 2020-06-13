@@ -25,7 +25,6 @@ const ContainerHealth = defaultProps => {
 
         const data = defaultProps.data;
         const dataKeys = Object.keys(data || {});
-        console.log("20200612 health data == ", defaultProps.data, data);
         if (dataKeys.length > 0 ) {
 
             const vCpu = data.vCpu;

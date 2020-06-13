@@ -114,11 +114,10 @@ class ChartWidget extends React.Component {
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
-            if (prevProps.id === DataType.HEALTH_CLOUDLET) {
+            if (prevProps.id === DataType.HEALTH_CLOUDLET && prevProps.id === DataType.HEALTH_CLUSTER) {
                 const updatedata = DataFormats.dataFormatHealthCloudlet(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
-
 
         }
         return null;
@@ -423,7 +422,6 @@ export const DotsMobileStepper = props => {
         props.setActiveStep(idObject.index);
     };
     React.useEffect(() => {
-        console.log('20200609', props.data)
         let stepData = props.data // <----- data form edit
 
         if (Array.isArray(stepData) && props.itemCount) {

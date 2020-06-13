@@ -44,6 +44,9 @@ const getOptions = params => ({
     legend: {
         display: false
     },
+    responsive: true,
+    redraw: true,
+    maintainAspectRatio: false,
 });
 const getOptionsBar = params => ({
     scales: {
@@ -56,6 +59,9 @@ const getOptionsBar = params => ({
     legend: {
         display: false
     },
+    responsive: true,
+    redraw: true,
+    maintainAspectRatio: false,
 });
 
 let myRef = null;
@@ -176,25 +182,39 @@ const ChartJSComponent = defaultProps => {
         }
     }, [defaultProps.id, defaultProps.data]);
 
+    React.useEffect(() => {
+        console.log("20200613 canvas size = ", defaultProps, isNaN(defaultProps.width), isNaN(defaultProps.height));
+        if (!isNaN(defaultProps.width) && !isNaN(defaultProps.height)) {
+            setVWidth(defaultProps.width);
+            setVHeight(defaultProps.height);
+            const chart = myRef.chartInstance;
+            chart.canvas.id = defaultProps.id;
+            chart.canvas.parentNode.width = defaultProps.width;
+            chart.canvas.parentNode.height = defaultProps.height;
+            chart.canvas.parentNode.style.width = `${defaultProps.width}px`;
+            chart.canvas.parentNode.style.height = `${defaultProps.height - 30}px`;
+        }
+    }, [defaultProps.width, defaultProps.height]);
+
     const idLegend = legendOpen ? "legend-popper-" + legendId : undefined;
 
     return (
-        <div style={{ position: "relative", height: "100%", width: "100%" }}>
+        <div className="chatContainer" style={{ position: "relative", height: vHeight, width: vWidth }}>
             {(type === "bar")
                 ? <Bar
                     id="typeisBar"
                     ref={element => setChartRef(element)}
                     data={data}
-                    width={vWidth}
-                    height={vHeight}
+                    width={null}
+                    height={null}
                     options={options || { maintainAspectRatio: false }}
                 />
                 : <Line
                     id="typeisLine"
                     ref={element => setChartRef(element)}
                     data={data}
-                    width={vWidth}
-                    height={vHeight}
+                    width={null}
+                    height={null}
                     options={options || { maintainAspectRatio: false }}
                 />}
             <Popper
