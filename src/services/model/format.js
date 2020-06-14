@@ -119,7 +119,7 @@ export const fields = {
     infraApiAccess:'infraApiAccess',
     infraFlavorName:'infraFlavorName',
     infraExternalNetworkName:'infraExternalNetworkName',
-    manifest:'manifest'
+    manifest:'manifest',
     userName: 'userName',
     userRole: 'userRole',
     healthCheck: 'healthCheck',
