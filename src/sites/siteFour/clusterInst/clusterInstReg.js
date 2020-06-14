@@ -15,7 +15,7 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
-import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningPolicy';
+import { getAutoScalePolicyList } from '../../../services/model/autoScalePolicy';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -41,7 +41,7 @@ class ClusterInstReg extends React.Component {
         this.cloudletList = []
         this.flavorList = []
         this.privacyPolicyList = []
-        this.autoProvisioningList = []
+        this.autoScalePolicyList = []
         this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
     }
 
@@ -81,9 +81,9 @@ class ClusterInstReg extends React.Component {
         this.setState({ forms: forms })
     }
 
-    getAutoProvisioning = async (region, form, forms) => {
+    getAutoScalePolicy = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
-            this.autoProvisioningList = [...this.autoProvisioningList, ...await getAutoProvPolicyList(this, { region: region })]
+            this.autoScalePolicyList = [...this.autoScalePolicyList, ...await getAutoScalePolicyList(this, { region: region })]
         }
         this.updateUI(form)
         this.setState({ forms: forms })
@@ -109,9 +109,9 @@ class ClusterInstReg extends React.Component {
                     this.getPrivacyPolicy(region, form, forms)
                 }
             }
-            else if (form.field === fields.autoPolicyName) {
+            else if (form.field === fields.autoScalePolicyName) {
                 if (isInit === undefined || isInit === false) {
-                    this.getAutoProvisioning(region, form, forms)
+                    this.getAutoScalePolicy(region, form, forms)
                 }
             }
         }
@@ -131,7 +131,7 @@ class ClusterInstReg extends React.Component {
                 this.updateUI(form)
                 this.setState({ forms: forms })
             }
-            else if (form.field === fields.autoPolicyName) {
+            else if (form.field === fields.autoScalePolicyName) {
                 this.updateUI(form)
                 this.setState({ forms: forms })
             }
@@ -349,8 +349,8 @@ class ClusterInstReg extends React.Component {
                         case fields.privacyPolicyName:
                             form.options = this.privacyPolicyList
                             break;
-                        case fields.autoPolicyName:
-                            form.options = this.autoProvisioningList
+                        case fields.autoScalePolicyName:
+                            form.options = this.autoScalePolicyList
                             break;
                         case fields.ipAccess:
                             form.options = this.ipAccessList;
@@ -383,6 +383,7 @@ class ClusterInstReg extends React.Component {
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
             this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
+            this.autoScalePolicyList = await getAutoScalePolicyList(this, { region: data[fields.region] })
         }
     }
 
@@ -396,13 +397,13 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
             { field: fields.deployment, label: 'Deployment Type', formType: 'Select', placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
             { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', visible: true, update: false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App' },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy Name', visible: false, update: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', visible: false, update: false, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
+            { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: 'Select', placeholder: 'Select Auto Scale Policy', visible: true, update: false, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
             { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip:'FlavorKey uniquely identifies a Flavor' },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: 'Input', placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true, tip:'Number of k8s masters (In case of docker deployment, this field is not required)' },
             { field: fields.numberOfNodes, label: 'Number of Workers', formType: 'Input', placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: true, tip:'Number of k8s nodes (In case of docker deployment, this field is not required)' },
-            { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: true, tip:'Size of an optional shared volume to be mounted on the master' },
+            { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: false, tip:'Size of an optional shared volume to be mounted on the master' },
             { field: fields.reservable, label: 'Reservable', formType: 'Checkbox', visible: true, roles: ['AdminManager'], value: false, update: true, tip:'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
-            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: 'Select', placeholder: 'Select Auto Provisioning Policy Name', visible: true, update: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
         ]
     }
 

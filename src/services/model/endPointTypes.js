@@ -10,6 +10,7 @@ import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
 import * as PrivacyPolicy from './privacyPolicy';
+import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
 import * as CloudletPoolMember from './cloudletPoolMember';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
@@ -86,6 +87,10 @@ export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
 export const GET_CLOUDLET_MANIFEST = "GetCloudletManifest";
+export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
+export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
+export const UPDATE_AUTO_SCALE_POLICY = "UpdateAutoScalePolicy";
+export const DELETE_AUTO_SCALE_POLICY = "DeleteAutoScalePolicy";
 
 export function getPath(request) {
     switch (request.method) {
@@ -156,6 +161,10 @@ export function getPath(request) {
         case UPDATE_PRIVACY_POLICY:
         case CREATE_PRIVACY_POLICY:
         case DELETE_PRIVACY_POLICY:
+        case SHOW_AUTO_SCALE_POLICY:
+        case CREATE_AUTO_SCALE_POLICY:
+        case UPDATE_AUTO_SCALE_POLICY:
+        case DELETE_AUTO_SCALE_POLICY:
         case RUN_COMMAND:
         case SHOW_LOGS:
         case SHOW_CONSOLE:
@@ -221,6 +230,9 @@ export function formatData(request, response) {
             break;
         case SHOW_PRIVACY_POLICY:
             data = PrivacyPolicy.getData(response, request.data)
+            break;
+        case SHOW_AUTO_SCALE_POLICY:
+            data = AutoScalePolicy.getData(response, request.data)
             break;
         case SHOW_CLOUDLET_POOL:
             data = CloudletPool.getData(response, request.data)

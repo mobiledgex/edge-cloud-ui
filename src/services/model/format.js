@@ -116,13 +116,21 @@ export const fields = {
     powerState:'powerState',
     tls:'tls',
     userList:'userList',
-    userName:'userName',
-    userRole:'userRole',
-    healthCheck:'healthCheck',
     infraApiAccess:'infraApiAccess',
     infraFlavorName:'infraFlavorName',
     infraExternalNetworkName:'infraExternalNetworkName',
     manifest:'manifest'
+    userName: 'userName',
+    userRole: 'userRole',
+    healthCheck: 'healthCheck',
+    skipHCPorts: 'skipHCPorts',
+    templateDelimiter: 'templateDelimiter',
+    autoScalePolicyName: 'autoScalePolicyName',
+    minimumNodes: 'minimumNodes',
+    maximumNodes: 'maximumNodes',
+    scaleUpCPUThreshold: 'scaleUpCPUThreshold',
+    scaleDownCPUThreshold: 'scaleDownCPUThreshold',
+    triggerTime: 'triggerTime'
 }
 
 export const getUserRole = () => {

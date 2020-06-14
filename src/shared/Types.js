@@ -216,6 +216,7 @@ export type TypeClusterUsageOne = {
 
 }
 export type TypeAppInst = {
+
     "Region": string,
     "OrganizationName": string,
     "AppName": string,

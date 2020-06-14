@@ -16,6 +16,7 @@ export const keys = () => ([
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true },
     { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, filter: true },
     { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', sortable: true, filter: true },
+    { field: fields.autoScalePolicyName, serverField: 'auto_scale_policy', label: 'Auto Scale Policy' },
     { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
     { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },
@@ -119,6 +120,9 @@ export const clusterKey = (data, isCreate) => {
         }
         if (data[fields.privacyPolicyName]) {
             clusterinst.privacy_policy = data[fields.privacyPolicyName]
+        }
+        if (data[fields.autoScalePolicyName]) {
+            clusterinst.auto_scale_policy = data[fields.autoScalePolicyName]
         }
     }
     return ({
