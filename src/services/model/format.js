@@ -119,7 +119,10 @@ export const fields = {
     userName:'userName',
     userRole:'userRole',
     healthCheck:'healthCheck',
-    infraApiAccess:'infraApiAccess'
+    infraApiAccess:'infraApiAccess',
+    infraFlavorName:'infraFlavorName',
+    infraExternalNetworkName:'infraExternalNetworkName',
+    manifest:'manifest'
 }
 
 export const getUserRole = () => {

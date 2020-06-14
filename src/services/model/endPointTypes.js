@@ -85,6 +85,7 @@ export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
 export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
+export const GET_CLOUDLET_MANIFEST = "GetCloudletManifest";
 
 export function getPath(request) {
     switch (request.method) {
@@ -158,6 +159,7 @@ export function getPath(request) {
         case RUN_COMMAND:
         case SHOW_LOGS:
         case SHOW_CONSOLE:
+        case GET_CLOUDLET_MANIFEST:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:

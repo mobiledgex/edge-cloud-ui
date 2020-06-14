@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { fields, getUserRole, isAdmin } from '../../../services/model/format';
-import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
+import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest,  getCloudletManifest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
 import * as constant from '../../../constant'

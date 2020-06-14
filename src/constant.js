@@ -2,6 +2,7 @@ import {fields} from "./services/model/format"
 
 export const TYPE_JSON = 'JSON'
 export const TYPE_YAML = 'YAML'
+export const TYPE_URL = 'URL'
 export const ADD_CLOUDLET = 'AddCloudlet'
 export const DELETE_CLOUDLET = 'DeleteCloudlet'
 export const ADD_ORGANIZATION = 'AddOrganization'

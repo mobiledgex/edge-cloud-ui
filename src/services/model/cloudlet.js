@@ -2,7 +2,7 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST } from './endPointTypes'
 
 const fields = formatter.fields;
 
@@ -18,6 +18,7 @@ export const getKey = (data, isCreate) => {
         cloudlet.physical_name = data[fields.physicalName]
         cloudlet.ip_support = constant.IPSupport(data[fields.ipSupport])
         cloudlet.platform_type = constant.PlatformType(data[fields.platformType])
+        cloudlet.infra_api_access = constant.infraApiAccess(data[fields.infraApiAccess])
         let accessvars = {}
         if (data[fields.openRCData]) {
             accessvars.OPENRC_DATA = data[fields.openRCData]
@@ -31,6 +32,21 @@ export const getKey = (data, isCreate) => {
         if (data[fields.containerVersion]) {
             cloudlet.container_version = data[fields.containerVersion]
         }
+
+        let infraConfig = undefined
+        if (data[fields.infraFlavorName]) {
+            infraConfig = infraConfig ? infraConfig : {}
+            infraConfig.flavor_name = data[fields.infraFlavorName]
+        }
+        if (data[fields.infraExternalNetworkName]) {
+            infraConfig = infraConfig ? infraConfig : {}
+            infraConfig.external_network_name = data[fields.infraExternalNetworkName]
+        }
+        if(infraConfig)
+        {
+            cloudlet.infra_config = infraConfig
+        }
+
     }
     return ({
         region: data[fields.region],
@@ -117,6 +133,12 @@ export const deleteCloudlet = (data) => {
     return { uuid: data.uuid, method: DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]} deleted successfully` }
 }
 
+export const getCloudletManifest = async (self, data) => {
+    let requestData = getKey(data)
+    let mcRequest =  await serverData.sendRequest(self, {method: GET_CLOUDLET_MANIFEST, data: requestData})
+    return mcRequest
+}
+
 export const streamCloudlet = (data) => {
     let requestData = getKey(data)
     return { uuid: data.uuid, method: STREAM_CLOUDLET, data: requestData }
@@ -142,6 +164,9 @@ export const keys = () => ([
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
+    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
+    { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name'},
+    { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name'},
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
@@ -149,6 +174,7 @@ const customData = (value) => {
     value[fields.cloudletStatus] = formatter.isAdmin() ? 4 : undefined
     value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
+    value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])
 }
 
 export const getData = (response, body) => {

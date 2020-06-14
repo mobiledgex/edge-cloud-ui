@@ -12,11 +12,19 @@ import * as constant from '../../../constant';
 import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { createCloudlet, updateCloudlet } from '../../../services/model/cloudlet';
+import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../services/model/cloudlet';
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {CloudletTutor} from "../../../tutorial";
+import { Card, Link, Button, IconButton } from '@material-ui/core';
+import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
+import yaml from 'react-syntax-highlighter/dist/esm/languages/hljs/yaml';
+import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+
+import GetAppIcon from '@material-ui/icons/GetApp';
+
+SyntaxHighlighter.registerLanguage('yaml', yaml);
 
 const cloudletSteps = CloudletTutor();
 
@@ -28,7 +36,9 @@ class ClusterInstReg extends React.Component {
             forms: [],
             mapData: [],
             stepsArray: [],
+            cloudletManifest:false
         }
+        this.manifestData = undefined;
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
@@ -44,6 +54,18 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                 form.visible = currentForm.value === constant.PLATFORM_TYPE_OPEN_STACK ? true : false
             }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
+    infraAPIAccessChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.infraFlavorName || form.field === fields.infraExternalNetworkName) {
+                form.rules.required = currentForm.value === constant.INFRA_API_ACCESS_RESTRICTED
+             }
         }
         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
@@ -83,6 +105,9 @@ class ClusterInstReg extends React.Component {
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
         }
+        else if (form.field === fields.infraApiAccess) {
+            this.infraAPIAccessChange(form, forms, isInit)
+        }
     }
 
     /**Required */
@@ -92,16 +117,28 @@ class ClusterInstReg extends React.Component {
         this.checkForms(form, forms)
     }
 
-    onCreateResponse = (mcRequest) => {
-        this.props.handleLoadingSpinner(false)
+    onCreateResponse = async (mcRequest) => {
         if (mcRequest) {
             let responseData = undefined;
             let request = mcRequest.request;
             if (mcRequest.response && mcRequest.response.data) {
                 responseData = mcRequest.response.data;
             }
-            let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+            let orgData = request.orgData;
+            if (!this.isUpdate && orgData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED) {
+                if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
+                    let cloudletManifest = await getCloudletManifest(this, orgData)
+                    if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
+                        this.manifestData = cloudletManifest.response.data;
+                        this.setState({ cloudletManifest: true })
+                    }
+                }
+            }
+            else {
+                this.props.handleLoadingSpinner(false)
+                let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
+                this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+            }
         }
     }
 
@@ -189,22 +226,58 @@ class ClusterInstReg extends React.Component {
         this.props.onClose(true)
     }
 
+    downloadTxtFile = () => {
+        const element = document.createElement("a");
+        const file = new Blob([this.manifestData.manifest], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = "manifest.txt";
+        document.body.appendChild(element); // Required for this to work in FireFox
+        element.click();
+    }
 
+    cloudletManifestForm = () => {
+        return (
+            <Card style={{ height: '100%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
+                <div style={{ margin: 20, color: 'white' }}>
+                    <h2><b>Cloudlet Manifest</b></h2>
+                    <br />
+                    <h3><b>Steps</b></h3>
+                    <ul>
+                        <li>
+                            <h4>Please download our bootstrap image and execute HEAT template to connect to our platform, below is the link to the image, please download it and upload it to your glance store</h4>
+                            <Link href={this.manifestData.image_path} target='_blank'><h4 style={{color:'#77bd06', margin:10}}>{this.manifestData.image_path}</h4></Link>
+                        </li>
+                        <li>
+                            <h4>Following HEAT stack is provided to bring back platform VM, on downloading the image, execute the heat stack 
+                                <IconButton onClick={this.downloadTxtFile}><GetAppIcon/></IconButton>
+                            </h4>
+                            <div style={{ backgroundColor: 'grey', padding: 1, overflowX: 'auto', width: '85vw' }}>
+                                <SyntaxHighlighter language="yaml" style={allyDark} className='yamlDiv'>
+                                    {this.manifestData.manifest}
+                                </SyntaxHighlighter>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </Card>
+        )
+    }
 
     render() {
         return (
             <div className="round_panel">
                 <div className="grid_table" >
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column width={8}>
-                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                            </Grid.Column>
-                            <Grid.Column width={8}>
-                                <MexTab form={{ panes: this.getPanes() }} />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
+                    {this.state.cloudletManifest ? this.cloudletManifestForm() :
+                        <Grid>
+                            <Grid.Row>
+                                <Grid.Column width={8}>
+                                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                                </Grid.Column>
+                                <Grid.Column width={8}>
+                                    <MexTab form={{ panes: this.getPanes() }} />
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>}
                 </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
@@ -281,6 +354,12 @@ class ClusterInstReg extends React.Component {
         { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type:'number', onBlur: true}, width: 8, visible: true }
     ])
 
+    cloudletManifest = () => {
+        return [
+            { field: fields.manifest, serverField: 'manifest', label: 'Manifest', dataType: constant.TYPE_YAML },
+        ]
+    }
+
     formKeys = () => {
         return [
             { label: 'Create Cloudlet', formType: 'Header', visible: true },
@@ -296,6 +375,8 @@ class ClusterInstReg extends React.Component {
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
             { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network'},
+            { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, },
+            { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, },
         ]
     }
 
@@ -325,7 +406,7 @@ class ClusterInstReg extends React.Component {
     }
 
     getFormData = async (data) => {
-        if (data) {
+        if (data) { 
             await this.loadDefaultData(data)
         }
         else {
