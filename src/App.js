@@ -52,8 +52,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
-        if (!storage_data) {
+        if (!localStorage.getItem(LOCAL_STRAGE_KEY)) {
             return
         }
         this.getControllers()

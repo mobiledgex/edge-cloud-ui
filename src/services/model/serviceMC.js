@@ -11,21 +11,15 @@ export function getEP() {
 
 export const mcURL = (isWebSocket) =>
 {
-    let serverURL = ''
-    if(process.env.NODE_ENV === 'production' )
-    {
+    let serverURL = process.env.REACT_APP_API_ENDPOINT
+    if (process.env.NODE_ENV === 'production') {
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
     }
 
-    if (serverURL.includes('localhost')) {
-        serverURL = process.env.REACT_APP_API_ENDPOINT;
-    }
-
-    if(isWebSocket)
-    {
-        serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+    if (isWebSocket) {
+        serverURL = serverURL.replace('http', 'ws')
     }
     return serverURL
 }
@@ -67,8 +61,6 @@ const showError = (self, request, message) => {
 const checkExpiry = (self, message) => {
     let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
     if (isExpired && self) {
-        localStorage.setItem('userInfo', null)
-        localStorage.setItem('sessionData', null)
         setTimeout(() => {
             if (self && self.props && self.props.history) {
                 self.props.history.push({
