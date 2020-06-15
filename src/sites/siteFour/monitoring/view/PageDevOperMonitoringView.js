@@ -1412,7 +1412,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             className='layout page_monitoring_layout_dev_oper'
                             cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            //cols={{lg: 4, md: 3, sm: 2, xs: 2, xxs: 1}}
                             layout={this.state.layoutCluster}
                             rowHeight={this.gridItemHeight}
                             onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
