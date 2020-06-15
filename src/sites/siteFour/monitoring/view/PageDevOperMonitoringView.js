@@ -2298,9 +2298,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             renderClusterDropdown() {
-
-                console.log(`width====>`, this.props.size.width);
-
                 let treeSelectWidth = 500;
                 let maxTagCount=3;
                 if (this.props.size.width >= 1600) {
