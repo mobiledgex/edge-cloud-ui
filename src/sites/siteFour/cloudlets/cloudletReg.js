@@ -17,18 +17,19 @@ import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../se
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {CloudletTutor} from "../../../tutorial";
-import { Card, Link, Button, IconButton } from '@material-ui/core';
+import { Card, IconButton, Box, Link } from '@material-ui/core';
 import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/hljs/yaml';
 import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
+import CloseIcon from '@material-ui/icons/Close';
 
 SyntaxHighlighter.registerLanguage('yaml', yaml);
 
 const cloudletSteps = CloudletTutor();
 
-class ClusterInstReg extends React.Component {
+class CloudletReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,16 +37,16 @@ class ClusterInstReg extends React.Component {
             forms: [],
             mapData: [],
             stepsArray: [],
-            cloudletManifest:false
+            cloudletManifest:undefined
         }
-        this.manifestData = undefined;
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.infraApiAccessList = [constant.INFRA_API_ACCESS_DIRECT, constant.INFRA_API_ACCESS_RESTRICTED]
         //To avoid refecthing data from server
         this.requestedRegionList = [];
-        this.operatorList = []
+        this.operatorList = [];
+        this.cloudletName = undefined;
     }
 
     platformTypeValueChange = (currentForm, forms, isInit) => {
@@ -128,9 +129,9 @@ class ClusterInstReg extends React.Component {
             if (!this.isUpdate && orgData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED) {
                 if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
                     let cloudletManifest = await getCloudletManifest(this, orgData)
+                    this.cloudletName = orgData[fields.cloudletName]
                     if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
-                        this.manifestData = cloudletManifest.response.data;
-                        this.setState({ cloudletManifest: true })
+                        this.setState({ cloudletManifest: cloudletManifest.response.data })
                     }
                 }
             }
@@ -226,34 +227,43 @@ class ClusterInstReg extends React.Component {
         this.props.onClose(true)
     }
 
-    downloadTxtFile = () => {
+    downloadTxtFile = (data) => {
         const element = document.createElement("a");
-        const file = new Blob([this.manifestData.manifest], { type: 'text/plain' });
+        const file = new Blob([this.state.cloudletManifest.manifest], { type: 'text/yaml' });
         element.href = URL.createObjectURL(file);
-        element.download = "manifest.txt";
+        element.download = `${this.cloudletName}.yml`;
         document.body.appendChild(element); // Required for this to work in FireFox
         element.click();
     }
 
     cloudletManifestForm = () => {
+        let cloudletManifest = this.state.cloudletManifest;
         return (
             <Card style={{ height: '100%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <div style={{ margin: 20, color: 'white' }}>
-                    <h2><b>Cloudlet Manifest</b></h2>
+                    <Box display="flex" p={1}>
+                        <Box p={1} flexGrow={1}>
+                            <h2><b>Cloudlet Manifest</b></h2>
+                        </Box>
+                        <Box p={1}>
+                            <IconButton onClick={()=>this.props.onClose(true)}><CloseIcon/></IconButton>
+                        </Box>
+                    </Box>
                     <br />
                     <h3><b>Steps</b></h3>
                     <ul>
                         <li>
-                            <h4>Please download our bootstrap image and execute HEAT template to connect to our platform, below is the link to the image, please download it and upload it to your glance store</h4>
-                            <Link href={this.manifestData.image_path} target='_blank'><h4 style={{color:'#77bd06', margin:10}}>{this.manifestData.image_path}</h4></Link>
+                            <h4>Download our bootstrap image and execute template to setup cloudlet, below is the link to the image, please download it and upload it to your data store</h4>
+                            <Link href={cloudletManifest.image_path} target='_blank'><h4 style={{color:'#77bd06', margin:10}}>{cloudletManifest.image_path}</h4></Link>
                         </li>
                         <li>
-                            <h4>Following HEAT stack is provided to bring back platform VM, on downloading the image, execute the heat stack 
+                            <h4>
+                                Download and execute the following template
                                 <IconButton onClick={this.downloadTxtFile}><GetAppIcon/></IconButton>
                             </h4>
                             <div style={{ backgroundColor: 'grey', padding: 1, overflowX: 'auto', width: '85vw' }}>
                                 <SyntaxHighlighter language="yaml" style={allyDark} className='yamlDiv'>
-                                    {this.manifestData.manifest}
+                                    {cloudletManifest.manifest}
                                 </SyntaxHighlighter>
                             </div>
                         </li>
@@ -393,7 +403,7 @@ class ClusterInstReg extends React.Component {
                     this.checkForms(form, forms, true)
                 }
             }
-            //Todo if more such functions required try to move it to mexforms
+            //Todo if more such functions required must be moved to mexforms
             if(this.isUpdate)
             {
                 if(form.field === fields.openRCData || form.field === fields.caCertdata)
@@ -465,4 +475,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletReg));
