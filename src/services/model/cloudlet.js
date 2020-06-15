@@ -133,9 +133,9 @@ export const deleteCloudlet = (data) => {
     return { uuid: data.uuid, method: DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]} deleted successfully` }
 }
 
-export const getCloudletManifest = async (self, data) => {
+export const getCloudletManifest = async (self, data, showSpinner) => {
     let requestData = getKey(data)
-    let mcRequest =  await serverData.sendRequest(self, {method: GET_CLOUDLET_MANIFEST, data: requestData})
+    let mcRequest =  await serverData.sendRequest(self, {method: GET_CLOUDLET_MANIFEST, data: requestData, showSpinner:showSpinner})
     return mcRequest
 }
 

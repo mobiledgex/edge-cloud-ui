@@ -16,16 +16,16 @@ import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../se
 //Map
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import {CloudletTutor} from "../../../tutorial";
+import { CloudletTutor } from "../../../tutorial";
 import { Card, IconButton, Box, Link } from '@material-ui/core';
-import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
-import yaml from 'react-syntax-highlighter/dist/esm/languages/hljs/yaml';
-import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import { syntaxHighLighter, codeHighLighter } from '../../../hoc/highLighter/highLighter'
+import { downloadData } from '../../../utils/fileUtil'
+
 
 import GetAppIcon from '@material-ui/icons/GetApp';
 import CloseIcon from '@material-ui/icons/Close';
-
-SyntaxHighlighter.registerLanguage('yaml', yaml);
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 const cloudletSteps = CloudletTutor();
 
@@ -37,7 +37,9 @@ class CloudletReg extends React.Component {
             forms: [],
             mapData: [],
             stepsArray: [],
-            cloudletManifest:undefined
+            cloudletManifest: undefined,
+            showCloudletManifest: false,
+            showManifest: false,
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -47,6 +49,7 @@ class CloudletReg extends React.Component {
         this.requestedRegionList = [];
         this.operatorList = [];
         this.cloudletName = undefined;
+        this.canCloseStepper = true;
     }
 
     platformTypeValueChange = (currentForm, forms, isInit) => {
@@ -66,7 +69,7 @@ class CloudletReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.infraFlavorName || form.field === fields.infraExternalNetworkName) {
                 form.rules.required = currentForm.value === constant.INFRA_API_ACCESS_RESTRICTED
-             }
+            }
         }
         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
@@ -126,18 +129,29 @@ class CloudletReg extends React.Component {
                 responseData = mcRequest.response.data;
             }
             let orgData = request.orgData;
-            if (!this.isUpdate && orgData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED) {
+            let isRestricted = orgData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
+
+            this.props.handleLoadingSpinner(false)
+            let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
+            if (!this.isUpdate && isRestricted) {
                 if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
-                    let cloudletManifest = await getCloudletManifest(this, orgData)
+                    responseData.data.message = 'Cloudlet configured successfully, please wait requesting cloudlet manifest to bring up Platform VM(s) for cloudlet service'
+                    this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+                    let cloudletManifest = await getCloudletManifest(this, orgData, false)
                     this.cloudletName = orgData[fields.cloudletName]
                     if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
-                        this.setState({ cloudletManifest: cloudletManifest.response.data })
+                        this.setState({ cloudletManifest: cloudletManifest.response.data, showCloudletManifest: true, stepsArray: [] })
+                    }
+                }
+                else {
+                    let isRequestFailed = responseData ? responseData.code !== 200 : false
+                    if (responseData || isRequestFailed) {
+                        this.canCloseStepper = isRequestFailed
+                        this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
                     }
                 }
             }
             else {
-                this.props.handleLoadingSpinner(false)
-                let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
                 this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
             }
         }
@@ -178,8 +192,8 @@ class CloudletReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.cloudletLocation && !form.rules.disabled) {
                 let cloudlet = {}
-                cloudlet.cloudletLocation = {latitude:location.lat, longitude:location.long}
-                this.setState({mapData:[cloudlet]})
+                cloudlet.cloudletLocation = { latitude: location.lat, longitude: location.long }
+                this.setState({ mapData: [cloudlet] })
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
@@ -221,23 +235,21 @@ class CloudletReg extends React.Component {
     }
 
     stepperClose = () => {
-        this.setState({
-            stepsArray: []
-        })
-        this.props.onClose(true)
+        if (this.canCloseStepper) {
+            this.setState({
+                stepsArray: []
+            })
+            this.props.onClose(true)
+        }
     }
 
-    downloadTxtFile = (data) => {
-        const element = document.createElement("a");
-        const file = new Blob([this.state.cloudletManifest.manifest], { type: 'text/yaml' });
-        element.href = URL.createObjectURL(file);
-        element.download = `${this.cloudletName}.yml`;
-        document.body.appendChild(element); // Required for this to work in FireFox
-        element.click();
-    }
 
     cloudletManifestForm = () => {
         let cloudletManifest = this.state.cloudletManifest;
+        let imagePath = cloudletManifest.image_path;
+        let imageFileNameWithExt = imagePath.substring(imagePath.lastIndexOf('/') + 1)
+        let imageFileName = imageFileNameWithExt.substring(0, imageFileNameWithExt.lastIndexOf('.'))
+
         return (
             <Card style={{ height: '100%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <div style={{ margin: 20, color: 'white' }}>
@@ -246,26 +258,36 @@ class CloudletReg extends React.Component {
                             <h2><b>Cloudlet Manifest</b></h2>
                         </Box>
                         <Box p={1}>
-                            <IconButton onClick={()=>this.props.onClose(true)}><CloseIcon/></IconButton>
+                            <IconButton onClick={() => this.props.onClose(true)}><CloseIcon /></IconButton>
                         </Box>
                     </Box>
                     <br />
-                    <h3><b>Steps</b></h3>
                     <ul>
                         <li>
                             <h4>Download our bootstrap image and execute template to setup cloudlet, below is the link to the image, please download it and upload it to your data store</h4>
-                            <Link href={cloudletManifest.image_path} target='_blank'><h4 style={{color:'#77bd06', margin:10}}>{cloudletManifest.image_path}</h4></Link>
+                            <Link href={imagePath} target='_blank'><h4 style={{ color: '#77bd06', margin: 10 }}>{imagePath}</h4></Link>
                         </li>
-                        <li>
+                        <li style={{ marginTop: 30 }}>
                             <h4>
-                                Download and execute the following template
-                                <IconButton onClick={this.downloadTxtFile}><GetAppIcon/></IconButton>
+                                After download, execute below command &nbsp;&nbsp;&nbsp;
                             </h4>
-                            <div style={{ backgroundColor: 'grey', padding: 1, overflowX: 'auto', width: '85vw' }}>
-                                <SyntaxHighlighter language="yaml" style={allyDark} className='yamlDiv'>
-                                    {cloudletManifest.manifest}
-                                </SyntaxHighlighter>
-                            </div>
+                            {codeHighLighter(`openstack image create ${imageFileName} --disk-format qcow2 --container-format bare --file ${imageFileNameWithExt}`)}
+                        </li>
+                        <li style={{ marginTop: 20 }}>
+                            <h4>
+                                <IconButton onClick={() => { this.setState(prevState => ({ showManifest: !prevState.showManifest })) }}>{this.state.showManifest ? <ExpandMoreIcon /> : <ChevronRightIcon />}</IconButton>
+                                Download template (expand to view)
+                                <IconButton onClick={()=>downloadData(this.cloudletName, this.state.cloudletManifest.manifest)}><GetAppIcon fontSize='small' /></IconButton>
+                            </h4>
+                            {this.state.showManifest ?
+                                <div style={{ padding: 1, overflowX: 'auto', width: '85vw' }}>
+                                    {syntaxHighLighter('yaml', cloudletManifest.manifest, true)}
+                                </div> : null}
+                        </li>
+                        <li style={{ marginTop: 30 }}>
+                            <h4>After download, execute below command &nbsp;&nbsp;&nbsp;
+                            </h4>
+                            {codeHighLighter(`openstack stack create -t ${this.cloudletName}.yml cloudletname_cloudletorg_pf`)}
                         </li>
                     </ul>
                 </div>
@@ -277,7 +299,8 @@ class CloudletReg extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" >
-                    {this.state.cloudletManifest ? this.cloudletManifestForm() :
+                    {this.state.showCloudletManifest ?
+                        this.state.cloudletManifest ? this.cloudletManifestForm() : null :
                         <Grid>
                             <Grid.Row>
                                 <Grid.Column width={8}>
@@ -355,13 +378,13 @@ class CloudletReg extends React.Component {
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
-            this.setState({mapData:[data]})
+            this.setState({ mapData: [data] })
         }
     }
 
     locationForm = () => ([
-        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type:'number', onBlur: true}, width: 8, visible: true },
-        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type:'number', onBlur: true}, width: 8, visible: true }
+        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true },
+        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true }
     ])
 
     cloudletManifest = () => {
@@ -375,16 +398,16 @@ class CloudletReg extends React.Component {
             { label: 'Create Cloudlet', formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.' },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.' },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false}, visible: true, value: getOrganization(), tip: 'Organization of the cloudlet site' },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), tip: 'Organization of the cloudlet site' },
             { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location' },
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
-            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, update: true, tip:'Cloudlet container version' },
+            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, update: true, tip: 'Cloudlet container version' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
-            { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network'},
+            { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network' },
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, },
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, },
         ]
@@ -404,10 +427,8 @@ class CloudletReg extends React.Component {
                 }
             }
             //Todo if more such functions required must be moved to mexforms
-            if(this.isUpdate)
-            {
-                if(form.field === fields.openRCData || form.field === fields.caCertdata)
-                {
+            if (this.isUpdate) {
+                if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                     form.visible = false
                 }
             }
@@ -416,8 +437,18 @@ class CloudletReg extends React.Component {
     }
 
     getFormData = async (data) => {
-        if (data) { 
-            await this.loadDefaultData(data)
+        if (data) {
+            if (this.props.isManifest) {
+                this.setState({ showCloudletManifest: true })
+                let cloudletManifest = await getCloudletManifest(this, data)
+                this.cloudletName = data[fields.cloudletName]
+                if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
+                    this.setState({ cloudletManifest: cloudletManifest.response.data })
+                }
+            }
+            else {
+                await this.loadDefaultData(data)
+            }
         }
         else {
             let organizationList = await getOrganizationList(this)
@@ -445,7 +476,7 @@ class CloudletReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( cloudletSteps.stepsCloudletReg )
+        this.props.handleViewMode(cloudletSteps.stepsCloudletReg)
     }
 
 

@@ -35,10 +35,20 @@ class CloudletList extends React.Component {
         this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> });
     }
 
+    onCloudletManifest = (action, data) => {
+        this.setState({ currentView: <ClouldletReg data={data} isManifest={true} onClose={this.onRegClose}/> });
+    }
+    
+    onCloudletManifestVisible = (data) =>
+    {
+        return data[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
+    }
+
     actionMenu = () => {
         return [
             { label: 'Update', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteCloudlet, ws: true }
+            { label: 'Delete', onClick: deleteCloudlet, ws: true },
+            { label: 'Cloudlet Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest}
         ]
     }
 
