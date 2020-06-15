@@ -938,8 +938,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                /*todo:CLUSTER*/
-                /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -1430,7 +1430,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 });
 
                             }}
-                            {...this.props}
                         >
                             {this.state.layoutCluster.map((item, loopIndex) => {
 
@@ -2195,8 +2194,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div
                             style={{
                                 backgroundColor: this.state.cloudletDropdownList.length === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index - 1],
-                                width: 15,
-                                height: 15,
+                                width: 10,
+                                height: 10,
                                 borderRadius: 50,
                             }}
                         >
@@ -2298,6 +2297,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             renderClusterDropdown() {
+                let treeSelectWidth = 500;
+                let maxTagCount=3;
+                if (this.props.size.width >= 1600) {
+                    treeSelectWidth = 500;
+                    maxTagCount=3
+                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
+                    treeSelectWidth = 400;
+                    maxTagCount=2
+                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
+                    treeSelectWidth = 300;
+                    maxTagCount=1
+                } else if (this.props.size.width <= 1100) {
+                    treeSelectWidth = 150;
+                    maxTagCount=0
+                }
 
                 return (
                     <div className="page_monitoring_dropdown_box"
@@ -2310,41 +2324,44 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                             Cluster
                         </div>
-                        <TreeSelect
-                            showArrow={true}
-                            maxTagCount={3}
-                            disabled={this.state.loading}
-                            size={'middle'}
-                            allowClear={true}
-                            showSearch={true}
-                            treeCheckable={true}
-                            showCheckedStrategy={'SHOW_CHILD'}
-                            style={{width: '500px', height: 30}}
-                            onSearch={(value) => {
-                                this.setState({
-                                    searchClusterValue: value,
-                                });
-                            }}
-                            ref={c => this.treeSelect = c}
-                            listHeight={520}
-                            searchValue={this.state.searchClusterValue}
-                            searchPlaceholder={'Enter the cluster name.'}
-                            placeholder={'Select Cluster'}
-                            dropdownStyle={{
-                                maxHeight: 800, overflow: 'auto',
-                            }}
-                            treeData={this.state.clusterTreeDropdownList}
-                            treeDefaultExpandAll={true}
-                            value={this.state.currentClusterList}
-                            onChange={async (value, label, extra) => {
-                                if (!isEmpty(value)) {
-                                    this.setState({currentClusterList: value});
-                                } else {
-                                    this.resetLocalData()
-                                }
+                        <div style={{width: '100%'}}>
+                            <TreeSelect
+                                showArrow={true}
+                                maxTagCount={maxTagCount}
+                                disabled={this.state.loading}
+                                size={'middle'}
+                                allowClear={true}
+                                showSearch={true}
+                                treeCheckable={true}
+                                showCheckedStrategy={'SHOW_CHILD'}
+                                style={{height: '30px !important', width: treeSelectWidth}}
+                                dropdownStyle={{
+                                    maxHeight: 800, overflow: 'auto', width: '100%'
+                                }}
+                                onSearch={(value) => {
+                                    this.setState({
+                                        searchClusterValue: value,
+                                    });
+                                }}
+                                ref={c => this.treeSelect = c}
+                                listHeight={520}
+                                searchValue={this.state.searchClusterValue}
+                                searchPlaceholder={'Enter the cluster name.'}
+                                placeholder={'Select Cluster'}
 
-                            }}
-                        />
+                                treeData={this.state.clusterTreeDropdownList}
+                                treeDefaultExpandAll={true}
+                                value={this.state.currentClusterList}
+                                onChange={async (value, label, extra) => {
+                                    if (!isEmpty(value)) {
+                                        this.setState({currentClusterList: value});
+                                    } else {
+                                        this.resetLocalData()
+                                    }
+
+                                }}
+                            />
+                        </div>
                         <div style={{marginLeft: 10,}}>
                             <Button
                                 size={'small'}
@@ -2385,30 +2402,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             renderAppInstDropdown() {
+
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label" style={{width: 50}}>
                             App Inst
                         </div>
-                        <Select
-                            ref={c => this.appInstSelect = c}
-                            dropdownStyle={{}}
-                            style={{width: 350}}
-                            disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
-                            value={this.state.currentAppInstNameVersion}
-                            placeholder={this.state.appInstSelectBoxPlaceholder}
-                            onChange={async (value) => {
-                                this.appInstSelect.blur();
-                                await this.handleOnChangeAppInstDropdown(value.trim())
+                        <div>
+                            <Select
+                                ref={c => this.appInstSelect = c}
+                                dropdownStyle={{}}
+                                style={{width: '100%'}}
+                                disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
+                                value={this.state.currentAppInstNameVersion}
+                                placeholder={this.state.appInstSelectBoxPlaceholder}
+                                onChange={async (value) => {
+                                    this.appInstSelect.blur();
+                                    await this.handleOnChangeAppInstDropdown(value.trim())
 
-                            }}
-                        >
-                            {this.state.allAppInstDropdown.map(item => {
-                                return (
-                                    <Option value={item.value}>{item.text}</Option>
-                                )
-                            })}
-                        </Select>
+                                }}
+                            >
+                                {this.state.allAppInstDropdown.map(item => {
+                                    return (
+                                        <Option value={item.value}>{item.text}</Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
                     </div>
                 )
             }
@@ -2605,7 +2625,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }
                                     }}
                                 >
-                                    <div style={{display: 'flex'}}>
+                                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                         <div>
                                             {this.renderDot(item.colorCodeIndex)}
                                         </div>
@@ -2718,50 +2738,48 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderHeader() {
                 return (
-                    <>
-                        <Toolbar className='monitoring_title' style={{marginTop: -5}}>
-                            <div className='page_monitoring_select_area'
-                                 style={{
-                                     width: 'fit-content',
-                                     flex: .7,
-                                 }}>
-                                {this.renderTitleArea()}
-                                {this.state.userType.includes(USER_TYPE.OPERATOR) ?
-                                    <React.Fragment>
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderCloudletDropdown()}
-                                        </div>
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderDateRangeDropdown()}
-                                        </div>
-                                    </React.Fragment>
-                                    :
-                                    <React.Fragment>
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderClusterDropdown()}
-                                        </div>
-
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderAppInstDropdown()}
-                                        </div>
-                                    </React.Fragment>
-                                }
-                                {this.state.intervalLoading &&
-                                <div>
-                                    <div style={{marginLeft: 25, marginRight: 1,}}>
-                                        {renderWifiLoader()}
+                    <Toolbar className='monitoring_title' style={{marginTop: -5, width: '100%'}}>
+                        <div className='page_monitoring_select_area'
+                             style={{
+                                 width: 'fit-content',
+                                 flex: .7,
+                             }}>
+                            {this.renderTitleArea()}
+                            {this.state.userType.includes(USER_TYPE.OPERATOR) ?
+                                <React.Fragment>
+                                    <div style={{marginLeft: 25}}>
+                                        {this.renderCloudletDropdown()}
                                     </div>
+                                    <div style={{marginLeft: 25}}>
+                                        {this.renderDateRangeDropdown()}
+                                    </div>
+                                </React.Fragment>
+                                :
+                                <React.Fragment>
+                                    <div style={{marginLeft: 25}}>
+                                        {this.renderClusterDropdown()}
+                                    </div>
+
+                                    <div style={{marginLeft: 25}}>
+                                        {this.renderAppInstDropdown()}
+                                    </div>
+                                </React.Fragment>
+                            }
+                            {this.state.intervalLoading &&
+                            <div>
+                                <div style={{marginLeft: 25, marginRight: 1,}}>
+                                    {renderWifiLoader()}
                                 </div>
-                                }
                             </div>
-                            <div style={{
-                                display: 'flex', flex: .3, justifyContent: 'flex-end',
-                            }}>
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderStreamSwitch() : null}
-                                {this.makeTopRightMenuActionButton()}
-                            </div>
-                        </Toolbar>
-                    </>
+                            }
+                        </div>
+                        <div style={{
+                            display: 'flex', flex: .3, justifyContent: 'flex-end',
+                        }}>
+                            {this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderStreamSwitch() : null}
+                            {this.makeTopRightMenuActionButton()}
+                        </div>
+                    </Toolbar>
 
                 )
             }
@@ -2861,6 +2879,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          height: this.calcGridHeight(),
                                          marginTop: 0,
                                          marginRight: 50,
+                                         width: '100%',
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
                                     {this.renderNoItemMsg()}

@@ -127,7 +127,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                         <div style={{flex: .1, marginRight: 50, marginTop: 2,}}>
                                             <Select
                                                 ref={c => this.bubbleChartSelect = c}
-                                                size={'small'}
+                                                size={'medium'}
                                                 style={{width: 125}}
                                                 disabled={this.props.parent.state.bubbleChartLoader}
                                                 placeholder='SELECT HARDWARE'
