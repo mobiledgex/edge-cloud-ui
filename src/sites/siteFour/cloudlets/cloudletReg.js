@@ -17,15 +17,13 @@ import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../se
 import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { CloudletTutor } from "../../../tutorial";
-import { Card, IconButton, Box, Link } from '@material-ui/core';
+import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';
 import { syntaxHighLighter, codeHighLighter } from '../../../hoc/highLighter/highLighter'
 import { downloadData } from '../../../utils/fileUtil'
 
 
 import GetAppIcon from '@material-ui/icons/GetApp';
 import CloseIcon from '@material-ui/icons/Close';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 const cloudletSteps = CloudletTutor();
 
@@ -249,7 +247,7 @@ class CloudletReg extends React.Component {
         let imagePath = cloudletManifest.image_path;
         let imageFileNameWithExt = imagePath.substring(imagePath.lastIndexOf('/') + 1)
         let imageFileName = imageFileNameWithExt.substring(0, imageFileNameWithExt.lastIndexOf('.'))
-        let fileName = `${this.cloudletData[fields.cloudletName]}_${this.cloudletData[fields.operatorName]}_pf`
+        let fileName = `${this.cloudletData[fields.cloudletName]}-${this.cloudletData[fields.operatorName]}-pf`
         return (
             <Card style={{ height: '100%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <div style={{ margin: 20, color: 'white' }}>
@@ -279,7 +277,9 @@ class CloudletReg extends React.Component {
                         <li style={{ marginTop: 20 }}>
                             <h4>
                                 Download the following manifest template
-                                <IconButton onClick={()=>downloadData(`${fileName}.yml`, this.state.cloudletManifest.manifest)}><GetAppIcon fontSize='small' /></IconButton>
+                                <Tooltip title={'download'} aria-label="download">
+                                    <IconButton onClick={() => downloadData(`${fileName}.yml`, this.state.cloudletManifest.manifest)}><GetAppIcon fontSize='small' /></IconButton>
+                                </Tooltip>
                             </h4>
                             <div style={{ padding: 1, overflow: 'auto', width: '70vw', height:'50vh' }}>
                                 {syntaxHighLighter('yaml', cloudletManifest.manifest, true)}
@@ -409,8 +409,8 @@ class CloudletReg extends React.Component {
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
             { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network' },
-            { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, },
-            { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, },
+            { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
+            { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
         ]
     }
 
