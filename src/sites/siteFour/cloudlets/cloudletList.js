@@ -48,7 +48,7 @@ class CloudletList extends React.Component {
         return [
             { label: 'Update', onClick: this.onAdd },
             { label: 'Delete', onClick: deleteCloudlet, ws: true },
-            { label: 'Cloudlet Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest}
+            { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest}
         ]
     }
 

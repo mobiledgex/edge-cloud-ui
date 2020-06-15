@@ -48,7 +48,7 @@ class CloudletReg extends React.Component {
         //To avoid refecthing data from server
         this.requestedRegionList = [];
         this.operatorList = [];
-        this.cloudletName = undefined;
+        this.cloudletData = undefined;
         this.canCloseStepper = true;
     }
 
@@ -138,7 +138,7 @@ class CloudletReg extends React.Component {
                     responseData.data.message = 'Cloudlet configured successfully, please wait requesting cloudlet manifest to bring up Platform VM(s) for cloudlet service'
                     this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
                     let cloudletManifest = await getCloudletManifest(this, orgData, false)
-                    this.cloudletName = orgData[fields.cloudletName]
+                    this.cloudletData = orgData
                     if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
                         this.setState({ cloudletManifest: cloudletManifest.response.data, showCloudletManifest: true, stepsArray: [] })
                     }
@@ -249,7 +249,7 @@ class CloudletReg extends React.Component {
         let imagePath = cloudletManifest.image_path;
         let imageFileNameWithExt = imagePath.substring(imagePath.lastIndexOf('/') + 1)
         let imageFileName = imageFileNameWithExt.substring(0, imageFileNameWithExt.lastIndexOf('.'))
-
+        let fileName = `${this.cloudletData[fields.cloudletName]}_${this.cloudletData[fields.operatorName]}_pf`
         return (
             <Card style={{ height: '100%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
                 <div style={{ margin: 20, color: 'white' }}>
@@ -261,33 +261,34 @@ class CloudletReg extends React.Component {
                             <IconButton onClick={() => this.props.onClose(true)}><CloseIcon /></IconButton>
                         </Box>
                     </Box>
+                    <Box display="flex" p={1}>
+                        <Box p={1} flexGrow={1}><h4><b>Perform the following steps to setup cloudlet</b></h4></Box>
+                    </Box>
                     <br />
-                    <ul>
+                    <ul style={{listStyleType: 'decimal'}}>
                         <li>
-                            <h4>Download our bootstrap image and execute template to setup cloudlet, below is the link to the image, please download it and upload it to your data store</h4>
+                            <h4>Download MobiledgeX bootstrap VM image (please use your console credentials)</h4>
                             <Link href={imagePath} target='_blank'><h4 style={{ color: '#77bd06', margin: 10 }}>{imagePath}</h4></Link>
                         </li>
                         <li style={{ marginTop: 30 }}>
                             <h4>
-                                After download, execute below command &nbsp;&nbsp;&nbsp;
+                                Execute the following command to upload the image to your glance store &nbsp;&nbsp;&nbsp;
                             </h4>
                             {codeHighLighter(`openstack image create ${imageFileName} --disk-format qcow2 --container-format bare --file ${imageFileNameWithExt}`)}
                         </li>
                         <li style={{ marginTop: 20 }}>
                             <h4>
-                                <IconButton onClick={() => { this.setState(prevState => ({ showManifest: !prevState.showManifest })) }}>{this.state.showManifest ? <ExpandMoreIcon /> : <ChevronRightIcon />}</IconButton>
-                                Download template (expand to view)
-                                <IconButton onClick={()=>downloadData(this.cloudletName, this.state.cloudletManifest.manifest)}><GetAppIcon fontSize='small' /></IconButton>
+                                Download the following manifest template
+                                <IconButton onClick={()=>downloadData(`${fileName}.yml`, this.state.cloudletManifest.manifest)}><GetAppIcon fontSize='small' /></IconButton>
                             </h4>
-                            {this.state.showManifest ?
-                                <div style={{ padding: 1, overflowX: 'auto', width: '85vw' }}>
-                                    {syntaxHighLighter('yaml', cloudletManifest.manifest, true)}
-                                </div> : null}
+                            <div style={{ padding: 1, overflow: 'auto', width: '70vw', height:'50vh' }}>
+                                {syntaxHighLighter('yaml', cloudletManifest.manifest, true)}
+                            </div>
                         </li>
                         <li style={{ marginTop: 30 }}>
-                            <h4>After download, execute below command &nbsp;&nbsp;&nbsp;
+                            <h4>Execute the following command to use manifest to setup cloudlet &nbsp;&nbsp;&nbsp;
                             </h4>
-                            {codeHighLighter(`openstack stack create -t ${this.cloudletName}.yml cloudletname_cloudletorg_pf`)}
+                            {codeHighLighter(`openstack stack create -t ${fileName}.yml ${fileName}`)}
                         </li>
                     </ul>
                 </div>
@@ -441,7 +442,7 @@ class CloudletReg extends React.Component {
             if (this.props.isManifest) {
                 this.setState({ showCloudletManifest: true })
                 let cloudletManifest = await getCloudletManifest(this, data)
-                this.cloudletName = data[fields.cloudletName]
+                this.cloudletData = data
                 if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
                     this.setState({ cloudletManifest: cloudletManifest.response.data })
                 }
