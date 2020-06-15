@@ -130,7 +130,7 @@ export function sendWSRequest(request, callback) {
 }
 
 export function sendMultiRequest(self, requestDataList, callback) {
-    
+
     if (requestDataList && requestDataList.length > 0) {
         let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
         showSpinner(self, isSpinner)
@@ -152,9 +152,9 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
-                if (responseStatus(self, error.response.status)) {
+              /*  if (responseStatus(self, error.response.status)) {
                     responseError(self, requestDataList[0], error, callback)
-                }
+                }*/
             })
     }
 }
@@ -170,9 +170,10 @@ export const sendSyncRequest = async (self, request) => {
         showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        if (responseStatus(self, error.response.status)) {
+
+        /*if (responseStatus(self, error.response.status)) {
             responseError(self, request, error)
-        }
+        }*/
     }
 }
 
