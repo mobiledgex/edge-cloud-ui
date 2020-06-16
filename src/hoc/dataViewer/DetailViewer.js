@@ -38,7 +38,7 @@ const getJSON = (data) => {
 
 const getYAML = (data) => {
     return (
-        <div style={{backgroundColor: 'grey', padding: 1}}>
+        <div style={{backgroundColor: 'grey', padding: 1, overflowX:'auto', width:'85vw'}}>
             <SyntaxHighlighter language="yaml" style={allyDark} className='yamlDiv'>
                 {data.toString()}
             </SyntaxHighlighter>
@@ -46,11 +46,19 @@ const getYAML = (data) => {
     )
 }
 
+const getURL = (data) => {
+    return (
+        <a href={data} target="_blank">{data}</a>
+    )
+}
+
 const getData = (data, item) => (
-    item.dataType === constant.TYPE_JSON ?
-        getJSON(data) :
-        item.dataType === constant.TYPE_YAML ?
-            getYAML(data) :
+    item.dataType === constant.TYPE_URL ?
+        getURL(data) :
+        item.dataType === constant.TYPE_JSON ?
+            getJSON(data) :
+            item.dataType === constant.TYPE_YAML ?
+                getYAML(data) :
                 <p style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</p>
 )
 
