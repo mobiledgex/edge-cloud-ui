@@ -19,7 +19,7 @@ const usePrevious = (value) => {
 
 const RateOfMethods = defaultProps => {
     const [data, setData] = React.useState();
-    const [size, setsize] = React.useState({width:90, height:50});
+    const [size, setsize] = React.useState({ width: 90, height: 50 });
 
     const makeSpark = () => {
         const ctx = document.getElementById(`myChart_${defaultProps.method.key}`).getContext('2d');
@@ -77,7 +77,6 @@ const RateOfMethods = defaultProps => {
     React.useEffect(() => {
         // Get the previous value (was passed into hook on last render)
         // const prevData = usePrevious(data);
-        console.log("20200604 rate of method = ", defaultProps.data, ":", data);
         if (defaultProps.data !== data) {
             makeSpark();
         }

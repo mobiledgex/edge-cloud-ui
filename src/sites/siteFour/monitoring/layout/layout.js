@@ -79,7 +79,6 @@ class MonitoringLayout extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200611 render nextProps in layout ==", nextProps.items, ":", prevState.items, ": is equal = ", isEqual(nextProps.items, prevState.items));
         if (nextProps.appinsts && nextProps.appinsts.length > 0) {
             return { appinsts: nextProps.appinsts };
         }
@@ -90,12 +89,9 @@ class MonitoringLayout extends React.Component {
     }
 
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        console.log("20200611 render updagte  000 == >>>>>  ", prevProps.items, ":", prevState.items);
-        console.log("20200611 render updagte  111 == >>>>>  ", this.props.items, ":", this.state.items, ":", prevState.method);
         if (prevState.items !== this.props.items) {
             this.initMethod = prevState.method;
 
-            console.log("20200611 render 333 == >>>>>  init  ");
             this.setState({ items: this.props.items });
             return true;
         }
@@ -181,12 +177,10 @@ class MonitoringLayout extends React.Component {
     getHeight = () => (window.innerHeight - 78 - 41 - 40) / 3 // (window Height - header+(margin+padding for container) - title+margin - space for grid)/3
 
     refreshRender = items => {
-        console.log("20200605 refresh render --- >> ---- >> ---- >> ", items);
 
     }
 
     generateDOM(items, appinsts) {
-        console.log("20200611 render gen dom == ", items, ": appinsts =", appinsts);
         return this.state.layouts[this.state.currentBreakpoint].map(
             (l, idx) => (
                 <div
@@ -209,7 +203,7 @@ class MonitoringLayout extends React.Component {
                             height: 0
                         }}
                     >
-                        <ChartWidget {...items[idx]} panelInfo={items[idx]} appinsts={appinsts} />
+                        <ChartWidget {...items[idx]} panelInfo={items[idx]} appinsts={appinsts} legendShow={false} />
                     </div>
                 </div>
             )

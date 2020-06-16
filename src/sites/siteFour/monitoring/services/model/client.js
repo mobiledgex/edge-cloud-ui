@@ -79,7 +79,6 @@ moment().subtract(1, 'days').endOf('day').toString()
 */
 const metricFromServer = async (self, data) => {
 
-    console.log("20200610 request smetricFromServer === ");
     const makeUTC = time => moment(time).utc();
     const rangeTime = range => {
         let time = null;
@@ -109,7 +108,6 @@ const metricFromServer = async (self, data) => {
         },
     };
 
-    console.log("20200610 request serverData.sendRequest() === ", requestData);
     const response = await serverData.sendRequest(self, requestData);
     return parseData(response, `${data.pRegion}/${data.selectOrg}/${data.appinstSelectedOne}`);
 };

@@ -56,7 +56,6 @@ class ChartWidget extends React.Component {
     * 두번째 인자(prevState) 는 렌더링되기 이전의 state 객체다.
     */
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200605 change props ==>>>>>>>>", nextProps.chartType, ":", prevState.chartType);
         if (prevState.chartType !== nextProps.chartType) {
             // TODO: 20200605 차트가 교체될 수 있도록
             return { chartType: nextProps.chartType };
@@ -104,7 +103,6 @@ class ChartWidget extends React.Component {
 
             if (prevProps.id === DataType.EVENT_CLUSTER) {
                 const updatedata = this.props.data[prevProps.id];
-                console.log("20200612 updatedata == ", updatedata, ":", this.props.data);
                 // const updatedata = DataFormats.dataFormatEventCluster(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata[0] }), 500);
             }
@@ -122,7 +120,6 @@ class ChartWidget extends React.Component {
 
             if (prevProps.id === DataType.RUNNING_CLUSTER_INST) {
                 const updatedata = DataFormats.dataFormatRunningCluster(this.props.data[prevProps.id]);
-                console.log("20200615 running cluster ", this.props.data[prevProps.id], updatedata);
 
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
@@ -188,7 +185,6 @@ class ChartWidget extends React.Component {
             activeStep, mapData, clusterCnt, data, data2, chartType
         } = this.state;
         // const { size } = this.state;
-        console.log("20200607 chart type == ", chartType, ":", this.props);
         const pagerHeight = 12;
         const resize = { width: size.width, height: page === "multi" ? size.height - pagerHeight : size.height };
         return (

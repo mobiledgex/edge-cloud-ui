@@ -24,7 +24,6 @@ const ContainerHealth = defaultProps => {
         setSelfSize(defaultProps.size);
 
         const data = defaultProps.data;
-        console.log('20200616 health', data)
         if (data.vCpu && data.mem && data.disk) {
 
             const vCpu = data.vCpu;

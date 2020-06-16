@@ -92,7 +92,6 @@ const getListCluster = async (self, params) => {
 };
 const getListClusterInst = async (self, params) => {
     const result = await Metrics.getClusterList(self, params);
-    console.log("20200616 cluster result = ", result);
     return result;
 };
 /** *********************************
@@ -159,7 +158,6 @@ const getMetricsClient = async (self, params) => {
     //     console.log("20200521 client >>>> response for get metrics client... ", response, ": method = ", params.method);
     //     self.onReceiveResultClient(response, self);
     // });
-    console.log("20200610 request getMetricsClient ==", params.appinsts);
 
     // TODO : 페이지 개수만큼 데이터 호출
     return Promise.all(
@@ -178,7 +176,6 @@ const getMetricsClient = async (self, params) => {
  * token :
  *********************************** */
 const getMetricsCluster = async (self, params) => {
-    console.log("20200611 metic cluster param ", params.clusters)
     /**
      * Continue, get events of cloudlets */
     const requestData = clusterInfo => ({
@@ -296,7 +293,6 @@ export const getPrepareList = async (defaultValue: MetricsParmaType, self: any) 
 
 export const MetricsService = async (defaultValue: MetricsParmaType, self: any) => {
     let result = null;
-    console.log("20200612 request service index == ", defaultValue.method)
     // this.props.handleLoadingSpinner(true);
     // switch (defaultValue.method) {
     //     case serviceMC.getEP().COUNT_CLUSTER: result = await getListCluster(self, defaultValue); return result;
@@ -332,7 +328,6 @@ export const MetricsService = async (defaultValue: MetricsParmaType, self: any) 
         return result;
     }
     if (defaultValue.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
-        console.log("20200615 id = ", defaultValue.id);
         if (defaultValue.id === dataType.RUNNING_CLUSTER_INST) {
             result = await getListClusterInst(self, defaultValue);
         } else {
