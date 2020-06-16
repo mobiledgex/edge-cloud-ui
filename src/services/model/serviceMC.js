@@ -152,7 +152,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
-                if (responseStatus(self, error.response.status)) {
+                if (error.response && responseStatus(self, error.response.status)) {
                     responseError(self, requestDataList[0], error, callback)
                 }
             })
@@ -161,7 +161,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
 
 export const sendSyncRequest = async (self, request) => {
     try {
-        showSpinner(self, true)
+        request.showSpinner === undefined && showSpinner(self, true)
         let response = await axios.post(getHttpURL(request), request.data,
             {
                 headers: getHeader(request)
@@ -170,7 +170,7 @@ export const sendSyncRequest = async (self, request) => {
         showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        if (responseStatus(self, error.response.status)) {
+        if (error.response && responseStatus(self, error.response.status)) {
             responseError(self, request, error)
         }
     }
@@ -186,7 +186,7 @@ export const sendSyncRequestWithError = async (self, request) => {
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        if (responseStatus(self, error.response.status)) {
+        if (error.response && responseStatus(self, error.response.status)) {
             return { request: request, error: error }
         }
     }
@@ -205,7 +205,7 @@ export function sendRequest(self, request, callback) {
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
-            if (responseStatus(self, error.response.status)) {
+            if (error.response && responseStatus(self, error.response.status)) {
                 responseError(self, request, error, callback)
             }
         })

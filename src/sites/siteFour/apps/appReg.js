@@ -19,6 +19,7 @@ import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { appTutor } from "../../../tutorial";
+import { uploadData } from '../../../utils/fileUtil'
 
 
 const appSteps = appTutor();
@@ -64,29 +65,16 @@ class AppReg extends React.Component {
         this.reloadForms()
     }
 
+    onManifestLoad = (data, extra)=>
+    {
+        let form = extra.form
+        let manifestForm = form.parent.form.forms[0]
+        manifestForm.value = data
+        this.reloadForms()
+    }
+
     addManifestData = (e, form) => {
-        e.preventDefault();
-        let input = document.createElement("input");
-        input.type = "file";
-        input.accept = "*";
-        input.onchange = (event) => {
-            let file = event.target.files[0];
-            if (file) {
-                if (file.size <= 1000000) {
-                    let reader = new FileReader();
-                    reader.onload = () => {
-                        let manifestForm = form.parent.form.forms[0]
-                        manifestForm.value = reader.result;
-                        this.reloadForms()
-                    };
-                    reader.readAsText(file)
-                }
-                else {
-                    this.props.handleAlertInfo('error', 'File size cannot be >1MB')
-                }
-            }
-        };
-        input.click();
+        uploadData(e, this.onManifestLoad, {form:form})
     }
 
     deploymentManifestForm = () => ([
@@ -98,10 +86,10 @@ class AppReg extends React.Component {
     /**Deployment manifest block */
 
     portForm = () => ([
-        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1},
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 1},
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 2},
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
     ])
 
@@ -120,12 +108,12 @@ class AppReg extends React.Component {
     }
 
     multiPortForm = () => ([
-        { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1 },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 1},
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 2},
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
     ])
 
