@@ -36,14 +36,43 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
         this.groupData = [];
         this.allData = [];
         this.initMethod = "";
+        this.state = {
+            data: [],
+            dataRaw: [],
+            chartType: "",
+            chartMethod: "",
+            title: null,
+            legendShow: false,
+            legendInfo: { id: '', open: false, target: null },
+            page: "single",
+            selectedIndex: 0,
+            id: null,
+            method: "",
+            cloudlets: [],
+            appinsts: [],
+            clusters: [],
+            panelInfo: null
+        };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         console.log("20200611 did request wrapper props ===== ", nextProps, ":", prevState);
         const update = {};
 
+        if (prevState !== nextProps) {
+            if (prevState.panelInfo !== nextProps.panelInfo) {
+                console.log("20200610 panel info == ", nextProps.panelInfo);
+                if (nextProps.panelInfo && nextProps.panelInfo.info === "info" && nextProps.panelInfo.title.value === nextProps.title.value) {
+                    update.legendShow = !prevState.legendShow;
+                    update.legendInfo = { id: nextProps.panelInfo.id, open: nextProps.panelInfo.open, target: nextProps.panelInfo.target }
+                }
+                update.panelInfo = nextProps.panelInfo;
+                return update;
+            }
+            return nextProps;
+        }
 
-        return nextProps;
+        return null;
     }
 
 
