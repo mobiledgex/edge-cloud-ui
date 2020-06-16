@@ -1,21 +1,5 @@
 import moment from "moment";
-import orderBy from "lodash/orderBy";
 import * as serverData from "../../../../../services/model/serverData";
-import {
-    showCloudlets,
-    streamCloudlet
-} from "../../../../../services/model/cloudlet";
-import { fields } from "../../../../../services/model/format";
-import { showCloudletInfos } from "../../../../../services/model/cloudletInfo";
-import * as ChartType from "../../formatter/chartType";
-
-let dataList = [];
-let filterList = [];
-let selected = [];
-let _self = null;
-const REGION_ALL = 1;
-let requestCount = 2;
-let regions = localStorage.regions ? localStorage.regions.split(",") : [];
 
 const oneHourWithCurrent = moment().subtract(1, "minutes").toString();
 
@@ -62,7 +46,6 @@ const setdataPart = (data, name, max, columns) => {
         }
     }
 
-
     return setted[data[0][1] + "_" + data[0][2]] = array;
 
 }
@@ -94,20 +77,20 @@ const parseData = (response, type) => {
             let disk = null;
             let cpu = null;
             metricsKey.map((id) => {
-                const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
-                if(id = "udp") {
+                const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-" + id) : 0;
+                if (id === "udp") {
                     udp = (data.Series) ? data.Series[index] : null;
                 }
-                if(id = "tcp") {
+                if (id === "tcp") {
                     tcp = (data.Series) ? data.Series[index] : null;
                 }
-                if(id = "mem") {
+                if (id === "mem") {
                     mem = (data.Series) ? data.Series[index] : null;
                 }
-                if(id = "disk") {
+                if (id === "disk") {
                     disk = (data.Series) ? data.Series[index] : null;
                 }
-                if(id = "cpu") {
+                if (id === "cpu") {
                     cpu = (data.Series) ? data.Series[index] : null;
                 }
             })

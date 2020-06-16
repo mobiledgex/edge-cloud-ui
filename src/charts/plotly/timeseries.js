@@ -144,6 +144,16 @@ const TimeSeries = props => {
                 });
             }
         }
+        // cluster
+        if (props.id === dataType.RUNNING_CLUSTER_INST) {
+            console.log("20200615 props data = ", props.data);
+            if (props.data && props.data.length) {
+                chartUpdate({
+                    data: props.data[0], id: props.id, type: props.type, calculate: props.calculate
+                });
+            }
+        }
+
         if (props.showLegend) {
             setShowLegend(!showLegend);
         }
@@ -193,6 +203,26 @@ const TimeSeries = props => {
                     const methods = keys;
                     if (keys.indexOf("null") === -1) {
                         reloadChart(
+                            { [methods[0]]: data[methods[0]] },
+                            methods[0],
+                            type,
+                            prevProps.id,
+                            prevProps.calculate ? "summ" : null
+                        );
+                    }
+                });
+            }
+        }
+
+        if (prevProps.id === dataType.RUNNING_CLUSTER_INST) {
+            if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
+                const shortHand = prevProps.data[prevProps.id];
+
+                shortHand.map(data => {
+                    const keys = Object.keys(data);
+                    const methods = keys;
+                    if (keys.indexOf("null") === -1) {
+                        reloadChartColumn(
                             { [methods[0]]: data[methods[0]] },
                             methods[0],
                             type,
@@ -267,6 +297,78 @@ const TimeSeries = props => {
         }
         setChartData({ [id]: stackData });
         revision += 1;
+    };
+
+    const reloadChartColumn = (id) => {
+        let seriesData = null;
+        const xAxis = data[cloudlet].x;
+        const xCloudlet = data[cloudlet].names;
+        const names = data[cloudlet].x;
+        const cloudletName = data[cloudlet].names;
+        const title = (id === dataType.NETWORK_CLOUDLET) ? "Used" : "Method";
+        const unit = (id === dataType.NETWORK_CLOUDLET) ? "GBs" : "Count";
+        const appinst = data[cloudlet].names[0];
+        const time = (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? "Time" : "";
+        const summaryX = xCloudlet[0];
+        const summaryY = summaryArray(data[cloudlet].y);
+        let xValues = [];
+        let yValues = [];
+        console.log("20200607 calculate = ", calculate);
+        if (calculate === "summ") {
+            xValues = [summaryX];
+            yValues = [summaryY];
+        } else {
+            xValues = xCloudlet;
+            yValues = data[cloudlet].y;
+        }
+        /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
+        seriesData = {
+            type: _type,
+            x: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? xAxis : xValues,
+            y: yValues,
+            yaxis: "y",
+            text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? cloudletName : cloudletName,
+            name: data[cloudlet].names[0], // legend lable
+            mode: "lines+markers",
+            // line: {
+            //     dash: "solid",
+            //     width: 10
+            // },
+            // marker: { size: 4 },
+            hovertemplate: `<i>${title}</i>: %{y:.2f} ${unit}`
+                + `<br><b>${time}</b>: %{x}<br>`
+                + "<b> %{text} </b>"
+                + "<extra></extra>"
+        };
+
+        /**
+        * 페이지별로 나누어 데이터 표현
+        * once draw count of data to one page
+        */
+        if (stackData.length < maxDataCount) {
+            if (Math.floor(loadedCount / maxDataCount) === currentPage) {
+                stackData.push(seriesData);
+            }
+            loadedCount++;
+        }
+        setChartData({ [id]: stackData });
+        revision += 1;
+        // ****************************** //
+        // const stackData = {
+        //     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        //     datasets: [
+        //         {
+        //             label: 'My First dataset',
+        //             backgroundColor: 'rgba(255,99,132,0.2)',
+        //             borderColor: 'rgba(255,99,132,1)',
+        //             borderWidth: 1,
+        //             hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+        //             hoverBorderColor: 'rgba(255,99,132,1)',
+        //             data: [65, 59, 80, 81, 56, 55, 40]
+        //         }
+        //     ]
+        // };
+        // setChartData({ [id]: [stackData] });
     };
 
     const resetData = () => {

@@ -34,10 +34,14 @@ const MarkerCloudlet = defaultProps => {
     const [keyName, setKeyName] = React.useState(defaultProps.keyName);
     const [colorCode, setColorCode] = React.useState(defaultProps.gColor);
     const [tooltipMsg, setTooltipMsg] = React.useState("");
+    const [transform, setTransform] = React.useState(defaultProps.config.transform);
+    const [zoom, setZoom] = React.useState(1);
     let moveMouse = false;
 
     React.useEffect(() => {
         if (defaultProps.city) setCity(defaultProps.city);
+        if (defaultProps.config) setConfig(defaultProps.config);
+        if (defaultProps.config.transform) setZoom(defaultProps.config.transform.zoom);
     }, [defaultProps]);
 
     /** ******************************
@@ -104,7 +108,7 @@ const MarkerCloudlet = defaultProps => {
             {/* icon cloud circle */}
             <g
                 // fill={grdColors[config.gColor]}
-                // transform="translate(-12 -10) scale(0.8 0.8)"
+                transform={`translate(${-12 / zoom} ${-10 / zoom}) scale(${0.4 / zoom} ${0.4 / zoom})`}
                 version="1.1"
                 id="Layer_1"
                 x="0px"
@@ -120,7 +124,6 @@ const MarkerCloudlet = defaultProps => {
                 fill="url(#levelBg)"
                 stroke={styles.marker.stroke}
                 strokeWidth={styles.marker.strokeWidth}
-                transform={config.transform}
                 mix-blend-mode="lighten"
             >
                 {/* 필터 InnerGlow */}
@@ -187,7 +190,7 @@ const MarkerCloudlet = defaultProps => {
                 </defs>
                 <path filter="url(#innershadow)" className={config.cName} d={markerCloudPath[0]} />
             </g>
-            <g data-tip="tooltip" data-for="happyFace">
+            <g data-tip="" data-for="happyFace" transform={`translate(${-2 / zoom} 0) scale(${0.8 / zoom} ${0.8 / zoom})`}>
                 <text
                     textAnchor="middle"
                     y={0}

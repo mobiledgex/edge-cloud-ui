@@ -8,3 +8,4 @@ export const EVENT_CLUSTER = "eventCluster";
 export const NODE_INFO = "nodeInfo";
 export const HEALTH_CLOUDLET = "healthCloudlet";
 export const HEALTH_CLUSTER = "healthCluster";
+export const RUNNING_CLUSTER_INST = "runningClusterInst";

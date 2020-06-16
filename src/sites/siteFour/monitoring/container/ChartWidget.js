@@ -10,7 +10,7 @@ import ContainerHealth from "./ContainerHealth";
 import MatricMapCont from "./MatricMapCont";
 import CounterWidget from "./CounterWidget";
 import ContainerMethod from "./ContainerMethod";
-import BubbleChart from "./BubbleChart";
+import BubbleChart from "../../../../charts/BubbleChart";
 import MonitoringListViewer from "../components/MonitoringListViewer";
 import * as ChartType from "../formatter/chartType";
 import * as DataType from "../formatter/dataType";
@@ -114,8 +114,15 @@ class ChartWidget extends React.Component {
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
-            if (prevProps.id === DataType.HEALTH_CLOUDLET && prevProps.id === DataType.HEALTH_CLUSTER) {
+            if (prevProps.id === DataType.HEALTH_CLOUDLET || prevProps.id === DataType.HEALTH_CLUSTER) {
                 const updatedata = DataFormats.dataFormatHealthCloudlet(this.props.data[prevProps.id]);
+                setTimeout(() => this.setState({ data: updatedata }), 500);
+            }
+
+            if (prevProps.id === DataType.RUNNING_CLUSTER_INST) {
+                const updatedata = DataFormats.dataFormatRunningCluster(this.props.data[prevProps.id]);
+                console.log("20200615 running cluster ", this.props.data[prevProps.id], updatedata);
+
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 

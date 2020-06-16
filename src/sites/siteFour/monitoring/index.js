@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 0 // <<<===== change depth
+            currentAuthDepth: 1 // <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -407,7 +407,7 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
             method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
-            title: { value: "Health of Cloudlets", align: "left" },
+            title: { value: "Network I/O of Cloudlets", align: "left" },
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
             page: "single",
             itemCount: 3,
@@ -438,11 +438,11 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
             ...defaultProp,
         },
         {
-            id: dataType.FIND_CLOUDLET,
-            method: null,
+            id: dataType.RUNNING_CLUSTER_INST,
+            method: serviceMC.getEP().SHOW_CLUSTER_INST,
             chartType: chartType.GRAPH,
-            type: "bar",
-            title: { value: "Count of Find Cloudlet", align: "left" },
+            type: "column",
+            title: { value: "Liveness & ip-access of clusters", align: "left" },
             filter: null,
             page: "single",
             legend: true,
@@ -521,9 +521,9 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
             ...defaultProp,
         },
         {
-            id: dataType.FIND_CLOUDLET,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            id: dataType.RUNNING_CLUSTER_INST,
+            method: serviceMC.getEP().SHOW_CLUSTER_INST,
+            // method: null,
             chartType: chartType.GRAPH,
             type: "bar",
             title: { value: "Type of Cluster", align: "left" },

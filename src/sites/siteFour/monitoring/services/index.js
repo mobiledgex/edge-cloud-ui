@@ -3,10 +3,12 @@ import * as serviceMC from "../../../../services/model/serviceMC";
 import * as Cloudlet from "./model/cloudlet";
 import * as Cluster from "./model/cluster";
 import * as Metrics from "./model/metrics";
+import * as ClusterInst from "./model/clusterinst";
 import * as Appinst from "./model/appinst";
 import * as Client from "./model/client";
 import * as Events from "./model/events";
 import * as EventsCluster from "./model/eventsCluster";
+import * as dataType from "../formatter/dataType";
 import { yesterdayWithCurrentUTC, todayUTC } from "../hooks/timeRangeFilter";
 import { getApplyFilter } from "../hooks/FilterMenu";
 
@@ -86,6 +88,10 @@ const getListCloud = (self, params) => {
  *********************************** */
 const getListCluster = async (self, params) => {
     const result = await Metrics.getClusterList(self, params);
+    return result;
+};
+const getListClusterInst = async (self, params) => {
+    const result = await ClusterInst.getClusterInst(self, params);
     return result;
 };
 /** *********************************
@@ -322,6 +328,15 @@ export const MetricsService = async (defaultValue: MetricsParmaType, self: any) 
     }
     if (defaultValue.method === serviceMC.getEP().METRICS_CLUSTER) {
         result = await getMetricsCluster(self, defaultValue);
+        return result;
+    }
+    if (defaultValue.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
+        console.log("20200615 id = ", defaultValue.id);
+        if (defaultValue.id === dataType.RUNNING_CLUSTER_INST) {
+            result = await getListClusterInst(self, defaultValue);
+        } else {
+            result = await getListCluster(self, defaultValue);
+        }
         return result;
     }
 

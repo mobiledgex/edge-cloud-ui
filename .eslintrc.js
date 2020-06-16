@@ -54,6 +54,8 @@ module.exports = {
         "react/jsx-indent-props": 0,
         "import/prefer-default-export": 0,
         "array-callback-return": 0,
-        "react/jsx-wrap-multilines": 0
+        "react/jsx-wrap-multilines": 0,
+        "jsx-a11y/mouse-events-have-key-events": 0,
+        "object-curly-newline": 0
     }
 };

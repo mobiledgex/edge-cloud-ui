@@ -1,6 +1,3 @@
-/*
-review @Rahul
-*/
 
 import { getClusterInstList } from "../../../../../services/model/clusterInstance";
 

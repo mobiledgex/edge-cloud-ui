@@ -1,5 +1,5 @@
 import React from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, HorizontalBar } from "react-chartjs-2";
 import { sumBy, isEqual, sortBy } from "lodash";
 import Popper from "@material-ui/core/Popper";
 import { generateUniqueId } from "../services/serviceMC";
@@ -169,10 +169,10 @@ const ChartJSComponent = defaultProps => {
     }, [defaultProps.legendInfo]);
 
     React.useEffect(() => {
-        console.log("20200608 propData defaultProps.data isEqual == == ==  = default data = ", defaultProps.data, ": id = ", defaultProps.id);
+        console.log("20200615 propData defaultProps.data isEqual == == ==  = default data = ", defaultProps.data, ": id = ", defaultProps.id);
         const propData = defaultProps.data && defaultProps.data[defaultProps.id];
         if ((propData && propData.length > 0)) {
-            console.log("20200608 propData = ", propData);
+            console.log("20200615 propData = ", propData);
             if (propData[0].x.length > 0 && !initData) {
                 setInitData(true);
                 setTimeout(() => {
@@ -209,14 +209,23 @@ const ChartJSComponent = defaultProps => {
                     height={null}
                     options={options || { maintainAspectRatio: false }}
                 />
-                : <Line
-                    id="typeisLine"
-                    ref={element => setChartRef(element)}
-                    data={data}
-                    width={null}
-                    height={null}
-                    options={options || { maintainAspectRatio: false }}
-                />}
+                : (type === "column")
+                    ? <HorizontalBar
+                        id="typeisColumn"
+                        ref={element => setChartRef(element)}
+                        data={data}
+                        width={null}
+                        height={null}
+                        options={options || { maintainAspectRatio: false }}
+                    />
+                    : <Line
+                        id="typeisLine"
+                        ref={element => setChartRef(element)}
+                        data={data}
+                        width={null}
+                        height={null}
+                        options={options || { maintainAspectRatio: false }}
+                    />}
             <Popper
                 className="chart_legend"
                 id={idLegend}

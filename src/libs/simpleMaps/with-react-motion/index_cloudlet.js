@@ -28,7 +28,7 @@ let moveMouse = false;
 const ClusterMap = props => {
     const [toggle, setToggle] = React.useState(false);
     const [position, setPosition] = React.useState({ coordinates: zoomControls.center, zoom: zoomControls.zoom });
-
+    const [transform, setTransform] = React.useState();
     const [clients, setClients] = React.useState([]);
     const [center, setCenter] = React.useState(zoomControls.center);
     const [zoom, setZoom] = React.useState(1);
@@ -129,7 +129,8 @@ const ClusterMap = props => {
         }
         zoomControls.zoom++;
         setToggle(true);
-        setZoom(zoomControls.zoom);
+        // setZoom(zoomControls.zoom);
+        setPosition(pos => ({ ...pos, zoom: pos.zoom * 2 }));
     };
 
     const handleZoomOut = () => {
@@ -139,7 +140,8 @@ const ClusterMap = props => {
         }
         zoomControls.zoom--;
         setToggle(true);
-        setZoom(zoomControls.zoom);
+        // setZoom(zoomControls.zoom);
+        setPosition(pos => ({ ...pos, zoom: pos.zoom / 2 }));
     };
 
     const handleReset = () => {
@@ -152,7 +154,8 @@ const ClusterMap = props => {
     };
 
     function handleMoveEnd(position) {
-        // setPosition(position);
+        console.log("20200614 move pos = ", position);
+        setPosition(position);
     }
 
     const makeList = obj => {
@@ -270,24 +273,26 @@ const ClusterMap = props => {
             <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[3]} endColor={grdColors[3]} idCSS="levelThree" rotation={0} />
             <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[2]} endColor={grdColors[2]} idCSS="levelTwo" rotation={0} />
             <RadialGradientSVG startColor="#394251" middleColor="#394251" endColor="#394251" idCSS="levelBg" rotation={0} />
+            <ReactTooltip id="happyFace" className="customToolTip" type="dark" effect="float">
+                <List>{tooltipMsg && tooltipMsg.length > 0 ? makeListItem(tooltipMsg) : null}</List>
+            </ReactTooltip>
             <Spring
                 from={{ zoomS: 1 }}
                 to={{ zoomS: zoom }}
                 config={{ clamp: true }}
             >
-                {props => (
+                {_props => (
                     <div>
-                        <ReactTooltip id="happyFace" className="customToolTip" type="dark" effect="float">
-                            <List>{tooltipMsg && tooltipMsg.length > 0 ? makeListItem(tooltipMsg) : null}</List>
-                        </ReactTooltip>
+
                         <ComposableMap
                             style={{
                                 backgroundColor: styles.geoBackground.color
                             }}
                         >
                             <ZoomableGroup
-                                zoom={props.zoomS}
+                                zoom={_props.zoomS}
                                 center={position.coordinates}
+                                // zoom={position.zoom}
                                 onMoveEnd={handleMoveEnd}
                             >
                                 <Geographies geography={geoPaths[0]}>
@@ -302,7 +307,7 @@ const ClusterMap = props => {
                                             city={city}
                                             idx={i}
                                             config={{
-                                                transform: "translate(-12,-12) scale(0.5)", gColor: 6, cName: "st1", path: 0
+                                                transform, gColor: 6, cName: "st1", path: 0
                                             }}
                                             keyName={keyName}
                                             handleTooltip={handleTooltip}

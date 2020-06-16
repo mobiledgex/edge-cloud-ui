@@ -79,7 +79,7 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
             /** filtering data */
             const groupByData = result;
             if (result && result.length > 0) {
-                console.log("20200610 container widget   == 55 == ", result, ":", self.state.id, self.state.method, ": m =", method, ": this state = ", this.state.id);
+                console.log("20200615 container widget   == 55 == ", result, ":", self.state.id, self.state.method, ": m =", method, ": this state = ", this.state.id);
                 if (self.state.id === this.state.id) {
                     this.setState({ data: { [self.state.id]: result, method } });
                 }
@@ -140,7 +140,7 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 // filtering
                 let findIdx = null;
                 const newProps = cloneDeep(props);
-                if (props.filteringItems.cloudlet && props.filteringItems.cloudlet.value) {
+                if (props.filteringItems && props.filteringItems.cloudlet && props.filteringItems.cloudlet.value) {
                     findIdx = props.cloudlets.findIndex(x => x.cloudletName === props.filteringItems.cloudlet.value);
                     newProps.cloudlets = [];
                     console.log("20200610 props new pro === ", findIdx, ":", props.cloudlets[findIdx], ":", newProps);
@@ -157,14 +157,31 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 // filtering
                 let findIdx = null;
                 const newProps = cloneDeep(props);
-                if (props.filteringItems.cluster && props.filteringItems.cluster.value) {
+                if (props.filteringItems && props.filteringItems.cluster && props.filteringItems.cluster.value) {
                     findIdx = props.clusters.findIndex(x => x.clusterName === props.filteringItems.cluster.value);
                     newProps.clusters = [];
-                    console.log("20200610 props new pro === ", findIdx, ":", props.clusters[findIdx], ":", newProps);
                     if (props.clusters[findIdx]) newProps.clusters = [props.clusters[findIdx]];
                 }
-                console.log("20200610 props new newProps === ", newProps);
                 const result = await Service.MetricsService(newProps || props, self);
+                if (result && result.length > 0) {
+                    // const reduceResult = this.removeEmptyResult(result, "values");
+                    this.onReceiveResult(result, self, props.method);
+                }
+            }
+
+            if (props.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
+                // filtering
+                let findIdx = null;
+                const newProps = cloneDeep(props);
+                if (props.filteringItems && props.filteringItems.cluster && props.filteringItems.cluster.value) {
+                    findIdx = props.clusters.findIndex(x => x.clusterName === props.filteringItems.cluster.value);
+                    newProps.clusters = [];
+                    console.log("20200615 props new pro === ", findIdx, ":", props.clusters[findIdx], ":", newProps);
+                    if (props.clusters[findIdx]) newProps.clusters = [props.clusters[findIdx]];
+                }
+                console.log("20200615 newProps === ", newProps);
+                const result = await Service.MetricsService(newProps, self);
+                console.log("20200615 result new result === ", result);
                 if (result && result.length > 0) {
                     // const reduceResult = this.removeEmptyResult(result, "values");
                     this.onReceiveResult(result, self, props.method);

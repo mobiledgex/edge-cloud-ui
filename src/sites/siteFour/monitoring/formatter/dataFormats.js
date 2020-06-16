@@ -2,9 +2,9 @@
 * setdataPart
 * Format drawing for plotly.js chart
 */
+import isEqual from "lodash/isEqual";
 import * as DataType from "./dataType";
 import * as Util from "../../../../utils";
-import isEqual from "lodash/isEqual";
 
 const setdataPart = (data, req, cloudlet, cloudletIdx, appinstPath, method, methodIdx) => {
     const seriesX = [];
@@ -163,21 +163,51 @@ const parseCounterCluster = response => {
     });
 
     return containerData;
-
 };
 
 
 const parseHealthCloudlet = response => {
-    let selectedCloudlet = response[0]; // <----- 필터된 클라우드와 비교해서 데이터 select 하도록 해야함.
+    const selectedCloudlet = response[0]; // <----- 필터된 클라우드와 비교해서 데이터 select 하도록 해야함.
     const formatedData = selectedCloudlet[0].resData_util[0];
-    const vCpuData = {max: formatedData.vCpuUsed.max[0], current: formatedData.vCpuUsed.y[0]}
-    const memData = {max: formatedData.memUsed.max[0], current: formatedData.memUsed.y[0]}
-    const diskData = {max: formatedData.diskUsed.max[0], current: formatedData.diskUsed.y[0]}
-    const containerdata = {vCpu: vCpuData, mem: memData, disk: diskData}
+    const vCpuData = { max: formatedData.vCpuUsed.max[0], current: formatedData.vCpuUsed.y[0] };
+    const memData = { max: formatedData.memUsed.max[0], current: formatedData.memUsed.y[0] };
+    const diskData = { max: formatedData.diskUsed.max[0], current: formatedData.diskUsed.y[0] };
+    const containerdata = { vCpu: vCpuData, mem: memData, disk: diskData };
 
 
-   return containerdata;
+    return containerdata;
+};
 
+// running cluster
+const setdataPartCluster = (data, req, cloudlet, cloudletIdx, appinstPath, method, methodIdx) => {
+    const seriesX = [];
+    const seriesY = [];
+    const names = [];
+    const appinsts = [];
+    const time = 0;
+    data.map((item, i) => {
+        if (item[cloudletIdx] === cloudlet && item[methodIdx] === method) {
+            seriesX.push(item[time]);
+            seriesY.push(item[req]);
+            names.push(item[cloudletIdx]);
+            appinsts.push(appinstPath);
+        }
+    });
+
+    return {
+        x: seriesX, y: seriesY, names, appinsts
+    };
+};
+const parseRunningCluster = response => {
+    const liveness = [];
+    let concatData = [];
+    if (response.length > 0) {
+        response.map(res => {
+            concatData = concatData.concat(res);
+        });
+    }
+
+    return { clusters: [{ custerinst: "clusterA", live: 2, ipaccess: 3, cloudlet: "cloudletA" }, { clusterinst: "clusterB", live: 1, ipaccess: 2, cloudlet: "cloudletA" }, { clusterinst: "clusterC", live: 1, ipaccess: 1, cloudlet: "cloudletA" }] };
 };
 
 
@@ -189,3 +219,4 @@ export const dataFormaFindCloudlet = response => parseFindCloudlet(response);
 export const dataFormatClientList = response => parseClientList(response);
 export const dataFormatCounterCluster = response => parseCounterCluster(response);
 export const dataFormatHealthCloudlet = response => parseHealthCloudlet(response);
+export const dataFormatRunningCluster = response => parseRunningCluster(response);
