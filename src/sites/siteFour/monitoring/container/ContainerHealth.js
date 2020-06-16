@@ -24,8 +24,8 @@ const ContainerHealth = defaultProps => {
         setSelfSize(defaultProps.size);
 
         const data = defaultProps.data;
-        const dataKeys = Object.keys(data || {});
-        if (dataKeys.length > 0 ) {
+        console.log('20200616 health', data)
+        if (data.vCpu && data.mem && data.disk) {
 
             const vCpu = data.vCpu;
             setVCpuMax(vCpu.max);
