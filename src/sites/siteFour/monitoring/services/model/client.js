@@ -103,9 +103,9 @@ const metricFromServer = async (self, data) => {
                 },
             },
             selector: "api",
-            starttime: rangeTime("start"),
-            endtime: rangeTime("end")
-            // last: data.last
+            // starttime: rangeTime("start"),
+            // endtime: rangeTime("end")
+            last: 30
         },
     };
 

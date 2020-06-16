@@ -91,7 +91,8 @@ const getListCluster = async (self, params) => {
     return result;
 };
 const getListClusterInst = async (self, params) => {
-    const result = await ClusterInst.getClusterInst(self, params);
+    const result = await Metrics.getClusterList(self, params);
+    console.log("20200616 cluster result = ", result);
     return result;
 };
 /** *********************************

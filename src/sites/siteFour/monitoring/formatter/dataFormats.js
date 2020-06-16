@@ -206,6 +206,7 @@ const parseRunningCluster = response => {
             concatData = concatData.concat(res);
         });
     }
+    // TODO : 각 클러스터에 따른 master의 개수와 node의 개수
 
     return { clusters: [{ custerinst: "clusterA", live: 2, ipaccess: 3, cloudlet: "cloudletA" }, { clusterinst: "clusterB", live: 1, ipaccess: 2, cloudlet: "cloudletA" }, { clusterinst: "clusterC", live: 1, ipaccess: 1, cloudlet: "cloudletA" }] };
 };

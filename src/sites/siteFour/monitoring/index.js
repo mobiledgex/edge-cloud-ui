@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 1 // <<<===== change depth
+            currentAuthDepth: 0 // <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -304,8 +304,8 @@ const generateComponentAdmin = (self, infos, cloudlets, clusters, appinsts, filt
     return [
         {
             id: dataType.COUNT_CLUSTER,
-            // method: serviceMC.getEP().COUNT_CLUSTER,
-            method: null,
+            method: serviceMC.getEP().COUNT_CLUSTER,
+            // method: null,
             chartType: chartType.COUNTER,
             type: "counter",
             title: { value: "Count of Clusters", align: "left" },
@@ -330,8 +330,8 @@ const generateComponentAdmin = (self, infos, cloudlets, clusters, appinsts, filt
         },
         {
             id: dataType.FIND_CLOUDLET,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: null,
             chartType: chartType.MAP,
             type: "scatter",
             title: { value: "Find Cloudlets", align: "left" },
@@ -342,8 +342,8 @@ const generateComponentAdmin = (self, infos, cloudlets, clusters, appinsts, filt
         },
         {
             id: dataType.REGISTER_CLIENT,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
@@ -354,8 +354,8 @@ const generateComponentAdmin = (self, infos, cloudlets, clusters, appinsts, filt
         },
         {
             id: dataType.FIND_CLOUDLET,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            // method: null,
             chartType: chartType.GRAPH,
             type: "bar",
             title: { value: "Count of Find Cloudlet", align: "left" },
@@ -427,8 +427,8 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
         },
         {
             id: dataType.METHOD_CLIENT,
-            // method: serviceMC.getEP().METRICS_CLIENT,
-            method: null,
+            method: serviceMC.getEP().METRICS_CLIENT,
+            //method: null,
             chartType: chartType.COUNTERWITHSPARK,
             type: "scatter",
             title: { value: "Rate of Register Client", align: "left" },
