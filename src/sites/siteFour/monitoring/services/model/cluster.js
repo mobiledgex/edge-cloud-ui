@@ -34,10 +34,13 @@ const rangeTime = range => {
 // TODO: 클라우드렛 당 메트릭스 데이터 가져오기, 모든 region에 모든 cloudlet에 대한 메트릭스 데이터 
 // 한번에 하나씩 가져와 쌓는 구조, 로딩 속도 문제 해결 방안
 
+const TCP = "tcp"
+const UDP = "udp"
+const NETWORK = "network"
 const CPU = "cpu"
 const DISK = "disk"
 const MEM = "mem"
-const metricsKey = [CPU, DISK, MEM]
+const metricsKey = [TCP, UDP, CPU, DISK, MEM]
 
 const setdataPart = (data, name, max, columns) => {
     let setted = {};
@@ -81,50 +84,113 @@ const createMethods = (type, resSeries_utilize) => {
     return method;
 }
 
-const parseData = (response, type) => {
+const makeData = (key, cluster, i) => {
+    let keyValue = null
+
+    if (key && key.values) {
+        key.values.map((value) => {
+            if (value[i] === cluster) {
+                keyValue = value
+                // console.log('20200612 data true', keyValue);
+            }
+
+        });
+    }
+
+    return keyValue
+
+}
+
+const parseData = (response, type, clusterName) => {
     let resData = [];
     let times = [];
     let methods = [];
 
     if (response && response.response && response.response.data.data) {
         response.response.data.data.map((data, i) => {
-            let udp = null;
+
             let tcp = null;
+            let udp = null;
+            let network = null;
+            let cpu = null;
             let mem = null;
             let disk = null;
-            let cpu = null;
-            metricsKey.map((id) => {
-                const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
-                if(id = "udp") {
-                    udp = (data.Series) ? data.Series[index] : null;
+
+            if(data.Series && data.Series.length > 0) {
+                metricsKey.map((id) => {
+                    if(id = TCP) {
+                        const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
+                        tcp = (data.Series) ? data.Series[index] : null;
+                    }
+                    if(id = UDP) {
+                        const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
+                        udp = (data.Series) ? data.Series[index] : null;
+                    }
+                    if(id = NETWORK) {
+                        const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
+                        network = (data.Series) ? data.Series[index] : null;
+                    }
+                    if(id = MEM) {
+                        const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
+                        mem = (data.Series) ? data.Series[index] : null;
+                    }
+                    if(id = DISK) {
+                        const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
+                        disk = (data.Series) ? data.Series[index] : null;
+                    }
+                    if(id = CPU) {
+                        const index = (data.Series) ? data.Series.findIndex(g => g.name === "cluster-"+id) : 0;
+                        cpu = (data.Series) ? data.Series[index] : null;
+                    }
+                })
+
+                console.log('20200612 data', tcp, udp, network, cpu, mem, disk);
+
+                //let keys = (data.Series && data.Series[0].columns) ? data.Series[0].columns : []
+
+                const findCluster = data.Series[0].columns.findIndex((x) => x === "cluster");
+                const findCpu = cpu.columns.findIndex((x) => x === CPU);
+                const findMem = disk.columns.findIndex((x) => x === MEM);
+                const findDisk = mem.columns.findIndex((x) => x === DISK);
+
+                // let cpuValue = cpu? makeData(cpu, clusterName, findCluster) : null;
+                // let memValue = mem? makeData(mem, clusterName, findCluster) : null;
+                // let diskValue = disk? makeData(disk, clusterName, findCluster) : null;
+                //
+                let tcpValue = tcp? tcp.values[0] : null;
+                let udpValue = udp? udp.values[0] : null;
+                let networkValue = network? network.values[0] : null;
+                let cpuValue = cpu? cpu.values[0] : null;
+                let memValue = mem? mem.values[0] : null;
+                let diskValue = disk? disk.values[0] : null;
+
+                console.log('20200612 res', tcpValue, udpValue, networkValue,  cpuValue, memValue, diskValue);
+
+                // let dataForm = {cluster: clusterName, cpu: cpuValue[findCpu], mem: memValue[findMem], diskValue: diskValue[findDisk]}
+                const pathOneIdx = data.Series[0].columns.findIndex((x) => x === "cluster");
+                const pathTwoIdx = data.Series[0].columns.findIndex((x) => x === "cloudlet");
+
+                let resultParse = {
+                    path: data.Series[0].values[0][pathOneIdx] + "/" + data.Series[0].values[0][pathTwoIdx],
+                    methods: methods,
+                    resData_util: [
+                        {
+                            [CPU]: cpuValue[findCpu],
+                            [MEM]: memValue[findMem],
+                            [DISK]: diskValue[findDisk]
+                        }
+                    ],
+                    resData_network: [
+                        {
+                            [TCP]: null,
+                            [UDP]: null,
+                            [NETWORK]: null
+                        }
+                    ]
                 }
-                if(id = "tcp") {
-                    tcp = (data.Series) ? data.Series[index] : null;
-                }
-                if(id = "mem") {
-                    mem = (data.Series) ? data.Series[index] : null;
-                }
-                if(id = "disk") {
-                    disk = (data.Series) ? data.Series[index] : null;
-                }
-                if(id = "cpu") {
-                    cpu = (data.Series) ? data.Series[index] : null;
-                }
-            })
-
-            console.log('20200612 data', cpu, disk, mem)
 
 
-
-            const resSeries_utilize = (data.Series) ? data.Series[0] : null;
-            const resSeries_ipuse = (data.Series) ? data.Series[1] : null;
-            const columns_utilize = (data.Series) ? data.Series[0].columns : null;
-            const columns_ipus = (data.Series) ? data.Series[1].columns : null;
-
-            if (data.Series && data.Series.length > 0) {
-
-
-                return resData;
+                resData.push(resultParse);
 
             } else {
                 console.log("ERROR ::: ", data);
@@ -158,7 +224,7 @@ const metricFromServer = async (self, data) => {
         }
     };
     const response = await serverData.sendRequest(self, requestData);
-    return parseData(response, data.selectOrg + "/" + data.clusterSelectedOne);
+    return parseData(response, data.selectOrg + "/" + data.clusterSelectedOne,data.clusterSelectedOne );
 };
 
 export const getClusterMetrics = async (self, params) => {
