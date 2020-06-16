@@ -167,15 +167,20 @@ const parseCounterCluster = response => {
 
 
 const parseHealthCloudlet = response => {
-    const selectedCloudlet = response[0]; // <----- 필터된 클라우드와 비교해서 데이터 select 하도록 해야함.
-    const formatedData = selectedCloudlet[0].resData_util[0];
-    const vCpuData = { max: formatedData.vCpuUsed.max[0], current: formatedData.vCpuUsed.y[0] };
-    const memData = { max: formatedData.memUsed.max[0], current: formatedData.memUsed.y[0] };
-    const diskData = { max: formatedData.diskUsed.max[0], current: formatedData.diskUsed.y[0] };
-    const containerdata = { vCpu: vCpuData, mem: memData, disk: diskData };
+    let containerData = {};
+
+    if (response && response.length > 0) {
+        let selectedCloudlet = response[0]; // <----- 필터된 클라우드와 비교해서 데이터 select 하도록 해야함.
+        const formatedData = selectedCloudlet[0].resData_util[0];
+        const vCpuData = { max: formatedData.vCpuUsed.max[0], current: formatedData.vCpuUsed.y[0] }
+        const memData = { max: formatedData.memUsed.max[0], current: formatedData.memUsed.y[0] }
+        const diskData = { max: formatedData.diskUsed.max[0], current: formatedData.diskUsed.y[0] }
+
+        containerData = { vCpu: vCpuData, mem: memData, disk: diskData }
+    }
 
 
-    return containerdata;
+    return containerData;
 };
 
 // running cluster
