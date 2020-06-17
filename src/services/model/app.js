@@ -54,7 +54,9 @@ export const getKey = (data, isCreate) => {
         app.scale_with_cluster = data[fields.scaleWithCluster]
         app.deployment = data[fields.deployment]
         app.image_type = constant.imageType(data[fields.imageType])
-        app.image_path = data[fields.imagePath].toLowerCase()
+        if (data[fields.imagePath]) {
+            app.image_path = data[fields.imagePath].toLowerCase()
+        }
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts].toLowerCase()
         }
