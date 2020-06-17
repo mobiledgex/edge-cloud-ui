@@ -3,11 +3,14 @@ import React from "react";
 import RateOfMehtods from "../components/RateOfMethods";
 
 const ContainerMethod = defaultProps => {
-    const [data, setData] = React.useState({ key: "Register", value: 20 });
+    const [data, setData] = React.useState([]);
     const [size, setsize] = React.useState({width:90, height:50});
 
     React.useEffect(() => {
         if (defaultProps.size) setsize({width:(defaultProps.size.width - 20)/3, height:defaultProps.size.height});
+
+        if (defaultProps.data) setData(defaultProps.data)
+
 
     }, [defaultProps]);
 

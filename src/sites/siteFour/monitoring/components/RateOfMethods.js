@@ -19,6 +19,8 @@ const usePrevious = (value) => {
 
 const RateOfMethods = defaultProps => {
     const [data, setData] = React.useState();
+    const [name, setName] = React.useState('Method');
+    const [count, setCount] = React.useState(0);
     const [size, setsize] = React.useState({width:90, height:50});
 
     const makeSpark = () => {
@@ -75,6 +77,25 @@ const RateOfMethods = defaultProps => {
 
 
     React.useEffect(() => {
+
+
+        let countData = defaultProps.data ? defaultProps.data[0] : null;
+        let countKeys = countData && countData.methods? countData.methods : [];
+
+        let countMethodData = [];
+        countKeys.map( key => {
+            let methodData = countData[key][0];
+            if (methodData[Object.keys(methodData)[0]].y) {
+                const countValue = methodData[Object.keys(methodData)[0]].y;
+                countMethodData.push({key: key, value: countValue});
+            }
+        })
+
+        let countMethod = countMethodData[defaultProps.method.key]? countMethodData[defaultProps.method.key] : null;
+        setName(countMethod && countMethod.key? countMethod.key : 'No Method')
+        setCount(countMethod && countMethod.value[0]? countMethod.value[0] : 0)
+
+
         // Get the previous value (was passed into hook on last render)
         // const prevData = usePrevious(data);
         console.log("20200604 rate of method = ", defaultProps.data, ":", data);
@@ -82,11 +103,14 @@ const RateOfMethods = defaultProps => {
             makeSpark();
         }
         setData(defaultProps.data);
+
+
     }, [defaultProps]);
+
     return (
         <div className='page_monitoring_rate_grid_contain'>
-            <div className='page_monitoring_rate_label'>Method Name</div>
-            <div className='page_monitoring_rate_count'>00</div>
+            <div className='page_monitoring_rate_label'>{name}</div>
+            <div className='page_monitoring_rate_count'>{count}</div>
             <div className='page_monitoring_rate_chart'>
                 <canvas id={`myChart_${defaultProps.method.key}`} color="#6498FF" width="90" height="50" />
             </div>

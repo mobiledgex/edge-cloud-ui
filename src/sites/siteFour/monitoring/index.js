@@ -434,7 +434,7 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
             title: { value: "Rate of Register Client", align: "left" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
         {
