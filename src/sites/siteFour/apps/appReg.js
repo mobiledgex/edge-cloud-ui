@@ -393,10 +393,10 @@ class AppReg extends React.Component {
                 {
                     let data = mcRequest.request.data;
                     this.props.handleAlertInfo('success', `App ${data.app.key.name} added successfully`)
+                    this.props.onClose(true)
                 }
             })
         }
-        this.props.onClose(true)
     }
 
     onCreate = async (data) => {

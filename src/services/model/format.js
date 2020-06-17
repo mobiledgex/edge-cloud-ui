@@ -220,21 +220,14 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     return values
 }
 
-const compareObjects = (newData, oldData, ignoreCase) => {
-    if(newData === undefined && oldData === undefined)
-    {
+export const compareObjects = (newData, oldData, ignoreCase) => {
+    if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
         return true
     }
-    else if(newData === undefined && oldData !== undefined)
-    {
+    else if (newData !== undefined && newData.length > 0 && oldData === undefined) {
         return false
     }
-    else if(newData.length === 0 && oldData === undefined)
-    {
-        return true
-    }
-    else if(newData === undefined || oldData === undefined)
-    {
+    else if (newData === undefined && oldData !== undefined && oldData.length > 0) {
         return false
     }
     else if(ignoreCase)
