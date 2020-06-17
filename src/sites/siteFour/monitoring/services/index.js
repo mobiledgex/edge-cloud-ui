@@ -12,8 +12,8 @@ import * as dataType from "../formatter/dataType";
 import { yesterdayWithCurrentUTC, todayUTC } from "../hooks/timeRangeFilter";
 import { getApplyFilter } from "../hooks/FilterMenu";
 
-const savedCloudletData = [];
-const savedAppinstData = [];
+let savedCloudletData = [];
+let savedAppinstData = [];
 
 interface MetricsParmaType {
     id: string;
@@ -97,11 +97,12 @@ const getListClusterInst = async (self, params) => {
 /** *********************************
  * LIST APPINSTANCE
  *********************************** */
-const getListAppinst = async (self, params) =>
+const getListAppinst = async (self, params) => {
     /* First, need to get data for all appinstance */
-    await Appinst.getAppinstanceList(self, params);
-
-
+    const result = await Appinst.getAppinstanceList(self, params);
+    savedAppinstData = result;
+    return result;
+};
 /** *********************************
  * METRICS CLOUDLET
  * store : will be change to @Rahul's framwork

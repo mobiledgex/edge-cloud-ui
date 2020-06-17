@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 0 // <<<===== change depth
+            currentAuthDepth: 1 // <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -439,7 +439,7 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
             method: serviceMC.getEP().SHOW_CLUSTER_INST,
             chartType: chartType.GRAPH,
             type: "column",
-            title: { value: "Liveness & ip-access of clusters", align: "left" },
+            title: { value: "Cluster nodes", align: "left" },
             filter: null,
             page: "single",
             legend: true,

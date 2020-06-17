@@ -20,12 +20,14 @@ const ContainerHealth = defaultProps => {
     const [diskPercent, setDiskPercent] = React.useState(1);
 
     const getHeight = () => selfSize.height - hGap;
+
     React.useEffect(() => {
         setSelfSize(defaultProps.size);
+    }, [defaultProps.size]);
 
-        const data = defaultProps.data;
+    React.useEffect(() => {
+        const data = defaultProps.data ? defaultProps.data : { vCpu: null, mem: null, disk: null };
         if (data.vCpu && data.mem && data.disk) {
-
             const vCpu = data.vCpu;
             setVCpuMax(vCpu.max);
             setVCpuUsed(vCpu.current);
@@ -43,10 +45,9 @@ const ContainerHealth = defaultProps => {
             setDiskUsed(disk.current);
             const diskPer = Math.round(disk.current / disk.max * 100);
             setDiskPercent(diskPer);
-
         }
 
-    }, [defaultProps]);
+    }, [defaultProps.data]);
 
     return (
         <div style={{ width: "100%", height: "100%", overflow: 'auto' }}>

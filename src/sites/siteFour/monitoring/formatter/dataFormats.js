@@ -5,6 +5,7 @@
 import isEqual from "lodash/isEqual";
 import * as DataType from "./dataType";
 import * as Util from "../../../../utils";
+import { getAppinstData } from "../services";
 
 const setdataPart = (data, req, cloudlet, cloudletIdx, appinstPath, method, methodIdx) => {
     const seriesX = [];
@@ -206,14 +207,60 @@ const setdataPartCluster = (data, req, cloudlet, cloudletIdx, appinstPath, metho
 const parseRunningCluster = response => {
     const liveness = [];
     let concatData = [];
+    const seriesX = [];
+    const seriesY = [];
+    const names = [];
     if (response.length > 0) {
         response.map(res => {
             concatData = concatData.concat(res);
         });
     }
     // TODO : 각 클러스터에 따른 master의 개수와 node의 개수
+    // 1. group by cloudlet
+    // 2. get cluster from cloudlet that grouped
+    // 3. get number of child node
+    /* running app in cluster grouped by cloudlet
+    * {cloudletName: [{clusterName: {appCount:10, on: 9, off:1}}, {}]}
+    */
+    console.log("20200616 get appint ", getAppinstData());
+    const appinsts = getAppinstData();
+    const getAppCount = (clusterName, part) => {
+        //
+        let appNames = [];
+        let onCount = 0;
+        let offCount = 0;
+        appinsts.map(app => {
+            app.AppinstList.map(inst => {
+                if (inst.clusterName === clusterName) {
+                    appNames.push({ [inst.appName]: { powerState: inst.powerState } });
+                    if (inst.powerState === 3) onCount++; else offCount++;
+                }
+            });
+        });
+        return (part === "list") ? appNames : (part === "on") ? onCount : offCount;
+    };
+    const getOnCount = (cluster) => {
+        //
+        return 0;
+    };
+    const getOffCount = (cluster) => {
+        //
+        return 0;
+    };
+    const testCloudletName = "packetcloudlet";
+    const cloudlets = parseCountCluster(concatData);
+    const cloudletKeys = Object.keys(cloudlets);
+    const clusterInfo = {};
+    cloudletKeys.map(key => {
+        clusterInfo[key] = [];
+        cloudlets[key].map(cluster => {
+            clusterInfo[key].push({ [cluster.clusterName]: { appinsts: getAppCount(cluster.clusterName), on: getOnCount(cluster.clusterName), off: getOffCount(cluster.clusterName) } });
+        });
+    });
 
-    return { clusters: [{ custerinst: "clusterA", live: 2, ipaccess: 3, cloudlet: "cloudletA" }, { clusterinst: "clusterB", live: 1, ipaccess: 2, cloudlet: "cloudletA" }, { clusterinst: "clusterC", live: 1, ipaccess: 1, cloudlet: "cloudletA" }] };
+    console.log("20200616 group by cloudlets ", clusterInfo);
+
+    return clusterInfo;
 };
 
 
