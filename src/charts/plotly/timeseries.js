@@ -338,17 +338,12 @@ const TimeSeries = props => {
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
             type: _type,
-            x: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            y: [65, 59, 80, 81, 56, 55, 40],
+            x: ["clusterA", "clusterB", "clusterC", "clusterD"],
+            y: [[3, 2, 2, 3, 3], [3, 1, 1, 1, 2]],
             yaxis: "y",
             text: "appinstInfoTEST",
             name: "appinstInfoTEST", // legend lable
             mode: "lines+markers",
-            // line: {
-            //     dash: "solid",
-            //     width: 10
-            // },
-            // marker: { size: 4 },
             hovertemplate: `<i>${title}</i>: %{y:.2f} ${unit}`
                 + `<br><b>${time}</b>: %{x}<br>`
                 + "<b> %{text} </b>"

@@ -9,28 +9,29 @@ import randomColor from "../libs/randomColor";
 export const valueAsPercentage = (value, total) => `${(value / total) * 100}%`;
 let myRef = null;
 const getRandomColors = (_count, _alpha) => {
-    const colors = randomColor({ hue: "blue", count: _count, alpha: _alpha });
+    const colors = randomColor({ hue: "blue", count: _count, alpha: _alpha, format: "rgba" });
     return colors;
 };
 /* chart : https://codepen.io/jamiecalder/pen/NrROeB */
 
-const testdata = {
-    labels: ["2014", "2013", "2012", "2011"],
+const columnDataColors = [{
+    backgroundColor: "rgba(63,103,126,1)",
+    hoverBackgroundColor: "rgba(50,90,100,1)"
+}, {
+    backgroundColor: "rgba(63,203,226,1)",
+    hoverBackgroundColor: "rgba(46,185,235,1)"
+}];
+const testdata = [{
+    data: [3, 2, 2, 2],
+    backgroundColor: "rgba(63,103,126,1)",
+    hoverBackgroundColor: "rgba(50,90,100,1)"
+}, {
+    data: [0, 1, 0, 1],
+    backgroundColor: "rgba(63,203,226,1)",
+    hoverBackgroundColor: "rgba(46,185,235,1)"
+}]
 
-    datasets: [{
-        data: [727, 589, 537, 543],
-        backgroundColor: "rgba(63,103,126,1)",
-        hoverBackgroundColor: "rgba(50,90,100,1)"
-    }, {
-        data: [238, 553, 746, 884],
-        backgroundColor: "rgba(163,103,126,1)",
-        hoverBackgroundColor: "rgba(140,85,100,1)"
-    }, {
-        data: [1238, 553, 746, 884],
-        backgroundColor: "rgba(63,203,226,1)",
-        hoverBackgroundColor: "rgba(46,185,235,1)"
-    }]
-}
+
 const listItemStyle = {
     color: "#fff",
     listStyle: "none",
@@ -130,7 +131,7 @@ const getOptionsStackBar = params => (
                 ctx.font = "9px Open Sans";
                 ctx.fillStyle = "#fff";
 
-                Chart.helpers.each(params.datasets.forEach(function (dataset, i) {
+                Chart.helpers.each(params.forEach(function (dataset, i) {
                     const meta = chartInstance.controller.getDatasetMeta(i);
                     let data = {};
                     Chart.helpers.each(meta.data.forEach(function (bar, index) {
@@ -163,7 +164,7 @@ const ChartJSComponent = defaultProps => {
     const [legendList, setLegendList] = React.useState({});
     const [legendId, setLegendId] = React.useState("");
     const [legendOpen, setLegendOpen] = React.useState(false);
-    const [randomColors, setRandomColors] = React.useState(getRandomColors(200, 0.5));
+    const [randomColors, setRandomColors] = React.useState(getRandomColors(200, 0.7));
     const [randomColorsB, setRandomColorsB] = React.useState(getRandomColors(200, 1));
     const [legend, setLegend] = React.useState({ legend: <>no legend</> });
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -178,12 +179,14 @@ const ChartJSComponent = defaultProps => {
         return interpoldata;
     };
 
-    const getDataSet = (data, series) => (
+    const getDataSet = (data, series, type) => (
         data.map((item, i) => ({
             label: item.name,
             data: getInterpolate(item, series),
-            backgroundColor: randomColors[i],
-            borderColor: randomColorsB[i],
+            // backgroundColor: randomColors[i],
+            backgroundColor: (type === "scatter") ? "transparent" : randomColors[i],
+            // borderColor: randomColorsB[i],
+            borderColor: randomColors[i],
             borderWidth: 1
         }))
     );
@@ -207,18 +210,45 @@ const ChartJSComponent = defaultProps => {
         chart.update(); // re-draw chart to hide dataset
     };
 
+    const makeColumnDataset = (_data) => {
+        const dataset = [{
+            data: [3, 2, 2, 2],
+            backgroundColor: columnDataColors[0].backgroundColor,
+            hoverBackgroundColor: columnDataColors[0].hoverBackgroundColor
+        }, {
+            data: [0, 1, 0, 1],
+            backgroundColor: "rgba(63,203,226,1)",
+            hoverBackgroundColor: "rgba(46,185,235,1)"
+        }]
+        return dataset;
+    };
+
     const initialize = (_id, _data, _type) => {
-        setRandomColors(getRandomColors(_data.length, 0.5));
+        setRandomColors(getRandomColors(_data.length, 0.7));
         setRandomColorsB(getRandomColors(_data.length, 1));
-        const myChart = {
-            type: (_type === "scatter") ? "line" : "bar",
-            cubicInterpolationMode: "monotone",
-            data: {
-                labels: getSeriesLabels(_data),
-                datasets: getDataSet(_data, getSeriesLabels(_data))
-            },
-            options: (_type === "scatter") ? getOptions({ displayLegend: legendDisplay }) : getOptionsBar({ displayLegend: legendDisplay })
-        };
+        let myChart = null;
+        if (_type === "column") {
+            myChart = {
+                type: _type,
+                data: {
+                    labels: ["2014", "2013", "2012", "2011"],
+                    datasets: testdata
+                },
+                options: getOptionsStackBar(testdata)
+            };
+        } else {
+            myChart = {
+                type: (_type === "scatter") ? "line" : "bar",
+                cubicInterpolationMode: "monotone",
+                data: {
+                    labels: getSeriesLabels(_data),
+                    datasets: getDataSet(_data, getSeriesLabels(_data), _type)
+                },
+                options: (_type === "scatter") ? getOptions({ displayLegend: legendDisplay }) : getOptionsBar({ displayLegend: legendDisplay })
+            };
+        }
+
+        console.log("20200617 color", myChart.data);
         setOptions(myChart.options);
         setData(myChart.data);
     };
@@ -233,6 +263,7 @@ const ChartJSComponent = defaultProps => {
                 // const leg = generateLegend();
                 // setLegend({ legend: leg });
                 const legend = myRef.chartInstance.legend.legendItems;
+                console.log("20200617 legend", legend);
                 setLegend(legend);
                 setLegendOpen(defaultProps.legendShow);
                 setAnchorEl(defaultProps.legendShow ? defaultProps.legendInfo.target : null);
@@ -284,10 +315,10 @@ const ChartJSComponent = defaultProps => {
                     ? <HorizontalBar
                         id="typeisColumn"
                         ref={element => setChartRef(element)}
-                        data={testdata}
+                        data={data}
                         width={null}
                         height={null}
-                        options={getOptionsStackBar(testdata) || { maintainAspectRatio: false }}
+                        options={options || { maintainAspectRatio: false }}
                     />
                     : <Line
                         id="typeisLine"
@@ -315,7 +346,7 @@ const ChartJSComponent = defaultProps => {
                                 <div
                                     className="chart_legend_item_color"
                                     style={{
-                                        backgroundColor: item.fillStyle
+                                        backgroundColor: item.strokeStyle
                                     }}
                                 />
                                 {item.text}

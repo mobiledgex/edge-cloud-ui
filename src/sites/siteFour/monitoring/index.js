@@ -428,7 +428,7 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
             //method: null,
             chartType: chartType.COUNTERWITHSPARK,
             type: "scatter",
-            title: { value: "Rate of Register Client", align: "left" },
+            title: { value: "Rate of Method", align: "left" },
             filter: null,
             page: "single",
             legend: false,

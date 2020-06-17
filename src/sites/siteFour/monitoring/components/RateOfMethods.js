@@ -18,12 +18,57 @@ const usePrevious = (value) => {
 };
 
 const RateOfMethods = defaultProps => {
-    const [data, setData] = React.useState();
-    const [size, setsize] = React.useState({ width: 90, height: 50 });
+    const [data, setData] = React.useState([0,0,0]);
+    const [time, setTime] = React.useState([0,0,0]);
+    const [name, setName] = React.useState('No Method');
+    const [count, setCount] = React.useState(0);
+    const [size, setsize] = React.useState({width:90, height:50});
 
-    const makeSpark = () => {
+    React.useEffect(() => {
+
+        if(defaultProps.data && defaultProps.data.length > 0 ) {
+            let countData = defaultProps.data[0];
+            let countKeys = countData && countData.methods? countData.methods : [];
+
+            let countMethodData = [];
+            countKeys.map( key => {
+                let methodData = countData[key][0];
+                if (methodData[Object.keys(methodData)[0]].y) {
+                    const countValue = methodData[Object.keys(methodData)[0]].y;
+                    const countTime = methodData[Object.keys(methodData)[0]].x;
+                    countMethodData.push({key: key, time:countTime,  value: countValue});
+                }
+            })
+
+            const countMethod = countMethodData[defaultProps.method.key]? countMethodData[defaultProps.method.key] : null;
+            setName(( countMethod && countMethod.key )? countMethod.key : 'No Method')
+            //( countMethod && countMethod.key ) && setName(countMethod.key)
+            setCount(( countMethod && countMethod.value[0] )? countMethod.value[0] : 0)
+            //( countMethod && countMethod.value[0] ) && setCount(countMethod.value[0])
+            
+            let graphData = ( countMethod && countMethod.value ) ? countMethod.value : [0, 0, 0]
+            let graphTime = ( countMethod && countMethod.time ) ? countMethod.time : [0, 0, 0]
+
+
+            makeSpark(graphData, graphTime );
+        }
+
+        if (defaultProps.data !== data) {
+            //makeSpark();
+        }
+        setData(defaultProps.data);
+
+        // setData(defaultProps.data);
+
+        // Get the previous value (was passed into hook on last render)
+        // const prevData = usePrevious(data);
+
+    }, [defaultProps]);
+
+    const makeSpark = (_data, _time ) => {
         const ctx = document.getElementById(`myChart_${defaultProps.method.key}`).getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 60);
+        console.log( '20200617 graph', _data, _time, ctx)
 
         // Add three color stops
         gradient.addColorStop(0, '#6498FF');
@@ -31,10 +76,10 @@ const RateOfMethods = defaultProps => {
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: _time,
                 datasets: [
                     {
-                        data: [435, 321, 532, 801, 1231, 1098, 732, 321, 451, 482, 513, 397],
+                        data: _data,
                         backgroundColor: gradient
                     }
                 ]
@@ -74,18 +119,11 @@ const RateOfMethods = defaultProps => {
     }
 
 
-    React.useEffect(() => {
-        // Get the previous value (was passed into hook on last render)
-        // const prevData = usePrevious(data);
-        if (defaultProps.data !== data) {
-            makeSpark();
-        }
-        setData(defaultProps.data);
-    }, [defaultProps]);
+
     return (
         <div className='page_monitoring_rate_grid_contain'>
-            <div className='page_monitoring_rate_label'>Method Name</div>
-            <div className='page_monitoring_rate_count'>00</div>
+            <div className='page_monitoring_rate_label'>{name}</div>
+            <div className='page_monitoring_rate_count'>{count}</div>
             <div className='page_monitoring_rate_chart'>
                 <canvas id={`myChart_${defaultProps.method.key}`} color="#6498FF" width="90" height="50" />
             </div>

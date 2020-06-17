@@ -261,7 +261,11 @@ class ChartWidget extends React.Component {
                             step={activeStep}
                         />
                     ) : chartType === ChartType.COUNTERWITHSPARK ? (
-                        <ContainerMethod size={resize} />
+                        <ContainerMethod
+                            id={id}
+                            size={resize}
+                            data={data}
+                        />
                     ) : chartType === ChartType.BUBBLECHART ? (
                         <BubbleChart size={resize} />
                     ) : <MonitoringListViewer id={id} size={resize} type={type} chartType={chartType} data={data} title={title} method={method} />
