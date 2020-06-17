@@ -1,5 +1,6 @@
 import { generateUniqueId } from '../serviceMC';
 import { toJson } from '../../utils/JsonUtil'
+import isEqual from 'lodash/isEqual';
 
 export const fields = {
     uuid: 'uuid',
@@ -130,7 +131,10 @@ export const fields = {
     maximumNodes: 'maximumNodes',
     scaleUpCPUThreshold: 'scaleUpCPUThreshold',
     scaleDownCPUThreshold: 'scaleDownCPUThreshold',
-    triggerTime: 'triggerTime'
+    triggerTime: 'triggerTime',
+    minActiveInstances:'minActiveInstances',
+    maxInstances:'maxInstances',
+    fields:'fields'
 }
 
 export const getUserRole = () => {
@@ -215,3 +219,46 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     }
     return values
 }
+
+const compareObjects = (newData, oldData, ignoreCase) => {
+    if(newData === undefined && oldData === undefined)
+    {
+        return true
+    }
+    else if(newData === undefined && oldData !== undefined)
+    {
+        return false
+    }
+    else if(newData.length === 0 && oldData === undefined)
+    {
+        return true
+    }
+    else if(newData === undefined || oldData === undefined)
+    {
+        return false
+    }
+    else if(ignoreCase)
+    {
+        return isEqual(newData.toLowerCase(), oldData.toLowerCase())
+    }
+    else
+    {
+        return isEqual(newData, oldData)
+    }
+  }
+  
+  export const updateFields = (forms, data, orgData)=>
+  {
+    let updateFields = []
+    for(let i=0;i<forms.length;i++)
+    {
+      let form = forms[i]
+      if(form.update && form.updateId)
+      {
+        if (!compareObjects(data[form.field], orgData[form.field])) {
+          updateFields = [...updateFields, ...form.updateId]
+        }
+      }
+    }
+    return updateFields
+  }
