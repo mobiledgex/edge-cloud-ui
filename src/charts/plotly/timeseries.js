@@ -146,7 +146,6 @@ const TimeSeries = props => {
         }
         // cluster
         if (props.id === dataType.RUNNING_CLUSTER_INST) {
-            console.log("20200615 props data = ", props.data);
             if (props.data && props.data.length) {
                 chartUpdate({
                     data: props.data[0], id: props.id, type: props.type, calculate: props.calculate
@@ -155,7 +154,9 @@ const TimeSeries = props => {
         }
 
         if (props.showLegend) {
-            setShowLegend(!showLegend);
+            setShowLegend(true);
+        } else {
+            setShowLegend(false);
         }
         if (props.legendInfo) {
             setLegendInfo(props.legendInfo);
@@ -257,7 +258,6 @@ const TimeSeries = props => {
         const summaryY = summaryArray(data[cloudlet].y);
         let xValues = [];
         let yValues = [];
-        console.log("20200607 calculate = ", calculate);
         if (calculate === "summ") {
             xValues = [summaryX];
             yValues = [summaryY];
@@ -313,7 +313,6 @@ const TimeSeries = props => {
         const summaryY = summaryArray(data[cloudlet].y);
         let xValues = [];
         let yValues = [];
-        console.log("20200607 calculate = ", calculate);
         if (calculate === "summ") {
             xValues = [summaryX];
             yValues = [summaryY];

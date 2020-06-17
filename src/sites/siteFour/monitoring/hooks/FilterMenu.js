@@ -34,7 +34,6 @@ export default function FilterMenu(defaultProps) {
     };
 
     const onChangeSelect = (event, selectItem) => {
-        console.log("20200602 on change select == ", selectItem);
         // if (selectItem.id === "region") setValueZero(selectItem.id);
         const newObj = selectedFilterObj;
         if (selectItem.value === "") {

@@ -154,7 +154,6 @@ const ClusterMap = props => {
     };
 
     function handleMoveEnd(position) {
-        console.log("20200614 move pos = ", position);
         setPosition(position);
     }
 

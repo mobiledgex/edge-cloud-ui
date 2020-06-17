@@ -36,33 +36,55 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
         this.groupData = [];
         this.allData = [];
         this.initMethod = "";
+        this.state = {
+            data: [],
+            dataRaw: [],
+            chartType: "",
+            chartMethod: "",
+            title: null,
+            legendShow: false,
+            legendInfo: { id: '', open: false, target: null },
+            page: "single",
+            selectedIndex: 0,
+            id: null,
+            method: "",
+            cloudlets: [],
+            appinsts: [],
+            clusters: [],
+            panelInfo: null
+        };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("20200611 did request wrapper props ===== ", nextProps, ":", prevState);
         const update = {};
 
+        if (prevState !== nextProps) {
+            if (prevState.panelInfo !== nextProps.panelInfo) {
+                if (nextProps.panelInfo && nextProps.panelInfo.info === "info"
+                    && nextProps.panelInfo.title.value === nextProps.title.value && nextProps.id === nextProps.panelInfo.id) {
+                    update.legendShow = nextProps.panelInfo.open;
+                    update.id = nextProps.id;
+                    update.legendInfo = { id: nextProps.panelInfo.id, open: nextProps.panelInfo.open, target: nextProps.panelInfo.target }
+                }
+                update.panelInfo = nextProps.panelInfo;
+                return update;
+            }
+            return nextProps;
+        }
 
-        return nextProps;
+        return null;
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return true;
+    }
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        console.log("20200611 did request 000 == >>>>>  ", prevProps, ":", prevState);
-        console.log("20200610 request 111 check filtered item == >>>>>  prevProps, prevState = ", prevProps.method, ":", prevState.method);
-        console.log("20200610 request 222 check filtered item == >>>>>  this props = ", this.props.method, ": this state = ", this.state.method);
-        // if (prevState.method && (prevState.method !== this.initMethod) && this.state.appinsts) {
-        //     this.initMethod = prevState.method;
 
-        //     console.log("20200611 request 333 == >>>>>  init  ", this.state);
-        //     this.initialize(this.state, this);
-        //     return true;
-        // }
         if (prevState.method && this.props.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
             this.initMethod = this.props.method;
 
-            console.log("20200611 request 444 == >>>>>  init  ", this.state, "    filteringItems = ", prevProps, ":", this.props);
             this.initialize(this.props, this);
             return true;
         }
@@ -79,7 +101,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
             /** filtering data */
             const groupByData = result;
             if (result && result.length > 0) {
-                console.log("20200615 container widget   == 55 == ", result, ":", self.state.id, self.state.method, ": m =", method, ": this state = ", this.state.id);
                 if (self.state.id === this.state.id) {
                     this.setState({ data: { [self.state.id]: result, method } });
                 }
@@ -106,7 +127,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
     }
 
     async initialize(props: MetricsParmaType, self: any) {
-        console.log("20200610 request initialize props = ", props.method, ":", props.appinsts);
         try {
             if (props.method === serviceMC.getEP().COUNT_CLUSTER) {
                 // count cluster in cloudlet
@@ -136,17 +156,14 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 }
             }
             if (props.method === serviceMC.getEP().EVENT_CLOUDLET) {
-                console.log("20200610 filtered === ", props.filteringItems);
                 // filtering
                 let findIdx = null;
                 const newProps = cloneDeep(props);
                 if (props.filteringItems && props.filteringItems.cloudlet && props.filteringItems.cloudlet.value) {
                     findIdx = props.cloudlets.findIndex(x => x.cloudletName === props.filteringItems.cloudlet.value);
                     newProps.cloudlets = [];
-                    console.log("20200610 props new pro === ", findIdx, ":", props.cloudlets[findIdx], ":", newProps);
                     if (props.cloudlets[findIdx]) newProps.cloudlets = [props.cloudlets[findIdx]];
                 }
-                console.log("20200610 props new newProps === ", newProps);
                 const result = await Service.MetricsService(newProps || props, self);
                 if (result && result.length > 0) {
                     // const reduceResult = this.removeEmptyResult(result, "cloudletName");
@@ -176,12 +193,9 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 if (props.filteringItems && props.filteringItems.cluster && props.filteringItems.cluster.value) {
                     findIdx = props.clusters.findIndex(x => x.clusterName === props.filteringItems.cluster.value);
                     newProps.clusters = [];
-                    console.log("20200615 props new pro === ", findIdx, ":", props.clusters[findIdx], ":", newProps);
                     if (props.clusters[findIdx]) newProps.clusters = [props.clusters[findIdx]];
                 }
-                console.log("20200615 newProps === ", newProps);
                 const result = await Service.MetricsService(newProps, self);
-                console.log("20200615 result new result === ", result);
                 if (result && result.length > 0) {
                     // const reduceResult = this.removeEmptyResult(result, "values");
                     this.onReceiveResult(result, self, props.method);

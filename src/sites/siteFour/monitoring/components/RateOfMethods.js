@@ -98,7 +98,6 @@ const RateOfMethods = defaultProps => {
 
         // Get the previous value (was passed into hook on last render)
         // const prevData = usePrevious(data);
-        console.log("20200604 rate of method = ", defaultProps.data, ":", data);
         if (defaultProps.data !== data) {
             makeSpark();
         }

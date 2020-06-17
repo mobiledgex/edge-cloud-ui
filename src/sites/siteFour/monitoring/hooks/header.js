@@ -35,8 +35,8 @@ const HeaderComponent = (defaultValue) => {
                 <div className='page_monitoring_title_button'>
                     {info.legend &&
                         <div style={{ cursor: "pointer" }}
-                             onClick={(event) => {setOpen(!open); value.onClick("info", info.id, open, event.currentTarget, info.title)}}
-                             aria-describedby={open? 'legend-popper-'+info.id : undefined}
+                            onClick={(event) => { setOpen(!open); value.onClick("info", info.id, !open, event.currentTarget, info.title) }}
+                            aria-describedby={open ? 'legend-popper-' + info.id : undefined}
                         >
                             <MoreIcon fontSize={'small'} />
                         </div>

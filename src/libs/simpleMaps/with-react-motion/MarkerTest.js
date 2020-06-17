@@ -26,7 +26,7 @@ const markerCloudPath = [
 ];
 
 // self, city, i, config
-const MarkerCloudlet = defaultProps => {
+const MarkerTest = defaultProps => {
     const [idx, setIdx] = React.useState(defaultProps.idx);
     const [city, setCity] = React.useState(defaultProps.city);
     const [self, setSelf] = React.useState(defaultProps.self);
@@ -34,14 +34,10 @@ const MarkerCloudlet = defaultProps => {
     const [keyName, setKeyName] = React.useState(defaultProps.keyName);
     const [colorCode, setColorCode] = React.useState(defaultProps.gColor);
     const [tooltipMsg, setTooltipMsg] = React.useState("");
-    const [transform, setTransform] = React.useState(defaultProps.config.transform);
-    const [zoom, setZoom] = React.useState(1);
     let moveMouse = false;
 
     React.useEffect(() => {
-        if (defaultProps.city) setCity(defaultProps.city);
-        if (defaultProps.config) setConfig(defaultProps.config);
-        if (defaultProps.config.transform) setZoom(defaultProps.config.transform.zoom);
+        // if (defaultProps.city) setCity(defaultProps.city);
     }, [defaultProps]);
 
     /** ******************************
@@ -55,37 +51,7 @@ const MarkerCloudlet = defaultProps => {
         // ReactTooltip.hide(this.tooltipref);
         // this.moveMouse = false;
     };
-    // const handleMouseDown = (a, b) => {
-    //     const countries = CountryCode.ref_country_codes;
-    //     let _lat = "";
-    //     let _long = "";
-    //     countries.map(country => {
-    //         if (country.alpha2 === a.properties.ISO_A2) {
-    //             _lat = country.latitude;
-    //             _long = country.longitude;
-    //         }
-    //     });
 
-    //     if (this.props.id == "Cloudlets") {
-    //         const location = {
-    //             region: a.properties.REGION_UN, name: a.properties.NAME, lat: _lat, long: _long, State: 5
-    //         };
-
-    //         const locationData = [
-    //             {
-    //                 name: a.properties.NAME,
-    //                 coordinates: [_long, _lat],
-    //                 population: 17843000,
-    //                 cost: 3
-    //             }];
-    //         if (this.props.onMapClick) {
-    //             this.props.onMapClick(location);
-    //         }
-    //         _self.setState({ cities: locationData, detailMode: false });
-    //         _self.forceUpdate();
-    //     }
-    // };
-    /** ******************************* */
     return (
         // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
         <Marker
@@ -97,17 +63,16 @@ const MarkerCloudlet = defaultProps => {
                 defaultProps.onClick(city);
             }
             }
-            onMouseMove={() => {
+            onMouseOver={() => {
                 defaultProps.handleTooltip(city.name);
             }
             }
             onMouseLeave={handleLeaveMk}
             style={{ cursor: "pointer" }}
         >
-            {/* icon cloud circle */}
             <g
                 // fill={grdColors[config.gColor]}
-                transform={`translate(${-12 / zoom} ${-10 / zoom}) scale(${0.4 / zoom} ${0.4 / zoom})`}
+                transform={defaultProps.config.transform}
                 version="1.1"
                 id="Layer_1"
                 x="0px"
@@ -189,7 +154,7 @@ const MarkerCloudlet = defaultProps => {
                 </defs>
                 <path filter="url(#innershadow)" className={config.cName} d={markerCloudPath[0]} />
             </g>
-            <g data-tip="" data-for="happyFace" transform={`translate(${-2 / zoom} 0) scale(${0.8 / zoom} ${0.8 / zoom})`}>
+            <g data-tip="" data-for="happyFace" transform={defaultProps.config.transform}>
                 <text
                     textAnchor="middle"
                     y={0}
@@ -203,4 +168,4 @@ const MarkerCloudlet = defaultProps => {
     );
 };
 
-export default MarkerCloudlet;
+export default MarkerTest;

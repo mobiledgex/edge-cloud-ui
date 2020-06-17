@@ -135,7 +135,6 @@ const ChartJSComponent = defaultProps => {
             },
             options: (_type === "scatter") ? getOptions({ displayLegend: legendDisplay }) : getOptionsBar({ displayLegend: legendDisplay })
         };
-        console.log("20200607 make chart data  = ", myChart);
         setOptions(myChart.options);
         setData(myChart.data);
 
@@ -144,7 +143,6 @@ const ChartJSComponent = defaultProps => {
     React.useEffect(() => {
         setId(defaultProps.id);
         setType(defaultProps.type);
-
         if (isEqual(defaultProps.legendShow, legendDisplay) === false) {
             //
             setTimeout(() => {
@@ -153,37 +151,36 @@ const ChartJSComponent = defaultProps => {
                 // setLegend({ legend: leg });
                 const legend = myRef.chartInstance.legend.legendItems;
                 setLegend(legend);
-            }, 500);
+                setLegendOpen(defaultProps.legendShow);
+                setAnchorEl(defaultProps.legendShow ? defaultProps.legendInfo.target : null)
+            }, 100);
         }
         //
-    }, [defaultProps.id, defaultProps.type, defaultProps.legendShow]);
+    }, [defaultProps.id, defaultProps.type, defaultProps.legendShow, defaultProps.legendInfo]);
+
+    // React.useEffect(() => {
+    //     setLegendId(defaultProps.legendInfo.id);
+    //     if (id === legendId) {
+    //         // setLegendOpen(defaultProps.legendInfo.open);
+    //         setAnchorEl(legendOpen ? defaultProps.legendInfo.target : null)
+    //         console.log('20200610 legend', legendId, legendOpen, anchorEl)
+    //     }
+
+    // }, [defaultProps.legendInfo]);
 
     React.useEffect(() => {
-        setLegendId(defaultProps.legendInfo.id);
-        if (id === legendId) {
-            setLegendOpen(defaultProps.legendInfo.open);
-            setAnchorEl(legendOpen ? defaultProps.legendInfo.target : null)
-            console.log('20200610 legend', legendId, legendOpen, anchorEl)
-        }
-
-    }, [defaultProps.legendInfo]);
-
-    React.useEffect(() => {
-        console.log("20200615 propData defaultProps.data isEqual == == ==  = default data = ", defaultProps.data, ": id = ", defaultProps.id);
         const propData = defaultProps.data && defaultProps.data[defaultProps.id];
         if ((propData && propData.length > 0)) {
-            console.log("20200615 propData = ", propData);
             if (propData[0].x.length > 0 && !initData) {
                 setInitData(true);
                 setTimeout(() => {
                     initialize(defaultProps.id, propData, defaultProps.type);
-                }, 2000);
+                }, 200);
             }
         }
     }, [defaultProps.id, defaultProps.data]);
 
     React.useEffect(() => {
-        console.log("20200613 canvas size = ", defaultProps, isNaN(defaultProps.width), isNaN(defaultProps.height));
         if (!isNaN(defaultProps.width) && !isNaN(defaultProps.height)) {
             setVWidth(defaultProps.width);
             setVHeight(defaultProps.height);

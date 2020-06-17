@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {Toolbar, Grid, IconButton, withStyles} from "@material-ui/core";
+import { Toolbar, Grid, IconButton, withStyles } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import FilterMenu from "./FilterMenu";
 import { groupBy, groupByCompare } from "../../../../utils";
@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 const StyleToolbar = withStyles((theme) => ({
     regular: {
         minHeight: 48,
-        paddingRight:0
+        paddingRight: 0
     }
 }))(Toolbar);
 
@@ -68,7 +68,6 @@ const HeaderFiltering = props => {
 
     const onSelectItem = params => {
         const { depth, id, value } = params;
-        console.log("20200602 on selectd == ", params, ": depth= ", depth, "id=", id);
         /** set cloudlts in select items box */
         if (id === "region") {
             setSelectedRegion(params);
@@ -76,7 +75,6 @@ const HeaderFiltering = props => {
             setDepthTwo([]);
             setDepthThree([]);
             if (props.compCloudlet && props.compCloudlet.length > 0) {
-                console.log("20200602 cloudlet info == ", props.compCloudlet);
                 setDepthOne(makeDepthTrees(props.compCloudlet, value, { byId: id, depthId: "cloudletName", default: "Select Cloudlet" }));
             }
             /** set clusters in select items box */
@@ -85,14 +83,12 @@ const HeaderFiltering = props => {
             setDepthTwo([]);
             setDepthThree([]);
             if (props.compClusterinst && props.compClusterinst.length > 0) {
-                console.log("20200602 compClusterinst info == ", props.compClusterinst);
                 setDepthTwo(makeDepthTrees(props.compClusterinst, value, { byId: "cloudletName", depthId: "clusterName", default: "Select Cluster" }));
             }
             /** set appinst in select items box */
         } else if (id === "cluster") {
             setDepthThree([]);
             if (props.compAppinst && props.compAppinst.length > 0) {
-                console.log("20200602 appinst info == ", props.compAppinst);
                 setDepthThree(makeDepthTrees(props.compAppinst, value, { byId: "clusterName", depthId: "appName", default: "Select Appinstance" }));
             }
         }
@@ -130,7 +126,7 @@ const HeaderFiltering = props => {
                 onHandleApplyFilter={onHandleApplyFilter}
             />
             <div className="monitoring_title_tool">
-                <IconButton aria-label="refresh" onClick={(event) => { props.onRefresh(event) }} style={{marginLeft:10}}>
+                <IconButton aria-label="refresh" onClick={(event) => { props.onRefresh(event) }} style={{ marginLeft: 10 }}>
                     <RefreshIcon style={{ color: '#76ff03' }} />
                 </IconButton>
             </div>

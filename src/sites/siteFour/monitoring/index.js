@@ -99,7 +99,7 @@ class MonitoringAdmin extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log("20200605 did update == ", prevProps, ":autho depth = ", this.state.currentAuthDepth);
+        // console.log("20200605 did update == ", prevProps, ":autho depth = ", this.state.currentAuthDepth);
     }
 
 
@@ -175,7 +175,6 @@ class MonitoringAdmin extends React.Component {
     length = 3 : go to page of the appinstances / currentAuthDepth = 2
     */
     onHandleApplyFilter = filteredItem => {
-        console.log("20200610 filtering == ", filteredItem);
         /* example
         {region: {depth:0 , value:"EU"}}
         */
@@ -195,7 +194,6 @@ class MonitoringAdmin extends React.Component {
             case 2: currentItm = generateComponentCluster(scope, props, compCloudlet, compClusterinst, compAppinst, scope.state.filteringItems); break;
             default: currentItm;
         }
-        console.log("20200610 currentitem == ", currentItm);
         return currentItm;
     }
 
@@ -213,7 +211,6 @@ class MonitoringAdmin extends React.Component {
         const {
             compCloudlet, compClusterinst, compAppinst, currentAuthDepth
         } = this.state;
-        console.log("20200605 render =", currentAuthDepth);
         return (
             <div
                 style={{
@@ -337,7 +334,7 @@ const generateComponentAdmin = (self, infos, cloudlets, clusters, appinsts, filt
             title: { value: "Find Cloudlets", align: "left" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
         {
@@ -374,7 +371,7 @@ const generateComponentAdmin = (self, infos, cloudlets, clusters, appinsts, filt
             title: { value: "Metrics of Clients", align: "center" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
     ];
@@ -456,7 +453,7 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
             title: { value: "Events of Cloudlet", align: "center" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
     ];
@@ -506,7 +503,7 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
             title: { value: "Structure of cluster", align: "left" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
         {
@@ -517,7 +514,7 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
             title: { value: "Infomation of node", align: "left" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
         {
@@ -529,7 +526,7 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
             title: { value: "Type of Cluster", align: "left" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
         {
@@ -541,7 +538,7 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
             title: { value: "Events of Cluster", align: "center" },
             filter: null,
             page: "single",
-            legend: true,
+            legend: false,
             ...defaultProp,
         },
     ];

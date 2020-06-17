@@ -89,7 +89,6 @@ const makeData = (key, cluster, i) => {
         key.values.map(value => {
             if (value[i] === cluster) {
                 keyValue = value;
-                // console.log('20200612 data true', keyValue);
             }
         });
     }
@@ -139,7 +138,6 @@ const parseData = (response, type, clusterName) => {
                     }
                 });
 
-                console.log("20200612 data", tcp, udp, network, cpu, mem, disk);
 
                 // let keys = (data.Series && data.Series[0].columns) ? data.Series[0].columns : []
 
@@ -159,7 +157,6 @@ const parseData = (response, type, clusterName) => {
                 const memValue = mem ? mem.values[0] : null;
                 const diskValue = disk ? disk.values[0] : null;
 
-                console.log("20200612 res", tcpValue, udpValue, networkValue, cpuValue, memValue, diskValue);
 
                 // let dataForm = {cluster: clusterName, cpu: cpuValue[findCpu], mem: memValue[findMem], diskValue: diskValue[findDisk]}
                 const pathOneIdx = data.Series[0].columns.findIndex(x => x === "cluster");
