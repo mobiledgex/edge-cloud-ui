@@ -130,6 +130,7 @@ const TimeSeries = props => {
         if (props.id) setPrevPropsId(props.id);
         if (props.divide) maxDataCount = props.divide;
         if (props.type) setType(props.type);
+        console.log("20200617 useeffect in timesereis 11 = ", props.data, "id = ", props.id);
         // cloudlet
         if (props.data && (props.data !== data) && props.data[props.id]) {
             chartUpdate({
@@ -160,7 +161,6 @@ const TimeSeries = props => {
         }
         if (props.legendInfo) {
             setLegendInfo(props.legendInfo);
-
         }
         if (props.margin) setMargin(props.margin);
     }, [props]);
@@ -169,6 +169,7 @@ const TimeSeries = props => {
     * Stored on the stack whenever data is loaded
     */
     const chartUpdate = prevProps => {
+        console.log("20200617 update chart in timesereis 22 = ", prevProps.data, "id = ", prevProps.id);
         if (prevProps.id === dataType.NETWORK_CLOUDLET) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
@@ -216,22 +217,35 @@ const TimeSeries = props => {
         }
 
         if (prevProps.id === dataType.RUNNING_CLUSTER_INST) {
+            // TODO: 필터링이 있을 경우, 선택된(filtered) 된 cloudlet만 표현한다. 그렇지 않을경우 모든 cloudlets 대한 cluster 표현.
+            console.log("20200617 update chart in timesereis = ", prevProps.data, "id = ", prevProps.id);
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
 
-                shortHand.map(data => {
-                    const keys = Object.keys(data);
-                    const methods = keys;
-                    if (keys.indexOf("null") === -1) {
-                        reloadChartColumn(
-                            { [methods[0]]: data[methods[0]] },
-                            methods[0],
-                            type,
-                            prevProps.id,
-                            prevProps.calculate ? "summ" : null
-                        );
-                    }
-                });
+                // shortHand.map(data => {
+                //     const keys = Object.keys(data);
+                //     const methods = keys;
+
+                //     reloadChartColumn(
+                //         { [methods[0]]: data[methods[0]] },
+                //         methods[0],
+                //         type,
+                //         prevProps.id,
+                //         prevProps.calculate ? "summ" : null
+                //     );
+
+                // });
+
+                // TEST
+                const keys = Object.keys(data);
+                const methods = keys;
+                reloadChartColumn(
+                    { shortHand },
+                    methods[0],
+                    type,
+                    prevProps.id,
+                    prevProps.calculate ? "summ" : null
+                );
             }
         }
     };
@@ -299,35 +313,36 @@ const TimeSeries = props => {
         revision += 1;
     };
 
-    const reloadChartColumn = (id) => {
+    const reloadChartColumn = (data, cloudlet, _type, id, calculate) => {
+        console.log("20200617 in timeseries id = ", id);
         let seriesData = null;
-        const xAxis = data[cloudlet].x;
-        const xCloudlet = data[cloudlet].names;
-        const names = data[cloudlet].x;
-        const cloudletName = data[cloudlet].names;
+        // const xAxis = data[cloudlet].x;
+        // const xCloudlet = data[cloudlet].names;
+        // const names = data[cloudlet].x;
+        // const cloudletName = data[cloudlet].names;
         const title = (id === dataType.NETWORK_CLOUDLET) ? "Used" : "Method";
         const unit = (id === dataType.NETWORK_CLOUDLET) ? "GBs" : "Count";
-        const appinst = data[cloudlet].names[0];
+        // const appinst = data[cloudlet].names[0];
         const time = (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? "Time" : "";
-        const summaryX = xCloudlet[0];
-        const summaryY = summaryArray(data[cloudlet].y);
-        let xValues = [];
-        let yValues = [];
-        if (calculate === "summ") {
-            xValues = [summaryX];
-            yValues = [summaryY];
-        } else {
-            xValues = xCloudlet;
-            yValues = data[cloudlet].y;
-        }
+        // const summaryX = xCloudlet[0];
+        // const summaryY = summaryArray(data[cloudlet].y);
+        // let xValues = [];
+        // let yValues = [];
+        // if (calculate === "summ") {
+        //     xValues = [summaryX];
+        //     yValues = [summaryY];
+        // } else {
+        //     xValues = xCloudlet;
+        //     yValues = data[cloudlet].y;
+        // }
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
         seriesData = {
             type: _type,
-            x: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? xAxis : xValues,
-            y: yValues,
+            x: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            y: [65, 59, 80, 81, 56, 55, 40],
             yaxis: "y",
-            text: (id === dataType.NETWORK_CLOUDLET || id === dataType.REGISTER_CLIENT) ? cloudletName : cloudletName,
-            name: data[cloudlet].names[0], // legend lable
+            text: "appinstInfoTEST",
+            name: "appinstInfoTEST", // legend lable
             mode: "lines+markers",
             // line: {
             //     dash: "solid",
@@ -350,24 +365,31 @@ const TimeSeries = props => {
             }
             loadedCount++;
         }
-        setChartData({ [id]: stackData });
+        // 잠시 막음 20200617 ------ ------ 
+        // setChartData({ [id]: stackData });
         revision += 1;
         // ****************************** //
-        // const stackData = {
-        //     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        //     datasets: [
-        //         {
-        //             label: 'My First dataset',
-        //             backgroundColor: 'rgba(255,99,132,0.2)',
-        //             borderColor: 'rgba(255,99,132,1)',
-        //             borderWidth: 1,
-        //             hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-        //             hoverBorderColor: 'rgba(255,99,132,1)',
-        //             data: [65, 59, 80, 81, 56, 55, 40]
-        //         }
-        //     ]
-        // };
-        // setChartData({ [id]: [stackData] });
+        /* tacked data example ==============
+        type: 'horizontalBar',
+        const testdata = {
+        labels: ["2014", "2013", "2012", "2011"],
+
+        datasets: [{
+            data: [727, 589, 537, 543],
+            backgroundColor: "rgba(63,103,126,1)",
+            hoverBackgroundColor: "rgba(50,90,100,1)"
+        }, {
+            data: [238, 553, 746, 884],
+            backgroundColor: "rgba(163,103,126,1)",
+            hoverBackgroundColor: "rgba(140,85,100,1)"
+        }, {
+            data: [1238, 553, 746, 884],
+            backgroundColor: "rgba(63,203,226,1)",
+            hoverBackgroundColor: "rgba(46,185,235,1)"
+        }]
+    
+        */
+        setChartData({ [id]: stackData });
     };
 
     const resetData = () => {
@@ -400,123 +422,3 @@ TimeSeries.defaultProps = {
 
 
 export default TimeSeries;
-
-
-
-/*
-
-            <PlotlyComponent
-                className="plotly-chart"
-                style={{
-                    backgroundColor: "transparent",
-                    width: vWidth,
-                    height: vHeight,
-                    padding: 5
-                }}
-                data={chartData}
-                layout={{
-                    title: null,
-                    autosize: true,
-                    width: vWidth - wGab,
-                    height: vHeight - hGab,
-                    margin,
-                    paper_bgcolor: "transparent",
-                    plot_bgcolor: "transparent",
-                    legend: {
-                        orientation: "h",
-                        x: 0,
-                        y: 1,
-                        xanchor: "bottom",
-                        font: {
-                            family: "Roboto",
-                            size: 10,
-                            color: "rgb(54, 54, 54)"
-                        },
-                        bgcolor: "#212121",
-                        bordercolor: "#454545",
-                        borderwidth: 1
-                    },
-                    showlegend: showLegend,
-                    xaxis: {
-                        showgrid: false,
-                        zeroline: true,
-                        showline: true,
-                        mirror: "ticks",
-                        gridcolor: "rgba(255,255,255,.05)",
-                        gridwidth: 1,
-                        zerolinecolor: "rgba(255,255,255,0)",
-                        zerolinewidth: 1,
-                        linecolor: "rgba(255,255,255,.2)",
-                        linewidth: 1,
-                        color: "rgba(255,255,255,.4)",
-                        domain: [0, 0.94]
-                    },
-                    yaxis: {
-                        showgrid: true,
-                        zeroline: false,
-                        showline: true,
-                        mirror: "ticks",
-                        ticklen: 3,
-                        tickcolor: "rgba(0,0,0,0)",
-                        gridcolor: "rgba(255,255,255,.05)",
-                        gridwidth: 1,
-                        zerolinecolor: "rgba(255,255,255,0)",
-                        zerolinewidth: 1,
-                        linecolor: "rgba(255,255,255,.2)",
-                        linewidth: 1,
-                        color: "rgba(255,255,255,.4)"
-                        // rangemode: 'tozero'
-                    },
-                    yaxis2: {
-                        showgrid: true,
-                        zeroline: false,
-                        showline: true,
-                        mirror: "ticks",
-                        ticklen: 3,
-                        tickcolor: "rgba(0,0,0,0)",
-                        gridcolor: "rgba(255,255,255,.05)",
-                        gridwidth: 1,
-                        zerolinecolor: "rgba(255,255,255,0)",
-                        zerolinewidth: 1,
-                        linecolor: "rgba(255,255,255,.2)",
-                        linewidth: 1,
-                        color: "rgba(255,255,255,.4)",
-                        overlaying: "y",
-                        side: "right",
-                        position: y2Position,
-                        range: y2Range
-                        // rangemode: 'tozero'
-                    },
-                    yaxis3: {
-                        showgrid: true,
-                        zeroline: false,
-                        showline: true,
-                        mirror: "ticks",
-                        ticklen: 3,
-                        tickcolor: "rgba(0,0,0,0)",
-                        gridcolor: "rgba(255,255,255,.05)",
-                        gridwidth: 1,
-                        zerolinecolor: "rgba(255,255,255,0)",
-                        zerolinewidth: 1,
-                        linecolor: "rgba(255,255,255,.2)",
-                        linewidth: 1,
-                        color: "rgba(255,255,255,.4)",
-                        overlaying: "y",
-                        side: "right",
-                        position: y3Position,
-                        range: y3Range
-                    },
-
-                    points: {
-                        width: 1
-                    },
-                    hoverlabel: {
-                        bordercolor: "rgba(255,255,255,.3)",
-                        font: { color: "rgba(255,255,255,.7)" }
-                    },
-                    hovermode: "closest",
-                    datarevision: datarevision + 1
-                }}
-                revision={revision}
-            />
-            */

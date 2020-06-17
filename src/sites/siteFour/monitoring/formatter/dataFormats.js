@@ -204,7 +204,7 @@ const setdataPartCluster = (data, req, cloudlet, cloudletIdx, appinstPath, metho
         x: seriesX, y: seriesY, names, appinsts
     };
 };
-const parseRunningCluster = response => {
+const parseRunningCluster = (response, id) => {
     const liveness = [];
     let concatData = [];
     const seriesX = [];
@@ -239,28 +239,22 @@ const parseRunningCluster = response => {
         });
         return (part === "list") ? appNames : (part === "on") ? onCount : offCount;
     };
-    const getOnCount = (cluster) => {
-        //
-        return 0;
-    };
-    const getOffCount = (cluster) => {
-        //
-        return 0;
-    };
+
     const testCloudletName = "packetcloudlet";
     const cloudlets = parseCountCluster(concatData);
     const cloudletKeys = Object.keys(cloudlets);
     const clusterInfo = {};
+    const dataStack = [];
     cloudletKeys.map(key => {
         clusterInfo[key] = [];
         cloudlets[key].map(cluster => {
-            clusterInfo[key].push({ [cluster.clusterName]: { appinsts: getAppCount(cluster.clusterName), on: getOnCount(cluster.clusterName), off: getOffCount(cluster.clusterName) } });
+            clusterInfo[key].push({ [cluster.clusterName]: { appinsts: getAppCount(cluster.clusterName, "list"), on: getAppCount(cluster.clusterName, "on"), off: getAppCount(cluster.clusterName, "off") } });
         });
+        dataStack.push(clusterInfo[key]);
     });
+    console.log("20200617 group by cloudlets ", dataStack);
 
-    console.log("20200616 group by cloudlets ", clusterInfo);
-
-    return clusterInfo;
+    return { [id]: dataStack };
 };
 
 
@@ -272,4 +266,4 @@ export const dataFormaFindCloudlet = response => parseFindCloudlet(response);
 export const dataFormatClientList = response => parseClientList(response);
 export const dataFormatCounterCluster = response => parseCounterCluster(response);
 export const dataFormatHealthCloudlet = response => parseHealthCloudlet(response);
-export const dataFormatRunningCluster = response => parseRunningCluster(response);
+export const dataFormatRunningCluster = async (response, id) => await parseRunningCluster(response, id);

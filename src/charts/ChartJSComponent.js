@@ -1,5 +1,5 @@
 import React from "react";
-import { Line, Bar, HorizontalBar } from "react-chartjs-2";
+import { Line, Bar, HorizontalBar, Chart } from "react-chartjs-2";
 import { sumBy, isEqual, sortBy } from "lodash";
 import Popper from "@material-ui/core/Popper";
 import { generateUniqueId } from "../services/serviceMC";
@@ -7,12 +7,30 @@ import { removeDuplicate } from "../utils";
 import randomColor from "../libs/randomColor";
 
 export const valueAsPercentage = (value, total) => `${(value / total) * 100}%`;
-
+let myRef = null;
 const getRandomColors = (_count, _alpha) => {
     const colors = randomColor({ hue: "blue", count: _count, alpha: _alpha });
     return colors;
 };
+/* chart : https://codepen.io/jamiecalder/pen/NrROeB */
 
+const testdata = {
+    labels: ["2014", "2013", "2012", "2011"],
+
+    datasets: [{
+        data: [727, 589, 537, 543],
+        backgroundColor: "rgba(63,103,126,1)",
+        hoverBackgroundColor: "rgba(50,90,100,1)"
+    }, {
+        data: [238, 553, 746, 884],
+        backgroundColor: "rgba(163,103,126,1)",
+        hoverBackgroundColor: "rgba(140,85,100,1)"
+    }, {
+        data: [1238, 553, 746, 884],
+        backgroundColor: "rgba(63,203,226,1)",
+        hoverBackgroundColor: "rgba(46,185,235,1)"
+    }]
+}
 const listItemStyle = {
     color: "#fff",
     listStyle: "none",
@@ -63,8 +81,75 @@ const getOptionsBar = params => ({
     redraw: true,
     maintainAspectRatio: false,
 });
+/** stacked horizontal bar chart * */
+const getOptionsStackBar = params => (
+    {
+        tooltips: {
+            enabled: false
+        },
+        hover: {
+            animationDuration: 0
+        },
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    fontFamily: "'Open Sans Bold', sans-serif",
+                    fontSize: 11
+                },
+                scaleLabel: {
+                    display: false
+                },
+                gridLines: {
+                },
+                stacked: true
+            }],
+            yAxes: [{
+                gridLines: {
+                    display: false,
+                    color: "#fff",
+                    zeroLineColor: "#fff",
+                    zeroLineWidth: 0
+                },
+                ticks: {
+                    fontFamily: "'Open Sans Bold', sans-serif",
+                    fontSize: 11
+                },
+                stacked: true
+            }]
+        },
+        legend: {
+            display: false
+        },
 
-let myRef = null;
+        animation: {
+            onComplete() {
+                const { chartInstance } = myRef;
+                const { ctx } = chartInstance;
+                ctx.textAlign = "left";
+                ctx.font = "9px Open Sans";
+                ctx.fillStyle = "#fff";
+
+                Chart.helpers.each(params.datasets.forEach(function (dataset, i) {
+                    const meta = chartInstance.controller.getDatasetMeta(i);
+                    let data = {};
+                    Chart.helpers.each(meta.data.forEach(function (bar, index) {
+                        data = dataset.data[index];
+                        if (i === 0) {
+                            ctx.fillText(data, 50, bar._model.y + 4);
+                        } else {
+                            ctx.fillText(data, bar._model.x - 25, bar._model.y + 4);
+                        }
+                    }), this);
+                }), this);
+            }
+        },
+        pointLabelFontFamily: "Quadon Extra Bold",
+        scaleFontFamily: "Quadon Extra Bold",
+    }
+);
+
+
 const ChartJSComponent = defaultProps => {
     const [id, setId] = React.useState();
     const [idx, setIdx] = React.useState(generateUniqueId());
@@ -76,7 +161,7 @@ const ChartJSComponent = defaultProps => {
     const [options, setOptions] = React.useState();
     const [legendDisplay, setLegendDisplay] = React.useState(false);
     const [legendList, setLegendList] = React.useState({});
-    const [legendId, setLegendId] = React.useState('');
+    const [legendId, setLegendId] = React.useState("");
     const [legendOpen, setLegendOpen] = React.useState(false);
     const [randomColors, setRandomColors] = React.useState(getRandomColors(200, 0.5));
     const [randomColorsB, setRandomColorsB] = React.useState(getRandomColors(200, 1));
@@ -123,7 +208,6 @@ const ChartJSComponent = defaultProps => {
     };
 
     const initialize = (_id, _data, _type) => {
-
         setRandomColors(getRandomColors(_data.length, 0.5));
         setRandomColorsB(getRandomColors(_data.length, 1));
         const myChart = {
@@ -137,7 +221,6 @@ const ChartJSComponent = defaultProps => {
         };
         setOptions(myChart.options);
         setData(myChart.data);
-
     };
 
     React.useEffect(() => {
@@ -152,24 +235,15 @@ const ChartJSComponent = defaultProps => {
                 const legend = myRef.chartInstance.legend.legendItems;
                 setLegend(legend);
                 setLegendOpen(defaultProps.legendShow);
-                setAnchorEl(defaultProps.legendShow ? defaultProps.legendInfo.target : null)
+                setAnchorEl(defaultProps.legendShow ? defaultProps.legendInfo.target : null);
             }, 100);
         }
         //
     }, [defaultProps.id, defaultProps.type, defaultProps.legendShow, defaultProps.legendInfo]);
 
-    // React.useEffect(() => {
-    //     setLegendId(defaultProps.legendInfo.id);
-    //     if (id === legendId) {
-    //         // setLegendOpen(defaultProps.legendInfo.open);
-    //         setAnchorEl(legendOpen ? defaultProps.legendInfo.target : null)
-    //         console.log('20200610 legend', legendId, legendOpen, anchorEl)
-    //     }
-
-    // }, [defaultProps.legendInfo]);
-
     React.useEffect(() => {
         const propData = defaultProps.data && defaultProps.data[defaultProps.id];
+        console.log("20200617 props data in chartJScomponent = ", propData);
         if ((propData && propData.length > 0)) {
             if (propData[0].x.length > 0 && !initData) {
                 setInitData(true);
@@ -210,10 +284,10 @@ const ChartJSComponent = defaultProps => {
                     ? <HorizontalBar
                         id="typeisColumn"
                         ref={element => setChartRef(element)}
-                        data={data}
+                        data={testdata}
                         width={null}
                         height={null}
-                        options={options || { maintainAspectRatio: false }}
+                        options={getOptionsStackBar(testdata) || { maintainAspectRatio: false }}
                     />
                     : <Line
                         id="typeisLine"
@@ -255,20 +329,6 @@ const ChartJSComponent = defaultProps => {
 export default ChartJSComponent;
 
 
-const testdata = {
-    labels: ['January'],
-    datasets: [
-        {
-            label: 'January',
-            backgroundColor: 'rgba(255,99,132,0.2)',
-            borderColor: 'rgba(255,99,132,1)',
-            borderWidth: 1,
-            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-            hoverBorderColor: 'rgba(255,99,132,1)',
-            data: [65]
-        }
-    ]
-};
 /*
 const backgroundColor = [
     "rgba(255, 99, 132, 0.2)",
