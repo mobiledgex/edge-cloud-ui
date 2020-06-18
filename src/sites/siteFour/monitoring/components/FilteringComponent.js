@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
 
 const FilteringComponent = props => {
     const classes = useStyles();
-    const [selecteditem, setSelecteditem] = React.useState("");
+    const [selectedItem, setSelectedItem] = React.useState("");
     const [data, setData] = React.useState(props.data);
     const [filter, setFilter] = React.useState(props.filterInfo);
 
@@ -68,14 +68,16 @@ const FilteringComponent = props => {
         if (props.filterInfo) {
             setFilter(props.filterInfo);
             if (props.filterInfo.method === serviceMC.getEP().METRICS_CLOUDLET) {
-                setSelecteditem(filterOptions.DISK_USED);
+                setSelectedItem(filterOptions.DISK_USED);
             }
         }
     }, [props]);
 
     const handleChange = event => {
-        setSelecteditem(event.target.value);
+        setSelectedItem(event.target.value);
+        props.onHandleFilter(event.target.value);
     };
+
     const makeMenuItem = items => {
         let utilsKeys = [];
         let ipsKeys = [];
@@ -99,7 +101,7 @@ const FilteringComponent = props => {
                 <Select
                     labelId="demo-customized-select-label"
                     id="demo-customized-select"
-                    value={selecteditem}
+                    value={selectedItem} // <--- selectedItem 이 바뀌지 않는 것 같음 
                     onChange={handleChange}
                     input={<BootstrapInput />}
                 >

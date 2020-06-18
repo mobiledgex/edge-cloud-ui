@@ -149,7 +149,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                     if (props.cloudlets[findIdx]) newProps.cloudlets = [props.cloudlets[findIdx]];
                 }
                 const result = await Service.MetricsService(newProps || props, self);
-                console.log('20200618 select', result, result2);
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result);
                     this.onReceiveResult(reduceResult, self, props.method);
