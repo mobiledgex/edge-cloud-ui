@@ -336,10 +336,24 @@ const TimeSeries = props => {
         //     yValues = data[cloudlet].y;
         // }
         /* 속성을 넘겨 받아야 한다. 차트의 타입이 라인 인지 바 인지 */
+        /** refer to : https://codepen.io/jamiecalder/pen/NrROeB */
+        const clusters = [];
+        const powerData = [[], []];
+        data.shortHand.map(_data => {
+            _data.map((item, i) => {
+                const itemKey = Object.keys(item)[0]; // cluster
+                clusters.push(itemKey);
+                const powerStates = item[itemKey]; // clusters
+                powerData[0].push(powerStates.off);
+                powerData[1].push(powerStates.on);
+
+            });
+        });
+        console.log("20200618 power data :: clusters = ", clusters, ": power = ", powerData);
         seriesData = {
             type: _type,
-            x: ["clusterA", "clusterB", "clusterC", "clusterD"],
-            y: [[3, 2, 2, 3, 3], [3, 1, 1, 1, 2]],
+            x: clusters,
+            y: powerData,
             yaxis: "y",
             text: "appinstInfoTEST",
             name: "appinstInfoTEST", // legend lable
@@ -364,26 +378,7 @@ const TimeSeries = props => {
         // setChartData({ [id]: stackData });
         revision += 1;
         // ****************************** //
-        /* tacked data example ==============
-        type: 'horizontalBar',
-        const testdata = {
-        labels: ["2014", "2013", "2012", "2011"],
 
-        datasets: [{
-            data: [727, 589, 537, 543],
-            backgroundColor: "rgba(63,103,126,1)",
-            hoverBackgroundColor: "rgba(50,90,100,1)"
-        }, {
-            data: [238, 553, 746, 884],
-            backgroundColor: "rgba(163,103,126,1)",
-            hoverBackgroundColor: "rgba(140,85,100,1)"
-        }, {
-            data: [1238, 553, 746, 884],
-            backgroundColor: "rgba(63,203,226,1)",
-            hoverBackgroundColor: "rgba(46,185,235,1)"
-        }]
-    
-        */
         setChartData({ [id]: stackData });
     };
 

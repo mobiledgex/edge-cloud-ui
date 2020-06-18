@@ -82,14 +82,14 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        if (prevState.method && this.props.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
-            this.initMethod = this.props.method;
-            this.initialize(this.props, this);
-            // return true;
-        }
         if (prevProps.filteringItems) {
             console.log("20200618 filtering 44 = ", prevProps.filteringItems);
             // this.initialize(this.props, this);
+            // return true;
+        }
+        if (prevState.method && this.props.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
+            this.initMethod = this.props.method;
+            this.initialize(this.props, this);
             // return true;
         }
         return null;
