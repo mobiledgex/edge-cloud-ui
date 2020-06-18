@@ -10,20 +10,20 @@ let fields = formatter.fields
 export const configs = [
     { field: fields.kind, serverField: 'kind', label: 'Kind' },
     { field: fields.config, serverField: 'config', label: 'Config', dataType: TYPE_YAML }
-  ]
+]
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
-    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter:true },
-    { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true, filter:true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
+    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true },
+    { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true, filter: true },
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true },
-    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter:true },
+    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter: true },
     { field: fields.command, serverField: 'command', label: 'Command' },
     { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
-    { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true, filter:true },
+    { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true, filter: true },
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports' },
     { field: fields.skipHCPorts, serverField: 'skip_hc_ports', label: 'Skip Health Check' },
     { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
@@ -33,7 +33,7 @@ export const keys = () => ([
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
-    { field: fields.configs, serverField: 'configs', label: 'Configs', keys:configs },
+    { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
@@ -54,7 +54,9 @@ export const getKey = (data, isCreate) => {
         app.scale_with_cluster = data[fields.scaleWithCluster]
         app.deployment = data[fields.deployment]
         app.image_type = constant.imageType(data[fields.imageType])
-        app.image_path = data[fields.imagePath]
+        if (data[fields.imagePath]) {
+            app.image_path = data[fields.imagePath].toLowerCase()
+        }
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts].toLowerCase()
         }
@@ -123,66 +125,31 @@ export const createApp = (data) => {
     return { method: CREATE_APP, data: requestData }
 }
 
-const compareObjects = (newData, oldData, ignoreCase) => {
-    if(newData === undefined && oldData === undefined)
-    {
-        return true
-    }
-    else if(newData === undefined && oldData !== undefined)
-    {
-        return false
-    }
-    else if(newData.length === 0 && oldData === undefined)
-    {
-        return true
-    }
-    else if(newData === undefined || oldData === undefined)
-    {
-        return false
-    }
-    else if(ignoreCase)
-    {
-        return isEqual(newData.toLowerCase(), oldData.toLowerCase())
-    }
-    else
-    {
-        return isEqual(newData, oldData)
-    }
-}
-
 export const updateApp = async (self, data, originalData) => {
     let requestData = getKey(data, true)
     let updateFields = []
-    if(!compareObjects(data[fields.imagePath], originalData[fields.imagePath]))
-    {
+    if (!formatter.compareObjects(data[fields.imagePath], originalData[fields.imagePath])) {
         updateFields.push('4')
     }
-    if(!compareObjects(data[fields.accessPorts], originalData[fields.accessPorts], true))
-    {
+    if (!formatter.compareObjects(data[fields.accessPorts], originalData[fields.accessPorts], true)) {
         updateFields.push('7')
     }
-    if(!compareObjects(data[fields.flavorName], originalData[fields.flavorName]))
-    {
+    if (!formatter.compareObjects(data[fields.flavorName], originalData[fields.flavorName])) {
         updateFields.push('9.1')
     }
-    if(!compareObjects(data[fields.authPublicKey], originalData[fields.authPublicKey]))
-    {
+    if (!formatter.compareObjects(data[fields.authPublicKey], originalData[fields.authPublicKey])) {
         updateFields.push('12')
     }
-    if(!compareObjects(data[fields.command], originalData[fields.command]))
-    {
+    if (!formatter.compareObjects(data[fields.command], originalData[fields.command])) {
         updateFields.push('13')
     }
-    if(!compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest]))
-    {
+    if (!formatter.compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest])) {
         updateFields.push('16')
     }
-    if(!compareObjects(data[fields.androidPackageName], originalData[fields.androidPackageName]))
-    {
+    if (!formatter.compareObjects(data[fields.androidPackageName], originalData[fields.androidPackageName])) {
         updateFields.push('18')
     }
-    if(!compareObjects(data[fields.configs], originalData[fields.configs]))
-    {
+    if (!formatter.compareObjects(data[fields.configs], originalData[fields.configs])) {
         if (data[fields.configs] && data[fields.configs].length > 0) {
             data[fields.configs] = data[fields.configs].map(config => {
                 config[fields.kind] = constant.configType(config[fields.kind])
@@ -191,28 +158,22 @@ export const updateApp = async (self, data, originalData) => {
         }
         updateFields.push('21', '21.1', '21.2')
     }
-    if(!compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster]))
-    {
+    if (!formatter.compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster])) {
         updateFields.push('22')
     }
-    if(!compareObjects(data[fields.officialFQDN], originalData[fields.officialFQDN]))
-    {
+    if (!formatter.compareObjects(data[fields.officialFQDN], originalData[fields.officialFQDN])) {
         updateFields.push('25')
     }
-    if(!compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName]))
-    {
+    if (!formatter.compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName])) {
         updateFields.push('28')
     }
-    if(!compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName]))
-    {
+    if (!formatter.compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName])) {
         updateFields.push('30')
     }
-    if(!compareObjects(data[fields.templateDelimiter], originalData[fields.templateDelimiter]))
-    {
+    if (!formatter.compareObjects(data[fields.templateDelimiter], originalData[fields.templateDelimiter])) {
         updateFields.push('33')
     }
-    if(!compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts]))
-    {
+    if (!formatter.compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts])) {
         updateFields.push('34')
     }
     requestData.app.fields = updateFields
@@ -231,11 +192,9 @@ const customData = (value) => {
     value[fields.imageType] = constant.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
-    if(value[fields.configs])
-    {
+    if (value[fields.configs]) {
         let configs = value[fields.configs]
-        for(let i=0;i<configs.length;i++)
-        {
+        for (let i = 0; i < configs.length; i++) {
             let config = configs[i]
             config.kind = constant.configType(config.kind)
         }

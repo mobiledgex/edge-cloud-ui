@@ -79,6 +79,7 @@ export const SHOW_LOGS = "ShowLogs";
 export const SHOW_CONSOLE = "RunConsole";
 export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
+export const UPDATE_AUTO_PROV_POLICY = "UpdateAutoProvPolicy";
 export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
 export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
 export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
@@ -154,6 +155,7 @@ export function getPath(request) {
         case DELETE_CLOUDLET_POOL_MEMBER:
         case SHOW_AUTO_PROV_POLICY:
         case CREATE_AUTO_PROV_POLICY:
+        case UPDATE_AUTO_PROV_POLICY:
         case DELETE_AUTO_PROV_POLICY:
         case ADD_AUTO_PROV_POLICY_CLOUDLET:
         case REMOVE_AUTO_PROV_POLICY_CLOUDLET:

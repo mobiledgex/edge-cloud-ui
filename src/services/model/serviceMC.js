@@ -11,15 +11,21 @@ export function getEP() {
 
 export const mcURL = (isWebSocket) =>
 {
-    let serverURL = process.env.REACT_APP_API_ENDPOINT
+    let serverURL = ''
     if (process.env.NODE_ENV === 'production') {
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
-    }
 
-    if (isWebSocket) {
-        serverURL = serverURL.replace('http', 'ws')
+        if (isWebSocket) {
+            serverURL = serverURL.replace('http', 'ws')
+        }
+    }
+    else
+    {
+        if (isWebSocket) {
+            serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+        }
     }
     return serverURL
 }
@@ -130,7 +136,6 @@ export function sendWSRequest(request, callback) {
 }
 
 export function sendMultiRequest(self, requestDataList, callback) {
-    
     if (requestDataList && requestDataList.length > 0) {
         let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
         showSpinner(self, isSpinner)
