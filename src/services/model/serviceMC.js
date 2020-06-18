@@ -131,7 +131,6 @@ export function sendWSRequest(request, callback) {
 }
 
 export function sendMultiRequest(self, requestDataList, callback) {
-
     if (requestDataList && requestDataList.length > 0) {
         let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
         showSpinner(self, isSpinner)
