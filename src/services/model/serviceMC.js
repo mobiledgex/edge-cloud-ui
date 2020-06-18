@@ -12,20 +12,20 @@ export function getEP() {
 export const mcURL = (isWebSocket) =>
 {
     let serverURL = ''
-    if(process.env.NODE_ENV === 'production' )
-    {
+    if (process.env.NODE_ENV === 'production') {
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
-    }
 
-    if (serverURL.includes('localhost')) {
-        serverURL = process.env.REACT_APP_API_ENDPOINT;
+        if (isWebSocket) {
+            serverURL = serverURL.replace('http', 'ws')
+        }
     }
-
-    if(isWebSocket)
+    else
     {
-        serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+        if (isWebSocket) {
+            serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+        }
     }
     return serverURL
 }
@@ -67,8 +67,6 @@ const showError = (self, request, message) => {
 const checkExpiry = (self, message) => {
     let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
     if (isExpired && self) {
-        localStorage.setItem('userInfo', null)
-        localStorage.setItem('sessionData', null)
         setTimeout(() => {
             if (self && self.props && self.props.history) {
                 self.props.history.push({
@@ -98,6 +96,19 @@ function responseError(self, request, error, callback) {
     }
 }
 
+function responseStatus(self, status)
+{
+    let valid = true
+    switch(status)
+    {
+        case 504:
+            valid = false
+            self.props.handleAlertInfo('error', '504 Gateway Timeout')
+            break;
+    }
+    return valid
+}
+
 export function sendWSRequest(request, callback) {
     const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
@@ -125,7 +136,6 @@ export function sendWSRequest(request, callback) {
 }
 
 export function sendMultiRequest(self, requestDataList, callback) {
-    
     if (requestDataList && requestDataList.length > 0) {
         let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
         showSpinner(self, isSpinner)
@@ -147,14 +157,16 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
-                responseError(self, requestDataList[0], error, callback)
+                if (error.response && responseStatus(self, error.response.status)) {
+                    responseError(self, requestDataList[0], error, callback)
+                }
             })
     }
 }
 
 export const sendSyncRequest = async (self, request) => {
     try {
-        showSpinner(self, true)
+        request.showSpinner === undefined && showSpinner(self, true)
         let response = await axios.post(getHttpURL(request), request.data,
             {
                 headers: getHeader(request)
@@ -163,7 +175,9 @@ export const sendSyncRequest = async (self, request) => {
         showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        responseError(self, request, error)
+        if (error.response && responseStatus(self, error.response.status)) {
+            responseError(self, request, error)
+        }
     }
 }
 
@@ -177,7 +191,9 @@ export const sendSyncRequestWithError = async (self, request) => {
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        return { request: request, error: error }
+        if (error.response && responseStatus(self, error.response.status)) {
+            return { request: request, error: error }
+        }
     }
 }
 
@@ -194,7 +210,7 @@ export function sendRequest(self, request, callback) {
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
-            if (error.response) {
+            if (error.response && responseStatus(self, error.response.status)) {
                 responseError(self, request, error, callback)
             }
         })

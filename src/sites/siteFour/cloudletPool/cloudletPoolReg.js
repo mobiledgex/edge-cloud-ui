@@ -219,7 +219,7 @@ class CloudletPoolReg extends React.Component {
                 { label: `${label} Cloudlets`, formType: 'Header', visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
-                { field: fields.cloudlets, label: 'Clouldets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
+                { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
                 { label: `${label} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
                 { label: this.props.action ? 'Cancel' : 'Skip', formType: 'Button', onClick: this.onCloudletCancel }
             ]

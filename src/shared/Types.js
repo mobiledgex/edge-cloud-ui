@@ -114,6 +114,7 @@ export type TypeCloudlet = {
     Platform_type: number,
     State: number,
     Progress: string,
+    colorCodeIndex:number,
 }
 
 export type TypeCloudletEventLog = {
@@ -141,6 +142,7 @@ export type TypeCluster = {
     State: number,
     Status: any,
     uuid: string,
+    colorCodeIndex: number,
 }
 
 export type TypeAppInstanceUsage2 = {
@@ -210,9 +212,11 @@ export type TypeClusterUsageOne = {
     sumUdpRecvErr: number,
     sumTcpConns: number,
     sumTcpRetrans: number,
+    colorCodeIndex: number,
 
 }
 export type TypeAppInst = {
+
     "Region": string,
     "OrganizationName": string,
     "AppName": string,
@@ -250,6 +254,12 @@ export type TypeLineChartData = {
     usageSetList: string,
     newDateTimeList: string,
     hardwareType: string,
+}
+
+export type TypeChartDataSet ={
+    labels: any,
+    datasets:any,
+    isNoData: boolean
 }
 
 export type TypeClusterEventLog = {

@@ -201,6 +201,7 @@ export const PageMonitoringStyles = {
         alignItems: 'center',
         marginLeft: 0,
         marginRight: 5,
+        //marginTop: -15,
         cursor: 'pointer',
         backgroundColor: 'transparent',
     },
@@ -484,7 +485,15 @@ export const PageMonitoringStyles = {
     gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 
 
+    miniTableGrid: {width: '100%', overflowX: 'scroll', marginTop: -5, scrollbarWidth: 'thin'},
     appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
+    miniTableNoData:{
+        color: 'orange',
+        marginTop: 25,
+        fontSize: 18,
+        fontWeight: 'bold',
+        fontStyle: 'italic'
+    },
     appInstGridTableData2: {flex: .083, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
 }
 
@@ -583,11 +592,10 @@ export const LegendOuterDiv = styled.div`
   border-color: dimgrey;
   margin-left: 10px;
   display: flex;
-  height: 25px;
   width: 98.925%;
   margin-right: 5px;
   flex-wrap: wrap;
-  padding: auto;
+  padding: 2px;
 `
 
 export const ChartIconOuterDiv = styled.div`

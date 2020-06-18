@@ -218,27 +218,30 @@ class MexListView extends React.Component {
     will be changed to make it more generalize*/
     onActionClose = (action) => {
         let data = this.selectedRow;
-        switch (action.label) {
-            case 'Delete':
-                this.onWarning(action, 'delete', false, data)
-                break
-            case 'Upgrade':
-                this.onWarning(action, 'upgrade', false, data)
-                break;
-            case 'Refresh':
-                this.onWarning(action, 'refresh', false, data)
-                break;
-            case 'Power On':
-                this.onWarning(action, 'power on', false, data)
-                break;
-            case 'Power Off':
-                this.onWarning(action, 'power off', false, data)
-                break;
-            case 'Reboot':
-                this.onWarning(action, 'reboot', false, data)
-                break;
-            default:
-                action.onClick(action, data)
+        let valid = action.onClickInterept ? action.onClickInterept(action, data) : true
+        if (valid) {
+            switch (action.label) {
+                case 'Delete':
+                    this.onWarning(action, 'delete', false, data)
+                    break
+                case 'Upgrade':
+                    this.onWarning(action, 'upgrade', false, data)
+                    break;
+                case 'Refresh':
+                    this.onWarning(action, 'refresh', false, data)
+                    break;
+                case 'Power On':
+                    this.onWarning(action, 'power on', false, data)
+                    break;
+                case 'Power Off':
+                    this.onWarning(action, 'power off', false, data)
+                    break;
+                case 'Reboot':
+                    this.onWarning(action, 'reboot', false, data)
+                    break;
+                default:
+                    action.onClick(action, data)
+            }
         }
     }
 

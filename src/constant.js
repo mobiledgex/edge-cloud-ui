@@ -2,6 +2,7 @@ import {fields} from "./services/model/format"
 
 export const TYPE_JSON = 'JSON'
 export const TYPE_YAML = 'YAML'
+export const TYPE_URL = 'URL'
 export const ADD_CLOUDLET = 'AddCloudlet'
 export const DELETE_CLOUDLET = 'DeleteCloudlet'
 export const ADD_ORGANIZATION = 'AddOrganization'
@@ -36,6 +37,10 @@ export const APP = 'App'
 export const YES = 'Yes'
 export const NO = 'No'
 
+
+export const INFRA_API_ACCESS_DIRECT = 'Direct'
+export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
+
 export const ADMIN_MANAGER = 'AdminManager'
 export const OPERATOR_MANAGER = 'OperatorManager'
 export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
@@ -61,6 +66,12 @@ export const POWER_STATE_REBOOTING = 'Rebooting'
 export const POWER_STATE_REBOOT = 'Reboot'
 export const POWER_STATE_ERROR = 'Error'
 
+
+export const HEALTH_CHECK_UNKNOWN = 'Unknown'
+export const HEALTH_CHECK_FAIL_ROOTLB_OFFLINE = 'Rootlb Offline'
+export const HEALTH_CHECK_FAIL_SERVER_FAIL = 'Server Fail'
+export const HEALTH_CHECK_OK = 'OK'
+
 export const PAGE_ORGANIZATIONS = 'Organizations'
 export const PAGE_USER_ROLES = 'UserRoles'
 export const PAGE_ACCOUNTS = 'Accounts'
@@ -72,8 +83,8 @@ export const PAGE_APPS = 'Apps'
 export const PAGE_APP_INSTANCES = 'AppInstances'
 export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
 export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
+export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
-export const PAGE_AUDIT_LOGS = 'AuditLog'
 
 export const PowerState = (id) => {
     switch (id) {
@@ -166,6 +177,44 @@ export const accessType = (id) => {
             return 1
         case ACCESS_TYPE_LOAD_BALANCER:
             return 2
+        default:
+            return id
+    }
+}
+
+export const infraApiAccess = (id) => {
+    switch (id) {
+        case 0:
+            return INFRA_API_ACCESS_DIRECT
+        case 1:
+            return INFRA_API_ACCESS_RESTRICTED
+        case INFRA_API_ACCESS_DIRECT:
+            return 0
+        case INFRA_API_ACCESS_RESTRICTED:
+            return 1
+        default:
+            return id
+    }
+}
+
+export const healthCheck = (id) => {
+    switch (id) {
+        case 0:
+            return HEALTH_CHECK_UNKNOWN
+        case HEALTH_CHECK_UNKNOWN:
+            return 0
+        case 1:
+            return HEALTH_CHECK_FAIL_ROOTLB_OFFLINE
+        case HEALTH_CHECK_FAIL_ROOTLB_OFFLINE:
+            return 1
+        case 2:
+            return HEALTH_CHECK_FAIL_SERVER_FAIL
+        case HEALTH_CHECK_FAIL_SERVER_FAIL:
+            return 2
+        case 3:
+            return HEALTH_CHECK_OK
+        case HEALTH_CHECK_OK:
+            return 3
         default:
             return id
     }

@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Abel|Pathway+Gothic+One|Bungee|Candal|Righteous|Baloo+Bhai+2|Baloo+Bhaina+2|Ubuntu&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Ubuntu|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 
 
 .chartIcon {
@@ -19,15 +18,6 @@
 .ant-select-dropdown-menu-item {
     background-color: black;
 }
-
-/*DESC:MUI*/
-/*DESC:MUI*/
-/*DESC:MUI*/
-/*.MuiPaper-root {
-    color: #fff;
-    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    background-color: black;
-}*/
 
 .mon_tr {
     height: 35px;
@@ -552,6 +542,7 @@ tr td {
 .gutterRow {
     display: flex;
     cursor: pointer;
+    marginTop: 20px;
 }
 
 .clusterCloudletBox {
@@ -631,7 +622,7 @@ tr td {
 
 .clientPopup .leaflet-popup-content-wrapper {
     border-radius: 0px;
-    width: 360px !important;
+    width: 420px !important;
     border-color: #00A2FF;
     border-style: groove;
     background-color: black;
@@ -759,15 +750,113 @@ tr td {
 .ant-picker-cell-in-view {
     color: #ebe9f2;
 }
+
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
     color: #fff;
     font-weight: 600;
     background-color: #5c5c58;
 }
 
-.ant-select-selection-item{
+.ant-select-selection-item {
     background-color: #23232E;
     display: flex;
     justify-content: center;
     text-align: center;
 }
+
+
+/*todo:####################*/
+/*todo:tresSelectCheckbox*/
+/*todo:####################*/
+.ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner {
+    background-color: lightgrey !important;
+    border-color: lightgrey !important;
+}
+
+.ant-select-tree-checkbox-wrapper:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox-input:focus + .ant-select-tree-checkbox-inner {
+    border-color: lightgrey;
+}
+
+.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
+    background-color: lightgrey;
+}
+
+.ant-select-selection-item {
+    font-size: 8pt;
+    text-overflow: ellipsis;
+    width: 105px;
+    padding: 0 5px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ant-select-multiple .ant-select-selection-item {
+
+    background: #17171f;
+    border: 1px solid #17171f;
+
+}
+
+.ant-select-tree-checkbox .ant-select-tree-checkbox-checked {
+    color: red;
+}
+
+.react-grid-layout {
+    position: relative;
+    transition: height 200ms ease;
+    background-color: #292c33;
+    overflow-y: auto;
+    padding-bottom: 50px;
+    padding-right: 10px;
+    margin-right: 0px;
+    width: 100%;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+    width: 6px !important;
+
+}
+
+::-webkit-scrollbar-thumb {
+    border-right: 3px #55616b solid;
+    border-left: 3px #55616b solid;
+    background-clip: padding-box;
+}
+
+.thinScrBar {
+    scrollbar-width: thin !important;
+}
+
+.ant-select-selector {
+    height: 30px !important;
+}
+
+.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
+    background-color: #F4F9EF;
+}
+
+
+.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
+    background-color: #F4F9EF !important;
+}
+
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    background-color: dimgrey !important;
+}
+
+
+.ant-select-multiple .ant-select-selection-item {
+    background: #353535 !important;
+    border: 1px solid #55616b !important;
+    border-radius: 2px;
+}
+
+
+.ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+    background: #23232E !important;
+}
+
+

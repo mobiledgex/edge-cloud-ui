@@ -39,6 +39,7 @@ import regionInfo from './regionInfo';
 import editInstance from './editInstance';
 import deleteReset from './deleteReset';
 import checkedAudit from './checkedAudit';
+import showAuditLog from './showAuditLog';
 import stateStream from './stateStream';
 import resetMap from './resetMap';
 import submitObj from './submitObj';
@@ -72,6 +73,7 @@ const reducers = combineReducers({
     editInstance,
     regionInfo,
     checkedAudit,
+    showAuditLog,
     stateStream,
     resetMap,
     submitObj,

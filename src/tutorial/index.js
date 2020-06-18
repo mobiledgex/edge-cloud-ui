@@ -919,7 +919,7 @@ export const PolicyTutor = () => {
                 },
                 {
                     element: '.formRow-4',
-                    intro: 'Enter Deploy Client Count.'
+                    intro: 'Enter Deploy Request Count.'
                 },
                 {
                     element: '.formRow-5',

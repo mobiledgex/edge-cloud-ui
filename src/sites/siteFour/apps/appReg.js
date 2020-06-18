@@ -19,6 +19,7 @@ import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { appTutor } from "../../../tutorial";
+import { uploadData } from '../../../utils/fileUtil'
 
 
 const appSteps = appTutor();
@@ -64,29 +65,16 @@ class AppReg extends React.Component {
         this.reloadForms()
     }
 
+    onManifestLoad = (data, extra)=>
+    {
+        let form = extra.form
+        let manifestForm = form.parent.form.forms[0]
+        manifestForm.value = data
+        this.reloadForms()
+    }
+
     addManifestData = (e, form) => {
-        e.preventDefault();
-        let input = document.createElement("input");
-        input.type = "file";
-        input.accept = "*";
-        input.onchange = (event) => {
-            let file = event.target.files[0];
-            if (file) {
-                if (file.size <= 1000000) {
-                    let reader = new FileReader();
-                    reader.onload = () => {
-                        let manifestForm = form.parent.form.forms[0]
-                        manifestForm.value = reader.result;
-                        this.reloadForms()
-                    };
-                    reader.readAsText(file)
-                }
-                else {
-                    this.props.handleAlertInfo('error', 'File size cannot be >1MB')
-                }
-            }
-        };
-        input.click();
+        uploadData(e, this.onManifestLoad, {form:form})
     }
 
     deploymentManifestForm = () => ([
@@ -98,14 +86,15 @@ class AppReg extends React.Component {
     /**Deployment manifest block */
 
     portForm = () => ([
-        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 9, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1},
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm, update: true }
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 2},
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
     ])
 
     getPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.portForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.portForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
     }
 
     annotationForm = () => ([
@@ -119,16 +108,17 @@ class AppReg extends React.Component {
     }
 
     multiPortForm = () => ([
-        { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1 },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm, update: true }
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 2},
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
     ])
 
     getMultiPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.multiPortForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.multiPortForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
     }
 
     configForm = () => ([
@@ -207,6 +197,7 @@ class AppReg extends React.Component {
                     [constant.ACCESS_TYPE_LOAD_BALANCER] :
                     [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
+                this.accessTypeChange(form, forms, isInit)
                 return form
             }
             else if (form.label === 'Configs') {
@@ -266,9 +257,21 @@ class AppReg extends React.Component {
 
     protcolValueChange = (currentForm, forms, isInit) => {
         let childForms = currentForm.parent.form.forms
+        let accessType = undefined
+        let dependentData = currentForm.parent.form.dependentData
+        for (let i = 0; i < dependentData.length; i++) {
+            let parentForm = forms[dependentData[i].index]
+            if (parentForm.field === fields.accessType) {
+                accessType = parentForm.value;
+            }
+        }
+
         for (let i = 0; i < childForms.length; i++) {
             let form = childForms[i]
             if (form.field === fields.tls) {
+                form.visible = currentForm.value === 'tcp' && accessType === constant.ACCESS_TYPE_LOAD_BALANCER
+            }
+            else if (form.field === fields.skipHCPorts) {
                 form.visible = currentForm.value === 'tcp'
             }
         }
@@ -343,6 +346,29 @@ class AppReg extends React.Component {
         })
     }
 
+    accessTypeChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.ports) {
+                let protocol = undefined
+                for (let j = 0; j < form.forms.length; j++) {
+                    let childForm = form.forms[j]
+                    if (childForm.field === fields.protocol) {
+                        protocol = childForm.value;
+                    }
+                    else if (childForm.field === fields.tls) {
+                        childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp' ? true : false
+                        childForm.value = childForm.visible ? childForm.value : false
+                        protocol = undefined
+                    }
+                }
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
@@ -358,6 +384,9 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.accessType) {
+            this.accessTypeChange(form, forms, isInit)
         }
     }
 
@@ -403,16 +432,17 @@ class AppReg extends React.Component {
                 {
                     let data = mcRequest.request.data;
                     this.props.handleAlertInfo('success', `App ${data.app.key.name} added successfully`)
+                    this.props.onClose(true)
                 }
             })
         }
-        this.props.onClose(true)
     }
 
     onCreate = async (data) => {
         if (data) {
             let forms = this.state.forms;
             let ports = ''
+            let skipHCPorts = ''
             let annotations = ''
             let configs = []
             for (let i = 0; i < forms.length; i++) {
@@ -423,13 +453,23 @@ class AppReg extends React.Component {
                     if (multiFormData) {
                         if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
-                            ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
+                            let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
+                            ports = ports + newPort
                             ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
+                            if (!multiFormData[fields.skipHCPorts]) {
+                                skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                                skipHCPorts = skipHCPorts + newPort
+                            }
                         }
                         else if (multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
-                            ports = ports + multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                            let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                            ports = ports + newPort
                             ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
+                            if (!multiFormData[fields.skipHCPorts]) {
+                                skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                                skipHCPorts = skipHCPorts + newPort
+                            }
                         }
                         else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
                             data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()
@@ -449,13 +489,16 @@ class AppReg extends React.Component {
                 if (ports.length > 0) {
                     data[fields.accessPorts] = ports
 
+                    if(skipHCPorts.length > 0)
+                    {
+                        data[fields.skipHCPorts] = skipHCPorts
+                    }
                     if (annotations.length > 0) {
                         data[fields.annotations] = annotations
                     }
                     if (configs.length > 0) {
                         data[fields.configs] = configs
                     }
-
                     if (this.isUpdate) {
                         if (await updateApp(this, data, this.originalData)) {
                             this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
@@ -596,11 +639,13 @@ class AppReg extends React.Component {
             let multiFormCount = 0
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
+                let skipHCPortArray = data[fields.skipHCPorts] ? data[fields.skipHCPorts].split(',') : []
                 for (let i = 0; i < portArray.length; i++) {
                     let portInfo = portArray[i].split(':')
                     let protocol = portInfo[0].toLowerCase();
                     let portMaxNo = portInfo[1];
                     let tls = false
+                    let skipHCPort = skipHCPortArray.includes(portArray[i].replace(':tls', ''))
                     if(portInfo.length === 3 && portInfo[2] === 'tls')
                     {
                         tls = true
@@ -630,6 +675,10 @@ class AppReg extends React.Component {
                         else if (portForm.field === fields.tls) {
                             portForm.visible = protocol === 'tcp'
                             portForm.value = tls
+                        }
+                        else if (portForm.field === fields.skipHCPorts) {
+                            portForm.visible = protocol === 'tcp'
+                            portForm.value = !skipHCPort
                         }
                     }
                     forms.splice(13 + multiFormCount, 0, this.getPortForm(portForms))
@@ -704,6 +753,7 @@ class AppReg extends React.Component {
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service', advance: false },
+            { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: true, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
         ]
     }
 

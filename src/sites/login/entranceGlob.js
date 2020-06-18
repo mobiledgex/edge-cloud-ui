@@ -35,11 +35,6 @@ class EntranceGlobe extends Component {
         }
         if (this.props.match.path === '/logout') {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
-            localStorage.setItem('userInfo', null)
-            localStorage.setItem('sessionData', null)
-            localStorage.removeItem('selectOrg')
-            localStorage.setItem('selectRole', null)
-            localStorage.setItem('selectMenu', null)
             this.setState({ modalOpen: true, logined: false })
         }
         else if (this.props.match.path === '/passwordreset') {
@@ -55,8 +50,9 @@ class EntranceGlobe extends Component {
             props.handleAlertInfo(undefined, undefined);
             return {mexAlertMessage: alertInfo}
         }
-
-        if (props.loginMode && props.loginMode === 'resetPass') {
+        
+        if (props.match.path === '/passwordreset') {
+            return { modalOpen: true}
         }
         else if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
             props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)
