@@ -152,10 +152,10 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
-                if (error.response && responseStatus(self, error.response.status)) {
-                    responseError(self, requestDataList[0], error, callback)
-                }
-            })
+            if (error.response && responseStatus(self, error.response.status)) {
+                responseError(self, requestDataList[0], error, callback)
+            }
+        })
     }
 }
 
