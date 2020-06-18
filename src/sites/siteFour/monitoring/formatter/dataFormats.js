@@ -248,7 +248,7 @@ const parseRunningCluster = (response, id) => {
     cloudletKeys.map(key => {
         clusterInfo[key] = [];
         cloudlets[key].map(cluster => {
-            clusterInfo[key].push({ [cluster.clusterName]: { appinsts: getAppCount(cluster.clusterName, "list"), on: getAppCount(cluster.clusterName, "on"), off: getAppCount(cluster.clusterName, "off") } });
+            clusterInfo[key].push({ [cluster.clusterName]: { cloudlet: key, appinsts: getAppCount(cluster.clusterName, "list"), on: getAppCount(cluster.clusterName, "on"), off: getAppCount(cluster.clusterName, "off") } });
         });
         dataStack.push(clusterInfo[key]);
     });

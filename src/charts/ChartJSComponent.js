@@ -120,7 +120,7 @@ const getOptionsStackBar = params => (
             }]
         },
         legend: {
-            display: false
+            display: true
         },
 
         animation: {
@@ -128,8 +128,8 @@ const getOptionsStackBar = params => (
                 const { chartInstance } = myRef;
                 const { ctx } = chartInstance;
                 ctx.textAlign = "left";
-                ctx.font = "9px Open Sans";
-                ctx.fillStyle = "#fff";
+                ctx.font = "11px Open Sans";
+                ctx.fillStyle = "#383838";
 
                 Chart.helpers.each(params.forEach(function (dataset, i) {
                     const meta = chartInstance.controller.getDatasetMeta(i);
@@ -137,9 +137,9 @@ const getOptionsStackBar = params => (
                     Chart.helpers.each(meta.data.forEach(function (bar, index) {
                         data = dataset.data[index];
                         if (i === 0) {
-                            ctx.fillText(data, 50, bar._model.y + 4);
+                            ctx.fillText(data, bar._model.x + 5, bar._model.y + 4);
                         } else {
-                            ctx.fillText(data, bar._model.x - 25, bar._model.y + 4);
+                            if (data > 0) ctx.fillText(data, bar._model.x - 25, bar._model.y + 4);
                         }
                     }), this);
                 }), this);
@@ -211,15 +211,14 @@ const ChartJSComponent = defaultProps => {
     };
 
     const makeColumnDataset = (_data) => {
-        const dataset = [{
-            data: [3, 2, 2, 2],
-            backgroundColor: columnDataColors[0].backgroundColor,
-            hoverBackgroundColor: columnDataColors[0].hoverBackgroundColor
-        }, {
-            data: [0, 1, 0, 1],
-            backgroundColor: "rgba(63,203,226,1)",
-            hoverBackgroundColor: "rgba(46,185,235,1)"
-        }]
+        const dataset = _data.y.map((item, i) => (
+            {
+                label: i === 0 ? "OFF" : "ON",
+                data: item,
+                backgroundColor: columnDataColors[i].backgroundColor,
+                hoverBackgroundColor: columnDataColors[i].hoverBackgroundColor
+            }
+        ));
         return dataset;
     };
 
@@ -231,10 +230,10 @@ const ChartJSComponent = defaultProps => {
             myChart = {
                 type: _type,
                 data: {
-                    labels: ["2014", "2013", "2012", "2011"],
-                    datasets: testdata
+                    labels: _data[0].x,
+                    datasets: makeColumnDataset(_data[0])
                 },
-                options: getOptionsStackBar(testdata)
+                options: getOptionsStackBar(makeColumnDataset(_data[0]))
             };
         } else {
             myChart = {

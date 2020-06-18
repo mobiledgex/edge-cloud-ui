@@ -92,7 +92,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
             this.initialize(this.props, this);
             // return true;
         }
-
         return null;
     }
 
