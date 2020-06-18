@@ -209,7 +209,7 @@ class MonitoringAdmin extends React.Component {
         const containerWidth = this.props.size.width;
         const containerHeight = this.props.size.height;
         const {
-            compCloudlet, compClusterinst, compAppinst, currentAuthDepth
+            compCloudlet, compClusterinst, compAppinst, currentAuthDepth, filteringItems
         } = this.state;
         return (
             <div
@@ -233,6 +233,8 @@ class MonitoringAdmin extends React.Component {
                     sizeInfo={this.props.size}
                     clusters={compClusterinst}
                     appinsts={compAppinst}
+                    currentAuthDepth={currentAuthDepth}
+                    filteringItems={filteringItems}
                     items={this.getCurrentItem(currentAuthDepth, scope, this.props, compCloudlet, compClusterinst, compAppinst)}
                 />
             </div>

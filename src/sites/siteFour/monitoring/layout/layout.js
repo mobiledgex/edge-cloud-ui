@@ -180,7 +180,7 @@ class MonitoringLayout extends React.Component {
 
     }
 
-    generateDOM(items, appinsts) {
+    generateDOM(items, appinsts, currentAuthDepth, filteringItems) {
         return this.state.layouts[this.state.currentBreakpoint].map(
             (l, idx) => (
                 <div
@@ -203,7 +203,7 @@ class MonitoringLayout extends React.Component {
                             height: 0
                         }}
                     >
-                        <ChartWidget {...items[idx]} panelInfo={items[idx]} appinsts={appinsts} legendShow={false} />
+                        <ChartWidget {...items[idx]} panelInfo={items[idx]} appinsts={appinsts} legendShow={false} currentAuthDepth={currentAuthDepth} filteringItems={filteringItems} />
                     </div>
                 </div>
             )
@@ -214,6 +214,7 @@ class MonitoringLayout extends React.Component {
         const {
             toolbox, currentBreakpoint, layouts, items, appinsts
         } = this.state;
+        const { currentAuthDepth, filteringItems } = this.props;
         return (
             <div>
                 <ToolBox
@@ -244,7 +245,7 @@ class MonitoringLayout extends React.Component {
                     rowHeight={this.getHeight()} // TODO : value 70 is maby height of header
                     draggableHandle="#react-grid-dragHandleExample"
                 >
-                    {(items && items.length > 0) ? this.generateDOM(items, appinsts) : null}
+                    {(items && items.length > 0) ? this.generateDOM(items, appinsts, currentAuthDepth, filteringItems) : null}
                 </ResponsiveReactGridLayout>
             </div>
         );

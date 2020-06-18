@@ -5,7 +5,19 @@ import Popper from "@material-ui/core/Popper";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import RoomIcon from "@material-ui/icons/Room";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { Dropdown } from "semantic-ui-react";
+import Tooltip from "@material-ui/core/Tooltip";
+
+const HtmlTooltip = withStyles((theme) => ({
+    tooltip: {
+        backgroundColor: '#f5f5f9',
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 220,
+        fontSize: theme.typography.pxToRem(12),
+        border: '1px solid #dadde9',
+    },
+}))(Tooltip);
 
 let _selectedFilterObj = null;
 
@@ -19,6 +31,7 @@ export default function FilterMenu(defaultProps) {
     const [enableApply, setEnableApply] = React.useState(false);
     const [applyMent, setApplyMent] = React.useState("");
     const [selectedFilterObj, setSelectedFilterObj] = React.useState({});
+    const [showHelp, setShowHelp] = React.useState(false);
 
     const handleClick = event => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -48,6 +61,9 @@ export default function FilterMenu(defaultProps) {
             setEnableApply(true); // visilbe apply button
             setApplyMent(selectItem.id); // lead to skip next depth click
         }
+
+        setShowHelp(true);
+
     };
 
     React.useEffect(() => {
@@ -102,7 +118,18 @@ export default function FilterMenu(defaultProps) {
             // onClose={handleClose}
             >
                 <div className="page_monitoring_location_header">
-                    Select location
+                    <span>Select location</span>
+                    {showHelp
+                        ? <HtmlTooltip
+                            title={
+                                <>
+                                    <em>{"Your can apply "}</em> <b>{applyMent}</b> <em>{"by click the apply button"}</em>
+                                </>
+                            }
+                        >
+                            <HelpOutlineIcon />
+                        </HtmlTooltip> : null
+                    }
                 </div>
                 <div className="page_monitoring_location_row">
                     <div className="page_monitoring_location_label">
@@ -183,14 +210,13 @@ export default function FilterMenu(defaultProps) {
                     display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItem: "center", padding: 5
                 }}
                 >
-                    {enableApply ? <div style={{ fontSize: 16 }}>{`Apply filter of ${applyMent}`}</div> : null}
+                    <div className="page_monitoring_location_apply">
+                        <Button onClick={handleClose} style={{ backgroundColor: "#6b7487", color: "#fff" }} variant="contained">Cancel</Button>
+                    </div>
                     {enableApply
                         ? <div className="page_monitoring_location_apply">
                             <Button onClick={handleApply} style={{ backgroundColor: "#9acd32", color: "#fff" }} variant="contained">Apply</Button>
                         </div> : null}
-                    <div className="page_monitoring_location_apply">
-                        <Button onClick={handleClose} style={{ backgroundColor: "#6b7487", color: "#fff" }} variant="contained">Cancel</Button>
-                    </div>
                 </div>
             </Popper>
         </div>

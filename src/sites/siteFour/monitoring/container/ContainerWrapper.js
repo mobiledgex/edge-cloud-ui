@@ -51,13 +51,14 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
             cloudlets: [],
             appinsts: [],
             clusters: [],
-            panelInfo: null
+            panelInfo: null,
+            filteringItems: null
         };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         const update = {};
-
+        console.log("20200618 filtering 11 = ", nextProps.filteringItems, ":", prevState.filteringItems);
         if (prevState !== nextProps) {
             if (prevState.panelInfo !== nextProps.panelInfo) {
                 if (nextProps.panelInfo && nextProps.panelInfo.info === "info"
@@ -71,6 +72,11 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
             }
             return nextProps;
         }
+        if (nextProps.filteringItems) {
+            console.log("20200618 filtering = ", nextProps.filteringItems);
+            update.filteringItems = nextProps.filteringItems;
+            return update;
+        }
 
         return null;
     }
@@ -81,12 +87,18 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-
+        console.log("20200618 filtering 22 = ", prevProps.filteringItems, ":prevState=", prevState.filteringItems);
+        console.log("20200618 filtering 33 = ", this.props.filteringItems, ":state=", this.state.filteringItems);
         if (prevState.method && this.props.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
             this.initMethod = this.props.method;
 
             this.initialize(this.props, this);
-            return true;
+            // return true;
+        }
+        if (prevState.filteringItems !== this.props.filteringItems) {
+            console.log("20200618 filtering 44 = ", this.props.filteringItems, ":", prevState.filteringItems);
+            // this.initialize(this.props, this);
+            // return true;
         }
         return null;
     }
