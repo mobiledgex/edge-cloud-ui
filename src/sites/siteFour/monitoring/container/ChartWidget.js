@@ -113,7 +113,6 @@ class ChartWidget extends React.Component {
             }
 
             if (prevProps.id === DataType.HEALTH_CLOUDLET) {
-                console.log('4343')
                 const updatedata = DataFormats.dataFormatHealthCloudlet(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }

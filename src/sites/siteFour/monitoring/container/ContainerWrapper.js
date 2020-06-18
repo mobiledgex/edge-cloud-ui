@@ -82,16 +82,17 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
 
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
-        if (prevState.method && this.props.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
-            this.initMethod = this.props.method;
-            this.initialize(this.props, this);
-            // return true;
-        }
         if (prevProps.filteringItems) {
             console.log("20200618 filtering 44 = ", prevProps.filteringItems);
             // this.initialize(this.props, this);
             // return true;
         }
+        if (prevState.method && this.props.method && (this.props.method !== this.initMethod) && this.state.appinsts) {
+            this.initMethod = this.props.method;
+            this.initialize(this.props, this);
+            // return true;
+        }
+
         return null;
     }
 
@@ -109,6 +110,7 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                     this.setState({ data: { [self.state.id]: result, method } });
                 }
             }
+
         } catch (e) { }
     }
 
@@ -139,7 +141,15 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 // this.onReceiveResult(props.cloudlets, self);
             }
             if (props.method === serviceMC.getEP().METRICS_CLOUDLET) {
-                const result = await Service.MetricsService(props, self);
+                let findIdx = null;
+                const newProps = cloneDeep(props);
+                if (props.filteringItems && props.filteringItems.cloudlet && props.filteringItems.cloudlet.value) {
+                    findIdx = props.cloudlets.findIndex(x => x.cloudletName === props.filteringItems.cloudlet.value);
+                    newProps.cloudlets = [];
+                    if (props.cloudlets[findIdx]) newProps.cloudlets = [props.cloudlets[findIdx]];
+                }
+                const result = await Service.MetricsService(newProps || props, self);
+                console.log('20200618 select', result, result2);
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result);
                     this.onReceiveResult(reduceResult, self, props.method);
