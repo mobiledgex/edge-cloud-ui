@@ -651,8 +651,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
 
-                        console.log(`allClusterUsageList====>`, allClusterUsageList);
-
 
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
@@ -667,7 +665,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
                     let dataCount = 0;
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                        dataCount = appInstList.length
+                        dataCount = clusterList.length
                     } else {
                         dataCount = cloudletList.length
                     }
