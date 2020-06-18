@@ -155,7 +155,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 if (error.response && responseStatus(self, error.response.status)) {
                     responseError(self, requestDataList[0], error, callback)
                 }
-       })
+            })
     }
 }
 
