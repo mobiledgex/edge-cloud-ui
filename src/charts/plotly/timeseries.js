@@ -130,7 +130,6 @@ const TimeSeries = props => {
         if (props.id) setPrevPropsId(props.id);
         if (props.divide) maxDataCount = props.divide;
         if (props.type) setType(props.type);
-        console.log("20200617 useeffect in timesereis 11 = ", props.data, "id = ", props.id);
         // cloudlet
         if (props.data && (props.data !== data) && props.data[props.id]) {
             chartUpdate({
@@ -169,7 +168,6 @@ const TimeSeries = props => {
     * Stored on the stack whenever data is loaded
     */
     const chartUpdate = prevProps => {
-        console.log("20200617 update chart in timesereis 22 = ", prevProps.data, "id = ", prevProps.id, prevProps.filter);
         if (prevProps.id === dataType.NETWORK_CLOUDLET) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
@@ -185,7 +183,6 @@ const TimeSeries = props => {
                         (selectedItem === 'floatingIpsUsed' || selectedItem === 'ipv4Used') ? data[0].resData_ip[0][selectedItem]
                             : (selectedItem === 'vCpuUsed' || selectedItem === 'memUsed' || selectedItem === 'diskUsed') ? data[0].resData_util[0][selectedItem]
                                 : data[0].resData_util[0].diskUsed; // as x & y
-                    console.log('20200617 data3343', data[0], datas);
                     const methods = data[0].methods[0]; // as names
                     datas.names = methods;
                     reloadChart( // <--- 데이터 필터링 되고 있으나 셀렉트가 바뀌었을 때 차트 리로드가 안 됨
@@ -222,7 +219,6 @@ const TimeSeries = props => {
 
         if (prevProps.id === dataType.RUNNING_CLUSTER_INST) {
             // TODO: 필터링이 있을 경우, 선택된(filtered) 된 cloudlet만 표현한다. 그렇지 않을경우 모든 cloudlets 대한 cluster 표현.
-            console.log("20200617 update chart in timesereis = ", prevProps.data, "id = ", prevProps.id);
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
 
@@ -318,7 +314,6 @@ const TimeSeries = props => {
     };
 
     const reloadChartColumn = (data, cloudlet, _type, id, calculate) => {
-        console.log("20200617 in timeseries id = ", id);
         let seriesData = null;
         // const xAxis = data[cloudlet].x;
         // const xCloudlet = data[cloudlet].names;
@@ -353,7 +348,6 @@ const TimeSeries = props => {
 
             });
         });
-        console.log("20200618 power data :: clusters = ", clusters, ": power = ", powerData);
         seriesData = {
             type: _type,
             x: clusters,
@@ -372,7 +366,6 @@ const TimeSeries = props => {
         * 페이지별로 나누어 데이터 표현
         * once draw count of data to one page
         */
-        console.log("20200618 check loaded count == stackData=", stackData.length, ":maxDataCount=", maxDataCount, ":loadedCount=", loadedCount, ":currentPage=", currentPage)
         if (stackData.length < maxDataCount) {
             if (Math.floor(loadedCount / maxDataCount) === currentPage) {
                 stackData.push(seriesData);
@@ -382,7 +375,6 @@ const TimeSeries = props => {
 
         revision += 1;
         // ****************************** //
-        console.log("20200618 stack data = ", stackData);
 
         setChartData({ [id]: stackData });
     };

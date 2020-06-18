@@ -125,7 +125,6 @@ class ChartWidget extends React.Component {
             if (prevProps.id === DataType.RUNNING_CLUSTER_INST) {
                 setTimeout(async () => {
                     const updatedata = await DataFormats.dataFormatRunningCluster(this.props.data[prevProps.id], prevProps.id);
-                    console.log("20200617 updatedata -- in chartWidget = ", updatedata);
                     this.setState({ data: updatedata });
                 }, 500);
 
@@ -185,7 +184,6 @@ class ChartWidget extends React.Component {
     }
 
     onHandleFilter = filteredItem => {
-        console.log('20200618 selectdd 33', filteredItem)
         if (filteredItem === FilterFormats.DISK_USED) {
             this.setState({ unitLabel: "GBs" });
         } else if (filteredItem === FilterFormats.VCPU) {

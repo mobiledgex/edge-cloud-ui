@@ -274,7 +274,6 @@ const ChartJSComponent = defaultProps => {
             };
         }
 
-        console.log("20200617 color", myChart.data);
         setOptions(myChart.options);
         setData(myChart.data);
     };
@@ -290,7 +289,6 @@ const ChartJSComponent = defaultProps => {
                 // const leg = generateLegend();
                 // setLegend({ legend: leg });
                 const legend = myRef.chartInstance.legend.legendItems;
-                console.log("20200618 legend", legend);
                 setLegend(legend);
                 setLegendOpen(defaultProps.legendShow);
                 setAnchorEl(defaultProps.legendShow ? defaultProps.legendInfo.target : null);
@@ -301,7 +299,6 @@ const ChartJSComponent = defaultProps => {
 
     React.useEffect(() => {
         const propData = defaultProps.data && defaultProps.data[defaultProps.id];
-        console.log("20200618 props data in chartJScomponent = ", propData);
         if ((propData && propData.length > 0)) {
             // if (propData[0].x.length > 0 && !initData) {
             if (propData[0].x.length > 0) {

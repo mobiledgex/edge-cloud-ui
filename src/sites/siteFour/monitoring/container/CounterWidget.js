@@ -71,7 +71,6 @@ const CounterWidget = forwardRef((props, ref) => {
             setTimeout(() => setInitial(false), 500);
         }
         setData(props.data);
-        // console.log('20200609', props.data)
     }, [props]);
 
     let index = [0, 1, 2, 3, 4, 5]
@@ -99,9 +98,9 @@ const makeContainer = (clusterData, index) => (
             ? (
                 <div className='page_monitoring_cnt_box'>
                     <div className='page_monitoring_cnt_region'>{clusterData[index].region}</div>
-                    <div className='page_monitoring_cnt_name'>{clusterData[index].cloudlet? clusterData[index].cloudlet : 0}</div>
+                    <div className='page_monitoring_cnt_name'>{clusterData[index].cloudlet ? clusterData[index].cloudlet : 0}</div>
                     <div className='page_monitoring_cnt_num'>
-                        <CountUp isCounting end={clusterData[index].count? clusterData[index].count : '0'} duration={3.2} />
+                        <CountUp isCounting end={clusterData[index].count ? clusterData[index].count : '0'} duration={3.2} />
                     </div>
                 </div>
             ) : null}

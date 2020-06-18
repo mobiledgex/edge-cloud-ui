@@ -19,7 +19,6 @@ const usePrevious = value => {
 const makeSpark = (_data, _time, props) => {
     const ctx = document.getElementById(`myChart_${props.method.key}`).getContext("2d");
     const gradient = ctx.createLinearGradient(0, 0, 0, 60);
-    console.log("20200617 graph", _data, _time, ctx);
 
     // Add three color stops
     gradient.addColorStop(0, "#6498FF");

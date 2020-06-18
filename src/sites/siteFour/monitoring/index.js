@@ -99,7 +99,7 @@ class MonitoringAdmin extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        // console.log("20200605 did update == ", prevProps, ":autho depth = ", this.state.currentAuthDepth);
+        //
     }
 
 

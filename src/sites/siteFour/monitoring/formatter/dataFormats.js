@@ -222,7 +222,6 @@ const parseRunningCluster = (response, id) => {
     /* running app in cluster grouped by cloudlet
     * {cloudletName: [{clusterName: {appCount:10, on: 9, off:1}}, {}]}
     */
-    console.log("20200616 get appint ", getAppinstData());
     const appinsts = getAppinstData();
     const getAppCount = (clusterName, part) => {
         //
@@ -252,7 +251,6 @@ const parseRunningCluster = (response, id) => {
         });
         dataStack.push(clusterInfo[key]);
     });
-    console.log("20200617 group by cloudlets ", dataStack);
 
     return { [id]: dataStack };
 };

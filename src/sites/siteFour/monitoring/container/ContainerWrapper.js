@@ -58,7 +58,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
 
     static getDerivedStateFromProps(nextProps, prevState) {
         const update = {};
-        console.log("20200618 filtering 11 = ", nextProps.filteringItems, ":", prevState.filteringItems);
         if (prevState !== nextProps) {
             if (prevState.panelInfo !== nextProps.panelInfo) {
                 if (nextProps.panelInfo && nextProps.panelInfo.info === "info"
@@ -83,7 +82,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
     /* 컴포넌트 변화를 DOM에 반영하기 바로 직전에 호출하는 메서드 */
     getSnapshotBeforeUpdate(prevProps, prevState) {
         if (prevProps.filteringItems) {
-            console.log("20200618 filtering 44 = ", prevProps.filteringItems);
             // this.initialize(this.props, this);
             // return true;
         }
@@ -208,7 +206,6 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                     if (props.clusters[findIdx]) newProps.clusters = [props.clusters[findIdx]];
                 }
                 const result = await Service.MetricsService(newProps, self);
-                console.log("20200618 show cluster =", result);
                 if (result && result.length > 0) {
                     // const reduceResult = this.removeEmptyResult(result, "values");
                     this.onReceiveResult(result, self, props.method);
