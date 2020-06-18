@@ -77,17 +77,17 @@ const getOptions = params => ({
     responsive: true,
     redraw: true,
     maintainAspectRatio: false,
-    animation: {
-        onComplete() {
-            const { chartInstance } = myRef;
-            const { ctx } = chartInstance;
-            ctx.textAlign = "left";
-            ctx.font = "11px Open Sans";
-            ctx.fillStyle = "#dcdcdc";
-            ctx.fillText("GBs", 40, 5);
+    // animation: {
+    //     onComplete() {
+    //         const { chartInstance } = myRef;
+    //         const { ctx } = chartInstance;
+    //         ctx.textAlign = "left";
+    //         ctx.font = "11px Open Sans";
+    //         ctx.fillStyle = "#dcdcdc";
+    //         ctx.fillText("GBs", 40, 5);
 
-        }
-    },
+    //     }
+    // },
 });
 const getOptionsBar = params => ({
     scales: {
@@ -108,7 +108,7 @@ const getOptionsBar = params => ({
 const getOptionsStackBar = params => (
     {
         tooltips: {
-            enabled: false
+            enabled: true
         },
         hover: {
             animationDuration: 0

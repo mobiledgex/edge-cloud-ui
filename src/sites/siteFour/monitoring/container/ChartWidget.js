@@ -16,6 +16,7 @@ import * as ChartType from "../formatter/chartType";
 import * as DataType from "../formatter/dataType";
 import FilteringComponent from "../components/FilteringComponent";
 import * as DataFormats from "../formatter/dataFormats";
+import * as FilterFormats from "../formatter/filterOptions";
 import HeaderFiltering from "../hooks/HeaderFiltering";
 
 let scope = null;
@@ -33,7 +34,8 @@ class ChartWidget extends React.Component {
             dataRaw: [],
             resId: "",
             chartType: "",
-            networkFilter: ""
+            networkFilter: "",
+            unitLabel: ""
         };
         this.id = null;
         scope = this;
@@ -81,6 +83,7 @@ class ChartWidget extends React.Component {
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
             if (prevProps.id === DataType.NETWORK_CLOUDLET) {
+                this.onHandleFilter(FilterFormats.DISK_USED);
                 this.updateMetricData(this.props.data[prevProps.id], prevProps.id);
             }
             //
@@ -183,6 +186,15 @@ class ChartWidget extends React.Component {
 
     onHandleFilter = filteredItem => {
         console.log('20200618 selectdd 33', filteredItem)
+        if (filteredItem === FilterFormats.DISK_USED) {
+            this.setState({ unitLabel: "GBs" });
+        } else if (filteredItem === FilterFormats.VCPU) {
+            this.setState({ unitLabel: "Count" });
+        } else if (filteredItem === FilterFormats.MEM) {
+            this.setState({ unitLabel: "MBs" });
+        } else if (filteredItem === FilterFormats.IPV4) {
+            this.setState({ unitLabel: "Count" });
+        }
         this.setState({ networkFilter: filteredItem });
     }
 
@@ -191,7 +203,7 @@ class ChartWidget extends React.Component {
             type, size, title, legendShow, legendInfo, filter, method, page, id, selectedIndex, cloudlets, calculate, itemCount
         } = this.props;
         const {
-            activeStep, mapData, clusterCnt, data, data2, chartType, networkFilter
+            activeStep, mapData, clusterCnt, data, data2, chartType, networkFilter, unitLabel
         } = this.state;
         // const { size } = this.state;
         const pagerHeight = 12;
@@ -207,15 +219,18 @@ class ChartWidget extends React.Component {
                                 chartType !== ChartType.COUNTERWITHSPARK && chartType !== ChartType.BUBBLECHART ? "#202329" : "transparent",
                     }}
                 >
-                    {(filter) ? (
-                        <FilteringComponent
-                            id={id}
-                            data={data}
-                            filterInfo={filter}
-                            onHandleFilter={this.onHandleFilter}
+                    <div style={{ display: "flex", alignContent: "column", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ marginLefgt: 6 }}>{unitLabel}</div>
+                        {(filter) ? (
+                            <FilteringComponent
+                                id={id}
+                                data={data}
+                                filterInfo={filter}
+                                onHandleFilter={this.onHandleFilter}
 
-                        />
-                    ) : null}
+                            />
+                        ) : null}
+                    </div>
                     {chartType === ChartType.GRAPH ? (
                         <TimeSeries
                             id={id}
