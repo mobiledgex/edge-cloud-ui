@@ -109,6 +109,7 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                     this.setState({ data: { [self.state.id]: result, method } });
                 }
             }
+
         } catch (e) { }
     }
 
@@ -139,7 +140,14 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                 // this.onReceiveResult(props.cloudlets, self);
             }
             if (props.method === serviceMC.getEP().METRICS_CLOUDLET) {
-                const result = await Service.MetricsService(props, self);
+                let findIdx = null;
+                const newProps = cloneDeep(props);
+                if (props.filteringItems && props.filteringItems.cloudlet && props.filteringItems.cloudlet.value) {
+                    findIdx = props.cloudlets.findIndex(x => x.cloudletName === props.filteringItems.cloudlet.value);
+                    newProps.cloudlets = [];
+                    if (props.cloudlets[findIdx]) newProps.cloudlets = [props.cloudlets[findIdx]];
+                }
+                const result = await Service.MetricsService(newProps || props, self);
                 if (result && result.length > 0) {
                     const reduceResult = this.removeEmptyResult(result);
                     this.onReceiveResult(reduceResult, self, props.method);

@@ -16,6 +16,7 @@ import * as ChartType from "../formatter/chartType";
 import * as DataType from "../formatter/dataType";
 import FilteringComponent from "../components/FilteringComponent";
 import * as DataFormats from "../formatter/dataFormats";
+import HeaderFiltering from "../hooks/HeaderFiltering";
 
 let scope = null;
 
@@ -31,7 +32,8 @@ class ChartWidget extends React.Component {
             stackedData: [],
             dataRaw: [],
             resId: "",
-            chartType: ""
+            chartType: "",
+            networkFilter: ""
         };
         this.id = null;
         scope = this;
@@ -113,7 +115,6 @@ class ChartWidget extends React.Component {
             }
 
             if (prevProps.id === DataType.HEALTH_CLOUDLET) {
-                console.log('4343')
                 const updatedata = DataFormats.dataFormatHealthCloudlet(this.props.data[prevProps.id]);
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
@@ -180,12 +181,17 @@ class ChartWidget extends React.Component {
         this.setState({ activeStep: step });
     }
 
+    onHandleFilter = filteredItem => {
+        console.log('20200618 selectdd 33', filteredItem)
+        this.setState({ networkFilter: filteredItem });
+    }
+
     render() {
         const {
             type, size, title, legendShow, legendInfo, filter, method, page, id, selectedIndex, cloudlets, calculate, itemCount
         } = this.props;
         const {
-            activeStep, mapData, clusterCnt, data, data2, chartType
+            activeStep, mapData, clusterCnt, data, data2, chartType, networkFilter
         } = this.state;
         // const { size } = this.state;
         const pagerHeight = 12;
@@ -202,11 +208,18 @@ class ChartWidget extends React.Component {
                     }}
                 >
                     {(filter) ? (
-                        <FilteringComponent id={id} data={data} filterInfo={filter} />
+                        <FilteringComponent
+                            id={id}
+                            data={data}
+                            filterInfo={filter}
+                            onHandleFilter={this.onHandleFilter}
+
+                        />
                     ) : null}
                     {chartType === ChartType.GRAPH ? (
                         <TimeSeries
                             id={id}
+                            filter={networkFilter}
                             size={resize}
                             type={type}
                             chartType={chartType}

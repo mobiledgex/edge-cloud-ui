@@ -134,7 +134,7 @@ const TimeSeries = props => {
         // cloudlet
         if (props.data && (props.data !== data) && props.data[props.id]) {
             chartUpdate({
-                data: props.data, id: props.id, type: props.type, calculate: props.calculate
+                data: props.data, id: props.id, type: props.type, calculate: props.calculate, filter: props.filter? props.filter: '',
             });
         }
         // client
@@ -169,22 +169,26 @@ const TimeSeries = props => {
     * Stored on the stack whenever data is loaded
     */
     const chartUpdate = prevProps => {
-        console.log("20200617 update chart in timesereis 22 = ", prevProps.data, "id = ", prevProps.id);
+        console.log("20200617 update chart in timesereis 22 = ", prevProps.data, "id = ", prevProps.id, prevProps.filter);
         if (prevProps.id === dataType.NETWORK_CLOUDLET) {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
-                let selectedItem = "";
+                let selectedItem = prevProps.filter? prevProps.filter : '';
                 if (prevProps.method === "") {
-                    selectedItem = "diskUsed";
+                    //selectedItem = "diskUsed";
                 }
 
                 shortHand.map(data => {
                     const times = data[0].times[0]; // not use
-                    const datas = data[0].resData_util[0].diskUsed; // as x & y
+                    const datas =
+                        (selectedItem === 'floatingIpsUsed' || selectedItem === 'ipv4Used') ? data[0].resData_ip[0][selectedItem]
+                            :(selectedItem === 'vCpuUsed' || selectedItem === 'memUsed' || selectedItem === 'diskUsed') ? data[0].resData_util[0][selectedItem]
+                            : data[0].resData_util[0].diskUsed; // as x & y
+                    console.log('20200617 data3343', data[0], datas);
                     const methods = data[0].methods[0]; // as names
                     datas.names = methods;
-                    reloadChart(
+                    reloadChart( // <--- 데이터 필터링 되고 있으나 셀렉트가 바뀌었을 때 차트 리로드가 안 됨
                         { [methods[0]]: datas },
                         methods[0],
                         type,

@@ -12,12 +12,12 @@ const ContainerHealth = defaultProps => {
     const [vCpuMax, setVCpuMax] = React.useState(1);
     const [memoryMax, setMemoryMax] = React.useState(1);
     const [diskMax, setDiskMax] = React.useState(1);
-    const [vCpuUsed, setVCpuUsed] = React.useState(1);
-    const [memoryUsed, setMemoryUsed] = React.useState(1);
-    const [diskUsed, setDiskUsed] = React.useState(1);
-    const [vCpuPercent, setVCpuPercent] = React.useState(1);
-    const [memoryPercent, setMemoryPercent] = React.useState(1);
-    const [diskPercent, setDiskPercent] = React.useState(1);
+    const [vCpuUsed, setVCpuUsed] = React.useState(0);
+    const [memoryUsed, setMemoryUsed] = React.useState(0);
+    const [diskUsed, setDiskUsed] = React.useState(0);
+    const [vCpuPercent, setVCpuPercent] = React.useState(0);
+    const [memoryPercent, setMemoryPercent] = React.useState(0);
+    const [diskPercent, setDiskPercent] = React.useState(0);
 
     const getHeight = () => selfSize.height - hGap;
 
