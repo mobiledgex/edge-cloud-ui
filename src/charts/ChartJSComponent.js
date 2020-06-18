@@ -130,28 +130,28 @@ const getOptionsStackBar = params => (
             display: false
         },
 
-        animation: {
-            onComplete() {
-                const { chartInstance } = myRef;
-                const { ctx } = chartInstance;
-                ctx.textAlign = "left";
-                ctx.font = "11px Open Sans";
-                ctx.fillStyle = "#fff";
-
-                Chart.helpers.each(params.forEach(function (dataset, i) {
-                    const meta = chartInstance.controller.getDatasetMeta(i);
-                    let data = {};
-                    Chart.helpers.each(meta.data.forEach(function (bar, index) {
-                        data = dataset.data[index];
-                        if (i === 0) {
-                            if (data > 0) ctx.fillText(data, bar._model.x + 5, bar._model.y + 4);
-                        } else {
-                            if (data > 0) ctx.fillText(data, bar._model.x - 25, bar._model.y + 4);
-                        }
-                    }), this);
-                }), this);
-            }
-        },
+        // animation: {
+        //     onComplete() {
+        //         const { chartInstance } = myRef;
+        //         const { ctx } = chartInstance;
+        //         ctx.textAlign = "left";
+        //         ctx.font = "11px Open Sans";
+        //         ctx.fillStyle = "#fff";
+        //
+        //         Chart.helpers.each(params.forEach(function (dataset, i) {
+        //             const meta = chartInstance.controller.getDatasetMeta(i);
+        //             let data = {};
+        //             Chart.helpers.each(meta.data.forEach(function (bar, index) {
+        //                 data = dataset.data[index];
+        //                 if (i === 0) {
+        //                     if (data > 0) ctx.fillText(data, bar._model.x + 5, bar._model.y + 4);
+        //                 } else {
+        //                     if (data > 0) ctx.fillText(data, bar._model.x - 10, bar._model.y + 4);
+        //                 }
+        //             }), this);
+        //         }), this);
+        //     }
+        // },
         pointLabelFontFamily: "Quadon Extra Bold",
         scaleFontFamily: "Quadon Extra Bold",
     }
