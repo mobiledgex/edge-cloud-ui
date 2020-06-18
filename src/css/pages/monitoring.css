@@ -1184,6 +1184,20 @@ page_monitoring_dashboard_dev {
 
 }
 
+.page_monitoring_network_filter.ui.selection.dropdown {
+    min-height: 28px;
+    min-width: 140px;
+    align-items: center;
+    display: flex;
+}
+
+.page_monitoring_network_filter.ui.selection.dropdown>.delete.icon,
+.page_monitoring_network_filter.ui.selection.dropdown>.dropdown.icon,
+.page_monitoring_network_filter.ui.selection.dropdown>.search.icon {
+    top: inherit;
+    margin: 0;
+    padding: 0;
+}
 .chart_legend {
     background-color: #000;
     border-radius:4px;
