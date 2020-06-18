@@ -15,21 +15,23 @@ const getRandomColors = (_count, _alpha) => {
 /* chart : https://codepen.io/jamiecalder/pen/NrROeB */
 
 const columnDataColors = [{
-    backgroundColor: "rgba(63,103,126,1)",
-    hoverBackgroundColor: "rgba(50,90,100,1)"
+    backgroundColor: "rgba(181, 185, 193, 1)",
+    hoverBackgroundColor: "rgba(181, 185, 193, .7)",
+    borderColor: "rgba(181, 185, 193, 1)",
 }, {
-    backgroundColor: "rgba(63,203,226,1)",
-    hoverBackgroundColor: "rgba(46,185,235,1)"
+    backgroundColor: "rgb(65,180,211,1)",
+    hoverBackgroundColor: "rgb(65,180,211,.7)",
+    borderColor: "rgb(65,180,211,1)",
 }];
-const testdata = [{
-    data: [3, 2, 2, 2],
-    backgroundColor: "rgba(63,103,126,1)",
-    hoverBackgroundColor: "rgba(50,90,100,1)"
-}, {
-    data: [0, 1, 0, 1],
-    backgroundColor: "rgba(63,203,226,1)",
-    hoverBackgroundColor: "rgba(46,185,235,1)"
-}]
+// const testdata = [{
+//     data: [3, 2, 2, 2],
+//     backgroundColor: "rgba(63,103,126,1)",
+//     hoverBackgroundColor: "rgba(50,90,100,1)"
+// }, {
+//     data: [0, 1, 0, 1],
+//     backgroundColor: "rgba(63,203,226,1)",
+//     hoverBackgroundColor: "rgba(46,185,235,1)"
+// }]
 
 
 const listItemStyle = {
@@ -42,6 +44,7 @@ const listItemStyle = {
     padding: "10px 20px",
     cursor: "pointer"
 };
+
 const getOptions = params => ({
     scales: {
         yAxes: [{
@@ -102,14 +105,18 @@ const getOptionsStackBar = params => (
                     display: false
                 },
                 gridLines: {
+                    display: true,
+                    color: "rgba(255,255,255,.2)",
+                    zeroLineColor: "rgba(255,255,255,.2)",
+                    zeroLineWidth: 1
                 },
                 stacked: true
             }],
             yAxes: [{
                 gridLines: {
                     display: false,
-                    color: "#fff",
-                    zeroLineColor: "#fff",
+                    color: "rgba(255,255,255,.2)",
+                    zeroLineColor: "rgba(255,255,255,.2)",
                     zeroLineWidth: 0
                 },
                 ticks: {
@@ -120,7 +127,7 @@ const getOptionsStackBar = params => (
             }]
         },
         legend: {
-            display: true
+            display: false
         },
 
         animation: {
@@ -129,7 +136,7 @@ const getOptionsStackBar = params => (
                 const { ctx } = chartInstance;
                 ctx.textAlign = "left";
                 ctx.font = "11px Open Sans";
-                ctx.fillStyle = "#383838";
+                ctx.fillStyle = "#fff";
 
                 Chart.helpers.each(params.forEach(function (dataset, i) {
                     const meta = chartInstance.controller.getDatasetMeta(i);
@@ -137,7 +144,7 @@ const getOptionsStackBar = params => (
                     Chart.helpers.each(meta.data.forEach(function (bar, index) {
                         data = dataset.data[index];
                         if (i === 0) {
-                            ctx.fillText(data, bar._model.x + 5, bar._model.y + 4);
+                            if (data > 0) ctx.fillText(data, bar._model.x + 5, bar._model.y + 4);
                         } else {
                             if (data > 0) ctx.fillText(data, bar._model.x - 25, bar._model.y + 4);
                         }
@@ -216,7 +223,8 @@ const ChartJSComponent = defaultProps => {
                 label: i === 0 ? "OFF" : "ON",
                 data: item,
                 backgroundColor: columnDataColors[i].backgroundColor,
-                hoverBackgroundColor: columnDataColors[i].hoverBackgroundColor
+                hoverBackgroundColor: columnDataColors[i].hoverBackgroundColor,
+                borderColor: columnDataColors[i].borderColor,
             }
         ));
         return dataset;

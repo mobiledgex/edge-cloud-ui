@@ -403,6 +403,7 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
         },
         {
             id: dataType.NETWORK_CLOUDLET,
+            //method: serviceMC.getEP().METRICS_CLOUDLET,
             method: null,
             chartType: chartType.GRAPH,
             type: "scatter",
