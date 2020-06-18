@@ -34,7 +34,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
+        let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName }, true)
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 this.setState({ isOpen:true, devData: mcRequest.response.data })
@@ -42,7 +42,13 @@ class headerGlobalAudit extends React.Component {
         }
     }
 
+
     componentDidUpdate(prevProps, prevState) {
+        let serverRequestCount = parseInt(localStorage.getItem('ServerRequestCount'))
+        if(serverRequestCount > 0)
+        {
+            this.readyToData()
+        }
         if(this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg)
         {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
@@ -52,6 +58,7 @@ class headerGlobalAudit extends React.Component {
     readyToData() {
         this.setState({devData: []})
         this.getDataAudit();
+        localStorage.setItem('ServerRequestCount', 0)
     }
 
     componentWillUnmount() {
@@ -60,7 +67,7 @@ class headerGlobalAudit extends React.Component {
 
     getDataAudit = async () => {
         this.setState({devData: []})
-        let mcRequest = await serverData.showSelf(_self, {})
+        let mcRequest = await serverData.showSelf(_self, {}, false)
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 let response = mcRequest.response;

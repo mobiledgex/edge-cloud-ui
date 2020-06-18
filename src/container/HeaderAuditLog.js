@@ -11,7 +11,6 @@ import Calendar from '../components/horizontal_calendar/Calendar';
 import moment from "moment";
 import CheckIcon from '@material-ui/icons/Check';
 
-let _self = null;
 const options = [
     { key: 'Individual', value: 'Individual', text: 'Individual' },
     { key: 'Group', value: 'Group', text: 'Group' }
@@ -19,10 +18,7 @@ const options = [
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
-            tabValue: 0,
             expanded: (-1),
             groupExpanded: (-1),
             devData: [],
