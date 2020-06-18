@@ -9,7 +9,6 @@ export function getEP() {
     return EP;
 }
 
-
 export const mcURL = (isWebSocket) =>
 {
     let serverURL = process.env.REACT_APP_API_ENDPOINT
