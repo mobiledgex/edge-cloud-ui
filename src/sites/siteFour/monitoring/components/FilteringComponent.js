@@ -48,7 +48,7 @@ const BootstrapInput = withStyles(theme => ({
 
 const useStyles = makeStyles(theme => ({
     margin: {
-        margin: 3,
+        margin: 5,
     },
 }));
 
@@ -73,9 +73,10 @@ const FilteringComponent = props => {
         }
     }, [props]);
 
-    const handleChange = event => {
-        setSelectedItem(event.target.value);
-        props.onHandleFilter(event.target.value);
+    const handleChange = (event, value) => {
+        //setSelectedItem(event.target.value);
+        setSelectedItem(value.value);
+        props.onHandleFilter(value.value);
     };
 
     const makeMenuItem = items => {
@@ -95,18 +96,40 @@ const FilteringComponent = props => {
 
         ));
     };
+    const makeMenuOption = items => {
+        let utilsKeys = [];
+        let ipsKeys = [];
+        let allKeys = [];
+        if (filter.method === serviceMC.getEP().METRICS_CLOUDLET) {
+            utilsKeys = Object.keys(items[0].resData_util[0]);
+            ipsKeys = Object.keys(items[0].resData_ip[0]);
+            allKeys = utilsKeys.concat(ipsKeys);
+        }
+        let option = [];
+        allKeys.map(key => {
+            option.push({key: key, text: key, value: key})
+        })
+        return option
+    };
     return (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', height: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', height: 38 }}>
             <FormControl className={classes.margin}>
-                <Select
-                    labelId="demo-customized-select-label"
-                    id="demo-customized-select"
-                    value={selectedItem} // <--- selectedItem 이 바뀌지 않는 것 같음 
+                <Dropdown
+                    selection
+                    options={(data && data.length > 0) ? makeMenuOption(data[0]) : null}
+                    defaultValue={"diskUsed"}
                     onChange={handleChange}
-                    input={<BootstrapInput />}
-                >
-                    {(data && data.length > 0) ? makeMenuItem(data[0]) : null}
-                </Select>
+                    className='page_monitoring_network_filter'
+                />
+                {/*<Select*/}
+                {/*    labelId="demo-customized-select-label"*/}
+                {/*    id="demo-customized-select"*/}
+                {/*    value={selectedItem} // <--- selectedItem 이 바뀌지 않는 것 같음*/}
+                {/*    onChange={handleChange}*/}
+                {/*    input={<BootstrapInput />}*/}
+                {/*>*/}
+                {/*    {(data && data.length > 0) ? makeMenuItem(data[0]) : null}*/}
+                {/*</Select>*/}
             </FormControl>
         </div>
     );
