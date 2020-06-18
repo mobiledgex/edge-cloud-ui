@@ -665,7 +665,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
                     let dataCount = 0;
                     if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                        dataCount = appInstList.length
+                        dataCount = clusterList.length
                     } else {
                         dataCount = cloudletList.length
                     }
