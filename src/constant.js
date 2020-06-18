@@ -2,6 +2,7 @@ import {fields} from "./services/model/format"
 
 export const TYPE_JSON = 'JSON'
 export const TYPE_YAML = 'YAML'
+export const TYPE_URL = 'URL'
 export const ADD_CLOUDLET = 'AddCloudlet'
 export const DELETE_CLOUDLET = 'DeleteCloudlet'
 export const ADD_ORGANIZATION = 'AddOrganization'
@@ -35,6 +36,10 @@ export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
 export const YES = 'Yes'
 export const NO = 'No'
+
+
+export const INFRA_API_ACCESS_DIRECT = 'Direct'
+export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
 
 export const ADMIN_MANAGER = 'AdminManager'
 export const OPERATOR_MANAGER = 'OperatorManager'
@@ -172,6 +177,21 @@ export const accessType = (id) => {
             return 1
         case ACCESS_TYPE_LOAD_BALANCER:
             return 2
+        default:
+            return id
+    }
+}
+
+export const infraApiAccess = (id) => {
+    switch (id) {
+        case 0:
+            return INFRA_API_ACCESS_DIRECT
+        case 1:
+            return INFRA_API_ACCESS_RESTRICTED
+        case INFRA_API_ACCESS_DIRECT:
+            return 0
+        case INFRA_API_ACCESS_RESTRICTED:
+            return 1
         default:
             return id
     }

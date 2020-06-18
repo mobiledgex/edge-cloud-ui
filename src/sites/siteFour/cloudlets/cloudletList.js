@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { fields, getUserRole, isAdmin } from '../../../services/model/format';
-import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
+import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest,  getCloudletManifest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
 import * as constant from '../../../constant'
@@ -35,10 +35,20 @@ class CloudletList extends React.Component {
         this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> });
     }
 
+    onCloudletManifest = (action, data) => {
+        this.setState({ currentView: <ClouldletReg data={data} isManifest={true} onClose={this.onRegClose}/> });
+    }
+    
+    onCloudletManifestVisible = (data) =>
+    {
+        return data[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
+    }
+
     actionMenu = () => {
         return [
             { label: 'Update', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteCloudlet, ws: true }
+            { label: 'Delete', onClick: deleteCloudlet, ws: true },
+            { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest}
         ]
     }
 
