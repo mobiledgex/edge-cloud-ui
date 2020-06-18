@@ -134,7 +134,7 @@ const TimeSeries = props => {
         // cloudlet
         if (props.data && (props.data !== data) && props.data[props.id]) {
             chartUpdate({
-                data: props.data, id: props.id, type: props.type, calculate: props.calculate, filter: props.filter? props.filter: '',
+                data: props.data, id: props.id, type: props.type, calculate: props.calculate, filter: props.filter ? props.filter : '',
             });
         }
         // client
@@ -174,7 +174,7 @@ const TimeSeries = props => {
             /* 지우지 말것 : 클라우드렛 헬스에 쓰임 */
             if (prevProps.data[prevProps.id] && prevProps.data[prevProps.id].length > 0) {
                 const shortHand = prevProps.data[prevProps.id];
-                let selectedItem = prevProps.filter? prevProps.filter : '';
+                let selectedItem = prevProps.filter ? prevProps.filter : '';
                 if (prevProps.method === "") {
                     //selectedItem = "diskUsed";
                 }
@@ -183,8 +183,8 @@ const TimeSeries = props => {
                     const times = data[0].times[0]; // not use
                     const datas =
                         (selectedItem === 'floatingIpsUsed' || selectedItem === 'ipv4Used') ? data[0].resData_ip[0][selectedItem]
-                            :(selectedItem === 'vCpuUsed' || selectedItem === 'memUsed' || selectedItem === 'diskUsed') ? data[0].resData_util[0][selectedItem]
-                            : data[0].resData_util[0].diskUsed; // as x & y
+                            : (selectedItem === 'vCpuUsed' || selectedItem === 'memUsed' || selectedItem === 'diskUsed') ? data[0].resData_util[0][selectedItem]
+                                : data[0].resData_util[0].diskUsed; // as x & y
                     console.log('20200617 data3343', data[0], datas);
                     const methods = data[0].methods[0]; // as names
                     datas.names = methods;
@@ -372,16 +372,17 @@ const TimeSeries = props => {
         * 페이지별로 나누어 데이터 표현
         * once draw count of data to one page
         */
+        console.log("20200618 check loaded count == stackData=", stackData.length, ":maxDataCount=", maxDataCount, ":loadedCount=", loadedCount, ":currentPage=", currentPage)
         if (stackData.length < maxDataCount) {
             if (Math.floor(loadedCount / maxDataCount) === currentPage) {
                 stackData.push(seriesData);
             }
             loadedCount++;
         }
-        // 잠시 막음 20200617 ------ ------ 
-        // setChartData({ [id]: stackData });
+
         revision += 1;
         // ****************************** //
+        console.log("20200618 stack data = ", stackData);
 
         setChartData({ [id]: stackData });
     };

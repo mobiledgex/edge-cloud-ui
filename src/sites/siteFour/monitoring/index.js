@@ -38,7 +38,7 @@ class MonitoringAdmin extends React.Component {
             compClusterinst: [],
             compAppinst: [],
             filteringItems: {},
-            currentAuthDepth: 1 // <<<===== change depth
+            currentAuthDepth: 0 // <<<===== change depth
         };
         this.hasCloudlets = [];
         this.hasCluster = [];
@@ -441,7 +441,7 @@ const generateComponentOperator = (self, infos, cloudlets, clusters, appinsts, f
             method: serviceMC.getEP().SHOW_CLUSTER_INST,
             chartType: chartType.GRAPH,
             type: "column",
-            title: { value: "Cluster nodes", align: "left" },
+            title: { value: "State power of Clusters", align: "left" },
             filter: null,
             page: "single",
             legend: true,
@@ -533,8 +533,8 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
         },
         {
             id: dataType.EVENT_CLUSTER,
-            // method: serviceMC.getEP().EVENT_CLUSTER,
-            method: null,
+            method: serviceMC.getEP().EVENT_CLUSTER,
+            // method: null,
             chartType: chartType.TABLE,
             type: "alarm",
             title: { value: "Events of Cluster", align: "center" },

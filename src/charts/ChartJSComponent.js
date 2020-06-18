@@ -60,12 +60,31 @@ const getOptions = params => ({
             }
         }]
     },
+    layout: {
+        padding: {
+            left: 0,
+            right: 0,
+            top: 10,
+            bottom: 0
+        }
+    },
     legend: {
         display: false
     },
     responsive: true,
     redraw: true,
     maintainAspectRatio: false,
+    animation: {
+        onComplete() {
+            const { chartInstance } = myRef;
+            const { ctx } = chartInstance;
+            ctx.textAlign = "left";
+            ctx.font = "11px Open Sans";
+            ctx.fillStyle = "#dcdcdc";
+            ctx.fillText("GBs", 40, 5);
+
+        }
+    },
 });
 const getOptionsBar = params => ({
     scales: {
@@ -255,6 +274,7 @@ const ChartJSComponent = defaultProps => {
     React.useEffect(() => {
         setId(defaultProps.id);
         setType(defaultProps.type);
+        setInitData(false);
         if (isEqual(defaultProps.legendShow, legendDisplay) === false) {
             //
             setTimeout(() => {
@@ -262,7 +282,7 @@ const ChartJSComponent = defaultProps => {
                 // const leg = generateLegend();
                 // setLegend({ legend: leg });
                 const legend = myRef.chartInstance.legend.legendItems;
-                console.log("20200617 legend", legend);
+                console.log("20200618 legend", legend);
                 setLegend(legend);
                 setLegendOpen(defaultProps.legendShow);
                 setAnchorEl(defaultProps.legendShow ? defaultProps.legendInfo.target : null);
@@ -273,12 +293,13 @@ const ChartJSComponent = defaultProps => {
 
     React.useEffect(() => {
         const propData = defaultProps.data && defaultProps.data[defaultProps.id];
-        console.log("20200617 props data in chartJScomponent = ", propData);
+        console.log("20200618 props data in chartJScomponent = ", propData);
         if ((propData && propData.length > 0)) {
-            if (propData[0].x.length > 0 && !initData) {
-                setInitData(true);
+            // if (propData[0].x.length > 0 && !initData) {
+            if (propData[0].x.length > 0) {
                 setTimeout(() => {
                     initialize(defaultProps.id, propData, defaultProps.type);
+                    setInitData(true);
                 }, 200);
             }
         }

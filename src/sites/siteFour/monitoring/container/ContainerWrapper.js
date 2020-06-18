@@ -208,6 +208,7 @@ const ContainerWrapper = obj => compose(connect(mapStateToProps, mapDispatchProp
                     if (props.clusters[findIdx]) newProps.clusters = [props.clusters[findIdx]];
                 }
                 const result = await Service.MetricsService(newProps, self);
+                console.log("20200618 show cluster =", result);
                 if (result && result.length > 0) {
                     // const reduceResult = this.removeEmptyResult(result, "values");
                     this.onReceiveResult(result, self, props.method);
