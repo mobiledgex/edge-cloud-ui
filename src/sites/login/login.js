@@ -297,7 +297,7 @@ class Login extends Component {
                 email: nextProps.values.email,
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
-                callbackurl: 'https://' + host + '/verify',
+                callbackurl: `https://${host}/#/verify`,
                 clientip: self.clientSysInfo.clientIP,
             }
         })

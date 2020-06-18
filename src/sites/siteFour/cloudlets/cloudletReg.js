@@ -319,20 +319,8 @@ class CloudletReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.props.onClose(false) 
     }
-
-
-
-    getOptions = (dataList, form) => {
-        if (dataList && dataList.length > 0) {
-            return dataList.map(data => {
-                let info = form ? data[form.field] : data
-                return { key: info, value: info, text: info }
-            })
-        }
-    }
-
 
     resetFormValue = (form) => {
         let rules = form.rules

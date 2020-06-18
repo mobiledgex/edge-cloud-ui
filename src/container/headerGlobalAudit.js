@@ -58,11 +58,6 @@ class headerGlobalAudit extends React.Component {
         clearInterval(this.interval);
     }
 
-    makeOga = (logName) => {
-        let lastSub = logName.substring(logName.lastIndexOf('=') + 1);
-        return lastSub
-    }
-
     getDataAudit = async () => {
         this.setState({devData: []})
         let mcRequest = await serverData.showSelf(_self, {})
