@@ -46,9 +46,8 @@ const RateOfMethods = defaultProps => {
             setCount(( countMethod && countMethod.value[0] )? countMethod.value[0] : 0)
             //( countMethod && countMethod.value[0] ) && setCount(countMethod.value[0])
             
-            let graphData = ( countMethod && countMethod.value ) ? countMethod.value : [0, 0, 0]
-            let graphTime = ( countMethod && countMethod.time ) ? countMethod.time : [0, 0, 0]
-
+            let graphData = ( countMethod && countMethod.value ) ? countMethod.value.reverse() : [0, 0, 0]
+            let graphTime = ( countMethod && countMethod.time ) ? countMethod.time.reverse() : [0, 0, 0]
 
             makeSpark(graphData, graphTime );
         }
