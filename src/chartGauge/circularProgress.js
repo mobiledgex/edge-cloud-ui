@@ -16,7 +16,7 @@ const CircularProgress = defaultProps => {
     const [percentage, setPercentage] = React.useState(0);
 
     React.useEffect(() => {
-        if (defaultProps.data) setPercentage(defaultProps.data);
+        if (defaultProps.data || defaultProps.data === 0) setPercentage(defaultProps.data);
     }, [defaultProps]);
 
     return (
