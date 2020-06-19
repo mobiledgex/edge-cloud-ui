@@ -1039,6 +1039,8 @@ page_monitoring_dashboard_dev {
 }
 
 .page_monitoring_location_header{
+    display: flex;
+    align-items: center;
     width: 100%;
     line-height: 1.5;
     font-size: 14px;
@@ -1061,6 +1063,7 @@ page_monitoring_dashboard_dev {
 .page_monitoring_location_apply {
     display: flex;
     justify-content: center;
+    margin-right: 20px;
 }
 
 

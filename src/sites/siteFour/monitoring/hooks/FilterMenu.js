@@ -5,7 +5,7 @@ import Popper from "@material-ui/core/Popper";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import RoomIcon from "@material-ui/icons/Room";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import HelpIcon from "@material-ui/icons/Help";
 import { Dropdown } from "semantic-ui-react";
 import Tooltip from "@material-ui/core/Tooltip";
 
@@ -44,6 +44,7 @@ export default function FilterMenu(defaultProps) {
     const handleApply = event => {
         setApplyFilter(selectedFilterObj);
         defaultProps.onHandleApplyFilter(selectedFilterObj);
+        setAnchorEl(null);
     };
 
     const onChangeSelect = (event, selectItem) => {
@@ -127,7 +128,7 @@ export default function FilterMenu(defaultProps) {
                                 </>
                             }
                         >
-                            <HelpOutlineIcon />
+                            <HelpIcon style={{ color: 'rgba(255,255,255,.7)', marginLeft: 10 }} fontSize={'small'}/>
                         </HtmlTooltip> : null
                     }
                 </div>
@@ -207,16 +208,16 @@ export default function FilterMenu(defaultProps) {
                     </div>
                 </div>
                 <div style={{
-                    display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItem: "center", padding: 5
+                    display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItem: "center", padding: 5
                 }}
                 >
-                    <div className="page_monitoring_location_apply">
-                        <Button onClick={handleClose} style={{ backgroundColor: "#6b7487", color: "#fff" }} variant="contained">Cancel</Button>
-                    </div>
                     {enableApply
                         ? <div className="page_monitoring_location_apply">
                             <Button onClick={handleApply} style={{ backgroundColor: "#9acd32", color: "#fff" }} variant="contained">Apply</Button>
                         </div> : null}
+                    <div>
+                        <Button onClick={handleClose} style={{ backgroundColor: "#6b7487", color: "#fff" }} variant="contained">Cancel</Button>
+                    </div>
                 </div>
             </Popper>
         </div>
