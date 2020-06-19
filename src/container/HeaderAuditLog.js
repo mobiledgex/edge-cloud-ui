@@ -250,7 +250,7 @@ class HeaderAuditLog extends React.Component {
             id="panel1a-header"
         >
             <Step key={index}>
-                <div className='audit_timeline_time'>
+                <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
                     {moment(this.makeUTC(data.starttime)).format("hh:mm:ss")}<br />
                     {moment(this.makeUTC(data.starttime)).format("A")}
                 </div>
@@ -293,7 +293,7 @@ class HeaderAuditLog extends React.Component {
             <div className='audit_timeline_detail_button'>
                 <Button onClick={() => this.onClickViewDetail(data)}>
                     VIEW DETAIL
-                            </Button>
+                </Button>
             </div>
         </ExpansionPanelDetails>
     )
@@ -301,7 +301,7 @@ class HeaderAuditLog extends React.Component {
     renderStepper = (data, index) => {
         return (
             data.operationname ?
-                <ExpansionPanel key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)}>
+                <ExpansionPanel key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)} last='' completed='' active={undefined}>
                     {this.expandablePanelSummary(index, data)}
                     {this.expandablePanelDetails(data)}
                 </ExpansionPanel>
@@ -311,27 +311,34 @@ class HeaderAuditLog extends React.Component {
     }
 
     renderGroupStepper = (data, index, group) => {
-        let count = 0;
-        data.map((d) => { (d.status !== 200) ? count++ : count })
+        let errorCount = 0;
+        data.map((d) => { (d.status !== 200) ? errorCount++ : errorCount })
         return (
             (group) ?
                 <div className='audit_timeline_group'>
-                    <div className='audit_timeline_group_header'>
-                        <div>{group.title}<span className='audit_timeline_group_bedge'>{(count > (-1) ? count : 0)}</span></div>
-                    </div>
-                    <Stepper className='audit_timeline_container' activeStep={data.length} orientation="vertical">
-                        {
-                            data.map((item, itemIndex) => {
-                                item.status !== 200 ? count++ : count
-                                return (
-                                    <ExpansionPanel key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
-                                        {this.expandablePanelSummary(itemIndex, item)}
-                                        {this.expandablePanelDetails(item)}
-                                    </ExpansionPanel>
-                                )
-                            })
-                        }
-                    </Stepper>
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary
+                            id="panel1a-header"
+                        >
+                            <div className='audit_timeline_group_header'>
+                                <h4>{group.title}<span className='audit_timeline_group_bedge'>{(errorCount > (-1) ? errorCount : 0)}</span></h4>
+                            </div>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            <Stepper className='audit_timeline_container' activeStep={data.length} orientation="vertical">
+                                {
+                                    data.map((item, itemIndex) => {
+                                        return (
+                                            <ExpansionPanel key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
+                                                {this.expandablePanelSummary(itemIndex, item)}
+                                                {this.expandablePanelDetails(item)}
+                                            </ExpansionPanel>
+                                        )
+                                    })
+                                }
+                            </Stepper>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
                 </div>
                 : null
         )
@@ -383,6 +390,8 @@ class HeaderAuditLog extends React.Component {
         )
     }
 }
+
+
 
 function mapStateToProps(state) {
     return {

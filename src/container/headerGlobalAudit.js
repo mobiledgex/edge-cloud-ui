@@ -68,6 +68,12 @@ class headerGlobalAudit extends React.Component {
         clearInterval(this.interval);
     }
 
+    updateStatus = (data) => {
+        if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
+            data.status = data.response.includes('"code":400') ? 400 : data.status
+        }
+    }
+
     getDataAudit = async () => {
         this.setState({devData: []})
         let mcRequest = await serverData.showSelf(_self, {}, false)
@@ -83,6 +89,7 @@ class headerGlobalAudit extends React.Component {
                 let unCheckedErrorCount = 0;
 
                 devData.map((data, index) => {
+                    this.updateStatus(data)
                     let status = data.status;
                     let traceid = data.traceid;
                     if (status !== 200) {
@@ -93,9 +100,7 @@ class headerGlobalAudit extends React.Component {
                         }
                     }
                 })
-
-                this.state.errorCount = errorCount
-                this.state.unCheckedErrorCount = unCheckedErrorCount
+                this.setState({ errorCount: errorCount, unCheckedErrorCount: unCheckedErrorCount })
             }
         }
     }
@@ -111,7 +116,7 @@ class headerGlobalAudit extends React.Component {
                     if(storageSelectedTraceidList){
                         let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === data.traceid) : (-1)
                         if(storageSelectedTraceidIndex === (-1)){
-                            this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
+                            this.setState(prevState=>({unCheckedErrorCount : prevState.unCheckedErrorCount - 1}))
                         }
                     }
                 }
