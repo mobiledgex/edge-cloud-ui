@@ -9,8 +9,8 @@ export const keys = () => ([
   { field: fields.autoScalePolicyName, serverField: 'key#OS#name', label: 'Auto Scale Policy', sortable: true, visible: true, filter:true },
   { field: fields.minimumNodes, serverField: 'min_nodes', label: 'Minimun Nodes', visible: true },
   { field: fields.maximumNodes, serverField: 'max_nodes', label: 'Maximum Nodes', visible: true},
-  { field: fields.scaleDownCPUThreshold, serverField: 'scale_down_cpu_thresh', label: 'Scale Down CPU Treshold (%)'},
-  { field: fields.scaleUpCPUThreshold, serverField: 'scale_up_cpu_thresh', label: 'Scale Up CPU Treshold (%)'},
+  { field: fields.scaleDownCPUThreshold, serverField: 'scale_down_cpu_thresh', label: 'Scale Down CPU Threshold (%)'},
+  { field: fields.scaleUpCPUThreshold, serverField: 'scale_up_cpu_thresh', label: 'Scale Up CPU Threshold (%)'},
   { field: fields.triggerTime, serverField: 'trigger_time_sec', label: 'Trigger Time (sec)'},
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
