@@ -184,6 +184,24 @@ const parseHealthCloudlet = response => {
     return containerData;
 };
 
+
+const parseHealthCluster = response => {
+    let containerData = {};
+
+    if (response && response.length > 0) {
+        let selectedCloudlet = response[0]; // <----- 필터된 클라우드와 비교해서 데이터 select 하도록 해야함.
+        const formatedData = selectedCloudlet[0].resData_util[0];
+        // const vCpuData = { max: formatedData.vCpuUsed.max[0], current: formatedData.vCpuUsed.y[0] }
+        // const memData = { max: formatedData.memUsed.max[0], current: formatedData.memUsed.y[0] }
+        // const diskData = { max: formatedData.diskUsed.max[0], current: formatedData.diskUsed.y[0] }
+        //
+        containerData = formatedData
+    }
+
+
+    return containerData;
+};
+
 // running cluster
 const setdataPartCluster = (data, req, cloudlet, cloudletIdx, appinstPath, method, methodIdx) => {
     const seriesX = [];
@@ -264,4 +282,5 @@ export const dataFormaFindCloudlet = response => parseFindCloudlet(response);
 export const dataFormatClientList = response => parseClientList(response);
 export const dataFormatCounterCluster = response => parseCounterCluster(response);
 export const dataFormatHealthCloudlet = response => parseHealthCloudlet(response);
+export const dataFormatHealthCluster = response => parseHealthCluster(response);
 export const dataFormatRunningCluster = async (response, id) => await parseRunningCluster(response, id);
