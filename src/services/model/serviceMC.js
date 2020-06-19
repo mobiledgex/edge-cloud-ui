@@ -9,18 +9,31 @@ export function getEP() {
     return EP;
 }
 
+const updateServerRequestCount = (requestData) =>
+{
+    if(requestData && requestData.method && !requestData.method.toLowerCase().includes('show') && !requestData.method.toLowerCase().includes('stream'))
+    {
+        localStorage.setItem('ServerRequestCount', parseInt(localStorage.getItem('ServerRequestCount'))+1)
+    }
+}
 
 export const mcURL = (isWebSocket) =>
 {
-    let serverURL = process.env.REACT_APP_API_ENDPOINT
+    let serverURL = ''
     if (process.env.NODE_ENV === 'production') {
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
-    }
 
-    if (isWebSocket) {
-        serverURL = serverURL.replace('http', 'ws')
+        if (isWebSocket) {
+            serverURL = serverURL.replace('http', 'ws')
+        }
+    }
+    else
+    {
+        if (isWebSocket) {
+            serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+        }
     }
     return serverURL
 }
@@ -127,11 +140,11 @@ export function sendWSRequest(request, callback) {
                 sockets.splice(i, 1)
             }
         })
+        updateServerRequestCount(request)
     }
 }
 
 export function sendMultiRequest(self, requestDataList, callback) {
-
     if (requestDataList && requestDataList.length > 0) {
         let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
         showSpinner(self, isSpinner)
@@ -146,6 +159,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
         })
         axios.all(promise)
             .then(responseList => {
+                updateServerRequestCount(requestDataList[0])
                 responseList.map((response, i) => {
                     resResults.push(EP.formatData(requestDataList[i], response));
                 })
@@ -153,10 +167,11 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
-            if (error.response && responseStatus(self, error.response.status)) {
-                responseError(self, requestDataList[0], error, callback)
-            }
-        })
+                updateServerRequestCount(requestDataList[0])
+                if (error.response && responseStatus(self, error.response.status)) {
+                    responseError(self, requestDataList[0], error, callback)
+                }
+            })
     }
 }
 
@@ -167,10 +182,11 @@ export const sendSyncRequest = async (self, request) => {
             {
                 headers: getHeader(request)
             });
-
+        updateServerRequestCount(request)
         showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
+        updateServerRequestCount(request)
         if (error.response && responseStatus(self, error.response.status)) {
             responseError(self, request, error)
         }
@@ -184,9 +200,11 @@ export const sendSyncRequestWithError = async (self, request) => {
             {
                 headers: getHeader(request)
             });
+        updateServerRequestCount(request)
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
+        updateServerRequestCount(request)
         if (error.response && responseStatus(self, error.response.status)) {
             return { request: request, error: error }
         }
@@ -202,10 +220,12 @@ export function sendRequest(self, request, callback) {
             headers: getHeader(request)
         })
         .then(function (response) {
+            updateServerRequestCount(request)
             showSpinner(self, false)
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
+            updateServerRequestCount(request)
             if (error.response && responseStatus(self, error.response.status)) {
                 responseError(self, request, error, callback)
             }

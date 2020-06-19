@@ -194,6 +194,18 @@ class ClusterInstReg extends React.Component {
         })
     }
 
+    reservableChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.ipAccess) {
+                form.value = currentForm.value ? constant.IP_ACCESS_DEDICATED : form.value
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
@@ -212,6 +224,9 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.cloudletName) {
             this.cloudletValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.reservable) {
+            this.reservableChange(form, forms, isInit)
         }
     }
 

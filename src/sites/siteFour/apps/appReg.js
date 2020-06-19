@@ -94,7 +94,7 @@ class AppReg extends React.Component {
     ])
 
     getPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.portForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.portForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
     }
 
     annotationForm = () => ([
@@ -118,7 +118,7 @@ class AppReg extends React.Component {
     ])
 
     getMultiPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.multiPortForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.multiPortForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
     }
 
     configForm = () => ([
@@ -197,6 +197,7 @@ class AppReg extends React.Component {
                     [constant.ACCESS_TYPE_LOAD_BALANCER] :
                     [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
+                this.accessTypeChange(form, forms, isInit)
                 return form
             }
             else if (form.label === 'Configs') {
@@ -256,9 +257,21 @@ class AppReg extends React.Component {
 
     protcolValueChange = (currentForm, forms, isInit) => {
         let childForms = currentForm.parent.form.forms
+        let accessType = undefined
+        let dependentData = currentForm.parent.form.dependentData
+        for (let i = 0; i < dependentData.length; i++) {
+            let parentForm = forms[dependentData[i].index]
+            if (parentForm.field === fields.accessType) {
+                accessType = parentForm.value;
+            }
+        }
+
         for (let i = 0; i < childForms.length; i++) {
             let form = childForms[i]
-            if (form.field === fields.tls || form.field === fields.skipHCPorts) {
+            if (form.field === fields.tls) {
+                form.visible = currentForm.value === 'tcp' && accessType === constant.ACCESS_TYPE_LOAD_BALANCER
+            }
+            else if (form.field === fields.skipHCPorts) {
                 form.visible = currentForm.value === 'tcp'
             }
         }
@@ -333,6 +346,29 @@ class AppReg extends React.Component {
         })
     }
 
+    accessTypeChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.ports) {
+                let protocol = undefined
+                for (let j = 0; j < form.forms.length; j++) {
+                    let childForm = form.forms[j]
+                    if (childForm.field === fields.protocol) {
+                        protocol = childForm.value;
+                    }
+                    else if (childForm.field === fields.tls) {
+                        childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp' ? true : false
+                        childForm.value = childForm.visible ? childForm.value : false
+                        protocol = undefined
+                    }
+                }
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
     checkForms = (form, forms, isInit) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
@@ -348,6 +384,9 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.accessType) {
+            this.accessTypeChange(form, forms, isInit)
         }
     }
 
@@ -393,10 +432,10 @@ class AppReg extends React.Component {
                 {
                     let data = mcRequest.request.data;
                     this.props.handleAlertInfo('success', `App ${data.app.key.name} added successfully`)
+                    this.props.onClose(true)
                 }
             })
         }
-        this.props.onClose(true)
     }
 
     onCreate = async (data) => {
@@ -417,18 +456,20 @@ class AppReg extends React.Component {
                             let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
                             ports = ports + newPort
                             ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
-
-                            skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
-                            skipHCPorts = skipHCPorts + (multiFormData[fields.skipHCPorts] ? '' : newPort)
+                            if (!multiFormData[fields.skipHCPorts]) {
+                                skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                                skipHCPorts = skipHCPorts + newPort
+                            }
                         }
                         else if (multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
                             let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
                             ports = ports + newPort
                             ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
-
-                            skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
-                            skipHCPorts = skipHCPorts + (multiFormData[fields.skipHCPorts] ? '' : newPort)
+                            if (!multiFormData[fields.skipHCPorts]) {
+                                skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                                skipHCPorts = skipHCPorts + newPort
+                            }
                         }
                         else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
                             data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()

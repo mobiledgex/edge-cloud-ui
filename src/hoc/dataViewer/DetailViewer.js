@@ -2,13 +2,7 @@ import React from 'react';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import * as constant from '../../constant'
 import {getUserRole} from '../../services/model/format';
-import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
-import yaml from 'react-syntax-highlighter/dist/esm/languages/hljs/yaml';
-import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
-import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
-
-SyntaxHighlighter.registerLanguage('yaml', yaml);
-SyntaxHighlighter.registerLanguage('json', json);
+import {syntaxHighLighter} from '../../hoc/highLighter/highLighter'
 
 const checkRole = (form) => {
     let roles = form.roles
@@ -26,22 +20,10 @@ const checkRole = (form) => {
     return true
 }
 
-const getJSON = (data) => {
+const getHighLighter = (language, data) => {
     return (
-        <div style={{flex: 1, width: '100%', flexDirection: 'column'}}>
-            <SyntaxHighlighter language="json" style={allyDark} className='yamlDiv'>
-                {JSON.stringify(data, null, '\t')}
-            </SyntaxHighlighter>
-        </div>
-    )
-}
-
-const getYAML = (data) => {
-    return (
-        <div style={{backgroundColor: 'grey', padding: 1, overflowX:'auto', width:'85vw'}}>
-            <SyntaxHighlighter language="yaml" style={allyDark} className='yamlDiv'>
-                {data.toString()}
-            </SyntaxHighlighter>
+        <div style={{backgroundColor: 'grey', padding: 1, overflow:'auto', maxHeight:'50vh', maxWidth:'50vw', border:'1px solid #808080'}}>
+            {syntaxHighLighter(language, data.toString())}
         </div>
     )
 }
@@ -56,9 +38,9 @@ const getData = (data, item) => (
     item.dataType === constant.TYPE_URL ?
         getURL(data) :
         item.dataType === constant.TYPE_JSON ?
-            getJSON(data) :
+            getHighLighter('json', JSON.stringify(data, null, 1)) :
             item.dataType === constant.TYPE_YAML ?
-                getYAML(data) :
+                getHighLighter('yaml', data.toString()) :
                 <p style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</p>
 )
 

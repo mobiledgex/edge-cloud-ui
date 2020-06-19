@@ -3,6 +3,7 @@ import {Field, initialize, reduxForm} from "redux-form";
 import {Form} from "semantic-ui-react";
 import './styles.css';
 
+const expression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 let _errors = null;
 const validate = values => {
@@ -28,7 +29,7 @@ const validate = values => {
 
     if (!values.email) {
         errors.email = 'Required'
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (!expression.test(values.email)) {
         errors.email = 'Invalid email address'
     }
     _errors = errors;
@@ -112,7 +113,7 @@ class RegistryUserForm extends React.Component{
                                name="email"
                                type="email"
                                placeholder={this.email}
-                                initialValue={this.emailValue}
+                               initialValue={this.emailValue}
                                onChange={this.onChangeField}
                         />
                     </Form.Group>

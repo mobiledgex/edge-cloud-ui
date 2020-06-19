@@ -5,14 +5,13 @@ import {Icon} from "semantic-ui-react";
 const MexDualList = (props) => {
     let form = props.form;
     
-    const [selected, setSelected] = useState([]);
+    const [selected, setSelected] = useState(props.form.value ? props.form.value : [])
     const onSelected = (data)=>
     {
         setSelected(data)
         props.onChange(form, data)
     }
     
-
     return (
         <DualListBox
             icons={{

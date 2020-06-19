@@ -1,6 +1,7 @@
 import React from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/hljs/yaml';
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import {copyData} from '../../utils/fileUtil'
 
@@ -8,6 +9,7 @@ import { Box, IconButton, Tooltip } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 
 SyntaxHighlighter.registerLanguage('yaml', yaml);
+SyntaxHighlighter.registerLanguage('json', json);
 
 export const syntaxHighLighter = (language, data) => (
     <SyntaxHighlighter language={language} style={allyDark} className='yamlDiv'>

@@ -105,13 +105,13 @@ export const verifyEmail = async (self, data) => {
     return mcRequest
 }
 
-export const showSelf = async (self, data) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_SELF, data: data })
+export const showSelf = async (self, data, showSpinner) => {
+    let mcRequest = await sendRequest(self, { method: SHOW_SELF, data: data, showSpinner:showSpinner })
     return mcRequest
 }
 
-export const showAuditOrg = async (self, data) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_AUDIT_ORG, data: data })
+export const showAuditOrg = async (self, data, showSpinner) => {
+    let mcRequest = await sendRequest(self, { method: SHOW_AUDIT_ORG, data: data, showSpinner:showSpinner })
     return mcRequest
 }
 

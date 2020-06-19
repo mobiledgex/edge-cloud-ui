@@ -6,12 +6,13 @@ import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STR
 
 const fields = formatter.fields;
 
+export const getCloudletKey = (data) => {
+    return { organization: data[fields.operatorName], name: data[fields.cloudletName] }
+}
+
 export const getKey = (data, isCreate) => {
     let cloudlet = {}
-    cloudlet.key = {
-        organization: data[fields.operatorName],
-        name: data[fields.cloudletName]
-    }
+    cloudlet.key = getCloudletKey(data)
     if (isCreate) {
         cloudlet.location = data[fields.cloudletLocation]
         cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])

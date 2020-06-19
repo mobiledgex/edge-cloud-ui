@@ -2,25 +2,27 @@ import axios from 'axios';
 import uuid from 'uuid';
 import * as EP from './endPointTypes'
 
-
-let sockets = [];
-
-
 export function getEP() {
     return EP;
 }
 
 export const mcURL = (isWebSocket) =>
 {
-    let serverURL = process.env.REACT_APP_API_ENDPOINT
+    let serverURL = ''
     if (process.env.NODE_ENV === 'production') {
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
-    }
 
-    if (isWebSocket) {
-        serverURL = serverURL.replace('http', 'ws')
+        if (isWebSocket) {
+            serverURL = serverURL.replace('http', 'ws')
+        }
+    }
+    else
+    {
+        if (isWebSocket) {
+            serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+        }
     }
     return serverURL
 }
