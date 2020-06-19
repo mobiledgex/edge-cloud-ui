@@ -1,13 +1,10 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogTitle as MuiDialogTitle, Chip, Card } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
-import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import CloseIcon from '@material-ui/icons/Close';
 import cloneDeep from 'lodash/cloneDeep'
 import { withStyles } from '@material-ui/styles';
-SyntaxHighlighter.registerLanguage('json', json);
+import {syntaxHighLighter} from '../hoc/highLighter/highLighter';
 
 const jsonParse = (data) => {
     try {
@@ -36,9 +33,7 @@ const jsonView = (data, position) => {
     }
     return (
         <div style={{ width: '100%', flexDirection: 'column' }}>
-            <SyntaxHighlighter language="json" style={allyDark}>
-                {JSON.stringify(jsonObj !== undefined ? jsonObj : {}, null, 1)}
-            </SyntaxHighlighter>
+            {syntaxHighLighter('json', JSON.stringify(jsonObj !== undefined ? jsonObj : {}, null, 1))}
         </div>
     )
 }
@@ -95,10 +90,6 @@ export default class PopDetailViewer extends React.Component {
         this.props.close && this.props.close(mode)
     }
 
-    handleOpen = () => {
-        this.setState({ open: true });
-    }
-
     handleClose = () => {
         this.setState({ open: false });
         this.props.close();
@@ -115,7 +106,7 @@ export default class PopDetailViewer extends React.Component {
     getChipStyle = (position)=>
     {
         let color = this.state.viewIndex === position ? '#77BD06' :'#6F7074'
-        return {backgroundColor: color, marginRight:5}
+        return {backgroundColor: color, marginRight:5, fontSize:15}
     }
 
     render() {
@@ -123,7 +114,6 @@ export default class PopDetailViewer extends React.Component {
             <Dialog
                 className="audit_popup"
                 open={this.state.open}
-                onOpen={this.handleOpen}
                 onClose={this.handleClose}
                 aria-labelledby="draggable-dialog-title"
                 style={{ zIndex: 1901 }} // It should be higher than Audit Timeline Popup(= z-index:1900)

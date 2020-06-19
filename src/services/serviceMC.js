@@ -2,10 +2,6 @@ import axios from 'axios';
 import uuid from 'uuid';
 import * as EP from './endPointTypes'
 
-
-let sockets = [];
-
-
 export function getEP() {
     return EP;
 }

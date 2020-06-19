@@ -968,20 +968,17 @@
 }
 
 .audit_timeline_group:nth-child(odd) {
-    background-color: #3c404a;
+    background-color: #3E4046;
 }
 
 .audit_timeline_group:nth-child(even) {
-    background-color: #292c33;
+    background-color: #2A2C33;
 }
 
 .audit_timeline_group_header{
     margin: 0 20px;
     padding: 10px 0;
-    border-bottom: 1px solid #5d6576;
     font-size: 16px;
-    line-height: 1.25;
-    letter-spacing: 0.11px;
     color: #9e9e9e;
 }
 
