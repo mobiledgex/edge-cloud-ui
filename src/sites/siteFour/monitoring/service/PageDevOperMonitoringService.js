@@ -20,12 +20,21 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS
 } from "../../../../shared/Constants";
-import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
+import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
+import uniqBy from "lodash/uniqBy";
+import Chip from "@material-ui/core/Chip";
+import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
+
+//import _ from 'lodash';
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -205,7 +214,15 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
  */
 export function getCloudletClusterNameList(clusterList: TypeCluster) {
     let cloudletNameList = []
-    clusterList.map(item => (cloudletNameList.push(item.Cloudlet)))
+    clusterList.map(item => {
+        cloudletNameList.push({
+            CloudletName: item.Cloudlet,
+            Region: item.Region,
+        })
+    })
+
+    let uniqCloudletNameList = uniqBy(cloudletNameList, 'CloudletName')
+
     let clusterNameList = [];
     clusterList.map((item: TypeCluster, index) => {
         clusterNameList.push({
@@ -214,10 +231,12 @@ export function getCloudletClusterNameList(clusterList: TypeCluster) {
         })
     })
 
-    return {
-        cloudletNameList,
-        clusterNameList
+    let result = {
+        cloudletNameList: uniqCloudletNameList,
+        clusterNameList: clusterNameList,
     }
+
+    return result
 }
 
 /**
@@ -338,6 +357,7 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
 export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
     try {
 
+
         if (hardwareUsageList.length === 0) {
             return (
                 <div style={PageMonitoringStyles.noData}>
@@ -350,6 +370,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             let usageSetList = [];
             let dateTimeList = [];
             let series = [];
+            let colorCodeIndexList = [];
 
             hardwareUsageList.map((item, index) => {
                 let usageColumnList = item.columns;
@@ -402,6 +423,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 }
                 levelTypeNameList.push(classificationName);
                 usageSetList.push(usageList);
+                colorCodeIndexList.push(item.colorCodeIndex);
             });
 
             //@desc: cut List with RECENT_DATA_LIMIT_COUNT
@@ -419,6 +441,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 usageSetList,
                 newDateTimeList,
                 hardwareType,
+                colorCodeIndexList,
             }
 
             return _result
@@ -659,7 +682,7 @@ export const covertUnits = (value, hardwareType, _this) => {
 
         } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
             if (hardwareType === HARDWARE_TYPE.CPU) {
-                return value.toString().substring(0, 9) + " %";
+                return value.toFixed(4) + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 return convertByteToMegaGigaByte(value)
             } else {
@@ -782,8 +805,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: isBig ? 20 : 7,//@desc: maxTicksLimit
-                        fontSize: 11,
+                        maxTicksLimit: isBig ? 20 : 5,//@desc: maxTicksLimit
+                        fontSize: 9,
                         fontColor: 'white',
                         //maxRotation: 0.05,
                         autoSkip: isBig ? false : true,
@@ -1034,30 +1057,30 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
             let levelTypeNameList = lineChartDataSet.levelTypeNameList
             let usageSetList = lineChartDataSet.usageSetList
             let newDateTimeList = lineChartDataSet.newDateTimeList
+            let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
-
                 let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
                 let dataSetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3.5,//todo:라인 두께
                     fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
-                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[_colorIndex],
-                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[_colorIndex],
+                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
+                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[_colorIndex],
-                    pointBackgroundColor: _this.state.chartColorList[_colorIndex],
+                    pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[_colorIndex],
-                    pointHoverBorderColor: _this.state.chartColorList[_colorIndex],
+                    pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 10,
@@ -1103,10 +1126,12 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  * @param isGradientColor
  * @param hwType
  * @param isOnlyOneData
- * @returns {function(*=): {datasets: [], labels: *}}
+ * @param colorCodeIndexList
+ * @returns {function(*=): {datasets: *, labels: *}}
  */
-export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false) => {
+export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
     try {
+
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
             let finalSeriesDataSets = [];
@@ -1115,19 +1140,19 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                     label: levelTypeNameList[index],
                     radius: 0,
                     borderWidth: 3,//todo:라인 두께
-                    fill: isGradientColor,// @desc:fill@desc:fill@desc:fill@desc:fill
-                    backgroundColor: isGradientColor ? gradientList[isOnlyOneData ? _this.state.currentColorIndex : index] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    borderColor: isGradientColor ? gradientList[isOnlyOneData ? _this.state.currentColorIndex : index] : _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    fill: isGradientColor,// @desc:fill
+                    backgroundColor: isGradientColor ? gradientList[colorCodeIndexList[index]] : _this.state.chartColorList[colorCodeIndexList[index]],
+                    borderColor: isGradientColor ? gradientList[colorCodeIndexList[index]] : _this.state.chartColorList[colorCodeIndexList[index]],
                     lineTension: 0.5,
                     data: usageSetList[index],
                     borderCapStyle: 'butt',
                     borderDash: [],
                     borderDashOffset: 0.0,
                     borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    pointBackgroundColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    pointHoverBackgroundColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
-                    pointHoverBorderColor: _this.state.chartColorList[isOnlyOneData ? _this.state.currentColorIndex : index],
+                    pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                    pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
                     pointBorderWidth: 1,
                     pointHoverRadius: 5,
                     pointHoverBorderWidth: 2,
@@ -1138,11 +1163,14 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 finalSeriesDataSets.push(datasetsOne)
             }
 
-            let _result = {
+
+
+
+            let chartDataSet = {
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
             }
-            return _result;
+            return chartDataSet;
         };
 
         return lineChartData;
@@ -1163,80 +1191,21 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit) => {
+export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit, isLegendExpanded = true) => {
     //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
+
+    let clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
+
     return (
         <div style={{display: 'flex'}}>
             <div>
-                {reduceString(item.cluster, stringLimit)}
+                {reduceString(clusterCloudletName, isLegendExpanded ? stringLimit : 3)}
             </div>
-            <div style={{color: 'white'}}>
-                &nbsp;[{reduceString(item.cloudlet, stringLimit)}]
-            </div>
+
         </div>
     )
 }
 
-
-export const tempClusterList = [
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-    {
-        cluster: 'autoclustermobiledgexsdkdemo',
-        cloudlet: ' [mexplat-stage-hamburg-cloudlet',
-    },
-
-]
 
 export function convertHWType(hwType) {
     if (hwType === HARDWARE_TYPE.VCPU_USED) {
@@ -1258,49 +1227,83 @@ export function convertHWType(hwType) {
     }
 }
 
-
 /**
  *
+ * @param allRegionList
  * @param cloudletList
- * @param clusterNameList
+ * @param clusterList
+ * @param _this
  * @returns {[]}
  */
-export const makeClusterTreeDropdown = (cloudletList, clusterNameList) => {
-    let newCloudletList = []
-    newCloudletList.push({
-        title: 'Reset Filter',
-        value: '',
-        selectable: true,
-        children: []
-    });
+export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this) => {
+
+    let treeCloudletList = []
     cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
-                <div>{cloudletOne}&nbsp;&nbsp;
-                    {/*<Tag color="green">Cloudlet</Tag>*/}
+                <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
+                    <Chip
+                        color="primary"
+                        size="small"
+                        label="Cloudlet"
+                        style={{
+                            color: 'white',
+                            backgroundColor: '#34373E'
+                        }}
+                    />
                 </div>
             ),
-            value: cloudletOne,
-            selectable: false,
-            children: []
+
+            value: cloudletOne.CloudletName,
+            children: [],
+            region: cloudletOne.Region
         };
 
-        clusterNameList.map((clusterOne: TypeCluster, innerIndex) => {
-
-
-            if (clusterOne.Cloudlet === cloudletOne) {
+        clusterList.map((clusterOne, innerIndex) => {
+            if (clusterOne.cloudlet === cloudletOne.CloudletName) {
                 newCloudletOne.children.push({
-                    title: clusterOne.ClusterName,
-                    value: clusterOne.ClusterName + " | " + cloudletOne,
+                    title: (
+                        <div style={{display: 'flex'}}>
+                            <Center style={{width: 15,}}>
+                                {_this.renderDot(clusterOne.colorCodeIndex, 10)}
+                            </Center>
+                            <div style={{marginLeft: 5,}}>
+                                {clusterOne.cluster}
+                            </div>
+
+                        </div>
+                    ),
+                    value: clusterOne.cluster + " | " + cloudletOne.CloudletName,
                     isParent: false,
                 })
             }
         })
 
-        newCloudletList.push(newCloudletOne);
+        treeCloudletList.push(newCloudletOne);
     })
 
-    return newCloudletList;
+    //@desc:RegionList
+    let regionTreeList = []
+    allRegionList.map((regionOne, regionIndex) => {
+        let regionMapOne = {
+            title: (
+                <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
+                    {regionOne}
+                </div>
+            ),
+            value: regionOne,
+            children: []
+        };
+
+        treeCloudletList.map((innerItem, innerIndex) => {
+            if (regionOne === innerItem.region) {
+                regionMapOne.children.push(innerItem)
+            }
+        })
+        regionTreeList.push(regionMapOne)
+    })
+
+    return regionTreeList;
 }
 
 

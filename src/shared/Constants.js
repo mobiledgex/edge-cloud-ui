@@ -175,6 +175,8 @@ export const CLASSIFICATION = {
     REGION: 'Region',
 }
 
+export const gridItemOneHeight = 22.3;
+
 export const MEX_PROMETHEUS_APPNAME = 'MEXPrometheusAppName'
 
 export const APP_INST_USAGE_TYPE_INDEX = {
@@ -392,6 +394,7 @@ export const EVENT_LOG_ITEM_LIST = [
     {text: 'PERFORMANCE SUM', value: 'PERFORMANCE_SUM'},
     {text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
     {text: 'APP INST EVENT LOG', value: 'APP_INST_EVENT_LOG'},
+    {text: 'CLIENT STATUS', value: 'CLIENT_STATUS_TABLE'},
 ]
 
 

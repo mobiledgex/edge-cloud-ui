@@ -13,7 +13,12 @@ import '../common/PageMonitoringStyles.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    renderPlaceHolderLoader
+} from "../service/PageMonitoringCommonService";
+import type {TypeClusterUsageOne} from "../../../../shared/Types";
 
 type Props = {
     filteredUsageList: any,
@@ -81,9 +86,11 @@ export default function PerformanceSummaryForCluster(props: Props) {
                     }}
                 >
                     <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll',}}
-                           stickyheader={true.toString()}>
+                           stickyHeader={true}>
 
-                        <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}} fixedheader={true.toString()}>
+
+                        <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}}
+                                   className='thinScrBar'>
                             <TableRow>
                                 <TableCell padding={'none'} align="center" style={{}}>
                                 </TableCell>
@@ -120,7 +127,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                             </TableRow>
                         </TableHead>
                         <TableBody padding={'none'} style={{width: 'auto', overflowX: 'scroll'}}>
-                            {props.filteredUsageList !== undefined && props.filteredUsageList.map((item, index) => {
+                            {props.filteredUsageList !== undefined && props.filteredUsageList.map((item: TypeClusterUsageOne, index) => {
                                 return (
                                     <TableRow
                                         key={index}
@@ -131,7 +138,8 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                         }}
                                     >
 
-                                        <TableCell padding={'default'} align="center" style={{width: 30, color: '#C0C6C8',}}>
+                                        <TableCell padding={'default'} align="center"
+                                                   style={{width: 30, color: '#C0C6C8',}}>
                                             <div style={{
                                                 marginBottom: 0,
                                                 marginTop: 0,
@@ -140,7 +148,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                 justifyContent: 'center'
                                             }}>
                                                 <div style={{
-                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index],
+                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[item.colorCodeIndex] : props.parent.state.chartColorList[item.colorCodeIndex],
                                                     width: 15,
                                                     height: 15,
                                                     borderRadius: 50,
@@ -148,7 +156,8 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                 </div>
                                             </div>
                                         </TableCell>
-                                        <TableCell padding={'default'} align="center" style={{width: 320, color: '#C0C6C8',}}>
+                                        <TableCell padding={'default'} align="center"
+                                                   style={{width: 320, color: '#C0C6C8',}}>
                                             <div style={{
                                                 display: "flex",
                                                 justifyContent: 'center',
@@ -157,7 +166,12 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                 padding: 0,
                                             }}>
                                                 <div style={{
-                                                    marginBottom: 0, marginTop: 0, marginLeft: 20, display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                    marginBottom: 0,
+                                                    marginTop: 0,
+                                                    marginLeft: 20,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
                                                 }}>
                                                     {item.cluster.toString()}<br/>
                                                     [{item.cloudlet.toString()}]
@@ -166,7 +180,8 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                         </TableCell>
 
                                         {/*@desc:cpu*/}
-                                        <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                        <TableCell padding={'default'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.CPU)}
                                         >
                                             <div style={{heiight: 15, padding: 0,}}>
@@ -178,14 +193,15 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumCpuUsage.toFixed(0)}
-                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
+                                                              strokeColor={props.parent.state.chartColorList[item.colorCodeIndex]}
 
                                                               status={'normal'}/>
                                                 </div>
                                             </div>
                                         </TableCell>
 
-                                        <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                        <TableCell padding={'default'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.MEM)}
                                         >
                                             <div style={{heiight: 15, padding: 0,}}>
@@ -197,12 +213,13 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumMemUsage.toFixed(0)}
-                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
+                                                              strokeColor={props.parent.state.chartColorList[item.colorCodeIndex]}
                                                               status={'normal'}/>
                                                 </div>
                                             </div>
                                         </TableCell>
-                                        <TableCell padding={'default'} align="center" style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
+                                        <TableCell padding={'default'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8', marginLeft: 20,}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.DISK)}
 
                                         >
@@ -215,7 +232,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                               strokeWidth={10}
                                                               showInfo={false}
                                                               percent={item.sumDiskUsage.toFixed(0)}
-                                                              strokeColor={props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[props.parent.state.currentColorIndex] : props.parent.state.chartColorList[index]}
+                                                              strokeColor={props.parent.state.chartColorList[item.colorCodeIndex]}
                                                               status={'normal'}/>
                                                 </div>
                                             </div>
@@ -225,29 +242,34 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                             padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
                                             {numberWithCommas(convertByteToMegaGigaByte(item.sumRecvBytes.toFixed(0)))}
                                         </TableCell>
-                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                        <TableCell padding={'none'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8'}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.SENDBYTES)}
                                         >
                                             {numberWithCommas(convertByteToMegaGigaByte(item.sumSendBytes.toFixed(0)))}
                                         </TableCell>
 
-                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                        <TableCell padding={'none'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8'}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPCONNS)}
                                         >
                                             {numberWithCommas(convertToMegaGigaForNumber(item.sumTcpConns.toFixed(0)))}
                                         </TableCell>
-                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                        <TableCell padding={'none'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8'}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.TCPRETRANS)}
                                         >
                                             {numberWithCommas(convertToMegaGigaForNumber(item.sumTcpRetrans.toFixed(0)))}
                                         </TableCell>
-                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                        <TableCell padding={'none'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8'}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPRECV)}
                                         >
 
                                             {numberWithCommas(convertToMegaGigaForNumber(item.sumUdpRecv.toFixed(0)))}
                                         </TableCell>
-                                        <TableCell padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}
+                                        <TableCell padding={'none'} align="center"
+                                                   style={{width: 'auto', color: '#C0C6C8'}}
                                                    onClick={() => handleRowClicked(item, HARDWARE_TYPE.UDPSENT)}
                                         >
                                             {numberWithCommas(convertToMegaGigaForNumber(item.sumUdpSent.toFixed(0)))}

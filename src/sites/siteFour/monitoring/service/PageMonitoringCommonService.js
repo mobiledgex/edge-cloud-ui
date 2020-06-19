@@ -23,7 +23,7 @@ export const noDataArea = () => (
 )
 
 export const isEmpty = (value) => {
-    if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+    if (value === "undefined" || value === "" || value === null || value === undefined || (typeof value === "object" && !Object.keys(value).length)) {
         return true
     } else {
         return false
@@ -642,12 +642,26 @@ export const getOneYearStartEndDatetime = () => {
 }
 
 
-export const showToast = (title: string, time = 3) => {
-    notification.success({
-        placement: 'bottomLeft',
-        duration: time,
-        message: title,
-    });
+/**
+ *
+ * @param title
+ * @param time
+ * @param isSuccessToast
+ */
+export const showToast = (title: string, time = 3, isSuccessToast = true) => {
+    if (isSuccessToast) {
+        notification.success({
+            placement: 'bottomLeft',
+            duration: time,
+            message: title,
+        });
+    } else {
+        notification.warning({
+            placement: 'topLeft',
+            duration: time,
+            message: title,
+        });
+    }
 }
 export const showToast2 = (title: string, time = 2) => {
     toast({
@@ -707,7 +721,7 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
  * @param themeTitle
  * @returns {[]}
  */
-export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList, clusterIndex) => {
+export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList) => {
     try {
 
         let bubbleChartData = []
@@ -725,7 +739,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, cha
                 favor: usageValue,
                 fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
                 cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
-                color: usageList.length === 1 ? chartColorList[clusterIndex] : chartColorList[index],
+                color: usageList.length === 1 ? chartColorList[item.colorCodeIndex] : chartColorList[item.colorCodeIndex],
             })
         })
 

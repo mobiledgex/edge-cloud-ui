@@ -1,17 +1,19 @@
 import { TYPE_JSON } from '../../constant'
 import * as formatter from './format'
 import * as serverData from './serverData'
-import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from './endPointTypes'
+import {getCloudletKey} from './cloudlet'
+import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, UPDATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from './endPointTypes'
 
 let fields = formatter.fields
-
 
 export const keys = [
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
   { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter:true },
   { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter:true },
-  { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Client Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
+  { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Request Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
+  { field: fields.minActiveInstances, serverField: 'min_active_instances', label: 'Min Active Instances', sortable: true, visible: false, dataType: 'Integer' },
+  { field: fields.maxInstances, serverField: 'max_instances', label: 'Max Instances', sortable: true, visible: false, dataType: 'Integer' },
   { field: fields.cloudletCount, label: 'Cloudlet Count', sortable: false, visible: true },
   {
     field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets',
@@ -39,12 +41,28 @@ const getAutoProvCloudletKey = (data, isCreate) => {
   })
 }
 
+const getCloudletList = (data) =>
+{
+  let cloudlets = data[fields.cloudlets]
+  let cloudletList = undefined
+  if (cloudlets && cloudlets.length > 0) {
+    cloudletList = []
+    for (let i = 0; i < cloudlets.length; i++) {
+      cloudletList.push({ key: getCloudletKey(JSON.parse(cloudlets[i])) })
+    }
+  }
+  return cloudletList
+}
+
 const getAutoProvKey = (data, isCreate) => {
   let autoProvPolicy = {}
   autoProvPolicy.key = getKey(data)
   if (isCreate) {
     autoProvPolicy.deploy_client_count = data[fields.deployClientCount] ? parseInt(data[fields.deployClientCount]) : undefined
     autoProvPolicy.deploy_interval_count = data[fields.deployIntervalCount] ? parseInt(data[fields.deployIntervalCount]) : undefined
+    autoProvPolicy.min_active_instances = data[fields.minActiveInstances] ? parseInt(data[fields.minActiveInstances]) : undefined
+    autoProvPolicy.max_instances = data[fields.maxInstances] ? parseInt(data[fields.maxInstances]) : undefined
+    autoProvPolicy.cloudlets = getCloudletList(data)
   }
   return ({
     region: data[fields.region],
@@ -77,6 +95,12 @@ export const deleteAutoProvPolicy = (data) => {
 export const createAutoProvPolicy = (data) => {
   let requestData = getAutoProvKey(data, true)
   return { method: CREATE_AUTO_PROV_POLICY, data: requestData}
+}
+
+export const updateAutoProvPolicy = (forms, data, orgData) => {
+  let requestData = getAutoProvKey(data, true)
+  requestData.autoProvPolicy.fields = formatter.updateFields(forms, data, orgData)
+  return { method: UPDATE_AUTO_PROV_POLICY, data: requestData}
 }
 
 export const addAutoProvCloudletKey = (data) => {

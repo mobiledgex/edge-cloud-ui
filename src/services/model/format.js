@@ -1,5 +1,6 @@
 import { generateUniqueId } from '../serviceMC';
 import { toJson } from '../../utils/JsonUtil'
+import isEqual from 'lodash/isEqual';
 
 export const fields = {
     uuid: 'uuid',
@@ -116,8 +117,24 @@ export const fields = {
     powerState:'powerState',
     tls:'tls',
     userList:'userList',
-    userName:'userName',
-    userRole:'userRole'
+    infraApiAccess:'infraApiAccess',
+    infraFlavorName:'infraFlavorName',
+    infraExternalNetworkName:'infraExternalNetworkName',
+    manifest:'manifest',
+    userName: 'userName',
+    userRole: 'userRole',
+    healthCheck: 'healthCheck',
+    skipHCPorts: 'skipHCPorts',
+    templateDelimiter: 'templateDelimiter',
+    autoScalePolicyName: 'autoScalePolicyName',
+    minimumNodes: 'minimumNodes',
+    maximumNodes: 'maximumNodes',
+    scaleUpCPUThreshold: 'scaleUpCPUThreshold',
+    scaleDownCPUThreshold: 'scaleDownCPUThreshold',
+    triggerTime: 'triggerTime',
+    minActiveInstances:'minActiveInstances',
+    maxInstances:'maxInstances',
+    fields:'fields'
 }
 
 export const getUserRole = () => {
@@ -202,3 +219,39 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     }
     return values
 }
+
+export const compareObjects = (newData, oldData, ignoreCase) => {
+    if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
+        return true
+    }
+    else if (newData !== undefined && newData.length > 0 && oldData === undefined) {
+        return false
+    }
+    else if (newData === undefined && oldData !== undefined && oldData.length > 0) {
+        return false
+    }
+    else if(ignoreCase)
+    {
+        return isEqual(newData.toLowerCase(), oldData.toLowerCase())
+    }
+    else
+    {
+        return isEqual(newData, oldData)
+    }
+  }
+  
+  export const updateFields = (forms, data, orgData)=>
+  {
+    let updateFields = []
+    for(let i=0;i<forms.length;i++)
+    {
+      let form = forms[i]
+      if(form.update && form.updateId)
+      {
+        if (!compareObjects(data[form.field], orgData[form.field])) {
+          updateFields = [...updateFields, ...form.updateId]
+        }
+      }
+    }
+    return updateFields
+  }

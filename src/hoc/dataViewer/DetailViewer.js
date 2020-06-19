@@ -1,28 +1,8 @@
 import React from 'react';
-import ReactJson from 'react-json-view';
 import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import * as constant from '../../constant'
 import {getUserRole} from '../../services/model/format';
-import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
-import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
-
-SyntaxHighlighter.registerLanguage('javascript', js);
-
-const jsonViewProps = {
-    name: null,
-    theme: "monokai",
-    collapsed: false,
-    collapseStringsAfter: 15,
-    onAdd: false,
-    onEdit: false,
-    onDelete: false,
-    displayObjectSize: true,
-    enableClipboard: true,
-    indentWidth: 4,
-    displayDataTypes: false,
-    iconStyle: "triangle"
-}
+import {syntaxHighLighter} from '../../hoc/highLighter/highLighter'
 
 const checkRole = (form) => {
     let roles = form.roles
@@ -40,26 +20,28 @@ const checkRole = (form) => {
     return true
 }
 
-const getJSON = (data) => {
-    return <ReactJson src={data} {...jsonViewProps} />
-}
-
-const getYAML = (data) => {
+const getHighLighter = (language, data) => {
     return (
-        <div style={{backgroundColor: 'grey', padding: 1}}>
-            <SyntaxHighlighter language="yaml" style={allyDark} className='yamlDiv'>
-                {data.toString()}
-            </SyntaxHighlighter>
+        <div style={{backgroundColor: 'grey', padding: 1, overflow:'auto', maxHeight:'50vh', maxWidth:'50vw', border:'1px solid #808080'}}>
+            {syntaxHighLighter(language, data.toString())}
         </div>
     )
 }
 
+const getURL = (data) => {
+    return (
+        <a href={data} target="_blank">{data}</a>
+    )
+}
+
 const getData = (data, item) => (
-    item.dataType === constant.TYPE_JSON ?
-        getJSON(data) :
-        item.dataType === constant.TYPE_YAML ?
-            getYAML(data) :
-            <p style={{wordBreak: 'break-all'}}>{item.customizedData ? item.customizedData(data, true) : data}</p>
+    item.dataType === constant.TYPE_URL ?
+        getURL(data) :
+        item.dataType === constant.TYPE_JSON ?
+            getHighLighter('json', JSON.stringify(data, null, 1)) :
+            item.dataType === constant.TYPE_YAML ?
+                getHighLighter('yaml', data.toString()) :
+                <p style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</p>
 )
 
 

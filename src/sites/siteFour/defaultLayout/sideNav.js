@@ -25,12 +25,12 @@ import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
 import GamesOutlinedIcon from '@material-ui/icons/GamesOutlined';
 import TvOutlinedIcon from '@material-ui/icons/TvOutlined'; 
-import FeaturedPlayListOutlinedIcon from '@material-ui/icons/FeaturedPlayListOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PolicyIcon from '@material-ui/icons/Policy';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
+import LandscapeOutlinedIcon from '@material-ui/icons/LandscapeOutlined';
 
 import SiteFourPageOrganization from '../organization/organizationList';
 import SiteFourPageAccount from '../accounts/accountList';
@@ -41,9 +41,9 @@ import SiteFourPageFlavor from '../flavors/flavorList';
 import SiteFourPageApps from '../apps/appList';
 import SiteFourPageAppInst from '../appInst/appInstList';
 import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
-import SiteFourPageAudits from '../audits/auditLogs';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
+import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
 import PageMonitoringMain from '../monitoring/common/PageMonitoringMain'
 
 import {Collapse, Tooltip} from '@material-ui/core';
@@ -131,16 +131,8 @@ const setNavState = (flag) => {
 
 export default function MiniDrawer(props) {
 
-    const subPage = (path) => {
-        props.history.push({pathname:`/site4/${path}`})
-        if(path.includes(constant.PAGE_AUDIT_LOGS))
-        {
-            setPage(<SiteFourPageAudits/>)
-        }
-    }
-
     const options = [
-        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization subPage={subPage}/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
         { divider: true },
@@ -154,10 +146,10 @@ export default function MiniDrawer(props) {
             label: 'Policies', icon: <TrackChangesIcon />, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
                 { label: 'Auto Provisioning Policy', icon: <GroupWorkIcon />, pg: 8, pageId: constant.PAGE_AUTO_PROVISIONING_POLICY, page: <AutoProvPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
                 { label: 'Privacy Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_PRIVACY_POLICY, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+                { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: ['AdminManager', 'DeveloperManager'] },
             ]
         },
-        { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-        { label: 'Audit Logs', icon: <FeaturedPlayListOutlinedIcon />, pg: 'audits', pageId: constant.PAGE_AUDIT_LOGS, page: <SiteFourPageAudits />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
+        { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
     ]
 
     const classes = useStyles();

@@ -1,6 +1,7 @@
 import React from 'react';
 import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
+import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import * as constant from '../../../constant';
@@ -9,7 +10,6 @@ import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '.
 import { showCloudletPoolMembers } from '../../../services/model/cloudletPoolMember';
 import { showCloudletLinkOrg } from '../../../services/model/cloudletLinkOrg';
 import CloudletPoolReg from './cloudletPoolReg';
-import * as actions from "../../../actions";
 import {CloudletPoolTutor} from "../../../tutorial";
 
 const cloudletPoolSteps = CloudletPoolTutor();
@@ -34,13 +34,23 @@ class ClouldetPoolList extends React.Component {
 
     }
 
+    showDeleteCloudletPool = (action, data) => {
+        let valid = true
+        if(data[fields.organizationCount] !== 0)
+        {
+            this.props.handleAlertInfo('error', 'Please unlink all organizations before deleting cloudlet pool');
+            valid = false
+        }
+        return valid;
+    }
+
     actionMenu = () => {
         return [
             { id: constant.ADD_CLOUDLET, label: 'Add Cloudlet', onClick: this.onActionClick },
             { id: constant.DELETE_CLOUDLET, label: 'Delete Cloudlet', onClick: this.onActionClick },
             { id: constant.ADD_ORGANIZATION, label: 'Link Organization', onClick: this.onActionClick },
             { id: constant.DELETE_ORGANIZATION, label: 'Unlink Organization', onClick: this.onActionClick },
-            { id: constant.DELETE, label: 'Delete', onClick: deleteCloudletPool }
+            { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool }
         ]
     }
 
@@ -76,6 +86,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 

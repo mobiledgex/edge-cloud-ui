@@ -35,7 +35,6 @@ export default class CalendarTimeline extends React.PureComponent {
         const defaultTimeEnd = this.makeUTCDateTime(moment(), "hour", 1);
         const visibleTimeStart= this.makeUTCDateTime(moment(), "hour", -4);
         const visibleTimeEnd= this.makeUTCDateTime(moment(), "hour", 1);
-
         this.state = {
             groups,
             items,
@@ -170,11 +169,8 @@ export default class CalendarTimeline extends React.PureComponent {
         let customStyles = {
             ...properties.style,
             ...additional,
-            backgroundColor,
-            color: item.color,
-            borderColor,
-            borderStyle: "solid",
-            borderWidth: 1,
+            color: item.color, 
+            border: "solid 1px",
             borderRadius: 4,
             borderLeftWidth: itemContext.selected ? 3 : 1,
             borderRightWidth: itemContext.selected ? 3 : 1,

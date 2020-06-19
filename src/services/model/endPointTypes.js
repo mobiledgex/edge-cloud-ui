@@ -10,6 +10,7 @@ import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
 import * as PrivacyPolicy from './privacyPolicy';
+import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
 import * as CloudletPoolMember from './cloudletPoolMember';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
@@ -78,6 +79,7 @@ export const SHOW_LOGS = "ShowLogs";
 export const SHOW_CONSOLE = "RunConsole";
 export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
 export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
+export const UPDATE_AUTO_PROV_POLICY = "UpdateAutoProvPolicy";
 export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
 export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
 export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
@@ -85,6 +87,7 @@ export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
 export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
 export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
 export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
+
 /** ADMIN MONITORING added by @Smith */
 export const EVENT_CLOUDLET = "CloudletLevelEvents";
 export const METRICS_CLOUDLET = "cloudlet";
@@ -92,6 +95,13 @@ export const METRICS_CLUSTER = "clusterMetrics";
 export const METRICS_CLIENT = "client";
 export const COUNT_CLUSTER = "cluster";
 export const EVENT_CLUSTER = "ClusterLevelEvents";
+/** MONI */
+
+export const GET_CLOUDLET_MANIFEST = "GetCloudletManifest";
+export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
+export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
+export const UPDATE_AUTO_SCALE_POLICY = "UpdateAutoScalePolicy";
+export const DELETE_AUTO_SCALE_POLICY = "DeleteAutoScalePolicy";
 
 export function getPath(request) {
     switch (request.method) {
@@ -155,6 +165,7 @@ export function getPath(request) {
         case DELETE_CLOUDLET_POOL_MEMBER:
         case SHOW_AUTO_PROV_POLICY:
         case CREATE_AUTO_PROV_POLICY:
+        case UPDATE_AUTO_PROV_POLICY:
         case DELETE_AUTO_PROV_POLICY:
         case ADD_AUTO_PROV_POLICY_CLOUDLET:
         case REMOVE_AUTO_PROV_POLICY_CLOUDLET:
@@ -162,10 +173,15 @@ export function getPath(request) {
         case UPDATE_PRIVACY_POLICY:
         case CREATE_PRIVACY_POLICY:
         case DELETE_PRIVACY_POLICY:
+        case SHOW_AUTO_SCALE_POLICY:
+        case CREATE_AUTO_SCALE_POLICY:
+        case UPDATE_AUTO_SCALE_POLICY:
+        case DELETE_AUTO_SCALE_POLICY:
         case RUN_COMMAND:
         case SHOW_LOGS:
         case SHOW_CONSOLE:
         case COUNT_CLUSTER:
+        case GET_CLOUDLET_MANIFEST:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -241,6 +257,9 @@ export function formatData(request, response) {
             break;
         case SHOW_PRIVACY_POLICY:
             data = PrivacyPolicy.getData(response, request.data);
+            break;
+        case SHOW_AUTO_SCALE_POLICY:
+            data = AutoScalePolicy.getData(response, request.data)
             break;
         case SHOW_CLOUDLET_POOL:
             data = CloudletPool.getData(response, request.data);
