@@ -4,6 +4,7 @@ import * as actions from '../actions';
 import * as serverData from "../services/model/serverData";
 import { GridLoader } from "react-spinners";
 import MexAlert from '../hoc/alert/AlertDialog';
+import { Dialog } from '@material-ui/core';
 
 
 class VerifyContent extends Component {
@@ -11,7 +12,8 @@ class VerifyContent extends Component {
         super(props);
         this.state = {
             loading: true,
-            mexAlertMessage:undefined
+            mexAlertMessage: undefined,
+            open:true
         };
 
     }
@@ -29,23 +31,29 @@ class VerifyContent extends Component {
         }
     }
 
-    onAlertClose = ()=>
-    {
-        this.setState({ mexAlertMessage: undefined })
+    onAlertClose = () => {
+        this.setState({ mexAlertMessage: undefined, open:false })
         this.props.history.push({ pathname: '/' })
     }
 
     render() {
         return (
-            <div className="loadingBox">
-                <GridLoader
-                    sizeUnit={"px"}
-                    size={20}
-                    color={'#70b2bc'}
-                    loading={this.state.loading}
-                />
-                <div>Verifying...</div>{this.state.mexAlertMessage ?
-                <MexAlert data={this.state.mexAlertMessage} onClose={this.onAlertClose} /> : null}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <Dialog open={this.state.open} PaperProps={{
+                    style: {
+                        backgroundColor: 'transparent',
+                        boxShadow: 'none',
+                    }
+                }}>
+                    <GridLoader
+                        sizeUnit={"px"}
+                        size={20}
+                        color={'#70b2bc'}
+                        loading={this.state.loading}
+                    />
+                    Verifying...
+                </Dialog>
+                {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={this.onAlertClose} /> : null}
             </div>
         );
     }

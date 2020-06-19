@@ -39,10 +39,19 @@ class headerGlobalAudit extends React.Component {
             if (mcRequest.response.data.length > 0) {
                 this.setState({ isOpen:true, devData: mcRequest.response.data })
             }
+            else{
+                this.props.handleAlertInfo('error', 'No logs found')
+            }
         }
     }
 
+
     componentDidUpdate(prevProps, prevState) {
+        let serverRequestCount = parseInt(localStorage.getItem('ServerRequestCount'))
+        if(serverRequestCount > 0)
+        {
+            this.readyToData()
+        }
         if(this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg)
         {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
@@ -52,15 +61,22 @@ class headerGlobalAudit extends React.Component {
     readyToData() {
         this.setState({devData: []})
         this.getDataAudit();
+        localStorage.setItem('ServerRequestCount', 0)
     }
 
     componentWillUnmount() {
         clearInterval(this.interval);
     }
 
+    updateStatus = (data) => {
+        if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
+            data.status = data.response.includes('"code":400') ? 400 : data.status
+        }
+    }
+
     getDataAudit = async () => {
         this.setState({devData: []})
-        let mcRequest = await serverData.showSelf(_self, {})
+        let mcRequest = await serverData.showSelf(_self, {}, false)
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 let response = mcRequest.response;
@@ -73,6 +89,7 @@ class headerGlobalAudit extends React.Component {
                 let unCheckedErrorCount = 0;
 
                 devData.map((data, index) => {
+                    this.updateStatus(data)
                     let status = data.status;
                     let traceid = data.traceid;
                     if (status !== 200) {
@@ -83,9 +100,7 @@ class headerGlobalAudit extends React.Component {
                         }
                     }
                 })
-
-                this.state.errorCount = errorCount
-                this.state.unCheckedErrorCount = unCheckedErrorCount
+                this.setState({ errorCount: errorCount, unCheckedErrorCount: unCheckedErrorCount })
             }
         }
     }
@@ -101,7 +116,7 @@ class headerGlobalAudit extends React.Component {
                     if(storageSelectedTraceidList){
                         let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === data.traceid) : (-1)
                         if(storageSelectedTraceidIndex === (-1)){
-                            this.setState({"unCheckedErrorCount" : this.state.unCheckedErrorCount - 1})
+                            this.setState(prevState=>({unCheckedErrorCount : prevState.unCheckedErrorCount - 1}))
                         }
                     }
                 }
