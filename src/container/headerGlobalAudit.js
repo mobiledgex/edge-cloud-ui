@@ -34,10 +34,13 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName }, true)
+        let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 this.setState({ isOpen:true, devData: mcRequest.response.data })
+            }
+            else{
+                this.props.handleAlertInfo('error', 'No logs found')
             }
         }
     }
