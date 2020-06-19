@@ -10,6 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Calendar from '../components/horizontal_calendar/Calendar';
 import moment from "moment";
 import CheckIcon from '@material-ui/icons/Check';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const options = [
     { key: 'Individual', value: 'Individual', text: 'Individual' },
@@ -21,6 +22,7 @@ class HeaderAuditLog extends React.Component {
         this.state = {
             expanded: (-1),
             groupExpanded: (-1),
+            groupParentExpanded:(-1),
             devData: [],
             dayData: [],
             groups: [],
@@ -193,13 +195,15 @@ class HeaderAuditLog extends React.Component {
     };
 
     handleExpandedChange = (index, traceid) => (event, newExpanded) => {
-        let dayData = this.state.dayData;
         this.props.onItemSelected(traceid)
         this.setState({ expanded: newExpanded ? index : false });
     };
 
+    handleGroupParentExpandedChange = (index) =>  {
+        this.setState(prevState=>({ groupParentExpanded: prevState.groupParentExpanded === index ? (-1) : index }));
+    };
+
     handleGroupExpandedChange = (group, index, traceid) => (event, newExpanded) => {
-        let dayData = this.state.dayData;
         this.props.onItemSelected(traceid)
         this.setState({ groupExpanded: { expanded: newExpanded ? index : false, group: group } });
     };
@@ -315,13 +319,16 @@ class HeaderAuditLog extends React.Component {
         data.map((d) => { (d.status !== 200) ? errorCount++ : errorCount })
         return (
             (group) ?
-                <div className='audit_timeline_group'>
-                    <ExpansionPanel>
+                <div key={index} className='audit_timeline_group'>
+                    <ExpansionPanel expanded={this.state.groupParentExpanded === index} onChange={(e)=>{this.handleGroupParentExpandedChange(index)}}>
                         <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
                             id="panel1a-header"
                         >
                             <div className='audit_timeline_group_header'>
-                                <h4>{group.title}<span className='audit_timeline_group_bedge'>{(errorCount > (-1) ? errorCount : 0)}</span></h4>
+                                <h4>{group.title}
+                                    {errorCount > 0 ?<span className='audit_timeline_group_bedge'>{(errorCount > (-1) ? errorCount : 0)}</span> : null}
+                                </h4>
                             </div>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
@@ -329,7 +336,7 @@ class HeaderAuditLog extends React.Component {
                                 {
                                     data.map((item, itemIndex) => {
                                         return (
-                                            <ExpansionPanel key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
+                                            <ExpansionPanel last='' active={undefined} completed='' key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
                                                 {this.expandablePanelSummary(itemIndex, item)}
                                                 {this.expandablePanelDetails(item)}
                                             </ExpansionPanel>
