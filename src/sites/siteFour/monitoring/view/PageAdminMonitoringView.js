@@ -1,4 +1,3 @@
-import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
@@ -8,7 +7,6 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
-import {hot} from "react-hot-loader/root";
 import DatePicker from 'antd/es/date-picker';
 import * as reducer from "../../../../utils";
 import {
@@ -35,7 +33,18 @@ import {
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
 } from "../service/PageAdmMonitoringService";
-import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APPINSTANCE_INIT_VALUE,
+    CLASSIFICATION,
+    CONNECTIONS_OPTIONS,
+    HARDWARE_OPTIONS,
+    HARDWARE_TYPE,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS,
+    USER_TYPE
+} from "../../../../shared/Constants";
 import type {TypeAppInst, TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
@@ -154,7 +163,7 @@ type State = {
 
 }
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageAdminMonitoring extends Component<Props, State> {
         state = {
             date: '',
@@ -861,12 +870,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo:Cluster Dropdown         */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box" style={{zIndex: 9999}}>
+                        <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
                                 Cluster
                             </div>
                             <Dropdown
-                                style={{zIndex: 9999}}
                                 disabled={this.state.loading}
                                 selectOnBlur={false}
                                 value={this.state.currentCluster}
@@ -897,13 +905,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo: App Instance Dropdown      */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box" style={{zIndex: 9999}}>
+                        <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
                                 App Inst
                             </div>
                             <Dropdown
                                 selectOnBlur={false}
-                                style={{zIndex: 9999, minWidth: 290}}
+                                style={{minWidth: 290}}
                                 disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
@@ -930,7 +938,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo: Time Range Dropdown       */}
                         {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box" style={{zIndex: 9999}}>
+                        <div className="page_monitoring_dropdown_box">
                             {/* <div className="page_monitoring_dropdown_label">
                                 TimeRange
                             </div>*/}
@@ -1262,6 +1270,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
     }
-))));
+)))
 
 
