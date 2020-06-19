@@ -68,7 +68,7 @@ const ContainerHealth = defaultProps => {
             <div className='page_monitoring_circle_chart'>
                 <div className='page_monitoring_circle_chart_item'>
                     <div className='page_monitoring_circle_chart_label'>
-                        {(type === 'cluster')? 'Cpu' : 'vCPU'}
+                        {(type === 'cluster')? 'CPU' : 'vCPU'}
                     </div>
                     <CircularProgress data={vCpuPercent} />
                     {(type === 'cloudlet') &&
