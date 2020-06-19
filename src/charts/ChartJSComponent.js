@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import { Line, Bar, HorizontalBar, Chart } from "react-chartjs-2";
 import { sumBy, isEqual, sortBy } from "lodash";
 import Popper from "@material-ui/core/Popper";
@@ -51,17 +52,26 @@ const getOptions = params => ({
             ticks: {
                 beginAtZero: false,
                 integerSteps: true,
-                integers: true
+                integers: true,
+                stepSize: 10
             }
         }],
         xAxes: [{
             type: "time",
-            distribution: "linear",
+            distribution: "series",
             time: {
+                tooltipFormat: "HH:mm:ss MM/DD/YY",
                 displayFormats: {
                     second: "hh:mm:ss"
                 },
-                stepSize: 2
+                stepSize: 10
+            },
+            ticks: {
+                source: "labels",
+                callback: function (value, index, values) {
+                    if (!values[index]) { return }
+                    return moment.utc(values[index]['value']).format('HH:mm:ss')
+                }
             }
         }]
     },
@@ -95,7 +105,10 @@ const getOptionsBar = params => ({
     scales: {
         yAxes: [{
             ticks: {
-                beginAtZero: false
+                beginAtZero: false,
+                integerSteps: true,
+                integers: true,
+                stepSize: 1
             }
         }]
     },
