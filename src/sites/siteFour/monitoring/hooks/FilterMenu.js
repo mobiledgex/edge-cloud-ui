@@ -11,11 +11,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 const HtmlTooltip = withStyles((theme) => ({
     tooltip: {
-        backgroundColor: '#f5f5f9',
-        color: 'rgba(0, 0, 0, 0.87)',
         maxWidth: 220,
-        fontSize: theme.typography.pxToRem(12),
-        border: '1px solid #dadde9',
+        fontSize: theme.typography.pxToRem(12)
     },
 }))(Tooltip);
 
@@ -124,11 +121,11 @@ export default function FilterMenu(defaultProps) {
                         ? <HtmlTooltip
                             title={
                                 <>
-                                    <em>{"Your can apply "}</em> <b>{applyMent}</b> <em>{"by click the apply button"}</em>
+                                    {"Your can apply "}<b>{applyMent}</b>{" by click the apply button"}
                                 </>
                             }
                         >
-                            <HelpIcon style={{ color: 'rgba(255,255,255,.7)', marginLeft: 10 }} fontSize={'small'}/>
+                            <HelpIcon style={{ color: 'rgba(255,255,255,.7)', marginLeft: 5 }} fontSize={'small'}/>
                         </HtmlTooltip> : null
                     }
                 </div>
