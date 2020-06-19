@@ -90,7 +90,7 @@ const RateOfMethods = defaultProps => {
             });
 
             const countMethod = countMethodData[defaultProps.method.key] ? countMethodData[defaultProps.method.key] : null;
-            setName((countMethod && countMethod.key) ? countMethod.key : "No Method");
+            setName((countMethod && countMethod.key) ? countMethod.key : "Verify Location");
             // ( countMethod && countMethod.key ) && setName(countMethod.key)
             setCount((countMethod && countMethod.value[0]) ? countMethod.value[0] : 0);
             // ( countMethod && countMethod.value[0] ) && setCount(countMethod.value[0])

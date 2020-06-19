@@ -49,7 +49,9 @@ const getOptions = params => ({
     scales: {
         yAxes: [{
             ticks: {
-                beginAtZero: false
+                beginAtZero: false,
+                integerSteps: true,
+                integers: true
             }
         }],
         xAxes: [{

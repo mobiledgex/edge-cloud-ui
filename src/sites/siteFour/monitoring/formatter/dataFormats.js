@@ -1,6 +1,5 @@
 /**
 * setdataPart
-* Format drawing for plotly.js chart
 */
 import isEqual from "lodash/isEqual";
 import * as DataType from "./dataType";

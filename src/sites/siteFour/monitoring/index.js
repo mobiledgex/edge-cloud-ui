@@ -494,7 +494,7 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
             filter: { type: "dropdown", method: serviceMC.getEP().METRICS_CLOUDLET },
             page: "single",
             itemCount: 3,
-            legend: false,
+            legend: true,
             ...defaultProp,
         },
         {
@@ -529,7 +529,7 @@ const generateComponentCluster = (self, infos, cloudlets, clusters, appinsts, fi
             title: { value: "Type of Cluster", align: "left" },
             filter: null,
             page: "single",
-            legend: false,
+            legend: true,
             ...defaultProp,
         },
         {
