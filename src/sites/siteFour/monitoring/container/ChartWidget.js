@@ -122,6 +122,11 @@ class ChartWidget extends React.Component {
                 setTimeout(() => this.setState({ data: updatedata }), 500);
             }
 
+            if (prevProps.id === DataType.HEALTH_CLUSTER) {
+                const updatedata = DataFormats.dataFormatHealthCluster(this.props.data[prevProps.id]);
+                setTimeout(() => this.setState({ data: updatedata }), 500);
+            }
+
             if (prevProps.id === DataType.RUNNING_CLUSTER_INST) {
                 setTimeout(async () => {
                     const updatedata = await DataFormats.dataFormatRunningCluster(this.props.data[prevProps.id], prevProps.id);
