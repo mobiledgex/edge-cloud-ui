@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
 import {Dropdown} from "semantic-ui-react";
-import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET} from "../../../../shared/Constants";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -303,7 +303,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             })
                         }}
                         value={this.state.currentItemType}
-                        options={EVENT_LOG_ITEM_LIST}
+                        options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? EVENT_LOG_ITEM_LIST_FOR_CLUSTER : EVENT_LOG_ITEM_LIST_FOR_APPINST}
                     />
                 </div>
             </div>
