@@ -54,14 +54,7 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartDataForCluster,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartDataForCluster, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -97,12 +90,7 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
@@ -131,6 +119,7 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
+import MapForAdmin from "../components/MapForAdmin";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -592,6 +581,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //TODO:###############################################
                     let clientStatusList = []
 
+
                     //TODO:###############################################
                     //fixme:AMDINAMDINAMDINAMDINAMDINAMDINAMDIN
                     //TODO:###############################################
@@ -602,6 +592,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
                         clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                        console.log('appInstList===>', appInstList);
+
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
@@ -673,12 +665,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
-                    let dataCount = 0;
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                        dataCount = clusterList.length
-                    } else {
-                        dataCount = cloudletList.length
-                    }
+
+
+                    let dataCount = this.getDataCount(appInstList, clusterList, cloudletList)
+
 
                     /*TODO: LEGEND ROW COUNTING*/
                     let itemCount = 0;
@@ -741,6 +731,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (!isEmpty(this.webSocketInst)) {
                     this.webSocketInst.close();
                 }
+            }
+
+            getDataCount(appInstList, clusterList, cloudletList) {
+                let dataCount;
+                if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                    dataCount = appInstList.length
+                } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    dataCount = clusterList.length
+                } else {
+                    dataCount = cloudletList.length
+                }
+                return dataCount;
             }
 
 
@@ -1269,7 +1271,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
 
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                        return (
+                            <MapForAdmin
+                                markerList={this.state.appInstanceListGroupByCloudlet}
+                                currentWidgetWidth={this.state.currentWidgetWidth}
+                                isMapUpdate={this.state.isMapUpdate}
+                                selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                                mapPopUploading={this.state.mapPopUploading}
+                                parent={this}
+                                isDraggable={this.state.isDraggable}
+                                handleOnChangeAppInstDropdown={this.handleOnChangeAppInstDropdown}
+                                isFullScreenMap={false}
+                                isShowAppInstPopup={this.state.isShowAppInstPopup}
+                                selectedAppInstIndex={this.state.selectedAppInstIndex}
+                                isEnableZoomIn={!this.state.isEnableZoomIn}
+                            />
+                        )
+                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         return (
                             <MapForDev
                                 markerList={this.state.appInstanceListGroupByCloudlet}
@@ -2834,7 +2853,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             render() {
-                if (!this.state.isExistData) {
+                if (!this.state.isExistData && !this.state.userType.includes(USER_TYPE.AMDIN)) {
                     return (
                         <div style={{width: '100%', height: '100%',}}>
                             {this.renderHeader()}
