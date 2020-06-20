@@ -796,7 +796,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 await this.setState({
                     currentRegion: 'ALL',
                     currentCloudLet: '',
-                    currentClusterList: '',
+                    currentClusterList: undefined,
                     currentAppInst: '',
                 })
 
@@ -2298,19 +2298,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderClusterDropdown() {
                 let treeSelectWidth = 500;
-                let maxTagCount=3;
+                let maxTagCount = 3;
                 if (this.props.size.width >= 1600) {
                     treeSelectWidth = 500;
-                    maxTagCount=3
+                    maxTagCount = 3
                 } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
                     treeSelectWidth = 400;
-                    maxTagCount=2
+                    maxTagCount = 2
                 } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
                     treeSelectWidth = 300;
-                    maxTagCount=1
+                    maxTagCount = 1
                 } else if (this.props.size.width <= 1100) {
                     treeSelectWidth = 150;
-                    maxTagCount=0
+                    maxTagCount = 0
                 }
 
                 return (
@@ -2726,13 +2726,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderTitleArea() {
                 return (
-                    <label className='content_title_label' style={{marginBottom: 1}}
-                           onClick={() => {
-                               this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleOnChangeCloudletDropdown(undefined) : this.handleOnChangeClusterDropdown('')
-                           }}
-                    >
-                        Monitoring
-                    </label>
+                    <React.Fragment>
+                        {this.state.intervalLoading &&
+                        <div>
+                            <div style={{position: 'absolute', left: -3, top: 2,}}>
+                                {renderWifiLoader()}
+                            </div>
+                        </div>
+                        }
+                        <label className='content_title_label' style={{marginBottom: 1, marginLeft: 2,}}
+                               onClick={() => {
+                                   this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleOnChangeCloudletDropdown(undefined) : this.handleOnChangeClusterDropdown('')
+                               }}
+                        >
+                            Monitoring
+                        </label>
+                    </React.Fragment>
                 )
             }
 
@@ -2764,13 +2773,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.renderAppInstDropdown()}
                                     </div>
                                 </React.Fragment>
-                            }
-                            {this.state.intervalLoading &&
-                            <div>
-                                <div style={{marginLeft: 25, marginRight: 1,}}>
-                                    {renderWifiLoader()}
-                                </div>
-                            </div>
                             }
                         </div>
                         <div style={{

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
 import {Dropdown} from "semantic-ui-react";
-import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET} from "../../../../shared/Constants";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -20,7 +20,7 @@ type State = {
     currentItemType: number,
     currentHwType: string,
     isShowHWDropDown: boolean,
-    isShowEventLog: boolean,
+    isShowTableType: boolean,
     currentHwTypeList: any,
     selectDefaultValues: any,
     loading: boolean,
@@ -37,7 +37,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
             currentItemType: GRID_ITEM_TYPE.LINE,
             currentHwTypeList: [],
             isShowHWDropDown: true,
-            isShowEventLog: false,
+            isShowTableType: false,
             selectDefaultValues: [],
             loading: false,
         }
@@ -129,7 +129,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         this.setState({
                             currentItemType: GRID_ITEM_TYPE.LINE,
                             isShowHWDropDown: true,
-                            isShowEventLog: false,
+                            isShowTableType: false,
                         })
                     }}
                 >
@@ -156,7 +156,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             this.setState({
                                 currentItemType: GRID_ITEM_TYPE.BAR,
                                 isShowHWDropDown: true,
-                                isShowEventLog: false,
+                                isShowTableType: false,
                             })
                         }}
                     >
@@ -185,7 +185,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 this.setState({
                                     currentItemType: GRID_ITEM_TYPE.COLUMN,
                                     isShowHWDropDown: true,
-                                    isShowEventLog: false,
+                                    isShowTableType: false,
                                 })
                             }}
                         >
@@ -210,10 +210,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 <div
                     onClick={() => {
                         this.setState({
-                            //DESC:when 클라우드렛, cluster , appInst
-                            currentItemType: this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? GRID_ITEM_TYPE.CLIENT_STATUS_TABLE : GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+                            currentItemType: GRID_ITEM_TYPE.TABLE,
                             isShowHWDropDown: false,
-                            isShowEventLog: true,
+                            isShowTableType: true,
                         })
                     }}
                 >
@@ -224,7 +223,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     </Center>
                 </div>
                 <div className='page_monitoring_form_radio_label'>
-                    <Radio value={GRID_ITEM_TYPE.CLIENT_STATUS_TABLE}>Table</Radio>
+                    <Radio value={GRID_ITEM_TYPE.TABLE}>Table</Radio>
                 </div>
             </ChartIconOuterDiv>
         )
@@ -239,7 +238,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         this.setState({
                             currentItemType: GRID_ITEM_TYPE.MAP,
                             isShowHWDropDown: false,
-                            isShowEventLog: false,
+                            isShowTableType: false,
                         })
                     }}
                 >
@@ -265,7 +264,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         this.setState({
                             currentItemType: GRID_ITEM_TYPE.BUBBLE,
                             isShowHWDropDown: false,
-                            isShowEventLog: false,
+                            isShowTableType: false,
                         })
                     }}
                 >
@@ -303,7 +302,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             })
                         }}
                         value={this.state.currentItemType}
-                        options={EVENT_LOG_ITEM_LIST}
+                        options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? EVENT_LOG_ITEM_LIST_FOR_CLUSTER : EVENT_LOG_ITEM_LIST_FOR_APPINST}
                     />
                 </div>
             </div>
@@ -481,15 +480,20 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 </div>
                             </Radio.Group>
                         </div>
-                        {/*@todo:###############################*/}
-                        {/*@todo:DROP DOWN AREA                 */}
-                        {/*@todo:###############################*/}
+                        {/*todo:############################*/}
+                        {/*@todo:MultipleDropdown           */}
+                        {/*todo:############################*/}
                         {this.state.isShowHWDropDown && this.renderHwMultipleDropdown(hwDropdownChildren)}
-                        {this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST
-                            ? this.renderTableSelectForAppInst_Cluster()
-                            : this.state.isShowEventLog && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderTableSelectForCloudlet() : null
-                        }
-                        {this.state.isShowEventLog === false && this.state.isShowHWDropDown === false &&
+
+                        {/*todo:############################*/}
+                        {/*@todo:TABLE TYPE             */}
+                        {/*todo:############################*/}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderTableSelectForAppInst_Cluster() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderTableSelectForAppInst_Cluster() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderTableSelectForCloudlet() : null}
+
+
+                        {this.state.isShowTableType === false && this.state.isShowHWDropDown === false &&
                         <div className='page_monitoring_form_row'>
                             <div className='page_monitoring_form_column_left'
                                  style={{fontFamily: 'Roboto', height: 30}}>
