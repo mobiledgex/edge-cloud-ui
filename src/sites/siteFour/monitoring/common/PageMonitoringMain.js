@@ -8,16 +8,7 @@ export default function PageMonitoringMain() {
 
     const renderMainPage = () => {
         try {
-            /*if (userRole.includes('Admin')) {
-                return (
-                    <PageMonitoringForAdmin/>
-                )
-            } else {
-                return (
-
-                )
-            }*/
-
+            /*if (userRole.includes('Admin')) {                return (                    <PageMonitoringForAdmin/>                )            } else {                return (                )}*/
             return <PageDevOperMonitoringView/>
         } catch (e) {
 
