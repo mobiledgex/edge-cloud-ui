@@ -390,9 +390,14 @@ export const ADD_ITEM_LIST = [
     {text: 'APP INST EVENT LOG', value: 'APP_INST_EVENT_LOG'},
 ]
 
-export const EVENT_LOG_ITEM_LIST = [
+export const EVENT_LOG_ITEM_LIST_FOR_CLUSTER = [
     {text: 'PERFORMANCE SUM', value: 'PERFORMANCE_SUM'},
     {text: 'CLUSTER EVENT LOG', value: 'CLUSTER_EVENTLOG_LIST'},
+    {text: 'CLIENT STATUS', value: 'CLIENT_STATUS_TABLE'},
+]
+
+export const EVENT_LOG_ITEM_LIST_FOR_APPINST = [
+    {text: 'PERFORMANCE SUM', value: 'PERFORMANCE_SUM'},
     {text: 'APP INST EVENT LOG', value: 'APP_INST_EVENT_LOG'},
     {text: 'CLIENT STATUS', value: 'CLIENT_STATUS_TABLE'},
 ]
