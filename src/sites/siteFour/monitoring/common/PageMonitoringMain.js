@@ -7,16 +7,18 @@ export default function PageMonitoringMain() {
     const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
 
     const renderMainPage = () => {
-        try {
-            if (userRole.includes('Admin')) {
-                return (<PageMonitoringForAdmin/>)
-            } else {
-                return <PageDevOperMonitoringView/>
-            }
+        /*  try {
+              if (userRole.includes('Admin')) {
+                  return (<PageMonitoringForAdmin/>)
+              } else {
 
-        } catch (e) {
+              }
 
-        }
+          } catch (e) {
+
+          }*/
+
+        return <PageDevOperMonitoringView/>
     }
 
     return (

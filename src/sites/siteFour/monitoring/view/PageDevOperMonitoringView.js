@@ -426,7 +426,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     intervalLoading: false,
                     isRequesting: false,
                     clusterDropdownList: [],
-                    currentClassification: localStorage.getItem('selectRole').toString().toLowerCase().includes("dev") ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLOUDLET,
+                    currentClassification: localStorage.getItem('selectRole').toString().toLowerCase().includes("dev") ? CLASSIFICATION.CLUSTER
+                        : localStorage.getItem('selectRole').toString().toLowerCase().includes("oper") ? CLASSIFICATION.CLOUDLET
+                            : localStorage.getItem('selectRole').toString().toLowerCase().includes("admin") ? CLASSIFICATION.APPINST : null,
                     selectOrg: '',
                     filteredAppInstList: [],
                     appInstDropdown: [],
@@ -695,7 +697,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
                         isReady: true,
-                        clusterTreeDropdownList: clusterTreeDropdownList,//@fixme
+                        clusterTreeDropdownList: clusterTreeDropdownList,
                         allClusterList: clusterList,
                         filteredClusterList: clusterList,
                         isAppInstaceDataReady: true,
@@ -1533,8 +1535,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } catch (e) {
                     //showToast(e.toString())
                 }
-
-
             }
 
 
@@ -2768,7 +2768,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                    this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleOnChangeCloudletDropdown(undefined) : this.handleOnChangeClusterDropdown('')
                                }}
                         >
-                            Monitoring
+                            Monitoring {this.state.currentClassification}
                         </label>
                     </React.Fragment>
                 )
@@ -2816,7 +2816,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderGridLayoutByClassification() {
-                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+
+                if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    return this.renderGridLayoutForCluster();
+                }
+                else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     return this.renderGridLayoutForCloudlet();
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     return this.renderGridLayoutForCluster();

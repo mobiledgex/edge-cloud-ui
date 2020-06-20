@@ -173,6 +173,7 @@ export const CLASSIFICATION = {
     VERSION: 'Version',
     CLUSTER: 'Cluster',
     REGION: 'Region',
+    APP_INST_FOR_ADMIN: 'appInstForAdmin',
 }
 
 export const gridItemOneHeight = 22.3;
