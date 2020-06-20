@@ -590,9 +590,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //TODO:###############################################
                     //todo:DEVELOPER
                     //TODO:###############################################
-
                     let clientStatusList = []
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+
+
+                        alert('dlkfsldkflk--ADMIN!!!!')
+                        showToast('ADMIM')
+
+                        promiseList.push(fetchClusterList())
+                        promiseList.push(fetchAppInstList())
+                        let newPromiseList = await Promise.all(promiseList);
+                        clusterList = newPromiseList[0];
+                        appInstList = newPromiseList[1];
+                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
                         let newPromiseList = await Promise.all(promiseList);
