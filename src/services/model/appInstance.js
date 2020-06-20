@@ -2,7 +2,7 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
-import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 
 let fields = formatter.fields;
 
@@ -85,7 +85,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
     else if (request.method === SHOW_APP) {
       appList = mcRequest.response.data
     }
-    else if (request.method === SHOW_CLOUDLET_INFO) {
+    else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
       cloudletInfoList = mcRequest.response.data
     }
   }
