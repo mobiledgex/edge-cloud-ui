@@ -2,7 +2,7 @@ import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import uuid from 'uuid'
-import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, UPDATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, SHOW_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, UPDATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 import { TYPE_JSON, IPAccessLabel } from '../../constant';
 
 let fields = formatter.fields;
@@ -38,14 +38,14 @@ export const multiDataRequest = (keys, mcRequestList) => {
     for (let i = 0; i < mcRequestList.length; i++) {
         let mcRequest = mcRequestList[i];
         if (mcRequest.response) {
-            let request = mcRequest.request;
-            if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
+            let method = mcRequest.request.method
+            if (method === SHOW_CLOUDLET || method === SHOW_ORG_CLOUDLET) {
                 cloudletDataList = mcRequest.response.data;
             }
-            if (mcRequest.request.method === SHOW_CLUSTER_INST) {
+            if (method === SHOW_CLUSTER_INST) {
                 clusterDataList = mcRequest.response.data;
             }
-            if (mcRequest.request.method === SHOW_CLOUDLET_INFO) {
+            if (method === SHOW_CLOUDLET_INFO  || method === SHOW_ORG_CLOUDLET_INFO) {
                 cloudletInfoList = mcRequest.response.data;
             }
         }
