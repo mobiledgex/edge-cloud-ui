@@ -591,12 +591,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo:DEVELOPER
                     //TODO:###############################################
                     let clientStatusList = []
+
+                    //TODO:###############################################
+                    //fixme:AMDINAMDINAMDINAMDINAMDINAMDINAMDIN
+                    //TODO:###############################################
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-
-
-                        alert('dlkfsldkflk--ADMIN!!!!')
-                        showToast('ADMIM')
-
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
                         let newPromiseList = await Promise.all(promiseList);
