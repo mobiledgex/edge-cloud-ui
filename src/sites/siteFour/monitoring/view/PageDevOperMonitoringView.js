@@ -796,7 +796,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 await this.setState({
                     currentRegion: 'ALL',
                     currentCloudLet: '',
-                    currentClusterList: '',
+                    currentClusterList: undefined,
                     currentAppInst: '',
                 })
 
