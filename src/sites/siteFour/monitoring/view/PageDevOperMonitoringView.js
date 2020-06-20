@@ -2729,7 +2729,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     <React.Fragment>
                         {this.state.intervalLoading &&
                         <div>
-                            <div style={{position: 'absolute', left: 0, top: 0,}}>
+                            <div style={{position: 'absolute', left: -3, top: 2,}}>
                                 {renderWifiLoader()}
                             </div>
                         </div>
