@@ -137,6 +137,8 @@ export default function MapForAdmin(props) {
         console.log('setAppInstCloudletLocation===>', props.filteredAppInstList);
         let uniqFilteredAppInstList = uniqBy(props.filteredAppInstList, 'Cloudlet')
 
+        console.log('setAppInstCloudletLocation...uniqFilteredAppInstList===>',uniqFilteredAppInstList);
+
         uniqFilteredAppInstList.map((item: TypeCloudlet, index) => {
             let cloudletLocationStr = JSON.stringify(item.CloudletLocation)
 
@@ -157,6 +159,9 @@ export default function MapForAdmin(props) {
 
         let appInstCloudletObjs = listGroupByKey(newCloudletList, 'cloudletLocationStr')
         let appInstCloudletLocList = Object.keys(appInstCloudletObjs)
+
+        console.log('appInstCloudletLocList===>', appInstCloudletLocList);
+
         setAppInstCloudLocList(appInstCloudletLocList)
         setAppInstCloudletObjects(appInstCloudletObjs)
 
