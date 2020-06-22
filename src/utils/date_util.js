@@ -1,4 +1,5 @@
 import * as moment from 'moment'
+import {getMexTimezone} from './sharedPreferences_util'
 
 export const FORMAT_FULL_DATE = 'YYYY-MM-DD'
 export const FORMAT_FULL_TIME = 'hh:mm:ss'
@@ -31,16 +32,12 @@ export const convertToUnix = (date) =>
     return moment(date).unix()
 }
 
-const makeUTC = (time) => {
-    return moment(convertToUnix(time)).utc().format("YYYY-MM-DDTHH:mm:ss")
-}
-
 export const time = (format, date) => {
-    return moment(date).format(format)
+    return moment.tz(date, getMexTimezone()).format(format)
 }
 
-export const unixTime = (format, date, isUTC) => {
-    return moment(convertToUnix(date)).format(format)
+export const unixTime = (format, date) => {
+    return moment.tz(convertToUnix(date), getMexTimezone()).format(format)
 }
 
 export const currentUTCTime = (format) => {
@@ -48,7 +45,7 @@ export const currentUTCTime = (format) => {
 }
 
 export const currentTime = (format) => {
-    return moment().format(format)
+    return moment.tz(getMexTimezone()).format(format)
 }
 
 export const utcTime = (date, format) => {

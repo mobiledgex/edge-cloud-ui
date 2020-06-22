@@ -14,6 +14,8 @@ import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import { Image, Button } from 'semantic-ui-react';
 import { Menu, MenuItem, Dialog, DialogActions, List, ListItem, ListItemText } from '@material-ui/core';
 
+import Preferences from './preferences'
+
 const drawerWidth = 250;
 
 const useStyles = makeStyles(theme => ({
@@ -53,6 +55,7 @@ export default function Header(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [open, setOpen] = React.useState(false);
+    const [openPreferences, setOpenPreferences] = React.useState(false);
 
     const handleClickListItem = (event) => {
         setAnchorEl(event.currentTarget);
@@ -94,6 +97,9 @@ export default function Header(props) {
                         >
                             <MenuItem onClick={onAbout}>
                                 About
+                            </MenuItem>
+                            <MenuItem onClick={()=>{setOpenPreferences(true)}}>
+                                Preferences
                             </MenuItem>
                         </Menu>
                         <Dialog
@@ -156,6 +162,7 @@ export default function Header(props) {
                         onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default' />
                     </IconButton>
+                    <Preferences open={openPreferences} close={()=>{setOpenPreferences(false)}}/>
                     <HeaderGlobalMini email={props.email} data={props.data}/>
                 </div>
             </Toolbar>
