@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
-import {isEmpty} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
 import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
 import {changeClassficationTxt, listGroupByKey} from "../service/PageDevOperMonitoringService";
 import Control from "react-leaflet-control";
@@ -122,7 +122,7 @@ export default function MapForAdmin(props) {
 
     useEffect(() => {
         async function loadContent() {
-            await setAppInstCloudletLocation2()
+            await setCloudletLocationForAppInst()
             if (!isEmpty(props.filteredAppInstList)) {
                 props.parent.setState({
                     mapLoading: false,
@@ -133,87 +133,59 @@ export default function MapForAdmin(props) {
         loadContent();
     }, [props.filteredAppInstList])
 
+    async function setCloudletLocationForAppInst() {
+        try {
+            let cloudletList = props.filteredAppInstList;
 
-    async function setAppInstCloudletLocation() {
-        let newCloudletList = []
-        console.log('setAppInstCloudletLocation===>', props.filteredAppInstList);
-        let uniqFilteredAppInstList = uniqBy(props.filteredAppInstList, 'Cloudlet')
+            let uniqueOnlyCloudletList = []
+            cloudletList.map(item => {
+                uniqueOnlyCloudletList.push({
+                    Cloudlet: item.Cloudlet,
+                    CloudletLocation: JSON.stringify(item.CloudletLocation),
+                })
+            })
 
-        console.log('setAppInstCloudletLocation===>', uniqFilteredAppInstList);
+            let cloudletLocList = _.uniqBy(uniqueOnlyCloudletList, "CloudletLocation")
+            let uniqCloudletList = _.uniqBy(uniqueOnlyCloudletList, "Cloudlet")
 
-        uniqFilteredAppInstList.map((item: TypeCloudlet, index) => {
-            let cloudletLocationStr = JSON.stringify(item.CloudletLocation)
+            let cloudletNames = []
+            cloudletLocList.map(item => {
+                let locSameCloudletList = []
+                uniqCloudletList.map(cloudletNameOne => {
+                    if (cloudletNameOne.CloudletLocation === item.CloudletLocation) {
+                        locSameCloudletList.push(cloudletNameOne.Cloudlet)
+                    }
+                })
+                cloudletNames.push({
+                    CloudletLocation: JSON.parse(item.CloudletLocation),
+                    CloudletLocationStr: item.CloudletLocation,
+                    CloudletNames: locSameCloudletList,
+                })
+            })
 
-            console.log('filteredAppInstList====>', item);
 
-            if (uniqFilteredAppInstList.length === 1) {
-                if (index === 0) {
-                    setMapCenter([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
-                }
-                setZoom(2)
-            } else {
-                setMapCenter([6.315299, -4.683301])
-                setZoom(1)
-            }
-            item.cloudletLocationStr = cloudletLocationStr;
-            newCloudletList.push(item);
-        })
+            let newCloudletList = []
+            cloudletNames.map((clouletLocOne, index) => {
 
-        let appInstCloudletObjs = listGroupByKey(newCloudletList, 'cloudletLocationStr')
-        let appInstCloudletLocList = Object.keys(appInstCloudletObjs)
+                let appInstList = []
+                cloudletList.map(innerItem => {
+                    if (clouletLocOne.CloudletLocationStr === JSON.stringify(innerItem.CloudletLocation)) {
+                        appInstList.push(innerItem)
+                    }
+                })
+                newCloudletList.push({
+                    CloudletNames: clouletLocOne.CloudletNames,
+                    CloudletLocation: clouletLocOne.CloudletLocation,
+                    appInstList: appInstList,
+                })
+            })
 
-        console.log('appInstCloudletLocList===>', appInstCloudletLocList);
+            console.log('newCloudletList===>', newCloudletList);
+            setCloudletList(newCloudletList)
 
-        setAppInstCloudLocList(appInstCloudletLocList)
-        setAppInstCloudletObjects(appInstCloudletObjs)
+        } catch (e) {
 
-        //todo: when only one Cloudlet
-        if (appInstCloudletLocList.length === 1) {
-            let selectCloudletOne = appInstCloudletObjs[appInstCloudletLocList[0]]
-            setCurrentCloudlet(selectCloudletOne[0])
-            setFilteredClusterList(props.filteredClusterList)
-
-        } else {
-            setCurrentCloudlet(undefined)
         }
-    }
-
-    async function setAppInstCloudletLocation2() {
-
-        let cloudletList = props.filteredAppInstList;
-
-
-        let uniqueOnlyCloudletList = []
-        cloudletList.map(item => {
-            uniqueOnlyCloudletList.push({
-                Cloudlet: item.Cloudlet,
-                CloudletLocation: item.CloudletLocation
-            })
-        })
-
-        uniqueOnlyCloudletList = _.uniqBy(uniqueOnlyCloudletList, "Cloudlet")
-
-        let newCloudletList = []
-        uniqueOnlyCloudletList.map((cloudletInfoOne, index) => {
-
-            let appInstList = []
-            cloudletList.map(innerItem => {
-                if (cloudletInfoOne.Cloudlet === innerItem.Cloudlet) {
-                    appInstList.push(innerItem)
-                }
-            })
-            newCloudletList.push({
-                Cloudlet: cloudletInfoOne.Cloudlet,
-                CloudletLocation: cloudletInfoOne.CloudletLocation,
-                appInstList: appInstList,
-            })
-        })
-
-
-        console.log('newCloudletList===>', newCloudletList);
-
-        setCloudletList(newCloudletList)
-
 
     }
 
@@ -519,7 +491,7 @@ export default function MapForAdmin(props) {
                 todo: #############################
                 */}
                 <Popup
-                    className='popup_oper_cloudlet'
+                    className='popup_admin_cloudlet'
                     offset={[0, 0]}
                     opacity={0.7}
                     style={{width: '200px !important'}}
@@ -548,9 +520,13 @@ export default function MapForAdmin(props) {
 
                 >
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        <div className='popup_oper_cloudlet'>
-                            {cloudletOne.Cloudlet}
-                        </div>
+                        {cloudletOne.CloudletNames.map(item => {
+                            return (
+                                <div className='popup_oper_cloudlet'>
+                                    {item}
+                                </div>
+                            )
+                        })}
                     </div>
                 </Tooltip>
 
@@ -609,8 +585,7 @@ export default function MapForAdmin(props) {
                     <div
                         style={mapIconStyle}
                         onClick={() => {
-                            setIsEnableZoom(!isEnableZoom
-                            )
+                            setIsEnableZoom(!isEnableZoom)
                         }}
                     >
                         <Icon
@@ -660,7 +635,7 @@ export default function MapForAdmin(props) {
                 {cloudletList.map((cloudletOne, index) => {
                     return renderCloudletMarkerOne(cloudletOne, index)
                 })}
-                {/*{props.parent.state.mapLoading && renderPlaceHolderLottiePinJump2()}*/}
+                {props.parent.state.mapLoading && renderPlaceHolderLottiePinJump2()}
             </Map>
 
         </div>

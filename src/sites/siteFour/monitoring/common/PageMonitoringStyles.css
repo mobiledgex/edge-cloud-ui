@@ -644,6 +644,13 @@ tr td {
     border-style: groove;
 }
 
+.popup_admin_cloudlet .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    width: 250px !important;
+    border-color: cornflowerblue !important;
+    border-style: groove;
+}
+
 .react-ripples {
     width: auto;
 }
