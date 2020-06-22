@@ -140,7 +140,7 @@ export default class PopDetailViewer extends React.Component {
                     >
                         <Tab label="Raw Viewer" />
                         <Tab label="Request" />
-                        <Tab label="Request" />
+                        <Tab label="Response" />
                     </StyledTabs>
                 </DialogTitle>
                 <DialogContent>
