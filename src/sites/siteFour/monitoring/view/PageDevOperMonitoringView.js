@@ -1325,18 +1325,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
                         return (
                             <MapForAdmin
-                                markerList={this.state.appInstanceListGroupByCloudlet}
-                                currentWidgetWidth={this.state.currentWidgetWidth}
-                                isMapUpdate={this.state.isMapUpdate}
-                                selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                                mapPopUploading={this.state.mapPopUploading}
+                                isEnableZoom={true}
+                                currentClassification={this.state.currentClassification}
                                 parent={this}
-                                isDraggable={this.state.isDraggable}
-                                handleOnChangeAppInstDropdown={this.handleOnChangeAppInstDropdown}
-                                isFullScreenMap={false}
-                                isShowAppInstPopup={this.state.isShowAppInstPopup}
-                                selectedAppInstIndex={this.state.selectedAppInstIndex}
-                                isEnableZoomIn={!this.state.isEnableZoomIn}
+                                cloudletLength={this.state.filteredCloudletList.length}
+                                cloudletList={this.state.filteredCloudletList}
+                                appInstList={this.state.filteredAppInstList}
+                                toggleOperMapZoom={!this.state.toggleOperMapZoom}
+                                filteredClusterList={this.state.filteredClusterList}
+                                filteredAppInstList={this.state.filteredAppInstList}
+                                currentOperLevel={this.state.currentOperLevel}
+                                filteredUsageList={this.state.filteredCloudletUsageList}
+                                chartColorList={this.state.chartColorList}
+                                currentColorIndex={this.state.currentColorIndex}
                             />
                         )
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
