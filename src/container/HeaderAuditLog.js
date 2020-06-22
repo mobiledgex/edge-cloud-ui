@@ -31,37 +31,20 @@ class HeaderAuditLog extends React.Component {
         }
     }
 
-    componentDidMount() {
-        let devData = this.props.devData;
-        let dayData = [];
-        let nowDay = parseInt(dateUtil.currentUTCTime(dateUtil.FORMAT_DAY));
-
-        devData.map((data, index) => {
-            let day = parseInt(dateUtil.time(dateUtil.FORMAT_DAY, data.starttime))
-            if (nowDay === day) {
-                dayData.push(data)
-            }
+    filterDataByDate = (filterDate) =>
+    {
+        return this.props.devData.filter(data => {
+            return filterDate === dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE, data.starttime)
         })
+    }
 
+    componentDidMount() {
+        let dayData = this.filterDataByDate(dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE))
         this.setState({
-            devData: devData,
             dayData: dayData,
             unCheckedErrorCount: this.props.unCheckedErrorCount,
             errorCount: this.props.errorCount
         })
-    }
-
-    convertWSResponsetoJSON = (response) => {
-        let dataArray = response.split('\n');
-        let data = '[';
-        for (let i = 0; i < dataArray.length; i++) {
-            if (i > 0) {
-                data = data + ','
-            }
-            data = data.concat(dataArray[i])
-        }
-        data = data + ']'
-        return data
     }
 
     setAllView = (dummyConts, sId) => {
@@ -69,43 +52,6 @@ class HeaderAuditLog extends React.Component {
             return dummyConts
         }
         return {}
-    }
-
-    setRequestView(dummyConts, sId) {
-
-        if (dummyConts && dummyConts['request']) {
-            if (dummyConts['request'].indexOf('{') > -1) {
-                let dataLenght = dummyConts['request'].split('{"data":').length;
-                if (dataLenght > 1) {
-                    return { "data": dummyConts['request'].split('{"data":') }
-                } else {
-                    return JSON.parse(dummyConts['request'])
-                }
-            } else {
-                return { 'request': dummyConts['request'] }
-            }
-        }
-        else {
-            return {}
-        }
-    }
-
-
-    setResponseView(dummyConts, sId) {
-        if (dummyConts.operationname.includes('/ws/')) {
-            dummyConts.response = this.convertWSResponsetoJSON(dummyConts.response);
-        }
-        if (dummyConts && dummyConts['response'].indexOf('{') > -1) {
-            let dataLenght = dummyConts['response'].split('{"data":').length;
-            if (dataLenght > 1) {
-                return { "data": dummyConts['response'].split('{"data":') }
-            } else {
-                return JSON.parse((dummyConts['response'] !== "") ? dummyConts['response'] : {})
-            }
-        }
-        else {
-            return {}
-        }
     }
 
     makeOper = (logName) => {
@@ -152,27 +98,14 @@ class HeaderAuditLog extends React.Component {
 
     onClickViewDetail = (data) => {
         let rawViewData = (data) ? this.setAllView(data) : {};
-        let requestData = (data) ? this.setRequestView(data) : {};
-        let responseData = (data) ? this.setResponseView(data) : {};
-
-        this.props.detailView(rawViewData, requestData, responseData)
+        this.props.detailView(rawViewData)
     }
 
     handleDateChange = (selectDate, index) => {
-        let devData = this.state.devData;
-        let dayData = [];
-
-        devData.map((data, index) => {
-            let date = dateUtil.time(dateUtil.FORMAT_FULL_DATE, data.starttime);
-            if (date === dateUtil.utcTime(selectDate, dateUtil.FORMAT_FULL_DATE)) {
-                dayData.push(data)
-            }
-        })
-
+        let dayData = this.filterDataByDate(dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf()))
         if (this.state.dropDownValue === 'Group') {
             this.dropDownOnChange(null, { value: "Group" }, dayData)
         }
-
         this.setState({
             dayData: dayData,
             expanded: (-1)
@@ -250,8 +183,8 @@ class HeaderAuditLog extends React.Component {
         >
             <Step key={index}>
                 <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
-                    {dateUtil.time(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
-                    {dateUtil.time(dateUtil.FORMAT_AM_PM,data.starttime)}
+                    {dateUtil.unixTime(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
+                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM,data.starttime)}
                 </div>
                 <StepLabel StepIconComponent={(stepperProps) => {
                     return this.getStepLabel(data, stepperProps)
@@ -267,7 +200,7 @@ class HeaderAuditLog extends React.Component {
         <ExpansionPanelDetails>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Start Time</div>
-                <div className='audit_timeline_detail_right'>{dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data.starttime)}</div>
+                <div className='audit_timeline_detail_right'>{dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE_TIME, data.starttime)}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Trace ID</div>

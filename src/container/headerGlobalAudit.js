@@ -45,7 +45,6 @@ class headerGlobalAudit extends React.Component {
         }
     }
 
-
     componentDidUpdate(prevProps, prevState) {
         let serverRequestCount = parseInt(localStorage.getItem('ServerRequestCount'))
         if(serverRequestCount > 0)
@@ -186,22 +185,24 @@ class headerGlobalAudit extends React.Component {
     }
 
     render() {
+        let auditLogs = this.state.devData
         return (
-            <React.Fragment>
-                <IconButton color='inherit' onClick={this.handleOpen}>
-                    <TimelineOutlinedIcon fontSize='default' />
-                    {this.state.errorCount > 0 ? <div className='audit_bedge' >{this.state.errorCount}</div> : null}
-                </IconButton>
-                <Drawer anchor={'right'} open={this.state.isOpen}>
-                    <HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} />
-                </Drawer>
-                <PopDetailViewer
-                    rawViewData={this.state.rawViewData}
-                    dimmer={false}
-                    open={this.state.openDetail}
-                    close={this.closeDetail}
-                />
-            </React.Fragment>
+            auditLogs && auditLogs.length > 0 ?
+                <React.Fragment>
+                    <IconButton color='inherit' onClick={this.handleOpen}>
+                        <TimelineOutlinedIcon fontSize='default' />
+                        {this.state.errorCount > 0 ? <div className='audit_bedge' >{this.state.errorCount}</div> : null}
+                    </IconButton>
+                    <Drawer anchor={'right'} open={this.state.isOpen}>
+                        <HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} />
+                    </Drawer>
+                    <PopDetailViewer
+                        rawViewData={this.state.rawViewData}
+                        dimmer={false}
+                        open={this.state.openDetail}
+                        close={this.closeDetail}
+                    />
+                </React.Fragment> : null
         )
     }
 }
