@@ -92,18 +92,23 @@ import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
 import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
+    ADMIN_HW_MAPPER_KEY,
+    ADMIN_LAYOUT_KEY,
     APPINST_HW_MAPPER_KEY,
     APPINST_LAYOUT_KEY,
     CLOUDLET_HW_MAPPER_KEY,
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
+    defaultHwMapperListForAdmin,
     defaultHwMapperListForCluster,
+    defaultLayoutForAdmin,
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
     defaultLayoutForCluster,
     defaultLayoutMapperForAppInst,
     defaultLayoutMapperForCloudlet,
+    defaultLayoutXYPosForAdmin,
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster,
@@ -126,6 +131,8 @@ const {Option} = Select;
 const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const FontAwesomeIcon = require('react-fontawesome')
+
+
 type PageDevMonitoringState = {
     date: string,
     time: string,
@@ -220,8 +227,19 @@ type PageDevMonitoringState = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
+    //todo: layout related state
+    layoutAdmin: any,
+    layoutMapperAdmin: [],
     layoutMapperCluster: [],
     layoutMapperAppInst: [],
+    layoutMapperClusterForOper: any,
+    layoutCloudlet: any,
+    layoutClusterForOper: any,
+    layoutCluster: any,
+    layoutAppInst: any,
+    layoutMapperCloudlet: any,
+
+
     hwListForCluster: [],
     isDraggable: boolean,
     isUpdateEnableForMap: boolean,
@@ -287,12 +305,6 @@ type PageDevMonitoringState = {
     filteredAppInstList: any,
     allClientStatusList: any,
     filteredClientStatusList: any,
-    layoutMapperClusterForOper: any,
-    layoutCloudlet: any,
-    layoutClusterForOper: any,
-    layoutCluster: any,
-    layoutAppInst: any,
-    layoutMapperCloudlet: any,
     currentOperLevel: string,
     currentIndex: number,
     hwListForCloudlet: any,
@@ -341,11 +353,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
 
+
+                //todo: admin layout(appInst)
+                let adminLayout = getUserId() + ADMIN_LAYOUT_KEY
+                let adminLayoutMapper = getUserId() + ADMIN_HW_MAPPER_KEY
+
+
                 //@fixme: DELETE THEME COLOR
-                /*reactLocalStorage.remove(clusterLayout)
-                reactLocalStorage.remove(clusterLayoutMapper)*/
+                reactLocalStorage.remove(adminLayout)
+                reactLocalStorage.remove(adminLayoutMapper)
 
                 this.state = {
+                    //todo: admin layout(appInst)
+                    layoutAdmin: isEmpty(reactLocalStorage.get(adminLayout)) ? defaultLayoutForAdmin : reactLocalStorage.getObject(adminLayout),
+                    layoutMapperAdmin: isEmpty(reactLocalStorage.get(adminLayoutMapper)) ? defaultHwMapperListForAdmin : reactLocalStorage.getObject(adminLayoutMapper),
+
+
                     //todo:dev layout
                     layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
                     layoutMapperCluster: isEmpty(reactLocalStorage.get(clusterLayoutMapper)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterLayoutMapper),
@@ -428,7 +451,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     clusterDropdownList: [],
                     currentClassification: localStorage.getItem('selectRole').toString().toLowerCase().includes("dev") ? CLASSIFICATION.CLUSTER
                         : localStorage.getItem('selectRole').toString().toLowerCase().includes("oper") ? CLASSIFICATION.CLOUDLET
-                            : localStorage.getItem('selectRole').toString().toLowerCase().includes("admin") ? CLASSIFICATION.APPINST : null,
+                            : localStorage.getItem('selectRole').toString().toLowerCase().includes("admin") ? CLASSIFICATION.APP_INST_FOR_ADMIN : null,
                     selectOrg: '',
                     filteredAppInstList: [],
                     appInstDropdown: [],
@@ -525,6 +548,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     legendHeight: 30,
                     isFirstLoad: true,
                     open: false,
+
                 };
             }
 
@@ -952,8 +976,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
+                /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -1020,7 +1044,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             removeGridItem(i) {
-                if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    let removedLayout = reject(this.state.layoutAdmin, {i: i});
+                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, removedLayout)
+                    this.setState({
+                        layoutAdmin: removedLayout,
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let removedLayout = reject(this.state.layoutCluster, {i: i});
                     reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, removedLayout)
                     this.setState({
@@ -1423,6 +1453,67 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
+            renderGridLayoutForAppInstAdmin() {
+                try {
+                    return (
+                        <ResponsiveReactGridLayout
+                            ref={c => this.adminGridlayout = c}
+                            isResizable={true}
+                            draggableHandle=".draggable"
+                            verticalCompact={true}
+                            compactType={'vertical'}
+                            preventCollision={true}
+                            isDraggable={true}
+                            autoSize={true}
+                            style={{
+                                backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null,
+                                overflowY: this.state.isLegendExpanded ? 'auto' : null,
+
+                            }}
+                            className='layout page_monitoring_layout_dev_oper'
+                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
+                            layout={this.state.layoutAdmin}
+                            rowHeight={this.gridItemHeight}
+                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                                let width = newItem.w;
+                                this.setState({
+                                    isResizeComplete: !this.state.isResizeComplete,
+                                    currentWidgetWidth: width,
+                                })
+                            }}
+                            onLayoutChange={async (layout) => {
+                                this.setState({
+                                    layoutAdmin: layout,
+                                }, async () => {
+                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAdmin);
+                                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, layout)
+                                });
+
+                            }}
+                        >
+                            {this.state.layoutAdmin.map((item, loopIndex) => {
+
+                                console.log('layoutAdmin====>', item)
+
+                                const uniqueIndex = item.i;
+                                let hwType = HARDWARE_TYPE.CPU
+                                let graphType = GRID_ITEM_TYPE.LINE;
+                                if (!isEmpty(this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex))) {
+                                    hwType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).hwType
+                                    graphType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).graphType
+                                    graphType = graphType.toUpperCase()
+                                }
+                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                            })}
+
+                        </ResponsiveReactGridLayout>
+
+                    )
+                } catch (e) {
+                    showToast(e.toString())
+                }
+            }
+
 
             renderGridLayoutForCluster() {
                 try {
@@ -1586,7 +1677,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             revertToDefaultLayout = async () => {
                 try {
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    //@TODO:ADMIN
+                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                        reactLocalStorage.remove(getUserId() + ADMIN_LAYOUT_KEY)
+                        reactLocalStorage.remove(getUserId() + ADMIN_HW_MAPPER_KEY)
+
+                        await this.setState({
+                            layoutAdmin: [],
+                            layoutMapperAdmin: [],
+                        });
+
+                        await this.setState({
+                            layoutAdmin: defaultLayoutForAdmin,
+                            layoutMapperAdmin: defaultHwMapperListForAdmin,
+                        });
+                    }//@TODO:DEV
+                    else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         reactLocalStorage.remove(getUserId() + CLUSTER_LAYOUT_KEY)
                         reactLocalStorage.remove(getUserId() + CLUSTER_HW_MAPPER_KEY)
                         reactLocalStorage.remove(getUserId() + APPINST_LAYOUT_KEY)
@@ -1700,9 +1806,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                         </AMenu.Item>
 
-                        {/*desc: ######################*/}
-                        {/*desc: Revert to default Layout*/}
-                        {/*desc: ######################*/}
+                        {/*todo: ######################*/}
+                        {/*todo: Revert to default Layout*/}
+                        {/*todo: ######################*/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={async () => {
@@ -2768,7 +2874,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                    this.state.userType.includes(USER_TYPE.OPERATOR) ? this.handleOnChangeCloudletDropdown(undefined) : this.handleOnChangeClusterDropdown('')
                                }}
                         >
-                            Monitoring {this.state.currentClassification}
+                            Monitoring <div style={{fontSize: 12, color: 'yellow', marginLeft: 10,}}>{this.state.userType}</div>
                         </label>
                     </React.Fragment>
                 )
@@ -2817,10 +2923,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             renderGridLayoutByClassification() {
 
+
                 if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-                    return this.renderGridLayoutForCluster();
-                }
-                else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    return this.renderGridLayoutForAppInstAdmin();
+                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     return this.renderGridLayoutForCloudlet();
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     return this.renderGridLayoutForCluster();
@@ -2917,7 +3023,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                          width: '100%',
                                          backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                      }}>
-                                    {this.renderNoItemMsg()}
+                                    {/*{this.renderNoItemMsg()}*/}
                                     {this.renderGridLayoutByClassification()}
                                 </div>
                             </div>
