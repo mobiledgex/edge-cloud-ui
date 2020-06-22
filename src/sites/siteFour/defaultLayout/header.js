@@ -10,11 +10,14 @@ import HeaderGlobalMini from '../../../container/headerGlobalMini';
 import HeaderGlobalAudit from '../../../container/headerGlobalAudit';
 
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+import LanguageIcon from '@material-ui/icons/Language';
+import BusinessIcon from '@material-ui/icons/Business';
 
 import { Image, Button } from 'semantic-ui-react';
 import { Menu, MenuItem, Dialog, DialogActions, List, ListItem, ListItemText } from '@material-ui/core';
 
 import Preferences from './preferences'
+import { getMexTimezone } from '../../../utils/sharedPreferences_util';
 
 const drawerWidth = 250;
 
@@ -70,6 +73,11 @@ export default function Header(props) {
         setAnchorEl(null);
     };
 
+    const onPref = () => {
+        setOpenPreferences(true);
+        setAnchorEl(null);
+    };
+
     const handleDialogClose = () => {
         setOpen(false);
     };
@@ -98,7 +106,7 @@ export default function Header(props) {
                             <MenuItem onClick={onAbout}>
                                 About
                             </MenuItem>
-                            <MenuItem onClick={()=>{setOpenPreferences(true)}}>
+                            <MenuItem onClick={()=>{onPref()}}>
                                 Preferences
                             </MenuItem>
                         </Menu>
@@ -147,18 +155,18 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
-                    <IconButton disabled={true} className="orgName">
-                        {
-                            localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
-                                <h5>
-                                    <strong>Organization: </strong>
-                                    {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg}
-                                </h5> :
-                                null
-                        }
+                    <IconButton disabled={true} aria-label="timezone" color="inherit">
+                        <LanguageIcon fontSize='default' /> &nbsp;<h5>{getMexTimezone()}</h5>
                     </IconButton>
+                    {localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
+                        <IconButton disabled={true} className="orgName">
+                            <BusinessIcon fontSize='default' />&nbsp;
+                            <h5>
+                                {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg}
+                            </h5>
+                        </IconButton> : null}
                     <HeaderGlobalAudit />
-                    <IconButton aria-label="show 17 new notifications" color="inherit"
+                    <IconButton disabled={true} aria-label="help" color="inherit"
                         onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default' />
                     </IconButton>
@@ -168,4 +176,5 @@ export default function Header(props) {
             </Toolbar>
         </AppBar>
     );
+
 }

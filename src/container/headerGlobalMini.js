@@ -86,6 +86,7 @@ class headerGlobalMini extends React.Component {
                     inverted
                     trigger={
                         <IconButton color='inherit' onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}>
+                            <br/>
                             <AccountCircleOutlinedIcon fontSize='default'/>
                         </IconButton>
                     }

@@ -30,16 +30,17 @@ export default function Preferences(props) {
             aria-describedby="alert-dialog-description"
         >
             <DialogContent>
-                <h3>Preferences</h3>
-                <Divider />
+                <h3 style={{color:'#76FF03'}}>Preferences</h3>
+                <Divider style={{backgroundColor:'#76FF03'}}/>
                 <br/><br/>
             </DialogContent>
-            <DialogContent style={{ height: 500 }}>
-                <Icon name='globe' /> Timezone &nbsp;&nbsp;&nbsp;
+            <DialogContent style={{ height: 400 }}>
+                Timezone &nbsp;&nbsp;&nbsp;
                 <Dropdown
                     search
                     selection
                     options={getTimeZones()}
+                    style={{backgroundColor:'transparent'}}
                     placeholder='Select Timezone'
                     value={timezone}
                     onChange={(e, { value }) => selectTimezone(value)}
@@ -48,7 +49,7 @@ export default function Preferences(props) {
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.close}>
-                    OK
+                    Done
                 </Button>
             </DialogActions>
         </Dialog>

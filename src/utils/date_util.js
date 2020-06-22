@@ -32,12 +32,17 @@ export const convertToUnix = (date) =>
     return moment(date).unix()
 }
 
+export const convertToTimezone = (date)=>
+{
+    return date ? moment.tz(date, getMexTimezone()) : moment.tz(getMexTimezone()) 
+}
+
 export const time = (format, date) => {
-    return moment.tz(date, getMexTimezone()).format(format)
+    return convertToTimezone(date).format(format)
 }
 
 export const unixTime = (format, date) => {
-    return moment.tz(convertToUnix(date), getMexTimezone()).format(format)
+    return convertToTimezone(convertToUnix(date)).format(format)
 }
 
 export const currentUTCTime = (format) => {
@@ -45,7 +50,7 @@ export const currentUTCTime = (format) => {
 }
 
 export const currentTime = (format) => {
-    return moment.tz(getMexTimezone()).format(format)
+    return convertToTimezone().format(format)
 }
 
 export const utcTime = (date, format) => {
