@@ -142,9 +142,6 @@ export default class PopDetailViewer extends React.Component {
                         <Tab label="Request" />
                         <Tab label="Request" />
                     </StyledTabs>
-                    {/*<Chip label="Raw Viewer" onClick={() => this.setState({ viewIndex: 0 })} style={this.getChipStyle(0)}/>*/}
-                    {/*<Chip label="Request" onClick={() => this.setState({ viewIndex: 1 })} style={this.getChipStyle(1)}/>*/}
-                    {/*<Chip label="Request" onClick={() => this.setState({ viewIndex: 2 })} style={this.getChipStyle(2)}/>*/}
                 </DialogTitle>
                 <DialogContent>
                     {this.expansionPanelView(this.state.viewIndex, this.props.rawViewData)}
