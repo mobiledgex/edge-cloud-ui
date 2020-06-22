@@ -17,12 +17,19 @@ import {
     CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
     HARDWARE_TYPE,
+    MONITORING_CATE_SELECT_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS
+    THEME_OPTIONS,
+    USER_TYPE
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    makeBubbleChartDataForCluster,
+    renderUsageByType
+} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
@@ -204,14 +211,14 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
 
 export function getCloudletClusterNameListForAppInst(appInst: TypeAppInst) {
     let cloudletNameList = []
-    appInst.map((item : TypeAppInst, index) => {
+    appInst.map((item: TypeAppInst, index) => {
         cloudletNameList.push({
-            Cloudlet: item.Cloudlet,
+            CloudletName: item.Cloudlet,
             Region: item.Region,
         })
     })
 
-    let uniqCloudletNameList = uniqBy(cloudletNameList, 'Cloudlet')
+    let uniqCloudletNameList = uniqBy(cloudletNameList, 'CloudletName')
 
     let clusterNameList = [];
     appInst.map((item: TypeAppInst, index) => {
@@ -221,9 +228,13 @@ export function getCloudletClusterNameListForAppInst(appInst: TypeAppInst) {
         })
     })
 
+    let uniqClusterNameList = uniqBy(clusterNameList, MONITORING_CATE_SELECT_TYPE.CLUSTERINST)
+
+    console.log('uniqClusterNameList====>',uniqClusterNameList);
+
     let result = {
         cloudletNameList: uniqCloudletNameList,
-        clusterNameList: clusterNameList,
+        clusterNameList: uniqClusterNameList,
     }
 
     return result
@@ -466,7 +477,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 colorCodeIndexList,
             }
 
-            console.log('_result====>',_result);
+            console.log('_result====>', _result);
 
             return _result
         }
@@ -1188,14 +1199,12 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
             }
 
 
-
-
             let chartDataSet = {
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
             }
 
-            console.log('chartDataSet====>',chartDataSet);
+            console.log('chartDataSet====>', chartDataSet);
 
             return chartDataSet;
         };
@@ -1255,88 +1264,6 @@ export function convertHWType(hwType) {
 }
 
 
-export const makeAppInstTreeDropdown = (allRegionList, cloudletList, clusterList, appInstList,  _this ) => {
-    console.log('makeAppInstTreeDropdown====1allRegionList>',allRegionList);
-    console.log('makeAppInstTreeDropdown====2cloudletList>',cloudletList);
-    console.log('makeAppInstTreeDropdown====3clusterList>',clusterList);
-    console.log('makeAppInstTreeDropdown====4appInstList>',appInstList);
-
-
-
-    let treeCloudletList = []
-    cloudletList.map((cloudletOne : TypeAppInst, cloudletIndex) => {
-
-        console.log('makeAppInstTreeDropdown====cloudletOne>' + cloudletOne.Cloudlet);
-
-        let newCloudletOne = {
-            title: (
-                <div>{cloudletOne.Cloudlet}&nbsp;&nbsp;
-                    <Chip
-                        color="primary"
-                        size="small"
-                        label="Cloudlet"
-                        style={{
-                            color: 'white',
-                            backgroundColor: '#34373E'
-                        }}
-                    />
-                </div>
-            ),
-
-            value: cloudletOne.Cloudlet,
-            children: [],
-            region: cloudletOne.Region
-        };
-
-        clusterList.map((clusterOne: TypeAppInst, innerIndex) => {
-            if (clusterOne.Cloudlet === cloudletOne.Cloudlet) {
-                newCloudletOne.children.push({
-                    title: (
-                        <div style={{display: 'flex'}}>
-                            <Center style={{width: 15,}}>
-                                {_this.renderDot(clusterOne.colorCodeIndex, 10)}
-                            </Center>
-                            <div style={{marginLeft: 5,}}>
-                                {clusterOne.cluster}
-                            </div>
-
-                        </div>
-                    ),
-                    value: clusterOne.cluster + " | " + cloudletOne.Cloudlet,
-                    isParent: false,
-                })
-            }
-        })
-
-        treeCloudletList.push(newCloudletOne);
-    })
-
-    //@desc:RegionList
-    let regionTreeList = []
-    allRegionList.map((regionOne, regionIndex) => {
-        let regionMapOne = {
-            title: (
-                <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
-                    {regionOne}
-                </div>
-            ),
-            value: regionOne,
-            children: []
-        };
-
-        treeCloudletList.map((innerItem, innerIndex) => {
-            if (regionOne === innerItem.region) {
-                regionMapOne.children.push(innerItem)
-            }
-        })
-        regionTreeList.push(regionMapOne)
-    })
-
-    console.log('regionTreeList====>',regionTreeList);
-
-    return regionTreeList;
-}
-
 
 /**
  *
@@ -1346,7 +1273,11 @@ export const makeAppInstTreeDropdown = (allRegionList, cloudletList, clusterList
  * @param _this
  * @returns {[]}
  */
-export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this ) => {
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this) => {
+
+    console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
+    console.log('makeRegionCloudletClusterTreeDropdown====clusterList>', clusterList);
+
 
     let treeCloudletList = []
     cloudletList.map((cloudletOne, cloudletIndex) => {
@@ -1370,24 +1301,47 @@ export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList
             region: cloudletOne.Region
         };
 
-        clusterList.map((clusterOne, innerIndex) => {
-            if (clusterOne.cloudlet === cloudletOne.CloudletName) {
-                newCloudletOne.children.push({
-                    title: (
-                        <div style={{display: 'flex'}}>
-                            <Center style={{width: 15,}}>
-                                {_this.renderDot(clusterOne.colorCodeIndex, 10)}
-                            </Center>
-                            <div style={{marginLeft: 5,}}>
-                                {clusterOne.cluster}
-                            </div>
 
-                        </div>
-                    ),
-                    value: clusterOne.cluster + " | " + cloudletOne.CloudletName,
-                    isParent: false,
-                })
-            }
+
+        clusterList.map((clusterItemOne, innerIndex) => {
+
+            //todo######################
+            //todo: admin user type
+            //todo######################
+           if ( _this.state.userType.includes(USER_TYPE.AMDIN)){
+               if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
+                   newCloudletOne.children.push({
+                       title: (
+                           <div style={{display: 'flex'}}>
+                               <div style={{marginLeft: 5,}}>
+                                   {clusterItemOne.ClusterInst}
+                               </div>
+
+                           </div>
+                       ),
+                       value: clusterItemOne.ClusterInst + " | " + cloudletOne.CloudletName,
+                       isParent: false,
+                   })
+               }
+           }else{
+               if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+                   newCloudletOne.children.push({
+                       title: (
+                           <div style={{display: 'flex'}}>
+                               <Center style={{width: 15,}}>
+                                   {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
+                               </Center>
+                               <div style={{marginLeft: 5,}}>
+                                   {clusterItemOne.cluster}
+                               </div>
+
+                           </div>
+                       ),
+                       value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                       isParent: false,
+                   })
+               }
+           }
         })
 
         treeCloudletList.push(newCloudletOne);

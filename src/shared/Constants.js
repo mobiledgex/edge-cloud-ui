@@ -541,6 +541,8 @@ export const MOINTORING_FILTER_ITEM_TYPE = {
 export const SELECT_TYPE_ENUM = "Region" | "AppName" | "Cloudlet" | "ClusterInst"
 
 
+
+
 export const MONITORING_CATE_SELECT_TYPE = {
     REGION: 'Region',
     APPNAME: 'AppName',
