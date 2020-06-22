@@ -136,6 +136,8 @@ export default function MapForAdmin(props) {
         props.cloudletList.map((item: TypeCloudlet, index) => {
             let cloudletLocationStr = JSON.stringify(item.CloudletLocation)
 
+            console.log('cloudletList====>', item);
+
             if (props.cloudletList.length === 1) {
                 if (index === 0) {
                     setMapCenter([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
@@ -472,7 +474,7 @@ export default function MapForAdmin(props) {
                         {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
                             return (
                                 <div className='popup_oper_cloudlet'>
-                                    {cloudLetOne.CloudletName}
+                                    {cloudLetOne.Cloudlet}
                                 </div>
                             )
                         })}

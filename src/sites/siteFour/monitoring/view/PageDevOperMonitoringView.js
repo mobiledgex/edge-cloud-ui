@@ -620,7 +620,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let clientStatusList = []
                     //TODO:###################################################################################################################
-                    //TODO:       AMDIN                                         (allClusterList, appnInstList, cloudletList)
+                    //TODO:       ADMIN                                         (allClusterList, appnInstList, cloudletList)
                     //TODO:###################################################################################################################
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
                         promiseList.push(fetchClusterList())
@@ -689,12 +689,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstEventLogList = newPromiseList[0];
                         allAppInstUsageList = newPromiseList[1];
                         let cloudletClusterListMap1: TypeCloudletClusterListMap = getCloudletClusterNameListForAppInst(appInstList)
-
                         let regionList = localStorage.getItem('regions').split(",")
-
-
                         appInstTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap1.cloudletNameList, cloudletClusterListMap1.clusterNameList, this)
-                        clusterList = undefined;
 
 
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
@@ -1363,7 +1359,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 currentClassification={this.state.currentClassification}
                                 parent={this}
                                 cloudletLength={this.state.filteredCloudletList.length}
-                                cloudletList={this.state.filteredCloudletList}
+                                cloudletList={this.state.filteredAppInstList}
                                 appInstList={this.state.filteredAppInstList}
                                 toggleOperMapZoom={!this.state.toggleOperMapZoom}
                                 filteredClusterList={this.state.filteredClusterList}
