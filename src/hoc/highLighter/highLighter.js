@@ -3,7 +3,7 @@ import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/hljs/yaml';
 import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
 import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
-import {copyData} from '../../utils/fileUtil'
+import {copyData} from '../../utils/file_util'
 
 import { Box, IconButton, Tooltip } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
