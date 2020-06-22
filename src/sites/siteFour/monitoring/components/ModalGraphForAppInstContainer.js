@@ -2,7 +2,7 @@
 import * as React from 'react';
 import {Modal as AModal} from "antd";
 import {Line} from 'react-chartjs-2';
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../service/PageMonitoringCommonService";
 import {makeGradientColorOne} from "../service/PageDevOperMonitoringService";
@@ -11,7 +11,7 @@ import {HARDWARE_OPTIONS_FOR_APPINST} from "../../../../shared/Constants";
 
 type Props = {
     modalIsOpen: boolean,
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     currentAppInstLineChartData: Array,
     appInst: string,
 };

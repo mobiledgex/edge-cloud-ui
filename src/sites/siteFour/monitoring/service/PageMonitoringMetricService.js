@@ -16,7 +16,7 @@ import {
     showToast
 } from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
-import PageDevMonitoring, {source} from "../view/PageDevOperMonitoringView";
+import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -29,7 +29,7 @@ import {
 } from "./PageMonitoringMetricEndPoint";
 
 
-export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
+export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitoringView) => {
     try {
 
         let AppName = pCurrentAppInst.split('|')[0].trim()
@@ -525,7 +525,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
  * @param pEndTime
  * @returns {Promise<[]|Array>}
  */
-export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', _this: PageDevMonitoring) => {
+export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', _this: PageMonitoringView) => {
     try {
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);

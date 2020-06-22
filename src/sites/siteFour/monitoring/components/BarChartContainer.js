@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
@@ -10,7 +10,7 @@ import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {convertHWType} from "../service/PageDevOperMonitoringService";
 
 type Props = {
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,

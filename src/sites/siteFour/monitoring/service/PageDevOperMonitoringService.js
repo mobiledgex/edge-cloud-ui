@@ -23,7 +23,7 @@ import {
     USER_TYPE
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
@@ -175,7 +175,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType, userType = '') =>
 };
 
 
-export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
+export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageMonitoringView) => {
     try {
         if (usageList.length === 0) {
             return "";
@@ -279,7 +279,7 @@ export function getCloudletClusterNameList(clusterList: TypeCluster) {
  * @param _this
  * @returns {string|{chartDataList: [], hardwareType: *}}
  */
-export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
+export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageMonitoringView) => {
     try {
         let typedUsageList = [];
         if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -326,7 +326,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
 };
 
 
-export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selectedValueOne) => {
+export const handleHardwareTabChanges = async (_this: PageMonitoringView, selectedValueOne) => {
     try {
         if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
             if (selectedValueOne === HARDWARE_TYPE.CPU) {
@@ -387,7 +387,7 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
  * @param _this
  * @returns {{levelTypeNameList: [], hardwareType: string, usageSetList: [], newDateTimeList: []}|*}
  */
-export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
+export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageMonitoringView) => {
     try {
 
 
@@ -658,7 +658,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
  * @param clickedItem
  * @param lineChartDataSet
  */
-export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clickedItem, lineChartDataSet) => {
+export const handleLegendAndBubbleClickedEvent = (_this: PageMonitoringView, clickedItem, lineChartDataSet) => {
     try {
 
         let selectedIndex = 0;
@@ -1085,7 +1085,7 @@ export const simpleGraphOptions = {
 }
 
 
-export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring, currentColorIndex = -1) => {
+export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonitoringView, currentColorIndex = -1) => {
     try {
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
@@ -1164,7 +1164,7 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  * @param colorCodeIndexList
  * @returns {function(*=): {datasets: *, labels: *}}
  */
-export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
+export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageMonitoringView, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
     try {
 
         const lineChartData = (canvas) => {
@@ -1227,7 +1227,7 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit, isLegendExpanded = true) => {
+export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true) => {
     //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
 
     let clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"

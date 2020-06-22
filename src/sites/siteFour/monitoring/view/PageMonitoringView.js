@@ -1359,11 +1359,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 currentClassification={this.state.currentClassification}
                                 parent={this}
                                 cloudletLength={this.state.filteredCloudletList.length}
-                                cloudletList={this.state.filteredAppInstList}
-                                appInstList={this.state.filteredAppInstList}
+                                filteredAppInstList={this.state.filteredAppInstList}
+                                //appInstList={this.state.filteredAppInstList}
                                 toggleOperMapZoom={!this.state.toggleOperMapZoom}
                                 filteredClusterList={this.state.filteredClusterList}
-                                filteredAppInstList={this.state.filteredAppInstList}
+                                //filteredAppInstList={this.state.filteredAppInstList}
                                 currentOperLevel={this.state.currentOperLevel}
                                 filteredUsageList={this.state.filteredCloudletUsageList}
                                 chartColorList={this.state.chartColorList}

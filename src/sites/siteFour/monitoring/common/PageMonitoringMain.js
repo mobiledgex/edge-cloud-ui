@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import PageDevOperMonitoringView from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {Card} from "@material-ui/core";
 
 export default function PageMonitoringMain() {
@@ -7,7 +7,7 @@ export default function PageMonitoringMain() {
 
     const renderMainPage = () => {
         /*  try {              if (userRole.includes('Admin')) {                  return (<PageMonitoringForAdmin/>)              } else {              }          } catch (e) {          }*/
-        return <PageDevOperMonitoringView/>
+        return <PageMonitoringView/>
     }
 
     return (

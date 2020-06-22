@@ -1,14 +1,14 @@
 // @flow
 import * as React from 'react';
 import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import type {TypeChartDataSet} from "../../../../shared/Types";
 
 type Props = {
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,

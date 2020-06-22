@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {Center} from "../common/PageMonitoringStyles";
@@ -13,7 +13,7 @@ const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
     cloudletEventLogList: any,
     columnList: any,
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
 };
 
 function getWindowDimensions() {

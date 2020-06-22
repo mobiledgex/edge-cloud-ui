@@ -4,7 +4,7 @@ import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import type {TypeAppInst, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
 import {groupByKey_, removeDuplicates} from "../service/PageMonitoringCommonService";
@@ -79,7 +79,7 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 type Props = {
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     markerList: Array,
     selectedClientLocationListOnAppInst: any,
     isMapUpdate: boolean,

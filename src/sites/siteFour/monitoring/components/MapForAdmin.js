@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Map, Marker, Popup, TileLayer} from "react-leaflet";
+import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
 import {isEmpty} from "../service/PageMonitoringCommonService";
 import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
@@ -9,6 +9,7 @@ import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";
 import {CLASSIFICATION, CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
 import {Progress} from "antd";
+import uniqBy from "lodash/uniqBy";
 
 let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),
@@ -77,8 +78,8 @@ const Styles = {
 
 export default function MapForAdmin(props) {
     const mapRef = useRef(null);
-    const [cloudletObjects, setCloudletObjects] = useState([]);
-    const [cloudLocList, setCloudLocList] = useState([]);
+    const [appInstCloudletObjects, setAppInstCloudletObjects] = useState([]);
+    const [appInstCloudLocList, setAppInstCloudLocList] = useState([]);
     const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
     const [zoom, setZoom] = useState(1)
     const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
@@ -119,8 +120,8 @@ export default function MapForAdmin(props) {
 
     useEffect(() => {
         async function loadContent() {
-            await setCloudletLocation()
-            if (!isEmpty(props.cloudletList)) {
+            await setAppInstCloudletLocation()
+            if (!isEmpty(props.filteredAppInstList)) {
                 props.parent.setState({
                     mapLoading: false,
                 })
@@ -128,17 +129,20 @@ export default function MapForAdmin(props) {
         }
 
         loadContent();
-    }, [props.cloudletList])
+    }, [props.filteredAppInstList])
 
 
-    async function setCloudletLocation() {
+    async function setAppInstCloudletLocation() {
         let newCloudletList = []
-        props.cloudletList.map((item: TypeCloudlet, index) => {
+        console.log('setAppInstCloudletLocation===>', props.filteredAppInstList);
+        let uniqFilteredAppInstList = uniqBy(props.filteredAppInstList, 'Cloudlet')
+
+        uniqFilteredAppInstList.map((item: TypeCloudlet, index) => {
             let cloudletLocationStr = JSON.stringify(item.CloudletLocation)
 
-            console.log('cloudletList====>', item);
+            console.log('filteredAppInstList====>', item);
 
-            if (props.cloudletList.length === 1) {
+            if (uniqFilteredAppInstList.length === 1) {
                 if (index === 0) {
                     setMapCenter([item.CloudletLocation.latitude, item.CloudletLocation.longitude])
                 }
@@ -151,14 +155,14 @@ export default function MapForAdmin(props) {
             newCloudletList.push(item);
         })
 
-        let cloudletObjs = listGroupByKey(newCloudletList, 'cloudletLocationStr')
-        let cloudletLocList = Object.keys(cloudletObjs)
-        setCloudLocList(cloudletLocList)
-        setCloudletObjects(cloudletObjs)
+        let appInstCloudletObjs = listGroupByKey(newCloudletList, 'cloudletLocationStr')
+        let appInstCloudletLocList = Object.keys(appInstCloudletObjs)
+        setAppInstCloudLocList(appInstCloudletLocList)
+        setAppInstCloudletObjects(appInstCloudletObjs)
 
         //todo: when only one Cloudlet
-        if (cloudletLocList.length === 1) {
-            let selectCloudletOne = cloudletObjs[cloudletLocList[0]]
+        if (appInstCloudletLocList.length === 1) {
+            let selectCloudletOne = appInstCloudletObjs[appInstCloudletLocList[0]]
             setCurrentCloudlet(selectCloudletOne[0])
             setFilteredClusterList(props.filteredClusterList)
 
@@ -464,14 +468,14 @@ export default function MapForAdmin(props) {
                     [CloudletLocation.latitude, CloudletLocation.longitude,]
                 }
             >
-                <Popup
+                {/*<Popup
                     className='popup_oper_cloudlet'
                     offset={[0, 0]}
                     opacity={0.7}
                     style={{width: '200px !important'}}
                 >
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {cloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
+                        {appInstCloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
                             return (
                                 <div className='popup_oper_cloudlet'>
                                     {cloudLetOne.Cloudlet}
@@ -479,7 +483,29 @@ export default function MapForAdmin(props) {
                             )
                         })}
                     </div>
-                </Popup>
+                </Popup>*/}
+                <Tooltip
+                    className='mapCloudletTooltip'
+                    direction='right'
+                    offset={[14, -10]}//x,y
+                    opacity={0.8}
+                    permanent
+                    /*ref={c => {
+                        this.toolTip = c;
+                    }}*/
+                    style={{cursor: 'pointer', pointerEvents: 'auto'}}
+
+                >
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                        {appInstCloudletObjects[locOne].map((cloudLetOne: TypeCloudlet, innerIndex) => {
+                            return (
+                                <div className='popup_oper_cloudlet'>
+                                    {cloudLetOne.Cloudlet}
+                                </div>
+                            )
+                        })}
+                    </div>
+                </Tooltip>
 
             </Marker>
         )
@@ -584,7 +610,7 @@ export default function MapForAdmin(props) {
                 }
                 {renderAppInstInfo()}
                 {renderMapControlButton()}
-                {cloudLocList.map((locOne, index) => {
+                {appInstCloudLocList.map((locOne, index) => {
                     return renderCloudletMarkerOne(locOne, index)
                 })}
                 {/*{props.parent.state.mapLoading && renderPlaceHolderLottiePinJump2()}*/}

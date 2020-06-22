@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageDevOperMonitoringService";
@@ -12,7 +12,7 @@ const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
     eventLogList: any,
     columnList: any,
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
 };
 
 function getWindowDimensions() {
