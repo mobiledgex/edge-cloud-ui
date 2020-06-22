@@ -1,4 +1,6 @@
-let data = [
+import _ from "lodash";
+
+let cloudletList = [
     {
         "uuid": "5fa2be3b-06a7-40fa-8775-0e562df1bb89",
         "Region": "EU",
@@ -646,3 +648,36 @@ let data = [
         "colorCodeIndex": 12
     }
 ]
+
+
+
+
+let uniqueOnlyCloudletList = []
+cloudletList.map(item => {
+    uniqueOnlyCloudletList.push({
+        Cloudlet: item.Cloudlet,
+        CloudletLocation: item.CloudletLocation
+    })
+})
+
+uniqueOnlyCloudletList = _.uniqBy(uniqueOnlyCloudletList, "Cloudlet")
+
+let newCloudletList=[]
+uniqueOnlyCloudletList.map((cloudletInfoOne, index) => {
+
+    let appInstList=[]
+    cloudletList.map(innerItem => {
+        if (cloudletInfoOne.Cloudlet === innerItem.Cloudlet) {
+            appInstList.push(innerItem)
+        }
+    })
+    newCloudletList.push({
+        Cloudlet: cloudletInfoOne.Cloudlet,
+        CloudletLocation : cloudletInfoOne.CloudletLocation,
+        appInstList: appInstList,
+    })
+})
+
+
+
+console.log('sdlkfsldkflksdflksdlfk===>', newCloudletList);
