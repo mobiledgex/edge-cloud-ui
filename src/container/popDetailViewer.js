@@ -5,6 +5,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import cloneDeep from 'lodash/cloneDeep'
 import { withStyles } from '@material-ui/styles';
 import {syntaxHighLighter} from '../hoc/highLighter/highLighter';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import TableRow from "@material-ui/core/TableRow";
 
 const jsonParse = (data) => {
     try {
@@ -41,7 +45,7 @@ const jsonView = (data, position) => {
 const styles = (theme) => ({
     root: {
         margin: 0,
-        padding: theme.spacing(2),
+        padding: '16px 0',
     },
     closeButton: {
         position: 'absolute',
@@ -64,6 +68,12 @@ const DialogTitle = withStyles(styles)((props) => {
         </MuiDialogTitle>
     );
 });
+
+const StyledTabs = withStyles((theme) => ({
+    flexContainer: {
+        borderBottom: '1px solid rgba(255,255,255,.7)'
+    },
+}))(Tabs);
 
 let _self = null;
 export default class PopDetailViewer extends React.Component {
@@ -105,9 +115,13 @@ export default class PopDetailViewer extends React.Component {
 
     getChipStyle = (position)=>
     {
-        let color = this.state.viewIndex === position ? '#77BD06' :'#6F7074'
+        let color = this.state.viewIndex === position ? '#77BD06' :'#6F7074';
         return {backgroundColor: color, marginRight:5, fontSize:15}
     }
+
+    handleChangeTab = (event, newValue) => {
+        this.setState({viewIndex: newValue});
+    };
 
     render() {
         return (
@@ -116,12 +130,21 @@ export default class PopDetailViewer extends React.Component {
                 open={this.state.open}
                 onClose={this.handleClose}
                 aria-labelledby="draggable-dialog-title"
-                style={{ zIndex: 1901 }} // It should be higher than Audit Timeline Popup(= z-index:1900)
             >
                 <DialogTitle onClose={this.handleClose}>
-                    <Chip label="Raw Viewer" onClick={() => this.setState({ viewIndex: 0 })} style={this.getChipStyle(0)}/>
-                    <Chip label="Request" onClick={() => this.setState({ viewIndex: 1 })} style={this.getChipStyle(1)}/>
-                    <Chip label="Response" onClick={() => this.setState({ viewIndex: 2 })} style={this.getChipStyle(2)}/>
+                    <StyledTabs
+                        value={this.state.viewIndex}
+                        onChange={this.handleChangeTab}
+                        indicatorColor="primary"
+                        textColor="primary"
+                    >
+                        <Tab label="Raw Viewer" />
+                        <Tab label="Request" />
+                        <Tab label="Request" />
+                    </StyledTabs>
+                    {/*<Chip label="Raw Viewer" onClick={() => this.setState({ viewIndex: 0 })} style={this.getChipStyle(0)}/>*/}
+                    {/*<Chip label="Request" onClick={() => this.setState({ viewIndex: 1 })} style={this.getChipStyle(1)}/>*/}
+                    {/*<Chip label="Request" onClick={() => this.setState({ viewIndex: 2 })} style={this.getChipStyle(2)}/>*/}
                 </DialogTitle>
                 <DialogContent>
                     {this.expansionPanelView(this.state.viewIndex, this.props.rawViewData)}
