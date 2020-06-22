@@ -468,7 +468,12 @@ export default function MapForAdmin(props) {
                     [CloudletLocation.latitude, CloudletLocation.longitude,]
                 }
             >
-                {/*<Popup
+                {/*
+                todo: #############################
+                todo:      appInst List popup
+                todo: ############################
+                */}
+                <Popup
                     className='popup_oper_cloudlet'
                     offset={[0, 0]}
                     opacity={0.7}
@@ -483,16 +488,13 @@ export default function MapForAdmin(props) {
                             )
                         })}
                     </div>
-                </Popup>*/}
+                </Popup>
                 <Tooltip
                     className='mapCloudletTooltip'
                     direction='right'
                     offset={[14, -10]}//x,y
                     opacity={0.8}
                     permanent
-                    /*ref={c => {
-                        this.toolTip = c;
-                    }}*/
                     style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
                 >
