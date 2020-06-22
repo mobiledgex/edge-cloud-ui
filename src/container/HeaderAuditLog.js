@@ -8,7 +8,7 @@ import * as actions from '../actions';
 import { IconButton, Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Calendar from '../components/horizontal_calendar/Calendar';
-import moment from "moment";
+import * as dateUtil from '../utils/date_util'
 import CheckIcon from '@material-ui/icons/Check';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -34,10 +34,10 @@ class HeaderAuditLog extends React.Component {
     componentDidMount() {
         let devData = this.props.devData;
         let dayData = [];
-        let nowDay = parseInt(moment().utc().format("D"));
+        let nowDay = parseInt(dateUtil.currentUTCTime(dateUtil.FORMAT_DAY));
 
         devData.map((data, index) => {
-            let day = parseInt(moment(this.makeUTC(data.starttime)).format("D"))
+            let day = parseInt(dateUtil.time(dateUtil.FORMAT_DAY, data.starttime))
             if (nowDay === day) {
                 dayData.push(data)
             }
@@ -108,11 +108,6 @@ class HeaderAuditLog extends React.Component {
         }
     }
 
-    makeUTC = (time) => {
-        let newTime = moment(time).unix()
-        return moment(newTime).utc().format("YYYY-MM-DDTHH:mm:ss")
-    }
-
     makeOper = (logName) => {
         let item = '';
         let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
@@ -168,8 +163,8 @@ class HeaderAuditLog extends React.Component {
         let dayData = [];
 
         devData.map((data, index) => {
-            let date = moment(this.makeUTC(data.starttime)).format("YYYY-MM-DD");
-            if (date === moment(selectDate).utc().format("YYYY-MM-DD")) {
+            let date = dateUtil.time(dateUtil.FORMAT_FULL_DATE, data.starttime);
+            if (date === dateUtil.utcTime(selectDate, dateUtil.FORMAT_FULL_DATE)) {
                 dayData.push(data)
             }
         })
@@ -255,8 +250,8 @@ class HeaderAuditLog extends React.Component {
         >
             <Step key={index}>
                 <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
-                    {moment(this.makeUTC(data.starttime)).format("hh:mm:ss")}<br />
-                    {moment(this.makeUTC(data.starttime)).format("A")}
+                    {dateUtil.time(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
+                    {dateUtil.time(dateUtil.FORMAT_AM_PM,data.starttime)}
                 </div>
                 <StepLabel StepIconComponent={(stepperProps) => {
                     return this.getStepLabel(data, stepperProps)
@@ -272,7 +267,7 @@ class HeaderAuditLog extends React.Component {
         <ExpansionPanelDetails>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Start Time</div>
-                <div className='audit_timeline_detail_right'>{moment(this.makeUTC(data.starttime)).format("YYYY-MM-DDTHH:mm:ss")}</div>
+                <div className='audit_timeline_detail_right'>{dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data.starttime)}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Trace ID</div>
