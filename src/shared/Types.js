@@ -215,6 +215,12 @@ export type TypeClusterUsageOne = {
     colorCodeIndex: number,
 
 }
+
+export type TypeCloudletClusterListMap ={
+    cloudletNameList: any,
+    clusterNameList: any,
+}
+
 export type TypeAppInst = {
 
     "Region": string,

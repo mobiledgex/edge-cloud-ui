@@ -9,9 +9,11 @@ import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Sele
 import {
     filterByClassification,
     getCloudletClusterNameList,
+    getCloudletClusterNameListForAppInst,
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
+    makeAppInstTreeDropdown,
     makeBarChartDataForAppInst,
     makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
@@ -43,6 +45,7 @@ import {
 import type {
     TypeBarChartData,
     TypeCloudlet,
+    TypeCloudletClusterListMap,
     TypeCloudletEventLog,
     TypeCloudletUsage,
     TypeCluster,
@@ -321,6 +324,7 @@ type PageDevMonitoringState = {
     legendRowCount: number,
     open: boolean,
     clusterTreeDropdownList: any,
+    appInstTreeDropdownList: any,
 }
 
 export const CancelToken = axios.CancelToken;
@@ -548,6 +552,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     legendHeight: 30,
                     isFirstLoad: true,
                     open: false,
+                    appInstTreeDropdownList: [],
 
                 };
             }
@@ -600,18 +605,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let startTime = makeCompleteDateTime(date[0]);
                     let endTime = makeCompleteDateTime(date[1]);
 
-                    //@desc:#############################################
-                    //@desc: (allClusterList, appnInstList, cloudletList)
-                    //@desc:#############################################
-                    //TODO:###############################################
-                    //todo:DEVELOPER
-                    //TODO:###############################################
                     let clientStatusList = []
-
-
-                    //TODO:###############################################
-                    //fixme:AMDINAMDINAMDINAMDINAMDINAMDINAMDIN
-                    //TODO:###############################################
+                    //TODO:#####################################################
+                    //TODO:AMDIN  (allClusterList, appnInstList, cloudletList)
+                    //TODO:#####################################################
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
@@ -622,6 +619,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         console.log('appInstList===>', appInstList);
 
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                        //TODO:###############################################
+                        //todo:DEVELOPER
+                        //TODO:###############################################
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList())
                         let newPromiseList = await Promise.all(promiseList);
@@ -676,7 +676,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allAppInstUsageList = newPromiseList[1];
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
-                        clusterTreeDropdownList = makeClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allAppInstUsageList, this)
+
+
+                        console.log('allAppInstUsageList==111==>', cloudletClusterListMap.cloudletNameList);
+                        console.log('allAppInstUsageList==222==>', allAppInstUsageList);
+                        console.log('allAppInstUsageList==333==>', appInstList);
+
+
+                        let cloudletClusterListMap2: TypeCloudletClusterListMap = getCloudletClusterNameListForAppInst(appInstList)
+
+                        console.log('cloudletClusterListMap====>', cloudletClusterListMap2);
+
+
+                        //region,cloudlet,cluster, appinst
+                        clusterTreeDropdownList = makeAppInstTreeDropdown(regionList, cloudletClusterListMap2.cloudletNameList, cloudletClusterListMap2.clusterNameList, appInstList, this)
+
 
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         //todo:#################################
@@ -721,6 +735,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         itemCount = appInstList.length;
                         rowCount = Math.ceil(itemCount / 6);
+                    } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                        itemCount = appInstList.length;
+
+                        console.log('itemCount====>', itemCount);
+
+                        rowCount = Math.ceil(itemCount / 6);
                     }
 
                     let legendHeight = Math.round(allCloudletUsageList.length / 4) * gridItemOneHeight
@@ -759,6 +779,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         legendRowCount: rowCount,
                     }, () => {
 
+                        console.log('legendRowCount====>', this.state.legendRowCount);
                     });
                 } catch (e) {
                     showToast(e.toString())
@@ -2450,7 +2471,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
             renderClusterDropdown() {
                 let treeSelectWidth = 500;
                 let maxTagCount = 3;
@@ -2551,8 +2571,110 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
                     </div>
                 )
+            }
 
 
+            renderAdminAppInstTreeDropdown() {
+                let treeSelectWidth = 500;
+                let maxTagCount = 3;
+                if (this.props.size.width >= 1600) {
+                    treeSelectWidth = 500;
+                    maxTagCount = 3
+                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
+                    treeSelectWidth = 400;
+                    maxTagCount = 2
+                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
+                    treeSelectWidth = 300;
+                    maxTagCount = 1
+                } else if (this.props.size.width <= 1100) {
+                    treeSelectWidth = 150;
+                    maxTagCount = 0
+                }
+
+                return (
+                    <div className="page_monitoring_dropdown_box"
+                         style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div
+                            className="page_monitoring_dropdown_label"
+                            style={{
+                                marginLeft: this.state.isShowFilter ? 0 : 10,
+                                width: 100,
+                            }}
+                        >
+                            App Inst
+                        </div>
+                        <div style={{width: '100%'}}>
+                            <TreeSelect
+                                showArrow={true}
+                                maxTagCount={maxTagCount}
+                                disabled={this.state.loading}
+                                size={'middle'}
+                                allowClear={true}
+                                showSearch={true}
+                                treeCheckable={true}
+                                showCheckedStrategy={'SHOW_CHILD'}
+                                style={{height: '30px !important', width: treeSelectWidth}}
+                                dropdownStyle={{
+                                    maxHeight: 800, overflow: 'auto', width: '100%'
+                                }}
+                                onSearch={(value) => {
+                                    this.setState({
+                                        searchClusterValue: value,
+                                    });
+                                }}
+                                ref={c => this.treeSelect = c}
+                                listHeight={520}
+                                searchValue={this.state.searchClusterValue}
+                                searchPlaceholder={'Enter the cluster name.'}
+                                placeholder={'Select Cluster'}
+
+                                treeData={this.state.appInstTreeDropdownList}
+                                treeDefaultExpandAll={true}
+                                value={this.state.currentClusterList}
+                                onChange={async (value, label, extra) => {
+                                    if (!isEmpty(value)) {
+                                        this.setState({currentClusterList: value});
+                                    } else {
+                                        this.resetLocalData()
+                                    }
+
+                                }}
+                            />
+                        </div>
+                        <div style={{marginLeft: 10,}}>
+                            <Button
+                                size={'small'}
+                                onClick={async () => {
+                                    this.applyButton.blur();
+                                    if (this.state.currentClusterList !== undefined) {
+                                        let selectClusterCloudletList = this.state.currentClusterList
+                                        this.handleOnChangeClusterDropdown(selectClusterCloudletList)
+
+                                    } else {
+                                        this.resetLocalData()
+                                    }
+
+
+                                }}
+                                ref={c => this.applyButton = c}
+                            >
+                                Apply
+                            </Button>
+                        </div>
+                        <div style={{marginLeft: 10,}}>
+                            <Button
+                                ref={c => this.resetBtn = c}
+                                size={'small'}
+                                onClick={() => {
+                                    this.resetBtn.blur();
+                                    this.resetLocalData();
+                                }}
+                            >
+                                Reset
+                            </Button>
+                        </div>
+                    </div>
+                )
             }
 
 
@@ -2796,6 +2918,49 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderAppLegendForAdmin(pLegendItemCount) {
+
+                console.log('renderAppLegendF123orAdmin====>', pLegendItemCount);
+
+                return (
+                    <Row gutter={16}
+                         style={{
+                             flex: .97,
+                             marginLeft: 10,
+                             backgroundColor: 'transparent',
+                             justifyContent: 'center',
+                             alignSelf: 'center',
+                         }}
+                    >
+                        {this.state.appInstList.map((item: TypeAppInst, index) => {
+                            return (
+                                <Col
+                                    className="gutterRow"
+                                    onClick={async () => {
+                                    }}
+                                    span={pLegendItemCount === 1 ? 24 : 4}
+                                    style={{marginTop: 3, marginBottom: 3,}}
+                                >
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-start', alignItems: 'flex-start',
+                                        marginLeft: 0,
+                                        flex: 1,
+                                    }}>
+                                        {this.renderDot(index)}
+                                        <ClusterCluoudletLabel
+                                            style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
+                                            {/*{this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]*/}
+                                            {item.AppName} [{item.Version}]
+                                        </ClusterCluoudletLabel>
+                                    </div>
+                                </Col>
+                            )
+                        })}
+                    </Row>
+                )
+            }
+
 
             renderAppLegend(pLegendItemCount) {
                 return (
@@ -2868,7 +3033,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}>
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderClusterLegend()
                                     : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderCloudletLegend(this.state.legendItemCount)
-                                        : this.state.currentClassification === CLASSIFICATION.APPINST && this.renderAppLegend(this.state.legendItemCount)
+                                        : this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderAppLegend(this.state.legendItemCount)
+                                            : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegendForAdmin(this.state.legendItemCount) : null
                                 }
                             </LegendOuterDiv>
                         )
@@ -2909,25 +3075,32 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  flex: .7,
                              }}>
                             {this.renderTitleArea()}
-                            {this.state.userType.includes(USER_TYPE.OPERATOR) ?
+                            {this.state.userType.includes(USER_TYPE.AMDIN) ?
                                 <React.Fragment>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderCloudletDropdown()}
-                                    </div>
-                                    <div style={{marginLeft: 25}}>
-                                        {this.renderDateRangeDropdown()}
+                                        {this.renderAdminAppInstTreeDropdown()}
                                     </div>
                                 </React.Fragment>
                                 :
-                                <React.Fragment>
-                                    <div style={{marginLeft: 25}}>
-                                        {this.renderClusterDropdown()}
-                                    </div>
+                                this.state.userType.includes(USER_TYPE.OPERATOR) ?
+                                    <React.Fragment>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderCloudletDropdown()}
+                                        </div>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderDateRangeDropdown()}
+                                        </div>
+                                    </React.Fragment>
+                                    :
+                                    <React.Fragment>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderClusterDropdown()}
+                                        </div>
 
-                                    <div style={{marginLeft: 25}}>
-                                        {this.renderAppInstDropdown()}
-                                    </div>
-                                </React.Fragment>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderAppInstDropdown()}
+                                        </div>
+                                    </React.Fragment>
                             }
                         </div>
                         <div style={{

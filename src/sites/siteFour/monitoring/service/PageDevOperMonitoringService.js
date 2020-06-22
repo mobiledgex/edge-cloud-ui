@@ -202,6 +202,33 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
 };
 
 
+export function getCloudletClusterNameListForAppInst(appInst: TypeAppInst) {
+    let cloudletNameList = []
+    appInst.map((item : TypeAppInst, index) => {
+        cloudletNameList.push({
+            Cloudlet: item.Cloudlet,
+            Region: item.Region,
+        })
+    })
+
+    let uniqCloudletNameList = uniqBy(cloudletNameList, 'Cloudlet')
+
+    let clusterNameList = [];
+    appInst.map((item: TypeAppInst, index) => {
+        clusterNameList.push({
+            ClusterInst: item.ClusterInst,
+            Cloudlet: item.Cloudlet,
+        })
+    })
+
+    let result = {
+        cloudletNameList: uniqCloudletNameList,
+        clusterNameList: clusterNameList,
+    }
+
+    return result
+}
+
 /**
  *
  * @param clusterList
@@ -1227,6 +1254,90 @@ export function convertHWType(hwType) {
     }
 }
 
+
+export const makeAppInstTreeDropdown = (allRegionList, cloudletList, clusterList, appInstList,  _this ) => {
+    console.log('makeAppInstTreeDropdown====1allRegionList>',allRegionList);
+    console.log('makeAppInstTreeDropdown====2cloudletList>',cloudletList);
+    console.log('makeAppInstTreeDropdown====3clusterList>',clusterList);
+    console.log('makeAppInstTreeDropdown====4appInstList>',appInstList);
+
+
+
+    let treeCloudletList = []
+    cloudletList.map((cloudletOne : TypeAppInst, cloudletIndex) => {
+
+        console.log('makeAppInstTreeDropdown====cloudletOne>' + cloudletOne.Cloudlet);
+
+        let newCloudletOne = {
+            title: (
+                <div>{cloudletOne.Cloudlet}&nbsp;&nbsp;
+                    <Chip
+                        color="primary"
+                        size="small"
+                        label="Cloudlet"
+                        style={{
+                            color: 'white',
+                            backgroundColor: '#34373E'
+                        }}
+                    />
+                </div>
+            ),
+
+            value: cloudletOne.Cloudlet,
+            children: [],
+            region: cloudletOne.Region
+        };
+
+        clusterList.map((clusterOne: TypeAppInst, innerIndex) => {
+            if (clusterOne.Cloudlet === cloudletOne.Cloudlet) {
+                newCloudletOne.children.push({
+                    title: (
+                        <div style={{display: 'flex'}}>
+                            <Center style={{width: 15,}}>
+                                {_this.renderDot(clusterOne.colorCodeIndex, 10)}
+                            </Center>
+                            <div style={{marginLeft: 5,}}>
+                                {clusterOne.cluster}
+                            </div>
+
+                        </div>
+                    ),
+                    value: clusterOne.cluster + " | " + cloudletOne.Cloudlet,
+                    isParent: false,
+                })
+            }
+        })
+
+        treeCloudletList.push(newCloudletOne);
+    })
+
+    //@desc:RegionList
+    let regionTreeList = []
+    allRegionList.map((regionOne, regionIndex) => {
+        let regionMapOne = {
+            title: (
+                <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
+                    {regionOne}
+                </div>
+            ),
+            value: regionOne,
+            children: []
+        };
+
+        treeCloudletList.map((innerItem, innerIndex) => {
+            if (regionOne === innerItem.region) {
+                regionMapOne.children.push(innerItem)
+            }
+        })
+        regionTreeList.push(regionMapOne)
+    })
+
+    console.log('regionTreeList====>',regionTreeList);
+
+    return regionTreeList;
+}
+
+
 /**
  *
  * @param allRegionList
@@ -1235,7 +1346,7 @@ export function convertHWType(hwType) {
  * @param _this
  * @returns {[]}
  */
-export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this) => {
+export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this ) => {
 
     let treeCloudletList = []
     cloudletList.map((cloudletOne, cloudletIndex) => {
