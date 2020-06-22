@@ -19,6 +19,7 @@ import * as CloudletLinkOrg from './cloudletLinkOrg';
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
 export const DELETE_ORG = "deleteOrg";
+export const UPDATE_ORG = "updateOrg";
 export const SHOW_AUDIT_ORG = "Auditshoworg";
 export const SHOW_USERS = "ShowUsers";
 export const DELETE_USER = "DeleteUser";
@@ -124,6 +125,8 @@ export function getPath(request) {
             return '/api/v1/auth/role/adduser';
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
+        case UPDATE_ORG:
+            return '/api/v1/auth/org/update';
         case SHOW_CLOUDLET:
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:

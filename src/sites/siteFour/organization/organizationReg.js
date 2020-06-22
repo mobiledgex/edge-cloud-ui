@@ -11,7 +11,7 @@ import * as constant from '../../../constant';
 import {additionalDetail} from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 //model
-import { keys, createOrganization } from '../../../services/model/organization';
+import { keys, createOrganization, updateOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import {organizationTutor} from "../../../tutorial";
 import { List } from "@material-ui/core";
@@ -133,16 +133,17 @@ class OrganizationReg extends React.Component {
             step: 0,
             forms: [],
         }
+        this.isUpdate = this.props.isUpdate
         this.type = null
         this.organizationInfo = null
     }
 
     makeRoleList = (selectedType, i) => {
         return (
-            <List divided verticalAlign='middle'>
+            <List>
                 {
-                    Object.keys(roles[selectedType][i]).map((key) => (
-                        <div key={i} style={{ color: ((roles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (roles[selectedType][i][key])}</div>
+                    Object.keys(roles[selectedType][i]).map((key, j) => (
+                        <div key={j} style={{ color: ((roles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (roles[selectedType][i][key])}</div>
                     ))
                 }
             </List>
@@ -233,13 +234,10 @@ class OrganizationReg extends React.Component {
             this.organizationInfo = data
             this.type = data[fields.type]
             data[fields.type] = data[fields.type].toLowerCase()
-            let mcRequest = await createOrganization(this, data)
-            if (mcRequest && mcRequest.response && mcRequest.response.data) {
-                let message = mcRequest.response.data.message
-                if (message === 'Organization created') {
-                    this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} created successfully`)
-                    this.addUserForm(data)
-                }
+            let mcRequest = this.isUpdate ? await updateOrganization(this, data) :  await createOrganization(this, data)
+            if (mcRequest && mcRequest.response) {
+                    this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
+                    this.isUpdate ? this.props.onClose() : this.addUserForm(data)
             }
         }
     }
@@ -280,7 +278,7 @@ class OrganizationReg extends React.Component {
                 <div className="grid_table" >
 
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                        {this.props.action ? null :
+                        {this.props.action || this.isUpdate ? null :
                             <div>
                                 <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                     {
@@ -300,7 +298,7 @@ class OrganizationReg extends React.Component {
                             <Grid>
                                 <Grid.Row>
                                     <Grid.Column width={this.state.step === 1 ? 12 : 16}>
-                                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate}/>
                                     </Grid.Column>
                                     {this.state.step === 1 ?
                                         <Grid.Column width={4}>
@@ -361,7 +359,7 @@ class OrganizationReg extends React.Component {
     }
 
     validatePhone= (form) => {
-        if (!/^\+?(?:[0-9] ?){6,14}[0-9]$/.test(form.value)) {
+        if (!/^\+?(?:[0-9] ?){6,14}[0-9]$/.test(form.value) && !/^\d{3}-\d{3}-\d{4}$/.test(form.value)) {
             form.error = 'Phone should only contain "+" and 7~15 digits.'
             return false;
         }
@@ -384,50 +382,53 @@ class OrganizationReg extends React.Component {
 
     step1 = () => {
         return [
-            { label: 'Create Organization', formType: 'Header', visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Organization`, formType: 'Header', visible: true },
             { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
-            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, dataValidateFunc: this.validatePhone},
-            { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value:false }
+            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: true },
+            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: true, dataValidateFunc: this.validatePhone },
+            { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value: false, update: true }
         ]
     }
 
     loadDefaultData = async (data) => {
-        if (data) {
-
-        }
+        data[fields.publicImages] = data[fields.publicImages] === constant.YES ? true : false
+        data[fields.type] = data[fields.type] === 'developer' ? 'Developer' : 'Operator'
     }
 
     getFormData = (data) => {
         if (data) {
-            this.type = data[fields.type] === 'developer' ? 'Developer' : 'Operator'
-            this.organizationInfo = data
-            this.addUserForm(data)
-            this.setState({ step: 1 })
-            this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
-        }
-        else {
-
-
-            let forms = this.step1()
-            forms.push(
-                { label: 'Create Organization', formType: 'Button', onClick: this.onCreateOrganization, validate: true },
-                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
-
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
-                this.updateUI(form)
-                if (data) {
-                    form.value = data[form.field]
-                    this.checkForms(form, forms, true)
-                }
+            if (this.isUpdate) {
+                this.loadDefaultData(data)
             }
-
-            this.setState({
-                forms: forms
-            })
+            else {
+                this.type = data[fields.type] === 'developer' ? 'Developer' : 'Operator'
+                this.organizationInfo = data
+                this.addUserForm(data)
+                this.setState({ step: 1 })
+                this.props.handleViewMode(orgaSteps.stepsNewOrg2);
+                return
+            }
         }
+        
+        let forms = this.step1()
+        forms.push(
+            { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreateOrganization, validate: true },
+            { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
+
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                form.value = data[form.field]
+                this.checkForms(form, forms, true)
+            }
+        }
+
+        this.setState({
+            forms: forms
+        })
+        
 
     }
 

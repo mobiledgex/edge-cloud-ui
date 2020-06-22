@@ -30,8 +30,12 @@ class OrganizationList extends React.Component {
         this.setState({ currentView: null })
     }
 
-    onAdd = (action, data) => {
+    onAddUser = (action, data) => {
         this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
+    }
+
+    onAdd = (action, data) => {
+        this.setState({ currentView: <OrganizationReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
     /**Action menu block */
@@ -51,7 +55,8 @@ class OrganizationList extends React.Component {
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
-            { label: 'Add User', onClick: this.onAdd },
+            { label: 'Add User', onClick: this.onAddUser },
+            { label: 'Update', onClick: this.onAdd },
             { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete }
         ]
     }

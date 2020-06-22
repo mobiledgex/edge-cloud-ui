@@ -64,10 +64,6 @@ class headerGlobalAudit extends React.Component {
         localStorage.setItem('ServerRequestCount', 0)
     }
 
-    componentWillUnmount() {
-        clearInterval(this.interval);
-    }
-
     updateStatus = (data) => {
         if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
             data.status = data.response.includes('"code":400') ? 400 : data.status
