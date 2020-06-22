@@ -22,12 +22,7 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeBubbleChartDataForCluster, renderUsageByType} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
@@ -409,7 +404,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
                 } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     classificationName = item.cloudlet
-                } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
+                } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                     classificationName = item.instance.AppName
                 }
 
@@ -443,6 +438,8 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 hardwareType,
                 colorCodeIndexList,
             }
+
+            console.log('_result====>',_result);
 
             return _result
         }
@@ -1170,6 +1167,9 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
             }
+
+            console.log('chartDataSet====>',chartDataSet);
+
             return chartDataSet;
         };
 

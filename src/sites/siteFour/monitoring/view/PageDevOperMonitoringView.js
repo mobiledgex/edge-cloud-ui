@@ -62,7 +62,7 @@ import {
     getAllAppInstEventLogs,
     getAllCloudletEventLogs,
     getAllClusterEventLogList,
-    getAppLevelUsageList,
+    getAppInstLevelUsageList,
     getClientStatusList,
     getCloudletUsageList,
     getClusterLevelUsageList,
@@ -583,12 +583,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async loadInitData(isInterval: boolean = false) {
                 let promiseList = []
-                let promiseList2 = []
+                let usageEventPromiseList = []
                 let clusterList = []
                 let appInstList = []
                 let cloudletList = []
                 let allClusterEventLogList = [];
                 let allAppInstEventLogList = [];
+                let allAppInstUsageList = [];
                 let allClusterUsageList = [];
                 let allCloudletUsageList = [];
 
@@ -664,32 +665,44 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let cloudletClusterListMap = {}
                     let clusterTreeDropdownList = []
-                    //@desc:#########################################################################
-                    //@desc: getAllClusterEventLogList, getAllAppInstEventLogs ,allClusterUsageList
-                    //@desc:#########################################################################
                     //todo:#################################
-                    //todo: DEVELOPER
+                    //todo: ADMIN (eventLog, usageList)
                     //todo:###################################
-                    if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                        promiseList2.push(getAllClusterEventLogList(clusterList))
-                        promiseList2.push(getAllAppInstEventLogs());
-                        promiseList2.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                        let newPromiseList2 = await Promise.all(promiseList2);
+                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                        usageEventPromiseList.push(getAllAppInstEventLogs());
+                        usageEventPromiseList.push(getAppInstLevelUsageList(appInstList, "*", RECENT_DATA_LIMIT_COUNT))
+                        let newPromiseList = await Promise.all(usageEventPromiseList);
+                        allAppInstEventLogList = newPromiseList[0];
+                        allAppInstUsageList = newPromiseList[1];
+                        cloudletClusterListMap = getCloudletClusterNameList(clusterList)
+                        let regionList = localStorage.getItem('regions').split(",")
+                        clusterTreeDropdownList = makeClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allAppInstUsageList, this)
+
+                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                        //todo:#################################
+                        //todo: DEV (eventLog, usageList)
+                        //todo:###################################
+                        usageEventPromiseList.push(getAllClusterEventLogList(clusterList))
+                        usageEventPromiseList.push(getAllAppInstEventLogs());
+                        usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                        let newPromiseList2 = await Promise.all(usageEventPromiseList);
                         allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
-
 
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
                         clusterTreeDropdownList = makeClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
 
 
-                    } else {//TODO:OPERATOR
+                    } else {
+                        //todo:###################################
+                        //TODO:OPERATOR(eventLog, usageList)
+                        //todo:###################################
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                     }
 
-                    let bubbleChartData = await makeBubbleChartDataForCluster(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
+                    let bubbleChartData = await makeBubbleChartDataForCluster(allAppInstUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
 
 
@@ -731,6 +744,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         clusterListLoading: false,
                         allClusterUsageList: allClusterUsageList,
                         filteredClusterUsageList: allClusterUsageList,
+
+                        allAppInstUsageList: allAppInstUsageList,
+                        filteredAppInstUsageList: allAppInstUsageList,
+
                         maxCpu: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumCpuUsage)),
                         maxMem: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumMemUsage)),
                         isRequesting: false,
@@ -895,7 +912,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     this.intervalForAppInst = setInterval(async () => {
                         this.setState({intervalLoading: true,})
-                        let allAppInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+                        let allAppInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
                         this.setChartDataForBigModal(allAppInstUsageList)
                         this.setState({
                             intervalLoading: false,
@@ -1235,11 +1252,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
+
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
                         chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
-                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST || this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+
                         chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                     }
 
@@ -2204,7 +2223,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                     let arrDateTime = getOneYearStartEndDatetime();
-                    let appInstUsageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                    let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
                     fullCurrentAppInst = fullCurrentAppInst.trim();
                     fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
 

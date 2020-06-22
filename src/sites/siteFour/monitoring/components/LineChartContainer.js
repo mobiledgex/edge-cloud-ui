@@ -51,6 +51,10 @@ export default class LineChartContainer extends React.Component<Props, State> {
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.chartDataSet !== nextProps.chartDataSet) {
             let lineChartDataSet = nextProps.chartDataSet
+
+
+            console.log('lineChartDataSet====>',lineChartDataSet);
+
             let hwType = nextProps.pHardwareType;
             let graphType = nextProps.graphType;
             this.setChartData(lineChartDataSet, hwType, graphType);

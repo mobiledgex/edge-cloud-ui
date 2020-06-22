@@ -52,7 +52,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/PageMonitoringCommonService";
 import '../common/PageMonitoringStyles.css'
-import {fetchAppInstList, getAppLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
+import {fetchAppInstList, getAppInstLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -326,7 +326,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 let allAppInstUsageList = [];
                 //@todo:realdata
                 try {
-                    allAppInstUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime, USER_TYPE.ADMIN);
+                    allAppInstUsageList = await getAppInstLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime, USER_TYPE.ADMIN);
                 } catch (e) {
                     showToast(e.toString())
                 }
@@ -409,7 +409,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                     let endTime = makeCompleteDateTime(this.state.endTime);
 
                     this.setState({loading: true})
-                    let appInstUsageList_byDate = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                    let appInstUsageList_byDate = await getAppInstLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
 
                     this.setState({
                         usageListByDate: appInstUsageList_byDate,
