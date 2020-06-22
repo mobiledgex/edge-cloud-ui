@@ -565,7 +565,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isFirstLoad: true,
                     open: false,
                     appInstTreeDropdownList: [],
-                    currentClusterListForAdmin:[],
+                    currentClusterListForAdmin: [],
 
                 };
             }
@@ -691,7 +691,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let cloudletClusterListMap1: TypeCloudletClusterListMap = getCloudletClusterNameListForAppInst(appInstList)
 
                         let regionList = localStorage.getItem('regions').split(",")
-
 
 
                         appInstTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap1.cloudletNameList, cloudletClusterListMap1.clusterNameList, this)
@@ -2650,13 +2649,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     this.setState({currentClusterList: value});
 
-                                   /* if (!isEmpty(value)) {
+                                    /* if (!isEmpty(value)) {
 
-                                    } else {
+                                     } else {
 
-                                        alert('empoty!!!')
-                                        //this.resetLocalData()
-                                    }*/
+                                         alert('empoty!!!')
+                                         //this.resetLocalData()
+                                     }*/
                                 }}
                             />
                         </div>
@@ -2665,20 +2664,48 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 size={'small'}
                                 onClick={async () => {
                                     this.applyButton.blur();
-                                     if (this.state.currentClusterList !== undefined) {
-                                         let selectClusterCloudletList = this.state.currentClusterList
-                                         //todo: Cluster | cloudlet
-                                         console.log('selectClusterCloudletList====>', selectClusterCloudletList);
+                                    if (this.state.currentClusterList !== undefined) {
+                                        let selectClusterCloudletList = this.state.currentClusterList
+                                        //todo: Cluster | cloudlet
+                                        console.log('selectClusterCloudletList====>', selectClusterCloudletList);
+
+                                        console.log('allAppInstUsageList====>', this.state.allAppInstUsageList)
+
+                                        let filteredAppInstUsageList = []
+                                        this.state.allAppInstUsageList.map(item => {
+                                            selectClusterCloudletList.map(innerItem => {
+                                                let cluster = innerItem.toString().split(" | ")[0]
+                                                let cloudlet = innerItem.toString().split(" | ")[1]
+                                                if (item.Cloudlet === cloudlet && item.ClusterInst === cluster) {
+                                                    filteredAppInstUsageList.push(item)
+                                                }
+                                            })
+                                        })
 
 
-                                         console.log('selectClusterCloudletList====appInstList>', this.state.appInstList);
+                                        let filteredAppInstList = []
+                                        this.state.appInstList.map(item => {
+                                            selectClusterCloudletList.map(innerItem => {
+                                                let cluster = innerItem.toString().split(" | ")[0]
+                                                let cloudlet = innerItem.toString().split(" | ")[1]
+                                                if (item.Cloudlet === cloudlet && item.ClusterInst === cluster) {
+                                                    filteredAppInstList.push(item)
+                                                }
+                                            })
+                                        })
 
 
+                                        console.log('filteredAppInstList====>', filteredAppInstUsageList);
+
+                                        this.setState({
+                                            filteredAppInstUsageList: filteredAppInstUsageList,
+                                            filteredAppInstList: filteredAppInstList,
+                                        })
 
 
-                                     } else {
-                                         //this.resetLocalData()
-                                     }
+                                    } else {
+                                        //this.resetLocalData()
+                                    }
 
 
                                 }}
@@ -2958,7 +2985,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                              alignSelf: 'center',
                          }}
                     >
-                        {this.state.appInstList.map((item: TypeAppInst, index) => {
+                        {this.state.filteredAppInstList.map((item: TypeAppInst, index) => {
                             return (
                                 <Col
                                     className="gutterRow"

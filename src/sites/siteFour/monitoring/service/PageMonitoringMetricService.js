@@ -1,9 +1,20 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CLOUDLET_METRIC_COLUMN,
+    MEX_PROMETHEUS_APPNAME,
+    RECENT_DATA_LIMIT_COUNT,
+    USER_TYPE
+} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {
+    isEmpty,
+    makeFormForCloudletLevelMatric,
+    makeFormForClusterLevelMatric,
+    showToast
+} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
 import PageDevMonitoring, {source} from "../view/PageDevOperMonitoringView";
 import {
@@ -341,7 +352,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
 
         let promiseList = []
         for (let index = 0; index < instanceBodyList.length; index++) {
-            promiseList.push(getAppLevelMetric(instanceBodyList[index]))
+            promiseList.push(getAppInstLevelMetric(instanceBodyList[index]))
         }
 
 
@@ -364,7 +375,11 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
 
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
+            console.log('usageListForAllInstance====>', item);
+
             let appName = item.instanceData.AppName
+            let Cloudlet = item.instanceData.Cloudlet
+            let ClusterInst = item.instanceData.ClusterInst
 
             let sumMemUsage = 0;
             let sumDiskUsage = 0;
@@ -445,7 +460,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
                     allUsageList.push({
                         instance: item.instanceData,
                         columns: columns,
-                        appName: appName,
                         sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
                         sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
                         sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
@@ -459,7 +473,9 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
                         diskSeriesList,
                         networkSeriesList,
                         connectionsSeriesList,
-
+                        appName,
+                        Cloudlet,
+                        ClusterInst,
                     })
 
                 } else {//@todo: If series data is null
@@ -475,7 +491,9 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
                         sumHandledConnection: 0,
                         sumAcceptsConnection: 0,
                         values: [],
-                        appName: appName,
+                        appName,
+                        Cloudlet,
+                        ClusterInst,
                     })
                 }
             }
@@ -842,7 +860,7 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
     })
 }
 
-export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
+export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: mcURL() + APP_INST_METRICS_ENDPOINT,
@@ -1209,7 +1227,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
     let cloudlet = appInst.Cloudlet
     let cloudletorg = appInst.OrganizationName
     let ver = appInst.Version
-
 
 
     seriesValues.map(item => {
