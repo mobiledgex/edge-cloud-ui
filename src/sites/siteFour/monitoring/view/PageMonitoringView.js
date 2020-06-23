@@ -2758,7 +2758,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     console.log('fullCurrentAppInst===>', fullCurrentAppInst);
 
-                   /* await this.setState({
+                    await this.setState({
                         currentAppInst: fullCurrentAppInst,
                         loading: true,
                     })
@@ -2772,11 +2772,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
                     filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
 
-                    let appInstDropdown = makeDropdownForAppInst(filteredAppList)
-                    await this.setState({
-                        appInstDropdown,
-                    });
+                    let arrDateTime = getOneYearStartEndDatetime();
+                    let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                    fullCurrentAppInst = fullCurrentAppInst.trim();
+                    fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
 
+
+                    let appInstDropdown = makeDropdownForAppInst(filteredAppList)
                     //desc: ############################
                     //desc: filtered AppInstEventLogList
                     //desc: ############################
@@ -2787,17 +2789,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         }
                     })
                     await this.setState({
+                        appInstDropdown: appInstDropdown,
                         filteredAppInstEventLogs: filteredAppInstEventLogList,
                         currentTabIndex: 0,
                         currentClassification: CLASSIFICATION.APPINST,
-                        allAppInstUsageList: appInstUsageList,
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
                         currentAppInstNameVersion: AppName + ' [' + Version + ']',
                         currentAppInst: fullCurrentAppInst,
                         currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
-                    });*/
+                    });
 
                 } catch (e) {
                     //throw new Error(e)
@@ -3147,7 +3149,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     selectedClientLocationListOnAppInst: [],
                     filteredClientStatusList: this.state.allClientStatusList,
 
-                },()=>{
+                }, () => {
                     console.log('filteredAppInstUsageList===>', this.state.allAppInstUsageList);
                 })
             }
