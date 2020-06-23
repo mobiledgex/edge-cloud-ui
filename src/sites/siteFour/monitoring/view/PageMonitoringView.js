@@ -862,7 +862,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             async reloadDataFromRemote() {
                 clearInterval(this.intervalForAppInst)
                 await this.setState({
-                    currentClassification: this.state.userType.toString().includes("dev") ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLOUDLET,
+                    currentClassification:
+                        this.state.userType.toString().includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER :
+                            this.state.userType.toString().includes(USER_TYPE.OPERATOR) ? CLASSIFICATION.CLOUDLET :
+                                this.state.userType.toString().includes(USER_TYPE.AMDIN) ? CLASSIFICATION.APP_INST_FOR_ADMIN : null,
                     placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
                     placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
                 })
