@@ -1117,9 +1117,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
             removeGridAllItem() {
-                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, [])
+                    this.setState({
+                        layoutAdmin: [],
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, [])
                     this.setState({
                         layoutCloudlet: [],
