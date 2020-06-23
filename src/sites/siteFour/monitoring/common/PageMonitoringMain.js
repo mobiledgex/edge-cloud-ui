@@ -4,9 +4,7 @@ import {Card} from "@material-ui/core";
 
 export default function PageMonitoringMain() {
     const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
-
     const renderMainPage = () => {
-        /*  try {              if (userRole.includes('Admin')) {                  return (<PageMonitoringForAdmin/>)              } else {              }          } catch (e) {          }*/
         return <PageMonitoringView/>
     }
 
@@ -16,3 +14,6 @@ export default function PageMonitoringMain() {
         </Card>
     );
 }
+
+
+/*  try {              if (userRole.includes('Admin')) {                  return (<PageMonitoringForAdmin/>)              } else {              }          } catch (e) {          }*/
