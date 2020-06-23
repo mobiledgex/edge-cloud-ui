@@ -16,8 +16,9 @@ import BusinessIcon from '@material-ui/icons/Business';
 import { Image, Button } from 'semantic-ui-react';
 import { Menu, MenuItem, Dialog, DialogActions, List, ListItem, ListItemText } from '@material-ui/core';
 
-import Preferences from './preferences'
+import MexVirtualSelect from './mexVirtualSelect'
 import { getMexTimezone } from '../../../utils/sharedPreferences_util';
+import { timezones } from '../../../utils/date_util'
 
 const drawerWidth = 250;
 
@@ -106,9 +107,6 @@ export default function Header(props) {
                             <MenuItem onClick={onAbout}>
                                 About
                             </MenuItem>
-                            <MenuItem onClick={()=>{onPref()}}>
-                                Preferences
-                            </MenuItem>
                         </Menu>
                         <Dialog
                             open={open}
@@ -155,7 +153,7 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
-                    <IconButton disabled={true} aria-label="timezone" color="inherit">
+                    <IconButton style={{ backgroundColor: 'transparent'}} onClick={()=>{onPref()}} aria-label="timezone" color="inherit">
                         <LanguageIcon fontSize='default' /> &nbsp;<h5>{getMexTimezone()}</h5>
                     </IconButton>
                     {localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
@@ -166,11 +164,11 @@ export default function Header(props) {
                             </h5>
                         </IconButton> : null}
                     <HeaderGlobalAudit />
-                    <IconButton disabled={true} aria-label="help" color="inherit"
+                    <IconButton style={{ backgroundColor: 'transparent'}} aria-label="help" color="inherit"
                         onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default' />
                     </IconButton>
-                    <Preferences open={openPreferences} close={()=>{setOpenPreferences(false)}}/>
+                    <MexVirtualSelect open={openPreferences} close={()=>{setOpenPreferences(false)}} data={timezones()} header={'Select Timezone'}/>
                     <HeaderGlobalMini email={props.email} data={props.data}/>
                 </div>
             </Toolbar>

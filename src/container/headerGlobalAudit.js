@@ -189,7 +189,7 @@ class headerGlobalAudit extends React.Component {
         return (
             auditLogs && auditLogs.length > 0 ?
                 <React.Fragment>
-                    <IconButton color='inherit' onClick={this.handleOpen}>
+                    <IconButton style={{ backgroundColor: 'transparent'}} color='inherit' onClick={this.handleOpen}>
                         <TimelineOutlinedIcon fontSize='default' />
                         {this.state.errorCount > 0 ? <div className='audit_bedge' >{this.state.errorCount}</div> : null}
                     </IconButton>
