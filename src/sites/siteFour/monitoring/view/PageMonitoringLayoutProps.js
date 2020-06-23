@@ -187,7 +187,7 @@ export const defaultLayoutForAdmin = [
     {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
 ];
 
-export const defaultHwMapperListForAdmin  = [
+export const defaultHwMapperListForAdmin = [
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.CPU,
@@ -211,8 +211,8 @@ export const defaultHwMapperListForAdmin  = [
     },
     {
         id: '5',
-        hwType: GRID_ITEM_TYPE.BUBBLE,
-        graphType: GRID_ITEM_TYPE.BUBBLE,
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
     },
     {
         id: '6',

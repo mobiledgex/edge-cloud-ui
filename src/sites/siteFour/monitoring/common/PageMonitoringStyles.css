@@ -857,9 +857,10 @@ tr td {
 
 
 .ant-select-multiple .ant-select-selection-item {
-    background: #353535 !important;
+    background: #090909 !important;
     border: 1px solid #55616b !important;
     border-radius: 2px;
+    color: white;
 }
 
 

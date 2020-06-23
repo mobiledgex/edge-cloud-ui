@@ -681,20 +681,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let clusterTreeDropdownList = []
                     let appInstTreeDropdownList = [];
                     let bubbleChartData = []
+                    let allCloudletEventLogList = []
                     //todo:#################################
                     //todo: ADMIN (eventLog, usageList)
                     //todo:###################################
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getAppInstLevelUsageList(appInstList, "*", RECENT_DATA_LIMIT_COUNT))
                         let newPromiseList = await Promise.all(usageEventPromiseList);
-                        allAppInstEventLogList = newPromiseList[0];
-                        allAppInstUsageList = newPromiseList[1];
+
+                        allAppInstUsageList = newPromiseList[0];
+
+
                         let cloudletClusterListMap1: TypeCloudletClusterListMap = getCloudletClusterNameListForAppInst(appInstList)
                         let regionList = localStorage.getItem('regions').split(",")
                         appInstTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap1.cloudletNameList, cloudletClusterListMap1.clusterNameList, this)
 
-                        console.log('allAppInstUsageList===>', allAppInstUsageList);
                         bubbleChartData = await makeBubbleChartData(allAppInstUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex, CLASSIFICATION.APP_INST_FOR_ADMIN);
 
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
@@ -750,8 +751,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         bubbleChartData: bubbleChartData,
                         allClusterEventLogList: allClusterEventLogList,
                         filteredClusterEventLogList: allClusterEventLogList,
+
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
+
                         isReady: true,
                         clusterTreeDropdownList: clusterTreeDropdownList,
                         appInstTreeDropdownList: appInstTreeDropdownList,
@@ -779,7 +782,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         legendRowCount: rowCount,
                     }, () => {
 
-                        console.log('allClusterList====>', this.state.allClusterList);
+                        console.log('filteredAppInstEventLogs====>', this.state.filteredAppInstEventLogs);
                     });
                 } catch (e) {
                     showToast(e.toString())
@@ -2808,7 +2811,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderAppInstDropdownForAdmin() {
+            renderAppInstDropdown__Admin() {
 
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -2820,7 +2823,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 ref={c => this.appInstSelect = c}
                                 dropdownStyle={{}}
                                 style={{display: 'inline-block', width: '250px', fontSize: 12}}
-                                //disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
+                                disabled={this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
                                 placeholder={this.state.appInstSelectBoxPlaceholder}
                                 onChange={async (value) => {
@@ -3249,7 +3252,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.renderAdminCloudletClusterTreeDropdown()}
                                     </div>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderAppInstDropdownForAdmin()}
+                                        {this.renderAppInstDropdown__Admin()}
                                     </div>
                                 </React.Fragment>
                                 :
