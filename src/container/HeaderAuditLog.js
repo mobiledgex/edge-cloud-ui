@@ -299,9 +299,10 @@ class HeaderAuditLog extends React.Component {
                                 style={{ width: 150, height: 30 }}
                             />
                         </Box>
-                        <IconButton onClick={this.props.onRefresh}>
-                            <RefreshIcon />
-                        </IconButton>
+                        {this.props.showRefresh ?
+                            <IconButton onClick={this.props.onRefresh}>
+                                <RefreshIcon />
+                            </IconButton> : null}
                     </div>
                     <IconButton onClick={this.onClickClose}>
                         <CloseIcon />

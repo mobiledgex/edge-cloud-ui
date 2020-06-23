@@ -24,7 +24,8 @@ class headerGlobalAudit extends React.Component {
             errorCount: 0,
             tabValue: 0,
             openDetail: false,
-            isOpen: false
+            isOpen: false,
+            canRefresh: true,
         }
         this.fullLogData = []
     }
@@ -34,6 +35,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
+        this.setState({canRefresh:false})
         let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
@@ -70,7 +72,6 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAudit = async () => {
-        this.setState({devData: []})
         let mcRequest = await serverData.showSelf(_self, {}, false)
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
@@ -168,7 +169,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     handleOpen = () => {
-        this.setState({ isOpen: true, devData:this.fullLogData });
+        this.setState({ isOpen: true, devData:this.fullLogData, canRefresh:true });
     }
 
     handleClose = () => {
@@ -185,25 +186,24 @@ class headerGlobalAudit extends React.Component {
     }
 
     render() {
-        let auditLogs = this.state.devData
+        const {devData, canRefresh, errorCount, isOpen, rawViewData, openDetail} = this.state
         return (
-                <React.Fragment>
-
-            {auditLogs && auditLogs.length > 0 ?
-                    <IconButton style={{ backgroundColor: 'transparent'}} color='inherit' onClick={this.handleOpen}>
+            <React.Fragment>
+                {devData && devData.length > 0 ?
+                    <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
                         <TimelineOutlinedIcon fontSize='default' />
-                        {this.state.errorCount > 0 ? <div className='audit_bedge' >{this.state.errorCount}</div> : null}
+                        {errorCount > 0 ? <div className='audit_bedge' >{errorCount}</div> : null}
                     </IconButton> : null}
-                    <Drawer anchor={'right'} open={this.state.isOpen}>
-                        <HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} onRefresh={this.getDataAudit}/>
-                    </Drawer>
-                    <PopDetailViewer
-                        rawViewData={this.state.rawViewData}
-                        dimmer={false}
-                        open={this.state.openDetail}
-                        close={this.closeDetail}
-                    />
-                </React.Fragment>
+                <Drawer anchor={'right'} open={isOpen}>
+                    <HeaderAuditLog devData={devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} showRefresh={canRefresh} onRefresh={this.getDataAudit} />
+                </Drawer>
+                <PopDetailViewer
+                    rawViewData={rawViewData}
+                    dimmer={false}
+                    open={openDetail}
+                    close={this.closeDetail}
+                />
+            </React.Fragment>
         )
     }
 }
