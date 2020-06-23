@@ -2845,7 +2845,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.state.allAppInstDropdown.map(item => {
                                     let cluster = item.key.split(" | ")[2]
                                     return (
-                                        <Option value={item.value}>{item.text}({cluster})</Option>
+                                        <Option value={item.value}>{item.text}&nbsp;({cluster})</Option>
                                     )
                                 })}
                             </Select>
