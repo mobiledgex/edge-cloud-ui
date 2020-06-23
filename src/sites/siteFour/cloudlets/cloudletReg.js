@@ -19,7 +19,7 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { CloudletTutor } from "../../../tutorial";
 import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';
 import { syntaxHighLighter, codeHighLighter } from '../../../hoc/highLighter/highLighter'
-import { downloadData } from '../../../utils/fileUtil'
+import { downloadData } from '../../../utils/file_util'
 
 
 import GetAppIcon from '@material-ui/icons/GetApp';

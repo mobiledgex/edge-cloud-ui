@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Box } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -8,14 +8,23 @@ import * as actions from '../actions';
 import { IconButton, Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Calendar from '../components/horizontal_calendar/Calendar';
-import moment from "moment";
+import * as dateUtil from '../utils/date_util'
 import CheckIcon from '@material-ui/icons/Check';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const options = [
     { key: 'Individual', value: 'Individual', text: 'Individual' },
     { key: 'Group', value: 'Group', text: 'Group' }
 ]
+
+const filterDataByDate = (dataList, filterDate) =>
+{
+    return dataList.filter(data => {
+        return filterDate === dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE, data.starttime)
+    })
+}
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
@@ -31,37 +40,13 @@ class HeaderAuditLog extends React.Component {
         }
     }
 
-    componentDidMount() {
-        let devData = this.props.devData;
-        let dayData = [];
-        let nowDay = parseInt(moment().utc().format("D"));
 
-        devData.map((data, index) => {
-            let day = parseInt(moment(this.makeUTC(data.starttime)).format("D"))
-            if (nowDay === day) {
-                dayData.push(data)
-            }
-        })
-
-        this.setState({
-            devData: devData,
-            dayData: dayData,
-            unCheckedErrorCount: this.props.unCheckedErrorCount,
-            errorCount: this.props.errorCount
-        })
-    }
-
-    convertWSResponsetoJSON = (response) => {
-        let dataArray = response.split('\n');
-        let data = '[';
-        for (let i = 0; i < dataArray.length; i++) {
-            if (i > 0) {
-                data = data + ','
-            }
-            data = data.concat(dataArray[i])
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.devData !== prevState.devData) {
+            let dayData = filterDataByDate(nextProps.devData, dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE))
+            return { dayData: dayData, devData: nextProps.devData, unCheckedErrorCount: nextProps.unCheckedErrorCount, errorCount: nextProps.errorCount }
         }
-        data = data + ']'
-        return data
+        return null
     }
 
     setAllView = (dummyConts, sId) => {
@@ -69,48 +54,6 @@ class HeaderAuditLog extends React.Component {
             return dummyConts
         }
         return {}
-    }
-
-    setRequestView(dummyConts, sId) {
-
-        if (dummyConts && dummyConts['request']) {
-            if (dummyConts['request'].indexOf('{') > -1) {
-                let dataLenght = dummyConts['request'].split('{"data":').length;
-                if (dataLenght > 1) {
-                    return { "data": dummyConts['request'].split('{"data":') }
-                } else {
-                    return JSON.parse(dummyConts['request'])
-                }
-            } else {
-                return { 'request': dummyConts['request'] }
-            }
-        }
-        else {
-            return {}
-        }
-    }
-
-
-    setResponseView(dummyConts, sId) {
-        if (dummyConts.operationname.includes('/ws/')) {
-            dummyConts.response = this.convertWSResponsetoJSON(dummyConts.response);
-        }
-        if (dummyConts && dummyConts['response'].indexOf('{') > -1) {
-            let dataLenght = dummyConts['response'].split('{"data":').length;
-            if (dataLenght > 1) {
-                return { "data": dummyConts['response'].split('{"data":') }
-            } else {
-                return JSON.parse((dummyConts['response'] !== "") ? dummyConts['response'] : {})
-            }
-        }
-        else {
-            return {}
-        }
-    }
-
-    makeUTC = (time) => {
-        let newTime = moment(time).unix()
-        return moment(newTime).utc().format("YYYY-MM-DDTHH:mm:ss")
     }
 
     makeOper = (logName) => {
@@ -157,31 +100,21 @@ class HeaderAuditLog extends React.Component {
 
     onClickViewDetail = (data) => {
         let rawViewData = (data) ? this.setAllView(data) : {};
-        let requestData = (data) ? this.setRequestView(data) : {};
-        let responseData = (data) ? this.setResponseView(data) : {};
-
-        this.props.detailView(rawViewData, requestData, responseData)
+        this.props.detailView(rawViewData)
     }
 
     handleDateChange = (selectDate, index) => {
-        let devData = this.state.devData;
-        let dayData = [];
-
-        devData.map((data, index) => {
-            let date = moment(this.makeUTC(data.starttime)).format("YYYY-MM-DD");
-            if (date === moment(selectDate).utc().format("YYYY-MM-DD")) {
-                dayData.push(data)
+        this.setState({dayData:[]})
+        setTimeout(() => {
+            let dayData = filterDataByDate(this.props.devData, dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf()))
+            if (this.state.dropDownValue === 'Group') {
+                this.dropDownOnChange(null, { value: "Group" }, dayData)
             }
-        })
-
-        if (this.state.dropDownValue === 'Group') {
-            this.dropDownOnChange(null, { value: "Group" }, dayData)
-        }
-
-        this.setState({
-            dayData: dayData,
-            expanded: (-1)
-        });
+            this.setState({
+                dayData: dayData,
+                expanded: (-1)
+            });
+        }, 1)
     };
 
     onSelectDate = (date, index) => {
@@ -255,8 +188,8 @@ class HeaderAuditLog extends React.Component {
         >
             <Step key={index}>
                 <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
-                    {moment(this.makeUTC(data.starttime)).format("hh:mm:ss")}<br />
-                    {moment(this.makeUTC(data.starttime)).format("A")}
+                    {dateUtil.unixTime(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
+                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM,data.starttime)}
                 </div>
                 <StepLabel StepIconComponent={(stepperProps) => {
                     return this.getStepLabel(data, stepperProps)
@@ -272,7 +205,7 @@ class HeaderAuditLog extends React.Component {
         <ExpansionPanelDetails>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Start Time</div>
-                <div className='audit_timeline_detail_right'>{moment(this.makeUTC(data.starttime)).format("YYYY-MM-DDTHH:mm:ss")}</div>
+                <div className='audit_timeline_detail_right'>{dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE_TIME, data.starttime)}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Trace ID</div>
@@ -358,15 +291,22 @@ class HeaderAuditLog extends React.Component {
                 <div className='audit_title'>
                     <div className="audit_title_label">Audit Logs</div>
                     <div className='audit_filter'>
-                        <Dropdown
-                            placeholder='Individual'
-                            fluid
-                            search
-                            selection
-                            options={options}
-                            onChange={this.dropDownOnChange}
-                            style={{ width: 150 }}
-                        />
+                        <Box p={1}>
+                            <Dropdown
+                                button
+                                placeholder='Individual'
+                                fluid
+                                search
+                                selection
+                                options={options}
+                                onChange={this.dropDownOnChange}
+                                style={{ width: 150, height: 30 }}
+                            />
+                        </Box>
+                        {this.props.showRefresh ?
+                            <IconButton onClick={this.props.onRefresh}>
+                                <RefreshIcon />
+                            </IconButton> : null}
                     </div>
                     <IconButton onClick={this.onClickClose}>
                         <CloseIcon />
@@ -375,6 +315,7 @@ class HeaderAuditLog extends React.Component {
                 <div className='audit_calendar'>
                     <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
                 </div>
+                {this.props.loading ? <LinearProgress /> : null}
                 <div className='audit_timeline_vertical'>
                     {
                         (groups.length > 0) ?
