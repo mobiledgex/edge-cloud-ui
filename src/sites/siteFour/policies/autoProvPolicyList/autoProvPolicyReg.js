@@ -179,15 +179,19 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     onCreateAutoProvPolicy = async (data) => {
-        let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updateAutoProvPolicy(this.state.forms, data, this.props.data) : createAutoProvPolicy(data))
-        if (mcRequest && mcRequest.response) {
-            let response = mcRequest.response;
-            if (response.status === 200) {
-                this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
-                this.props.onClose(true)
+        if (data[fields.deployClientCount] || data[fields.minActiveInstances]) {
+            let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updateAutoProvPolicy(this.state.forms, data, this.props.data) : createAutoProvPolicy(data))
+            if (mcRequest && mcRequest.response) {
+                let response = mcRequest.response;
+                if (response.status === 200) {
+                    this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
+                    this.props.onClose(true)
+                }
             }
         }
-
+        else {
+            this.props.handleAlertInfo('error', `Please define either deploy request count or minimum active instances`)
+        }
     }
 
     onAddCloudlets = (data) => {
@@ -331,7 +335,7 @@ class AutoProvPolicyReg extends React.Component {
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to' },
             { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true, tip: 'Policy name' },
-            { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: true }, visible: true, update: true, dataValidateFunc: this.validatedeployClientCount, updateId: '3', tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
+            { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: true, dataValidateFunc: this.validatedeployClientCount, updateId: '3', tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
             { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: true, updateId: '4', tip: 'Number of intervals to check before triggering deployment' },
             { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: false }, visible: true, update: true, updateId: ['5', '5.1', '5.1.1', '5.1.2'], dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.minActiveInstances, label: 'Min Active Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: '6', update: true, dataValidateFunc: this.validateMinInst, tip: 'Minimum number of active instances for High-Availability' },
