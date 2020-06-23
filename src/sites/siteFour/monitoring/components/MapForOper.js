@@ -585,7 +585,7 @@ export default function MapForOper(props) {
                 {cloudLocList.map((locOne, index) => {
                     return renderCloudletMarkerOne(locOne, index)
                 })}
-                {props.parent.state.mapLoading && renderPlaceHolderLottieForMap()}
+                {props.parent.state.mapLoading && renderPlaceHolderLottieForMap(true)}
             </Map>
 
         </div>

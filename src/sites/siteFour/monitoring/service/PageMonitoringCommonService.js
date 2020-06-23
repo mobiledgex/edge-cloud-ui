@@ -168,8 +168,8 @@ export const removeDuplicates = (paramArrayList, key) => {
     return newArray;
 }
 
-export const renderPlaceHolderLottieForMap = (isAdmin = false) => {
-    if (isAdmin) {
+export const renderPlaceHolderLottieForMap = (isCloud = false) => {
+    if (isCloud) {
         return (
             <div className='page_monitoring_blank_box'
                  style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
