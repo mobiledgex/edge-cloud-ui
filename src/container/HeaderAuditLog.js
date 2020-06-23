@@ -12,11 +12,19 @@ import * as dateUtil from '../utils/date_util'
 import CheckIcon from '@material-ui/icons/Check';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const options = [
     { key: 'Individual', value: 'Individual', text: 'Individual' },
     { key: 'Group', value: 'Group', text: 'Group' }
 ]
+
+const filterDataByDate = (dataList, filterDate) =>
+{
+    return dataList.filter(data => {
+        return filterDate === dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE, data.starttime)
+    })
+}
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
@@ -32,20 +40,13 @@ class HeaderAuditLog extends React.Component {
         }
     }
 
-    filterDataByDate = (filterDate) =>
-    {
-        return this.props.devData.filter(data => {
-            return filterDate === dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE, data.starttime)
-        })
-    }
 
-    componentDidMount() {
-        let dayData = this.filterDataByDate(dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE))
-        this.setState({
-            dayData: dayData,
-            unCheckedErrorCount: this.props.unCheckedErrorCount,
-            errorCount: this.props.errorCount
-        })
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.devData !== prevState.devData) {
+            let dayData = filterDataByDate(nextProps.devData, dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE))
+            return { dayData: dayData, devData: nextProps.devData, unCheckedErrorCount: nextProps.unCheckedErrorCount, errorCount: nextProps.errorCount }
+        }
+        return null
     }
 
     setAllView = (dummyConts, sId) => {
@@ -103,7 +104,7 @@ class HeaderAuditLog extends React.Component {
     }
 
     handleDateChange = (selectDate, index) => {
-        let dayData = this.filterDataByDate(dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf()))
+        let dayData = filterDataByDate(this.props.devData, dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf()))
         if (this.state.dropDownValue === 'Group') {
             this.dropDownOnChange(null, { value: "Group" }, dayData)
         }
@@ -311,6 +312,7 @@ class HeaderAuditLog extends React.Component {
                 <div className='audit_calendar'>
                     <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
                 </div>
+                {this.props.loading ? <LinearProgress /> : null}
                 <div className='audit_timeline_vertical'>
                     {
                         (groups.length > 0) ?

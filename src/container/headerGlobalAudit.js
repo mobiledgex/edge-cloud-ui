@@ -26,7 +26,9 @@ class headerGlobalAudit extends React.Component {
             openDetail: false,
             isOpen: false,
             canRefresh: true,
+            loading:false
         }
+        _self = this
         this.fullLogData = []
     }
 
@@ -60,7 +62,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     readyToData() {
-        this.setState({devData: []})
+        this.setState({devData: [], loading:true})
         this.getDataAudit();
         localStorage.setItem('ServerRequestCount', 0)
     }
@@ -77,14 +79,12 @@ class headerGlobalAudit extends React.Component {
             if (mcRequest.response.data.length > 0) {
                 let response = mcRequest.response;
                 this.fullLogData = response.data
-                _self.setState({ devData: response.data })
 
                 let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
-                let devData = this.state.devData
                 let errorCount = 0;
                 let unCheckedErrorCount = 0;
 
-                devData.map((data, index) => {
+                this.fullLogData.map((data, index) => {
                     this.updateStatus(data)
                     let status = data.status;
                     let traceid = data.traceid;
@@ -96,7 +96,7 @@ class headerGlobalAudit extends React.Component {
                         }
                     }
                 })
-                this.setState({ errorCount: errorCount, unCheckedErrorCount: unCheckedErrorCount })
+                this.setState({ devData:this.fullLogData, errorCount: errorCount, unCheckedErrorCount: unCheckedErrorCount, loading:false })
             }
         }
     }
@@ -186,7 +186,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     render() {
-        const {devData, canRefresh, errorCount, isOpen, rawViewData, openDetail} = this.state
+        const {devData, canRefresh, errorCount, isOpen, rawViewData, openDetail, loading} = this.state
         return (
             <React.Fragment>
                 {devData && devData.length > 0 ?
@@ -195,7 +195,7 @@ class headerGlobalAudit extends React.Component {
                         {errorCount > 0 ? <div className='audit_bedge' >{errorCount}</div> : null}
                     </IconButton> : null}
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog devData={devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} showRefresh={canRefresh} onRefresh={this.getDataAudit} />
+                    <HeaderAuditLog devData={devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} showRefresh={canRefresh} onRefresh={()=>this.readyToData()} loading={loading} />
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
