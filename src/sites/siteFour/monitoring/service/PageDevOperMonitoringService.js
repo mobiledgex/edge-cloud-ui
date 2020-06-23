@@ -27,7 +27,7 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
+    makeBubbleChartData,
     renderUsageByType
 } from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -647,7 +647,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
         chartColorList: selectedChartColorList,
     }, async () => {
         _this.setState({
-            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
+            bubbleChartData: await makeBubbleChartData(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
         })
     })
 
@@ -716,9 +716,9 @@ export const covertUnits = (value, hardwareType, _this) => {
                 return convertToMegaGigaForNumber(value);
             }
 
-        } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
+        } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
             if (hardwareType === HARDWARE_TYPE.CPU) {
-                return value.toFixed(4) + " %";
+                return value.toFixed(0) + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 return convertByteToMegaGigaByte(value)
             } else {
@@ -756,19 +756,6 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             animation: {
                 duration: 500
             },
-            /* tooltips: {
-                 callbacks: {
-                     label: function (tooltipItem, data) {
-                         var dataset = data.datasets[tooltipItem.datasetIndex];
-                         var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-                         var currentValue = dataset.data[tooltipItem.index];
-                         return currentValue.toFixed(2).toString();
-                     },
-                     title: function (tooltipItem, data) {
-                         return data.datasets[tooltipItem[0].index]['label'];
-                     }
-                 }
-             },*/
             maintainAspectRatio: false,
             responsive: true,
             datasetStrokeWidth: 1,
@@ -1218,10 +1205,11 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
 
 
 export const convertToClassification = (pClassification) => {
-    if (pClassification === CLASSIFICATION.APPINST) {
+    if (pClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
         return CLASSIFICATION.APP_INST
-    }
-    if (pClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+    } else if (pClassification === CLASSIFICATION.APPINST) {
+        return CLASSIFICATION.APP_INST
+    } else if (pClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
         return CLASSIFICATION.CLUSTER
     } else {
         return pClassification.toString().replace("_", " ")

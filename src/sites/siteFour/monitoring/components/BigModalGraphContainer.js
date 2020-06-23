@@ -12,7 +12,7 @@ import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
 import {renderCircleLoaderForMap, renderWifiLoader} from "../service/PageMonitoringCommonService";
-import {makeLineChartOptions} from "../service/PageDevOperMonitoringService";
+import {convertToClassification, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 const FA = require('react-fontawesome')
 
@@ -200,7 +200,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                                             <div style={{display: 'flex'}}>
                                                 {this.renderPrevBtn()}
                                                 <div className='page_monitoring_popup_title'>
-                                                    {this.props.parent.state.currentClassification} {this.props.popupGraphHWType} Utilization
+                                                    {convertToClassification(this.props.parent.state.currentClassification)} {this.props.popupGraphHWType} Utilization
                                                 </div>
                                             </div>
 

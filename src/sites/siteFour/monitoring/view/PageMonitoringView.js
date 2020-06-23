@@ -59,7 +59,7 @@ import moment from "moment";
 import {
     getOneYearStartEndDatetime,
     isEmpty,
-    makeBubbleChartDataForCluster,
+    makeBubbleChartData,
     renderPlaceHolderLoader,
     renderWifiLoader,
     showToast
@@ -680,6 +680,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let cloudletClusterListMap = {}
                     let clusterTreeDropdownList = []
                     let appInstTreeDropdownList = [];
+                    let bubbleChartData = []
                     //todo:#################################
                     //todo: ADMIN (eventLog, usageList)
                     //todo:###################################
@@ -693,6 +694,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let regionList = localStorage.getItem('regions').split(",")
                         appInstTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap1.cloudletNameList, cloudletClusterListMap1.clusterNameList, this)
 
+                        console.log('allAppInstUsageList===>', allAppInstUsageList);
+                        bubbleChartData = await makeBubbleChartData(allAppInstUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex, CLASSIFICATION.APP_INST_FOR_ADMIN);
 
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         //todo:#################################
@@ -709,7 +712,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
                         clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
-
+                        bubbleChartData = await makeBubbleChartData(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
 
                     } else {
                         //todo:###################################
@@ -718,12 +721,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                     }
 
-                    let bubbleChartData = await makeBubbleChartDataForCluster(allAppInstUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
+
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
-
-
                     let dataCount = this.getDataCount(appInstList, clusterList, cloudletList)
-
 
                     /*TODO: LEGEND ROW COUNTING*/
                     let itemCount = 0;
@@ -739,9 +739,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         rowCount = Math.ceil(itemCount / 6);
                     } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                         itemCount = appInstList.length;
-
-                        console.log('itemCount====>', itemCount);
-
                         rowCount = Math.ceil(itemCount / 6);
                     }
 
@@ -838,7 +835,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //@fixme: reset bubble chart data
                 let bubbleChartData = []
                 if (!this.state.userType.includes(USER_TYPE.AMDIN)) {
-                    bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
+                    bubbleChartData = await makeBubbleChartData(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                     await this.setState({
                         bubbleChartData: bubbleChartData,
                     })
@@ -1345,6 +1342,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <BubbleChartContainer
                             loading={this.state.loading}
                             parent={this}
+                            currentClassification={this.state.currentClassification}
                             currentHardwareType={this.state.currentHardwareType}
                             bubbleChartData={this.state.bubbleChartData}
                             themeTitle={this.state.themeTitle}/>
@@ -2165,7 +2163,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
-                        let bubbleChartData = makeBubbleChartDataForCluster(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                        let bubbleChartData = makeBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
                         await this.setState({
@@ -2860,7 +2858,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             makeStringLimit(classification) {
                 let stringLimit = 25;
-                if (classification === CLASSIFICATION.CLOUDLET) {
+                if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    if (this.props.size.width > 1600) {
+                        stringLimit = 27
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                        stringLimit = 18
+                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                        stringLimit = 14
+                    } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+                        stringLimit = 10
+                    } else if (this.props.size.width < 720) {
+                        stringLimit = 4
+                    }
+                } else if (classification === CLASSIFICATION.CLOUDLET) {
                     if (this.props.size.width > 1600) {
                         stringLimit = 25
                     } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
@@ -2872,7 +2882,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.props.size.width < 720) {
                         stringLimit = 4
                     }
-                    return stringLimit;
 
                 } else if (classification === CLASSIFICATION.CLUSTER) {
                     if (this.props.size.width > 1500) {
@@ -2884,8 +2893,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.props.size.width < 1100) {
                         stringLimit = 28
                     }
-                    return stringLimit;
+
                 }
+
+                return stringLimit;
             }
 
 
@@ -2893,7 +2904,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
-
                 //@fixme:fake json list
                 //let filteredClusterUsageList = cloudletClusterList
 
@@ -3051,6 +3061,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderAppLegendForAdmin() {
+                let stringLimit = this.makeStringLimit(CLASSIFICATION.APP_INST_FOR_ADMIN);
 
                 console.log('legendItemCount====>', this.state.legendItemCount);
 
@@ -3082,8 +3093,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.renderDot(index)}
                                         <ClusterCluoudletLabel
                                             style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
-                                            {/*{this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]*/}
-                                            {item.AppName} [{item.Version}]
+                                            {reduceString(item.AppName, stringLimit, this.state.legendItemCount)}[{item.Version}]
                                         </ClusterCluoudletLabel>
                                     </div>
                                 </Col>

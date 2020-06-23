@@ -1,10 +1,10 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
-import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
+import {convertToClassification, handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
+import {makeBubbleChartData, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
-import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
+import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Select} from "antd";
 
@@ -37,6 +37,8 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
         this.setState({
             bubbleChartData: this.props.bubbleChartData,
         }, () => {
+
+            console.log('bubbleChartData===>', this.state.bubbleChartData);
         })
     }
 
@@ -112,7 +114,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     >
                                         {this.props.isBig === undefined ?
                                             <div style={{flex: .9, marginTop: 5}}>
-                                                Cluster Bubble Chart
+                                                {convertToClassification(this.props.currentClassification)} Bubble Chart
                                             </div>
                                             : <div style={{width: window.innerWidth * 0.9}}>
 
@@ -131,7 +133,12 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                     await handleHardwareTabChanges(this.props.parent, value)
 
                                                     try {
-                                                        let bubbleChartData = makeBubbleChartDataForCluster(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList, this.props.parent.state.currentColorIndex);
+                                                        let bubbleChartData = []
+                                                        if (this.props.currentClassification === CLASSIFICATION.CLUSTER) {
+                                                            bubbleChartData = makeBubbleChartData(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList, this.props.parent.state.currentColorIndex);
+                                                        } else {
+                                                            bubbleChartData = makeBubbleChartData(this.props.parent.state.filteredAppInstUsageList, value, this.props.parent.state.chartColorList, this.props.parent.state.currentColorIndex);
+                                                        }
 
                                                         this.props.parent.setState({
                                                             bubbleChartData: bubbleChartData,

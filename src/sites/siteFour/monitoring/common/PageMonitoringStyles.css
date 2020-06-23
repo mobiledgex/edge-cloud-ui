@@ -648,7 +648,7 @@ tr td {
     border-radius: 0px;
     /*width: auto !important;*/
     display: inline-block;
-    border-color: darkolivegreen !important;
+    border-color: orange !important;
     border-style: groove;
 }
 

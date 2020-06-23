@@ -10,7 +10,7 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import notification from "antd/es/notification";
 import {makeGradientColor} from "./PageDevOperMonitoringService";
-import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
+import {CLASSIFICATION, HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "./PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
@@ -746,27 +746,47 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
  * @param themeTitle
  * @returns {[]}
  */
-export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList) => {
+export const makeBubbleChartData = (usageList: any, pHardwareType, chartColorList, classification = CLASSIFICATION.CLUSTER) => {
     try {
 
         let bubbleChartData = []
-        usageList.map((item, index) => {
-            let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
-            usageValue = usageValue.toFixed(2)
+        if (classification === CLASSIFICATION.CLUSTER) {
 
-            let clusterCloudletFullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
+            usageList.map((item, index) => {
+                let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
+                usageValue = usageValue.toFixed(2)
 
-            bubbleChartData.push({
-                type: pHardwareType,
-                index: index,
-                label: clusterCloudletFullLabel.toString().substring(0, 17) + "...",
-                value: usageValue,
-                favor: usageValue,
-                fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
-                cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
-                color: usageList.length === 1 ? chartColorList[item.colorCodeIndex] : chartColorList[item.colorCodeIndex],
+                let clusterCloudletFullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
+
+                bubbleChartData.push({
+                    type: pHardwareType,
+                    index: index,
+                    label: clusterCloudletFullLabel.toString().substring(0, 17) + "...",
+                    value: usageValue,
+                    favor: usageValue,
+                    fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
+                    cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
+                    color: usageList.length === 1 ? chartColorList[item.colorCodeIndex] : chartColorList[item.colorCodeIndex],
+                })
             })
-        })
+        } else {//TODO: APPINST
+            usageList.map((item, index) => {
+                let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
+                usageValue = usageValue.toFixed(1)
+                let label = item.appName.toString() //+ ' [' + item.ClusterInst.toString().trim() + "]";
+
+                bubbleChartData.push({
+                    type: pHardwareType,
+                    index: index,
+                    label: label.toString().substring(0, 17) + "...",
+                    value: usageValue,
+                    favor: usageValue,
+                    fullLabel: item.appName.toString() + ' [' + item.appName.toString().trim().substring(0, 15) + "]",
+                    cluster_cloudlet: item.appName.toString() + ' | ' + item.appName.toString(),
+                    color: usageList.length === 1 ? chartColorList[item.colorCodeIndex] : chartColorList[item.colorCodeIndex],
+                })
+            })
+        }
 
         return bubbleChartData;
     } catch (e) {

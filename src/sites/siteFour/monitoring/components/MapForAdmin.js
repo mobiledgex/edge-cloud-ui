@@ -506,7 +506,7 @@ export default function MapForAdmin(props) {
                                         alert(item.AppName)
                                     }}
                                 >
-                                    {item.AppName}&nbsp;[{item.Version}]
+                                    {item.AppName}[{item.Version}]
                                     <div style={{color: 'yellow'}}>
                                         &nbsp;({item.ClusterInst})
                                     </div>
@@ -587,18 +587,6 @@ export default function MapForAdmin(props) {
                             style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
                         />
                     </div>
-                    <div
-                        style={mapIconStyle}
-                        onClick={() => {
-                            setIsEnableZoom(!isEnableZoom)
-                        }}
-                    >
-                        <Icon
-                            name='arrows alternate vertical'
-                            style={{fontSize: 20, color: isEnableZoom ? 'white' : 'grey', cursor: 'pointer'}}
-                        />
-                    </div>
-
                 </div>
             </Control>
         )

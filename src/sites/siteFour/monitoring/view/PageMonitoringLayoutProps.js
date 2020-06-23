@@ -174,12 +174,9 @@ export const defaultHwMapperListForCluster = [
     },
 
 ];
-/*
-todo:#####################################
-todo:defaultLayoutForAdmin (AppInst)
-todo:#######################################
- */
-
+/*todo:#####################################
+  todo:  defaultLayoutFor__Admin (AppInst)
+  todo:#######################################*/
 export const defaultLayoutForAdmin = [
 
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
@@ -214,13 +211,13 @@ export const defaultHwMapperListForAdmin  = [
     },
     {
         id: '5',
-        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        hwType: GRID_ITEM_TYPE.BUBBLE,
+        graphType: GRID_ITEM_TYPE.BUBBLE,
     },
     {
         id: '6',
-        hwType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
-        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+        hwType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
+        graphType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
     },
 ];
 
