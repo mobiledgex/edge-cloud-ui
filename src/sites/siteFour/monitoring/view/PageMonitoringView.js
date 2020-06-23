@@ -2700,7 +2700,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                             />
                         </div>
-                        <div style={{marginLeft: 10,}}>
+                        {/*todo:apply/reset button*/}
+                        {/*todo:apply/reset button*/}
+                        {/*todo:apply/reset button*/}
+                        <div style={{marginLeft: -30,}}>
                             <Button
                                 size={'small'}
                                 onClick={async () => {
@@ -2829,7 +2832,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Select
                                 ref={c => this.appInstSelect = c}
                                 dropdownStyle={{}}
-                                style={{display: 'inline-block', width: '250px', fontSize: 12}}
+                                style={{display: 'inline-block', width: '350px'}}
                                 disabled={this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
                                 placeholder={this.state.appInstSelectBoxPlaceholder}
@@ -2840,8 +2843,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                             >
                                 {this.state.allAppInstDropdown.map(item => {
+                                    let cluster = item.key.split(" | ")[2]
                                     return (
-                                        <Option value={item.value}>{item.text}</Option>
+                                        <Option value={item.value}>{item.text}({cluster})</Option>
                                     )
                                 })}
                             </Select>
