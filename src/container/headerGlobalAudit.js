@@ -187,14 +187,15 @@ class headerGlobalAudit extends React.Component {
     render() {
         let auditLogs = this.state.devData
         return (
-            auditLogs && auditLogs.length > 0 ?
                 <React.Fragment>
+
+            {auditLogs && auditLogs.length > 0 ?
                     <IconButton style={{ backgroundColor: 'transparent'}} color='inherit' onClick={this.handleOpen}>
                         <TimelineOutlinedIcon fontSize='default' />
                         {this.state.errorCount > 0 ? <div className='audit_bedge' >{this.state.errorCount}</div> : null}
-                    </IconButton>
+                    </IconButton> : null}
                     <Drawer anchor={'right'} open={this.state.isOpen}>
-                        <HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} />
+                        <HeaderAuditLog devData={this.state.devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} onRefresh={this.getDataAudit}/>
                     </Drawer>
                     <PopDetailViewer
                         rawViewData={this.state.rawViewData}
@@ -202,7 +203,7 @@ class headerGlobalAudit extends React.Component {
                         open={this.state.openDetail}
                         close={this.closeDetail}
                     />
-                </React.Fragment> : null
+                </React.Fragment>
         )
     }
 }

@@ -9,7 +9,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { IconButton } from '@material-ui/core';
-import { convertToTimezone } from '../../utils/date_util';
+import { convertToTimezone, currentTime } from '../../utils/date_util';
 
 const { width: screenWidth } = window.screen
 const formatMonth = (date: Moment): string => date.format('MMMM');
@@ -312,7 +312,7 @@ export default class Calendar extends PureComponent {
                 <View>
                     <div className='audit_calendar_month'>
                         {visibleMonthAndYear}
-                        <IconButton onClick={this.onClickCurrentButton}><UpdateOutlinedIcon/></IconButton>
+                        <IconButton style={{backgroundColor:'transparent'}} onClick={this.onClickCurrentButton}><p style={{backgroundColor:'#388E3B', borderRadius:5, fontSize:12, padding:3}}>{currentTime('D')}</p></IconButton>
                     </div>
                     <div>
                         <div className='audit_calendar_days'  style={{display:'flex', flexDirection:'row'}}>

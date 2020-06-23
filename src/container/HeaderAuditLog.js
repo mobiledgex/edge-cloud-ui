@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Box } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -11,6 +11,7 @@ import Calendar from '../components/horizontal_calendar/Calendar';
 import * as dateUtil from '../utils/date_util'
 import CheckIcon from '@material-ui/icons/Check';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const options = [
     { key: 'Individual', value: 'Individual', text: 'Individual' },
@@ -286,15 +287,21 @@ class HeaderAuditLog extends React.Component {
                 <div className='audit_title'>
                     <div className="audit_title_label">Audit Logs</div>
                     <div className='audit_filter'>
-                        <Dropdown
-                            placeholder='Individual'
-                            fluid
-                            search
-                            selection
-                            options={options}
-                            onChange={this.dropDownOnChange}
-                            style={{ width: 150 }}
-                        />
+                        <Box p={1}>
+                            <Dropdown
+                                button
+                                placeholder='Individual'
+                                fluid
+                                search
+                                selection
+                                options={options}
+                                onChange={this.dropDownOnChange}
+                                style={{ width: 150, height: 30 }}
+                            />
+                        </Box>
+                        <IconButton onClick={this.props.onRefresh}>
+                            <RefreshIcon />
+                        </IconButton>
                     </div>
                     <IconButton onClick={this.onClickClose}>
                         <CloseIcon />
