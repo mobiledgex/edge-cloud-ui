@@ -50,6 +50,7 @@ export const fields = {
     errors: 'errors',
     runtimeInfo: 'runtimeInfo',
     createdAt: 'createdAt',
+    seconds: 'seconds',
     updatedAt: 'updatedAt',
     revision: 'revision',
     ram: 'ram',
