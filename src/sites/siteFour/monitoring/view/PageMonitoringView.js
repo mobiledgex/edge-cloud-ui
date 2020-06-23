@@ -2800,7 +2800,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         appInstDropdown: appInstDropdown,
                         filteredAppInstEventLogs: filteredAppInstEventLogList,
                         currentTabIndex: 0,
-                        currentClassification: CLASSIFICATION.APPINST,
+                        currentClassification: CLASSIFICATION.APP_INST_FOR_ADMIN,
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
                         currentAppInstNameVersion: AppName + ' [' + Version + ']',
