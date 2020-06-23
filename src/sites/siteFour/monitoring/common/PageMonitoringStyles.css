@@ -642,6 +642,7 @@ tr td {
     width: 250px !important;
     border-color: #43c02a;
     border-style: groove;
+
 }
 
 .popup_admin_cloudlet .leaflet-popup-content-wrapper {
@@ -650,6 +651,16 @@ tr td {
     display: inline-block;
     border-color: orange !important;
     border-style: groove;
+    margin: 1px !important;
+    background-color: black;
+    opacity: 0.9;
+
+}
+
+.popup_text_admin_map {
+    font-size: 10pt;
+    font-weight: normal !important;
+    margin-top: 7px !important;
 }
 
 .react-ripples {

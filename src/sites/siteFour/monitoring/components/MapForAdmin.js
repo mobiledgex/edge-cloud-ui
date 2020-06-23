@@ -501,13 +501,15 @@ export default function MapForAdmin(props) {
                             return (
                                 <div
                                     className='popup_admin_cloudlet'
-                                    style={{display: 'flex', flexDirection: 'row'}}
+                                    style={{display: 'flex', flexDirection: 'row',}}
                                     onClick={() => {
                                         alert(item.AppName)
                                     }}
                                 >
-                                    {item.AppName}[{item.Version}]
-                                    <div style={{color: 'yellow'}}>
+                                    <div className={'popup_text_admin_map'}>
+                                        {item.AppName}[{item.Version}]
+                                    </div>
+                                    <div className={'popup_text_admin_map'} style={{color: 'yellow'}}>
                                         &nbsp;({item.ClusterInst})
                                     </div>
                                 </div>
