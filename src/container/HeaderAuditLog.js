@@ -104,14 +104,17 @@ class HeaderAuditLog extends React.Component {
     }
 
     handleDateChange = (selectDate, index) => {
-        let dayData = filterDataByDate(this.props.devData, dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf()))
-        if (this.state.dropDownValue === 'Group') {
-            this.dropDownOnChange(null, { value: "Group" }, dayData)
-        }
-        this.setState({
-            dayData: dayData,
-            expanded: (-1)
-        });
+        this.setState({dayData:[]})
+        setTimeout(() => {
+            let dayData = filterDataByDate(this.props.devData, dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf()))
+            if (this.state.dropDownValue === 'Group') {
+                this.dropDownOnChange(null, { value: "Group" }, dayData)
+            }
+            this.setState({
+                dayData: dayData,
+                expanded: (-1)
+            });
+        }, 1)
     };
 
     onSelectDate = (date, index) => {
