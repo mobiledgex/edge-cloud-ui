@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import * as L from 'leaflet';
-import {isEmpty, renderPlaceHolderLottiePinJump2} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderPlaceHolderLottieForMap} from "../service/PageMonitoringCommonService";
 import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
 import {changeClassficationTxt, listGroupByKey} from "../service/PageDevOperMonitoringService";
 import Control from "react-leaflet-control";
@@ -635,7 +635,7 @@ export default function MapForAdmin(props) {
                 {cloudletList.map((cloudletOne, index) => {
                     return renderCloudletMarkerOne(cloudletOne, index)
                 })}
-                {props.parent.state.mapLoading && renderPlaceHolderLottiePinJump2()}
+                {props.parent.state.mapLoading && renderPlaceHolderLottieForMap(true)}
             </Map>
 
         </div>

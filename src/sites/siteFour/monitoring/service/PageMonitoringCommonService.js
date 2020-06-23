@@ -168,27 +168,52 @@ export const removeDuplicates = (paramArrayList, key) => {
     return newArray;
 }
 
-export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
-    return (
-        <div className='page_monitoring_blank_box'
-             style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../../lotties/6698-location-pin22222'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                speed={2.9}
-                height={220}
-                width={220}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
+export const renderPlaceHolderLottieForMap = (isAdmin = false) => {
+    if (isAdmin) {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../../../../lotties/color_cloud.json'),
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    }}
+                    speed={4.3}
+                    height={70}
+                    width={70}
+                    isStopped={false}
+                    isPaused={false}
+                />
+            </div>
+        )
+    } else {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../../../../lotties/6698-location-pin22222'),
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    }}
+                    speed={2.9}
+                    height={220}
+                    width={220}
+                    isStopped={false}
+                    isPaused={false}
+                />
+            </div>
+        )
+    }
+
+
 }
 
 

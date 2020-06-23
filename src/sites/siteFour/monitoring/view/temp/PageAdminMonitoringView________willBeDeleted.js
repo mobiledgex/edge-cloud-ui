@@ -6,9 +6,9 @@ import {Button, Dropdown, Grid, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import * as actions from '../../../../actions';
+import * as actions from '../../../../../actions';
 import DatePicker from 'antd/es/date-picker';
-import * as reducer from "../../../../utils";
+import * as reducer from "../../../../../utils";
 import {
     cutArrayList,
     filterAppInstanceListByClassification,
@@ -32,7 +32,7 @@ import {
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
-} from "../service/PageAdmMonitoringService";
+} from "../../service/PageAdmMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
     CLASSIFICATION,
@@ -44,14 +44,14 @@ import {
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS,
     USER_TYPE
-} from "../../../../shared/Constants";
-import type {TypeAppInst, TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeUtilization} from "../../../../shared/Types";
+} from "../../../../../shared/Constants";
+import type {TypeAppInst, TypeGridInstanceList} from "../../../../../shared/Types";
+import {TypeUtilization} from "../../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../service/PageMonitoringCommonService";
-import '../common/PageMonitoringStyles.css'
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../../service/PageMonitoringCommonService";
+import '../../common/PageMonitoringStyles.css'
 import {fetchAppInstList, getAppInstLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
 
 const FA = require('react-fontawesome')

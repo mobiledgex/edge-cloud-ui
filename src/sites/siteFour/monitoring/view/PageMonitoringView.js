@@ -139,6 +139,7 @@ import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
+import Lottie from "react-lottie";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -1023,8 +1024,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 }
-                /*todo:CLUSTER*/
-                /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
+                    /*todo:CLUSTER*/
                 /*todo:CLUSTER*/
                 else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
@@ -2610,7 +2611,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 width: 150,
                             }}
                         >
-                            Cloudlet&nbsp;[Cluster]
+                            Cloudlet&nbsp;|&nbsp;Cluster
                         </div>
                         <div style={{width: '100%'}}>
                             <TreeSelect
@@ -2635,7 +2636,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 listHeight={520}
                                 //searchValue={this.state.searchClusterValue}
                                 searchPlaceholder={'Enter the cluster name.'}
-                                placeholder={'Select Cluster'}
+                                placeholder={'Select Cloudlet | Cluster'}
                                 treeData={this.state.appInstTreeDropdownList}
                                 treeDefaultExpandAll={true}
                                 value={this.state.currentClusterList}
