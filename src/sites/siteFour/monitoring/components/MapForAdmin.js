@@ -499,12 +499,17 @@ export default function MapForAdmin(props) {
                     <div style={{display: 'flex', flexDirection: 'column'}}>
                         {cloudletOne.appInstList.map(item => {
                             return (
-                                <div className='popup_oper_cloudlet'
-                                     onClick={() => {
-                                         alert(item.AppName)
-                                     }}
+                                <div
+                                    className='popup_admin_cloudlet'
+                                    style={{display: 'flex', flexDirection: 'row'}}
+                                    onClick={() => {
+                                        alert(item.AppName)
+                                    }}
                                 >
-                                    {item.AppName}
+                                    {item.AppName}&nbsp;[{item.Version}]
+                                    <div style={{color: 'yellow'}}>
+                                        &nbsp;({item.ClusterInst})
+                                    </div>
                                 </div>
                             )
                         })}

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
 import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
-import {makeBubbleChartDataForCluster, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {makeBubbleChartDataForCluster, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -62,13 +62,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
         let pBubbleChartData = this.state.bubbleChartData;
         let themeTitle = this.props.themeTitle;
 
-        if (pBubbleChartData.length === 0 && this.props.parent.state.loading === false) {
-            return (
-                <div style={PageMonitoringStyles.noData}>
-                    &nbsp;
-                </div>
-            )
-        } else {
+        try {
             let allClusterUsageList = this.props.parent.state.allClusterUsageList;
 
             let boxWidth = (window.innerWidth - 300) / 3 - 20
@@ -224,6 +218,9 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
                 </>
             )
+        } catch (e) {
+            //throw new Error(e)
+            showToast(e.toString())
         }
     };
 };

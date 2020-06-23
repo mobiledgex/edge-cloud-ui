@@ -143,7 +143,14 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitorin
 
 }
 
-export const fetchAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
+
+/**
+ *
+ * @param pRegionList
+ * @param type
+ * @returns {Promise<[]>}
+ */
+export const fetchAppInstList = async (pRegionList: string[] = localStorage.getItem('regions').split(","), _this: PageMonitoringView) => {
     try {
         let promiseList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -166,15 +173,23 @@ export const fetchAppInstList = async (pRegionList = localStorage.getItem('regio
             mergedAppInstanceList = mergedList;
         })
 
-        let filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {
-            return item.AppName !== MEX_PROMETHEUS_APPNAME
-        })
+        let filteredAppInstList = []
+        if (_this.state.userType.includes(USER_TYPE.AMDIN)) {
+            filteredAppInstList = mergedAppInstanceList;
+        } else {//todo: DEV, OPER
+            filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {
+                return item.AppName !== MEX_PROMETHEUS_APPNAME
+            })
+        }
+
 
         let resultWithColorCode = []
         filteredAppInstList.map((item, index) => {
             item.colorCodeIndex = index;
             resultWithColorCode.push(item)
         })
+
+        console.log('resultWithColorCode===>', resultWithColorCode)
 
 
         return resultWithColorCode;

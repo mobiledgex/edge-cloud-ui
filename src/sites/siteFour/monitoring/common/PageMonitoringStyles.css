@@ -646,8 +646,9 @@ tr td {
 
 .popup_admin_cloudlet .leaflet-popup-content-wrapper {
     border-radius: 0px;
-    width: 250px !important;
-    border-color: cornflowerblue !important;
+    /*width: auto !important;*/
+    display: inline-block;
+    border-color: darkolivegreen !important;
     border-style: groove;
 }
 

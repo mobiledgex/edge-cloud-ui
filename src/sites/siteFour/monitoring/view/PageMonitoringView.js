@@ -625,7 +625,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //TODO:###################################################################################################################
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
                         promiseList.push(fetchClusterList())
-                        promiseList.push(fetchAppInstList())
+                        promiseList.push(fetchAppInstList(undefined, this))
                         let newPromiseList = await Promise.all(promiseList);
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
@@ -637,7 +637,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //todo:DEVELOPER
                         //TODO:###############################################
                         promiseList.push(fetchClusterList())
-                        promiseList.push(fetchAppInstList())
+                        promiseList.push(fetchAppInstList(undefined, this))
                         let newPromiseList = await Promise.all(promiseList);
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
@@ -649,7 +649,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletList = await fetchCloudletList();
                         let allCloudletEventLogList = []
                         allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
-                        appInstList = await fetchAppInstList()
+                        appInstList = await fetchAppInstList(undefined, this)
                         clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
                             loadingForClientStatus: false,
@@ -822,8 +822,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async resetLocalData() {
-
-                alert('sdlkfsldkflksdlfksldkflk!!!!')
                 let markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
                 await this.setState({
                     currentGridIndex: -1,
@@ -837,14 +835,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
                     appInstanceListGroupByCloudlet: markerListForMap,
                 })
-                //desc: reset bubble chart data
-                /*let bubbleChartData = []
+                //@fixme: reset bubble chart data
+                let bubbleChartData = []
                 if (!this.state.userType.includes(USER_TYPE.AMDIN)) {
                     bubbleChartData = await makeBubbleChartDataForCluster(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                     await this.setState({
                         bubbleChartData: bubbleChartData,
                     })
-                }*/
+                }
                 await this.setState({
                     dropdownRequestLoading: false,
                     currentClusterList: undefined,
@@ -858,8 +856,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     selectedClientLocationListOnAppInst: [],
                     filteredClientStatusList: this.state.allClientStatusList,
                 })
-
             }
+
 
             async reloadDataFromRemote() {
                 clearInterval(this.intervalForAppInst)
@@ -2214,6 +2212,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
                 try {
+
+
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
                     //@desc: ################################
@@ -2290,7 +2290,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         clearInterval(this.intervalForAppInst)
                     }
                 } catch (e) {
-                    throw new Error(e)
+                    //throw new Error(e)
+                    showToast(e.toString())
                 }
 
 
@@ -2583,8 +2584,49 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            async handleClusterDropDownChangeForAdmin() {
+                this.applyButton.blur();
+                if (this.state.currentClusterList !== undefined) {
+                    let selectClusterCloudletList = this.state.currentClusterList
+                    let filteredAppInstUsageList = []
+                    this.state.allAppInstUsageList.map(item => {
+                        selectClusterCloudletList.map(innerItem => {
+                            let cluster = innerItem.toString().split(" | ")[0]
+                            let cloudlet = innerItem.toString().split(" | ")[1]
+                            if (item.Cloudlet === cloudlet && item.ClusterInst === cluster) {
+                                filteredAppInstUsageList.push(item)
+                            }
+                        })
+                    })
 
-            renderAdminAppInstTreeDropdown() {
+                    let filteredAppInstList = []
+                    this.state.appInstList.map(item => {
+                        selectClusterCloudletList.map(innerItem => {
+                            let cluster = innerItem.toString().split(" | ")[0]
+                            let cloudlet = innerItem.toString().split(" | ")[1]
+                            if (item.Cloudlet === cloudlet && item.ClusterInst === cluster) {
+                                filteredAppInstList.push(item)
+                            }
+                        })
+                    })
+                    let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
+
+                    console.log('appInstDropdown===>', appInstDropdown);
+
+                    await this.setState({
+                        filteredAppInstUsageList: filteredAppInstUsageList,
+                        filteredAppInstList: filteredAppInstList,
+                        allAppInstDropdown: appInstDropdown,
+
+                    })
+
+                } else {
+                    this.resetLocalDataForAdmin();
+                }
+            }
+
+
+            renderAdminCloudletClusterTreeDropdown() {
                 let treeSelectWidth = 500;
                 let maxTagCount = 3;
                 if (this.props.size.width >= 1600) {
@@ -2642,17 +2684,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
 
-                                    console.log('value====>', value);
-
-                                    this.setState({currentClusterList: value});
-
-                                    /* if (!isEmpty(value)) {
-
-                                     } else {
-
-                                         alert('empoty!!!')
-                                         //this.resetLocalData()
-                                     }*/
+                                    if (!isEmpty(value)) {
+                                        this.setState({currentClusterList: value});
+                                    } else {
+                                        await this.resetLocalDataForAdmin();
+                                    }
                                 }}
                             />
                         </div>
@@ -2660,51 +2696,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Button
                                 size={'small'}
                                 onClick={async () => {
-                                    this.applyButton.blur();
-                                    if (this.state.currentClusterList !== undefined) {
-                                        let selectClusterCloudletList = this.state.currentClusterList
-                                        //todo: Cluster | cloudlet
-                                        console.log('selectClusterCloudletList====>', selectClusterCloudletList);
-
-                                        console.log('allAppInstUsageList====>', this.state.allAppInstUsageList)
-
-                                        let filteredAppInstUsageList = []
-                                        this.state.allAppInstUsageList.map(item => {
-                                            selectClusterCloudletList.map(innerItem => {
-                                                let cluster = innerItem.toString().split(" | ")[0]
-                                                let cloudlet = innerItem.toString().split(" | ")[1]
-                                                if (item.Cloudlet === cloudlet && item.ClusterInst === cluster) {
-                                                    filteredAppInstUsageList.push(item)
-                                                }
-                                            })
-                                        })
-
-
-                                        let filteredAppInstList = []
-                                        this.state.appInstList.map(item => {
-                                            selectClusterCloudletList.map(innerItem => {
-                                                let cluster = innerItem.toString().split(" | ")[0]
-                                                let cloudlet = innerItem.toString().split(" | ")[1]
-                                                if (item.Cloudlet === cloudlet && item.ClusterInst === cluster) {
-                                                    filteredAppInstList.push(item)
-                                                }
-                                            })
-                                        })
-
-
-                                        console.log('filteredAppInstList====>', filteredAppInstUsageList);
-
-                                        this.setState({
-                                            filteredAppInstUsageList: filteredAppInstUsageList,
-                                            filteredAppInstList: filteredAppInstList,
-                                        })
-
-
-                                    } else {
-                                        //this.resetLocalData()
-                                    }
-
-
+                                    this.handleClusterDropDownChangeForAdmin()
                                 }}
                                 ref={c => this.applyButton = c}
                             >
@@ -2717,7 +2709,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 size={'small'}
                                 onClick={() => {
                                     this.resetBtn2.blur();
-                                    //this.resetLocalData();
+                                    this.resetLocalDataForAdmin();
                                 }}
                             >
                                 Reset
@@ -2746,6 +2738,94 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 onChange={async (value) => {
                                     this.appInstSelect.blur();
                                     await this.handleOnChangeAppInstDropdown(value.trim())
+
+                                }}
+                            >
+                                {this.state.allAppInstDropdown.map(item => {
+                                    return (
+                                        <Option value={item.value}>{item.text}</Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                    </div>
+                )
+            }
+
+
+            handleAppInstDropDownChangeForAdmin = async (fullCurrentAppInst) => {
+                try {
+
+                    console.log('fullCurrentAppInst===>', fullCurrentAppInst);
+
+                   /* await this.setState({
+                        currentAppInst: fullCurrentAppInst,
+                        loading: true,
+                    })
+
+                    let AppName = fullCurrentAppInst.split('|')[0].trim()
+                    let Cloudlet = fullCurrentAppInst.split('|')[1].trim()
+                    let ClusterInst = fullCurrentAppInst.split('|')[2].trim()
+                    let Version = fullCurrentAppInst.split('|')[3].trim()
+                    let filteredAppList = filterByClassification(this.state.appInstList, Cloudlet, 'Cloudlet');
+                    filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+                    filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
+                    filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
+
+                    let appInstDropdown = makeDropdownForAppInst(filteredAppList)
+                    await this.setState({
+                        appInstDropdown,
+                    });
+
+                    //desc: ############################
+                    //desc: filtered AppInstEventLogList
+                    //desc: ############################
+                    let _allAppInstEventLog = this.state.allAppInstEventLogs;
+                    let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
+                        if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
+                            return true;
+                        }
+                    })
+                    await this.setState({
+                        filteredAppInstEventLogs: filteredAppInstEventLogList,
+                        currentTabIndex: 0,
+                        currentClassification: CLASSIFICATION.APPINST,
+                        allAppInstUsageList: appInstUsageList,
+                        filteredAppInstUsageList: appInstUsageList,
+                        loading: false,
+                        currentAppInstNameVersion: AppName + ' [' + Version + ']',
+                        currentAppInst: fullCurrentAppInst,
+                        currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
+                        clusterSelectBoxPlaceholder: 'Select Cluster',
+                    });*/
+
+                } catch (e) {
+                    //throw new Error(e)
+                    showToast(e.toString())
+                }
+
+
+            }
+
+
+            renderAppInstDropdownForAdmin() {
+
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label" style={{width: 50}}>
+                            App Inst
+                        </div>
+                        <div>
+                            <Select
+                                ref={c => this.appInstSelect = c}
+                                dropdownStyle={{}}
+                                style={{display: 'inline-block', width: '250px', fontSize: 12}}
+                                //disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
+                                value={this.state.currentAppInstNameVersion}
+                                placeholder={this.state.appInstSelectBoxPlaceholder}
+                                onChange={async (value) => {
+                                    this.appInstSelect.blur();
+                                    await this.handleAppInstDropDownChangeForAdmin(value.trim())
 
                                 }}
                             >
@@ -2968,9 +3048,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderAppLegendForAdmin(pLegendItemCount) {
+            renderAppLegendForAdmin() {
 
-                console.log('renderAppLegendF123orAdmin====>', pLegendItemCount);
+                console.log('legendItemCount====>', this.state.legendItemCount);
 
                 return (
                     <Row gutter={16}
@@ -2988,7 +3068,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     className="gutterRow"
                                     onClick={async () => {
                                     }}
-                                    span={pLegendItemCount === 1 ? 24 : 4}
+                                    span={this.state.legendItemCount === 1 ? 24 : 4}
                                     style={{marginTop: 3, marginBottom: 3,}}
                                 >
                                     <div style={{
@@ -3047,6 +3127,31 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            async resetLocalDataForAdmin() {
+                await this.setState({
+                    currentGridIndex: -1,
+                    currentTabIndex: 0,
+                    intervalLoading: false,
+                    currentClassification: CLASSIFICATION.APP_INST_FOR_ADMIN,
+                    currentClusterList: undefined,
+                    filteredAppInstList: this.state.appInstList,
+                    filteredAppInstUsageList: this.state.allAppInstUsageList,
+                    filteredAppInstEventLogs: this.state.allAppInstEventLogs,
+                    dropdownRequestLoading: false,
+                    currentAppInst: undefined,
+                    isShowAppInstPopup: !this.state.isShowAppInstPopup,
+                    isEnableZoomIn: !this.state.isEnableZoomIn,
+                    legendItemCount: this.state.allAppInstanceList.length,
+                    appInstSelectBoxPlaceholder: 'Select App Inst',
+                    currentAppInstNameVersion: undefined,
+                    selectedClientLocationListOnAppInst: [],
+                    filteredClientStatusList: this.state.allClientStatusList,
+
+                },()=>{
+                    console.log('filteredAppInstUsageList===>', this.state.allAppInstUsageList);
+                })
+            }
+
 
             makeLegend() {
                 try {
@@ -3084,7 +3189,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderClusterLegend()
                                     : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderCloudletLegend(this.state.legendItemCount)
                                         : this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderAppLegend(this.state.legendItemCount)
-                                            : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegendForAdmin(this.state.legendItemCount) : null
+                                            : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegendForAdmin() : null
                                 }
                             </LegendOuterDiv>
                         )
@@ -3129,10 +3234,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {this.state.userType.includes(USER_TYPE.AMDIN) ?
                                 <React.Fragment>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderAdminAppInstTreeDropdown()}
+                                        {this.renderAdminCloudletClusterTreeDropdown()}
                                     </div>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderAppInstDropdown()}
+                                        {this.renderAppInstDropdownForAdmin()}
                                     </div>
                                 </React.Fragment>
                                 :
@@ -3182,6 +3287,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
+
+            //@fixme:renderNoItemMsg
+            //@fixme:renderNoItemMsg
+            //@fixme:renderNoItemMsg
             renderNoItemMsg() {
                 if (!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLOUDLET && this.state.layoutCloudlet.length === 0 ||
                     !this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutCluster.length === 0 ||
