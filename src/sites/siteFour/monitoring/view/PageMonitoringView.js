@@ -376,9 +376,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let adminLayoutMapper = getUserId() + ADMIN_HW_MAPPER_KEY
 
 
-                //@fixme: DELETE THEME COLOR
-                reactLocalStorage.remove(adminLayout)
-                reactLocalStorage.remove(adminLayoutMapper)
+                //@fixme: DELETE GRID LAYOUT
+                /*reactLocalStorage.remove(adminLayout)
+                reactLocalStorage.remove(adminLayoutMapper)*/
 
                 this.state = {
                     //todo: admin layout(appInst)
@@ -2593,7 +2593,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            _________________________________________________________________________ADMIN______________START_________(){}
+            _________________________________________________________________________ADMIN______________START_________() {
+            }
+
             async handleClusterDropDownChange_______Admin() {
 
                 console.log('currentClusterList===>', this.state.currentClusterList);
@@ -2633,7 +2635,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
 
                 } else {
-                    await this.resetLocalDataForAdmin();
+                    await this.resetLocalDataFor______Admin();
                 }
             }
 
@@ -2700,7 +2702,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         this.setState({currentClusterList: value}, () => {
                                         });
                                     } else {
-                                        await this.resetLocalDataForAdmin();
+                                        await this.resetLocalDataFor______Admin();
                                     }
                                 }}
                             />
@@ -2725,7 +2727,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 size={'small'}
                                 onClick={() => {
                                     this.resetBtn2.blur();
-                                    this.resetLocalDataForAdmin();
+                                    this.resetLocalDataFor______Admin();
                                 }}
                             >
                                 Reset
@@ -2738,10 +2740,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleAppInstDropDownChange___Admin = async (pSelectedAppInst: TypeAppInst) => {
                 try {
+
+                    console.log('pSelectedAppInst===>', pSelectedAppInst);
+
                     let _filteredAppInstList = []
                     let currentClusterList = []
                     _filteredAppInstList.push(pSelectedAppInst)
-
                     await this.setState({
                         currentAppInst: pSelectedAppInst,
                         loading: true,
@@ -2789,7 +2793,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentAppInstNameVersion: AppName + ' [' + Version + ']',
                         clusterSelectBoxPlaceholder: 'Select Cluster',
                         filteredAppInstList: _filteredAppInstList,
-                        currentAppInst: pSelectedAppInst,
                         currentClusterList: currentClusterList,
                     }, () => {
                         console.log('currentClusterList===>', currentClusterList);
@@ -2819,9 +2822,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 disabled={this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
                                 placeholder={this.state.appInstSelectBoxPlaceholder}
-                                onChange={async (value) => {
+                                onChange={async (value, option) => {
                                     this.appInstSelect.blur();
-                                    await this.handleAppInstDropDownChange___Admin(value.trim())
+
+                                    console.log('option===>', JSON.parse(value.split(" | ")[8]));
+
+                                    let appInstMap= JSON.parse(value.split(" | ")[8])
+
+                                    await this.handleAppInstDropDownChange___Admin(appInstMap)
 
                                 }}
                             >
@@ -2870,7 +2878,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         onClick={async () => {
 
                                             if (this.state.filteredAppInstList.length === 1) {
-                                                await this.resetLocalDataForAdmin();
+                                                await this.resetLocalDataFor______Admin();
                                             } else {
                                                 await this.handleAppInstDropDownChange___Admin(item)
                                             }
@@ -2889,8 +2897,35 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            async resetLocalDataFor______Admin() {
+                await this.setState({
+                    currentGridIndex: -1,
+                    currentTabIndex: 0,
+                    intervalLoading: false,
+                    currentClassification: CLASSIFICATION.APP_INST_FOR_ADMIN,
+                    currentClusterList: undefined,
+                    filteredAppInstList: this.state.appInstList,
+                    filteredAppInstUsageList: this.state.allAppInstUsageList,
+                    filteredAppInstEventLogs: this.state.allAppInstEventLogs,
+                    dropdownRequestLoading: false,
+                    currentAppInst: undefined,
+                    isShowAppInstPopup: !this.state.isShowAppInstPopup,
+                    isEnableZoomIn: !this.state.isEnableZoomIn,
+                    legendItemCount: this.state.allAppInstanceList.length,
+                    appInstSelectBoxPlaceholder: 'Select App Inst',
+                    currentAppInstNameVersion: undefined,
+                    selectedClientLocationListOnAppInst: [],
+                    filteredClientStatusList: this.state.allClientStatusList,
 
-            ________________________________________________________________________ADMIN______________END_________(){}
+                }, () => {
+                    console.log('filteredAppInstUsageList===>', this.state.allAppInstUsageList);
+                })
+            }
+
+
+
+            ________________________________________________________________________ADMIN______________END_________() {
+            }
 
             renderAppInstDropdown() {
 
@@ -3180,30 +3215,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            async resetLocalDataForAdmin() {
-                await this.setState({
-                    currentGridIndex: -1,
-                    currentTabIndex: 0,
-                    intervalLoading: false,
-                    currentClassification: CLASSIFICATION.APP_INST_FOR_ADMIN,
-                    currentClusterList: undefined,
-                    filteredAppInstList: this.state.appInstList,
-                    filteredAppInstUsageList: this.state.allAppInstUsageList,
-                    filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                    dropdownRequestLoading: false,
-                    currentAppInst: undefined,
-                    isShowAppInstPopup: !this.state.isShowAppInstPopup,
-                    isEnableZoomIn: !this.state.isEnableZoomIn,
-                    legendItemCount: this.state.allAppInstanceList.length,
-                    appInstSelectBoxPlaceholder: 'Select App Inst',
-                    currentAppInstNameVersion: undefined,
-                    selectedClientLocationListOnAppInst: [],
-                    filteredClientStatusList: this.state.allClientStatusList,
-
-                }, () => {
-                    console.log('filteredAppInstUsageList===>', this.state.allAppInstUsageList);
-                })
-            }
 
 
             makeLegend() {

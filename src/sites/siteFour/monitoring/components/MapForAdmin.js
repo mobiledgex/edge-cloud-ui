@@ -550,7 +550,7 @@ export default function MapForAdmin(props) {
                         style={mapIconStyle}
                         onClick={async () => {
                             setCurrentCloudlet(undefined)
-                            props.parent.handleOnChangeCloudletDropdown(undefined).then(() => {
+                            props.parent.resetLocalDataFor______Admin(undefined).then(() => {
                                 props.parent.setState({
                                     toggleZoom: !props.parent.state.toggleZoom
                                 });

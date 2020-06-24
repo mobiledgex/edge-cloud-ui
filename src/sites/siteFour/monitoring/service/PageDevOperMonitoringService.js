@@ -1401,7 +1401,7 @@ export const makeDropdownForAppInst = (appInstList) => {
             let specifiedAppInstOne = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(CloudletLocation);
             appInstDropdownList.push({
                 key: specifiedAppInstOne,
-                value: specifiedAppInstOne,
+                value: specifiedAppInstOne + " | " + JSON.stringify(item),
                 text: AppName.trim() + " [" + Version.toString().trim() + "]",
             })
         })
