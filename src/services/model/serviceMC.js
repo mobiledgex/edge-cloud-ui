@@ -111,7 +111,9 @@ function responseStatus(self, status)
     {
         case 504:
             valid = false
-            self.props.handleAlertInfo('error', '504 Gateway Timeout')
+            if (self.props.handleAlertInfo) {
+                self.props.handleAlertInfo('error', '504 Gateway Timeout')
+            }
             break;
     }
     return valid
