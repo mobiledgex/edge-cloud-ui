@@ -2,7 +2,7 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST } from './endPointTypes'
+import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 
 const fields = formatter.fields;
 
@@ -62,16 +62,9 @@ export const multiDataRequest = (keys, mcRequestList) => {
         let mcRequest = mcRequestList[i];
         let request = mcRequest.request;
         if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
-            for (let i = 0; i < keys.length > 0; i++) {
-                let key = keys[i];
-                if (key.field === fields.cloudletStatus) {
-                    key.visible = request.method === SHOW_ORG_CLOUDLET ? false : true;
-                    break;
-                }
-            }
             cloudletList = mcRequest.response.data
         }
-        else if (request.method === SHOW_CLOUDLET_INFO) {
+        else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
             cloudletInfoList = mcRequest.response.data
         }
     }
@@ -87,7 +80,6 @@ export const multiDataRequest = (keys, mcRequestList) => {
             }
         }
     }
-
     return cloudletList;
 }
 
@@ -160,7 +152,7 @@ export const keys = () => ([
     { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
     { field: fields.openRCData, serverField: 'accessvars#OS#OPENRC_DATA', label: 'Open RC Data' },
     { field: fields.caCertdata, serverField: 'accessvars#OS#CACERT_DATA', label: 'CA Cert Data' },
-    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: formatter.isAdmin() },
+    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
@@ -172,7 +164,7 @@ export const keys = () => ([
 ])
 
 const customData = (value) => {
-    value[fields.cloudletStatus] = formatter.isAdmin() ? 4 : undefined
+    value[fields.cloudletStatus] = 4
     value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
     value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])

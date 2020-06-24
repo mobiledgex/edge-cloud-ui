@@ -3,13 +3,13 @@ import {
     ScrollView,
     View,
 } from 'react-native-web';
-import moment from 'moment';
 import type Moment from 'moment';
 import Dates from './Dates';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import UpdateOutlinedIcon from '@material-ui/icons/UpdateOutlined';
 import { IconButton } from '@material-ui/core';
+import { convertToTimezone, currentTime } from '../../utils/date_util';
 
 const { width: screenWidth } = window.screen
 const formatMonth = (date: Moment): string => date.format('MMMM');
@@ -84,7 +84,7 @@ export default class Calendar extends PureComponent {
         } = this.props;
 
         // Go `showDaysBeforeCurrent` ago before today or custom `currentDate`
-        const startDay = moment(currentDate || undefined)
+        const startDay = convertToTimezone(currentDate || undefined)
             .subtract(showDaysBeforeCurrent + 1, 'days');
         // Number of days in total
         const totalDaysCount = showDaysBeforeCurrent + showDaysAfterCurrent + 1;
@@ -312,7 +312,7 @@ export default class Calendar extends PureComponent {
                 <View>
                     <div className='audit_calendar_month'>
                         {visibleMonthAndYear}
-                        <IconButton onClick={this.onClickCurrentButton}><UpdateOutlinedIcon/></IconButton>
+                        <IconButton style={{backgroundColor:'transparent'}} onClick={this.onClickCurrentButton}><p style={{backgroundColor:'#388E3B', borderRadius:5, fontSize:12, padding:3}}>{currentTime('D')}</p></IconButton>
                     </div>
                     <div>
                         <div className='audit_calendar_days'  style={{display:'flex', flexDirection:'row'}}>

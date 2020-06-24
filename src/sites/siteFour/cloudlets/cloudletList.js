@@ -4,8 +4,8 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields, getUserRole, isAdmin } from '../../../services/model/format';
-import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest,  getCloudletManifest } from '../../../services/model/cloudlet';
+import { fields, getUserRole } from '../../../services/model/format';
+import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
 import * as constant from '../../../constant'
@@ -128,7 +128,7 @@ class CloudletList extends React.Component {
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
-            if (key.field === fields.cloudletStatus && isAdmin()) {
+            if (key.field === fields.cloudletStatus) {
                 key.customizedData = this.getCloudletInfoState
             }
             else if (key.field === fields.state) {
@@ -148,7 +148,7 @@ class CloudletList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={isAdmin() ? multiDataRequest : undefined} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
         )
     }
 };

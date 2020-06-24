@@ -3,6 +3,7 @@ import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/cor
 import * as constant from '../../constant'
 import {getUserRole} from '../../services/model/format';
 import {syntaxHighLighter} from '../../hoc/highLighter/highLighter'
+import {time} from '../../utils/date_util'
 
 const checkRole = (form) => {
     let roles = form.roles
@@ -34,14 +35,26 @@ const getURL = (data) => {
     )
 }
 
+const getDate = (data, item) => {
+    let date = item.date
+    if (date.dataFormat === 'seconds') {
+        data = data * 1000
+    }
+    return (
+        time(date.format, data)
+    )
+}
+
 const getData = (data, item) => (
     item.dataType === constant.TYPE_URL ?
         getURL(data) :
-        item.dataType === constant.TYPE_JSON ?
-            getHighLighter('json', JSON.stringify(data, null, 1)) :
-            item.dataType === constant.TYPE_YAML ?
-                getHighLighter('yaml', data.toString()) :
-                <p style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</p>
+        item.dataType === constant.TYPE_DATE ?
+            getDate(data, item) :
+            item.dataType === constant.TYPE_JSON ?
+                getHighLighter('json', JSON.stringify(data, null, 1)) :
+                item.dataType === constant.TYPE_YAML ?
+                    getHighLighter('yaml', data.toString()) :
+                    <p style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</p>
 )
 
 

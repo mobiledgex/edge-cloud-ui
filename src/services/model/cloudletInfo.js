@@ -1,5 +1,5 @@
 
-import { SHOW_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 import * as formatter from './format'
 
 let fields = formatter.fields;
@@ -19,13 +19,14 @@ const keys = [
 ]
 
 export const showCloudletInfos = (data) => {
-    let method = undefined;
+    let method = SHOW_ORG_CLOUDLET_INFO;
     if (formatter.isAdmin()) {
         method = SHOW_CLOUDLET_INFO;
     }
-    if (method) {
-        return { method: method, data: data }
+    else {
+        data.org = formatter.getOrganization()
     }
+    return { method: method, data: data }
 }
 
 export const getKey = (data) => {

@@ -19,7 +19,7 @@ import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { appTutor } from "../../../tutorial";
-import { uploadData } from '../../../utils/fileUtil'
+import { uploadData } from '../../../utils/file_util'
 
 
 const appSteps = appTutor();

@@ -73,7 +73,6 @@ class ClustersMap extends Component {
         this.handleReset = this.handleReset.bind(this)
         this.handleLeave = this.handleLeave.bind(this)
         this.dir = 1;
-        this.interval = null;
         this.tempData = null;
         this.tempLocation = null;
     }
@@ -298,11 +297,6 @@ class ClustersMap extends Component {
             return { cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false, clickCities: clickMarker };
         }
         return null;
-    }
-
-
-    componentWillUnmount() {
-        clearInterval(this.interval)
     }
 
     render() {
