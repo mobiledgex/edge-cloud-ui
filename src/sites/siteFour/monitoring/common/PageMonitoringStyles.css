@@ -662,6 +662,7 @@ tr td {
     font-weight: normal !important;
     margin-top: 3px !important;
     margin-bottom: 3px !important;
+    cursor: pointer;
 }
 
 .popup_text_admin_map2 {

@@ -2870,7 +2870,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         onClick={async () => {
 
                                             if (this.state.filteredAppInstList.length === 1) {
-                                                this.resetLocalDataForAdmin();
+                                                await this.resetLocalDataForAdmin();
                                             } else {
                                                 await this.handleAppInstDropDownChange___Admin(item)
                                             }
