@@ -2619,7 +2619,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
                     let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
 
-                    console.log('appInstDropdown===>', appInstDropdown);
+                    console.log('handleClusterDropDownChangeForAdmin===>', appInstDropdown);
 
                     await this.setState({
                         filteredAppInstUsageList: filteredAppInstUsageList,
@@ -2764,27 +2764,43 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleAppInstDropDownChange___Admin = async (paramSelectedAppInst: TypeAppInst) => {
+            handleAppInstDropDownChange___Admin = async (pSelectedAppInst: TypeAppInst) => {
                 try {
                     let __filteredAppInstList = []
-                    __filteredAppInstList.push(paramSelectedAppInst)
-                    console.log('fullCurrentAppInst===>', paramSelectedAppInst);
+                    let currentClusterList = []
+                    __filteredAppInstList.push(pSelectedAppInst)
+                    console.log('fullCurrentAppInst===>', pSelectedAppInst);
+
+
+                    //key: "MEXPrometheusAppName | automationFrankfurtCloudlet | angshukubetest | 1.0 | EU | undefined | TDG | {"lat":50.110922,"long":8.682127}"
+
+
                     await this.setState({
-                        currentAppInst: paramSelectedAppInst,
+                        currentAppInst: pSelectedAppInst,
                         loading: true,
                     })
 
-                    let AppName = paramSelectedAppInst.AppName
-                    let Cloudlet = paramSelectedAppInst.Cloudlet
-                    let ClusterInst = paramSelectedAppInst.ClusterInst
-                    let Version = paramSelectedAppInst.Version
+                    let AppName = pSelectedAppInst.AppName
+                    let Cloudlet = pSelectedAppInst.Cloudlet
+                    let ClusterInst = pSelectedAppInst.ClusterInst
+                    let Version = pSelectedAppInst.Version
+                    let Region = pSelectedAppInst.Region
+                    let tempElement = ''
+                    let Operator = pSelectedAppInst.Operator
+                    let CloudletLocation = pSelectedAppInst.CloudletLocation
+
+
+                    let tempCluster = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + tempElement + " | " + CloudletLocation
+
                     let filteredAppList = filterByClassification(this.state.appInstList, Cloudlet, 'Cloudlet');
                     filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
                     filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
                     filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
+
+
                     let arrDateTime = getOneYearStartEndDatetime();
                     let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
-                    paramSelectedAppInst = AppName + " | " + Cloudlet + " | " + ClusterInst + ' | ' + Version
+                    pSelectedAppInst = AppName + " | " + Cloudlet + " | " + ClusterInst + ' | ' + Version
 
                     let appInstDropdown = makeDropdownForAppInst(filteredAppList)
                     //desc: ############################
@@ -2804,7 +2820,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
                         currentAppInstNameVersion: AppName + ' [' + Version + ']',
-                        currentAppInst: paramSelectedAppInst,
+                        currentAppInst: pSelectedAppInst,
                         currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
                         filteredAppInstList: __filteredAppInstList,

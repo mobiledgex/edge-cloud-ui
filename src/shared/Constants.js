@@ -176,6 +176,8 @@ export const CLASSIFICATION = {
     APP_INST_FOR_ADMIN: 'appInstForAdmin',
 }
 
+export const SEPARATOR = " | ";
+
 export const gridItemOneHeight = 22.3;
 
 export const MEX_PROMETHEUS_APPNAME = 'MEXPrometheusAppName'
