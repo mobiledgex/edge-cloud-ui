@@ -1198,7 +1198,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                     }
-                    console.log('Rahu1234', chartDataSets)
                     return (
                         <LineChartContainer
                             isResizeComplete={this.state.isResizeComplete}

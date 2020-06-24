@@ -19,6 +19,7 @@ import Progress from "antd/es/progress";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {renderUsageLabelByType} from "./PageDevOperMonitoringService";
+import * as dateUtil from  '../../../../utils/date_util'
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -671,12 +672,8 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                     } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
                         usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
                     }
-
                     usageList.push(usageOne);
-                    let dateOne = seriesValues[j]["0"];
-                    dateOne = dateOne.toString().split("T")
-
-                    dateTimeList.push(dateOne[1]);
+                    dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, seriesValues[j]["0"]));
                 }
 
                 instanceNameList.push(instanceAppName)
@@ -971,10 +968,7 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
                 usageOne = seriesValues[j]["13"]; //sendBytes -> index13
             }
             usageList.push(usageOne);
-            let dateOne = seriesValues[j]["0"];
-            dateOne = dateOne.toString().split("T")
-
-            dateTimeList.push(dateOne[1]);
+            dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, seriesValues[j]["0"]));
         }
 
         instanceNameList.push(instanceAppName)
