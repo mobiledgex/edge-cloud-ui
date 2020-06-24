@@ -476,7 +476,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                     {this.renderColumnChartRadio()}
                                     {this.renderTableRadio()}
                                     {this.renderMapRadio()}
-                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
+                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
+                                    || this.props.parent.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN
+                                    || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
                                 </div>
                             </Radio.Group>
                         </div>

@@ -1024,11 +1024,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
-                }
-                    /*todo:CLUSTER*/
-                    /*todo:CLUSTER*/
-                /*todo:CLUSTER*/
-                else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     let currentItems = this.state.layoutCluster;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
@@ -1059,6 +1055,36 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutCluster)
                     reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperCluster)
 
+                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    //@desc: ##########################
+                    //@desc: APPINST
+                    //@desc: ##########################
+                    let currentItems = this.state.layoutAdmin;
+                    let maxY = -1;
+                    if (!isEmpty(currentItems)) {
+                        maxY = maxBy(currentItems, 'y').y
+                    }
+                    let uniqueId = makeid(5)
+                    let mapperList = this.state.layoutMapperAdmin
+
+                    let itemOne = {
+                        id: uniqueId,
+                        hwType: paramHwType,
+                        graphType: graphType,
+                    }
+
+                    await this.setState({
+                        layoutAdmin: this.state.layoutAdmin.concat({
+                            i: uniqueId,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
+                            w: 1,
+                            h: 1,
+                        }),
+                        layoutMapperAdmin: mapperList.concat(itemOne),
+                    });
+                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, this.state.layoutAdmin)
+                    reactLocalStorage.setObject(getUserId() + ADMIN_HW_MAPPER_KEY, this.state.layoutMapperAdmin)
                 } else {
                     //@desc: ##########################
                     //@desc: APPINST
@@ -2712,7 +2738,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Button
                                 size={'small'}
                                 onClick={async () => {
-                                    this.handleClusterDropDownChange_______Admin()
+                                    await this.handleClusterDropDownChange_______Admin()
                                 }}
                                 ref={c => this.applyButton = c}
                             >
