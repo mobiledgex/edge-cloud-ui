@@ -2592,7 +2592,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            async handleClusterDropDownChangeForAdmin() {
+
+            _________________________________________________________________________ADMIN______________START_________(){}
+            async handleClusterDropDownChange_______Admin() {
+
+                console.log('currentClusterList===>', this.state.currentClusterList);
+
                 this.applyButton.blur();
                 if (this.state.currentClusterList !== undefined) {
                     let selectClusterCloudletList = this.state.currentClusterList
@@ -2619,22 +2624,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
                     let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
 
-                    console.log('handleClusterDropDownChangeForAdmin===>', appInstDropdown);
+                    console.log('appInstDropdown===>', appInstDropdown);
 
                     await this.setState({
                         filteredAppInstUsageList: filteredAppInstUsageList,
                         filteredAppInstList: filteredAppInstList,
                         allAppInstDropdown: appInstDropdown,
-
                     })
 
                 } else {
-                    this.resetLocalDataForAdmin();
+                    await this.resetLocalDataForAdmin();
                 }
             }
 
 
-            renderAdminCloudletClusterTreeDropdown() {
+            renderCloudletClusterTreeDropdown____Admin() {
                 let treeSelectWidth = 500;
                 let maxTagCount = 3;
                 if (this.props.size.width >= 1600) {
@@ -2693,7 +2697,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 onChange={async (value, label, extra) => {
 
                                     if (!isEmpty(value)) {
-                                        this.setState({currentClusterList: value});
+                                        this.setState({currentClusterList: value}, () => {
+                                        });
                                     } else {
                                         await this.resetLocalDataForAdmin();
                                     }
@@ -2707,7 +2712,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Button
                                 size={'small'}
                                 onClick={async () => {
-                                    this.handleClusterDropDownChangeForAdmin()
+                                    this.handleClusterDropDownChange_______Admin()
                                 }}
                                 ref={c => this.applyButton = c}
                             >
@@ -2731,49 +2736,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderAppInstDropdown() {
-
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label" style={{width: 50}}>
-                            App Inst
-                        </div>
-                        <div>
-                            <Select
-                                ref={c => this.appInstSelect = c}
-                                dropdownStyle={{}}
-                                style={{width: '100%'}}
-                                disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
-                                value={this.state.currentAppInstNameVersion}
-                                placeholder={this.state.appInstSelectBoxPlaceholder}
-                                onChange={async (value) => {
-                                    this.appInstSelect.blur();
-                                    await this.handleOnChangeAppInstDropdown(value.trim())
-
-                                }}
-                            >
-                                {this.state.allAppInstDropdown.map(item => {
-                                    return (
-                                        <Option value={item.value}>{item.text}</Option>
-                                    )
-                                })}
-                            </Select>
-                        </div>
-                    </div>
-                )
-            }
-
-
             handleAppInstDropDownChange___Admin = async (pSelectedAppInst: TypeAppInst) => {
                 try {
-                    let __filteredAppInstList = []
+                    let _filteredAppInstList = []
                     let currentClusterList = []
-                    __filteredAppInstList.push(pSelectedAppInst)
-                    console.log('fullCurrentAppInst===>', pSelectedAppInst);
-
-
-                    //key: "MEXPrometheusAppName | automationFrankfurtCloudlet | angshukubetest | 1.0 | EU | undefined | TDG | {"lat":50.110922,"long":8.682127}"
-
+                    _filteredAppInstList.push(pSelectedAppInst)
 
                     await this.setState({
                         currentAppInst: pSelectedAppInst,
@@ -2789,8 +2756,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let Operator = pSelectedAppInst.Operator
                     let CloudletLocation = pSelectedAppInst.CloudletLocation
 
-
-                    let tempCluster = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + tempElement + " | " + CloudletLocation
+                    currentClusterList.push(ClusterInst + " | " + Cloudlet);
+                    console.log('currentClusterList===>', currentClusterList);
 
                     let filteredAppList = filterByClassification(this.state.appInstList, Cloudlet, 'Cloudlet');
                     filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
@@ -2820,10 +2787,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
                         currentAppInstNameVersion: AppName + ' [' + Version + ']',
-                        currentAppInst: pSelectedAppInst,
-                        currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
-                        filteredAppInstList: __filteredAppInstList,
+                        filteredAppInstList: _filteredAppInstList,
+                        currentAppInst: pSelectedAppInst,
+                        currentClusterList: currentClusterList,
+                    }, () => {
+                        console.log('currentClusterList===>', currentClusterList);
                     });
 
                 } catch (e) {
@@ -2860,6 +2829,93 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     let cluster = item.key.split(" | ")[2]
                                     return (
                                         <Option value={item.value}>{item.text}&nbsp;({cluster})</Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                    </div>
+                )
+            }
+
+
+            renderAppLegend__Admin() {
+                let stringLimit = this.makeStringLimit(CLASSIFICATION.APP_INST_FOR_ADMIN);
+                return (
+                    <Row gutter={16}
+                         style={{
+                             flex: .97,
+                             marginLeft: 10,
+                             backgroundColor: 'transparent',
+                             justifyContent: 'center',
+                             alignSelf: 'center',
+                         }}
+                    >
+                        {this.state.filteredAppInstList.map((item: TypeAppInst, index) => {
+                            return (
+                                <Col
+                                    className="gutterRow"
+                                    onClick={async () => {
+                                    }}
+                                    span={this.state.legendItemCount === 1 ? 24 : 4}
+                                    style={{marginTop: 3, marginBottom: 3,}}
+                                >
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'flex-start', alignItems: 'flex-start',
+                                            marginLeft: 0,
+                                            flex: 1,
+                                        }}
+
+                                        onClick={async () => {
+
+                                            if (this.state.filteredAppInstList.length === 1) {
+                                                this.resetLocalDataForAdmin();
+                                            } else {
+                                                await this.handleAppInstDropDownChange___Admin(item)
+                                            }
+                                        }}
+                                    >
+                                        {this.renderDot(index)}
+                                        <ClusterCluoudletAppInstLabel
+                                            style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
+                                            {reduceString(item.AppName, stringLimit, this.state.legendItemCount)}[{item.Version}]
+                                        </ClusterCluoudletAppInstLabel>
+                                    </div>
+                                </Col>
+                            )
+                        })}
+                    </Row>
+                )
+            }
+
+
+            ________________________________________________________________________ADMIN______________END_________(){}
+
+            renderAppInstDropdown() {
+
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label" style={{width: 50}}>
+                            App Inst
+                        </div>
+                        <div>
+                            <Select
+                                ref={c => this.appInstSelect = c}
+                                dropdownStyle={{}}
+                                style={{width: '100%'}}
+                                disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
+                                value={this.state.currentAppInstNameVersion}
+                                placeholder={this.state.appInstSelectBoxPlaceholder}
+                                onChange={async (value) => {
+                                    this.appInstSelect.blur();
+                                    await this.handleOnChangeAppInstDropdown(value.trim())
+
+                                }}
+                            >
+                                {this.state.allAppInstDropdown.map(item => {
+                                    return (
+                                        <Option value={item.value}>{item.text}</Option>
                                     )
                                 })}
                             </Select>
@@ -3088,55 +3144,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderAppLegend__Admin() {
-                let stringLimit = this.makeStringLimit(CLASSIFICATION.APP_INST_FOR_ADMIN);
-
-                console.log('legendItemCount====>', this.state.legendItemCount);
-
-                return (
-                    <Row gutter={16}
-                         style={{
-                             flex: .97,
-                             marginLeft: 10,
-                             backgroundColor: 'transparent',
-                             justifyContent: 'center',
-                             alignSelf: 'center',
-                         }}
-                    >
-                        {this.state.filteredAppInstList.map((item: TypeAppInst, index) => {
-                            return (
-                                <Col
-                                    className="gutterRow"
-                                    onClick={async () => {
-                                    }}
-                                    span={this.state.legendItemCount === 1 ? 24 : 4}
-                                    style={{marginTop: 3, marginBottom: 3,}}
-                                >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'flex-start', alignItems: 'flex-start',
-                                            marginLeft: 0,
-                                            flex: 1,
-                                        }}
-
-                                        onClick={async () => {
-                                            await this.handleAppInstDropDownChange___Admin(item)
-                                        }}
-                                    >
-                                        {this.renderDot(index)}
-                                        <ClusterCluoudletAppInstLabel
-                                            style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
-                                            {reduceString(item.AppName, stringLimit, this.state.legendItemCount)}[{item.Version}]
-                                        </ClusterCluoudletAppInstLabel>
-                                    </div>
-                                </Col>
-                            )
-                        })}
-                    </Row>
-                )
-            }
-
 
             renderAppLegend(pLegendItemCount) {
                 return (
@@ -3280,7 +3287,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {this.state.userType.includes(USER_TYPE.AMDIN) ?
                                 <React.Fragment>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderAdminCloudletClusterTreeDropdown()}
+                                        {this.renderCloudletClusterTreeDropdown____Admin()}
                                     </div>
                                     <div style={{marginLeft: 25}}>
                                         {this.renderAppInstDropdown__Admin()}
