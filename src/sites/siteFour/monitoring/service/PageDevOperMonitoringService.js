@@ -33,7 +33,7 @@ import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUti
 import uniqBy from "lodash/uniqBy";
 import Chip from "@material-ui/core/Chip";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
-
+import * as dateUtil from  '../../../../utils/date_util'
 //import _ from 'lodash';
 
 export function getOnlyCloudletName(cloudletOne) {
@@ -417,9 +417,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 for (let j in series) {
                     let usageOne = series[j][hardWareUsageIndex];
                     usageList.push(usageOne);
-                    let dateOne = series[j]["0"];
-                    dateOne = dateOne.toString().split("T");
-                    dateTimeList.push(dateOne[1]);
+                    dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, series[j]["0"]));
                 }
                 levelTypeNameList.push(classificationName);
                 usageSetList.push(usageList);
@@ -1661,7 +1659,6 @@ export const barChartOptions2 = {
 
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, currentColorIndex = -1) => {
-
     try {
         if (usageList.length === 0) {
             return "";
@@ -1678,6 +1675,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, curr
                 {role: "style"},
                 {role: 'annotation'}
             ]);
+
             for (let index = 0; index < usageList.length; index++) {
 
                 let tooltipOne = `<div style="background-color:black ;color: white; padding: 15px; font-size: 9pt; font-style: italic; font-family: Roboto; min-width: 200px; border: solid 1px rgba(255, 255, 255, .2) ">
@@ -1709,7 +1707,6 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, curr
                 chartDataList,
                 hardwareType,
             };
-
             return chartDataSet
         }
     } catch (e) {

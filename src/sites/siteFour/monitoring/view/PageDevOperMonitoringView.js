@@ -53,7 +53,7 @@ import type {
     TypeUtilization
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
-import moment from "moment";
+import moment from "moment-timezone";
 import {
     getOneYearStartEndDatetime,
     isEmpty,
@@ -95,7 +95,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForCluster from "../components/PerformanceSummaryForCluster";
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import AppInstEventLogList from "../components/AppInstEventLogList";
-import {fields} from '../../../../services/model/format'
+import {fields, getOrganization, getUserRole} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
 import {
     ColorLinearProgress,
@@ -131,6 +131,8 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
+import * as dateUtil from '../../../../utils/date_util'
+import { getMexTimezone } from '../../../../utils/sharedPreferences_util';
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -423,8 +425,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     gridInstanceListCpuMax: 0,
                     usageListByDate: [],
                     userType: '',
-                    placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-                    placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+                    placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
+                    placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
                     allConnectionsUsageList: [],
                     filteredConnectionsUsageList: [],
                     connectionsTabIndex: 0,
@@ -534,6 +536,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     legendHeight: 30,
                     isFirstLoad: true,
                     open: false,
+                    timezoneChange:true
                 };
             }
 
@@ -545,6 +548,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             componentDidMount = async () => {
+                moment.tz.setDefault(getMexTimezone())
+                window.addEventListener('MexTimezoneChangeEvent', () => {
+                    this.setState({ timezoneChange: !this.state.timezoneChange })
+                    setTimeout(() => {
+                        this.setState({ timezoneChange: !this.state.timezoneChange })
+                    }, 100)
+                    if(getUserRole().includes('Developer'))
+                    {
+                        this.resetLocalData();
+                    }
+                }, false);
                 try {
                     this.setState({
                         loading: true,
@@ -580,10 +594,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
-                    let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]
                     let startTime = makeCompleteDateTime(date[0]);
                     let endTime = makeCompleteDateTime(date[1]);
-
                     //@desc:#############################################
                     //@desc: (allClusterList, appnInstList, cloudletList)
                     //@desc:#############################################
@@ -725,6 +738,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             componentWillUnmount(): void {
+                window.removeEventListener('MexTimezoneChangeEvent', ()=>{console.log('Removed')})
                 this.props.toggleHeader(true)
                 clearInterval(this.intervalForAppInst)
                 clearInterval(this.intervalForCluster)
@@ -779,8 +793,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 clearInterval(this.intervalForAppInst)
                 await this.setState({
                     currentClassification: this.state.userType.toString().includes("dev") ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLOUDLET,
-                    placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-                    placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+                    placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
+                    placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
                 })
                 await this.setState({
                     cloudLetSelectBoxClearable: true,
@@ -1198,7 +1212,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                     }
-
                     return (
                         <LineChartContainer
                             isResizeComplete={this.state.isResizeComplete}
@@ -2144,20 +2157,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div className="page_monitoring_dropdown_label">
                             Date
                         </div>
+                        {this.state.timezoneChange ? 
                         <RangePicker
+                            timezoneChange ={this}
                             separator={"~"}
                             disabled={this.state.filteredCloudletUsageList.length === 1 || this.state.loading}
                             ref={c => this.dateRangePicker = c}
-                            showTime={{format: 'HH:mm'}}
-                            format="YYYY-MM-DD HH:mm"
-                            placeholder={[moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
+                            showTime={{format: dateUtil.FORMAT_TIME_HH_mm}}
+                            format={dateUtil.FORMAT_DATE_24_HH_mm}
+                            placeholder={[dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]}
                             onChange={async (date) => {
                                 try {
                                     this.dateRangePicker.blur()
-                                    let stateTime = date[0].format('YYYY-MM-DD HH:mm')
-                                    let endTime = date[1].format('YYYY-MM-DD HH:mm')
+                                    let startTime = dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, date[0])
+                                    let endTime = dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, date[1])
                                     await this.setState({
-                                        startTime: stateTime,
+                                        startTime: startTime,
                                         endTime: endTime,
                                     })
 
@@ -2169,21 +2184,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                             }}
                             ranges={{
-                                'Last 24 hours': [moment().subtract(1, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Days': [moment().subtract(3, 'd'), moment().subtract(0, 'd')],
-                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(0, 'd')],
-                                'Last 15 Days': [moment().subtract(15, 'd'), moment().subtract(0, 'd')],
-                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(0, 'd')],
-                                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                'Last 24 hours': [dateUtil.subtractDays(1), dateUtil.subtractDays(0)],
+                                'Last 3 Days': [dateUtil.subtractDays(3), dateUtil.subtractDays(0)],
+                                'Last 7 Days': [dateUtil.subtractDays(7), dateUtil.subtractDays(0)],
+                                'Last 15 Days': [dateUtil.subtractDays(15), dateUtil.subtractDays(0)],
+                                'Last 30 Days': [dateUtil.subtractDays(30), dateUtil.subtractDays(0)],
+                                'This Month': [dateUtil.startOfMonth(), dateUtil.endOfMonth()],
                                 'Last Month': [moment().date(-30), moment().date(-1)],
-                                'Last 2 Months': [moment().subtract(60, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Months': [moment().subtract(90, 'd'), moment().subtract(0, 'd')],
-                                'Last 6 Months': [moment().subtract(180, 'd'), moment().subtract(0, 'd')],
-                                'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
+                                'Last 2 Months': [dateUtil.subtractDays(60), dateUtil.subtractDays(0)],
+                                'Last 3 Months': [dateUtil.subtractDays(90), dateUtil.subtractDays(0)],
+                                'Last 6 Months': [dateUtil.subtractDays(180), dateUtil.subtractDays(0)],
+                                'Last 1 Year': [dateUtil.subtractDays(364), dateUtil.subtractDays(0)],
+                                'Last 2 Year': [dateUtil.subtractDays(729), dateUtil.subtractDays(0)],
+                                'Last 3 Year': [dateUtil.subtractDays(1094), dateUtil.subtractDays(0)],
                             }}
-                        />
+                        /> : null}
                     </div>
                 )
             }

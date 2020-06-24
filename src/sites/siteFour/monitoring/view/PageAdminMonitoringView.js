@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import DatePicker from 'antd/es/date-picker';
 import * as reducer from "../../../../utils";
+import * as dateUtil from '../../../../utils/date_util'
 import {
     cutArrayList,
     filterAppInstanceListByClassification,
@@ -221,8 +222,8 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
             gridInstanceListCpuMax: 0,
             usageListByDate: [],
             userType: '',
-            placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-            placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+            placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
+            placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
             allConnectionsUsageList: [],
             filteredConnectionsUsageList: [],
             connectionsTabIndex: 0,
@@ -316,8 +317,8 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 })
 
 
-                let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
-                let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
+                let startTime = makeCompleteDateTime(dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)));
+                let endTime = makeCompleteDateTime(dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)));
                 await this.setState({
                     startTime,
                     endTime
@@ -460,8 +461,8 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 color: 'black',
             });
             await this.setState({
-                placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
-                placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+                placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
+                placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
             })
             await this.setState({
                 cloudLetSelectBoxClearable: true,
@@ -947,7 +948,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                                 //disabled={true}
                                 showTime={{format: 'HH:mm'}}
                                 format="YYYY-MM-DD HH:mm"
-                                placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
+                                placeholder={[dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]}
                                 onOk={async (date) => {
 
                                     try {
@@ -964,15 +965,15 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
 
                                 }}
                                 ranges={{
-                                    Today: [moment(), moment()],
-                                    'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
-                                    'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
-                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                    Today: [dateUtil.currentTime(), dateUtil.currentTime()],
+                                    'Last 7 Days': [dateUtil.subtractDays(7), dateUtil.subtractDays(1)],
+                                    'Last 30 Days': [dateUtil.subtractDays(30), dateUtil.subtractDays(1)],
+                                    'This Month': [dateUtil.startOfMonth(), dateUtil.endOfMonth()],
                                     'Last Month': [moment().date(-30), moment().date(-1)],
-                                    'Last 6 Months': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
-                                    'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                    'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                    'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
+                                    'Last 6 Months': [dateUtil.subtractDays(181), dateUtil.subtractDays(0)],
+                                    'Last 1 Year': [dateUtil.subtractDays(364), dateUtil.subtractDays(0)],
+                                    'Last 2 Year': [dateUtil.subtractDays(729), dateUtil.subtractDays(0)],
+                                    'Last 3 Year': [dateUtil.subtractDays(1094), dateUtil.subtractDays(0)],
                                 }}
                                 // style={{width: 300}}
                             />

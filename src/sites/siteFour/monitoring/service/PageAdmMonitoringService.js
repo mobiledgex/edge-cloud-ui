@@ -19,6 +19,7 @@ import Progress from "antd/es/progress";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {renderUsageLabelByType} from "./PageDevOperMonitoringService";
+import * as dateUtil from  '../../../../utils/date_util'
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -671,12 +672,8 @@ export const makeLineChartDataForAppInst = (_this: PageAdminMonitoring, hardware
                     } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
                         usageOne = seriesValues[j][APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS.toString()];
                     }
-
                     usageList.push(usageOne);
-                    let dateOne = seriesValues[j]["0"];
-                    dateOne = dateOne.toString().split("T")
-
-                    dateTimeList.push(dateOne[1]);
+                    dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, seriesValues[j]["0"]));
                 }
 
                 instanceNameList.push(instanceAppName)
@@ -971,10 +968,7 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
                 usageOne = seriesValues[j]["13"]; //sendBytes -> index13
             }
             usageList.push(usageOne);
-            let dateOne = seriesValues[j]["0"];
-            dateOne = dateOne.toString().split("T")
-
-            dateTimeList.push(dateOne[1]);
+            dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, seriesValues[j]["0"]));
         }
 
         instanceNameList.push(instanceAppName)
@@ -1075,7 +1069,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:###############################..*/}
                 {chunkedCloudletListOfColSize.map((listItem, index) => {
                     return (
-                        <TabPanel className='page_monitoring_tab_with_pager'>
+                        <TabPanel key={index} className='page_monitoring_tab_with_pager'>
                             {renderGrid(listItem)}
                         </TabPanel>
                     )
@@ -1090,6 +1084,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
+                                key={index}
                                 style={{display: 'flex', margin: '0 5px'}}
                                 onClick={() => {
                                     _this.setState({
@@ -1127,7 +1122,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
         return (
             <div className='page_monitoring_grid_wrap'>
                 {pListItem.map((item, index) =>
-                    <div className='page_monitoring_grid_box_layout'>
+                    <div key={index} className='page_monitoring_grid_box_layout'>
                         <div className='page_monitoring_grid_box'>
                             <div className='page_monitoring_grid_box_name'>
                                 {item.name}
