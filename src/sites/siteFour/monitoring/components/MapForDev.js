@@ -19,6 +19,7 @@ import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageDevOperMonitoringService";
 import MomentTimezone from "moment-timezone";
+import { getMexTimezone } from "../../../../utils/sharedPreferences_util";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -438,7 +439,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             </div>
                                             <div style={{width: 5,}}/>
                                             <div style={{color: 'orange'}}>
-                                                [{MomentTimezone(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}]
+                                                [{MomentTimezone(item.timestamp.seconds, 'X').tz(getMexTimezone()).format('lll').trim().toString().trim()}]
                                             </div>
                                         </div>
 

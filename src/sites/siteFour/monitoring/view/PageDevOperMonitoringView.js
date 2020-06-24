@@ -2184,19 +2184,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                             }}
                             ranges={{
-                                'Last 24 hours': [moment().subtract(1, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Days': [moment().subtract(3, 'd'), moment().subtract(0, 'd')],
-                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(0, 'd')],
-                                'Last 15 Days': [moment().subtract(15, 'd'), moment().subtract(0, 'd')],
-                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(0, 'd')],
-                                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                'Last 24 hours': [dateUtil.subtractDays(1), dateUtil.subtractDays(0)],
+                                'Last 3 Days': [dateUtil.subtractDays(3), dateUtil.subtractDays(0)],
+                                'Last 7 Days': [dateUtil.subtractDays(7), dateUtil.subtractDays(0)],
+                                'Last 15 Days': [dateUtil.subtractDays(15), dateUtil.subtractDays(0)],
+                                'Last 30 Days': [dateUtil.subtractDays(30), dateUtil.subtractDays(0)],
+                                'This Month': [dateUtil.startOfMonth(), dateUtil.endOfMonth()],
                                 'Last Month': [moment().date(-30), moment().date(-1)],
-                                'Last 2 Months': [moment().subtract(60, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Months': [moment().subtract(90, 'd'), moment().subtract(0, 'd')],
-                                'Last 6 Months': [moment().subtract(180, 'd'), moment().subtract(0, 'd')],
-                                'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
+                                'Last 2 Months': [dateUtil.subtractDays(60), dateUtil.subtractDays(0)],
+                                'Last 3 Months': [dateUtil.subtractDays(90), dateUtil.subtractDays(0)],
+                                'Last 6 Months': [dateUtil.subtractDays(180), dateUtil.subtractDays(0)],
+                                'Last 1 Year': [dateUtil.subtractDays(364), dateUtil.subtractDays(0)],
+                                'Last 2 Year': [dateUtil.subtractDays(729), dateUtil.subtractDays(0)],
+                                'Last 3 Year': [dateUtil.subtractDays(1094), dateUtil.subtractDays(0)],
                             }}
                         /> : null}
                     </div>
