@@ -503,7 +503,8 @@ export default function MapForAdmin(props) {
                                     className='popup_admin_cloudlet'
                                     style={{display: 'flex', flexDirection: 'row',}}
                                     onClick={() => {
-                                        alert(item.AppName)
+                                        //alert(item.AppName)
+                                        props.parent.handleAppInstDropDownChange___Admin(item)
                                     }}
                                 >
                                     <div className={'popup_text_admin_map'}>
