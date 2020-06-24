@@ -654,7 +654,7 @@ export const Center2 = styled.div`
 `
 
 
-export const ClusterCluoudletLabel = styled.div`
+export const ClusterCluoudletAppInstLabel = styled.div`
   justify-content: center;
   text-align: center;
   flex-direction: row;

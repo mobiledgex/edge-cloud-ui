@@ -1,4 +1,4 @@
-import {Center, ClusterCluoudletLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -2764,30 +2764,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            handleAppInstDropDownChangeForAdmin = async (fullCurrentAppInst) => {
+            handleAppInstDropDownChange___Admin = async (paramSelectedAppInst: TypeAppInst) => {
                 try {
-
-                    console.log('fullCurrentAppInst===>', fullCurrentAppInst);
-
+                    let __filteredAppInstList = []
+                    __filteredAppInstList.push(paramSelectedAppInst)
+                    console.log('fullCurrentAppInst===>', paramSelectedAppInst);
                     await this.setState({
-                        currentAppInst: fullCurrentAppInst,
+                        currentAppInst: paramSelectedAppInst,
                         loading: true,
                     })
 
-                    let AppName = fullCurrentAppInst.split('|')[0].trim()
-                    let Cloudlet = fullCurrentAppInst.split('|')[1].trim()
-                    let ClusterInst = fullCurrentAppInst.split('|')[2].trim()
-                    let Version = fullCurrentAppInst.split('|')[3].trim()
+                    let AppName = paramSelectedAppInst.AppName
+                    let Cloudlet = paramSelectedAppInst.Cloudlet
+                    let ClusterInst = paramSelectedAppInst.ClusterInst
+                    let Version = paramSelectedAppInst.Version
                     let filteredAppList = filterByClassification(this.state.appInstList, Cloudlet, 'Cloudlet');
                     filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
                     filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
                     filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
-
                     let arrDateTime = getOneYearStartEndDatetime();
                     let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
-                    fullCurrentAppInst = fullCurrentAppInst.trim();
-                    fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
-
+                    paramSelectedAppInst = AppName + " | " + Cloudlet + " | " + ClusterInst + ' | ' + Version
 
                     let appInstDropdown = makeDropdownForAppInst(filteredAppList)
                     //desc: ############################
@@ -2807,9 +2804,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
                         currentAppInstNameVersion: AppName + ' [' + Version + ']',
-                        currentAppInst: fullCurrentAppInst,
+                        currentAppInst: paramSelectedAppInst,
                         currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
+                        filteredAppInstList: __filteredAppInstList,
                     });
 
                 } catch (e) {
@@ -2838,7 +2836,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 placeholder={this.state.appInstSelectBoxPlaceholder}
                                 onChange={async (value) => {
                                     this.appInstSelect.blur();
-                                    await this.handleAppInstDropDownChangeForAdmin(value.trim())
+                                    await this.handleAppInstDropDownChange___Admin(value.trim())
 
                                 }}
                             >
@@ -3074,7 +3072,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderAppLegendForAdmin() {
+            renderAppLegend__Admin() {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.APP_INST_FOR_ADMIN);
 
                 console.log('legendItemCount====>', this.state.legendItemCount);
@@ -3098,17 +3096,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     span={this.state.legendItemCount === 1 ? 24 : 4}
                                     style={{marginTop: 3, marginBottom: 3,}}
                                 >
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-start', alignItems: 'flex-start',
-                                        marginLeft: 0,
-                                        flex: 1,
-                                    }}>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'flex-start', alignItems: 'flex-start',
+                                            marginLeft: 0,
+                                            flex: 1,
+                                        }}
+
+                                        onClick={async () => {
+                                            await this.handleAppInstDropDownChange___Admin(item)
+                                        }}
+                                    >
                                         {this.renderDot(index)}
-                                        <ClusterCluoudletLabel
+                                        <ClusterCluoudletAppInstLabel
                                             style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                             {reduceString(item.AppName, stringLimit, this.state.legendItemCount)}[{item.Version}]
-                                        </ClusterCluoudletLabel>
+                                        </ClusterCluoudletAppInstLabel>
                                     </div>
                                 </Col>
                             )
@@ -3143,10 +3147,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 flex: 1,
                             }}>
                                 {this.renderDot(0)}
-                                <ClusterCluoudletLabel
+                                <ClusterCluoudletAppInstLabel
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                     {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
-                                </ClusterCluoudletLabel>
+                                </ClusterCluoudletAppInstLabel>
                             </div>
                         </Col>
                     </Row>
@@ -3215,7 +3219,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderClusterLegend()
                                     : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderCloudletLegend(this.state.legendItemCount)
                                         : this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderAppLegend(this.state.legendItemCount)
-                                            : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegendForAdmin() : null
+                                            : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegend__Admin() : null
                                 }
                             </LegendOuterDiv>
                         )
