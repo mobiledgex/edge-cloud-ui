@@ -1797,8 +1797,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 let cloudletClusterNameMap = getCloudletClusterNameList(this.state.filteredClusterList)
                 let allRegionList = localStorage.getItem('regions').split(",")
-                clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(allRegionList, cloudletClusterNameMap.cloudletNameList, allClusterUsageList, this)
-
+                let clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(allRegionList, cloudletClusterNameMap.cloudletNameList, this.state.allClusterUsageList, this)
                 await this.setState({
                     clusterTreeDropdownList: clusterTreeDropdownList,
                 })
@@ -1816,10 +1815,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             key="1"
                             onClick={async () => {
                                 {
-                                    this.state.currentClassification === CLASSIFICATION.CLUSTER ?
-                                        await this.handleOnChangeClusterDropdown(undefined)
-                                        :
-                                        await this.handleOnChangeCloudletDropdown(undefined)
+                                    this.state.currentClassification === CLASSIFICATION.CLUSTER ? await this.handleOnChangeClusterDropdown(undefined)
+                                        : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? await this.handleOnChangeCloudletDropdown(undefined)
+                                        : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? await this.resetLocalDataFor______Admin() : null
                                 }
                             }}
                         >
