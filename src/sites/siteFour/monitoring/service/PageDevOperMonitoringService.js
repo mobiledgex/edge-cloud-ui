@@ -33,7 +33,7 @@ import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUti
 import uniqBy from "lodash/uniqBy";
 import Chip from "@material-ui/core/Chip";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
-
+import * as dateUtil from  '../../../../utils/date_util'
 //import _ from 'lodash';
 
 export function getOnlyCloudletName(cloudletOne) {
@@ -417,9 +417,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 for (let j in series) {
                     let usageOne = series[j][hardWareUsageIndex];
                     usageList.push(usageOne);
-                    let dateOne = series[j]["0"];
-                    dateOne = dateOne.toString().split("T");
-                    dateTimeList.push(dateOne[1]);
+                    dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, series[j]["0"]));
                 }
                 levelTypeNameList.push(classificationName);
                 usageSetList.push(usageList);

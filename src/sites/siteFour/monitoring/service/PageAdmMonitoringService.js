@@ -1075,7 +1075,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                 {/*todo:###############################..*/}
                 {chunkedCloudletListOfColSize.map((listItem, index) => {
                     return (
-                        <TabPanel className='page_monitoring_tab_with_pager'>
+                        <TabPanel key={index} className='page_monitoring_tab_with_pager'>
                             {renderGrid(listItem)}
                         </TabPanel>
                     )
@@ -1090,6 +1090,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
                     {chunkedCloudletListOfColSize.map((item, index) => {
                         return (
                             <div
+                                key={index}
                                 style={{display: 'flex', margin: '0 5px'}}
                                 onClick={() => {
                                     _this.setState({
@@ -1127,7 +1128,7 @@ export const renderSixGridForAppInstOnCloudlet = (appInstanceListSortByCloudlet,
         return (
             <div className='page_monitoring_grid_wrap'>
                 {pListItem.map((item, index) =>
-                    <div className='page_monitoring_grid_box_layout'>
+                    <div key={index} className='page_monitoring_grid_box_layout'>
                         <div className='page_monitoring_grid_box'>
                             <div className='page_monitoring_grid_box_name'>
                                 {item.name}

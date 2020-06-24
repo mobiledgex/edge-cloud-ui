@@ -7,6 +7,7 @@ import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageDevOperMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {time, FORMAT_FULL_DATE, FORMAT_FULL_TIME} from '../../../../utils/date_util'
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -165,10 +166,10 @@ export default function AppInstEventLogList(props) {
                                                 }}>
                                                 <div style={{}}>
                                                     <div style={{marginLeft: 2}}>
-                                                        {props.eventLogList[index][0].toString().split('T')[0]}
+                                                        {time(FORMAT_FULL_DATE, props.eventLogList[index][0])}
                                                     </div>
                                                     <div style={{marginLeft: 2}}>
-                                                        {props.eventLogList[index][0].toString().split('T')[1].substring(0, 8)}
+                                                        {time(FORMAT_FULL_TIME, props.eventLogList[index][0])}
                                                     </div>
                                                 </div>
                                             </td>
