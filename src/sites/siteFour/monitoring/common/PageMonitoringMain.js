@@ -14,6 +14,3 @@ export default function PageMonitoringMain() {
         </Card>
     );
 }
-
-
-/*  try {              if (userRole.includes('Admin')) {                  return (<PageMonitoringForAdmin/>)              } else {              }          } catch (e) {          }*/
