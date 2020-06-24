@@ -805,7 +805,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 if (this.state.userType.includes(USER_TYPE.AMDIN)) {
                     dataCount = appInstList.length
                 } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                    dataCount = clusterList.length
+                    dataCount = parseInt(clusterList.length) + parseInt(appInstList.length)
                 } else {
                     dataCount = cloudletList.length
                 }
@@ -2827,7 +2827,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     console.log('option===>', JSON.parse(value.split(" | ")[8]));
 
-                                    let appInstMap= JSON.parse(value.split(" | ")[8])
+                                    let appInstMap = JSON.parse(value.split(" | ")[8])
 
                                     await this.handleAppInstDropDownChange___Admin(appInstMap)
 
@@ -2921,7 +2921,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     console.log('filteredAppInstUsageList===>', this.state.allAppInstUsageList);
                 })
             }
-
 
 
             ________________________________________________________________________ADMIN______________END_________() {
@@ -3214,7 +3213,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </Row>
                 )
             }
-
 
 
             makeLegend() {
