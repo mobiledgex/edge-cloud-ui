@@ -545,6 +545,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             componentDidMount = async () => {
+                window.addEventListener('MexTimezoneChangeEvent', () => {
+                    this.resetLocalData();
+                }, false);
                 try {
                     this.setState({
                         loading: true,
@@ -725,6 +728,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             componentWillUnmount(): void {
+                window.removeEventListener('MexTimezoneChangeEvent', ()=>{console.log('Removed')})
                 this.props.toggleHeader(true)
                 clearInterval(this.intervalForAppInst)
                 clearInterval(this.intervalForCluster)

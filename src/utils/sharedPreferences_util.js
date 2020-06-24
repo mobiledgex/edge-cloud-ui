@@ -6,5 +6,7 @@ export const getMexTimezone = () => {
 }
 
 export const setMexTimezone = (value) => {
+    var event = new Event('MexTimezoneChangeEvent');
+    window.dispatchEvent(event);
     return localStorage.setItem('mextimezone', value)
 }
