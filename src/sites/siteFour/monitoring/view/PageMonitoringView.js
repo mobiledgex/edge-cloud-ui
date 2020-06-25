@@ -813,16 +813,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            showModalClusterLineChart(lineChartDataOne, index) {
-                this.setState({
-                    selectedClusterUsageOne: lineChartDataOne,
-                    modalIsOpen: true,
-                    selectedClusterUsageOneIndex: index,
-                })
-            }
-
             async resetLocalData() {
-                let markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
+                let markerListForMap = []
+                if (this.state.userType.toLowerCase().includes("dev")) {
+                    markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
+                } else {//todo: admin
+                    markerListForMap = reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET);
+                }
+
+
                 await this.setState({
                     currentGridIndex: -1,
                     currentTabIndex: 0,
