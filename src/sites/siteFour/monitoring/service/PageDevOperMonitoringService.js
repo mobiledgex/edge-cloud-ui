@@ -439,7 +439,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
-                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
                 } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     classificationName = item.cloudlet
@@ -1205,7 +1205,9 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
 
 
 export const convertToClassification = (pClassification) => {
-    if (pClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+    if (pClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+        return pClassification//CLASSIFICATION.CLUSTER
+    } else if (pClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
         return CLASSIFICATION.APP_INST
     } else if (pClassification === CLASSIFICATION.APPINST) {
         return CLASSIFICATION.APP_INST
@@ -1263,6 +1265,7 @@ export function convertHWType(hwType) {
  */
 export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this) => {
 
+    console.log(`makeRegionCloudletClusterTreeDropdown====allRegionList>`, allRegionList)
     console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
     console.log('makeRegionCloudletClusterTreeDropdown====clusterList>', clusterList);
 
@@ -1283,48 +1286,28 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
 
         clusterList.map((clusterItemOne, innerIndex) => {
-
-            //todo######################
-            //todo: admin user type
-            //todo######################
-            if (_this.state.userType.includes(USER_TYPE.AMDIN)) {
-                if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
-                    newCloudletOne.children.push({
-                        title: (
-                            <div style={{display: 'flex'}}>
-                                <div style={{marginLeft: 5,}}>
-                                    {clusterItemOne.ClusterInst}
-                                </div>
-
+            if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+                newCloudletOne.children.push({
+                    title: (
+                        <div style={{display: 'flex'}}>
+                            <Center style={{width: 15,}}>
+                                {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
+                            </Center>
+                            <div style={{marginLeft: 5,}}>
+                                {clusterItemOne.cluster}
                             </div>
-                        ),
-                        value: clusterItemOne.ClusterInst + " | " + cloudletOne.CloudletName,
-                        isParent: false,
-                    })
-                }
-            } else {
-                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
-                    newCloudletOne.children.push({
-                        title: (
-                            <div style={{display: 'flex'}}>
-                                <Center style={{width: 15,}}>
-                                    {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
-                                </Center>
-                                <div style={{marginLeft: 5,}}>
-                                    {clusterItemOne.cluster}
-                                </div>
 
-                            </div>
-                        ),
-                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
-                        isParent: false,
-                    })
-                }
+                        </div>
+                    ),
+                    value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                    isParent: false,
+                })
             }
         })
 
         treeCloudletList.push(newCloudletOne);
     })
+
 
     //@desc:RegionList
     let regionTreeList = []
@@ -1346,6 +1329,8 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
         })
         regionTreeList.push(regionMapOne)
     })
+
+    console.log(`regionTreeList====>`, regionTreeList);
 
     return regionTreeList;
 }

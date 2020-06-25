@@ -291,9 +291,14 @@ export const fetchClusterList = async () => {
             }
         })
 
+        console.log(`showClusterList====>`, showClusterList);
+
 
         let finalResult = []
-        if (localStorage.getItem('selectRole').includes('Oper')) {
+
+        if (localStorage.getItem('selectRole').includes('Admin')) {
+            finalResult = mergedClusterList;
+        } else if (localStorage.getItem('selectRole').includes('Oper')) {
             finalResult = mergedClusterList;
         } else {
             //todo: Filter to fetch only those belonging to the current organization

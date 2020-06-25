@@ -1,4 +1,9 @@
-import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+import {
+    Center,
+    ClusterCluoudletAppInstLabel,
+    LegendOuterDiv,
+    PageMonitoringStyles
+} from '../common/PageMonitoringStyles'
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -56,7 +61,14 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartData, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartData,
+    renderPlaceHolderLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -92,7 +104,12 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    ColorLinearProgress,
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import {
     ADMIN_CLUSTER_LAYOUT_KEY,
     ADMIN_HW_MAPPER_KEY,
@@ -233,7 +250,6 @@ type PageDevMonitoringState = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
-
 
 
     hwListForCluster: [],
@@ -380,13 +396,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 reactLocalStorage.remove(adminLayoutMapper)*/
 
                 this.state = {
+                    //todo: admin layout(Cluster)
+                    layoutClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayout)) ? defaultLayoutForAdminCluster : reactLocalStorage.getObject(adminClusterLayout),
+                    layoutMapperClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayoutMapper)) ? defaultHwMapperListForAdminCluster : reactLocalStorage.getObject(adminClusterLayoutMapper),
                     //todo: admin layout(appInst)
                     layoutAdmin: isEmpty(reactLocalStorage.get(adminLayout)) ? defaultLayoutForAdmin : reactLocalStorage.getObject(adminLayout),
                     layoutMapperAdmin: isEmpty(reactLocalStorage.get(adminLayoutMapper)) ? defaultHwMapperListForAdmin : reactLocalStorage.getObject(adminLayoutMapper),
 
-                    //todo: admin layout(Cluster)
-                    layoutClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayout)) ? defaultLayoutForAdminCluster : reactLocalStorage.getObject(adminClusterLayout),
-                    layoutMapperClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayoutMapper)) ? defaultHwMapperListForAdminCluster : reactLocalStorage.getObject(adminClusterLayoutMapper),
 
                     //todo:dev layout
                     layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
@@ -468,9 +484,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     intervalLoading: false,
                     isRequesting: false,
                     clusterDropdownList: [],
-                    currentClassification: localStorage.getItem('selectRole').toString().toLowerCase().includes("dev") ? CLASSIFICATION.CLUSTER
-                        : localStorage.getItem('selectRole').toString().toLowerCase().includes("oper") ? CLASSIFICATION.CLOUDLET
-                            : localStorage.getItem('selectRole').toString().toLowerCase().includes("admin") ? CLASSIFICATION.APP_INST_FOR_ADMIN : null,
+                    currentClassification:
+                        localStorage.getItem('selectRole').toString().toLowerCase().includes("dev") ? CLASSIFICATION.CLUSTER
+                            : localStorage.getItem('selectRole').toString().toLowerCase().includes("oper") ? CLASSIFICATION.CLOUDLET
+                            : localStorage.getItem('selectRole').toString().toLowerCase().includes("admin") ? CLASSIFICATION.CLUSTER_FOR_ADMIN : null,
                     selectOrg: '',
                     filteredAppInstList: [],
                     appInstDropdown: [],
@@ -623,21 +640,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let clientStatusList = []
                     //TODO:###################################################################################################################
-                    //TODO:       ADMIN                                         (allClusterList, appnInstList, cloudletList)
+                    //TODO:       ADMIN        , DEVELOPER         (allClusterList, appnInstList, cloudletList)
                     //TODO:###################################################################################################################
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        promiseList.push(fetchClusterList())
-                        promiseList.push(fetchAppInstList(undefined, this))
-                        let newPromiseList = await Promise.all(promiseList);
-                        clusterList = newPromiseList[0];
-                        appInstList = newPromiseList[1];
-                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
-                        console.log('appInstList===>', appInstList);
-
-                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                        //TODO:###############################################
-                        //todo:DEVELOPER
-                        //TODO:###############################################
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER) || this.state.userType.includes(USER_TYPE.AMDIN)) {
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList(undefined, this))
                         let newPromiseList = await Promise.all(promiseList);
@@ -665,18 +670,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClientStatusList: clientStatusList,
                         filteredClientStatusList: clientStatusList,
                         loadingForClientStatus: false,
+                        cloudletList: cloudletList,
+                        filteredCloudletList: cloudletList,
                     })
 
-                    let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                     //@desc:#########################################################################
                     //@desc: map Marker
                     //@desc:#########################################################################
-                    let markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-                    await this.setState({
-                        cloudletList: cloudletList,
-                        filteredCloudletList: cloudletList,
-                        appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
-                    });
+                    let markerListForMap = []
+                    if (this.state.userType.toLowerCase().includes("admin")) {
+                        markerListForMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                    } else {//todo : oper
+                        let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+                        markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                    }
+                    await this.setState({appInstanceListGroupByCloudlet: !isInterval && markerListForMap});
 
 
                     let cloudletClusterListMap = {}
@@ -684,37 +692,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstTreeDropdownList = [];
                     let bubbleChartData = []
                     let allCloudletEventLogList = []
-                    //todo:#################################
-                    //todo: ADMIN (eventLog, usageList)
-                    //todo:###################################
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        usageEventPromiseList.push(getAppInstLevelUsageList(appInstList, "*", RECENT_DATA_LIMIT_COUNT))
-                        let newPromiseList = await Promise.all(usageEventPromiseList);
-
-                        allAppInstUsageList = newPromiseList[0];
-
-
-                        let cloudletClusterListMap1: TypeCloudletClusterListMap = getCloudletClusterNameListForAppInst(appInstList)
-                        let regionList = localStorage.getItem('regions').split(",")
-                        appInstTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap1.cloudletNameList, cloudletClusterListMap1.clusterNameList, this)
-
-                        bubbleChartData = await makeBubbleChartData(allAppInstUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex, CLASSIFICATION.APP_INST_FOR_ADMIN);
-
-                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                        //todo:#################################
-                        //todo: DEV (eventLog, usageList)
-                        //todo:###################################
+                    //todo:##########################################################
+                    //todo: ADMIN , DEV (eventLog, usageList)
+                    //todo:############################################################
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER) || this.state.userType.includes(USER_TYPE.AMDIN)) {
                         usageEventPromiseList.push(getAllClusterEventLogList(clusterList))
                         usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                         let newPromiseList2 = await Promise.all(usageEventPromiseList);
-                        allClusterEventLogList = newPromiseList2[0];
+                        //allClusterEventLogList = newPromiseList2[0];
+                        allClusterEventLogList = []
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
+
+                        console.log(`allClusterUsageList====>`, allClusterUsageList);
 
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
                         clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this)
+
+                        console.log(`clusterTreeDropdownList====>`, clusterTreeDropdownList);
+
                         bubbleChartData = await makeBubbleChartData(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
 
                     } else {
@@ -867,7 +865,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentClassification:
                         this.state.userType.toString().includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER :
                             this.state.userType.toString().includes(USER_TYPE.OPERATOR) ? CLASSIFICATION.CLOUDLET :
-                                this.state.userType.toString().includes(USER_TYPE.AMDIN) ? CLASSIFICATION.APP_INST_FOR_ADMIN : null,
+                                this.state.userType.toString().includes(USER_TYPE.AMDIN) ? CLASSIFICATION.CLUSTER_FOR_ADMIN : null,
                     placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
                     placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
                 })
@@ -1319,8 +1317,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
-                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                    } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
                         chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
+
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST || this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                         chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                     }
@@ -1386,25 +1385,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
 
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        return (
-                            <MapForAdmin
-                                isEnableZoom={true}
-                                currentClassification={this.state.currentClassification}
-                                parent={this}
-                                cloudletLength={this.state.filteredCloudletList.length}
-                                filteredAppInstList={this.state.filteredAppInstList}
-                                //appInstList={this.state.filteredAppInstList}
-                                toggleOperMapZoom={!this.state.toggleOperMapZoom}
-                                filteredClusterList={this.state.filteredClusterList}
-                                //filteredAppInstList={this.state.filteredAppInstList}
-                                currentOperLevel={this.state.currentOperLevel}
-                                filteredUsageList={this.state.filteredCloudletUsageList}
-                                chartColorList={this.state.chartColorList}
-                                currentColorIndex={this.state.currentColorIndex}
-                            />
-                        )
-                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    if (this.state.userType.toLowerCase().includes('dev') || this.state.userType.toLowerCase().includes('admin')) {
                         return (
                             <MapForDev
                                 markerList={this.state.appInstanceListGroupByCloudlet}
@@ -1443,7 +1424,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.PERFORMANCE_SUM) {
                     return (
-                        this.state.currentClassification === CLASSIFICATION.CLUSTER ?
+                        this.state.currentClassification.toLowerCase().includes("cluster") ?
                             <PerformanceSummaryForCluster
                                 parent={this}
                                 loading={this.state.loading}
@@ -1600,7 +1581,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     return (
                         <ResponsiveReactGridLayout
-                            ref={c => this.adminGridlayout = c}
                             isResizable={true}
                             draggableHandle=".draggable"
                             verticalCompact={true}
@@ -2264,7 +2244,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClientStatusList: filteredClientStatusList,
                             bubbleChartData: bubbleChartData,
                             currentClusterList: selectClusterCloudletList,
-                            currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_OPER,
+                            currentClassification: this.state.userType.includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_ADMIN,
                             dropdownRequestLoading: false,
                             filteredClusterUsageList: filteredClusterUsageList,
                             appInstDropdown: appInstDropdown,
@@ -3335,7 +3315,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderClusterLegend()
                                     : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderCloudletLegend(this.state.legendItemCount)
                                         : this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderAppLegend(this.state.legendItemCount)
-                                            : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegend__Admin() : null
+                                            : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN ? this.renderClusterLegend()
+                                                : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegend(this.state.legendItemCount) : null
                                 }
                             </LegendOuterDiv>
                         )
@@ -3377,35 +3358,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  flex: .7,
                              }}>
                             {this.renderTitleArea()}
-                            {this.state.userType.includes(USER_TYPE.AMDIN) ?
+                            {this.state.userType.toLowerCase().includes('dev') || this.state.userType.toLowerCase().includes('admin') ?
                                 <React.Fragment>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderCloudletClusterTreeDropdown____Admin()}
+                                        {this.renderClusterDropdown()}
                                     </div>
+
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderAppInstDropdown__Admin()}
+                                        {this.renderAppInstDropdown()}
                                     </div>
                                 </React.Fragment>
-                                :
-                                this.state.userType.includes(USER_TYPE.OPERATOR) ?
-                                    <React.Fragment>
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderCloudletDropdown()}
-                                        </div>
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderDateRangeDropdown()}
-                                        </div>
-                                    </React.Fragment>
-                                    :
-                                    <React.Fragment>
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderClusterDropdown()}
-                                        </div>
-
-                                        <div style={{marginLeft: 25}}>
-                                            {this.renderAppInstDropdown()}
-                                        </div>
-                                    </React.Fragment>
+                                ://TODO:오퍼레이터
+                                <React.Fragment>
+                                    <div style={{marginLeft: 25}}>
+                                        {this.renderCloudletDropdown()}
+                                    </div>
+                                    <div style={{marginLeft: 25}}>
+                                        {this.renderDateRangeDropdown()}
+                                    </div>
+                                </React.Fragment>
                             }
                         </div>
                         <div style={{
@@ -3420,8 +3391,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderGridLayoutByClassification() {
-
-
                 if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
                     return this.renderGridLayoutForClusterAdmin();
                 } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
