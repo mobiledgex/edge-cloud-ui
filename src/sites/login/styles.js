@@ -56,7 +56,7 @@ export default {
         width: null,
         height: null
     },
-    userName: {
+    username: {
         width: 130,
         height: 15
     },

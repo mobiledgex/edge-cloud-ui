@@ -122,7 +122,6 @@ export const fields = {
     infraFlavorName:'infraFlavorName',
     infraExternalNetworkName:'infraExternalNetworkName',
     manifest:'manifest',
-    userName: 'userName',
     userRole: 'userRole',
     healthCheck: 'healthCheck',
     skipHCPorts: 'skipHCPorts',
