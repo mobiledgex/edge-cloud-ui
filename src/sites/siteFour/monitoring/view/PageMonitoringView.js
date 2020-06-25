@@ -1118,7 +1118,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             removeGridItem(i) {
-                if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                    let removedLayout = reject(this.state.layoutClusterAdmin, {i: i});
+                    reactLocalStorage.setObject(getUserId() + ADMIN_CLUSTER_LAYOUT_KEY, removedLayout)
+                    this.setState({
+                        layoutClusterAdmin: removedLayout,
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                     let removedLayout = reject(this.state.layoutAdmin, {i: i});
                     reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, removedLayout)
                     this.setState({
@@ -2984,7 +2990,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     console.log('filteredAppInstUsageList===>', this.state.allAppInstUsageList);
                 })
             }
-
 
             ________________________________________________________________________ADMIN______________END_________() {
             }
