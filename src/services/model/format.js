@@ -241,7 +241,7 @@ export const compareObjects = (newData, oldData, ignoreCase) => {
     }
   }
   
-  export const updateFields = (forms, data, orgData)=>
+  export const updateFields = (self, forms, data, orgData)=>
   {
     let updateFields = []
     for(let i=0;i<forms.length;i++)
@@ -253,6 +253,10 @@ export const compareObjects = (newData, oldData, ignoreCase) => {
           updateFields = [...updateFields, ...form.updateId]
         }
       }
+    }
+    if(updateFields.length === 0 )
+    {
+        self.props.handleAlertInfo('error', 'Nothing to update')
     }
     return updateFields
   }
