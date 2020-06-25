@@ -222,6 +222,53 @@ export const defaultHwMapperListForAdmin = [
 ];
 
 
+/*todo:#####################################
+  todo:  defaultLayoutFor__Admin (Cluster)
+  todo:#######################################*/
+export const defaultLayoutForAdminCluster = [
+
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+];
+
+export const defaultHwMapperListForAdminCluster = [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: GRID_ITEM_TYPE.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: GRID_ITEM_TYPE.BUBBLE,
+    },
+    {
+        id: '5',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
+    },
+    {
+        id: '6',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+    },
+];
+
 /*
 desc:#####################################
 desc:defaultLayoutForAppInst

@@ -174,6 +174,7 @@ export const CLASSIFICATION = {
     CLUSTER: 'Cluster',
     REGION: 'Region',
     APP_INST_FOR_ADMIN: 'appInstForAdmin',
+    CLUSTER_FOR_ADMIN: 'clusterForAdmin',
 }
 
 export const SEPARATOR = " | ";

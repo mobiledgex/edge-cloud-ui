@@ -114,9 +114,9 @@ import {
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
-    defaultHwMapperListForAdmin,
+    defaultHwMapperListForAdmin, defaultHwMapperListForAdminCluster,
     defaultHwMapperListForCluster,
-    defaultLayoutForAdmin,
+    defaultLayoutForAdmin, defaultLayoutForAdminCluster,
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
     defaultLayoutForCluster,
@@ -338,6 +338,8 @@ type PageDevMonitoringState = {
     open: boolean,
     clusterTreeDropdownList: any,
     appInstTreeDropdownList: any,
+    layoutClusterAdmin: any,
+    layoutClusterMapperAdmin: any,
 }
 
 export const CancelToken = axios.CancelToken;
@@ -367,13 +369,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let appInstLayoutMapper = getUserId() + APPINST_HW_MAPPER_KEY
                 let cloudletLayout = getUserId() + CLOUDLET_LAYOUT_KEY
                 let cloudletlayoutMapper = getUserId() + CLOUDLET_HW_MAPPER_KEY
-                let themeKey = getUserId() + "_mon_theme";
-                let themeTitle = getUserId() + "_mon_theme_title";
-
-
                 //todo: admin layout(appInst)
                 let adminLayout = getUserId() + ADMIN_LAYOUT_KEY
                 let adminLayoutMapper = getUserId() + ADMIN_HW_MAPPER_KEY
+                //todo: admin layout(appInst)
+                let adminClusterLayout = getUserId() + ADMIN_LAYOUT_KEY
+                let adminClusterLayoutMapper = getUserId() + ADMIN_HW_MAPPER_KEY
+
+
+                let themeKey = getUserId() + "_mon_theme";
+                let themeTitle = getUserId() + "_mon_theme_title";
 
 
                 //@fixme: DELETE GRID LAYOUT
@@ -384,6 +389,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo: admin layout(appInst)
                     layoutAdmin: isEmpty(reactLocalStorage.get(adminLayout)) ? defaultLayoutForAdmin : reactLocalStorage.getObject(adminLayout),
                     layoutMapperAdmin: isEmpty(reactLocalStorage.get(adminLayoutMapper)) ? defaultHwMapperListForAdmin : reactLocalStorage.getObject(adminLayoutMapper),
+
+                    //todo: admin layout(Cluster)
+                    layoutClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayout)) ? defaultLayoutForAdminCluster : reactLocalStorage.getObject(adminClusterLayout),
+                    layoutClusterMapperAdmin: isEmpty(reactLocalStorage.get(adminClusterLayoutMapper)) ? defaultHwMapperListForAdminCluster : reactLocalStorage.getObject(adminClusterLayoutMapper),
 
 
                     //todo:dev layout
@@ -1536,6 +1545,67 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderGridLayoutForAppInstAdmin() {
+                try {
+                    return (
+                        <ResponsiveReactGridLayout
+                            ref={c => this.adminGridlayout = c}
+                            isResizable={true}
+                            draggableHandle=".draggable"
+                            verticalCompact={true}
+                            compactType={'vertical'}
+                            preventCollision={true}
+                            isDraggable={true}
+                            autoSize={true}
+                            style={{
+                                backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null,
+                                overflowY: this.state.isLegendExpanded ? 'auto' : null,
+
+                            }}
+                            className='layout page_monitoring_layout_dev_oper'
+                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
+                            layout={this.state.layoutAdmin}
+                            rowHeight={this.gridItemHeight}
+                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
+                                let width = newItem.w;
+                                this.setState({
+                                    isResizeComplete: !this.state.isResizeComplete,
+                                    currentWidgetWidth: width,
+                                })
+                            }}
+                            onLayoutChange={async (layout) => {
+                                this.setState({
+                                    layoutAdmin: layout,
+                                }, async () => {
+                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAdmin);
+                                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, layout)
+                                });
+
+                            }}
+                        >
+                            {this.state.layoutAdmin.map((item, loopIndex) => {
+
+                                console.log('layoutAdmin====>', item)
+
+                                const uniqueIndex = item.i;
+                                let hwType = HARDWARE_TYPE.CPU
+                                let graphType = GRID_ITEM_TYPE.LINE;
+                                if (!isEmpty(this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex))) {
+                                    hwType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).hwType
+                                    graphType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).graphType
+                                    graphType = graphType.toUpperCase()
+                                }
+                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
+                            })}
+
+                        </ResponsiveReactGridLayout>
+
+                    )
+                } catch (e) {
+                    showToast(e.toString())
+                }
+            }
+
+            renderGridLayoutForClusterAdmin() {
                 try {
                     return (
                         <ResponsiveReactGridLayout
@@ -3363,7 +3433,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                     return this.renderGridLayoutForAppInstAdmin();
-                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                }if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    return this.renderGridLayoutForAppInstAdmin();
+                }
+                else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     return this.renderGridLayoutForCloudlet();
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     return this.renderGridLayoutForCluster();
