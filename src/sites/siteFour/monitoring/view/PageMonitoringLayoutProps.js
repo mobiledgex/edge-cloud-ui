@@ -476,6 +476,45 @@ export const defaultLayoutXYPosForAdmin = [
     {x: 3, y: 8},
 ]
 
+export const defaultLayoutXYPosForClusterAdmin = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+    //////////// 4,5,6 row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
+    /////////// 7,8,9rd row
+    {x: 0, y: 6},
+    {x: 1, y: 6},
+    {x: 2, y: 6},
+    {x: 3, y: 6},
+
+    {x: 0, y: 7},
+    {x: 1, y: 7},
+    {x: 2, y: 7},
+    {x: 3, y: 7},
+
+    {x: 0, y: 8},
+    {x: 1, y: 8},
+    {x: 2, y: 8},
+    {x: 3, y: 8},
+]
+
 
 export const defaultLayoutXYPosForAppInst = [
     {x: 0, y: 0},
@@ -528,4 +567,7 @@ export const APPINST_HW_MAPPER_KEY = "_layout2_mapper";
 export const ADMIN_LAYOUT_KEY = "_layout_admin";
 export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
 
+
+export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster";
+export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster";
 

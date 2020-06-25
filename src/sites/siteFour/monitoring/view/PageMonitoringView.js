@@ -56,14 +56,7 @@ import type {
 } from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartData,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartData, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -99,13 +92,9 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
-import {
+    ADMIN_CLUSTER_LAYOUT_KEY,
     ADMIN_HW_MAPPER_KEY,
     ADMIN_LAYOUT_KEY,
     APPINST_HW_MAPPER_KEY,
@@ -114,9 +103,11 @@ import {
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
-    defaultHwMapperListForAdmin, defaultHwMapperListForAdminCluster,
+    defaultHwMapperListForAdmin,
+    defaultHwMapperListForAdminCluster,
     defaultHwMapperListForCluster,
-    defaultLayoutForAdmin, defaultLayoutForAdminCluster,
+    defaultLayoutForAdmin,
+    defaultLayoutForAdminCluster,
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
     defaultLayoutForCluster,
@@ -126,6 +117,7 @@ import {
     defaultLayoutXYPosForAppInst,
     defaultLayoutXYPosForCloudlet,
     defaultLayoutXYPosForCluster,
+    defaultLayoutXYPosForClusterAdmin,
     GRID_ITEM_TYPE
 } from "./PageMonitoringLayoutProps";
 import MapForOper from "../components/MapForOper";
@@ -139,7 +131,6 @@ import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
-import Lottie from "react-lottie";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -242,17 +233,7 @@ type PageDevMonitoringState = {
     selectedClusterUsageOneIndex: number,
     gridDraggable: boolean,
     diskGridItemOneStyleTranslate: string,
-    //todo: layout related state
-    layoutAdmin: any,
-    layoutMapperAdmin: [],
-    layoutMapperCluster: [],
-    layoutMapperAppInst: [],
-    layoutMapperClusterForOper: any,
-    layoutCloudlet: any,
-    layoutClusterForOper: any,
-    layoutCluster: any,
-    layoutAppInst: any,
-    layoutMapperCloudlet: any,
+
 
 
     hwListForCluster: [],
@@ -338,8 +319,21 @@ type PageDevMonitoringState = {
     open: boolean,
     clusterTreeDropdownList: any,
     appInstTreeDropdownList: any,
+    //todo: layout related state
+    layoutAdmin: any,
+    layoutMapperAdmin: [],
     layoutClusterAdmin: any,
-    layoutClusterMapperAdmin: any,
+    layoutMapperClusterAdmin: any,
+
+    layoutMapperCluster: [],
+    layoutMapperAppInst: [],
+    layoutMapperClusterForOper: any,
+    layoutCloudlet: any,
+    layoutClusterForOper: any,
+    layoutCluster: any,
+    layoutAppInst: any,
+    layoutMapperCloudlet: any,
+
 }
 
 export const CancelToken = axios.CancelToken;
@@ -392,8 +386,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     //todo: admin layout(Cluster)
                     layoutClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayout)) ? defaultLayoutForAdminCluster : reactLocalStorage.getObject(adminClusterLayout),
-                    layoutClusterMapperAdmin: isEmpty(reactLocalStorage.get(adminClusterLayoutMapper)) ? defaultHwMapperListForAdminCluster : reactLocalStorage.getObject(adminClusterLayoutMapper),
-
+                    layoutMapperClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayoutMapper)) ? defaultHwMapperListForAdminCluster : reactLocalStorage.getObject(adminClusterLayoutMapper),
 
                     //todo:dev layout
                     layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
@@ -1544,11 +1537,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            renderGridLayoutForAppInstAdmin() {
+
+            renderGridLayoutForClusterAdmin() {
                 try {
                     return (
                         <ResponsiveReactGridLayout
-                            ref={c => this.adminGridlayout = c}
                             isResizable={true}
                             draggableHandle=".draggable"
                             verticalCompact={true}
@@ -1563,7 +1556,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             className='layout page_monitoring_layout_dev_oper'
                             cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutAdmin}
+                            layout={this.state.layoutClusterAdmin}
                             rowHeight={this.gridItemHeight}
                             onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
                                 let width = newItem.w;
@@ -1574,24 +1567,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             onLayoutChange={async (layout) => {
                                 this.setState({
-                                    layoutAdmin: layout,
+                                    layoutClusterAdmin: layout,
                                 }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAdmin);
-                                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, layout)
+                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterAdmin);
+                                    reactLocalStorage.setObject(getUserId() + ADMIN_CLUSTER_LAYOUT_KEY, layout)
                                 });
 
                             }}
                         >
-                            {this.state.layoutAdmin.map((item, loopIndex) => {
-
-                                console.log('layoutAdmin====>', item)
+                            {this.state.layoutClusterAdmin.map((item, loopIndex) => {
 
                                 const uniqueIndex = item.i;
                                 let hwType = HARDWARE_TYPE.CPU
                                 let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).graphType
+                                if (!isEmpty(this.state.layoutMapperClusterAdmin.find(x => x.id === uniqueIndex))) {
+                                    hwType = this.state.layoutMapperClusterAdmin.find(x => x.id === uniqueIndex).hwType
+                                    graphType = this.state.layoutMapperClusterAdmin.find(x => x.id === uniqueIndex).graphType
                                     graphType = graphType.toUpperCase()
                                 }
                                 return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
@@ -1605,7 +1596,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            renderGridLayoutForClusterAdmin() {
+            renderGridLayoutForAppInstAdmin() {
                 try {
                     return (
                         <ResponsiveReactGridLayout
@@ -3431,12 +3422,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGridLayoutByClassification() {
 
 
-                if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                    return this.renderGridLayoutForClusterAdmin();
+                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                     return this.renderGridLayoutForAppInstAdmin();
-                }if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-                    return this.renderGridLayoutForAppInstAdmin();
-                }
-                else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     return this.renderGridLayoutForCloudlet();
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
                     return this.renderGridLayoutForCluster();

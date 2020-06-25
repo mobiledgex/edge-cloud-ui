@@ -7,7 +7,6 @@ import '../common/PageMonitoringStyles.css'
 import {Center} from "../common/PageMonitoringStyles";
 import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
-import Table from "@material-ui/core/Table";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
