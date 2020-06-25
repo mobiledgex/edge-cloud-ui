@@ -62,6 +62,7 @@ const getAutoProvKey = (data, isCreate) => {
     autoProvPolicy.deploy_interval_count = data[fields.deployIntervalCount] ? parseInt(data[fields.deployIntervalCount]) : undefined
     autoProvPolicy.min_active_instances = data[fields.minActiveInstances] ? parseInt(data[fields.minActiveInstances]) : undefined
     autoProvPolicy.max_instances = data[fields.maxInstances] ? parseInt(data[fields.maxInstances]) : undefined
+    autoProvPolicy.fields = data[fields.fields] ? data[fields.fields] : undefined
     autoProvPolicy.cloudlets = getCloudletList(data)
   }
   return ({
@@ -97,9 +98,8 @@ export const createAutoProvPolicy = (data) => {
   return { method: CREATE_AUTO_PROV_POLICY, data: requestData}
 }
 
-export const updateAutoProvPolicy = (forms, data, orgData) => {
+export const updateAutoProvPolicy = (data) => {
   let requestData = getAutoProvKey(data, true)
-  requestData.autoProvPolicy.fields = formatter.updateFields(forms, data, orgData)
   return { method: UPDATE_AUTO_PROV_POLICY, data: requestData}
 }
 

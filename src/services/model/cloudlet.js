@@ -33,7 +33,9 @@ export const getKey = (data, isCreate) => {
         if (data[fields.containerVersion]) {
             cloudlet.container_version = data[fields.containerVersion]
         }
-
+        if (data[fields.fields]) {
+            cloudlet.fields = data[fields.fields]
+        }
         let infraConfig = undefined
         if (data[fields.infraFlavorName]) {
             infraConfig = infraConfig ? infraConfig : {}
@@ -107,7 +109,6 @@ export const createCloudlet = (self, data, callback) => {
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
-    requestData.cloudlet.fields = ['20']
     data.uuid = data.uuid ? data.uuid : uuid()
     let request = { uuid: data.uuid, method: UPDATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
@@ -160,6 +161,7 @@ export const keys = () => ([
     { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name'},
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name'},
+    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML},
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
