@@ -53,7 +53,8 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let lineChartDataSet = nextProps.chartDataSet
 
 
-            console.log('lineChartDataSet====>',lineChartDataSet);
+            console.log('lineChartDataSet====>', lineChartDataSet.length);
+            console.log('currentColorIndex====>', this.props.currentColorIndex);
 
             let hwType = nextProps.pHardwareType;
             let graphType = nextProps.graphType;
@@ -69,6 +70,15 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let newDateTimeList = lineChartDataSet.newDateTimeList;
             let hardwareType = lineChartDataSet.hardwareType;
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
+
+            console.log('colorCodeIndexList===>', colorCodeIndexList.length);
+
+            //@todo: only 1 app
+            if (colorCodeIndexList.length === 1) {
+                colorCodeIndexList = []
+                colorCodeIndexList.push(this.props.currentColorIndex)
+            }
+
             const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, false, colorCodeIndexList)
 
 
@@ -140,7 +150,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
                                         <Line
                                             data={this.state.chartDataSet}
                                             options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
-                                            //options={simpleGraphOptions}
                                         />
                                         :
                                         <div style={{zIndex: 99999}}>

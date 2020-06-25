@@ -114,7 +114,7 @@ export type TypeCloudlet = {
     Platform_type: number,
     State: number,
     Progress: string,
-    colorCodeIndex:number,
+    colorCodeIndex: number,
 }
 
 export type TypeCloudletEventLog = {
@@ -216,7 +216,7 @@ export type TypeClusterUsageOne = {
 
 }
 
-export type TypeCloudletClusterListMap ={
+export type TypeCloudletClusterListMap = {
     cloudletNameList: any,
     clusterNameList: any,
 }
@@ -247,6 +247,7 @@ export type TypeAppInst = {
     "Status": any,
     "Revision": number,
     "HealthCheck": number,
+    colorCodeIndex: number,
 }
 
 export type TypeBarChartData = {
@@ -262,9 +263,9 @@ export type TypeLineChartData = {
     hardwareType: string,
 }
 
-export type TypeChartDataSet ={
+export type TypeChartDataSet = {
     labels: any,
-    datasets:any,
+    datasets: any,
     isNoData: boolean
 }
 

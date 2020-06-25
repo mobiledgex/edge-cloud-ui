@@ -1320,7 +1320,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER || this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
                         chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST || this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-
                         chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                     }
 
@@ -2766,6 +2765,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
 
                     console.log('pSelectedAppInst===>', pSelectedAppInst);
+                    console.log('pSelectedAppInst===colorCodeIndex>', pSelectedAppInst.colorCodeIndex);
 
                     let _filteredAppInstList = []
                     let currentClusterList = []
@@ -2773,6 +2773,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     await this.setState({
                         currentAppInst: pSelectedAppInst,
                         loading: true,
+                        currentColorIndex: pSelectedAppInst.colorCodeIndex,
                     })
 
                     let AppName = pSelectedAppInst.AppName
@@ -2819,7 +2820,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredAppInstList: _filteredAppInstList,
                         currentClusterList: currentClusterList,
                     }, () => {
-                        console.log('currentClusterList===>', currentClusterList);
                     });
 
                 } catch (e) {
@@ -2900,7 +2900,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }}
 
                                         onClick={async () => {
-
                                             if (this.state.filteredAppInstList.length === 1) {
                                                 await this.resetLocalDataFor______Admin();
                                             } else {
@@ -2908,7 +2907,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             }
                                         }}
                                     >
-                                        {this.renderDot(index)}
+                                        {this.renderDot(this.state.filteredAppInstList.length === 1 ? this.state.currentColorIndex : index)}
                                         <ClusterCluoudletAppInstLabel
                                             style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                             {reduceString(item.AppName, stringLimit, this.state.legendItemCount)}[{item.Version}]
