@@ -198,7 +198,7 @@ class OrganizationReg extends React.Component {
                     this.props.handleAlertInfo('success', `User ${data[fields.username]} added successfully`)
                     this.addUserForm(this.organizationInfo)
                     userList.push({
-                        userName : data[fields.username],
+                        username : data[fields.username],
                         userRole : data[fields.role]
                     })
                 }
@@ -250,14 +250,13 @@ class OrganizationReg extends React.Component {
     }
 
     getStep3 = () => {
-        let organizationName = this.organizationInfo[fields.organizationName]
         this.organizationInfo[fields.publicImages] = this.organizationInfo[fields.publicImages] ? constant.YES : constant.NO
         return (
             <Fragment>
                 <Grid>
                     <Grid.Column width={11}>
                         <Form>
-                            <Header className="newOrg3-1">{`Organization "` + organizationName + `" has been created.`}</Header>
+                            <br/>
                             <MexDetailViewer detailData={this.organizationInfo} keys={keys()}/>
                             {additionalDetail(this.organizationInfo)}
                             <Form.Group className='orgButton' style={{ width: '100%' }}>

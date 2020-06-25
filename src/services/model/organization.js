@@ -12,7 +12,7 @@ export const keys = () => ([
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
     { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true},
     { field: fields.userList, label: 'User List', sortable: true, visible: false,
-        keys: [{ field: fields.userName, label: 'Username' }, { field: fields.userRole, label: 'Role' }]},
+        keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]},
     { field: 'manage', label: 'Manage', visible: false, clickable: true },
     { field: fields.actions, label: 'Actions', visible: true, clickable: true }
 ])

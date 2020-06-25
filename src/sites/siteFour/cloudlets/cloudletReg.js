@@ -384,7 +384,7 @@ class CloudletReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Create Cloudlet', formType: 'Header', visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet`, formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.' },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.' },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), tip: 'Organization of the cloudlet site' },
