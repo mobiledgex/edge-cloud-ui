@@ -175,6 +175,7 @@ export const CLASSIFICATION = {
     REGION: 'Region',
     APP_INST_FOR_ADMIN: 'appInstForAdmin',
     CLUSTER_FOR_ADMIN: 'clusterForAdmin',
+    CLOUDLET_FOR_ADMIN: 'cloudletForAdmin',
 }
 
 export const SEPARATOR = " | ";

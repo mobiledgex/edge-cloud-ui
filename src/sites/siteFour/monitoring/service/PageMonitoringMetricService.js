@@ -182,7 +182,6 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
             })
         }
 
-
         let resultWithColorCode = []
         filteredAppInstList.map((item, index) => {
             item.colorCodeIndex = index;
@@ -223,11 +222,10 @@ export const fetchCloudletList = async () => {
         })
 
         let userType = localStorage.getItem('selectRole').toString().toLowerCase();
-        let currentSelectedOrg = localStorage.getItem('selectOrg').toString().trim();
-
 
         //@todo: when oper role
         if (userType.includes(USER_TYPE.OPERATOR)) {
+            let currentSelectedOrg = localStorage.getItem('selectOrg').toString().trim();
             let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
                 return item.Operator === currentSelectedOrg
             })
