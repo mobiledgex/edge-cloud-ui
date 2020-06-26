@@ -33,7 +33,7 @@ export const keys = () => ([
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
   //{ field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: false},  
-  { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', visible: true},  
+  { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: true},  
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
