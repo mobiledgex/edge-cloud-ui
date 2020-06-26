@@ -101,7 +101,7 @@ class RegistryUserForm extends React.Component{
 
     getFormData = () => {
         let forms = this.forms()
-        forms.push({ label: 'Sign Up', formType: BUTTON, onClick: this.onCreate, validate: true, style:{position:'absolute', zIndex:9999, right:0, marginRight:20, backgroundColor:'rgba(5, 85, 255, .25)', border:'solid 1px rgba(128, 170, 255, .5) !important', color:'white'} })
+        forms.push({ label: 'Sign Up', formType: BUTTON, onClick: this.onCreate, validate: true, style:{width:'90%', position:'absolute', zIndex:9999, backgroundColor:'rgba(0, 85, 255, .25)', border:'solid 1px rgba(128, 170, 255, .5) !important', color:'white'} })
         this.setState({
             forms: forms
         })
