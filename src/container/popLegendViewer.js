@@ -1,8 +1,6 @@
 import React from 'react';
-import {Divider, Modal, Grid, Table} from "semantic-ui-react";
-import TextareaAutosize from "react-textarea-autosize";
+import {Modal, Grid, Table} from "semantic-ui-react";
 import CloseIcon from '@material-ui/icons/Close';
-import { IconButton } from '@material-ui/core';
 
 const menuItem = ['Users & Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances', 'Policies', 'Monitoring', 'Audit Logs'];
 const roles =
@@ -84,124 +82,34 @@ export default class PopLegendViewer extends React.Component {
     constructor() {
         super();
         this.state = {
-            dummyData:[],
-            selected:{},
-            open:false,
-            dimmer:'',
-            devOptionsOne:[],
-            devOptionsTwo:[],
-            devOptionsThree:[],
-            devOptionsFour:[],
-            devOptionsFive:[],
-            dropdownValueOne:'',
-            dropdownValueTwo:'',
-            dropdownValueThree:'',
-            dropdownValueFour:'',
-            dropdownValueFive:'',
-            cloudletResult:null,
-            appResult:null,
-            listOfDetail:null,
-            propsData:'',
-            orgType:''
+            open: false
         }
         _self = this;
     }
 
-    makeTextBox = (value) => (
-        <TextareaAutosize
-            minRows={3}
-            maxRows={10}
-            style={{ boxSizing: "border-box", width:'400px', backgroundColor:'#545b6b', color:'#eeeeee' }}
-            defaultValue={value}></TextareaAutosize>
-    )
-
-    componentDidMount() {
-
-    }
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
-            let regKeys = [];
-            let component = null;
-            if(nextProps.data){
-                this.setState({orgType:nextProps.data.Type})
-                regKeys = Object.keys(nextProps.data)
-                component = regKeys.map((key, i)=>(
-                    (key !== 'Edit')?
-                    <Grid.Row columns={2} key={i}>
-                        <Grid.Column width={5} className='detail_item'>
-                            <div>
-                                {(key === 'FlavorName')?'Flavor Name'
-                                 :(key == 'RAM')?'RAM Size'
-                                 :(key == 'vCPUs')?'Number of vCPUs'
-                                 :(key == 'Disk')?'Disk Space' /* 여기까지 Flavors*/
-                                 :(key == 'OrganizationName')?'Organization Name'
-                                 :(key == 'AppName')?'App Name'
-                                 :(key == 'DeploymentType')?'Deployment Type'
-                                 :(key == 'ImageType')?'Image Type'
-                                 :(key == 'ImagePath')?'Image Path'
-                                 :(key == 'DefaultFlavor')?'Default Flavor'
-                                 :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
-                                 :(key == 'AuthPublicKey')?'Auth Public Key'
-                                 :key}
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column width={11}>
-                            <div style={{wordWrap: 'break-word'}} style={{overflowY:'auto'}}>
-                                {(key == 'DeploymentType' && String(nextProps.data[key]) === 'docker')?"Docker"
-                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'vm')?"VM"
-                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'kubernetes')?"Kubernetes"
-                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'helm')?"Helm"
-                                :(key == 'Ports')?String(nextProps.data[key]).toUpperCase()
-                                :(key == 'DeploymentMF')? this.makeTextBox(nextProps.data[key])
-                                :(key == 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
-                                :(key == 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/
-                                :(key == 'Created')? String("time is ==  "+nextProps.data[key])
-                                :(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
-                                :String(nextProps.data[key])}
-                            </div>
-                        </Grid.Column>
-
-                        <Divider vertical></Divider>
-                    </Grid.Row>
-                        :null
-
-                ))
-            }
-            this.setState({listOfDetail:component,propsData:nextProps.data})
+    static getDerivedStateFromProps(props, state) {
+        if (props.open) {
+            return { open: props.open }
         }
-
+        return null
     }
-
-    setCloudletList = (operNm) => {
-        let cl = [];
-        _self.state.cloudletResult[operNm].map((oper, i) => {
-            if(i === 0) _self.setState({dropdownValueThree: oper.CloudletName})
-            cl.push({ key: i, value: oper.CloudletName, text: oper.CloudletName })
-        })
-
-        _self.setState({devOptionsThree: cl})
-    }
-
-
 
     close() {
         this.setState({ open: false })
         this.props.close()
     }
-    getUserRole (type) {
+
+    getUserRole(type) {
         return (localStorage.selectRole == 'AdminManager') ? (type !== 'Monitoring' && type !== 'Audit Logs'? 'Manage' : 'View') :
             (localStorage.selectRole == 'DeveloperManager') ? roles.Developer['Manager'][type] :
                 (localStorage.selectRole == 'DeveloperContributor') ? roles.Developer['Contributor'][type] :
                     (localStorage.selectRole == 'DeveloperViewer') ? roles.Developer['Viewer'][type] :
                         (localStorage.selectRole == 'OperatorManager') ? roles.Operator['Manager'][type] :
                             (localStorage.selectRole == 'OperatorContributor') ? roles.Operator['Contributor'][type] :
-                                (localStorage.selectRole == 'OperatorViewer') ? roles.Operator['Viewer'][type] :
-                                    ''
+                                (localStorage.selectRole == 'OperatorViewer') ? roles.Operator['Viewer'][type] : ''
     }
 
     render() {
-        let { orgType } = this.state;
         return (
             <Modal style={{width: '450px'}} className="modal_role" open={this.state.open}>
                 <Modal.Content >
