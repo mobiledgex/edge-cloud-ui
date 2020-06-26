@@ -4,11 +4,11 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Box } fro
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../../actions';
 import { IconButton, Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import Calendar from '../components/horizontal_calendar/Calendar';
-import * as dateUtil from '../utils/date_util'
+import Calendar from '../../../components/horizontal_calendar/Calendar';
+import * as dateUtil from '../../../utils/date_util'
 import CheckIcon from '@material-ui/icons/Check';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RefreshIcon from '@material-ui/icons/Refresh';
