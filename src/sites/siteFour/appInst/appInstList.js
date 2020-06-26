@@ -111,7 +111,7 @@ class AppInstList extends React.Component {
             id: 'AppInsts',
             headerLabel: 'App Instances',
             nameField: fields.appName,
-            requestType: [showAppInsts, showApps, showCloudletInfos, showAutoProvPolicies],
+            requestType: [showAppInsts, showApps, showCloudletInfos],
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,
