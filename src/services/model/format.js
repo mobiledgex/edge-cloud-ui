@@ -137,8 +137,7 @@ export const fields = {
     triggerTime: 'triggerTime',
     minActiveInstances:'minActiveInstances',
     maxInstances:'maxInstances',
-    fields:'fields',
-    haStatus:'haStatus'
+    fields:'fields'
 }
 
 export const getUserRole = () => {
