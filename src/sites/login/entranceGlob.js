@@ -113,7 +113,16 @@ class EntranceGlobe extends Component {
                     />
                 </div>
                 {this.state.mexAlertMessage ?
-                    <MexAlert data={this.state.mexAlertMessage} onClose={()=>this.setState({ mexAlertMessage: undefined })} /> : null}
+                    <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
+                {(self.props.loadingSpinner == true) ?
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                        <GridLoader
+                            sizeUnit={"px"}
+                            size={25}
+                            color={'#70b2bc'}
+                            loading={self.props.loadingSpinner}
+                        />
+                    </div> : null}
             </div>
         )
     }
@@ -123,7 +132,8 @@ function mapStateToProps(state) {
         user: state.user,
         userInfo: state.userInfo ? state.userInfo : null,
         loginMode: state.loginMode ? state.loginMode.mode : null,
-        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg }
+        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
+        loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
     }
 }
 const mapDispatchProps = (dispatch) => {
