@@ -1256,15 +1256,60 @@ export function convertHWType(hwType) {
 }
 
 
-/**
- *
- * @param allRegionList
- * @param cloudletList
- * @param clusterList
- * @param _this
- * @returns {[]}
- */
-export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, operList) => {
+export const makeClusterMultiDropdown = (allRegionList, cloudletList, clusterList, _this,) => {
+
+    console.log(`makeRegionCloudletClusterTreeDropdown====allRegionList>`, allRegionList)
+    console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
+    console.log('makeRegionCloudletClusterTreeDropdown====clusterList>', clusterList);
+
+
+    let treeClusterList = []
+    cloudletList.map((cloudletOne, cloudletIndex) => {
+        let newCloudletOne = {
+            title: (
+                <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
+                    <Tag color="pink" style={{color: 'black'}}>Cloudlet</Tag>
+                </div>
+            ),
+            value: cloudletOne.CloudletName,
+            children: [],
+            region: cloudletOne.Region,
+            oper: cloudletOne.oper,
+            selectable: true,
+
+        };
+
+        clusterList.map((clusterItemOne: any, innerIndex) => {
+            if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+                newCloudletOne.children.push({
+                    title: (
+                        <div style={{display: 'flex'}}>
+                            <Center style={{width: 15,}}>
+                                {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
+                            </Center>
+                            <div style={{marginLeft: 5,}}>
+                                {clusterItemOne.cluster}
+                            </div>
+
+                        </div>
+                    ),
+                    value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                    isParent: false,
+
+                })
+            }
+        })
+
+        treeClusterList.push(newCloudletOne);
+    })
+
+
+    return treeClusterList
+
+}
+
+
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
 
     console.log(`makeRegionCloudletClusterTreeDropdown====allRegionList>`, allRegionList)
     console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
@@ -1287,56 +1332,33 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
         };
 
-
-        if (_this.state.userType.includes('dev')) {
-            clusterList.map((clusterItemOne: any, innerIndex) => {
-                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
-                    newCloudletOne.children.push({
-                        title: (
-                            <div style={{display: 'flex'}}>
-                                <Center style={{width: 15,}}>
-                                    {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
-                                </Center>
-                                <div style={{marginLeft: 5,}}>
-                                    {clusterItemOne.cluster}
-                                </div>
-
+        clusterList.map((clusterItemOne: any, innerIndex) => {
+            if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+                newCloudletOne.children.push({
+                    title: (
+                        <div style={{display: 'flex'}}>
+                            <Center style={{width: 15,}}>
+                                {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
+                            </Center>
+                            <div style={{marginLeft: 5,}}>
+                                {clusterItemOne.cluster}
                             </div>
-                        ),
-                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
-                        isParent: false,
 
-                    })
-                }
-            })
-        } else {//todo:admin
-            clusterList.map((clusterItemOne: TypeCluster, innerIndex) => {
-                if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
-                    newCloudletOne.children.push({
-                        title: (
-                            <div style={{display: 'flex'}}>
-                                <Center style={{width: 15,}}>
-                                    {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
-                                </Center>
-                                <div style={{marginLeft: 5,}}>
-                                    {clusterItemOne.ClusterName}
-                                </div>
+                        </div>
+                    ),
+                    value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                    isParent: false,
 
-                            </div>
-                        ),
-                        value: clusterItemOne.ClusterName + " | " + cloudletOne.CloudletName,
-                        isParent: false,
-                    })
-                }
-            })
-        }
+                })
+            }
+        })
 
         treeCloudletList.push(newCloudletOne);
     })
 
     console.log(`operTreeList==1==>`, treeCloudletList);
 
-    if (operList === undefined) {//TODO: ADD REGION PARENT
+    if (isShowRegion) {//TODO: ADD REGION PARENT
         let regionTreeList = []
         allRegionList.map((regionOne, regionIndex) => {
             let regionMapOne = {
@@ -1359,36 +1381,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
         return regionTreeList;
     } else {
-        //TODO : ######################
-        //TODO : ADD OPER PARENT
-        //TODO : ######################
-
-        let operTreeList = []
-
-        console.log(`operList====>`, operList);
-        operList.map((operOne, regionIndex) => {
-            let regionMapOne = {
-                title: (
-                    <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
-                        {operOne}
-                    </div>
-                ),
-                value: operOne,
-                children: [],
-                selectable: false,
-            };
-
-            treeCloudletList.map((innerItem, innerIndex) => {
-                if (operOne === innerItem.oper) {
-                    regionMapOne.children.push(innerItem)
-                }
-            })
-            operTreeList.push(regionMapOne)
-        })
-
-        console.log(`operTreeList=2===>`, operTreeList);
-
-        return operTreeList;
+        return treeCloudletList
     }
 
 }

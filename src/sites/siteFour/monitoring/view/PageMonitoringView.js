@@ -20,7 +20,7 @@ import {
     handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCloudlet,
-    makeBarChartDataForCluster,
+    makeBarChartDataForCluster, makeClusterMultiDropdown,
     makeDropdownForAppInst,
     makeDropdownForCloudlet,
     makeid,
@@ -759,9 +759,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let operList = this.makeUniqOper(clusterList)
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         if (this.state.userType.includes("dev")) {
-                            clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, undefined)
-                        } else {
-                            clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, operList)
+                            clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, true)
+                        } else {//admin
+                            clusterTreeDropdownList = makeClusterMultiDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, false)
                         }
 
                         bubbleChartData = await makeBubbleChartData(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
@@ -2253,7 +2253,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-           rendeCloudletDropdownFor____________Admin() {
+            rendeCloudletDropdownFor____________Admin() {
 
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -2343,7 +2343,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 let cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
                                 let regionList = localStorage.getItem('regions').split(",")
                                 let operList = this.makeUniqOper(filteredClusterList)
-                                let clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this, operList)
+                                let clusterTreeDropdownList = makeClusterMultiDropdown(regionList, cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
 
 
                                 await this.setState({
@@ -2989,6 +2989,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderClusterDot(index, size = 15) {
+                return (
+                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                        <FontAwesomeIcon
+                            name="star" style={{
+                            fontSize: 15,
+                            color: this.state.chartColorList[index],
+                            cursor: 'pointer',
+                            marginTop: -1
+                        }}
+                        />
+                    </div>
+                )
+            }
+
             makeStringLimit(classification) {
                 let stringLimit = 25;
                 if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
@@ -3141,7 +3156,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderMultiClusterLegendForAdmin(pLegendItemCount) {
+            renderCloudlet_MultiClusterLegendForAdmin(pLegendItemCount) {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
 
                 return (
@@ -3191,7 +3206,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     >
                                         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                             <div>
-                                                {this.renderDot(item.colorCodeIndex)}
+                                                {this.renderClusterDot(item.colorCodeIndex)}
                                             </div>
                                             <div style={{marginTop: 0, marginLeft: 5}}>
                                                 {reduceString(item.ClusterName, stringLimit, pLegendItemCount)}
@@ -3335,7 +3350,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderClusterLegend(this.state.legendItemCount)
                                     : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderCloudletLegend(this.state.legendItemCount)
                                         : this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderAppLegend(this.state.legendItemCount)
-                                            : this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.renderMultiClusterLegendForAdmin(this.state.legendItemCount)
+                                            : this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.renderCloudlet_MultiClusterLegendForAdmin(this.state.legendItemCount)
                                                 : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN ? this.renderClusterLegend(this.state.legendItemCount)
                                                     : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegend(this.state.legendItemCount) : null
                                 }
