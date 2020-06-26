@@ -16,8 +16,9 @@ import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
+//import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
 import { roundOff } from '../utils/math_util';
+import Map from "../libs/simpleMaps/with-react-motion/pageMap";
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -266,12 +267,15 @@ class MexListView extends React.Component {
     /*Action Block*/
     listView = () => {
         let isMap = this.props.requestInfo.isMap && this.state.showMap
+        let mapCenter = (this.selectedRegion === 'US')? [41,-74] : [53,13]
+
         return (
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 300 }}>
-                        <Map dataList={this.state.filterList} id={this.props.requestInfo.id} onClick={this.onMapClick} mapDetails={this.mapDetails} />
-                    </div> : null}
+                        <Map dataList={this.state.filterList} id={this.props.requestInfo.id} onClick={this.onMapClick} mapDetails={this.mapDetails} mapCenter={mapCenter}/>*/}
+                    </div> : null
+                }
                 <MexListViewer keys={this.keys} dataList={this.state.filterList}
                     selected={this.state.selected}
                     setSelected={this.setSelected}

@@ -40,3 +40,23 @@
 .annoteText {
     fill: #e6e6e6; stroke: #747474; stroke-width:2;  font-size: 3px; paint-order: stroke;
 }
+
+
+.leaflet-div-icon {
+    width:20px;
+    height:20px;
+    border-radius: 50%;
+    background: radial-gradient(transparent, #76FF03);
+    border: none;
+    text-align: center;
+    vertical-align: center;
+    font-size: 16px;
+}
+
+.map_tooltip{
+    color: rgba(255,255,255,.8);
+    background-color: rgba(31,37,51,1);
+    border: solid 1px rgba(255,255,255,.3);
+    border-radius: 4px;
+    z-index: 1000;
+}
