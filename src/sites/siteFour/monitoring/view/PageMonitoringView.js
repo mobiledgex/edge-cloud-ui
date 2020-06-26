@@ -658,14 +658,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //TODO:###################################################################################################################
                     //TODO:       AMDIN
                     //TODO:###################################################################################################################
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        this.setState({isEmptyChartData: true,})
-                        promiseList.push(fetchClusterList())
-                        promiseList.push(fetchAppInstList(undefined, this))
-                        let newPromiseList = await Promise.all(promiseList);
-                        clusterList = newPromiseList[0];
-                        appInstList = newPromiseList[1];
-                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER) || this.state.userType.includes(USER_TYPE.AMDIN)) {
                         //TODO:###################################################################################################################
                         //TODO:       DEVELOPER
                         //TODO:###################################################################################################################
@@ -721,13 +714,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo:##########################################################
                     //todo: ADMIN usage
                     //todo:############################################################
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        let operList = this.makeUniqOper(clusterList)
-                        let regionList = localStorage.getItem('regions').split(",")
-                        cloudletClusterListMap = getCloudletClusterNameList(clusterList)
-                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, operList)
-
-                    } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
+                    if (this.state.userType.includes(USER_TYPE.DEVELOPER) || this.state.userType.includes(USER_TYPE.AMDIN)) {
                         //todo:##########################################################
                         //todo: DEVELOPER usage
                         //todo:############################################################
@@ -735,14 +722,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                         let newPromiseList2 = await Promise.all(usageEventPromiseList);
-                        allClusterEventLogList = newPromiseList2[0];
+                        //allClusterEventLogList = newPromiseList2[0];
+                        allClusterEventLogList = [];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
-
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
-                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this, undefined)
+                        let operList = this.makeUniqOper(clusterList)
+                        cloudletClusterListMap = getCloudletClusterNameList(clusterList)
+                        if (this.state.userType.includes("dev")) {
+                            clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, undefined)
+                        } else {
+                            clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, operList)
+                        }
+
                         bubbleChartData = await makeBubbleChartData(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
+
 
                     } else {
                         //todo:###################################
@@ -2645,7 +2640,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 placeholder={'Select Cluster'}
 
                                 onSelect={(value, node, extra) => {
-                                    console.log(`sdlkflskdfkl====>`, value);
+                                   /* console.log(`sdlkflskdfkl====>`, value);
                                     console.log(`sdlkflskdfkl====>`, node);
                                     console.log(`sdlkflskdfkl====>`, extra);
 
@@ -2653,7 +2648,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         let cloudlet = node.key
                                         alert(cloudlet)
                                         this.treeSelect.blur();
-                                    }
+                                    }*/
                                 }}
                                 treeData={this.state.clusterTreeDropdownList}
                                 treeDefaultExpandAll={true}
