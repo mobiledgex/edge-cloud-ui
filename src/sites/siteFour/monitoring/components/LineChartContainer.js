@@ -147,7 +147,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                                 height: '99%'
                             }}>
                                 {this.props.parent.state.loading ? renderPlaceHolderLoader()
-                                    : !this.props.isEmptyChartData ?
+                                    : !this.state.isNoData ?
                                         <Line
                                             data={this.state.chartDataSet}
                                             options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
