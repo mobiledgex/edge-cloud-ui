@@ -32,7 +32,7 @@ export const keys = () => ([
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
-  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true},  
+  //{ field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: false},  
   { field: fields.haStatus, label: 'HA Policy', visible: true},  
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
