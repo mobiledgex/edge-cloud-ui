@@ -224,7 +224,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 .intro_login {
     position: absolute;
-    top: 45%; /* login-signUp location vertical */
+    top: 40%; /* login-signUp location vertical */
     left: 50%;
     width: 456px; /* vertical */
     height: auto;
@@ -363,26 +363,10 @@ body, button, input, textarea, optgroup, select, textarea,
     margin: 0;
 }
 
-.intro_login .ui.form.fieldForm {
+.fieldForm {
     padding: 0 1rem;
     width:100%;
 }
-
-.intro_login .ui.form.fieldForm .fields .field{
-    padding-top: 0.714em;
-    padding-bottom: 0.714em;
-}
-
-.intro_login .ui.form.fieldForm .fields .field{
-    padding-top: 0.714em;
-    padding-bottom: 0.714em;
-}
-
-.intro_login .ui.form .inline.fields .field{
-    padding: 0.714em 0em;
-    width:100%;
-}
-
 
 
 /* console main style */

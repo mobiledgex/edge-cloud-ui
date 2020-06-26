@@ -322,9 +322,11 @@ const MexForms = (props) => {
         }
         return (
             form.field ?
-                <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-'+index}>
+                <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-' + index}>
                     <Grid.Column width={4} className='detail_item'>
-                        <div style={form.labelStyle}>{form.label}{required ? ' *' : ''}</div>
+                        {form.labelIcon ?
+                            <IconButton disabled={true}>{form.labelIcon}<sup>{required ? ' *' : ''}</sup></IconButton> :
+                            <div style={form.labelStyle}>{form.label}<sup>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
