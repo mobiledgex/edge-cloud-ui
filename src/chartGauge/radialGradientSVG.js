@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as d3 from 'd3';
 class RadialGradientSVG extends Component {
     render() {
         let { startColor, endColor, middleColor, idCSS, rotation } = this.props;
