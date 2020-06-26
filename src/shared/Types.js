@@ -9,6 +9,10 @@ export type TypeUtilization = {
     "vCpuMax": number,
     "vCpuUsed": number,
 }
+export type TypeLegendRowCount = {
+    itemCount: number,
+    rowCount: number,
+}
 
 export type TypeGridInstanceList = {
     sumAcceptsConnection: number;

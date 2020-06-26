@@ -56,7 +56,7 @@ import type {
     TypeCluster,
     TypeClusterEventLog,
     TypeClusterUsageOne,
-    TypeGridInstanceList,
+    TypeGridInstanceList, TypeLegendRowCount,
     TypeLineChartData,
     TypeUtilization
 } from "../../../../shared/Types";
@@ -653,7 +653,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 let uniqOperList = _.uniqBy(operatorList)
                 let newOperList = []
-                newOperList.push('All')
+                newOperList.push('All Operator')
                 uniqOperList.map(item => {
                     newOperList.push(item)
                 })
@@ -686,11 +686,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //TODO:       AMDIN
                     //TODO:###################################################################################################################
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        /*cloudletList = await fetchCloudletList();
-                        appInstList = await fetchAppInstList(undefined, this)*/
+                        cloudletList = await fetchCloudletList();
+                        //appInstList = await fetchAppInstList(undefined, this)
+                        appInstList = [];
+                        console.log(`cloudletList========>`, cloudletList);
 
-                        cloudletList = require('./cloudletList')
-                        appInstList = require('./appInstList')
+                        //@fixme: fakeData
+                        /*cloudletList = require('./cloudletList')
+                        appInstList = require('./appInstList')*/
                         let operList = this.makeUniqOper(cloudletList)
 
                         await this.setState({
@@ -732,13 +735,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredCloudletList: cloudletList,
                     })
 
-                    //@desc:#########################################################################
-                    //@desc: map Marker
-                    //@desc:#########################################################################
+                    //@todo:#########################################################################
+                    //@todo: map Marker
+                    //@todo:#########################################################################
                     let markerListForMap = []
                     if (this.state.userType.toLowerCase().includes("admin")) {
-                        markerListForMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                    } else {//todo : oper
+                        /*if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {}*/
+
+
+                        markerListForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
+
+                    } else {//todo : oper, dev
                         let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                         markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                     }
@@ -785,7 +792,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
                     let dataCount = this.getDataCount(appInstList, clusterList, cloudletList)
-
                     /*TODO: LEGEND ROW COUNTING*/
                     let itemCount = 0;
                     let rowCount = 0;
@@ -848,6 +854,31 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     showToast(e.toString())
 
                 }
+
+            }
+
+            makeLegendRowCount(cloudletList, clusterList, appInstList, itemCount) {
+                let rowCount = 0
+                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    itemCount = cloudletList.length
+                    rowCount = Math.ceil(itemCount / 8);
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    itemCount = clusterList.length;
+                    rowCount = Math.ceil(itemCount / 6);
+                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                    itemCount = appInstList.length;
+                    rowCount = Math.ceil(itemCount / 6);
+                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    itemCount = appInstList.length;
+                    rowCount = Math.ceil(itemCount / 6);
+                }
+
+                let result = {
+                    itemCount,
+                    rowCount
+                }
+
+                return result
 
             }
 
@@ -1466,6 +1497,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 isShowAppInstPopup={this.state.isShowAppInstPopup}
                                 selectedAppInstIndex={this.state.selectedAppInstIndex}
                                 isEnableZoomIn={!this.state.isEnableZoomIn}
+                                currentClassfication={this.state.currentClassification}
                             />
                         )
                     } else {
@@ -2292,9 +2324,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 this.setState({
                                     currentOper: value,
                                     filteredCloudletList: filteredCloudletList,
+                                    filteredClusterUsageList: [],
                                     cloudletDropdownList: cloudletDropdownList,
                                     currentCloudLet: undefined,
                                     filteredCloudletUsageList: [],
+                                    currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                 }, () => {
                                 })
 
@@ -2306,7 +2340,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (index === 0) {
                                         return (
                                             <Option key={index} value={undefined} style={{}}>
-                                                <div style={{color: 'orange', marginLeft: 7,}}>{operOne}</div>
+                                                <div style={{marginLeft: 7,}}>{operOne}</div>
                                             </Option>
                                         )
                                     } else {
