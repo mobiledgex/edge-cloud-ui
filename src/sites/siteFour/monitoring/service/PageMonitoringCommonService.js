@@ -15,6 +15,9 @@ import {makeCompleteDateTime} from "./PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+import {Empty} from "antd";
+
+const FontAwesomeIcon = require('react-fontawesome')
 
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
@@ -94,6 +97,27 @@ export const renderGridLoader = () => {
             color={'#70b2bc'}
             loading={true}
         />
+    )
+}
+
+export const renderEmptyBox = () => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{height: '100%'}}>
+            <div style={{
+                background: 'grey',
+                opacity: 0.5,
+                borderRadius: 25,
+                padding: 10,
+                alignSelf: "center",
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
+                <div style={{color: 'white !important'}}>
+                    No Data Available
+                </div>
+            </div>
+        </div>
     )
 }
 

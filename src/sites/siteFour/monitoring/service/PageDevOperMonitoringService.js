@@ -1256,9 +1256,8 @@ export function convertHWType(hwType) {
 }
 
 
-export const makeClusterMultiDropdown = (allRegionList, cloudletList, clusterList, _this,) => {
+export const makeClusterMultiDropdown = ( cloudletList, clusterList, _this,) => {
 
-    console.log(`makeRegionCloudletClusterTreeDropdown====allRegionList>`, allRegionList)
     console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
     console.log('makeRegionCloudletClusterTreeDropdown====clusterList>', clusterList);
 
@@ -1279,8 +1278,8 @@ export const makeClusterMultiDropdown = (allRegionList, cloudletList, clusterLis
 
         };
 
-        clusterList.map((clusterItemOne: any, innerIndex) => {
-            if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+        clusterList.map((clusterItemOne: TypeCluster, innerIndex) => {
+            if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
                 newCloudletOne.children.push({
                     title: (
                         <div style={{display: 'flex'}}>
@@ -1288,12 +1287,12 @@ export const makeClusterMultiDropdown = (allRegionList, cloudletList, clusterLis
                                 {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
-                                {clusterItemOne.cluster}
+                                {clusterItemOne.ClusterName}
                             </div>
 
                         </div>
                     ),
-                    value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                    value: clusterItemOne.ClusterName + " | " + cloudletOne.CloudletName,
                     isParent: false,
 
                 })

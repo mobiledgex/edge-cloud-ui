@@ -1,0 +1,286 @@
+[
+    {
+        "uuid": "8094cf92-237a-4c3e-934c-576ee3a7e8f2",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MEXPrometheusAppName",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "RahDemo123",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "rahdemo123.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 9090,
+                "public_port": 9090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 8,
+        "Error": [
+            "Update App Inst failed: Server does not exist -- can't show server mex-k8s-master-mexplat-stage-hamburg-cloudlet-rahdemo123-venkydev, No server with a name or ID of 'mex-k8s-master-mexplat-stage-hamburg-cloudlet-rahdemo123-venkydev' exists.\n, exit status 1",
+            "inconsistent Controller vs CRM state"
+        ],
+        "Runtime": {},
+        "Created": "seconds : 1592412992",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "2020-05-16T050643",
+        "colorCodeIndex": 0
+    },
+    {
+        "uuid": "3b1cf253-0466-47f0-8855-01999f7bdce1",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MEXPrometheusAppName",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "autoclustermobiledgexsdkdemo",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "autoclustermobiledgexsdkdemo.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 2,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 9090,
+                "public_port": 9090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 10,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1592367583",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "2020-05-16T050643",
+        "colorCodeIndex": 1
+    },
+    {
+        "uuid": "426c4e96-ccd0-4a15-9d8b-50de451d06ea",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MEXPrometheusAppName",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "autoclustermobiledgexsdkdemo20",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "autoclustermobiledgexsdkdemo20.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 9090,
+                "public_port": 9090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 4,
+        "Error": [
+            "Create App Inst failed: error deploying helm chart, KUBECONFIG=autoclustermobiledgexsdkdemo20.TDG.kubeconfig helm install stable/prometheus-operator --version \"7.1.1\" --name mexprometheusappnamev10 -f mexprometheusappname0, 2020/05/18 05:06:22 Warning: Merging destination map for chart 'prometheus-node-exporter'. Overwriting table item 'extraArgs', with non table value: [--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/) --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$]\n2020/05/18 05:06:22 Warning: Merging destination map for chart 'prometheus-node-exporter'. Overwriting table item 'extraArgs', with non table value: [--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/) --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$]\nError: customresourcedefinitions.apiextensions.k8s.io \"alertmanagers.monitoring.coreos.com\" already exists, Process exited with status 1"
+        ],
+        "Runtime": {},
+        "Created": "seconds : 1589778362",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {
+            "task_number": 2,
+            "task_name": "Creating Helm App"
+        },
+        "Revision": "2020-05-16T050643",
+        "colorCodeIndex": 2
+    },
+    {
+        "uuid": "8aa352c8-d53d-42ce-8163-80a915a92621",
+        "Region": "EU",
+        "OrganizationName": "testmonitor",
+        "AppName": "pingthread",
+        "Version": "v1",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-frankfurt-cloudlet",
+        "ClusterInst": "DefaultVMCluster",
+        "CloudletLocation": {
+            "latitude": 50.1109,
+            "longitude": 8.6821
+        },
+        "URI": "testmonitorpingthreadv1.mexplat-stage-frankfurt-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 8090,
+                "public_port": 8090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1592896370",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "-",
+        "colorCodeIndex": 3
+    },
+    {
+        "uuid": "0ce91199-8f41-4a4b-b7ea-6ce1e14b118a",
+        "Region": "EU",
+        "OrganizationName": "testmonitor",
+        "AppName": "pingthread",
+        "Version": "v1",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "DefaultVMCluster",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "testmonitorpingthreadv1.mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 8090,
+                "public_port": 8090
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {},
+        "Created": "seconds : 1589390759",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "-",
+        "colorCodeIndex": 4
+    },
+    {
+        "uuid": "e5e9b37c-92d0-4a00-bac4-e14f0188657e",
+        "Region": "EU",
+        "OrganizationName": "titanorganization",
+        "AppName": "mobiledgexsdkdemo20",
+        "Version": "latest",
+        "Operator": "TDG",
+        "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+        "ClusterInst": "autoclustermobiledgexsdkdemo20",
+        "CloudletLocation": {
+            "latitude": 53.5511,
+            "longitude": 9.9937
+        },
+        "URI": "mexplat-stage-hamburg-cloudlet.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+            {
+                "proto": 1,
+                "internal_port": 8011,
+                "public_port": 8011,
+                "fqdn_prefix": "mobiledgexsdkdemo20-tcp."
+            },
+            {
+                "proto": 1,
+                "internal_port": 8008,
+                "public_port": 8008,
+                "fqdn_prefix": "mobiledgexsdkdemo20-tcp."
+            }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {
+            "container_ids": [
+                "mobiledgexsdkdemo20-deployment-5468657464-46j44"
+            ]
+        },
+        "Created": "seconds : 1588221869",
+        "Progress": "",
+        "Edit": [
+            "Region",
+            "DeveloperName",
+            "AppName",
+            "Version",
+            "Operator",
+            "Cloudlet",
+            "ClusterInst",
+            "CloudletLocation",
+            "State",
+            "Editable"
+        ],
+        "Status": {},
+        "Revision": "2020-04-29T204751",
+        "HealthCheck": 3,
+        "colorCodeIndex": 5
+    }
+]

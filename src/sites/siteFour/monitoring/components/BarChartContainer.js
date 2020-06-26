@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderEmptyBox, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -8,6 +8,7 @@ import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {convertHWType} from "../service/PageDevOperMonitoringService";
+import {Empty} from "antd";
 
 type Props = {
     parent: PageMonitoringView,
@@ -37,9 +38,15 @@ export default class BarChartContainer extends React.Component<Props, State> {
         }
     }
 
+    componentDidMount(): void {
+
+        console.log(`chartDataSet========>`, isEmpty(this.props.chartDataSet));
+    }
+
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
         if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
+
             this.setState({
                 chartDataSet: nextProps.chartDataSet,
                 pHardwareType: nextProps.pHardwareType,
@@ -67,17 +74,22 @@ export default class BarChartContainer extends React.Component<Props, State> {
                     </div>
                     <div className='page_monitoring_container'>
                         {this.props.loading ? renderPlaceHolderLoader() :
-                            <div style={{width: '100%'}}>
-                                <GoogleChart
-                                    key={this.state.isResizeComplete}
-                                    height={'100%'}
-                                    chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-                                    loader={<div><CircularProgress style={{color: '#1cecff',}}/></div>}
-                                    data={this.state.chartDataSet.chartDataList}
-                                    options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
-                                />
-                            </div>
+
+                            !isEmpty(this.props.chartDataSet) ?
+                                <div style={{width: '100%'}}>
+                                    <GoogleChart
+                                        key={this.state.isResizeComplete}
+                                        height={'100%'}
+                                        chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+                                        loader={<div><CircularProgress style={{color: '#1cecff',}}/></div>}
+                                        data={this.state.chartDataSet.chartDataList}
+                                        options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
+                                    />
+                                </div>
+                                :
+                                renderEmptyBox()
                         }
+
                     </div>
                 </div>
             </div>
