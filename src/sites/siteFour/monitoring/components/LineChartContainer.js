@@ -1,11 +1,16 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
+import {
+    convertToClassification,
+    makeGradientLineChartData,
+    makeLineChartOptions
+} from "../service/PageDevOperMonitoringService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import type {TypeChartDataSet} from "../../../../shared/Types";
+import {Empty} from "antd";
 
 type Props = {
     parent: PageMonitoringView,
@@ -43,6 +48,8 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
     componentDidMount(): void {
         let lineChartDataSet = this.props.chartDataSet
+
+
         let hwType = this.props.pHardwareType;
         let graphType = this.props.graphType;
         this.setChartData(lineChartDataSet, hwType, graphType)
@@ -80,6 +87,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 pHardwareType: hwType,
                 graphType: graphType,
                 isNoData: chartDataSet.isNoData,
+            }, () => {
             })
         } catch (e) {
 
@@ -139,14 +147,15 @@ export default class LineChartContainer extends React.Component<Props, State> {
                                 height: '99%'
                             }}>
                                 {this.props.parent.state.loading ? renderPlaceHolderLoader()
-                                    : !this.state.isNoData ?
+                                    : !this.props.isEmptyChartData ?
                                         <Line
                                             data={this.state.chartDataSet}
                                             options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
                                         />
                                         :
-                                        <div style={{zIndex: 99999}}>
-                                            no Data!!
+                                        <div className='page_monitoring_blank_box'
+                                             style={{height: '100%',}}>
+                                            <Empty image={'https://static.thenounproject.com/png/1439126-200.png'}/>
                                         </div>
                                 }
                             </div>
