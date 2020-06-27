@@ -1207,8 +1207,10 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
 
 
 export const convertToClassification = (pClassification) => {
-    if (pClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
-        return pClassification//CLASSIFICATION.CLUSTER
+    if (pClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+        return CLASSIFICATION.CLOUDLET
+    } else if (pClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+        return CLASSIFICATION.CLUSTER
     } else if (pClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
         return CLASSIFICATION.APP_INST
     } else if (pClassification === CLASSIFICATION.APPINST) {
