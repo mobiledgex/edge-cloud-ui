@@ -147,7 +147,7 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitorin
 /**
  *
  * @param pRegionList
- * @param type
+ * @param _this
  * @returns {Promise<[]>}
  */
 export const fetchAppInstList = async (pRegionList: string[] = localStorage.getItem('regions').split(","), _this: PageMonitoringView) => {

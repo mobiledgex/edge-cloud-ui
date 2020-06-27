@@ -2657,7 +2657,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let startTime = makeCompleteDateTime(this.state.startTime);
                         let endTime = makeCompleteDateTime(this.state.endTime);
                         let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
-                        let clientStatusList = await getClientStatusList(await fetchAppInstList(), startTime, endTime);
+                        let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
 
                         this.setState({
                             filteredCloudletUsageList: usageList,
