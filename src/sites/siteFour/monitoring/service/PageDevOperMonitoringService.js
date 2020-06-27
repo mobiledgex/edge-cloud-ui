@@ -69,7 +69,8 @@ export function renderTitle(props) {
                      color: 'white'
                  }}
             >
-                {props.currentClassification} Event Log
+                {convertToClassification(props.currentClassification)} Event Log
+
             </div>
 
         </div>
@@ -1256,7 +1257,7 @@ export function convertHWType(hwType) {
 }
 
 
-export const makeClusterMultiDropdown = ( cloudletList, clusterList, _this,) => {
+export const makeClusterMultiDropdown = (cloudletList, clusterList, _this,) => {
 
     console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
     console.log('makeRegionCloudletClusterTreeDropdown====clusterList>', clusterList);

@@ -4,6 +4,7 @@ import {
     LegendOuterDiv,
     PageMonitoringStyles
 } from '../common/PageMonitoringStyles'
+import AppsIcon from '@material-ui/icons/Apps';
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
@@ -104,6 +105,7 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
+import AdjustIcon from '@material-ui/icons/Adjust';
 import {
     ColorLinearProgress,
     CustomSwitch,
@@ -947,8 +949,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             convertToClassification(pClassification) {
-                if (pClassification === CLASSIFICATION.APPINST) {
-                    return CLASSIFICATION.APP_INSTANCE//"App Instance"
+                if (pClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+                    return CLASSIFICATION.CLOUDLET
+                } else if (pClassification === CLASSIFICATION.APPINST) {
+                    return CLASSIFICATION.APP_INSTANCE
                 } else {
                     return pClassification
                 }
@@ -3189,14 +3193,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderClusterDot(index, size = 15) {
                 return (
                     <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
-                        <FontAwesomeIcon
-                            name="braille" style={{
-                            fontSize: 15,
-                            color: this.state.chartColorList[index],
-                            cursor: 'pointer',
-                            marginTop: -1
-                        }}
-                        />
+                        <AppsIcon style={{fill: this.state.chartColorList[index], fontSize: 15, marginTop: 4,}}/>
+                    </div>
+                )
+            }
+
+            renderAppInstDot(index, size = 15) {
+                return (
+                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                        <AdjustIcon style={{fill: this.state.chartColorList[index], fontSize: 15, marginTop: 4,}}/>
                     </div>
                 )
             }
@@ -3298,7 +3303,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     >
                                         {itemCount === 1 ?
                                             <Center style={{marginLeft: 100, display: 'flex', width: '100%'}}>
-                                                {this.renderDot(item.colorCodeIndex)}
+                                                {this.renderClusterDot(item.colorCodeIndex)}
                                                 <div style={{display: 'flex', marginLeft: 3,}}>
                                                     <div>
                                                         {item.cluster}
@@ -3316,7 +3321,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 marginBottom: 2.5
                                             }}>
                                                 <Center>
-                                                    {this.renderDot(item.colorCodeIndex)}
+                                                    {this.renderClusterDot(item.colorCodeIndex)}
                                                 </Center>
                                                 <Center className="clusterCloudletBox">
                                                     {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
@@ -3353,72 +3358,72 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderCloudlet_MultiClusterLegendForAdmin(pLegendItemCount) {
-                let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
+            /*   renderCloudlet_MultiClusterLegendForAdmin(pLegendItemCount) {
+                   let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
 
-                return (
-                    <Row gutter={16}
-                         style={{
-                             flex: .97,
-                             marginLeft: 10,
-                             backgroundColor: 'transparent',
-                             justifyContent: 'center',
-                             alignSelf: 'center',
-                         }}
-                    >
-                        {this.state.filteredClusterList.length === 0 &&
-                        <Col
-                            className="gutterRow"
-                            span={pLegendItemCount === 1 ? 24 : 3}
-                        >
-                            <div style={{color: 'yellow'}}>&nbsp;</div>
-                        </Col>
-                        }
-                        {this.state.filteredClusterList.map((item: TypeCluster, clusterIndex) => {
-                            if (clusterIndex < 30) {
-                                return (
-                                    <Col
-                                        key={clusterIndex}
-                                        className="gutterRow"
-                                        onClick={async () => {
-                                        }}
-                                        title={item.ClusterName}
-                                        span={pLegendItemCount === 1 ? 24 : 3}
-                                        style={{
-                                            marginTop: 3,
-                                            marginBottom: 3,
-                                            justifyContent: pLegendItemCount === 1 ? 'center' : null,
-                                            //backgroundColor: 'blue',
-                                        }}
-                                        onClick={async () => {
-                                            if (this.state.filteredClusterList.length > 1) {
-                                                let tempClusterList = []
-                                                let fullCloudletItemOne = item.Cloudlet + " | " + JSON.stringify(item.CloudletLocation) + " | " + clusterIndex.toString()
-                                                tempClusterList.push(fullCloudletItemOne)
-                                                await this.handleOnChangeClusterDropdown(tempClusterList)
-                                            } else {
-                                                await this.handleOnChangeClusterDropdown(undefined)
-                                            }
-                                        }}
-                                    >
-                                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                                            <div>
-                                                {this.renderClusterDot(item.colorCodeIndex)}
-                                            </div>
-                                            <div style={{marginTop: 0, marginLeft: 5}}>
-                                                {reduceString(item.ClusterName, stringLimit, pLegendItemCount)}
-                                            </div>
-                                        </div>
+                   return (
+                       <Row gutter={16}
+                            style={{
+                                flex: .97,
+                                marginLeft: 10,
+                                backgroundColor: 'transparent',
+                                justifyContent: 'center',
+                                alignSelf: 'center',
+                            }}
+                       >
+                           {this.state.filteredClusterList.length === 0 &&
+                           <Col
+                               className="gutterRow"
+                               span={pLegendItemCount === 1 ? 24 : 3}
+                           >
+                               <div style={{color: 'yellow'}}>&nbsp;</div>
+                           </Col>
+                           }
+                           {this.state.filteredClusterList.map((item: TypeCluster, clusterIndex) => {
+                               if (clusterIndex < 30) {
+                                   return (
+                                       <Col
+                                           key={clusterIndex}
+                                           className="gutterRow"
+                                           onClick={async () => {
+                                           }}
+                                           title={item.ClusterName}
+                                           span={pLegendItemCount === 1 ? 24 : 3}
+                                           style={{
+                                               marginTop: 3,
+                                               marginBottom: 3,
+                                               justifyContent: pLegendItemCount === 1 ? 'center' : null,
+                                               //backgroundColor: 'blue',
+                                           }}
+                                           onClick={async () => {
+                                               if (this.state.filteredClusterList.length > 1) {
+                                                   let tempClusterList = []
+                                                   let fullCloudletItemOne = item.Cloudlet + " | " + JSON.stringify(item.CloudletLocation) + " | " + clusterIndex.toString()
+                                                   tempClusterList.push(fullCloudletItemOne)
+                                                   await this.handleOnChangeClusterDropdown(tempClusterList)
+                                               } else {
+                                                   await this.handleOnChangeClusterDropdown(undefined)
+                                               }
+                                           }}
+                                       >
+                                           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                               <div>
+                                                   {this.renderClusterDot(item.colorCodeIndex)}
+                                               </div>
+                                               <div style={{marginTop: 0, marginLeft: 5}}>
+                                                   {reduceString(item.ClusterName, stringLimit, pLegendItemCount)}
+                                               </div>
+                                           </div>
 
-                                    </Col>
-                                )
-                            }
+                                       </Col>
+                                   )
+                               }
 
 
-                        })}
-                    </Row>
-                )
-            }
+                           })}
+                       </Row>
+                   )
+               }*/
 
             renderCloudletLegend(pLegendItemCount) {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
@@ -3475,7 +3480,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderAppLegend(pLegendItemCount) {
+            renderAppInstLegend(pLegendItemCount) {
                 return (
                     <Row gutter={16}
                          style={{
@@ -3499,7 +3504,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 marginLeft: 0,
                                 flex: 1,
                             }}>
-                                {this.renderDot(0)}
+                                {this.renderAppInstDot(0)}
                                 <ClusterCluoudletAppInstLabel
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                     {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
@@ -3546,10 +3551,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}>
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderClusterLegend(this.state.legendItemCount)
                                     : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderCloudletLegend(this.state.legendItemCount)
-                                        : this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderAppLegend(this.state.legendItemCount)
+                                        : this.state.currentClassification === CLASSIFICATION.APPINST ? this.renderAppInstLegend(this.state.legendItemCount)
                                             : this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.renderClusterLegend(this.state.legendItemCount)
                                                 : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN ? this.renderClusterLegend(this.state.legendItemCount)
-                                                    : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppLegend(this.state.legendItemCount) : null
+                                                    : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.renderAppInstLegend(this.state.legendItemCount) : null
                                 }
                             </LegendOuterDiv>
                         )

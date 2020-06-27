@@ -6,7 +6,12 @@ import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {Center} from "../common/PageMonitoringStyles";
 import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
-import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
+import {
+    convertToClassification,
+    makeTableRowStyle,
+    reduceString,
+    renderTitle
+} from "../service/PageDevOperMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -153,10 +158,33 @@ export default function CloudletEventLogList(props) {
         )
     }
 
+    function renderTitle() {
+        return (
+            <React.Fragement>
+                <div style={{
+                    display: 'flex',
+                    width: '100%',
+                    height: 45
+                }}>
+                    <div className='page_monitoring_title draggable'
+                         style={{
+                             flex: 1,
+                             marginTop: 10,
+                             color: 'white'
+                         }}
+                    >
+                        Cloudlet Event Log
+                    </div>
+                </div>
+            </React.Fragement>
+        )
+    }
+
     return (
         <div>
-            {renderTitle(props)}
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}}  stickyheader={true.toString()}>
+            {renderTitle()}
+            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}}
+                   stickyheader={true.toString()}>
                 {!props.parent.state.loading && renderTableHead()}
                 {/*##########################################*/}
                 {/*     tableBody                            */}
