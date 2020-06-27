@@ -178,6 +178,14 @@ export const CLASSIFICATION = {
     CLOUDLET_FOR_ADMIN: 'cloudletForAdmin',
 }
 
+export const MAP_LEVEL = {
+    CLOUDLET_FOR_ADMIN: 'CLOUDLET_FOR_ADMIN',
+    CLOUDLET: 'CLOUDLET',
+    CLUSTER: 'CLUSTER',
+    //APPINST: 'APPINST',
+}
+
+
 export const SEPARATOR = " | ";
 
 export const gridItemOneHeight = 22.3;

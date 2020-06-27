@@ -1,14 +1,16 @@
 import React, {createRef} from "react";
 import * as L from 'leaflet';
-import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
-import type {TypeAppInst, TypeClient, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
-import Ripples from "react-ripples";
-import {CheckCircleOutlined} from '@material-ui/icons';
+import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import type {TypeClient, TypeCloudlet} from "../../../../shared/Types";
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, showToast} from "../service/PageMonitoringCommonService";
-import MarkerClusterGroup from "leaflet-make-cluster-group";
+import {
+    groupByKey_,
+    removeDuplicates,
+    renderPlaceHolderLottieForMap,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
@@ -20,10 +22,9 @@ import {
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
-import MomentTimezone from "moment-timezone";
+import '../common/PageMonitoringStyles.css'
+import {listGroupByKey} from "../service/PageMonitoringService";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -433,63 +434,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
-        makeClientMarker(objkeyOne, index) {
-            let groupedClientList = this.state.clientList;
-            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-            return (
-                <MarkerClusterGroup key={index}>
-                    {groupedClientList[objkeyOne].map((item, index) => {
-                        return (
-                            <React.Fragment>
-                                <Marker
-                                    icon={cellphoneIcon}
-                                    position={
-                                        [item.latitude, item.longitude]
-                                    }
-                                >
-                                    <Popup className='clientPopup'
-                                    >
-                                        <div style={{
-                                            display: 'flex',
-                                            fontSize: 13,
-                                        }}>
-                                            <div style={{color: 'white',}}>
-                                                {item.uuid}
-                                            </div>
-                                            <div style={{width: 5,}}/>
-                                            <div style={{color: 'orange'}}>
-                                                [{MomentTimezone(item.timestamp.seconds, 'X').tz(timeZone).format('lll').trim().toString().trim()}]
-                                            </div>
-                                        </div>
-
-                                    </Popup>
-                                </Marker>
-                                {/*@desc:#####################################..*/}
-                                {/*@desc:Render lines....                       */}
-                                {/*@desc:#####################################..*/}
-                                <Polyline
-                                    //dashArray={['30,1,30']}
-                                    id={index}
-                                    smoothFactor={2.0}
-
-                                    positions={[
-                                        [item.latitude, item.longitude], [item.serverLocInfo.lat, item.serverLocInfo.long],
-                                    ]}
-
-                                    color={this.props.lineColor}
-                                />
-
-                            </React.Fragment>
-                        )
-
-
-                    })
-
-                    }
-                </MarkerClusterGroup>
-            )
-        }
 
         handleRefresh = async () => {
             try {
@@ -505,99 +449,39 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-        renderAppHealthCheckState(paramHealthCheckStatus) {
+        renderCloudletTooltip(cloudlets) {
             return (
-                <div>
-                    {paramHealthCheckStatus === 3 ?
-                        <div style={{
-                            marginLeft: 7,
-                            marginBottom: 0,
-                            height: 15,
-                        }}>
-                            <CheckCircleOutlined style={{
-                                color: 'green',
-                                fontSize: 17,
-                                marginBottom: 25
-                            }}/>
-                        </div>
-                        :
-                        <div style={{
-                            marginLeft: 7,
-                            marginBottom: 0,
-                            height: 15,
-                        }}>
-                            <CheckCircleOutlined style={{
-                                color: 'red',
-                                fontSize: 17,
-                                marginBottom: 25
-                            }}/>
-                        </div>
-                    }
-                </div>
-            )
-        }
+                <Tooltip
+                    className='mapCloudletTooltip'
+                    direction='right'
+                    offset={[14, -10]}//x,y
+                    opacity={0.8}
+                    permanent
+                    ref={c => {
+                        this.toolTip = c;
+                    }}
+                    style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
-        renderAppInstPopup(listAppName, cloudletOne, cloudletIndex) {
-            return (
-                <Popup index={cloudletIndex} permanent className='cloudlet_popup' ref={this.appInstPopup}>
-                    {listAppName.map((AppFullName, appIndex) => {
-                        let AppName = AppFullName.trim().split(" | ")[0].trim()
-                        let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
-                        let Region = AppFullName.trim().split(" | ")[2].trim()
-                        let HealthCheckStatus = AppFullName.trim().split(" | ")[3].trim()
-                        let Version = AppFullName.trim().split(" | ")[4].trim()
-                        let Operator = AppFullName.trim().split(" | ")[5].trim()
-                        let selectCloudlet = AppFullName.trim().split(" | ")[6].trim()
-                        let serverLocation = {
-                            lat: cloudletOne.CloudletLocation.latitude,
-                            long: cloudletOne.CloudletLocation.longitude,
-                        }
-
-                        let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
-
+                >
+                    {cloudlets.map((item, index) => {
                         return (
-                            <div style={PageMonitoringStyles.appPopupDiv}
-                                 key={appIndex * cloudletIndex}
+                            <div
+                                key={index}
+                                className='mapCloudletTooltipInner'
                             >
-                                <Ripples
-
-                                    style={{marginLeft: 5,}}
-                                    color='#1cecff'
-                                    during={500}
-                                    onClick={async () => {
-                                        try {
-                                            await this.setState({selectedAppInstIndex: appIndex})
-                                            await this.props.handleOnChangeAppInstDropdown(fullAppInstOne)
-
-                                        } catch (e) {
-                                            throw new Error(e)
-                                        }
-                                    }}
-                                >
-                                    {reduceString(AppName.toString(), 25)} [{Version}]
-                                    <div style={{
-                                        color: '#77BD25',
-                                        fontSize: 12
-                                    }}>
-                                        &nbsp;&nbsp;[{reduceString(ClusterInst.trim(), 25)}]
-                                    </div>
-                                    {this.renderAppHealthCheckState(HealthCheckStatus)}
-                                </Ripples>
+                                {item}
                             </div>
                         )
                     })}
-                </Popup>
+
+                </Tooltip>
             )
         }
 
         renderCloudletMarkers = () => (
             this.state.locationGroupedCloudletList.map((cloudletOne: TypeCloudlet, cloudletIndex) => {
-                let listAppName = cloudletOne.AppNames.split(",")
                 let cloudlets = cloudletOne.Cloudlet.toString().split(',');
-
                 console.log(`listAppName====>`, cloudletOne.AppNames.toString().split(" | ")[0]);
-
-                let cloudletState = cloudletOne.AppNames.toString().split(" | ")[0]
                 return (
                     <React.Fragment>
                         <Marker
@@ -608,36 +492,29 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
                         >
-                            <Tooltip
+                            {/*desc:################################*/}
+                            {/*desc:CLOUDLET POPUP                  */}
+                            {/*desc:################################*/}
+                            <Popup
                                 className='mapCloudletTooltip'
-                                direction='right'
-                                offset={[14, -10]}//x,y
-                                opacity={0.8}
-                                permanent
-                                ref={c => {
-                                    this.toolTip = c;
-                                }}
-                                style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
+                                offset={[0, 0]}
+                                opacity={0.7}
+                                style={{width: '200px !important'}}
                             >
-                                {cloudlets.map((item, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className='mapCloudletTooltipInner'
-                                        >
-                                            {item}
-                                        </div>
-                                    )
-                                })}
-
-                            </Tooltip>
-                            {/*desc:################################*/}
-                            {/*desc:appInstPopup                    */}
-                            {/*desc:################################*/}
-                            {this.renderAppInstPopup(listAppName, cloudletOne, cloudletIndex)}
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    {cloudlets.map((item, index) => {
+                                        return (
+                                            <div
+                                                key={index}
+                                                className='mapCloudletPopupInner2'
+                                            >
+                                                {item}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </Popup>
                         </Marker>
-
                     </React.Fragment>
                 )
             })
@@ -645,87 +522,95 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         renderMapControl() {
             return (
-                <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+                <React.Fragment>
+                    <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
-                    <div style={PageMonitoringStyles.mapControlDiv}>
-                        <div
-                            style={{
-                                backgroundColor: 'transparent',
-                                height: 30,
-                                width: 30,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignSelf: 'center'
-                            }}
-                        >
-                            <Icon
-                                name='redo'
-                                onClick={this.handleRefresh}
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
-                        <div
-                            style={{backgroundColor: 'transparent', height: 30}}
-                            onClick={() => {
-                                this.setState({
-                                    zoom: this.state.zoom + 1,
-                                })
-                            }}
-                        >
-                            <Icon
-                                name='add'
-
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
-                        <div style={{width: 2}}/>
-                        <div
-                            style={{
-                                backgroundColor: 'transparent',
-                                height: 30,
-                                width: 30,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignSelf: 'center'
-                            }}
-                            onClick={() => {
-                                this.setState({
-                                    zoom: this.state.zoom - 1,
-                                })
-                            }}
-                        >
-                            <Icon
-                                name='minus'
-
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
-                        <div
-                            style={{
-                                backgroundColor: 'transparent',
-                                height: 30,
-                                width: 30,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignSelf: 'center'
-                            }}
-                        >
-                            <Icon
-                                name='zoom-in'
+                        <div style={PageMonitoringStyles.mapControlDiv}>
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}
+                            >
+                                <Icon
+                                    name='redo'
+                                    onClick={this.handleRefresh}
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div>
+                            <div
+                                style={{backgroundColor: 'transparent', height: 30}}
                                 onClick={() => {
                                     this.setState({
-                                        isEnableZoomIn: !this.state.isEnableZoomIn
+                                        zoom: this.state.zoom + 1,
                                     })
                                 }}
+                            >
+                                <Icon
+                                    name='add'
+
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div>
+                            <div style={{width: 2}}/>
+                            <div
                                 style={{
-                                    fontSize: 20,
-                                    color: this.state.isEnableZoomIn ? 'white' : 'grey',
-                                    cursor: 'pointer'
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
                                 }}
-                            />
+                                onClick={() => {
+                                    this.setState({
+                                        zoom: this.state.zoom - 1,
+                                    })
+                                }}
+                            >
+                                <Icon
+                                    name='minus'
+
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div>
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}
+                            >
+                                <Icon
+                                    name='zoom-in'
+                                    onClick={() => {
+                                        this.setState({
+                                            isEnableZoomIn: !this.state.isEnableZoomIn
+                                        })
+                                    }}
+                                    style={{
+                                        fontSize: 20,
+                                        color: this.state.isEnableZoomIn ? 'white' : 'grey',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                            </div>
                         </div>
-                    </div>
-                </Control>
+                    </Control>
+                    <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                        <div style={{color: 'yellow'}}>
+                            Cloudlets : {this.props.cloudletList.length}
+                        </div>
+                    </Control>
+
+                </React.Fragment>
             )
         }
 
@@ -778,6 +663,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             return (
                 <React.Fragment>
                     {this.renderHeader()}
+                    {this.props.loading && renderPlaceHolderLottieForMap(true)}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
                             <Map
@@ -815,13 +701,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         {this.makeMapThemeDropDown()}
                                     </div>
                                 }
-                                {/*@desc:#####################################..*/}
-                                {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
-                                {/*@desc:#####################################..*/}
-                                {this.state.clientObjKeys.map((objkeyOne, index) =>
-                                    this.makeClientMarker(objkeyOne, index)
-                                )}
-
                                 {/*@desc:#####################################..*/}
                                 {/*@desc:Cloudlet Markers                    ...*/}
                                 {/*@desc:#####################################..*/}

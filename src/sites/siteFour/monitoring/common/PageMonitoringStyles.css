@@ -716,12 +716,34 @@ tr td {
 }
 
 .mapCloudletTooltip {
-    background-color: white
+    background-color: black !important;
+    font-weight: normal !important;
+    opacity: 0.9 !important;
+    font-family: "Roboto Light" !important;
+    border-color: white !important;
+    border-width: 1px !important;
+    border-radius: 0px !important;
+    border-style: solid;
+
+}
+
+.mapCloudletPopup {
+    background-color: white !important;
+    font-weight: normal !important;
+    opacity: 0.9 !important;
+    font-family: "Roboto Light" !important;
+
 }
 
 .mapCloudletTooltipInner {
-    color: black;
-    font-weight: bold;
+    color: white;
+    padding: 2px;
+}
+
+.mapCloudletPopupInner2 {
+    color: white;
+    padding: 2px;
+
 }
 
 

@@ -245,8 +245,7 @@ export const renderPlaceHolderLottieForMap = (isCloud = false) => {
 
 }
 
-
-export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
+export const renderPlaceHolderLottieCloud = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
              style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
@@ -254,14 +253,14 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../../lotties/pinjump'),
+                    animationData: require('../../../../lotties/blue-cloud'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
-                speed={2.0}
-                height={105}
-                width={105}
+                speed={10}
+                height={45}
+                width={45}
                 isStopped={false}
                 isPaused={false}
             />
