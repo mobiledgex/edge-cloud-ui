@@ -12,7 +12,7 @@ import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
 import {renderCircleLoaderForMap, renderWifiLoader} from "../service/PageMonitoringCommonService";
-import {convertToClassification, makeLineChartOptions} from "../service/PageDevOperMonitoringService";
+import {convertToClassification, makeLineChartOptions} from "../service/PageMonitoringService";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 const FA = require('react-fontawesome')
 

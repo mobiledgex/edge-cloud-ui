@@ -7,7 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {convertHWType} from "../service/PageDevOperMonitoringService";
+import {convertHWType} from "../service/PageMonitoringService";
 import {Empty} from "antd";
 
 type Props = {

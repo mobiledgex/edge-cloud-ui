@@ -4,7 +4,7 @@ import {useEffect, useState} from 'react';
 import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
-import {reduceString} from "../service/PageDevOperMonitoringService";
+import {reduceString} from "../service/PageMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 

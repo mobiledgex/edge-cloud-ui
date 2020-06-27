@@ -1,5 +1,5 @@
 import React from 'react';
-import '../common/PageMonitoringStyles.css';
+import '../../common/PageMonitoringStyles.css';
 import {
     APP_INST_MATRIX_HW_USAGE_INDEX,
     CHART_COLOR_LIST,
@@ -7,18 +7,18 @@ import {
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     REGION
-} from "../../../../shared/Constants";
+} from "../../../../../shared/Constants";
 import Lottie from "react-lottie";
-import BubbleChartCore from "../components/BubbleChartCore";
-import type {TypeAppInstanceUsage2, TypeClientStatus, TypeGridInstanceList} from "../../../../shared/Types";
-import {TypeAppInst} from "../../../../shared/Types";
-import {renderBarChartCore, renderLineChartCore, renderUsageByType, showToast} from "./PageMonitoringCommonService";
+import BubbleChartCore from "../../components/BubbleChartCore";
+import type {TypeAppInstanceUsage2, TypeClientStatus, TypeGridInstanceList} from "../../../../../shared/Types";
+import {TypeAppInst} from "../../../../../shared/Types";
+import {renderBarChartCore, renderLineChartCore, renderUsageByType, showToast} from "../../service/PageMonitoringCommonService";
 import {TabPanel, Tabs} from "react-tabs";
 import {Table} from "semantic-ui-react";
 import Progress from "antd/es/progress";
-import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {renderUsageLabelByType} from "./PageDevOperMonitoringService";
+import {numberWithCommas} from "../../common/PageMonitoringUtils";
+import {PageMonitoringStyles} from "../../common/PageMonitoringStyles";
+import {renderUsageLabelByType} from "./../../service/PageMonitoringService";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -376,7 +376,7 @@ export const renderPlaceHolder2 = () => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../../lotties/13255-loader22'),
+                        animationData: require('../../../../../lotties/13255-loader22'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }
@@ -870,7 +870,7 @@ export const renderBottomGridArea = (_this) => {
                             options={{
                                 loop: true,
                                 autoplay: true,
-                                animationData: require('../../../../lotties/loader001'),
+                                animationData: require('../../../../../lotties/loader001'),
                                 rendererSettings: {
                                     preserveAspectRatio: 'xMidYMid slice'
                                 }

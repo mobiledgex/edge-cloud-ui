@@ -1,7 +1,7 @@
 import React from 'react';
 import '../common/PageMonitoringStyles.css'
 import {FixedSizeList} from "react-window";
-import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
+import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
 import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 

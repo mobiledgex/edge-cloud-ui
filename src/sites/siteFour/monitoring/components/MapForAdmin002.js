@@ -22,7 +22,7 @@ import {
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {listGroupByKey, reduceString} from "../service/PageDevOperMonitoringService";
+import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 
 const {Option} = Select;

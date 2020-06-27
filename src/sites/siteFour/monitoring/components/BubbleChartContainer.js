@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {convertToClassification, handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
+import {convertToClassification, handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
 import {makeBubbleChartData, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";

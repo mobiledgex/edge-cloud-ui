@@ -3,7 +3,7 @@ import * as React from 'react';
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Bar, HorizontalBar} from "react-chartjs-2";
 import 'chartjs-plugin-labels'
-import {barChartOptions2, GradientBarChartOptions1} from "../service/PageDevOperMonitoringService";
+import {barChartOptions2, GradientBarChartOptions1} from "../service/PageMonitoringService";
 
 
 type Props = {

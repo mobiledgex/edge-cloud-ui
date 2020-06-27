@@ -6,7 +6,7 @@ import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {Center} from "../common/PageMonitoringStyles";
 import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
-import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
+import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {

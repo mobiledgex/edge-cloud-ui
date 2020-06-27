@@ -12,7 +12,7 @@ import {
     makeGradientLineChartData,
     makeGradientLineChartDataForOneColor,
     makeLineChartOptions
-} from "../service/PageDevOperMonitoringService";
+} from "../service/PageMonitoringService";
 
 type Props = {
     parent: PageMonitoringView,

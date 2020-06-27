@@ -3,7 +3,7 @@ import {Map, Marker, Popup, TileLayer} from "react-leaflet";
 import * as L from 'leaflet';
 import {isEmpty, renderPlaceHolderLottieForMap} from "../service/PageMonitoringCommonService";
 import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
-import {changeClassficationTxt, listGroupByKey} from "../service/PageDevOperMonitoringService";
+import {changeClassficationTxt, listGroupByKey} from "../service/PageMonitoringService";
 import Control from "react-leaflet-control";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";

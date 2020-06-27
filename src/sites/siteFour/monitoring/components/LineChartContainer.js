@@ -4,7 +4,7 @@ import {
     convertToClassification,
     makeGradientLineChartData,
     makeLineChartOptions
-} from "../service/PageDevOperMonitoringService";
+} from "../service/PageMonitoringService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";

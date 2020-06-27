@@ -32,7 +32,7 @@ import {
     renderBubbleChart,
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
-} from "../../service/PageAdmMonitoringService";
+} from "./PageAdmMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
     CLASSIFICATION,

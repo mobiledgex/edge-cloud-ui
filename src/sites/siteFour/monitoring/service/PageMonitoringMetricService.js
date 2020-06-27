@@ -15,7 +15,7 @@ import {
     makeFormForClusterLevelMatric,
     showToast
 } from "./PageMonitoringCommonService";
-import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
+import {makeFormForAppLevelUsageList} from "../view/temp/PageAdmMonitoringService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
