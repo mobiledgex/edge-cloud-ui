@@ -15,8 +15,15 @@ import {makeCompleteDateTime} from "./PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {Empty} from "antd";
-
+import {Empty, Tag} from "antd";
+import Chip from "@material-ui/core/Chip";
+import Cloud from '@material-ui/icons/Cloud';
+import withStyles from "@material-ui/styles/withStyles";
+const OrangeChip = withStyles({
+    root: {
+        backgroundColor:'orange'
+    }
+})(Chip);
 const FontAwesomeIcon = require('react-fontawesome')
 
 export const noDataArea = () => (
@@ -105,17 +112,16 @@ export const renderEmptyBox = () => {
         <div className='page_monitoring_blank_box'
              style={{height: '100%'}}>
             <div style={{
-                background: 'grey',
-                opacity: 0.5,
-                borderRadius: 25,
-                padding: 10,
                 alignSelf: "center",
                 alignItems: 'center',
                 justifyContent: 'center',
             }}>
-                <div style={{color: 'white !important'}}>
-                    No Data Available
-                </div>
+                <Chip
+                    variant="outlined"
+                    icon={<Cloud/>}
+                    color="secondary"
+                    label="Please, select Cloudlet"
+                />
             </div>
         </div>
     )

@@ -185,6 +185,7 @@ type PageDevMonitoringState = {
     clusterSelectBoxPlaceholder: string,
     appInstSelectBoxPlaceholder: string,
     currentCloudLet: string,
+    currentCloudLet2: string,
     currentAppInst: string,
     isReady: boolean,
     isModalOpened: false,
@@ -451,6 +452,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentRegion: 'ALL',
                     currentCloudLet: undefined,
+                    currentCloudLet2: undefined,
                     currentClusterList: undefined,
                     currentAppInst: undefined,
                     isModalOpened: false,
@@ -937,7 +939,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 await this.setState({
                     currentRegion: 'ALL',
-                    currentCloudLet: '',
+                    currentCloudLet: undefined,
                     currentClusterList: undefined,
                     currentAppInst: '',
                 })
@@ -2273,9 +2275,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentOper}
                             placeholder={'Select Oper'}
                             onSelect={async (value) => {
+
+                                let filteredCloudletList = []
+                                if (value === "0") {//todo: all
+                                    filteredCloudletList = this.state.cloudletList
+                                } else {//todo:Wnen specific oper
+                                    filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
+                                        return item.Operator === value
+                                    })
+                                }
+                                let cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
                                 this.setState({
                                     currentOper: value,
+                                    filteredCloudletList: filteredCloudletList,
+                                    cloudletDropdownList: cloudletDropdownList,
+                                    currentCloudLet: undefined,
+                                    filteredCloudletUsageList: [],
+                                }, () => {
                                 })
+
 
                             }}
                         >
@@ -2319,11 +2337,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             showSearch={true}
                             dropdownStyle={{}}
                             listHeight={512}
-                            style={{width: 300, maxHeight: '512px !important'}}
+                            style={{width: 250, maxHeight: '512px !important'}}
                             disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
-                            value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
+                            //value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
+                            value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (value) => {
+                                //mexplat-stage-frankfurt-cloudlet | {"latitude":50.1109,"longitude":8.6821} | EU | 0
+                                console.log(`temp========>`, value);
+
                                 this.cloudletSelect.blur();
                                 if (value === '0') {//todo:reset filter
                                     await this.setState({
@@ -2413,7 +2435,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     let operList = this.makeUniqOper(filteredClusterList)
                                     let clusterTreeDropdownList = makeClusterMultiDropdown(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
 
-
                                     await this.setState({
                                         allClusterEventLogList: allClusterEventLogList,
                                         filteredClusterEventLogList: allClusterEventLogList,
@@ -2432,6 +2453,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         isRequesting: false,
                                         mapLoading: false,
                                         loading: false,
+                                        currentCloudLet: value,
                                     });
 
                                     //await this.handleOnChangeCloudletDropdown(value, selectIndex)
@@ -2439,20 +2461,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                             }}
                         >
-                            {this.state.cloudletDropdownList.map((item: any, index) => {
+                            {this.state.cloudletDropdownList.map((cloudletOne: any, index) => {
+
+                                console.log(`cloudletOne========>`, cloudletOne);
+
                                 try {
                                     if (index === 0) {
                                         return (
                                             <Option key={index} value={undefined} style={{}}>
-                                                <div style={{color: 'orange', fontStyle: 'italic'}}>{item.text}</div>
+                                                <div style={{color: 'orange', fontStyle: 'italic'}}>{cloudletOne.text}</div>
                                             </Option>
                                         )
                                     } else {
-                                        let itemValues = item.value + " | " + (index - 1).toString()
+                                        let itemValues = cloudletOne.value + " | " + (index - 1).toString()
                                         return (
                                             <Option key={index} value={itemValues}>
                                                 <div style={{display: 'flex'}}>
-                                                    <div style={{marginLeft: 7,}}>{item.text}-{index}</div>
+                                                    <div style={{marginLeft: 7,}}>{cloudletOne.text}</div>
                                                 </div>
                                             </Option>
                                         )
@@ -2896,19 +2921,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderClusterTreeDropdownForAdmin() {
-                let treeSelectWidth = 500;
-                let maxTagCount = 3;
+                let treeSelectWidth = 350;
+                let maxTagCount = 2;
                 if (this.props.size.width >= 1600) {
-                    treeSelectWidth = 500;
-                    maxTagCount = 3
+                    treeSelectWidth = 350;
+                    maxTagCount = 1
                 } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
-                    treeSelectWidth = 400;
-                    maxTagCount = 2
+                    treeSelectWidth = 250;
+                    maxTagCount = 1
                 } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
-                    treeSelectWidth = 300;
+                    treeSelectWidth = 150;
                     maxTagCount = 1
                 } else if (this.props.size.width <= 1100) {
-                    treeSelectWidth = 150;
+                    treeSelectWidth = 50;
                     maxTagCount = 0
                 }
 
@@ -2947,22 +2972,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 searchValue={this.state.searchClusterValue}
                                 searchPlaceholder={'Enter the cluster name.'}
                                 placeholder={'Select Cluster'}
-
-                                onSelect={(value, node, extra) => {
-                                    /* console.log(`sdlkflskdfkl====>`, value);
-                                     console.log(`sdlkflskdfkl====>`, node);
-                                     console.log(`sdlkflskdfkl====>`, extra);
-
-                                     if (node.selectable) {
-                                         let cloudlet = node.key
-                                         alert(cloudlet)
-                                         this.treeSelect.blur();
-                                     }*/
-                                }}
                                 treeData={this.state.clusterTreeDropdownList}
                                 treeDefaultExpandAll={true}
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
+
                                     if (!isEmpty(value)) {
                                         this.setState({currentClusterList: value});
                                     } else {
@@ -2976,6 +2990,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Button
                                 size={'small'}
                                 onClick={async () => {
+                                    this.appInstSelect.blur();
                                     this.applyButton.blur();
                                     if (this.state.currentClusterList !== undefined) {
                                         let selectClusterCloudletList = this.state.currentClusterList
@@ -2992,7 +3007,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Apply
                             </Button>
                         </div>
-                        <div style={{marginLeft: 10,}}>
+                        {/*<div style={{marginLeft: 10,}}>
                             <Button
                                 ref={c => this.resetBtn = c}
                                 size={'small'}
@@ -3003,7 +3018,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             >
                                 Reset
                             </Button>
-                        </div>
+                        </div>*/}
                     </div>
                 )
             }
@@ -3134,7 +3149,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Select
                                 ref={c => this.appInstSelect = c}
                                 dropdownStyle={{}}
-                                style={{width: '100%'}}
+                                style={{width: 220}}
                                 disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
                                 placeholder={this.state.appInstSelectBoxPlaceholder}
