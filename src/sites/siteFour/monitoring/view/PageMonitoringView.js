@@ -2338,6 +2338,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentOper}
                             placeholder={'Select Oper'}
                             onSelect={async (value) => {
+                                this.operSelect.blur();
                                 let markerListForMap = []
                                 let filteredCloudletList = []
                                 if (value === "0") {//todo: all
