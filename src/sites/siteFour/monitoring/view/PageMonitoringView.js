@@ -1,9 +1,4 @@
-import {
-    Center,
-    ClusterCluoudletAppInstLabel,
-    LegendOuterDiv,
-    PageMonitoringStyles
-} from '../common/PageMonitoringStyles'
+import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
 import AppsIcon from '@material-ui/icons/Apps';
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
@@ -15,13 +10,13 @@ import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Sele
 import {
     filterByClassification,
     getCloudletClusterNameList,
-    getCloudletClusterNameListForAppInst,
     getOnlyCloudletName,
     getUserId,
     handleThemeChanges,
     makeBarChartDataForAppInst,
     makeBarChartDataForCloudlet,
-    makeBarChartDataForCluster, makeClusterMultiDropdown,
+    makeBarChartDataForCluster,
+    makeClusterMultiDropdown,
     makeDropdownForAppInst,
     makeDropdownForCloudlet,
     makeid,
@@ -47,29 +42,10 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletClusterListMap,
-    TypeCloudletEventLog,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterEventLog,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterEventLog, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartData,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartData, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -105,13 +81,8 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
+import {ColorLinearProgress, CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import AdjustIcon from '@material-ui/icons/Adjust';
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
 import {
     ADMIN_CLOUDLET_HW_MAPPER_KEY,
     ADMIN_CLOUDLET_LAYOUT_KEY,
@@ -125,10 +96,12 @@ import {
     CLOUDLET_LAYOUT_KEY,
     CLUSTER_HW_MAPPER_KEY,
     CLUSTER_LAYOUT_KEY,
-    defaultHwMapperListForAdmin, defaultHwMapperListForAdminCloudlet,
+    defaultHwMapperListForAdmin,
+    defaultHwMapperListForAdminCloudlet,
     defaultHwMapperListForAdminCluster,
     defaultHwMapperListForCluster,
-    defaultLayoutForAdmin, defaultLayoutForAdminCloudlet,
+    defaultLayoutForAdmin,
+    defaultLayoutForAdminCloudlet,
     defaultLayoutForAdminCluster,
     defaultLayoutForAppInst,
     defaultLayoutForCloudlet,
@@ -137,7 +110,8 @@ import {
     defaultLayoutMapperForCloudlet,
     defaultLayoutXYPosForAdmin,
     defaultLayoutXYPosForAppInst,
-    defaultLayoutXYPosForCloudlet, defaultLayoutXYPosForCloudletAdmin,
+    defaultLayoutXYPosForCloudlet,
+    defaultLayoutXYPosForCloudletAdmin,
     defaultLayoutXYPosForCluster,
     defaultLayoutXYPosForClusterAdmin,
     GRID_ITEM_TYPE
@@ -152,7 +126,6 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
-import MapForAdmin from "../components/MapForAdmin";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -3011,18 +2984,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Apply
                             </Button>
                         </div>
-                        {/*<div style={{marginLeft: 10,}}>
-                            <Button
-                                ref={c => this.resetBtn = c}
-                                size={'small'}
-                                onClick={() => {
-                                    this.resetBtn.blur();
-                                    this.resetLocalData();
-                                }}
-                            >
-                                Reset
-                            </Button>
-                        </div>*/}
                     </div>
                 )
             }
