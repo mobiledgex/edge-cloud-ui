@@ -153,6 +153,7 @@ import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
+import MapForAdmin002 from "../components/MapForAdmin002";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -361,6 +362,7 @@ type PageDevMonitoringState = {
     operList: any,
     isEmptyChartData: boolean,
     currentOper: any,
+    cloudletDropdownLoading: boolean,
 
 }
 
@@ -610,7 +612,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     treeOperCloudletList: [],
                     operList: [],
                     isEmptyChartData: false,
-                    currentOper: 'All'
+                    currentOper: 'All Operator',
+                    cloudletDropdownLoading: false,
 
                 };
             }
@@ -709,6 +712,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let newPromiseList = await Promise.all(promiseList);
                         clusterList = newPromiseList[0];
                         appInstList = newPromiseList[1];
+
+                        console.log(`sdlkflskdfkl====>`, appInstList);
+
                         clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                     } else {
                         //TODO:###############################################
@@ -740,14 +746,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@todo:#########################################################################
                     let markerListForMap = []
                     if (this.state.userType.toLowerCase().includes("admin")) {
-                        /*if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {}*/
-
-
                         markerListForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
 
                     } else {//todo : oper, dev
+                        console.log(`orgAppInstList====appInstList>`, appInstList);
+
                         let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+
+                        console.log(`orgAppInstList====>`, orgAppInstList);
+
                         markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+
+                        console.log(`markerListForMap222====>`, markerListForMap);
                     }
                     await this.setState({appInstanceListGroupByCloudlet: !isInterval && markerListForMap});
 
@@ -777,7 +787,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
-                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, true)
+                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this, true)
 
                         bubbleChartData = await makeBubbleChartData(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
 
@@ -1481,8 +1491,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             themeTitle={this.state.themeTitle}/>
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
-
-                    if (this.state.userType.toLowerCase().includes('dev') || this.state.userType.toLowerCase().includes('admin')) {
+                    if (this.state.userType.toLowerCase().includes('admin')) {
+                        return (
+                            <MapForAdmin002
+                                markerList={this.state.appInstanceListGroupByCloudlet}
+                                currentWidgetWidth={this.state.currentWidgetWidth}
+                                isMapUpdate={this.state.isMapUpdate}
+                                selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                                mapPopUploading={this.state.mapPopUploading}
+                                parent={this}
+                                isDraggable={this.state.isDraggable}
+                                handleOnChangeAppInstDropdown={this.handleOnChangeAppInstDropdown}
+                                isFullScreenMap={false}
+                                isShowAppInstPopup={this.state.isShowAppInstPopup}
+                                selectedAppInstIndex={this.state.selectedAppInstIndex}
+                                isEnableZoomIn={!this.state.isEnableZoomIn}
+                                currentClassfication={this.state.currentClassification}
+                            />
+                        )
+                    } else if (this.state.userType.toLowerCase().includes('dev')) {
                         return (
                             <MapForDev
                                 markerList={this.state.appInstanceListGroupByCloudlet}
@@ -2311,14 +2338,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentOper}
                             placeholder={'Select Oper'}
                             onSelect={async (value) => {
-
+                                let markerListForMap = []
                                 let filteredCloudletList = []
                                 if (value === "0") {//todo: all
                                     filteredCloudletList = this.state.cloudletList
+
+                                    console.log(`sdlkflskdfkl====>`, filteredCloudletList);
+
+                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+
+                                    console.log(`markerListForMap====>`, markerListForMap);
+
                                 } else {//todo:Wnen specific oper
                                     filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
                                         return item.Operator === value
                                     })
+                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+
+                                    console.log(`markerListForMap====>`, markerListForMap);
                                 }
                                 let cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
                                 this.setState({
@@ -2329,6 +2366,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     currentCloudLet: undefined,
                                     filteredCloudletUsageList: [],
                                     currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                                    appInstanceListGroupByCloudlet: markerListForMap,
+
                                 }, () => {
                                 })
 
@@ -2348,174 +2387,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             <Option key={index} value={operOne}>
                                                 <div style={{display: 'flex'}}>
                                                     <div style={{marginLeft: 7,}}>{operOne}</div>
-                                                </div>
-                                            </Option>
-                                        )
-                                    }
-                                } catch (e) {
-
-                                }
-                            })}
-                        </Select>
-                    </div>
-                )
-            }
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            rendeCloudletDropdownFor____________Admin() {
-
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label">
-                            Cloudlet
-                        </div>
-                        <Select
-                            ref={c => this.cloudletSelect = c}
-                            showSearch={true}
-                            dropdownStyle={{}}
-                            listHeight={512}
-                            style={{width: 250, maxHeight: '512px !important'}}
-                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
-                            //value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
-                            value={this.state.currentCloudLet}
-                            placeholder={'Select Cloudlet'}
-                            onSelect={async (value) => {
-                                //mexplat-stage-frankfurt-cloudlet | {"latitude":50.1109,"longitude":8.6821} | EU | 0
-                                console.log(`temp========>`, value);
-
-                                this.cloudletSelect.blur();
-                                if (value === '0') {//todo:reset filter
-                                    await this.setState({
-                                        currentGridIndex: -1,
-                                        currentTabIndex: 0,
-                                        intervalLoading: false,
-                                        filteredCloudletList: this.state.cloudletList,
-                                        currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                                        filteredClusterUsageList: [],
-                                        filteredCloudletUsageList: [],
-                                        filteredClusterList: this.state.allClusterList,
-                                        filteredAppInstList: this.state.appInstList,
-                                        filteredClusterEventLogList: this.state.allClusterEventLogList,
-                                        filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                                    })
-
-                                } else {
-                                    await this.setState({
-                                        mapLoading: true,
-                                    })
-                                    let selectIndex = 0;
-                                    this.state.cloudletList.map((item: TypeCloudlet, index) => {
-                                        if (item.CloudletName === value.split("|")[0].trim()) {
-                                            selectIndex = index;
-                                        }
-                                    })
-
-
-                                    let currentCloudletOne = this.state.cloudletList[selectIndex];
-
-                                    let filteredCloudletList = []
-                                    filteredCloudletList.push(currentCloudletOne)
-                                    console.log(`cloudlentOne====>`, currentCloudletOne);
-
-                                    await this.setState({loading: true})
-                                    let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
-
-                                    await this.setState({
-                                        filteredCloudletUsageList: cloudletUsageList,
-                                        currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                                    })
-
-                                    let promiseList = []
-                                    promiseList.push(fetchClusterList())
-                                    promiseList.push(fetchAppInstList(undefined, this))
-                                    let newPromiseList = await Promise.all(promiseList);
-                                    let clusterList = newPromiseList[0];
-                                    let appInstList = newPromiseList[1];
-
-                                    console.log(`clusterList====>`, clusterList)
-
-                                    let filteredClusterList = []
-                                    clusterList.map((item: TypeCluster, index) => {
-                                        if (item.Cloudlet === currentCloudletOne.CloudletName) {
-                                            filteredClusterList.push(item)
-                                        }
-                                    })
-
-                                    console.log(`filteredClusterList====>`, filteredClusterList);
-
-                                    if (filteredClusterList.length === 0) {
-                                        showToast('no cluster')
-                                    }
-
-
-                                    await this.setState({
-                                        filteredClusterList: filteredClusterList,
-                                        currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                                        filteredCloudletList: filteredCloudletList,
-                                        filteredAppInstList: appInstList,
-                                    })
-
-
-                                    let usageEventPromiseList = []
-                                    usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList))
-                                    usageEventPromiseList.push(getAllAppInstEventLogs());
-                                    usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                                    let newPromiseList2 = await Promise.all(usageEventPromiseList);
-                                    //allClusterEventLogList = newPromiseList2[0];
-                                    let allClusterEventLogList = []
-                                    let allAppInstEventLogList = newPromiseList2[1];
-                                    let allClusterUsageList = newPromiseList2[2];
-
-
-                                    let cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
-                                    let regionList = localStorage.getItem('regions').split(",")
-                                    let operList = this.makeUniqOper(filteredClusterList)
-                                    let clusterTreeDropdownList = makeClusterMultiDropdown(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
-
-                                    await this.setState({
-                                        allClusterEventLogList: allClusterEventLogList,
-                                        filteredClusterEventLogList: allClusterEventLogList,
-                                        allAppInstEventLogs: allAppInstEventLogList,
-                                        filteredAppInstEventLogs: allAppInstEventLogList,
-                                        isReady: true,
-                                        clusterTreeDropdownList: clusterTreeDropdownList,
-                                        allClusterList: clusterList,
-                                        isAppInstaceDataReady: true,
-                                        appInstList: appInstList,
-                                        filteredAppInstList: appInstList,
-                                        dropdownRequestLoading: false,
-                                        clusterListLoading: false,
-                                        allClusterUsageList: allClusterUsageList,
-                                        filteredClusterUsageList: allClusterUsageList,
-                                        isRequesting: false,
-                                        mapLoading: false,
-                                        loading: false,
-                                        currentCloudLet: value,
-                                    });
-
-                                    //await this.handleOnChangeCloudletDropdown(value, selectIndex)
-                                }
-
-                            }}
-                        >
-                            {this.state.cloudletDropdownList.map((cloudletOne: any, index) => {
-
-                                console.log(`cloudletOne========>`, cloudletOne);
-
-                                try {
-                                    if (index === 0) {
-                                        return (
-                                            <Option key={index} value={undefined} style={{}}>
-                                                <div style={{color: 'orange', fontStyle: 'italic'}}>{cloudletOne.text}</div>
-                                            </Option>
-                                        )
-                                    } else {
-                                        let itemValues = cloudletOne.value + " | " + (index - 1).toString()
-                                        return (
-                                            <Option key={index} value={itemValues}>
-                                                <div style={{display: 'flex'}}>
-                                                    <div style={{marginLeft: 7,}}>{cloudletOne.text}</div>
                                                 </div>
                                             </Option>
                                         )
@@ -2864,6 +2735,180 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                         </div>
                     </Center>
+                )
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            rendeCloudletDropdownFor____________Admin() {
+
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label">
+                            Cloudlet
+                        </div>
+                        <Select
+                            ref={c => this.cloudletSelect = c}
+                            showSearch={true}
+                            dropdownStyle={{}}
+                            loading={this.state.cloudletDropdownLoading}
+                            listHeight={512}
+                            style={{width: 250, maxHeight: '512px !important'}}
+                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
+                            //value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
+                            value={this.state.currentCloudLet}
+                            placeholder={'Select Cloudlet'}
+                            onSelect={async (value) => {
+                                //mexplat-stage-frankfurt-cloudlet | {"latitude":50.1109,"longitude":8.6821} | EU | 0
+                                console.log(`temp========>`, value);
+
+                                this.cloudletSelect.blur();
+                                if (value === '0') {//todo:reset filter
+                                    await this.setState({
+                                        currentGridIndex: -1,
+                                        currentTabIndex: 0,
+                                        intervalLoading: false,
+                                        filteredCloudletList: this.state.cloudletList,
+                                        currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                                        filteredClusterUsageList: [],
+                                        filteredCloudletUsageList: [],
+                                        filteredClusterList: this.state.allClusterList,
+                                        filteredAppInstList: this.state.appInstList,
+                                        filteredClusterEventLogList: this.state.allClusterEventLogList,
+                                        filteredAppInstEventLogs: this.state.allAppInstEventLogs,
+                                    })
+
+                                } else {
+                                    await this.setState({
+                                        mapLoading: true,
+                                    })
+                                    let selectIndex = 0;
+                                    this.state.cloudletList.map((item: TypeCloudlet, index) => {
+                                        if (item.CloudletName === value.split("|")[0].trim()) {
+                                            selectIndex = index;
+                                        }
+                                    })
+
+
+                                    let currentCloudletOne = this.state.cloudletList[selectIndex];
+
+                                    let filteredCloudletList = []
+                                    filteredCloudletList.push(currentCloudletOne)
+                                    console.log(`cloudlentOne====>`, currentCloudletOne);
+
+                                    await this.setState({loading: true})
+                                    let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
+
+                                    await this.setState({
+                                        filteredCloudletUsageList: cloudletUsageList,
+                                        currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                                    })
+
+                                    let promiseList = []
+                                    promiseList.push(fetchClusterList())
+                                    promiseList.push(fetchAppInstList(undefined, this))
+                                    let newPromiseList = await Promise.all(promiseList);
+                                    let clusterList = newPromiseList[0];
+                                    let appInstList = newPromiseList[1];
+
+                                    console.log(`clusterList====>`, clusterList)
+
+                                    let filteredClusterList = []
+                                    clusterList.map((item: TypeCluster, index) => {
+                                        if (item.Cloudlet === currentCloudletOne.CloudletName) {
+                                            filteredClusterList.push(item)
+                                        }
+                                    })
+
+                                    console.log(`filteredClusterList====>`, filteredClusterList);
+
+                                    if (filteredClusterList.length === 0) {
+                                        showToast('no cluster')
+                                    }
+
+
+                                    await this.setState({
+                                        filteredClusterList: filteredClusterList,
+                                        currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                                        filteredCloudletList: filteredCloudletList,
+                                        filteredAppInstList: appInstList,
+                                    })
+
+
+                                    let usageEventPromiseList = []
+                                    usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList))
+                                    usageEventPromiseList.push(getAllAppInstEventLogs());
+                                    usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                                    let newPromiseList2 = await Promise.all(usageEventPromiseList);
+                                    //allClusterEventLogList = newPromiseList2[0];
+                                    let allClusterEventLogList = []
+                                    let allAppInstEventLogList = newPromiseList2[1];
+                                    let allClusterUsageList = newPromiseList2[2];
+
+
+                                    let cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
+                                    let regionList = localStorage.getItem('regions').split(",")
+                                    let operList = this.makeUniqOper(filteredClusterList)
+                                    let clusterTreeDropdownList = makeClusterMultiDropdown(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
+
+                                    let markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CLOUDLET);
+
+                                    console.log(`markerListForMap====>`, markerListForMap);
+
+
+                                    await this.setState({
+                                        appInstanceListGroupByCloudlet: markerListForMap,
+                                        allClusterEventLogList: allClusterEventLogList,
+                                        filteredClusterEventLogList: allClusterEventLogList,
+                                        allAppInstEventLogs: allAppInstEventLogList,
+                                        filteredAppInstEventLogs: allAppInstEventLogList,
+                                        isReady: true,
+                                        clusterTreeDropdownList: clusterTreeDropdownList,
+                                        allClusterList: clusterList,
+                                        isAppInstaceDataReady: true,
+                                        appInstList: appInstList,
+                                        filteredAppInstList: appInstList,
+                                        dropdownRequestLoading: false,
+                                        clusterListLoading: false,
+                                        allClusterUsageList: allClusterUsageList,
+                                        filteredClusterUsageList: allClusterUsageList,
+                                        isRequesting: false,
+                                        mapLoading: false,
+                                        loading: false,
+                                        currentCloudLet: value,
+                                    });
+
+                                    //await this.handleOnChangeCloudletDropdown(value, selectIndex)
+                                }
+
+                            }}
+                        >
+                            {this.state.cloudletDropdownList.map((cloudletOne: any, index) => {
+
+                                console.log(`cloudletOne========>`, cloudletOne);
+
+                                try {
+                                    if (index === 0) {
+                                        return (
+                                            <Option key={index} value={undefined} style={{}}>
+                                                <div style={{color: 'orange', fontStyle: 'italic'}}>{cloudletOne.text}</div>
+                                            </Option>
+                                        )
+                                    } else {
+                                        let itemValues = cloudletOne.value + " | " + (index - 1).toString()
+                                        return (
+                                            <Option key={index} value={itemValues}>
+                                                <div style={{display: 'flex'}}>
+                                                    <div style={{marginLeft: 7,}}>{cloudletOne.text}</div>
+                                                </div>
+                                            </Option>
+                                        )
+                                    }
+                                } catch (e) {
+
+                                }
+                            })}
+                        </Select>
+                    </div>
                 )
             }
 

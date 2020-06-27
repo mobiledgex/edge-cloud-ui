@@ -173,6 +173,9 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
             mergedAppInstanceList = mergedList;
         })
 
+
+        console.log(`mergedAppInstanceList====>`, mergedAppInstanceList);
+
         let filteredAppInstList = []
         if (_this.state.userType.includes(USER_TYPE.AMDIN)) {
             filteredAppInstList = mergedAppInstanceList;

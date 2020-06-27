@@ -1,7 +1,7 @@
 import React, {createRef} from "react";
 import * as L from 'leaflet';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
-import type {TypeAppInst, TypeClient} from "../../../../shared/Types";
+import type {TypeAppInst, TypeClient, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
@@ -13,7 +13,12 @@ import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -47,6 +52,15 @@ let cloudBlueIcon = L.icon({
     iconUrl: require('../images/cloud_blue2.png'),
     //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
     iconSize: [45, 39],//todo: width, height
+    iconAnchor: [24, 30],//x,y
+    shadowSize: [41, 41]
+});
+
+
+let cloudRedIcon = L.icon({
+    iconUrl: require('../images/red-clouds-xxl.png'),
+    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+    iconSize: [40, 38],//todo: width, height
     iconAnchor: [24, 30],//x,y
     shadowSize: [41, 41]
 });
@@ -118,7 +132,7 @@ type State = {
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(
-    class MapForDevContainer extends React.Component<Props, State> {
+    class MapForAdmin002 extends React.Component<Props, State> {
         tooltip = createRef();
         mapTileList = [
             {
@@ -317,19 +331,21 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     let AppNames = ''
                     let CloudletLocation = '';
                     let Cloudlet = '';
-                    appInstListOnCloudlet[key].map((innerItem: TypeAppInst, index) => {
-
+                    let State = '';
+                    appInstListOnCloudlet[key].map((innerItem: TypeCloudlet, index) => {
                         if (index === (appInstListOnCloudlet[key].length - 1)) {
-                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " | " + innerItem.Cloudlet
+                            AppNames += innerItem.State + " | " + innerItem.CloudletName + " | " + innerItem.Region + " | " + "-" + " | " + "-" + " | " + innerItem.Operator + " | " + innerItem.CloudletName
                         } else {
-                            AppNames += innerItem.AppName + " | " + innerItem.ClusterInst + " | " + innerItem.Region + " | " + innerItem.HealthCheck + " | " + innerItem.Version + " | " + innerItem.Operator + " | " + innerItem.Cloudlet + " , "
+                            AppNames += innerItem.State + " | " + innerItem.CloudletName + " | " + innerItem.Region + " | " + "-" + " | " + "-" + " | " + innerItem.Operator + " | " + innerItem.CloudletName + " , "
                         }
                         CloudletLocation = innerItem.CloudletLocation;
-                        Cloudlet = innerItem.Cloudlet;
+                        Cloudlet = innerItem.CloudletName;
+                        State = innerItem.State;
                     })
 
                     newCloudLetLocationList.push({
                         AppNames: AppNames,
+                        State: State,
                         CloudletLocation: CloudletLocation,
                         strCloudletLocation: CloudletLocation.latitude.toString() + "_" + CloudletLocation.longitude.toString(),
                         Cloudlet: Cloudlet,
@@ -346,11 +362,16 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         setCloudletLocation(appInstListOnCloudlet, isMapCenter = false) {
             try {
+
+                console.log(`setCloudletLocation====>`, appInstListOnCloudlet);
+
                 let cloudletKeys = Object.keys(appInstListOnCloudlet)
                 let newCloudLetLocationList = this.makeNewCloudletLocationList(appInstListOnCloudlet, cloudletKeys)
                 let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
                 let locKeys = Object.keys(locationGrpList);
                 let locationGroupedCloudletList = this.makeLocationGroupedCloudletList(locationGrpList, locKeys)
+
+                console.log(`setCloudletLocation===2=>`, locationGroupedCloudletList);
 
                 this.setState({
                     selectedAppInstIndex: -1,
@@ -570,9 +591,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         renderCloudletMarkers = () => (
-            this.state.locationGroupedCloudletList.map((cloudletOne, cloudletIndex) => {
+            this.state.locationGroupedCloudletList.map((cloudletOne: TypeCloudlet, cloudletIndex) => {
                 let listAppName = cloudletOne.AppNames.split(",")
                 let cloudlets = cloudletOne.Cloudlet.toString().split(',');
+
+                console.log(`listAppName====>`, cloudletOne.AppNames.toString().split(" | ")[0]);
+
+                let cloudletState = cloudletOne.AppNames.toString().split(" | ")[0]
                 return (
                     <React.Fragment>
                         <Marker

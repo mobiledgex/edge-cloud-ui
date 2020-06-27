@@ -118,8 +118,7 @@ export const renderEmptyBox = () => {
             }}>
                 <Chip
                     variant="outlined"
-                    icon={<Cloud/>}
-                    color="secondary"
+                    color="primary"
                     label="Please, select Cloudlet"
                 />
             </div>
