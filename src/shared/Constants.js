@@ -367,10 +367,16 @@ export const USAGE_INDEX_FOR_CLUSTER = {
 }
 
 export const USER_TYPE = {
-    OPERATOR: 'operator',
     DEVELOPER: 'developer',
+    OPERATOR: 'operator',
     AMDIN: 'admin',
 
+}
+
+export const USER_TYPE_SHORT = {
+    DEV: 'dev',
+    OPER: 'oper',
+    AMDIN: 'amdin',
 }
 
 export const NETWORK_TYPE = {
@@ -378,22 +384,6 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
-/*export const GRID_ITEM_TYPE = {
-    LINE: 'LINE',
-    BAR: 'BAR',
-    COLUMN: 'COLUMN',
-    BUBBLE: 'BUBBLE',
-    MAP: 'MAP',
-    TABLE: 'TABLE',
-    DONUTS: 'DONUTS',
-    CLUSTER_LIST: 'CLUSTER_LIST',
-    CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
-    APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
-    PERFORMANCE_SUM: 'PERFORMANCE_SUM',
-    CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
-    METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
-    MULTI_LINE_CHART: 'MULTI_LINE_CHART'
-}*/
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
     //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},
@@ -551,8 +541,6 @@ export const MOINTORING_FILTER_ITEM_TYPE = {
 }
 
 export const SELECT_TYPE_ENUM = "Region" | "AppName" | "Cloudlet" | "ClusterInst"
-
-
 
 
 export const MONITORING_CATE_SELECT_TYPE = {

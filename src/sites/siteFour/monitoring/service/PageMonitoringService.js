@@ -1223,10 +1223,12 @@ export const convertToClassification = (pClassification) => {
 };
 
 export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true) => {
-    //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
-
-    let clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
-
+    let clusterCloudletName = '';
+    if (_this.state.userType.includes('dev')) {
+        clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
+    } else {
+        clusterCloudletName = item.cluster
+    }
     return (
         <div style={{display: 'flex'}}>
             <div>

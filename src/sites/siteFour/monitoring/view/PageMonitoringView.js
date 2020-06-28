@@ -153,8 +153,8 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
-import MapForAdmin from "../components/MapForAdmin";
-import MapForAdmin002 from "../components/MapForAdmin002";
+import MapForAdmin from "./temp/MapForAdmin____.js__________";
+import MapForAdmin002 from "../components/MapForAdmin";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -3406,7 +3406,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                         {item.cluster}
                                                     </div>
 
-                                                    {this.state.userType.includes(USER_TYPE.DEV) &&
+                                                    {this.state.userType.includes('dev') &&
                                                     <div style={{color: 'white',}}>
                                                         &nbsp;[{item.cloudlet}]
                                                     </div>

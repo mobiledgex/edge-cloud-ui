@@ -1,640 +1,725 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import React, {createRef} from "react";
 import * as L from 'leaflet';
-import {isEmpty, renderPlaceHolderLottieForMap} from "../service/PageMonitoringCommonService";
-import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
-import {changeClassficationTxt, listGroupByKey} from "../service/PageMonitoringService";
-import Control from "react-leaflet-control";
-import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
+import type {TypeClient, TypeCloudlet} from "../../../../shared/Types";
+import PageMonitoringView from "../view/PageMonitoringView";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Control from 'react-leaflet-control';
+import {
+    groupByKey_,
+    removeDuplicates, renderPlaceHolderLottiePinJump,
+    renderPlaceHolderLottieForMap,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
-import {CLASSIFICATION, CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
-import {Progress} from "antd";
-import uniqBy from "lodash/uniqBy";
-import _ from "lodash";
+import {Select} from 'antd'
+import {connect} from "react-redux";
+import * as actions from "../../../../actions";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
+import "leaflet-make-cluster-group/LeafletMakeCluster.css";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import '../common/PageMonitoringStyles.css'
+import {listGroupByKey} from "../service/PageMonitoringService";
+
+const {Option} = Select;
+const DEFAULT_VIEWPORT = {
+    center: [51.505, -0.09],
+    zoom: 13,
+}
+
+let cellphoneIcon = L.icon({
+    iconUrl: require('../images/cellhone_white003.png'),
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 
 let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),
+    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
     iconSize: [40, 21],
     iconAnchor: [20, 21],
     shadowSize: [41, 41]
 });
-export const mapIconStyle = {
-    backgroundColor: 'transparent',
-    height: 30,
-    width: 30,
-    display: 'flex',
-    justifyContent: 'center',
-    alignSelf: 'center'
-}
 
-export const worldMapCenter = [
-    6.315299, -4.683301
-]
-
-const Styles = {
-    lable001: {
-        marginTop: 5,
-        fontSize: 13,
-        marginLeft: 25,
-        fontStyle: 'italic'
-    },
-    infoDiv: {
-        position: 'absolute',
-        bottom: 0,
-        background: 'rgba(0, 0, 0, 0.5)',
-        width: '100%',
-        height: 190,
-        zIndex: 99999,
-        padding: 10,
-        marginLeft: 0,
-        display: 'flex'
-    },
-    topInfoDiv: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        background: 'rgba(0, 0, 0, 0.5)',
-        width: '50%',
-        height: 190,
-        zIndex: 99999,
-        padding: 10,
-        marginLeft: 0,
-        display: 'flex',
-        borderRadius: 10,
-    },
-    topInfoDivNoAppInst: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        background: 'rgba(0, 0, 0, 0.5)',
-        width: '50%',
-        height: 60,
-        zIndex: 99999,
-        padding: 10,
-        marginLeft: 0,
-        display: 'flex',
-        borderRadius: 10,
-    },
-}
-
-export default function MapForAdmin(props) {
-    const mapRef = useRef(null);
-    const [appInstCloudletObjects, setAppInstCloudletObjects] = useState([]);
-    const [appInstCloudLocList, setAppInstCloudLocList] = useState([]);
-    const [mapCenter, setMapCenter] = useState([6.315299, -4.683301])
-    const [zoom, setZoom] = useState(1)
-    const [currentCluodlet: TypeCloudlet, setCurrentCloudlet] = useState(undefined)
-    const [filteredClusterList, setFilteredClusterList] = useState([])
-    const [isEnableZoom, setIsEnableZoom] = useState(true)
-    const [count, setCount] = useState(-1);
-    const [usageOne: any, setUsageOne] = useState(-1);
-    const height = 180;
-    const hwMarginTop = 10;
-    const hwFontSize = 15;
-    const [cloudletList, setCloudletList] = useState([]);
+let cloudBlueIcon = L.icon({
+    iconUrl: require('../images/cloud_blue2.png'),
+    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+    iconSize: [45, 39],//todo: width, height
+    iconAnchor: [24, 30],//x,y
+    shadowSize: [41, 41]
+});
 
 
-    useEffect(() => {
-        if (props.filteredUsageList !== undefined && props.filteredUsageList.length === 1) {
-            setCount(props.filteredUsageList.length)
-            setUsageOne(props.filteredUsageList[0])
-        } else {
-            setCount(-1);
+let cloudRedIcon = L.icon({
+    iconUrl: require('../images/red-clouds-xxl.png'),
+    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+    iconSize: [40, 38],//todo: width, height
+    iconAnchor: [24, 30],//x,y
+    shadowSize: [41, 41]
+});
+
+
+const mapStateToProps = (state) => {
+    return {
+        isLoading: state.LoadingReducer.isLoading,
+        currentTyleLayer: state.MapTyleLayerReducer.currentTyleLayer,
+        lineColor: state.MapTyleLayerReducer.lineColor,
+        cloudletIconColor: state.MapTyleLayerReducer.cloudletIconColor,
+    }
+};
+const mapDispatchProps = (dispatch) => {
+    return {
+        toggleLoading: (data) => {
+            dispatch(actions.toggleLoading(data))
+        },
+        setMapTyleLayer: (data) => {
+            dispatch(actions.setMapTyleLayer(data))
+        },
+
+        setLineColor: (data) => {
+            dispatch(actions.setLineColor(data))
+        },
+
+        setCloudletIconColor: (data) => {
+            dispatch(actions.setCloudletIconColor(data))
+        },
+    };
+};
+type Props = {
+    parent: PageMonitoringView,
+    markerList: Array,
+    selectedClientLocationListOnAppInst: any,
+    isMapUpdate: boolean,
+    currentWidgetWidth: number,
+    isFullScreenMap: boolean,
+    currentTyleLayer: string,
+    lineColor: string,
+    cloudletIconColor: string,
+    setMapTyleLayer: Function,
+    setLineColor: Function,
+    setCloudletIconColor: Function,
+    isLoading: boolean,
+    isShowAppInstPopup: boolean,
+    isEnableZoomIn: boolean,
+    handleAppInstDropdown: any,
+
+};
+type State = {
+    zoom: number,
+    popUploading: boolean,
+    newCloudLetLocationList: Array,
+    isUpdateEnable: boolean,
+    clientList: any,
+    currentTyleLayer: any,
+    currentWidgetWidth: number,
+    clientObjKeys: any,
+    lineColor: string,
+    cloudIcon: string,
+    cloudletIconColor: string,
+    mapCenter: any,
+    selectedAppInstIndex: number,
+    isEnableZoomIn: boolean,
+    isCloudletClustering: boolean,
+    currentTimeZone: string,
+
+};
+
+export default connect(mapStateToProps, mapDispatchProps)(
+    class MapForAdmin extends React.Component<Props, State> {
+        tooltip = createRef();
+        mapTileList = [
+            {
+                url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+                name: 'dark1',
+                value: 0,
+            },
+            {
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
+                name: 'dark2',
+                value: 1,
+            },
+            {
+                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
+                name: 'dark3',
+                value: 2,
+            },
+
+            {
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
+                name: 'blue',
+                value: 3,
+            },
+            {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                name: 'light2',
+                value: 4,
+            },
+            {
+                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
+                name: 'light3',
+                value: 5,
+            },
+            {
+                url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+                name: 'light4',
+                value: 6,
+            },
+        ]
+
+
+        constructor(props: Props) {
+            super(props);
+            this.appInstPopup = React.createRef();
+            this.state = {
+                zoom: 2,//mapZoom
+                appInstanceListGroupByCloudlet: '',
+                cloudletKeys: [],
+                locationGroupedCloudletList: [],
+                showModal: false,
+                showOffice: false,
+                isUpdateEnable: false,
+                arrIsShowCloudlet: [],
+                reDrawMap: 'dummy',
+                viewport: DEFAULT_VIEWPORT,
+                markers: [
+                    {key: 'marker1', position: [51.5, -0.1], content: 'My first popup'},
+                    {key: 'marker2', position: [51.51, -0.1], content: 'My second popup'},
+                    {key: 'marker3', position: [51.49, -0.05], content: 'My third popup'},
+                ],
+                popupLoading: false,
+                clientList: [],
+                currentTyleLayer: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+                currentWidgetWidth: window.innerWidth / 3,
+                clientObjKeys: [],
+                lineColor: 'green',
+                cloudletIconColor: 'green',
+                mapCenter: [43.4, 51.7],
+                selectedAppInstIndex: -1,
+                isEnableZoomIn: false,
+                isCloudletClustering: false,
+                currentTimeZone: undefined,
+
+            };
+
+
         }
-    }, [props.filteredUsageList]);
 
-    useEffect(() => {
-        if (zoom !== 1) {
-            setZoom(1)
-        } else {
-            setZoom(1.2)
+
+        componentDidMount = async () => {
+            try {
+                let markerList = this.props.markerList
+                this.setCloudletLocation(markerList, true)
+
+            } catch (e) {
+                throw new Error(e)
+            }
+
+        };
+
+
+        async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+            try {
+
+                if (this.props.isEnableZoomIn !== nextProps.isEnableZoomIn) {
+                    this.setState({
+                        isEnableZoomIn: false,
+                    })
+                }
+
+                if (this.props.markerList !== nextProps.markerList) {
+                    let markerList = nextProps.markerList;
+                    this.setCloudletLocation(markerList)
+                }
+
+                //@desc : #############################
+                //@desc:   hide appInstInfoPopup
+                //@desc : #############################
+                if (this.props.isShowAppInstPopup !== nextProps.isShowAppInstPopup) {
+                    try {
+                        if (this.appInstPopup.current !== undefined) {
+                            this.appInstPopup.current.leafletElement.options.leaflet.map.closePopup();
+                        }
+                    } catch (e) {
+
+                    }
+
+                }
+
+                //@desc : #############################
+                //@desc : clientList
+                //@desc : #############################
+                if (this.props.selectedClientLocationListOnAppInst !== nextProps.selectedClientLocationListOnAppInst) {
+
+                    await this.setState({
+                        clientObjKeys: [],
+                    })
+                    let clientList = nextProps.selectedClientLocationListOnAppInst;
+                    //desc: duplication remove by client cellphone uuid
+                    clientList = removeDuplicates(clientList, "uuid")
+
+                    let newClientList = []
+                    clientList.map((item: TypeClient, index) => {
+                        let clientLocation = parseFloat(item.latitude).toFixed(1).toString() + parseFloat(item.longitude).toFixed(1).toString();
+                        item.clientLocation = clientLocation;
+                        newClientList.push(item);
+                    })
+
+
+                    let groupedClientList = groupByKey_(newClientList, 'clientLocation')
+                    let clientObjKeys = Object.keys(groupedClientList)
+
+                    await this.setState({
+                        clientList: groupedClientList,
+                        clientObjKeys: clientObjKeys,
+                    }, () => {
+                    })
+                }
+            } catch (e) {
+                throw new Error(e)
+            }
+
         }
-        setMapCenter(worldMapCenter);
-    }, [props.toggleOperMapZoom])
 
-    useEffect(() => {
-        if (props.cloudletLength === 1) {
-            setIsEnableZoom(false)
-        } else {
-            setIsEnableZoom(true)
-        }
-    }, [props.cloudletLength])
+        makeLocationGroupedCloudletList(locationGrpedList, locKeys) {
+            try {
+                let locationGroupedCloudletList = []
+                locKeys.map(item => {
+                    let AppNames = '';
+                    let CloudletLocation = '';
+                    let strCloudletLocation = '';
+                    let Cloudlet = '';
+                    locationGrpedList[item].map((innerItem, index) => {
+                        if (index === locationGrpedList[item].length - 1) {
+                            AppNames += innerItem.AppNames
+                            Cloudlet += innerItem.Cloudlet
+                        } else {
+                            AppNames += innerItem.AppNames + ", "
+                            Cloudlet += innerItem.Cloudlet + ", "
+                        }
 
-    useEffect(() => {
-        async function loadContent() {
-            await setCloudletLocationForAppInst()
-            if (!isEmpty(props.filteredAppInstList)) {
-                props.parent.setState({
-                    mapLoading: false,
+                        CloudletLocation = innerItem.CloudletLocation;
+                        strCloudletLocation = innerItem.strCloudletLocation;
+                    })
+
+                    let CloudletGrpOne = {
+                        AppNames,
+                        CloudletLocation,
+                        strCloudletLocation,
+                        Cloudlet,
+                    }
+
+                    locationGroupedCloudletList.push(CloudletGrpOne)
                 })
+
+                return locationGroupedCloudletList;
+            } catch (e) {
+                throw new Error(e)
             }
         }
 
-        loadContent();
-    }, [props.filteredAppInstList])
+        makeNewCloudletLocationList(appInstListOnCloudlet, cloudletKeys) {
+            try {
+                let newCloudLetLocationList = []
+                cloudletKeys.map((key, index) => {
+                    let AppNames = ''
+                    let CloudletLocation = '';
+                    let Cloudlet = '';
+                    let State = '';
+                    appInstListOnCloudlet[key].map((innerItem: TypeCloudlet, index) => {
+                        if (index === (appInstListOnCloudlet[key].length - 1)) {
+                            AppNames += innerItem.State + " | " + innerItem.CloudletName + " | " + innerItem.Region + " | " + "-" + " | " + "-" + " | " + innerItem.Operator + " | " + innerItem.CloudletName
+                        } else {
+                            AppNames += innerItem.State + " | " + innerItem.CloudletName + " | " + innerItem.Region + " | " + "-" + " | " + "-" + " | " + innerItem.Operator + " | " + innerItem.CloudletName + " , "
+                        }
+                        CloudletLocation = innerItem.CloudletLocation;
+                        Cloudlet = innerItem.CloudletName;
+                        State = innerItem.State;
+                    })
 
-    async function setCloudletLocationForAppInst() {
-        try {
-            let cloudletList = props.filteredAppInstList;
-
-            let uniqueOnlyCloudletList = []
-            cloudletList.map(item => {
-                uniqueOnlyCloudletList.push({
-                    Cloudlet: item.Cloudlet,
-                    CloudletLocation: JSON.stringify(item.CloudletLocation),
+                    newCloudLetLocationList.push({
+                        AppNames: AppNames,
+                        State: State,
+                        CloudletLocation: CloudletLocation,
+                        strCloudletLocation: CloudletLocation.latitude.toString() + "_" + CloudletLocation.longitude.toString(),
+                        Cloudlet: Cloudlet,
+                        isShow: false,
+                        isShowCircle: false,
+                        //ClusterInst: ClusterInst,
+                    })
                 })
-            })
-
-            let cloudletLocList = _.uniqBy(uniqueOnlyCloudletList, "CloudletLocation")
-            let uniqCloudletList = _.uniqBy(uniqueOnlyCloudletList, "Cloudlet")
-
-            let cloudletNames = []
-            cloudletLocList.map(item => {
-                let locSameCloudletList = []
-                uniqCloudletList.map(cloudletNameOne => {
-                    if (cloudletNameOne.CloudletLocation === item.CloudletLocation) {
-                        locSameCloudletList.push(cloudletNameOne.Cloudlet)
-                    }
-                })
-                cloudletNames.push({
-                    CloudletLocation: JSON.parse(item.CloudletLocation),
-                    CloudletLocationStr: item.CloudletLocation,
-                    CloudletNames: locSameCloudletList,
-                })
-            })
-
-
-            let newCloudletList = []
-            cloudletNames.map((clouletLocOne, index) => {
-
-                let appInstList = []
-                cloudletList.map(innerItem => {
-                    if (clouletLocOne.CloudletLocationStr === JSON.stringify(innerItem.CloudletLocation)) {
-                        appInstList.push(innerItem)
-                    }
-                })
-                newCloudletList.push({
-                    CloudletNames: clouletLocOne.CloudletNames,
-                    CloudletLocation: clouletLocOne.CloudletLocation,
-                    appInstList: appInstList,
-                })
-            })
-
-            console.log('newCloudletList===>', newCloudletList);
-            setCloudletList(newCloudletList)
-
-        } catch (e) {
-
-        }
-
-    }
-
-
-    function renderAppInstInfo() {
-        return (
-            props.currentOperLevel === CLASSIFICATION.CLUSTER && props.filteredAppInstList.length > 0 && filteredClusterList.length === 1 ?
-                <div
-                    style={Styles.topInfoDiv}
-                >
-                    {/*todo:##################################*/}
-                    {/*todo:appInst top info               */}
-                    {/*todo:##################################*/}
-                    <div style={{
-                        flex: 1,
-                        border: '0.5px solid grey',
-                        padding: 10,
-                        overflowY: 'auto',
-                        marginLeft: 15,
-                        marginRight: 5,
-                        borderRadius: 10,
-                    }}>
-                        {props.filteredAppInstList.map((item: TypeAppInst, index) => {
-                            return (
-                                <div
-                                    onClick={async () => {
-                                    }}
-                                    key={index} style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    marginTop: index !== 0 && index === (filteredClusterList.length - 1) ? 10 : 0,
-                                }}
-                                >
-                                    <div style={{fontSize: 12, color: 'white',}}>
-                                        <Icon name='server'/> {item.AppName}
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-                : props.currentOperLevel === CLASSIFICATION.CLUSTER && props.filteredAppInstList.length === 0 ?
-                <div
-                    style={Styles.topInfoDivNoAppInst}
-                >
-                    <div style={{
-                        flex: 1,
-                        border: '0.5px solid grey',
-                        padding: 0,
-                        overflowY: 'auto',
-                        marginLeft: 15,
-                        marginRight: 5,
-                        borderRadius: 10,
-                    }}>
-                        <Center style={{
-                            fontSize: 15,
-                            color: 'orange',
-                            alignSelf: 'center',
-                            height: 40,
-                            marginTop: -1,
-                            fontWeight: 'bold'
-                        }}>
-                            <div style={{marginTop: 0, fontStyle: 'italic'}}>
-                                No App Inst
-                            </div>
-                        </Center>
-                    </div>
-                </div>
-                : null
-        )
-    }
-
-    function renderCloudletInfo() {
-        return (
-            <div style={{flex: .49, border: '0.5px solid grey', padding: 10, borderRadius: 10, marginLeft: 5}}
-                 onClick={async () => {
-
-                 }}
-            >
-                <div style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    marginTop: 0,
-                    fontFamily: 'Roboto',
-                    display: 'flex',
-                }}>
-                    <div style={{color: props.chartColorList[props.currentColorIndex], marginLeft: 5}}>
-                        <Icon name='cloud'/>
-                    </div
-
-
-                    >
-                    <div style={{marginLeft: 5}}>
-                        {currentCluodlet.CloudletName}
-                    </div>
-                </div>
-                <hr/>
-                <table style={{width: '100%', marginTop: 10, marginLeft: 10}}>
-                    <tr style={PageMonitoringStyles.trPadding2}>
-                        <td style={PageMonitoringStyles.width50}>
-                            <b>Operator</b>
-                        </td>
-                        <td style={PageMonitoringStyles.width50}>
-                            {currentCluodlet.Operator}
-                        </td>
-                    </tr>
-                    <tr style={PageMonitoringStyles.trPadding2}>
-                        <td style={PageMonitoringStyles.width50}>
-                            <b>Ip_support</b>
-                        </td>
-                        <td style={PageMonitoringStyles.width50}>
-                            {currentCluodlet.Ip_support}
-                        </td>
-                    </tr>
-                    <tr style={PageMonitoringStyles.trPadding2}>
-                        <td style={PageMonitoringStyles.width50}>
-                            <b>Num_dynamic_ips</b>
-                        </td>
-                        <td style={PageMonitoringStyles.width50}>
-                            {currentCluodlet.Num_dynamic_ips}
-                        </td>
-                    </tr>
-                    <tr style={PageMonitoringStyles.trPadding2}>
-                        <td style={PageMonitoringStyles.width50}>
-                            <b>State</b>
-                        </td>
-                        <td style={{width: '50%', color: 'yellow'}}>
-                            {CLOUDLET_CLUSTER_STATE[currentCluodlet.State]}
-                        </td>
-                    </tr>
-                    <tr style={PageMonitoringStyles.trPadding2}>
-                        <td style={PageMonitoringStyles.width50}>
-                            <b>CloudletInfoState</b>
-                        </td>
-                        <td style={PageMonitoringStyles.width50}>
-                            {currentCluodlet.CloudletInfoState}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-        )
-    }
-
-    function renderCloudletDashBoard() {
-        return (
-            <div style={{
-                backgroundColor: 'transparent',
-                height: '100%',
-                flex: .49,
-                /*border: '0.5px solid grey',
-                padding: 10,*/
-                borderRadius: 10,
-            }}>
-                {count === 1 && props.currentClassification === CLASSIFICATION.CLOUDLET ?
-                    <Center style={{height: height,}}>
-                        <div>
-                            <Progress
-                                strokeColor={'orange'}
-                                type="circle"
-                                width={100}
-                                trailColor='#262626'
-                                style={{fontSize: 10}}
-                                percent={usageOne.usedVCpuCount / usageOne.maxVCpuCount * 100}
-                                strokeWidth={10}
-                                format={(percent, successPercent) => {
-                                    return parseInt(usageOne.usedVCpuCount.toFixed(0)) + "/" + usageOne.maxVCpuCount;
-                                }}
-                            />
-                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                vCPU
-                            </div>
-                        </div>
-                        <div style={{width: 15}}/>
-                        <div>
-                            <Progress
-                                strokeColor='skyblue'
-                                type="circle"
-                                width={100}
-                                trailColor='#262626'
-                                percent={Math.round(usageOne.usedMemUsage / usageOne.maxMemUsage * 100)}
-                                strokeWidth={10}
-                            />
-                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                MEM
-                            </div>
-                        </div>
-                        <div style={{width: 15}}/>
-                        <div>
-                            <Progress
-                                strokeColor='#44B227'
-                                type="circle"
-                                width={100}
-                                trailColor='#262626'
-                                percent={Math.ceil((usageOne.usedDiskUsage / usageOne.maxDiskUsage) * 100)}
-                                strokeWidth={10}
-                                format={(percent, successPercent) => {
-                                    return usageOne.usedDiskUsage + "/" + usageOne.maxDiskUsage;
-                                }}
-                            />
-                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                DISK
-                            </div>
-                        </div>
-                    </Center>
-                    : count === 1 && props.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ? //@DESC: CLUSTER LEVEL FOR OPER
-                        <Center style={{height: height,}}>
-                            <div>
-                                <Progress
-                                    strokeColor={props.chartColorList[0]}
-                                    type="circle"
-                                    width={100}
-                                    trailColor='#262626'
-                                    style={{fontSize: 10}}
-                                    percent={Math.round(usageOne.sumCpuUsage)}
-                                    strokeWidth={10}
-
-                                />
-                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                    CPU
-                                </div>
-                            </div>
-                            <div style={{width: 15}}/>
-                            <div>
-                                <Progress
-                                    strokeColor={props.chartColorList[1]}
-                                    type="circle"
-                                    width={100}
-                                    trailColor='#262626'
-                                    percent={Math.round(usageOne.sumMemUsage)}
-                                    strokeWidth={10}
-                                />
-                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                    MEM
-                                </div>
-                            </div>
-                            <div style={{width: 15}}/>
-                            <div>
-                                <Progress
-                                    strokeColor={props.chartColorList[2]}
-                                    type="circle"
-                                    width={100}
-                                    trailColor='#262626'
-                                    percent={Math.round(usageOne.sumDiskUsage)}
-                                    strokeWidth={10}
-                                />
-                                <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                    DISK
-                                </div>
-                            </div>
-                        </Center>
-                        :
-                        <Center style={{
-                            fontSize: 22,
-                            backgroundColor: 'rgba(157,255,255,.02)',
-                            height: height,
-                            flexDirection: 'column'
-                        }}>
-                            <div>
-                                <div>
-                                    No Available
-                                </div>
-                                <div style={{fontSize: 12}}>
-                                    (It is shown only in one
-                                    specific {changeClassficationTxt(props.currentClassification)})
-                                </div>
-                            </div>
-                        </Center>
-                }
-            </div>
-        )
-
-    }
-
-    function openPopup(marker) {
-        try {
-            if (marker && marker.leafletElement && props.cloudletList.length === 1) {
-                window.setTimeout(() => {
-                    marker.leafletElement.openPopup()
-                })
-            } else {
-                mapRef.current.leafletElement.closePopup()
+                return newCloudLetLocationList;
+            } catch (e) {
+                throw new Error(e)
             }
-        } catch (e) {
-            //throw new Error(e)
         }
-    }
 
-    function renderCloudletMarkerOne(cloudletOne, cloudletIndex) {
-        return (
-            <Marker
-                ref={openPopup}
-                key={cloudletIndex}
-                icon={cloudGreenIcon}
-                className='marker1'
-                position={
-                    [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude,]
-                }
-            >
-                {/*
-                todo: #############################
-                todo:      appInst List popup
-                todo: #############################
-                */}
-                <Popup
-                    className='popup_admin_cloudlet'
-                    offset={[0, 0]}
-                    opacity={0.7}
-                    style={{width: '200px !important'}}
+        setCloudletLocation(appInstListOnCloudlet, isMapCenter = false) {
+            try {
+
+                console.log(`setCloudletLocation====>`, appInstListOnCloudlet);
+
+                let cloudletKeys = Object.keys(appInstListOnCloudlet)
+                let newCloudLetLocationList = this.makeNewCloudletLocationList(appInstListOnCloudlet, cloudletKeys)
+                let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
+                let locKeys = Object.keys(locationGrpList);
+                let locationGroupedCloudletList = this.makeLocationGroupedCloudletList(locationGrpList, locKeys)
+
+                console.log(`setCloudletLocation===2=>`, locationGroupedCloudletList);
+
+                this.setState({
+                    selectedAppInstIndex: -1,
+                    locationGroupedCloudletList: locationGroupedCloudletList,
+                    appInstanceListGroupByCloudlet: appInstListOnCloudlet,
+                }, () => {
+                    if (locationGroupedCloudletList[0] !== undefined) {
+                        this.setState({
+                            mapCenter: isMapCenter ? this.state.mapCenter : [locationGroupedCloudletList[0].CloudletLocation.latitude, locationGroupedCloudletList[0].CloudletLocation.longitude],
+                            zoom: 2,
+                        })
+                    }
+                })
+            } catch (e) {
+                showToast(e.toString())
+                //throw new Error(e)
+            }
+        }
+
+
+        makeMapThemeDropDown() {
+            return (
+                <Select
+                    size={"small"}
+                    defaultValue="dark1"
+                    style={{width: 70, zIndex: 9999999999}}
+                    showArrow={false}
+                    bordered={false}
+                    ref={c => this.themeSelect = c}
+                    listHeight={550}
+                    onChange={async (value) => {
+                        try {
+                            let index = value
+                            let lineColor = DARK_LINE_COLOR
+                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                            if (Number(index) >= 4) {
+                                lineColor = WHITE_LINE_COLOR;
+                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                            }
+                            this.props.setMapTyleLayer(this.mapTileList[index].url);
+                            this.props.setLineColor(lineColor);
+                            this.props.setCloudletIconColor(cloudletIconColor);
+                            setTimeout(() => {
+                                this.themeSelect.blur();
+                            }, 250)
+
+                        } catch (e) {
+                            throw new Error(e)
+                        }
+                    }}
                 >
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {cloudletOne.appInstList.map(item => {
-                            return (
-                                <div
-                                    className='popup_admin_cloudlet'
-                                    style={{display: 'flex', flexDirection: 'row',}}
-                                    onClick={() => {
-                                        //alert(item.AppName)
-                                        props.parent.handleAppInstDropDownChange___Admin(item)
-                                    }}
-                                >
-                                    <div className={'popup_text_admin_map'}>
-                                        {item.AppName}[{item.Version}]
-                                    </div>
-                                    <div className={'popup_text_admin_map'} style={{color: 'yellow'}}>
-                                        &nbsp;({item.ClusterInst})
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </Popup>
+                    {this.mapTileList.map((item, index) => {
+                        return (
+                            <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
+                                    value={item.value}>{item.name}</Option>
+                        )
+                    })}
+                </Select>
+            )
+        }
+
+
+        handleRefresh = async () => {
+            try {
+                await this.setState({
+                    zoom: 1,
+                    selectedAppInstIndex: -1,
+                });
+                clearInterval(this.props.parent.intervalForAppInst)
+                clearInterval(this.props.parent.intervalForCluster)
+                await this.props.parent.handleOnChangeClusterDropdown(undefined);
+            } catch (e) {
+
+            }
+        }
+
+        renderCloudletMarkerTooltip(cloudlets) {
+            return (
                 <Tooltip
                     className='mapCloudletTooltip'
                     direction='right'
                     offset={[14, -10]}//x,y
                     opacity={0.8}
                     permanent
+                    ref={c => {
+                        this.toolTip = c;
+                    }}
                     style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
                 >
+                    {cloudlets.map((item, index) => {
+                        return (
+                            <div
+                                key={index}
+                                className='mapCloudletTooltipInnerBlack'
+                            >
+                                {item}
+                            </div>
+                        )
+                    })}
+
+                </Tooltip>
+            )
+        }
+
+        renderCloudletMarkerPopup(cloudlets){
+            return (
+                <Popup
+                    className='tooltip2'
+                    offset={[0, 0]}
+                    opacity={0.7}
+                    style={{width: '200px !important'}}
+                >
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {cloudletOne.CloudletNames.map(item => {
+                        {cloudlets.map((item, index) => {
                             return (
-                                <div className='popup_oper_cloudlet'>
+                                <div
+                                    key={index}
+                                    className='mapCloudletTooltipInner'
+                                >
                                     {item}
                                 </div>
                             )
                         })}
                     </div>
-                </Tooltip>
+                </Popup>
+            )
+        }
 
-            </Marker>
-        )
-    }
-
-    function renderMapControlButton() {
-        return (
-            <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
-                <div style={PageMonitoringStyles.mapControlDiv}>
-                    <div
-                        style={mapIconStyle}
-                        onClick={async () => {
-                            setCurrentCloudlet(undefined)
-                            props.parent.resetLocalDataFor______Admin(undefined).then(() => {
-                                props.parent.setState({
-                                    toggleZoom: !props.parent.state.toggleZoom
-                                });
-                                mapRef.current.leafletElement.closePopup();
-                            })
-
-                        }}
-                    >
-                        <Icon
-
-                            name='redo'
-                            style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                        />
-                    </div>
-                    <div
-                        style={mapIconStyle}
-                        onClick={() => {
-                            setZoom(zoom + 1)
-                        }}
-                    >
-                        <Icon
-                            name='add'
-                            style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                        />
-                    </div>
-                    <div style={{width: 2}}/>
-                    <div
-                        style={mapIconStyle}
-                        onClick={() => {
-                            if (zoom > 1) {
-                                setZoom(zoom - 1)
+        renderCloudletMarkers = () => (
+            this.state.locationGroupedCloudletList.map((cloudletOne: TypeCloudlet, cloudletIndex) => {
+                let cloudlets = cloudletOne.Cloudlet.toString().split(',');
+                console.log(`listAppName====>`, cloudletOne.AppNames.toString().split(" | ")[0]);
+                return (
+                    <React.Fragment>
+                        <Marker
+                            ref={c => this.marker1 = c}
+                            icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
+                            className='marker1'
+                            position={
+                                [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
-                        }}
-                    >
-                        <Icon
-                            name='minus'
-                            style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                        />
-                    </div>
-                </div>
-            </Control>
+                        >
+                            {/*{this.renderCloudletMarkerTooltip(cloudlets)}*/}
+                            {this.renderCloudletMarkerPopup(cloudlets)}
+                        </Marker>
+                    </React.Fragment>
+                )
+            })
         )
-    }
 
-    return (
-        <div style={{height: '100%', width: '100%'}}>
-            <Map
-                ref={mapRef}
-                center={mapCenter}
-                zoom={zoom}
-                duration={1.2}
-                style={{width: '100%', height: '100%'}}
-                easeLinearity={1}
-                useFlyTo={true}
-                dragging={true}
-                zoomControl={false}
-                boundsOptions={{padding: [50, 50]}}
-                scrollWheelZoom={isEnableZoom}
-            >
-                <TileLayer
-                    url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-                    minZoom={1}
-                />
-                {/*@todo:#####################################################*/}
-                {/*@todo:map bottom Info                                     */}
-                {/*@todo:####################################################*/}
-                {currentCluodlet !== undefined &&
-                <div
-                    style={Styles.infoDiv}
-                >
-                    {renderCloudletInfo()}
-                    <div style={{flex: .02}}></div>
-                    {renderCloudletDashBoard()}
+        renderMapControl() {
+            return (
+                <React.Fragment>
+                    <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+
+                        <div style={PageMonitoringStyles.mapControlDiv}>
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}
+                            >
+                                <Icon
+                                    name='redo'
+                                    onClick={this.handleRefresh}
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div>
+                            <div
+                                style={{backgroundColor: 'transparent', height: 30}}
+                                onClick={() => {
+                                    this.setState({
+                                        zoom: this.state.zoom + 1,
+                                    })
+                                }}
+                            >
+                                <Icon
+                                    name='add'
+
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div>
+                            <div style={{width: 2}}/>
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}
+                                onClick={() => {
+                                    this.setState({
+                                        zoom: this.state.zoom - 1,
+                                    })
+                                }}
+                            >
+                                <Icon
+                                    name='minus'
+
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div>
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}
+                            >
+                                <Icon
+                                    name='zoom-in'
+                                    onClick={() => {
+                                        this.setState({
+                                            isEnableZoomIn: !this.state.isEnableZoomIn
+                                        })
+                                    }}
+                                    style={{
+                                        fontSize: 20,
+                                        color: this.state.isEnableZoomIn ? 'white' : 'grey',
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </Control>
+                    <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                        <div style={{color: 'yellow'}}>
+                            Cloudlets : {this.props.cloudletList.length}
+                        </div>
+                    </Control>
+
+                </React.Fragment>
+            )
+        }
+
+        renderHeader() {
+            return (
+                <div>
+                    {!this.props.isFullScreenMap &&
+                    <div className='page_monitoring_title_area draggable'>
+                        <div style={{
+                            display: 'flex',
+                            width: '100%',
+                            height: 30
+                        }}>
+                            <div className='page_monitoring_title' style={{
+                                backgroundColor: 'transparent',
+                                flex: .38
+                            }}>
+                                Deployed Instance
+                            </div>
+
+                        </div>
+                    </div>
+                    }
+
+                    {this.props.parent.state.mapPopUploading &&
+                    <div className='page_monitoring_title_area draggable'>
+                        <div className='page_monitoring_title' style={{
+                            backgroundColor: 'transparent',
+                            flex: .65
+                        }}>
+                            <div style={{zIndex: 99999999999}}>
+                                <CircularProgress style={{
+                                    color: '#1cecff',
+                                    marginRight: 0,
+                                    marginBottom: -2,
+                                    fontWeight: 'bold',
+                                }}
+                                                  size={14}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    }
                 </div>
-                }
-                {renderAppInstInfo()}
-                {renderMapControlButton()}
-                {cloudletList.map((cloudletOne, index) => {
-                    return renderCloudletMarkerOne(cloudletOne, index)
-                })}
-                {props.parent.state.mapLoading && renderPlaceHolderLottieForMap(true)}
-            </Map>
+            )
+        }
 
-        </div>
-    )
 
-}
+        render() {
+            return (
+                <React.Fragment>
+                    {this.renderHeader()}
+                    {this.props.loading && renderPlaceHolderLottieForMap(true)}
+                    <div className='page_monitoring_container'>
+                        <div style={{height: '100%', width: '100%', zIndex: 1}}>
+                            <Map
+                                center={this.state.mapCenter}
+                                zoom={this.state.zoom}
+                                duration={0.9}
+                                onZoomEnd={(e) => {
+                                    this.setState({
+                                        zoom: e.target._zoom,
+                                    })
+                                }}
+                                style={{width: '100%', height: '100%', zIndex: 1,}}
+                                easeLinearity={1}
+                                useFlyTo={true}
+                                dragging={true}
+                                boundsOptions={{padding: [50, 50]}}
+                                maxZoom={14}
+                                zoomControl={false}
+                                ref={(ref) => {
+                                    this.map = ref;
+                                }}
+                            >
+
+                                <TileLayer
+                                    url={this.props.currentTyleLayer}
+                                    minZoom={2}
+                                    style={{zIndex: 1}}
+                                />
+                                {this.renderMapControl()}
+                                {this.props.isFullScreenMap ?
+                                    <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
+                                        {this.makeMapThemeDropDown()}
+                                    </div>
+                                    : <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 99999}}>
+                                        {this.makeMapThemeDropDown()}
+                                    </div>
+                                }
+                                {/*@desc:#####################################..*/}
+                                {/*@desc:Cloudlet Markers                    ...*/}
+                                {/*@desc:#####################################..*/}
+                                <React.Fragment>
+                                    <React.Fragment>
+                                        {this.renderCloudletMarkers()}
+                                    </React.Fragment>
+                                </React.Fragment>
+                            </Map>
+                        </div>
+
+                    </div>
+                </React.Fragment>
+            );
+        }
+    }
+)
+
