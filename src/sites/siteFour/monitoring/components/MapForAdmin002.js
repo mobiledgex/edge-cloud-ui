@@ -7,7 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
 import {
     groupByKey_,
-    removeDuplicates,
+    removeDuplicates, renderPlaceHolderLottiePinJump,
     renderPlaceHolderLottieForMap,
     showToast
 } from "../service/PageMonitoringCommonService";
@@ -449,7 +449,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-        renderCloudletTooltip(cloudlets) {
+        renderCloudletMarkerTooltip(cloudlets) {
             return (
                 <Tooltip
                     className='mapCloudletTooltip'
@@ -467,7 +467,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         return (
                             <div
                                 key={index}
-                                className='mapCloudletTooltipInner'
+                                className='mapCloudletTooltipInnerBlack'
                             >
                                 {item}
                             </div>
@@ -475,6 +475,30 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     })}
 
                 </Tooltip>
+            )
+        }
+
+        renderCloudletMarkerPopup(cloudlets){
+            return (
+                <Popup
+                    className='tooltip2'
+                    offset={[0, 0]}
+                    opacity={0.7}
+                    style={{width: '200px !important'}}
+                >
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                        {cloudlets.map((item, index) => {
+                            return (
+                                <div
+                                    key={index}
+                                    className='mapCloudletTooltipInner'
+                                >
+                                    {item}
+                                </div>
+                            )
+                        })}
+                    </div>
+                </Popup>
             )
         }
 
@@ -492,28 +516,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
                         >
-                            {/*desc:################################*/}
-                            {/*desc:CLOUDLET POPUP                  */}
-                            {/*desc:################################*/}
-                            <Popup
-                                className='tooltip2'
-                                offset={[0, 0]}
-                                opacity={0.7}
-                                style={{width: '200px !important'}}
-                            >
-                                <div style={{display: 'flex', flexDirection: 'column'}}>
-                                    {cloudlets.map((item, index) => {
-                                        return (
-                                            <div
-                                                key={index}
-                                                className='mapCloudletTooltipInner'
-                                            >
-                                                {item}
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                            </Popup>
+                            {/*{this.renderCloudletMarkerTooltip(cloudlets)}*/}
+                            {this.renderCloudletMarkerPopup(cloudlets)}
                         </Marker>
                     </React.Fragment>
                 )

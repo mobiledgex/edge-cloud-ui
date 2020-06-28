@@ -368,6 +368,7 @@ type PageDevMonitoringState = {
     currentOrg: string,
     isAdminClusterTreeExpand: boolean,
     currentMapLevel: string,
+    isNoCluster: boolean,
 
 }
 
@@ -626,6 +627,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     organizationList: [],
                     currentOrg: 'All Organization',
                     isAdminClusterTreeExpand: true,
+                    isNoCluster: false,
 
                 };
             }
@@ -2349,86 +2351,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderOperDropdown() {
-
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label">
-                            Oper
-                        </div>
-                        <Select
-                            ref={c => this.operSelect = c}
-                            showSearch={true}
-                            dropdownStyle={{}}
-                            listHeight={512}
-                            style={{width: 120, maxHeight: '512px !important'}}
-                            //disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
-                            value={this.state.currentOper}
-                            placeholder={'Select Oper'}
-                            onSelect={async (value) => {
-                                this.operSelect.blur();
-                                let markerListForMap = []
-                                let filteredCloudletList = []
-                                if (value === "0") {//todo: all
-                                    filteredCloudletList = this.state.cloudletList
-
-                                    console.log(`sdlkflskdfkl====>`, filteredCloudletList);
-
-                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
-
-                                    console.log(`markerListForMap====>`, markerListForMap);
-
-                                } else {//todo:Wnen specific oper
-                                    filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
-                                        return item.Operator === value
-                                    })
-                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
-
-                                    console.log(`markerListForMap====>`, markerListForMap);
-                                }
-                                let cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
-                                this.setState({
-                                    currentOper: value,
-                                    filteredCloudletList: filteredCloudletList,
-                                    filteredClusterUsageList: [],
-                                    cloudletDropdownList: cloudletDropdownList,
-                                    currentCloudLet: undefined,
-                                    filteredCloudletUsageList: [],
-                                    currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                                    appInstanceListGroupByCloudlet: markerListForMap,
-
-                                }, () => {
-                                })
-
-
-                            }}
-                        >
-                            {this.state.operList.map((operOne: any, index) => {
-                                try {
-                                    if (index === 0) {
-                                        return (
-                                            <Option key={index} value={undefined} style={{}}>
-                                                <div style={{marginLeft: 7,}}>{operOne}</div>
-                                            </Option>
-                                        )
-                                    } else {
-                                        return (
-                                            <Option key={index} value={operOne}>
-                                                <div style={{display: 'flex'}}>
-                                                    <div style={{marginLeft: 7,}}>{operOne}</div>
-                                                </div>
-                                            </Option>
-                                        )
-                                    }
-                                } catch (e) {
-
-                                }
-                            })}
-                        </Select>
-                    </div>
-                )
-            }
-
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
                 try {
@@ -2770,6 +2692,80 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             ________________________________________________dropdowns________________________________________________________________________________________________________________________() {
             }
 
+            renderOperDropdownForAdmin() {
+
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label">
+                            Oper
+                        </div>
+                        <Select
+                            ref={c => this.operSelect = c}
+                            showSearch={true}
+                            dropdownStyle={{}}
+                            listHeight={512}
+                            style={{width: 120, maxHeight: '512px !important'}}
+                            value={this.state.currentOper}
+                            placeholder={'Select Oper'}
+                            onSelect={async (value) => {
+                                this.operSelect.blur();
+                                let markerListForMap = []
+                                let filteredCloudletList = []
+                                if (value === "0") {//todo: all
+                                    filteredCloudletList = this.state.cloudletList
+                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+
+                                } else {//todo:Wnen specific oper
+                                    filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
+                                        return item.Operator === value
+                                    })
+                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                                }
+                                let cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+                                this.setState({
+                                    currentOper: value,
+                                    filteredCloudletList: filteredCloudletList,
+                                    filteredClusterUsageList: [],
+                                    cloudletDropdownList: cloudletDropdownList,
+                                    currentCloudLet: undefined,
+                                    filteredCloudletUsageList: [],
+                                    currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                                    currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
+                                    appInstanceListGroupByCloudlet: markerListForMap,
+
+                                }, () => {
+                                })
+
+
+                            }}
+                        >
+                            {this.state.operList.map((operOne: any, index) => {
+                                try {
+                                    if (index === 0) {
+                                        return (
+                                            <Option key={index} value={undefined} style={{}}>
+                                                <div style={{marginLeft: 7,}}>{operOne}</div>
+                                            </Option>
+                                        )
+                                    } else {
+                                        return (
+                                            <Option key={index} value={operOne}>
+                                                <div style={{display: 'flex'}}>
+                                                    <div style={{marginLeft: 7,}}>{operOne}</div>
+                                                </div>
+                                            </Option>
+                                        )
+                                    }
+                                } catch (e) {
+
+                                }
+                            })}
+                        </Select>
+                    </div>
+                )
+            }
+
+
             renderCloudletDropdownForAdmin() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -2823,7 +2819,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     let filteredCloudletList = []
                                     filteredCloudletList.push(currentCloudletOne)
-                                    console.log(`cloudlentOne====>`, currentCloudletOne);
 
                                     await this.setState({loading: true})
                                     let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
@@ -2840,8 +2835,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     let clusterList = newPromiseList[0];
                                     let appInstList = newPromiseList[1];
 
-                                    console.log(`clusterList====>`, clusterList)
-
                                     let filteredClusterList = []
                                     clusterList.map((item: TypeCluster, index) => {
                                         if (item.Cloudlet === currentCloudletOne.CloudletName) {
@@ -2849,19 +2842,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }
                                     })
 
-                                    console.log(`filteredClusterList====>`, filteredClusterList);
 
                                     if (filteredClusterList.length === 0) {
                                         showToast('no cluster')
+
                                     }
 
 
                                     await this.setState({
+                                        isNoCluster: filteredClusterList.length === 0,
                                         filteredClusterList: filteredClusterList,
                                         currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                         filteredCloudletList: filteredCloudletList,
                                         filteredAppInstList: appInstList,
-                                        currentMapLevel: MAP_LEVEL.CLUSTER,
+
                                     })
 
 
@@ -2890,6 +2884,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }
 
                                     await this.setState({
+                                        currentMapLevel: MAP_LEVEL.CLUSTER,
                                         appInstanceListGroupByCloudlet: newMarketListMap,
                                         allClusterEventLogList: allClusterEventLogList,
                                         filteredClusterEventLogList: allClusterEventLogList,
@@ -3410,9 +3405,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     <div>
                                                         {item.cluster}
                                                     </div>
+
+                                                    {this.state.userType.includes(USER_TYPE.DEV) &&
                                                     <div style={{color: 'white',}}>
                                                         &nbsp;[{item.cloudlet}]
                                                     </div>
+                                                    }
                                                 </div>
                                             </Center>
                                             :
@@ -3700,7 +3698,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {this.state.userType.toLowerCase().includes('admin') ? //todo: admin
                                 <React.Fragment>
                                     <div style={{marginLeft: 15}}>
-                                        {this.renderOperDropdown()}
+                                        {this.renderOperDropdownForAdmin()}
                                     </div>
                                     <div style={{marginLeft: 15}}>
                                         {this.renderCloudletDropdownForAdmin()}
