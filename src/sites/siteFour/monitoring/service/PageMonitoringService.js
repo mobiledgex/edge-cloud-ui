@@ -1258,11 +1258,7 @@ export function convertHWType(hwType) {
 }
 
 
-export const makeClusterMultiDropdown = (cloudletList, clusterList, _this,) => {
-
-    console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
-    console.log('makeRegionCloudletClusterTreeDropdown====clusterList>', clusterList);
-
+export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _this,) => {
 
     let treeClusterList = []
     cloudletList.map((cloudletOne, cloudletIndex) => {
@@ -1286,7 +1282,7 @@ export const makeClusterMultiDropdown = (cloudletList, clusterList, _this,) => {
                     title: (
                         <div style={{display: 'flex'}}>
                             <Center style={{width: 15,}}>
-                                {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
+                                {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
                                 {clusterItemOne.ClusterName}
@@ -1312,17 +1308,12 @@ export const makeClusterMultiDropdown = (cloudletList, clusterList, _this,) => {
 
 export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
 
-    console.log(`makeRegionCloudletClusterTreeDropdown====allRegionList>`, allRegionList)
-    console.log('makeRegionCloudletClusterTreeDropdown====cloudletList>', cloudletList);
-    console.log('makeRegionCloudletClusterTreeDropdown====clusterList>', clusterList);
-
-
     let treeCloudletList = []
     cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
                 <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
-                    <Tag color="pink" style={{color: 'black'}}>Cloudlet</Tag>
+                    <Tag color="grey" style={{color: 'black'}}>Cloudlet</Tag>
                 </div>
             ),
             value: cloudletOne.CloudletName,
@@ -1339,7 +1330,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                     title: (
                         <div style={{display: 'flex'}}>
                             <Center style={{width: 15,}}>
-                                {_this.renderDot(clusterItemOne.colorCodeIndex, 10)}
+                                {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
                                 {clusterItemOne.cluster}

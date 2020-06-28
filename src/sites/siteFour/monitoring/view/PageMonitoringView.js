@@ -22,7 +22,7 @@ import {
     makeBarChartDataForAppInst,
     makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
-    makeClusterMultiDropdown,
+    makeClusterMultiDropdownForAdmin,
     makeDropdownForAppInst,
     makeDropdownForCloudlet,
     makeid,
@@ -156,7 +156,7 @@ import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
-import MapForAdmin002 from "../components/MapForAdmin";
+import MapForAdmin from "../components/MapForAdmin";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const {RangePicker} = DatePicker;
@@ -1395,6 +1395,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP
                             && <div className="maxize page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
@@ -1519,7 +1520,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MAP) {
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
                         return (
-                            <MapForAdmin002
+                            <MapForAdmin
                                 markerList={this.state.appInstanceListGroupByCloudlet}
                                 cloudletList={this.state.filteredCloudletList}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
@@ -2883,7 +2884,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 allAppInstEventLogList = newPromiseList2[1];
                                                 allClusterUsageList = newPromiseList2[2];
                                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
-                                                clusterTreeDropdownList = makeClusterMultiDropdown(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
+                                                clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
                                                 ////todo:  mapFiltering
                                                 markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                                                 selectedCloudletName = value.toString().split(" | ")[0].toString().trim();
@@ -2925,8 +2926,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 currentCloudLet: value,
                                             });
                                         } catch (e) {
-
-                                            showToast('mapError')
+                                            throw new Error(e)
                                         } finally {
 
                                         }
@@ -2934,7 +2934,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     }
                                 } catch (e) {
-                                    showToast('mapError22222222222222222222')
+                                    throw new Error(e)
+                                    //showToast('mapError22222222222222222222')
                                 }
                             }}
                         >
@@ -2944,7 +2945,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (index === 0) {
                                         return (
                                             <Option key={index} value={undefined} style={{}}>
-                                                <div style={{color: 'orange', fontStyle: 'italic'}}>{cloudletOne.text}</div>
+                                                <div style={{fontWeight: 'bold', color: 'orange'}}>{cloudletOne.text}</div>
                                             </Option>
                                         )
                                     } else {
@@ -2952,7 +2953,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         return (
                                             <Option key={index} value={itemValues}>
                                                 <div style={{display: 'flex'}}>
-                                                    <div style={{marginLeft: 7,}}>{cloudletOne.text}</div>
+                                                    <div
+                                                        style={{
+                                                            marginLeft: 7,
+                                                        }}
+                                                    >{cloudletOne.text}
+                                                    </div>
                                                 </div>
                                             </Option>
                                         )
@@ -3000,7 +3006,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (index === 0) {
                                         return (
                                             <Option key={index} value={undefined} style={{}}>
-                                                <div style={{color: 'orange', fontStyle: 'italic'}}>{item.text}</div>
+                                                <div style={{fontWeight: 'bold', color: 'orange'}}>{item.text}</div>
                                             </Option>
                                         )
                                     } else {
@@ -3346,6 +3352,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
+                            {isEmpty(filteredClusterUsageList) &&
+                            <Col
+                                span={24}
+                            >
+                                <Center>
+                                    No Cluster
+                                </Center>
+                            </Col>
+                            }
                             {filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col
