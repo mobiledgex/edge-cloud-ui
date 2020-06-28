@@ -2701,22 +2701,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             ________________________________________________dropdowns________________________________________________________________________________________________________________________() {
             }
 
-            async handleResetForAdmin() {
+            async handleClusterLevelReset() {
                 let filteredCloudletList = this.state.cloudletList
-                let markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
-                let cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
-                await this.setState({
-                    currentOper: value,
-                    filteredCloudletList: filteredCloudletList,
-                    filteredClusterUsageList: [],
-                    cloudletDropdownList: cloudletDropdownList,
-                    currentCloudLet: undefined,
-                    filteredCloudletUsageList: [],
-                    currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                    currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
-                    appInstanceListGroupByCloudlet: markerListForMap,
 
-                });
             }
 
             renderOperDropdownForAdmin() {
@@ -2790,30 +2777,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            async filterMapDataForAdmin(filteredCloudletList, appInstList = [], selectCloudletOne = '') {
-                if (filteredCloudletList.length > 0) {
+            async filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList = [], selectCloudletOne = '') {
+                let newMarketListMap = {}
+                if (filteredClusterList.length > 0) {
                     ////todo:  mapFiltering(CLUSTER)
                     let markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                     let selectedCloudletName = selectCloudletOne.toString().split(" | ")[0].toString().trim();
                     let filteredAppInstList = markerListHashMap[selectedCloudletName];
-                    let newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
+                    newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
                     await this.setState({
                         currentMapLevel: MAP_LEVEL.CLUSTER,
                         appInstanceListGroupByCloudlet: newMarketListMap,
                     })
                 } else {////todo:  mapfiltering (CLOUDLET_FOR_ADMIN)
+                    newMarketListMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
                     await this.setState({
                         isNoCluster: true,
                         currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
-                    })
-                    let newMarketListMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
-
-                    console.log(`newMarketListMap====>`, newMarketListMap);
-
-                    await this.setState({
                         appInstanceListGroupByCloudlet: newMarketListMap,
                     })
-
 
                 }
             }
@@ -2912,14 +2894,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         let allClusterUsageList = []
                                         let cloudletClusterListMap = []
                                         let clusterTreeDropdownList = []
-                                        let markerListHashMap = []
-                                        let selectedCloudletName = []
-                                        let filteredAppInstList = []
-                                        let newMarketListMap = []
                                         try {
                                             let usageEventPromiseList = []
-                                            console.log(`filteredClusterList=length===>`, filteredClusterList.length);
-
                                             if (filteredClusterList.length > 0) {
                                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList))
                                                 usageEventPromiseList.push(getAllAppInstEventLogs());
@@ -2930,26 +2906,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 allClusterUsageList = newPromiseList2[2];
                                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
                                                 clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
-                                                ////todo:  mapFiltering
-                                                markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                                                selectedCloudletName = value.toString().split(" | ")[0].toString().trim();
-                                                filteredAppInstList = markerListHashMap[selectedCloudletName];
-                                                newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
-                                                await this.setState({
-                                                    currentMapLevel: MAP_LEVEL.CLUSTER,
-                                                })
+                                                ////todo:  mapFiltering when map for cluster
+                                                this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, value)
                                             } else {
-                                                ////todo:  mapfiltering, when no cluster)
-                                                newMarketListMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
-                                                await this.setState({
-                                                    currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
-                                                    isNoCluster: true,
-                                                })
+                                                ////todo:  mapfiltering, when no cluster
+                                                this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
+
                                             }
 
-
                                             await this.setState({
-                                                appInstanceListGroupByCloudlet: newMarketListMap,
                                                 allClusterEventLogList: allClusterEventLogList,
                                                 filteredClusterEventLogList: allClusterEventLogList,
                                                 allAppInstEventLogs: allAppInstEventLogList,
@@ -2971,10 +2936,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             });
                                         } catch (e) {
                                             throw new Error(e)
-                                        } finally {
-
                                         }
-
 
                                     }
                                 } catch (e) {
@@ -3012,6 +2974,96 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                             })}
                         </Select>
+                    </div>
+                )
+            }
+
+            renderClusterTreeDropdownForAdmin() {
+                let treeSelectWidth = 350;
+                let maxTagCount = 2;
+                if (this.props.size.width >= 1600) {
+                    treeSelectWidth = 350;
+                    maxTagCount = 1
+                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
+                    treeSelectWidth = 250;
+                    maxTagCount = 1
+                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
+                    treeSelectWidth = 150;
+                    maxTagCount = 1
+                } else if (this.props.size.width <= 1100) {
+                    treeSelectWidth = 50;
+                    maxTagCount = 0
+                }
+
+                return (
+                    <div className="page_monitoring_dropdown_box"
+                         style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div
+                            className="page_monitoring_dropdown_label"
+                            style={{
+                                marginLeft: this.state.isShowFilter ? 0 : 10,
+                            }}
+                        >
+                            Cluster
+                        </div>
+                        <div style={{width: '100%'}}>
+                            <TreeSelect
+                                dropdownMatchSelectWidth={false}
+                                listHeight={800}
+                                dropdownStyle={{
+                                    maxHeight: 800, overflow: 'auto', width: '420px'
+                                }}
+                                showArrow={true}
+                                maxTagCount={maxTagCount}
+                                disabled={this.state.loading}
+                                size={'middle'}
+                                allowClear={true}
+                                showSearch={true}
+                                treeCheckable={true}
+                                showCheckedStrategy={'SHOW_CHILD'}
+                                style={{height: '30px !important', width: treeSelectWidth}}
+                                ref={c => this.treeSelectClusterAdmin = c}
+
+                                placeholder={'Select Cluster'}
+                                treeData={this.state.clusterTreeDropdownList}
+                                treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
+                                value={this.state.currentClusterList}
+                                onChange={async (value, label, extra) => {
+
+                                    if (!isEmpty(value)) {
+
+                                        //this.filterMapDataForAdmin()
+
+
+                                        this.setState({currentClusterList: value});
+                                    } else {
+                                        this.resetLocalData()
+                                    }
+
+                                }}
+                            />
+                        </div>
+                        <div style={{marginLeft: 10,}}>
+                            <Button
+                                size={'small'}
+                                onClick={async () => {
+                                    this.appInstSelect.blur();
+                                    this.applyButton.blur();
+                                    if (this.state.currentClusterList !== undefined) {
+                                        let selectClusterCloudletList = this.state.currentClusterList
+                                        this.handleOnChangeClusterDropdown(selectClusterCloudletList)
+
+                                    } else {
+                                        this.resetLocalData()
+                                    }
+
+
+                                }}
+                                ref={c => this.applyButton = c}
+                            >
+                                Apply
+                            </Button>
+                        </div>
                     </div>
                 )
             }
@@ -3107,101 +3159,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            renderClusterTreeDropdownForAdmin() {
-                let treeSelectWidth = 350;
-                let maxTagCount = 2;
-                if (this.props.size.width >= 1600) {
-                    treeSelectWidth = 350;
-                    maxTagCount = 1
-                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
-                    treeSelectWidth = 250;
-                    maxTagCount = 1
-                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
-                    treeSelectWidth = 150;
-                    maxTagCount = 1
-                } else if (this.props.size.width <= 1100) {
-                    treeSelectWidth = 50;
-                    maxTagCount = 0
-                }
 
-                return (
-                    <div className="page_monitoring_dropdown_box"
-                         style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div
-                            className="page_monitoring_dropdown_label"
-                            style={{
-                                marginLeft: this.state.isShowFilter ? 0 : 10,
-                            }}
-                        >
-                            Cluster
-                        </div>
-                        <div style={{width: '100%'}}>
-                            <TreeSelect
-                                dropdownMatchSelectWidth={false}
-                                listHeight={800}
-                                dropdownStyle={{
-                                    maxHeight: 800, overflow: 'auto', width: '420px'
-                                }}
-                                showArrow={true}
-                                maxTagCount={maxTagCount}
-                                disabled={this.state.loading}
-                                size={'middle'}
-                                allowClear={true}
-                                showSearch={true}
-                                treeCheckable={true}
-                                showCheckedStrategy={'SHOW_CHILD'}
-                                style={{height: '30px !important', width: treeSelectWidth}}
-                                ref={c => this.treeSelectClusterAdmin = c}
-
-                                placeholder={'Select Cluster'}
-                                treeData={this.state.clusterTreeDropdownList}
-                                treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
-                                value={this.state.currentClusterList}
-                                onChange={async (value, label, extra) => {
-
-                                    if (!isEmpty(value)) {
-
-                                        //todo: map Filtering
-                                        /*  let markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                                          let selectedCloudletName = value.toString().split(" | ")[0].toString().trim();
-                                          let filteredAppInstList = markerListHashMap[selectedCloudletName];
-                                          let newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
-                                          await this.setState({
-                                              currentMapLevel: MAP_LEVEL.CLUSTER,
-                                          })*/
-
-                                        this.setState({currentClusterList: value});
-                                    } else {
-                                        this.resetLocalData()
-                                    }
-
-                                }}
-                            />
-                        </div>
-                        <div style={{marginLeft: 10,}}>
-                            <Button
-                                size={'small'}
-                                onClick={async () => {
-                                    this.appInstSelect.blur();
-                                    this.applyButton.blur();
-                                    if (this.state.currentClusterList !== undefined) {
-                                        let selectClusterCloudletList = this.state.currentClusterList
-                                        this.handleOnChangeClusterDropdown(selectClusterCloudletList)
-
-                                    } else {
-                                        this.resetLocalData()
-                                    }
-
-
-                                }}
-                                ref={c => this.applyButton = c}
-                            >
-                                Apply
-                            </Button>
-                        </div>
-                    </div>
-                )
-            }
 
 
             renderClusterTreeDropdown() {
