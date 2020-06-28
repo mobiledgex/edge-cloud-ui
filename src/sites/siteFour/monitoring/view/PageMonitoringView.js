@@ -2996,7 +2996,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
-                                disabled={this.state.loading}
+                                disabled={this.state.loading || isEmpty(this.state.currentClusterList)}
                                 size={'middle'}
                                 onSearch={(value) => {
                                     this.setState({
