@@ -499,7 +499,7 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                     <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
                         <div style={PageMonitoringStyles.mapControlDiv}>
-                           {/* <div
+                            {/* <div
                                 style={{
                                     backgroundColor: 'transparent',
                                     height: 30,
@@ -578,9 +578,17 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                         </div>
                     </Control>
                     <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                        <Center style={{height: 25, backgroundColor: 'rgba(0,0,0,0.5)', padding: 10,}}>
+                        <Center style={{
+                            height: 25,
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            padding: 10,
+                            flexDirection: 'column'
+                        }}>
                             <div style={{}}>
                                 Cloudlets : {this.props.cloudletList.length}
+                            </div>
+                            <div style={{}}>
+                                Clusters : {this.props.clusterList.length}
                             </div>
                         </Center>
                     </Control>

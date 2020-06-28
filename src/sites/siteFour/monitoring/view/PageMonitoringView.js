@@ -1524,6 +1524,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <MapForAdmin
                                 markerList={this.state.appInstanceListGroupByCloudlet}
                                 cloudletList={this.state.filteredCloudletList}
+                                clusterList={this.state.filteredClusterList}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
                                 isMapUpdate={this.state.isMapUpdate}
                                 selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
@@ -2459,20 +2460,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             })
                         })
 
+                        console.log(`allClusterEventLogList====>`, this.state.allClusterEventLogList);
 
                         let filteredClusterEventLogList = []
-                        this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
+                        /*    this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
 
-                            selectClusterCloudletList.map((innerItem, innerIndex) => {
-                                if (clusterEventLogOne[1] === innerItem.split("|")[0].trim()) {
-                                    filteredClusterEventLogList.push(clusterEventLogOne)
-                                }
-                            })
-                        })
+                                selectClusterCloudletList.map((innerItem, innerIndex) => {
+                                    if (clusterEventLogOne[1] === innerItem.split("|")[0].trim()) {
+                                        filteredClusterEventLogList.push(clusterEventLogOne)
+                                    }
+                                })
+                            })*/
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
+
+                        let mapMarkerListHashMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
+
+                        console.log(`sdlkflskdfkl====>`, mapMarkerListHashMap);
 
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
@@ -2485,7 +2491,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             allAppInstDropdown: appInstDropdown,
                             appInstSelectBoxPlaceholder: 'Select App Inst',
                             filteredAppInstList: filteredAppInstList,
-                            appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+                            appInstanceListGroupByCloudlet: mapMarkerListHashMap,//todo mapdata
                             currentAppInst: undefined,
                             currentAppInstNameVersion: undefined,
                             filteredClusterList: filteredClusterList,
@@ -2512,7 +2518,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({isStream: false})
                     }
                 } catch (e) {
-
+                    showToast(e.toString())
                 }
             }
 
@@ -2701,10 +2707,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             ________________________________________________dropdowns________________________________________________________________________________________________________________________() {
             }
 
-            async handleClusterLevelReset() {
-                let filteredCloudletList = this.state.cloudletList
-
-            }
 
             renderOperDropdownForAdmin() {
 
@@ -2821,6 +2823,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             onSelect={async (value) => {
                                 try {
                                     this.cloudletSelect.blur();
+                                    await this.setState({
+                                        clusterTreeDropdownList: undefined,
+                                    })
+
+
                                     if (value === '0') {//todo:reset filter
                                         await this.setState({
                                             currentGridIndex: -1,
@@ -3021,8 +3028,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 maxTagCount={maxTagCount}
                                 disabled={this.state.loading}
                                 size={'middle'}
-                                allowClear={true}
-                                showSearch={true}
+                                onSearch={(value) => {
+                                    this.setState({
+                                        searchClusterValue: value,
+                                    });
+                                }}
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
                                 style={{height: '30px !important', width: treeSelectWidth}}
@@ -3050,14 +3060,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 onClick={async () => {
                                     this.appInstSelect.blur();
                                     this.applyButton.blur();
-                                    await this.setState({
-                                        currentMapLevel: MAP_LEVEL.CLUSTER,
-                                    })
                                     if (this.state.currentClusterList !== undefined) {
                                         //todo: filtering for map
                                         const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
                                         await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
+                                        await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
                                         await this.handleOnChangeClusterDropdown(currentClusterList)
+
 
                                     } else {
                                         this.resetLocalData()

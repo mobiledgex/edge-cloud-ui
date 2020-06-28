@@ -1264,8 +1264,8 @@ export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _thi
     cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
-                <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
-                    <Tag color="pink" style={{color: 'black'}}>Cloudlet</Tag>
+                <div>
+                    {cloudletOne.CloudletName}
                 </div>
             ),
             value: cloudletOne.CloudletName,
