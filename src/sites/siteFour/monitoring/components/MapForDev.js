@@ -9,7 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
 import {
     groupByKey_,
-    removeDuplicates, renderPlaceHolderLottieBar,
+    removeDuplicates, renderPlaceHolderHorizontalBar,
     renderPlaceHolderLottieForMap,
     showToast
 } from "../service/PageMonitoringCommonService";
@@ -741,7 +741,7 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
         render() {
             return (
                 <React.Fragment>
-                    {this.props.mapLoading && renderPlaceHolderLottieBar(true, this)}
+                    {this.props.mapLoading && renderPlaceHolderHorizontalBar(true, this)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>

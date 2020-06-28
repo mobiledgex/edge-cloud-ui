@@ -8,7 +8,7 @@ import Control from 'react-leaflet-control';
 import {
     groupByKey_,
     removeDuplicates,
-    renderPlaceHolderLottieBar,
+    renderPlaceHolderHorizontalBar,
     showToast
 } from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
@@ -638,7 +638,7 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
             return (
                 <React.Fragment>
                     {this.renderHeader()}
-                    {this.props.loading && renderPlaceHolderLottieBar(true, this)}
+                    {this.props.loading && renderPlaceHolderHorizontalBar(true, this)}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
                             <Map

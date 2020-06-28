@@ -3032,7 +3032,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     if (!isEmpty(value)) {
 
-                                        //this.filterMapDataForAdmin()
+
+                                        const {filteredCloudletList, filteredAppInstList} = this.state
+
+                                        let newfilteredAppInstList = filteredAppInstList.filter((item: TypeAppInst, index) => {
+
+                                            return item.Cloudlet === value[0].split(" | ")[1]
+                                        })
+
+                                        console.log(`newfilteredAppInstList====>`, newfilteredAppInstList);
+
+                                        this.filterMapDataForAdmin(999999, filteredCloudletList, newfilteredAppInstList, undefined)
 
 
                                         this.setState({currentClusterList: value});
@@ -3158,8 +3168,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     showToast(e.toString())
                 }
             }
-
-
 
 
             renderClusterTreeDropdown() {
@@ -3356,15 +3364,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
-                            {isEmpty(filteredClusterUsageList) &&
-                            <Col
-                                span={24}
-                            >
-                                <Center>
-                                    <Tag color="grey" style={{color: 'black'}}>No Cluster</Tag>
-                                </Center>
-                            </Col>
-                            }
                             {filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col

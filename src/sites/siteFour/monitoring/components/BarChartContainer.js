@@ -1,6 +1,11 @@
 // @flow
 import * as React from 'react';
-import {isEmpty, renderEmptyBox, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {
+    isEmpty,
+    renderEmptyBox,
+    renderPlaceHolderHorizontalBarForChart,
+    renderPlaceHolderLoader
+} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -9,6 +14,7 @@ import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {convertHWType} from "../service/PageMonitoringService";
 import {Empty} from "antd";
+import {withSize} from "react-sizeme";
 
 type Props = {
     parent: PageMonitoringView,
@@ -25,57 +31,54 @@ type State = {
     isResizeComplete: boolean,
 };
 
-export default class BarChartContainer extends React.Component<Props, State> {
-    context = React.createRef();
+export default withSize()(
+    class BarChartContainer extends React.Component<Props, State> {
+        context = React.createRef();
 
-    constructor(props: Props) {
-        super(props)
-        this.state = {
-            currentClassification: [],
-            themeTitle: '',
-            chartDataSet: [],
-            graphType: '',
-        }
-    }
-
-    componentDidMount(): void {
-
-        console.log(`chartDataSet========>`, isEmpty(this.props.chartDataSet));
-    }
-
-    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-
-        if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
-
-            this.setState({
-                chartDataSet: nextProps.chartDataSet,
-                pHardwareType: nextProps.pHardwareType,
-                graphType: nextProps.graphType,
-            })
+        constructor(props: Props) {
+            super(props)
+            this.state = {
+                currentClassification: [],
+                themeTitle: '',
+                chartDataSet: [],
+                graphType: '',
+            }
         }
 
-        if (this.props.isResizeComplete !== nextProps.isResizeComplete) {
-            this.setState({
-                isResizeComplete: nextProps.isResizeComplete,
-            })
+        componentDidMount(): void {
         }
 
-    }
+        async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
+            if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
 
-    render() {
-        return (
-            <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
-                <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                    <div className='page_monitoring_title_area draggable'>
-                        <div className='page_monitoring_title'>
-                            {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization
+                this.setState({
+                    chartDataSet: nextProps.chartDataSet,
+                    pHardwareType: nextProps.pHardwareType,
+                    graphType: nextProps.graphType,
+                })
+            }
+
+            if (this.props.isResizeComplete !== nextProps.isResizeComplete) {
+                this.setState({
+                    isResizeComplete: nextProps.isResizeComplete,
+                })
+            }
+
+        }
+
+        render() {
+            return (
+                <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
+                    <div className='page_monitoring_dual_container' style={{flex: 1}}>
+                        {this.props.parent.state.loading && renderPlaceHolderHorizontalBarForChart(undefined, this)}
+                        <div className='page_monitoring_title_area draggable'>
+                            <div className='page_monitoring_title'>
+                                {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization
+                            </div>
                         </div>
-                    </div>
-                    <div className='page_monitoring_container'>
-                        {this.props.loading ? renderPlaceHolderLoader() :
-
-                            !isEmpty(this.props.chartDataSet) ?
+                        <div className='page_monitoring_container'>
+                            {!this.props.loading && !isEmpty(this.props.chartDataSet) ?
                                 <div style={{width: '100%'}}>
                                     <GoogleChart
                                         key={this.state.isResizeComplete}
@@ -88,21 +91,13 @@ export default class BarChartContainer extends React.Component<Props, State> {
                                 </div>
                                 :
                                 renderEmptyBox()
-                        }
+                            }
 
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        )
-    };
-};
-
-
-/*
-<MonitoringConsumer>
-    {(context: MonitoringContextInterface) => (
-
-    )}
-</MonitoringConsumer>
-*/
+            )
+        };
+    }
+)
