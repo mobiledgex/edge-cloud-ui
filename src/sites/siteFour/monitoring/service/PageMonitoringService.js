@@ -19,8 +19,7 @@ import {
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS,
-    USER_TYPE
+    THEME_OPTIONS
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
@@ -33,11 +32,9 @@ import {
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
-import Chip from "@material-ui/core/Chip";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {Tag} from "antd";
-
-//import _ from 'lodash';
+import _ from 'lodash';
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
