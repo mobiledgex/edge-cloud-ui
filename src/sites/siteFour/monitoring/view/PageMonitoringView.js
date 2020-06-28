@@ -943,9 +943,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async resetLocalData() {
                 let markerListForMap = []
-                if (this.state.userType.toLowerCase().includes("dev")) {
+                if (this.state.currentMapLevel === MAP_LEVEL.CLUSTER) {
                     markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
-                } else {//todo: admin
+                } else {//todo: MAP_LEVEL.ADMIN
                     markerListForMap = reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET);
                 }
 
@@ -2981,6 +2981,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+
             renderClusterTreeDropdownForAdmin() {
                 let treeSelectWidth = 350;
                 let maxTagCount = 2;
@@ -3032,31 +3033,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
-                                    //todo:@onchange 가 아니라 어플라이에 적용햐야됨
-
                                     await this.setState({
-                                        currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN
+                                        currentMapLevel: MAP_LEVEL.CLUSTER,
                                     })
-
                                     if (!isEmpty(value)) {
-
-                                        const {filteredCloudletList, filteredAppInstList} = this.state
-
-                                        let newfilteredAppInstList = filteredAppInstList.filter((item: TypeAppInst, index) => {
-
-                                            return item.Cloudlet === value[0].split(" | ")[1]
-                                        })
-
-                                        console.log(`newfilteredAppInstList====>`, newfilteredAppInstList);
-
-                                        this.filterMapDataForAdmin(999999, filteredCloudletList, newfilteredAppInstList, undefined)
-
-
                                         this.setState({currentClusterList: value});
                                     } else {
-                                        this.resetLocalData()
+                                        //this.resetLocalData()
                                     }
-
                                 }}
                             />
                         </div>
@@ -3066,9 +3050,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 onClick={async () => {
                                     this.appInstSelect.blur();
                                     this.applyButton.blur();
+                                    await this.setState({
+                                        currentMapLevel: MAP_LEVEL.CLUSTER,
+                                    })
                                     if (this.state.currentClusterList !== undefined) {
-                                        let selectClusterCloudletList = this.state.currentClusterList
-                                        this.handleOnChangeClusterDropdown(selectClusterCloudletList)
+                                        //todo: filtering for map
+                                        const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
+                                        await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
+                                        await this.handleOnChangeClusterDropdown(currentClusterList)
 
                                     } else {
                                         this.resetLocalData()
@@ -3084,98 +3073,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </div>
                 )
             }
-
-
-            renderCloudletDropdown() {
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label">
-                            Cloudlet
-                        </div>
-                        <Select
-                            ref={c => this.cloudletSelect = c}
-                            showSearch={true}
-                            dropdownStyle={{}}
-                            listHeight={512}
-                            style={{width: 300, maxHeight: '512px !important'}}
-                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
-                            value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
-                            placeholder={'Select Cloudlet'}
-                            onSelect={async (value) => {
-                                this.cloudletSelect.blur();
-                                let selectIndex = 0;
-                                this.state.cloudletList.map((item: TypeCloudlet, index) => {
-                                    if (item.CloudletName === value.split("|")[0].trim()) {
-                                        selectIndex = index;
-                                    }
-                                })
-
-                                await this.handleOnChangeCloudletDropdown(value, selectIndex)
-
-                            }}
-                        >
-                            {this.state.cloudletDropdownList.map((item: any, index) => {
-                                try {
-                                    if (index === 0) {
-                                        return (
-                                            <Option key={index} value={undefined} style={{}}>
-                                                <div style={{fontWeight: 'bold', color: 'orange'}}>{item.text}</div>
-                                            </Option>
-                                        )
-                                    } else {
-                                        let itemValues = item.value + " | " + (index - 1).toString()
-                                        return (
-                                            <Option key={index} value={itemValues}>
-                                                <div style={{display: 'flex'}}>
-                                                    {this.renderDotForCloudlet(index)}
-                                                    <div style={{marginLeft: 7,}}>{item.text}</div>
-                                                </div>
-                                            </Option>
-                                        )
-                                    }
-                                } catch (e) {
-
-                                }
-                            })}
-                        </Select>
-                    </div>
-                )
-            }
-
-            filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList) {
-                try {
-                    let filteredClusterList = []
-                    allClusterUsageList.map((clusterUsageOne, index) => {
-                        selectClusterList.map((innerItem, innerIndex) => {
-                            if (clusterUsageOne.cluster === innerItem.split("|")[0].trim() && clusterUsageOne.cloudlet === innerItem.split("|")[1].trim()) {
-                                filteredClusterList.push(clusterUsageOne)
-                            }
-                        })
-                    })
-                    return filteredClusterList;
-                } catch (e) {
-                    showToast(e.toString())
-                }
-            }
-
-            filterClusterListForTreeSelect(allClusterList, selectClusterList) {
-                try {
-                    let filteredClusterList = []
-                    allClusterList.map((item, index) => {
-                        selectClusterList.map((innerItem, innerIndex) => {
-
-                            if (item.ClusterName === innerItem.split("|")[0].trim() && item.Cloudlet === innerItem.split("|")[1].trim()) {
-                                filteredClusterList.push(item)
-                            }
-                        })
-                    })
-
-                    return filteredClusterList;
-                } catch (e) {
-                    showToast(e.toString())
-                }
-            }
-
 
             renderClusterTreeDropdown() {
                 let treeSelectWidth = 500;
@@ -3279,6 +3176,97 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            renderCloudletDropdown() {
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label">
+                            Cloudlet
+                        </div>
+                        <Select
+                            ref={c => this.cloudletSelect = c}
+                            showSearch={true}
+                            dropdownStyle={{}}
+                            listHeight={512}
+                            style={{width: 300, maxHeight: '512px !important'}}
+                            disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
+                            value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
+                            placeholder={'Select Cloudlet'}
+                            onSelect={async (value) => {
+                                this.cloudletSelect.blur();
+                                let selectIndex = 0;
+                                this.state.cloudletList.map((item: TypeCloudlet, index) => {
+                                    if (item.CloudletName === value.split("|")[0].trim()) {
+                                        selectIndex = index;
+                                    }
+                                })
+
+                                await this.handleOnChangeCloudletDropdown(value, selectIndex)
+
+                            }}
+                        >
+                            {this.state.cloudletDropdownList.map((item: any, index) => {
+                                try {
+                                    if (index === 0) {
+                                        return (
+                                            <Option key={index} value={undefined} style={{}}>
+                                                <div style={{fontWeight: 'bold', color: 'orange'}}>{item.text}</div>
+                                            </Option>
+                                        )
+                                    } else {
+                                        let itemValues = item.value + " | " + (index - 1).toString()
+                                        return (
+                                            <Option key={index} value={itemValues}>
+                                                <div style={{display: 'flex'}}>
+                                                    {this.renderDotForCloudlet(index)}
+                                                    <div style={{marginLeft: 7,}}>{item.text}</div>
+                                                </div>
+                                            </Option>
+                                        )
+                                    }
+                                } catch (e) {
+
+                                }
+                            })}
+                        </Select>
+                    </div>
+                )
+            }
+
+            filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterList) {
+                try {
+                    let filteredClusterList = []
+                    allClusterUsageList.map((clusterUsageOne, index) => {
+                        selectClusterList.map((innerItem, innerIndex) => {
+                            if (clusterUsageOne.cluster === innerItem.split("|")[0].trim() && clusterUsageOne.cloudlet === innerItem.split("|")[1].trim()) {
+                                filteredClusterList.push(clusterUsageOne)
+                            }
+                        })
+                    })
+                    return filteredClusterList;
+                } catch (e) {
+                    showToast(e.toString())
+                }
+            }
+
+            filterClusterListForTreeSelect(allClusterList, selectClusterList) {
+                try {
+                    let filteredClusterList = []
+                    allClusterList.map((item, index) => {
+                        selectClusterList.map((innerItem, innerIndex) => {
+
+                            if (item.ClusterName === innerItem.split("|")[0].trim() && item.Cloudlet === innerItem.split("|")[1].trim()) {
+                                filteredClusterList.push(item)
+                            }
+                        })
+                    })
+
+                    return filteredClusterList;
+                } catch (e) {
+                    showToast(e.toString())
+                }
+            }
+
+
             renderAppInstDropdown() {
 
                 return (
@@ -3318,7 +3306,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     if (this.state.loading) {
                         return (
-                            <LegendOuterDiv style={{height: 32}}>
+                            <LegendOuterDiv style={{height: 35}}>
                                 <div style={{
                                     display: 'flex',
                                     alignSelf: 'center',
