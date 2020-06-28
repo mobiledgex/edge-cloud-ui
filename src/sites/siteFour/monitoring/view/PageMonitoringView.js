@@ -2790,6 +2790,34 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            async filterMapDataForAdmin(filteredCloudletList, appInstList = [], selectCloudletOne = '') {
+                if (filteredCloudletList.length > 0) {
+                    ////todo:  mapFiltering(CLUSTER)
+                    let markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                    let selectedCloudletName = selectCloudletOne.toString().split(" | ")[0].toString().trim();
+                    let filteredAppInstList = markerListHashMap[selectedCloudletName];
+                    let newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
+                    await this.setState({
+                        currentMapLevel: MAP_LEVEL.CLUSTER,
+                        appInstanceListGroupByCloudlet: newMarketListMap,
+                    })
+                } else {////todo:  mapfiltering (CLOUDLET_FOR_ADMIN)
+                    await this.setState({
+                        isNoCluster: true,
+                        currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
+                    })
+                    let newMarketListMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+
+                    console.log(`newMarketListMap====>`, newMarketListMap);
+
+                    await this.setState({
+                        appInstanceListGroupByCloudlet: newMarketListMap,
+                    })
+
+
+                }
+            }
+
 
             renderCloudletDropdownForAdmin() {
                 return (
@@ -2921,7 +2949,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                                             await this.setState({
-
                                                 appInstanceListGroupByCloudlet: newMarketListMap,
                                                 allClusterEventLogList: allClusterEventLogList,
                                                 filteredClusterEventLogList: allClusterEventLogList,
@@ -3124,14 +3151,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
                                 style={{height: '30px !important', width: treeSelectWidth}}
-
-                                /*onSearch={(value) => {
-                                    this.setState({
-                                        searchClusterValue: value,
-                                    });
-                                }}
-                                searchValue={this.state.searchClusterValue}
-                                searchPlaceholder={'Enter the cluster name.'}*/
                                 ref={c => this.treeSelectClusterAdmin = c}
 
                                 placeholder={'Select Cluster'}
@@ -3141,6 +3160,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 onChange={async (value, label, extra) => {
 
                                     if (!isEmpty(value)) {
+
+                                        //todo: map Filtering
+                                        /*  let markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                                          let selectedCloudletName = value.toString().split(" | ")[0].toString().trim();
+                                          let filteredAppInstList = markerListHashMap[selectedCloudletName];
+                                          let newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
+                                          await this.setState({
+                                              currentMapLevel: MAP_LEVEL.CLUSTER,
+                                          })*/
+
                                         this.setState({currentClusterList: value});
                                     } else {
                                         this.resetLocalData()
@@ -3316,7 +3345,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     if (this.state.loading) {
                         return (
-                            <LegendOuterDiv style={{height: 25}}>
+                            <LegendOuterDiv style={{height: 32}}>
                                 <div style={{
                                     display: 'flex',
                                     alignSelf: 'center',
@@ -3607,7 +3636,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return (
                     <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                         <AdjustIcon
-                            style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
+                            style={{fill: this.state.chartColorList[index], fontSize: 16, marginTop: 4,}}/>
                     </div>
                 )
             }

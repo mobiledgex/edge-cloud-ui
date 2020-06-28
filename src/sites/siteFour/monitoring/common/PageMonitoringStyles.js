@@ -660,7 +660,7 @@ export const ClusterCluoudletAppInstLabel = styled.div`
   flex-direction: row;
   display : flex;
   align-self: center;
-  font-size: 10px;
+  font-size: 12px;
   marginLeft:50px;
 `
 
