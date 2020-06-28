@@ -3416,7 +3416,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 width: '100%',
                                             }}>
                                                 {this.renderClusterDot(item.colorCodeIndex)}
-                                                <div style={{display: 'flex', marginLeft: 3, backgroundColor: 'red'}}>
+                                                <div style={{display: 'flex', marginLeft: 3,}}>
                                                     <div>
                                                         {item.cluster}
                                                     </div>
