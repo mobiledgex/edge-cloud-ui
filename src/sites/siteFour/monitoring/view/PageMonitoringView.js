@@ -2701,6 +2701,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             ________________________________________________dropdowns________________________________________________________________________________________________________________________() {
             }
 
+            async handleResetForAdmin() {
+                let filteredCloudletList = this.state.cloudletList
+                let markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                let cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+                await this.setState({
+                    currentOper: value,
+                    filteredCloudletList: filteredCloudletList,
+                    filteredClusterUsageList: [],
+                    cloudletDropdownList: cloudletDropdownList,
+                    currentCloudLet: undefined,
+                    filteredCloudletUsageList: [],
+                    currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                    currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
+                    appInstanceListGroupByCloudlet: markerListForMap,
+
+                });
+            }
+
             renderOperDropdownForAdmin() {
 
                 return (
@@ -2742,9 +2760,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
                                     appInstanceListGroupByCloudlet: markerListForMap,
 
-                                }, () => {
-                                })
-
+                                });
 
                             }}
                         >
@@ -3394,9 +3410,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }}
                                     >
                                         {itemCount === 1 ?
-                                            <Center style={{marginLeft: 100, display: 'flex', width: '100%'}}>
+                                            <Center style={{
+                                                marginLeft: 100,
+                                                display: 'flex',
+                                                width: '100%',
+                                            }}>
                                                 {this.renderClusterDot(item.colorCodeIndex)}
-                                                <div style={{display: 'flex', marginLeft: 3,}}>
+                                                <div style={{display: 'flex', marginLeft: 3, backgroundColor: 'red'}}>
                                                     <div>
                                                         {item.cluster}
                                                     </div>

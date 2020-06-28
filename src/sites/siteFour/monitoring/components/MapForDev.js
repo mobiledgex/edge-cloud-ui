@@ -30,37 +30,13 @@ import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 import {withSize} from "react-sizeme";
+import {cloudBlueIcon, cloudGreenIcon, mapTileList} from "../common/MapProperties";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-
-let cellphoneIcon = L.icon({
-    iconUrl: require('../images/cellhone_white003.png'),
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
-
-let cloudGreenIcon = L.icon({
-    iconUrl: require('../images/cloud_green.png'),
-    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-    iconSize: [40, 21],
-    iconAnchor: [20, 21],
-    shadowSize: [41, 41]
-});
-
-let cloudBlueIcon = L.icon({
-    iconUrl: require('../images/cloud_blue2.png'),
-    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-    iconSize: [45, 39],//todo: width, height
-    iconAnchor: [24, 30],//x,y
-    shadowSize: [41, 41]
-});
 
 
 const mapStateToProps = (state) => {
@@ -133,44 +109,6 @@ type State = {
 export default withSize()(connect(mapStateToProps, mapDispatchProps)((
     class MapForDevContainer extends React.Component<Props, State> {
         tooltip = createRef();
-        mapTileList = [
-            {
-                url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
-                name: 'dark1',
-                value: 0,
-            },
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
-                name: 'dark2',
-                value: 1,
-            },
-            {
-                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
-                name: 'dark3',
-                value: 2,
-            },
-
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
-                name: 'blue',
-                value: 3,
-            },
-            {
-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-                name: 'light2',
-                value: 4,
-            },
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
-                name: 'light3',
-                value: 5,
-            },
-            {
-                url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                name: 'light4',
-                value: 6,
-            },
-        ]
 
 
         constructor(props: Props) {
@@ -403,7 +341,7 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                                 lineColor = WHITE_LINE_COLOR;
                                 cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
                             }
-                            this.props.setMapTyleLayer(this.mapTileList[index].url);
+                            this.props.setMapTyleLayer(mapTileList[index].url);
                             this.props.setLineColor(lineColor);
                             this.props.setCloudletIconColor(cloudletIconColor);
                             setTimeout(() => {
@@ -415,7 +353,7 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                         }
                     }}
                 >
-                    {this.mapTileList.map((item, index) => {
+                    {mapTileList.map((item, index) => {
                         return (
                             <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
                                     value={item.value}>{item.name}</Option>
