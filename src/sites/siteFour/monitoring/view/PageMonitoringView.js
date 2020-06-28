@@ -390,8 +390,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                 //@fixme: DELETE GRID LAYOUT
-                /*reactLocalStorage.remove(adminCloudletLayout)
-                reactLocalStorage.remove(adminCloudletLayoutMapper)*/
+                reactLocalStorage.remove(adminCloudletLayout)
+                reactLocalStorage.remove(adminCloudletLayoutMapper)
 
                 this.state = {
                     //todo: admin layout(Cloudlet)
@@ -618,6 +618,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
 
                     console.log(`layoutMapperCloudletAdmin====>`, this.state.layoutMapperCloudletAdmin);
+
+                    console.log(`currentClassification===>`, this.state.currentClassification);
 
                     this.setState({
                         loading: true,
@@ -1218,33 +1220,39 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            removeGridItem(i) {
-                if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
-                    let removedLayout = reject(this.state.layoutClusterAdmin, {i: i});
+            deleteGridItem(index) {
+                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+                    let removedLayout = reject(this.state.layoutCloudletAdmin, {i: index});
+                    reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, removedLayout)
+                    this.setState({
+                        layoutCloudletAdmin: removedLayout,
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                    let removedLayout = reject(this.state.layoutClusterAdmin, {i: index});
                     reactLocalStorage.setObject(getUserId() + ADMIN_CLUSTER_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutClusterAdmin: removedLayout,
                     });
                 } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-                    let removedLayout = reject(this.state.layoutAdmin, {i: i});
+                    let removedLayout = reject(this.state.layoutAdmin, {i: index});
                     reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutAdmin: removedLayout,
                     });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    let removedLayout = reject(this.state.layoutCluster, {i: i});
+                    let removedLayout = reject(this.state.layoutCluster, {i: index});
                     reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutCluster: removedLayout,
                     });
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                    let removedLayout = reject(this.state.layoutCloudlet, {i: i});
+                    let removedLayout = reject(this.state.layoutCloudlet, {i: index});
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutCloudlet: removedLayout,
                     });
                 } else {//@desc: AppInst Level
-                    let removedLayout = reject(this.state.layoutAppInst, {i: i});
+                    let removedLayout = reject(this.state.layoutAppInst, {i: index});
                     reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, removedLayout)
                     this.setState({
                         layoutAppInst: removedLayout,
@@ -1253,7 +1261,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             removeGridAllItem() {
-                if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+                    reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, [])
+                    this.setState({
+                        layoutCloudletAdmin: [],
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                    reactLocalStorage.setObject(getUserId() + ADMIN_CLUSTER_LAYOUT_KEY, [])
+                    this.setState({
+                        layoutClusterAdmin: [],
+                    });
+                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                     reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, [])
                     this.setState({
                         layoutAdmin: [],
@@ -1339,7 +1357,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         data-grid={item}
                         style={{
                             margin: 0,
-                            //backgroundColor: '#292c33',
                             backgroundColor: this.props.themeType === 'light' ? 'white' : '#292c33'
                         }}
                         onDoubleClick={async () => {
@@ -1367,7 +1384,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
-                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP
                             && <div className="maxize page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
@@ -1379,11 +1395,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
                             <div className="remove page_monitoring_widget_icon"
+                                 style={{zIndex: 9999999999}}
                                  onClick={() => {
-                                     this.removeGridItem(uniqueIndex)
+                                     alert('sdflksdlfksldkflsdkflksdlfksdlkf')
+                                     this.deleteGridItem(uniqueIndex)
                                  }}
                             >
-                                <MaterialIcon size={'tiny'} icon='delete' color={'white'}/>
+                                {/*<MaterialIcon size={'tiny'} icon='delete' color={'white'}/>*/}
+                                <MaterialIcon size={'tiny'} icon='delete' color={'green'}
+                                              onClick={() => {
+                                                  alert('sdflksdlfksldkflsdkflksdlfksdlkf')
+                                                  this.deleteGridItem(uniqueIndex)
+                                              }}
+                                />
                             </div>
 
                         </div>
@@ -2989,14 +3013,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div style={{width: '100%'}}>
                             <TreeSelect
                                 dropdownMatchSelectWidth={false}
-                                allowClear={true}
+                                //allowClear={true}
+                                //disabled={this.state.loading || isEmpty(this.state.currentClusterList)}
                                 listHeight={800}
                                 dropdownStyle={{
                                     maxHeight: 800, overflow: 'auto', width: '420px'
                                 }}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
-                                disabled={this.state.loading || isEmpty(this.state.currentClusterList)}
+
                                 size={'middle'}
                                 onSearch={(value) => {
                                     this.setState({
@@ -3020,9 +3045,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (!isEmpty(value)) {
                                         this.setState({currentClusterList: value});
                                     } else {
-                                        //this.resetLocalData()
+                                        this.resetLocalData()
                                     }
                                 }}
+
                             />
                         </div>
                         <div style={{marginLeft: 10,}}>

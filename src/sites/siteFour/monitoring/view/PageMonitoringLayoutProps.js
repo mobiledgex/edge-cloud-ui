@@ -1,6 +1,3 @@
-import {makeStyles} from "@material-ui/core/styles";
-import {green, red} from "@material-ui/core/colors";
-
 export const GRID_ITEM_TYPE = {
     LINE: 'LINE',
     BAR: 'BAR',
@@ -659,14 +656,17 @@ export const CLUSTER_HW_MAPPER_KEY = "_layout_mapper";
 export const APPINST_LAYOUT_KEY = "_layout2";
 export const APPINST_HW_MAPPER_KEY = "_layout2_mapper";
 
-export const ADMIN_LAYOUT_KEY = "_layout_admin";
-export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
 
+
+export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet";
+export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet";
 
 export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster";
 export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster";
 
 
-export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet";
-export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet";
+export const ADMIN_LAYOUT_KEY = "_layout_admin";
+export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
+
+
 

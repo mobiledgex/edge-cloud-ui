@@ -1,20 +1,10 @@
 // @flow
 import * as React from 'react';
-import {
-    convertToClassification,
-    makeGradientLineChartData,
-    makeLineChartOptions
-} from "../service/PageMonitoringService";
+import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageMonitoringService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {
-    renderPlaceHolderLoader,
-    renderPlaceHolderHorizontalBar,
-    renderPlaceHolderHorizontalBarForChart
-} from "../service/PageMonitoringCommonService";
 import type {TypeChartDataSet} from "../../../../shared/Types";
-import {Empty} from "antd";
 import {withSize} from "react-sizeme";
 
 type Props = {
@@ -138,9 +128,10 @@ export default withSize()(
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                        {this.props.parent.state.loading && renderPlaceHolderHorizontalBarForChart(undefined, this)}
+                       {/* {this.props.parent.state.loading && renderPlaceHolderHorizontalBarForChart(undefined, this)}*/}
                         <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
-                            <div className='page_monitoring_title' style={{fontFamily: 'Roboto'}}>
+                            <div className='page_monitoring_title' onClick={() => {
+                            }}>
                                 {convertToClassification(this.props.currentClassification)} {this.props.pHardwareType !== undefined && this.makeToShortTitle(this.props.pHardwareType)}
                             </div>
                         </div>
