@@ -633,8 +633,8 @@ export default connect(mapStateToProps, mapDispatchProps)((
         render() {
             return (
                 <div ref={c => this.element = c} style={{flex: 1, height: '100%'}}>
-                    {this.renderHeader()}
                     {this.props.loading && renderPlaceHolderHorizontalBar(true, this.element.getBoundingClientRect().width)}
+                    {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
                             <Map
