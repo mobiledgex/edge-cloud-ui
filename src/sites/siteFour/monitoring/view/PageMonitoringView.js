@@ -1,9 +1,4 @@
-import {
-    Center,
-    ClusterCluoudletAppInstLabel,
-    LegendOuterDiv,
-    PageMonitoringStyles
-} from '../common/PageMonitoringStyles'
+import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import AppsIcon from '@material-ui/icons/Apps';
 import {SemanticToastContainer} from 'react-semantic-toasts';
@@ -12,7 +7,7 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, Tag, TreeSelect} from 'antd';
+import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 import {
     filterByClassification,
     getCloudletClusterNameList,
@@ -49,28 +44,10 @@ import {
     THEME_OPTIONS_LIST,
     USER_TYPE
 } from "../../../../shared/Constants";
-import type {
-    TypeBarChartData,
-    TypeCloudlet,
-    TypeCloudletEventLog,
-    TypeCloudletUsage,
-    TypeCluster,
-    TypeClusterEventLog,
-    TypeClusterUsageOne,
-    TypeGridInstanceList,
-    TypeLineChartData,
-    TypeUtilization
-} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {
-    getOneYearStartEndDatetime,
-    isEmpty,
-    makeBubbleChartData,
-    renderPlaceHolderLoader,
-    renderWifiLoader,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartData, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -106,12 +83,7 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    ColorLinearProgress,
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import AdjustIcon from '@material-ui/icons/Adjust';
 import {
     ADMIN_CLOUDLET_HW_MAPPER_KEY,
@@ -144,7 +116,7 @@ import {
     defaultLayoutXYPosForCloudletAdmin,
     defaultLayoutXYPosForCluster,
     defaultLayoutXYPosForClusterAdmin,
-    GRID_ITEM_TYPE, useStyles
+    GRID_ITEM_TYPE
 } from "./PageMonitoringLayoutProps";
 import MapForOper from "../components/MapForOper";
 import DonutChart from "../components/DonutChart";
@@ -158,7 +130,6 @@ import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Chip from "@material-ui/core/Chip";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -2817,18 +2788,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             listHeight={512}
                             style={{width: 250, maxHeight: '512px !important'}}
                             disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
-                            //value={this.state.currentCloudLet !== undefined ? this.state.currentCloudLet.split("|")[0].trim() : undefined}
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
-                            onSelect={async (value) => {
+                            onSelect={async (selectCloudlet) => {
                                 try {
                                     this.cloudletSelect.blur();
                                     await this.setState({
-                                        clusterTreeDropdownList: undefined,
+                                        currentClusterList: [],
+                                        currentCloudLet: selectCloudlet.split("|")[0].trim(),
                                     })
 
-
-                                    if (value === '0') {//todo:reset filter
+                                    if (selectCloudlet === '0') {//todo:reset filter
                                         await this.setState({
                                             currentGridIndex: -1,
                                             currentTabIndex: 0,
@@ -2849,7 +2819,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         })
                                         let selectIndex = 0;
                                         this.state.cloudletList.map((item: TypeCloudlet, index) => {
-                                            if (item.CloudletName === value.split("|")[0].trim()) {
+                                            if (item.CloudletName === selectCloudlet.split("|")[0].trim()) {
                                                 selectIndex = index;
                                             }
                                         })
@@ -2918,7 +2888,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
                                                 clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
                                                 ////todo:  mapFiltering when map for cluster
-                                                this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, value)
+                                                this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
                                             } else {
                                                 ////todo:  mapfiltering, when no cluster
                                                 this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
@@ -2942,7 +2912,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 isRequesting: false,
                                                 mapLoading: false,
                                                 loading: false,
-                                                currentCloudLet: value,
                                             });
                                         } catch (e) {
                                             throw new Error(e)
@@ -3020,6 +2989,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div style={{width: '100%'}}>
                             <TreeSelect
                                 dropdownMatchSelectWidth={false}
+                                allowClear={true}
                                 listHeight={800}
                                 dropdownStyle={{
                                     maxHeight: 800, overflow: 'auto', width: '420px'
@@ -3033,6 +3003,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         searchClusterValue: value,
                                     });
                                 }}
+
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
                                 style={{height: '30px !important', width: treeSelectWidth}}
