@@ -144,7 +144,7 @@ import {
     defaultLayoutXYPosForCloudletAdmin,
     defaultLayoutXYPosForCluster,
     defaultLayoutXYPosForClusterAdmin,
-    GRID_ITEM_TYPE
+    GRID_ITEM_TYPE, useStyles
 } from "./PageMonitoringLayoutProps";
 import MapForOper from "../components/MapForOper";
 import DonutChart from "../components/DonutChart";
@@ -157,6 +157,7 @@ import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin002 from "../components/MapForAdmin";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -377,9 +378,9 @@ type PageDevMonitoringState = {
 export const CancelToken = axios.CancelToken;
 export const source = CancelToken.source();
 
-
 export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
         class PageDevMonitoring extends Component<PageMonitoringProps, PageDevMonitoringState> {
+
             intervalForAppInst = 0;
             intervalForCluster = 0;
             webSocketInst: WebSocket = null;
@@ -3285,16 +3286,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-
             ________________________________________________Legend________________________________________________________________________________________________________________________() {
             }
 
             makeLegend() {
                 try {
-
                     if (this.state.loading) {
                         return (
-                            <LegendOuterDiv style={{height: 30}}>
+                            <LegendOuterDiv style={{height: 25}}>
                                 <div style={{
                                     display: 'flex',
                                     alignSelf: 'center',
@@ -3303,15 +3302,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignItems: 'center',
                                     width: '100%',
                                 }}>
-                                    <ColorLinearProgress
-                                        variant={'query'}
-                                        style={{
-                                            marginLeft: -20,
-                                            width: '9%',
-                                            alignContent: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    />
+                                    <CircularProgress style={{color: '#1cecff'}} size={15} thickness={3}/>
                                 </div>
                             </LegendOuterDiv>
                         )
@@ -3320,6 +3311,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <LegendOuterDiv
                                 style={{
                                     marginTop: 4,
+
                                     width: '98.8%'
                                 }}>
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.makeClusterLegend(this.state.legendItemCount)

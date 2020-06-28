@@ -22,7 +22,7 @@ import {
     WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import '../common/PageMonitoringStyles.css'
 import {listGroupByKey} from "../service/PageMonitoringService";
 import {withSize} from "react-sizeme";
@@ -612,9 +612,11 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                         </div>
                     </Control>
                     <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                        <div style={{color: 'yellow'}}>
-                            Cloudlets : {this.props.cloudletList.length}
-                        </div>
+                        <Center style={{height: 25, backgroundColor: 'rgba(0,0,0,0.5)', padding: 10,}}>
+                            <div style={{}}>
+                                Cloudlets : {this.props.cloudletList.length}
+                            </div>
+                        </Center>
                     </Control>
 
                 </React.Fragment>

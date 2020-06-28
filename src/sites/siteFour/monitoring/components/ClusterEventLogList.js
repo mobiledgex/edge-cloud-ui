@@ -164,7 +164,7 @@ export default function ClusterEventLogList(props) {
                 {!props.loading ?
                     <FixedSizeList
                         height={179}
-                        itemCount={props.eventLogList.length}
+                        itemCount={props.eventLogList !== undefined ? props.eventLogList.length : 0}
                         itemSize={itemHeight}
                         width={'100%'}
                     >
