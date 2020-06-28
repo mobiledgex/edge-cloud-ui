@@ -2875,6 +2875,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             }
                                         })
 
+                                        let filteredAppInstList = appInstList.filter((item: TypeAppInst, index) => {
+                                            return item.Cloudlet === currentCloudletOne.CloudletName;
+                                        })
+
 
                                         if (filteredClusterList.length === 0) {
                                             showToast('no cluster')
@@ -2885,7 +2889,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             filteredClusterList: filteredClusterList,
                                             currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                             filteredCloudletList: filteredCloudletList,
-                                            filteredAppInstList: appInstList,
+                                            filteredAppInstList: filteredAppInstList,
 
                                         })
 
@@ -2924,7 +2928,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 allClusterList: clusterList,
                                                 isAppInstaceDataReady: true,
                                                 appInstList: appInstList,
-                                                filteredAppInstList: appInstList,
                                                 dropdownRequestLoading: false,
                                                 clusterListLoading: false,
                                                 allClusterUsageList: allClusterUsageList,
@@ -3029,9 +3032,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
+                                    //todo:@onchange 가 아니라 어플라이에 적용햐야됨
+
+                                    await this.setState({
+                                        currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN
+                                    })
 
                                     if (!isEmpty(value)) {
-
 
                                         const {filteredCloudletList, filteredAppInstList} = this.state
 
@@ -3429,12 +3436,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 </Center>
                                             </div>
 
-                                        }
-                                        {this.state.isNoCluster &&
-                                        <Center
-                                            style={{marginLeft: 100, display: 'flex', width: '100%', color: 'yellow'}}>
-                                            No Cluster
-                                        </Center>
                                         }
                                     </Col>
                                 )
