@@ -150,7 +150,7 @@ tbody:hover {
     font-size: 9px;
     width: auto;
     min-width: auto;
-    max-width: auto;
+    border-radius: 0px !important;
 }
 
 
@@ -715,16 +715,13 @@ tr td {
     border-color: blue;
 }
 
-.mapCloudletTooltip {
-    background-color: black !important;
+.tooltip2{
     font-weight: normal !important;
-    opacity: 0.9 !important;
-    font-family: "Roboto Light" !important;
-    border-color: white !important;
+    opacity: 0.8 !important;
     border-width: 1px !important;
     border-radius: 0px !important;
     border-style: solid;
-
+    border-color: green !important;
 }
 
 .mapCloudletPopup {
@@ -738,11 +735,38 @@ tr td {
 .mapCloudletTooltipInner {
     color: white;
     padding: 2px;
+    font-family: "Roboto Light" !important;
+    font-weight: normal !important;
+}
+
+.mapCloudletTooltipInnerBlack {
+    color: black !important;
+    padding: 2px;
+    font-family: "Roboto Light" !important;
+    font-weight: normal !important;
+
+}
+
+.mapCloudletTooltip {
+    color: black;
+    padding: 2px;
+    font-family: "Roboto Light" !important;
+    font-weight: normal !important;
+
+}
+
+.mapCloudletTooltipDev {
+    color: black !important;
+    padding: 2px;
+    font-family: "Roboto Light" !important;
+    font-weight: normal !important;
+
 }
 
 .mapCloudletPopupInner2 {
     color: white;
     padding: 2px;
+    border-width: 0px!important;
 
 }
 

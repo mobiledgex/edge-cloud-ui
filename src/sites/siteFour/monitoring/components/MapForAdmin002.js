@@ -496,7 +496,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             {/*desc:CLOUDLET POPUP                  */}
                             {/*desc:################################*/}
                             <Popup
-                                className='mapCloudletTooltip'
+                                className='tooltip2'
                                 offset={[0, 0]}
                                 opacity={0.7}
                                 style={{width: '200px !important'}}
@@ -506,7 +506,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         return (
                                             <div
                                                 key={index}
-                                                className='mapCloudletPopupInner2'
+                                                className='mapCloudletTooltipInner'
                                             >
                                                 {item}
                                             </div>

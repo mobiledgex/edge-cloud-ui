@@ -7,13 +7,23 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, showToast} from "../service/PageMonitoringCommonService";
+import {
+    groupByKey_,
+    removeDuplicates,
+    renderPlaceHolderLottieForMap,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -584,7 +594,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             }
                         >
                             <Tooltip
-                                className='mapCloudletTooltip'
+                                className='mapCloudletTooltipDev'
                                 direction='right'
                                 offset={[14, -10]}//x,y
                                 opacity={0.8}
@@ -599,7 +609,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     return (
                                         <div
                                             key={index}
-                                            className='mapCloudletTooltipInner'
+                                            className='mapCloudletTooltipInnerBlack'
                                         >
                                             {item}
                                         </div>
@@ -752,6 +762,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <React.Fragment>
+                    {this.props.mapLoading && renderPlaceHolderLottieForMap(true)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>

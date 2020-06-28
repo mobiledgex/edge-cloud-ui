@@ -780,7 +780,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
 
                     }
-                    await this.setState({appInstanceListGroupByCloudlet: !isInterval && markerListForMap});
+                    await this.setState({
+                        appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
+                        mapLoading: false,
+                    });
 
 
                     let cloudletClusterListMap = {}
@@ -1549,6 +1552,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 selectedAppInstIndex={this.state.selectedAppInstIndex}
                                 isEnableZoomIn={!this.state.isEnableZoomIn}
                                 currentClassfication={this.state.currentClassification}
+                                mapLoading={this.state.mapLoading}
                             />
                         )
                     } else if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET) {
@@ -2877,11 +2881,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     let operList = this.makeUniqOper(filteredClusterList)
                                     let clusterTreeDropdownList = makeClusterMultiDropdown(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
 
-                                    let markerListForMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                                    console.log(`markerListForMap====>`, markerListForMap);
+                                    let markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                                    let selectedCloudlet = value.toString().split(" | ")[0].toString().trim();
+                                    let filteredAppInstList = markerListHashMap[selectedCloudlet];
+
+                                    let newMarketListMap = {
+                                        currentCloudlet: filteredAppInstList === undefined ? [] : filteredAppInstList,
+                                    }
 
                                     await this.setState({
-                                        appInstanceListGroupByCloudlet: markerListForMap,
+                                        appInstanceListGroupByCloudlet: newMarketListMap,
                                         allClusterEventLogList: allClusterEventLogList,
                                         filteredClusterEventLogList: allClusterEventLogList,
                                         allAppInstEventLogs: allAppInstEventLogList,
