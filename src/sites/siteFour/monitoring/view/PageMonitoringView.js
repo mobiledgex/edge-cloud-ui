@@ -12,7 +12,7 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+import {Button, Col, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, Tag, TreeSelect} from 'antd';
 import {
     filterByClassification,
     getCloudletClusterNameList,
@@ -158,6 +158,7 @@ import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Chip from "@material-ui/core/Chip";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -3357,7 +3358,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 span={24}
                             >
                                 <Center>
-                                    No Cluster
+                                    <Tag color="grey" style={{color: 'black'}}>No Cluster</Tag>
                                 </Center>
                             </Col>
                             }
