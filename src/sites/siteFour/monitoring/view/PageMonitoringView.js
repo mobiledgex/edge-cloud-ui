@@ -1221,6 +1221,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             deleteGridItem(index) {
+
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
                     let removedLayout = reject(this.state.layoutCloudletAdmin, {i: index});
                     reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, removedLayout)
@@ -1395,18 +1396,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
                             <div className="remove page_monitoring_widget_icon"
-                                 style={{zIndex: 9999999999}}
                                  onClick={() => {
-                                     alert('sdflksdlfksldkflsdkflksdlfksdlkf')
                                      this.deleteGridItem(uniqueIndex)
                                  }}
                             >
-                                {/*<MaterialIcon size={'tiny'} icon='delete' color={'white'}/>*/}
-                                <MaterialIcon size={'tiny'} icon='delete' color={'green'}
-                                              onClick={() => {
-                                                  alert('sdflksdlfksldkflsdkflksdlfksdlkf')
-                                                  this.deleteGridItem(uniqueIndex)
-                                              }}
+                                <MaterialIcon size={'tiny'} icon='delete' color={'white'}
+
                                 />
                             </div>
 

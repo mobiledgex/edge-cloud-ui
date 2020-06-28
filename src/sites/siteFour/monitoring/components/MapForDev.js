@@ -1,5 +1,4 @@
 import React, {createRef} from "react";
-import * as L from 'leaflet';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
 import type {TypeAppInst, TypeClient} from "../../../../shared/Types";
 import Ripples from "react-ripples";
@@ -7,30 +6,19 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {
-    groupByKey_,
-    removeDuplicates, renderPlaceHolderHorizontalBar,
-    renderPlaceHolderLottieForMap,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderPlaceHolderHorizontalBar, showToast} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
-import {withSize} from "react-sizeme";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
+import '../common/PageMonitoringStyles.css'
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -104,9 +92,8 @@ type State = {
 
 };
 
-//export default connect(mapStateToProps, mapDispatchProps)(
 
-export default withSize()(connect(mapStateToProps, mapDispatchProps)((
+export default connect(mapStateToProps, mapDispatchProps)(
     class MapForDevContainer extends React.Component<Props, State> {
         tooltip = createRef();
         mapTileList = [
@@ -740,8 +727,8 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
 
         render() {
             return (
-                <React.Fragment>
-                    {this.props.mapLoading && renderPlaceHolderHorizontalBar(true, this)}
+                <div style={{flex: 1, height: '100%'}} ref={c => this.outerDiv = c}>
+                    {this.props.mapLoading && renderPlaceHolderHorizontalBar(true, this.outerDiv.getBoundingClientRect().width)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
@@ -799,9 +786,9 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                         </div>
 
                     </div>
-                </React.Fragment>
+                </div>
             );
         }
     }
-)))
+)
 

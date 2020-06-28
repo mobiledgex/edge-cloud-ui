@@ -1,31 +1,19 @@
 import React, {createRef} from "react";
-import * as L from 'leaflet';
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
 import type {TypeClient, TypeCloudlet} from "../../../../shared/Types";
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {
-    groupByKey_,
-    removeDuplicates,
-    renderPlaceHolderHorizontalBar,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderPlaceHolderHorizontalBar, showToast} from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
+import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import '../common/PageMonitoringStyles.css'
 import {listGroupByKey} from "../service/PageMonitoringService";
-import {withSize} from "react-sizeme";
 import {cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 
 const {Option} = Select;
@@ -101,7 +89,7 @@ type State = {
 };
 
 
-export default withSize()(connect(mapStateToProps, mapDispatchProps)((
+export default connect(mapStateToProps, mapDispatchProps)((
     class MapForAdmin extends React.Component<Props, State> {
         tooltip = createRef();
         mapTileList = [
@@ -644,9 +632,9 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
 
         render() {
             return (
-                <React.Fragment>
+                <div ref={c => this.element = c} style={{flex: 1, height: '100%'}}>
                     {this.renderHeader()}
-                    {this.props.loading && renderPlaceHolderHorizontalBar(true, this)}
+                    {this.props.loading && renderPlaceHolderHorizontalBar(true, this.element.getBoundingClientRect().width)}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
                             <Map
@@ -696,9 +684,9 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                         </div>
 
                     </div>
-                </React.Fragment>
+                </div>
             );
         }
     }
-)))
+))
 

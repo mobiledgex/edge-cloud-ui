@@ -1,19 +1,12 @@
 // @flow
 import * as React from 'react';
-import {
-    isEmpty,
-    renderEmptyBox,
-    renderPlaceHolderHorizontalBarForChart,
-    renderPlaceHolderLoader
-} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderEmptyBox, renderPlaceHolderHorizontalBar} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {convertHWType} from "../service/PageMonitoringService";
-import {Empty} from "antd";
 import {withSize} from "react-sizeme";
 
 type Props = {
@@ -71,7 +64,7 @@ export default withSize()(
             return (
                 <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                     <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                        {this.props.parent.state.loading && renderPlaceHolderHorizontalBarForChart(undefined, this)}
+                        {this.props.parent.state.loading && renderPlaceHolderHorizontalBar(undefined, this)}
                         <div className='page_monitoring_title_area draggable'>
                             <div className='page_monitoring_title'>
                                 {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization

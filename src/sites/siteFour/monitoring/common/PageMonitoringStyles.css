@@ -531,7 +531,7 @@ tr td {
 }*/
 
 .draggable .page_monitoring_title {
-    cursor: pointer;
+    cursor: pointer !important;
     color: white !important;
 }
 

@@ -447,7 +447,6 @@ page_monitoring_dashboard_dev {
     width: 27px;
     height: 20px;
     margin-left: 5px;
-    background-color: red;
 }
 
 .page_monitoring_title_select { /* 드롭다운 메뉴가 옆에 있을 때 타이틀 */

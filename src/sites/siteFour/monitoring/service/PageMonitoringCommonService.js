@@ -15,9 +15,7 @@ import {makeCompleteDateTime} from "../view/temp/PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {Empty, Tag} from "antd";
 import Chip from "@material-ui/core/Chip";
-import Cloud from '@material-ui/icons/Cloud';
 import withStyles from "@material-ui/styles/withStyles";
 
 const OrangeChip = withStyles({
@@ -198,43 +196,8 @@ export const removeDuplicates = (paramArrayList, key) => {
     return newArray;
 }
 
-export const renderPlaceHolderHorizontalBar = (isBar = true, _this) => {
-    if (isBar) {
-        return (
-            <div className='page_monitoring_blank_box'
-                 style={{
-                     zIndex: 999,
-                     position: 'absolute',
-                     top: '1%',
-                     width: _this.props.size.width,
-                     //backgroundColor: 'red'
-                 }}>
-                <Lottie
-                    options={{
-                        loop: true,
-                        autoplay: true,
-                        animationData: require('../../../../lotties/18705-horizontal-loading'),
-                    }}
-                    speed={1}
-                    height={7}
-                    isStopped={false}
-                    isPaused={false}
-                    style={{
-                        position: 'absolute',
-                        top: -10,
-                        //marginLeft: '-10%',
-                        justifyContent: 'center',
-                        alignItem: 'center',
-                        alignSelf: 'center'
-                    }}
-                />
-            </div>
-        )
-    }
-}
 
-
-export const renderPlaceHolderHorizontalBarForChart = (isBar = true, _this) => {
+export const renderPlaceHolderHorizontalBar = (isBar = true, paramWidth, isBold = false) => {
     if (isBar) {
         return (
             <div className='page_monitoring_blank_box'
@@ -242,14 +205,14 @@ export const renderPlaceHolderHorizontalBarForChart = (isBar = true, _this) => {
                      zIndex: 999,
                      position: 'absolute',
                      //top: '1%',
-                     width: _this.props.size.width,
+                     width: paramWidth,
                      //backgroundColor: 'red'
                  }}>
                 <Lottie
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../../lotties/18705-horizontal-loading'),
+                        animationData: isBold ? require('../../../../lotties/horizontal-loading-bold') : require('../../../../lotties/18705-horizontal-loading'),
                     }}
                     speed={1}
                     height={30}
