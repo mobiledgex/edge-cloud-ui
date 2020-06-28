@@ -9,7 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
 import {
     groupByKey_,
-    removeDuplicates,
+    removeDuplicates, renderPlaceHolderLottieBar,
     renderPlaceHolderLottieForMap,
     showToast
 } from "../service/PageMonitoringCommonService";
@@ -29,6 +29,7 @@ import '../common/PageMonitoringStyles.css'
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
+import {withSize} from "react-sizeme";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -127,7 +128,9 @@ type State = {
 
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(
+//export default connect(mapStateToProps, mapDispatchProps)(
+
+export default withSize()(connect(mapStateToProps, mapDispatchProps)((
     class MapForDevContainer extends React.Component<Props, State> {
         tooltip = createRef();
         mapTileList = [
@@ -762,7 +765,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <React.Fragment>
-                    {this.props.mapLoading && renderPlaceHolderLottieForMap(true)}
+                    {this.props.mapLoading && renderPlaceHolderLottieBar(true, this)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
@@ -824,5 +827,5 @@ export default connect(mapStateToProps, mapDispatchProps)(
             );
         }
     }
-)
+)))
 

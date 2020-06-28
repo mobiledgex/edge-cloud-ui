@@ -19,9 +19,10 @@ import {Empty, Tag} from "antd";
 import Chip from "@material-ui/core/Chip";
 import Cloud from '@material-ui/icons/Cloud';
 import withStyles from "@material-ui/styles/withStyles";
+
 const OrangeChip = withStyles({
     root: {
-        backgroundColor:'orange'
+        backgroundColor: 'orange'
     }
 })(Chip);
 const FontAwesomeIcon = require('react-fontawesome')
@@ -197,6 +198,42 @@ export const removeDuplicates = (paramArrayList, key) => {
     return newArray;
 }
 
+export const renderPlaceHolderLottieBar = (isBar = true, _this) => {
+    if (isBar) {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{
+                     zIndex: 999,
+                     position: 'absolute',
+                     top: '1%',
+                     width: _this.props.size.width,
+                     //backgroundColor: 'red'
+                 }}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../../../../lotties/18705-horizontal-loading'),
+                    }}
+                    speed={1}
+                    height={7}
+                    isStopped={false}
+                    isPaused={false}
+                    style={{
+                        position: 'absolute',
+                        top: -10,
+                        //marginLeft: '-10%',
+                        justifyContent: 'center',
+                        alignItem: 'center',
+                        alignSelf: 'center'
+                    }}
+                />
+            </div>
+        )
+    }
+}
+
+
 export const renderPlaceHolderLottieForMap = (isCloud = false) => {
     if (isCloud) {
         return (
@@ -216,6 +253,7 @@ export const renderPlaceHolderLottieForMap = (isCloud = false) => {
                     width={70}
                     isStopped={false}
                     isPaused={false}
+                    style={{position: 'absolute', top: 20,}}
                 />
             </div>
         )

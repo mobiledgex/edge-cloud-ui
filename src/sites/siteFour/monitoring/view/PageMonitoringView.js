@@ -719,9 +719,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //TODO:###################################################################################################################
                     //TODO:       AMDIN
                     //TODO:###################################################################################################################
-                    //@fixme: fakeData
-                    /*cloudletList = require('./cloudletList')
-                    appInstList = require('./appInstList')*/
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
                         cloudletList = await fetchCloudletList();
                         appInstList = await fetchAppInstList(undefined, this)
@@ -1676,6 +1673,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             ////////////////////////////////////////////
+            ________________________________________________GridLayout________________________________________________________________________________________________________________________() {
+            }
+
             renderGridLayoutForCloudletAdmin() {
 
                 try {
@@ -2081,6 +2081,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     showToast(e.toString())
                 }
             }
+
+            ________________________________________________GridLayout___END________________________________________________________________________________________________________________________() {
+            }
+
 
             async makeDropdownColorChange() {
                 let newClusterList = []
@@ -2856,57 +2860,80 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                         })
 
-
-                                        let usageEventPromiseList = []
-                                        usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList))
-                                        usageEventPromiseList.push(getAllAppInstEventLogs());
-                                        usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                                        let newPromiseList2 = await Promise.all(usageEventPromiseList);
-                                        //allClusterEventLogList = newPromiseList2[0];
                                         let allClusterEventLogList = []
-                                        let allAppInstEventLogList = newPromiseList2[1];
-                                        let allClusterUsageList = newPromiseList2[2];
+                                        let allAppInstEventLogList = []
+                                        let allClusterUsageList = []
+                                        let cloudletClusterListMap = []
+                                        let clusterTreeDropdownList = []
+                                        let markerListHashMap = []
+                                        let selectedCloudletName = []
+                                        let filteredAppInstList = []
+                                        let newMarketListMap = []
+                                        try {
+                                            let usageEventPromiseList = []
+                                            console.log(`filteredClusterList=length===>`, filteredClusterList.length);
+
+                                            if (filteredClusterList.length > 0) {
+                                                usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList))
+                                                usageEventPromiseList.push(getAllAppInstEventLogs());
+                                                usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                                                let newPromiseList2 = await Promise.all(usageEventPromiseList);
+                                                allClusterEventLogList = newPromiseList2[0];
+                                                allAppInstEventLogList = newPromiseList2[1];
+                                                allClusterUsageList = newPromiseList2[2];
+                                                cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
+                                                clusterTreeDropdownList = makeClusterMultiDropdown(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
+                                                ////todo:  mapFiltering
+                                                markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
+                                                selectedCloudletName = value.toString().split(" | ")[0].toString().trim();
+                                                filteredAppInstList = markerListHashMap[selectedCloudletName];
+                                                newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
+                                                await this.setState({
+                                                    currentMapLevel: MAP_LEVEL.CLUSTER,
+                                                })
+                                            } else {
+                                                ////todo:  mapfiltering, when no cluster)
+                                                newMarketListMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                                                await this.setState({
+                                                    currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
+                                                    isNoCluster: true,
+                                                })
+                                            }
 
 
-                                        let cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
-                                        let regionList = localStorage.getItem('regions').split(",")
-                                        let operList = this.makeUniqOper(filteredClusterList)
-                                        let clusterTreeDropdownList = makeClusterMultiDropdown(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
+                                            await this.setState({
 
-                                        let markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
-                                        let selectedCloudlet = value.toString().split(" | ")[0].toString().trim();
-                                        let filteredAppInstList = markerListHashMap[selectedCloudlet];
+                                                appInstanceListGroupByCloudlet: newMarketListMap,
+                                                allClusterEventLogList: allClusterEventLogList,
+                                                filteredClusterEventLogList: allClusterEventLogList,
+                                                allAppInstEventLogs: allAppInstEventLogList,
+                                                filteredAppInstEventLogs: allAppInstEventLogList,
+                                                isReady: true,
+                                                clusterTreeDropdownList: clusterTreeDropdownList,
+                                                allClusterList: clusterList,
+                                                isAppInstaceDataReady: true,
+                                                appInstList: appInstList,
+                                                filteredAppInstList: appInstList,
+                                                dropdownRequestLoading: false,
+                                                clusterListLoading: false,
+                                                allClusterUsageList: allClusterUsageList,
+                                                filteredClusterUsageList: allClusterUsageList,
+                                                isRequesting: false,
+                                                mapLoading: false,
+                                                loading: false,
+                                                currentCloudLet: value,
+                                            });
+                                        } catch (e) {
 
-                                        let newMarketListMap = {
-                                            currentCloudlet: filteredAppInstList === undefined ? [] : filteredAppInstList,
+                                            showToast('mapError')
+                                        } finally {
+
                                         }
 
-                                        await this.setState({
-                                            currentMapLevel: MAP_LEVEL.CLUSTER,
-                                            appInstanceListGroupByCloudlet: newMarketListMap,
-                                            allClusterEventLogList: allClusterEventLogList,
-                                            filteredClusterEventLogList: allClusterEventLogList,
-                                            allAppInstEventLogs: allAppInstEventLogList,
-                                            filteredAppInstEventLogs: allAppInstEventLogList,
-                                            isReady: true,
-                                            clusterTreeDropdownList: clusterTreeDropdownList,
-                                            allClusterList: clusterList,
-                                            isAppInstaceDataReady: true,
-                                            appInstList: appInstList,
-                                            filteredAppInstList: appInstList,
-                                            dropdownRequestLoading: false,
-                                            clusterListLoading: false,
-                                            allClusterUsageList: allClusterUsageList,
-                                            filteredClusterUsageList: allClusterUsageList,
-                                            isRequesting: false,
-                                            mapLoading: false,
-                                            loading: false,
-                                            currentCloudLet: value,
-                                        });
 
                                     }
                                 } catch (e) {
-                                    showToast(e.toString())
+                                    showToast('mapError22222222222222222222')
                                 }
                             }}
                         >
@@ -3258,92 +3285,57 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderDot(index, size = 15) {
-                return (
-                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
-                        <div
-                            style={{
-                                backgroundColor: this.state.chartColorList[index],
-                                width: size,
-                                height: size,
-                                borderRadius: 50,
-                            }}
-                        >
-                        </div>
-                    </div>
-                )
+
+            ________________________________________________Legend________________________________________________________________________________________________________________________() {
             }
 
-            renderCloudletDot(index, size = 15) {
-                return (
-                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
-                        <CloudQueueIcon
-                            style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
-                    </div>
-                )
-            }
+            makeLegend() {
+                try {
 
-            renderClusterDot(index, size = 15) {
-                return (
-                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
-                        <AppsIcon
-                            style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
-                    </div>
-                )
-            }
-
-            renderAppInstDot(index, size = 15) {
-                return (
-                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
-                        <AdjustIcon
-                            style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
-                    </div>
-                )
-            }
-
-            makeStringLimit(classification) {
-                let stringLimit = 25;
-                if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-                    if (this.props.size.width > 1600) {
-                        stringLimit = 27
-                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
-                        stringLimit = 18
-                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
-                        stringLimit = 14
-                    } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
-                        stringLimit = 10
-                    } else if (this.props.size.width < 720) {
-                        stringLimit = 4
+                    if (this.state.loading) {
+                        return (
+                            <LegendOuterDiv style={{height: 30}}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignSelf: 'center',
+                                    position: 'absolute',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                }}>
+                                    <ColorLinearProgress
+                                        variant={'query'}
+                                        style={{
+                                            marginLeft: -20,
+                                            width: '9%',
+                                            alignContent: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    />
+                                </div>
+                            </LegendOuterDiv>
+                        )
+                    } else {
+                        return (
+                            <LegendOuterDiv
+                                style={{
+                                    marginTop: 4,
+                                    width: '98.8%'
+                                }}>
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.makeClusterLegend(this.state.legendItemCount)
+                                    : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.makeCloudletLegend(this.state.legendItemCount)
+                                        : this.state.currentClassification === CLASSIFICATION.APPINST ? this.makeAppInstLegend(this.state.legendItemCount)
+                                            : this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.makeClusterLegend(this.state.legendItemCount)
+                                                : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN ? this.makeClusterLegend(this.state.legendItemCount)
+                                                    : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.makeAppInstLegend(this.state.legendItemCount) : null
+                                }
+                            </LegendOuterDiv>
+                        )
                     }
-                } else if (classification === CLASSIFICATION.CLOUDLET) {
-                    if (this.props.size.width > 1600) {
-                        stringLimit = 25
-                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
-                        stringLimit = 17
-                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
-                        stringLimit = 14
-                    } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
-                        stringLimit = 10
-                    } else if (this.props.size.width < 720) {
-                        stringLimit = 4
-                    }
-
-                } else if (classification === CLASSIFICATION.CLUSTER) {
-                    if (this.props.size.width > 1500) {
-                        stringLimit = 49
-                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1300) {
-                        stringLimit = 42
-                    } else if (this.props.size.width < 1300 && this.props.size.width >= 1100) {
-                        stringLimit = 34
-                    } else if (this.props.size.width < 1100) {
-                        stringLimit = 28
-                    }
+                } catch (e) {
 
                 }
-
-                return stringLimit;
             }
-
 
             makeClusterLegend() {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
@@ -3393,40 +3385,42 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             width: itemCount === 1 ? '100%' : this.props.size.width / 4,
                                         }}
                                     >
-                                        {itemCount === 0 ?
+                                        {itemCount === 1 ?
                                             <Center style={{marginLeft: 100, display: 'flex', width: '100%'}}>
-                                                No Cluster
-                                            </Center> :
-                                            itemCount === 1 ?
-                                                <Center style={{marginLeft: 100, display: 'flex', width: '100%'}}>
-                                                    {this.renderClusterDot(item.colorCodeIndex)}
-                                                    <div style={{display: 'flex', marginLeft: 3,}}>
-                                                        <div>
-                                                            {item.cluster}
-                                                        </div>
-
-                                                        {this.state.userType.includes('dev') &&
-                                                        <div style={{color: 'white',}}>
-                                                            &nbsp;[{item.cloudlet}]
-                                                        </div>
-                                                        }
+                                                {this.renderClusterDot(item.colorCodeIndex)}
+                                                <div style={{display: 'flex', marginLeft: 3,}}>
+                                                    <div>
+                                                        {item.cluster}
                                                     </div>
-                                                </Center>
-                                                :
-                                                <div style={{
-                                                    backgroundColor: 'transparent',
-                                                    display: 'flex',
-                                                    marginTop: 2.5,
-                                                    marginBottom: 2.5
-                                                }}>
-                                                    <Center>
-                                                        {this.renderClusterDot(item.colorCodeIndex)}
-                                                    </Center>
-                                                    <Center className="clusterCloudletBox">
-                                                        {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
-                                                    </Center>
-                                                </div>
 
+                                                    {this.state.userType.includes('dev') &&
+                                                    <div style={{color: 'white',}}>
+                                                        &nbsp;[{item.cloudlet}]
+                                                    </div>
+                                                    }
+                                                </div>
+                                            </Center>
+                                            :
+                                            <div style={{
+                                                backgroundColor: 'transparent',
+                                                display: 'flex',
+                                                marginTop: 2.5,
+                                                marginBottom: 2.5
+                                            }}>
+                                                <Center>
+                                                    {this.renderClusterDot(item.colorCodeIndex)}
+                                                </Center>
+                                                <Center className="clusterCloudletBox">
+                                                    {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
+                                                </Center>
+                                            </div>
+
+                                        }
+                                        {this.state.isNoCluster &&
+                                        <Center
+                                            style={{marginLeft: 100, display: 'flex', width: '100%', color: 'yellow'}}>
+                                            No Cluster
+                                        </Center>
                                         }
                                     </Col>
                                 )
@@ -3456,73 +3450,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </React.Fragment>
                 )
             }
-
-            /*   renderCloudlet_MultiClusterLegendForAdmin(pLegendItemCount) {
-                   let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
-
-                   return (
-                       <Row gutter={16}
-                            style={{
-                                flex: .97,
-                                marginLeft: 10,
-                                backgroundColor: 'transparent',
-                                justifyContent: 'center',
-                                alignSelf: 'center',
-                            }}
-                       >
-                           {this.state.filteredClusterList.length === 0 &&
-                           <Col
-                               className="gutterRow"
-                               span={pLegendItemCount === 1 ? 24 : 3}
-                           >
-                               <div style={{color: 'yellow'}}>&nbsp;</div>
-                           </Col>
-                           }
-                           {this.state.filteredClusterList.map((item: TypeCluster, clusterIndex) => {
-                               if (clusterIndex < 30) {
-                                   return (
-                                       <Col
-                                           key={clusterIndex}
-                                           className="gutterRow"
-                                           onClick={async () => {
-                                           }}
-                                           title={item.ClusterName}
-                                           span={pLegendItemCount === 1 ? 24 : 3}
-                                           style={{
-                                               marginTop: 3,
-                                               marginBottom: 3,
-                                               justifyContent: pLegendItemCount === 1 ? 'center' : null,
-                                               //backgroundColor: 'blue',
-                                           }}
-                                           onClick={async () => {
-                                               if (this.state.filteredClusterList.length > 1) {
-                                                   let tempClusterList = []
-                                                   let fullCloudletItemOne = item.Cloudlet + " | " + JSON.stringify(item.CloudletLocation) + " | " + clusterIndex.toString()
-                                                   tempClusterList.push(fullCloudletItemOne)
-                                                   await this.handleOnChangeClusterDropdown(tempClusterList)
-                                               } else {
-                                                   await this.handleOnChangeClusterDropdown(undefined)
-                                               }
-                                           }}
-                                       >
-                                           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                                               <div>
-                                                   {this.renderClusterDot(item.colorCodeIndex)}
-                                               </div>
-                                               <div style={{marginTop: 0, marginLeft: 5}}>
-                                                   {reduceString(item.ClusterName, stringLimit, pLegendItemCount)}
-                                               </div>
-                                           </div>
-
-                                       </Col>
-                                   )
-                               }
-
-
-                           })}
-                       </Row>
-                   )
-               }*/
 
             makeCloudletLegend(pLegendItemCount) {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLOUDLET);
@@ -3614,53 +3541,93 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            renderDot(index, size = 15) {
+                return (
+                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                        <div
+                            style={{
+                                backgroundColor: this.state.chartColorList[index],
+                                width: size,
+                                height: size,
+                                borderRadius: 50,
+                            }}
+                        >
+                        </div>
+                    </div>
+                )
+            }
 
-            makeLegend() {
-                try {
+            renderCloudletDot(index, size = 15) {
+                return (
+                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                        <CloudQueueIcon
+                            style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
+                    </div>
+                )
+            }
 
-                    if (this.state.loading) {
-                        return (
-                            <LegendOuterDiv style={{height: 30}}>
-                                <div style={{
-                                    display: 'flex',
-                                    alignSelf: 'center',
-                                    position: 'absolute',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: '100%',
-                                }}>
-                                    <ColorLinearProgress
-                                        variant={'query'}
-                                        style={{
-                                            marginLeft: -20,
-                                            width: '9%',
-                                            alignContent: 'center',
-                                            justifyContent: 'center',
-                                        }}
-                                    />
-                                </div>
-                            </LegendOuterDiv>
-                        )
-                    } else {
-                        return (
-                            <LegendOuterDiv
-                                style={{
-                                    marginTop: 4,
-                                    width: '98.8%'
-                                }}>
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.makeClusterLegend(this.state.legendItemCount)
-                                    : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.makeCloudletLegend(this.state.legendItemCount)
-                                        : this.state.currentClassification === CLASSIFICATION.APPINST ? this.makeAppInstLegend(this.state.legendItemCount)
-                                            : this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.makeClusterLegend(this.state.legendItemCount)
-                                                : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN ? this.makeClusterLegend(this.state.legendItemCount)
-                                                    : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.makeAppInstLegend(this.state.legendItemCount) : null
-                                }
-                            </LegendOuterDiv>
-                        )
+            renderClusterDot(index, size = 15) {
+                return (
+                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                        <AppsIcon
+                            style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
+                    </div>
+                )
+            }
+
+            renderAppInstDot(index, size = 15) {
+                return (
+                    <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                        <AdjustIcon
+                            style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
+                    </div>
+                )
+            }
+
+            makeStringLimit(classification) {
+                let stringLimit = 25;
+                if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                    if (this.props.size.width > 1600) {
+                        stringLimit = 27
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                        stringLimit = 18
+                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                        stringLimit = 14
+                    } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+                        stringLimit = 10
+                    } else if (this.props.size.width < 720) {
+                        stringLimit = 4
                     }
-                } catch (e) {
+                } else if (classification === CLASSIFICATION.CLOUDLET) {
+                    if (this.props.size.width > 1600) {
+                        stringLimit = 25
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+                        stringLimit = 17
+                    } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+                        stringLimit = 14
+                    } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+                        stringLimit = 10
+                    } else if (this.props.size.width < 720) {
+                        stringLimit = 4
+                    }
+
+                } else if (classification === CLASSIFICATION.CLUSTER) {
+                    if (this.props.size.width > 1500) {
+                        stringLimit = 49
+                    } else if (this.props.size.width < 1500 && this.props.size.width >= 1300) {
+                        stringLimit = 42
+                    } else if (this.props.size.width < 1300 && this.props.size.width >= 1100) {
+                        stringLimit = 34
+                    } else if (this.props.size.width < 1100) {
+                        stringLimit = 28
+                    }
 
                 }
+
+                return stringLimit;
+            }
+
+            ________________________________________________Legend___END________________________________________________________________________________________________________________________() {
             }
 
 

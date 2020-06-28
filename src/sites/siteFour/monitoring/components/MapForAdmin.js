@@ -9,7 +9,7 @@ import {
     groupByKey_,
     removeDuplicates, renderPlaceHolderLottiePinJump,
     renderPlaceHolderLottieForMap,
-    showToast
+    showToast, renderPlaceHolderLottieBar
 } from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
@@ -25,6 +25,8 @@ import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import '../common/PageMonitoringStyles.css'
 import {listGroupByKey} from "../service/PageMonitoringService";
+import {withSize} from "react-sizeme";
+import {PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -132,7 +134,8 @@ type State = {
 
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(
+
+export default withSize()(connect(mapStateToProps, mapDispatchProps)((
     class MapForAdmin extends React.Component<Props, State> {
         tooltip = createRef();
         mapTileList = [
@@ -478,7 +481,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
-        renderCloudletMarkerPopup(cloudlets){
+        renderCloudletMarkerPopup(cloudlets) {
             return (
                 <Popup
                     className='tooltip2'
@@ -516,8 +519,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
                         >
-                            {/*{this.renderCloudletMarkerTooltip(cloudlets)}*/}
-                            {this.renderCloudletMarkerPopup(cloudlets)}
+                            {this.renderCloudletMarkerTooltip(cloudlets)}
+                            {/*{this.renderCloudletMarkerPopup(cloudlets)}*/}
                         </Marker>
                     </React.Fragment>
                 )
@@ -667,7 +670,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             return (
                 <React.Fragment>
                     {this.renderHeader()}
-                    {this.props.loading && renderPlaceHolderLottieForMap(true)}
+                    {this.props.loading && renderPlaceHolderLottieBar(true, this)}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
                             <Map
@@ -721,5 +724,5 @@ export default connect(mapStateToProps, mapDispatchProps)(
             );
         }
     }
-)
+)))
 
