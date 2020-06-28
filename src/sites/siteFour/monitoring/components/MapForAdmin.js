@@ -26,6 +26,7 @@ import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import '../common/PageMonitoringStyles.css'
 import {listGroupByKey} from "../service/PageMonitoringService";
 import {withSize} from "react-sizeme";
+import {cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -498,7 +499,7 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                     <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
                         <div style={PageMonitoringStyles.mapControlDiv}>
-                            <div
+                           {/* <div
                                 style={{
                                     backgroundColor: 'transparent',
                                     height: 30,
@@ -513,7 +514,7 @@ export default withSize()(connect(mapStateToProps, mapDispatchProps)((
                                     onClick={this.props.parent.handleResetForAdmin()}
                                     style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
                                 />
-                            </div>
+                            </div>*/}
                             <div
                                 style={{backgroundColor: 'transparent', height: 30}}
                                 onClick={() => {

@@ -30,37 +30,13 @@ import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 import {withSize} from "react-sizeme";
+import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
     zoom: 13,
 }
-
-let cellphoneIcon = L.icon({
-    iconUrl: require('../images/cellhone_white003.png'),
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
-
-let cloudGreenIcon = L.icon({
-    iconUrl: require('../images/cloud_green.png'),
-    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-    iconSize: [40, 21],
-    iconAnchor: [20, 21],
-    shadowSize: [41, 41]
-});
-
-let cloudBlueIcon = L.icon({
-    iconUrl: require('../images/cloud_blue2.png'),
-    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-    iconSize: [45, 39],//todo: width, height
-    iconAnchor: [24, 30],//x,y
-    shadowSize: [41, 41]
-});
 
 
 const mapStateToProps = (state) => {
