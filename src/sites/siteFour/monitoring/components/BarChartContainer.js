@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {isEmpty, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderEmptyMessageBox, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -69,19 +69,21 @@ export default class BarChartContainer extends React.Component<Props, State> {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {!this.props.loading && !isEmpty(this.props.chartDataSet) ?
-                            <div style={{width: '100%'}}>
-                                <GoogleChart
-                                    key={this.state.isResizeComplete}
-                                    height={'100%'}
-                                    chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-                                    loader={<div><CircularProgress style={{color: '#1cecff',}}/></div>}
-                                    data={this.state.chartDataSet.chartDataList}
-                                    options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
-                                />
-                            </div>
-                            :
-                            renderEmptyMessageBox('Please, select Cloudlet')
+                        {this.props.loading ? renderPlaceHolderLoader() :
+
+                            !isEmpty(this.props.chartDataSet) ?
+                                <div style={{width: '100%'}}>
+                                    <GoogleChart
+                                        key={this.state.isResizeComplete}
+                                        height={'100%'}
+                                        chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
+                                        loader={<div><CircularProgress style={{color: '#1cecff',}}/></div>}
+                                        data={this.state.chartDataSet.chartDataList}
+                                        options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
+                                    />
+                                </div>
+                                :
+                                renderEmptyMessageBox("Please Select Cloudlet")
                         }
 
                     </div>

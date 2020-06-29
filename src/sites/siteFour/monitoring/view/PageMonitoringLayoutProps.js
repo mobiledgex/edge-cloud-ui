@@ -230,7 +230,8 @@ export const defaultLayoutForAdminCluster = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//performance Grid
+    {i: '7', x: 3, y: 2, w: 1, h: 1, "add": false}
 ];
 
 export const defaultHwMapperListForAdminCluster = [
@@ -257,13 +258,19 @@ export const defaultHwMapperListForAdminCluster = [
     },
     {
         id: '5',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
+
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '6',
         hwType: undefined,
         graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+    },
+    {
+        id: '7',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
     },
 ];
 
@@ -656,16 +663,24 @@ export const APPINST_LAYOUT_KEY = "_layout2";
 export const APPINST_HW_MAPPER_KEY = "_layout2_mapper";
 
 
-
-export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet";
+/*export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet";
 export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet";
 
 export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster";
 export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster";
 
-
 export const ADMIN_LAYOUT_KEY = "_layout_admin";
-export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
+export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";*/
 
+
+//todo : for test
+export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet2";
+export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet2";
+
+export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster2";
+export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster2";
+
+export const ADMIN_LAYOUT_KEY = "_layout_admin2";
+export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin2";
 
 

@@ -194,7 +194,9 @@ export default function ClientStatusTable(props) {
                                 </TableRow>
                             )
                         })}
-                        {/*  {props.clientStatusList.length === 0 ? renderEmptyTable() : null}*/}
+                        {props.loading ? renderTableLoader()
+                            : props.clientStatusList.length === 0 ? renderEmptyTable() : null
+                        }
                     </TableBody>
 
                 </Table>

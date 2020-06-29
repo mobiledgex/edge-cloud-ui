@@ -638,6 +638,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({
                         loading: false,
                         bubbleChartLoader: false,
+                    },()=>{
+                        console.log(`currentClassification===>`, this.state.currentClassification);
                     })
                 } catch (e) {
 
@@ -3073,8 +3075,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             currentMapLevel: MAP_LEVEL.CLUSTER,
                                             currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
                                         })*/
-
-                                        showToast('renderClusterTreeDropdownFor____Admin')
 
                                         console.log(`currentClassification===>`, this.state.currentClassification);
 
