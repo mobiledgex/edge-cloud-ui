@@ -41,16 +41,26 @@
     fill: #e6e6e6; stroke: #747474; stroke-width:2;  font-size: 3px; paint-order: stroke;
 }
 
-
-.leaflet-div-icon {
+.map_marker_red {
     width:20px;
     height:20px;
     border-radius: 50%;
-    background: radial-gradient(transparent, #76FF03);
     border: none;
     text-align: center;
     vertical-align: center;
     font-size: 16px;
+    background: radial-gradient(transparent, #d32f2f);
+}
+
+.map_marker_green {
+    width:20px;
+    height:20px;
+    border-radius: 50%;
+    border: none;
+    text-align: center;
+    vertical-align: center;
+    font-size: 16px;
+    background: radial-gradient(transparent, #76FF03);
 }
 
 .map_tooltip{

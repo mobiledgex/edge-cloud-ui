@@ -81,10 +81,20 @@ class ClustersMap extends Component {
             }
         }
 
+        let cloudletStatus = data.map((item) => {
+            if (item[fields.cloudletStatus]) {
+                return ({status: (item[fields.cloudletStatus] !== 2)? 'red' : 'green'})
+            }
+        })
+
 
         let locations = data.map((item) => {
             if (item[fields.cloudletLocation]) {
-                return ({ LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item) })
+
+                if (item[fields.cloudletStatus]) {
+                    return ({LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status: (item[fields.cloudletStatus] === 2)? 'green' : 'red'})
+                }
+                return ({LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status:'green'})
             }
         })
 
@@ -101,10 +111,24 @@ class ClustersMap extends Component {
             return nameArray;
         }
 
+        const statusColor = (key) => {
+
+            let status = groupbyData[key][0].status
+
+
+            groupbyData[key].map((item, i) => {
+                if(item.status === 'red') {
+                    status = groupbyData[key][i].status
+                }
+            })
+
+            return status;
+        }
+
         Object.keys(groupbyData).map((key) => {
-            locationData.push({ "name": cloundletName(key), "coordinates": [groupbyData[key][0]['LAT'], groupbyData[key][0]['LON']], "population": 17843000, "cost": groupbyData[key].length })
+            locationData.push({ "name": cloundletName(key), "coordinates": [groupbyData[key][0]['LAT'], groupbyData[key][0]['LON']],"status":statusColor(key), "population": 17843000, "cost": groupbyData[key].length })
         })
-        //
+
         let cloudlet = data.map((item) => (
             { LAT: item[fields.cloudletLocation].latitude, LON: item[fields.cloudletLocation].longitude, cloudlet: item[fields.cloudletName] }
         ))
@@ -200,7 +224,7 @@ class ClustersMap extends Component {
                                                 this.state.clickCities.map((city, i) => (
                                                     <Marker
                                                         position={city.coordinates}
-                                                        icon={iconMarker()}
+                                                        icon={iconMarker(city)}
                                                     >
                                                     </Marker>
                                                 ))
@@ -235,13 +259,14 @@ const mapDispatchProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchProps)(ClustersMap);
 
-const iconMarker = (Count) => {
+const iconMarker = (city) => {
 
     return (
         L.divIcon({
-            html:Count? Count : '',
+            html: city.cost? city.cost : '',
             iconSize: [24, 24],
             iconAnchor: [12, 12],
+            className: city.status === 'red'? 'map_marker_red' : 'map_marker_green'
         }
     ))
 };
@@ -249,15 +274,12 @@ const iconMarker = (Count) => {
 
 const MarkerMap = (self, city, i, config) => {
 
-    let Count = city.name.length;
-    console.log("map", city,Count)
-
     return (
     (!isNaN(city.coordinates[0])) ?
             <Marker
                 position={city.coordinates}
                 style={{fill:'#fff'}}
-                icon={iconMarker(Count)}
+                icon={iconMarker(city)}
             >
                 {city.name &&
                     <Tooltip
