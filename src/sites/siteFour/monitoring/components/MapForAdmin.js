@@ -567,16 +567,16 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     </Control>
                     <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
                         <Center style={{
-                            height: 25,
+                            height: 35,
                             backgroundColor: 'rgba(0,0,0,0.5)',
                             padding: 10,
                             flexDirection: 'column'
                         }}>
                             <div style={{}}>
-                                Cloudlets : {this.props.cloudletList.length}
+                                Cloudlet : {this.props.cloudletList.length}
                             </div>
                             <div style={{}}>
-                                Clusters : {this.props.clusterList.length}
+                                Cluster : {this.props.clusterList.length}
                             </div>
                         </Center>
                     </Control>
