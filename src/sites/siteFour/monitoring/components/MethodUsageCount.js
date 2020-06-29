@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import '../common/PageMonitoringStyles.css'
 import {Center, CenterMethodCount} from "../common/PageMonitoringStyles";
 import type {TypeClientStatus} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
-import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
 
 const height = 200;
 const outerDiv = {flex: .33, border: '0.5px solid grey', height: height, backgroundColor: 'rgba(0,0,0,.3)', margin: 2}
@@ -13,6 +12,7 @@ export default function MethodUsageCount(props) {
     const [FindCloudletCountTotal, setFindCloudletCountTotal] = useState(false);
     const [RegisterClientCountTotal, setRegisterClientCountTotal] = useState(false);
     const [VerifyLocationCountTotal, setVerifyLocationCountTotal] = useState(false);
+    const gridBodyRef = useRef();
 
     useEffect(() => {
         if (props.clientStatusList !== undefined) {
@@ -37,9 +37,8 @@ export default function MethodUsageCount(props) {
         setCountReady(true)
     }
 
-
-    return (
-        <div>
+    function renderHeader() {
+        return (
             <div style={{
                 display: 'flex',
                 width: '100%',
@@ -56,6 +55,13 @@ export default function MethodUsageCount(props) {
                 </div>
 
             </div>
+        )
+    }
+
+    return (
+        <div ref={gridBodyRef}>
+            {/*{props.loading && gridBodyRef !== undefined ? renderPlaceHolderHorizontalBar(undefined, gridBodyRef.current.getBoundingClientRect().width, true) : null}*/}
+            {renderHeader()}
             <div style={{
                 height: '100%',
                 //backgroundColor: 'red'
@@ -95,9 +101,7 @@ export default function MethodUsageCount(props) {
                         </div>
                     </CenterMethodCount>
                     :
-                    <Center style={{marginTop: 60}}>
-                        {renderPlaceHolderCircular()}
-                    </Center>
+                    null
                 }
             </div>
         </div>

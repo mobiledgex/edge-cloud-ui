@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -17,6 +17,9 @@ type Props = {
 };
 
 export default function ClientStatusTable(props) {
+    const bodyRef = useRef();
+    const tableRef = useRef();
+
     useEffect(() => {
     }, [props.clientStatusList]);
 
@@ -24,14 +27,14 @@ export default function ClientStatusTable(props) {
         return (
             <TableRow
                 style={{
-                    backgroundColor: '#1e2025',
+                    //backgroundColor: '#1e2025',
                     color: 'grey',
-                    height: 30,
+                    height: 50,
                 }}
             >
-                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}}
-                           colSpan={7}>
-                    <div style={{fontSize: 28, color: 'orange'}}> No Data</div>
+                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: '#57AA27',}}
+                           colSpan={7} rowSpan={4}>
+                    <div style={{fontSize: 17, color: '#57aa27'}}> No Data Available</div>
                 </TableCell>
             </TableRow>
         )
@@ -54,8 +57,8 @@ export default function ClientStatusTable(props) {
         )
     }
 
-    return (
-        <React.Fragment>
+    function renderHeader() {
+        return (
             <div
                 className='.draggable'
                 style={{
@@ -75,6 +78,13 @@ export default function ClientStatusTable(props) {
                     Client Status For App Inst
                 </div>
             </div>
+        )
+    }
+
+    return (
+        <div ref={bodyRef}>
+            {/*{props.loading && renderPlaceHolderHorizontalBar(undefined, bodyRef.current.getBoundingClientRect().width, false)}*/}
+            {renderHeader()}
             <TableContainer
                 component={Paper}
                 style={{
@@ -84,7 +94,7 @@ export default function ClientStatusTable(props) {
                     overflowX: 'scroll'
                 }}
             >
-                <Table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
+                <Table ref={tableRef} size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
                        stickyHeader={true}>
 
                     <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}}
@@ -184,13 +194,11 @@ export default function ClientStatusTable(props) {
                                 </TableRow>
                             )
                         })}
-                        {props.loadingForClientStatus ? renderTableLoader()
-                            : props.clientStatusList.length === 0 ? renderEmptyTable() : null
-                        }
+                        {/*  {props.clientStatusList.length === 0 ? renderEmptyTable() : null}*/}
                     </TableBody>
 
                 </Table>
             </TableContainer>
-        </React.Fragment>
+        </div>
     )
 };

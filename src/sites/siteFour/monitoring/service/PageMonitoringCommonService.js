@@ -106,7 +106,7 @@ export const renderGridLoader = () => {
     )
 }
 
-export const renderEmptyBox = () => {
+export const renderEmptyMessageBox = (message: string) => {
     return (
         <div className='page_monitoring_blank_box'
              style={{height: '100%'}}>
@@ -114,12 +114,13 @@ export const renderEmptyBox = () => {
                 alignSelf: "center",
                 alignItems: 'center',
                 justifyContent: 'center',
+                backgroundColor: 'rgba(0, 12, 15, 0.2)',
+                borderRadius: 8,
+                padding: 8,
+                paddingLeft:15,
+                paddingRight:15,
             }}>
-                <Chip
-                    variant="outlined"
-                    color="primary"
-                    label="Please, select Cloudlet"
-                />
+                <div style={{fontSize: 17, color: '#57aa27'}}>{message}</div>
             </div>
         </div>
     )
@@ -252,7 +253,7 @@ export const renderPlaceHolderLottieForMap = (isCloud = false) => {
                     width={70}
                     isStopped={false}
                     isPaused={false}
-                    style={{position: 'absolute', top: 20,}}
+                    //style={{position: 'absolute', top: 20,}}
                 />
             </div>
         )

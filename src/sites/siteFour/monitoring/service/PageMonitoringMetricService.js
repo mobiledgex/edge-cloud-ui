@@ -1,20 +1,9 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CLOUDLET_METRIC_COLUMN,
-    MEX_PROMETHEUS_APPNAME,
-    RECENT_DATA_LIMIT_COUNT,
-    USER_TYPE
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {
-    isEmpty,
-    makeFormForCloudletLevelMatric,
-    makeFormForClusterLevelMatric,
-    showToast
-} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "../view/temp/PageAdmMonitoringService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
@@ -928,23 +917,26 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
 }
 
 
-export const getCloudletEventLog = async (cloudletSelectedOne, pRegion, startTime = '', endTime = '') => {
+export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTime = '', endTime = '') => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        let selectOrg = localStorage.getItem('selectOrg')
+        let dataBody = {}
+        dataBody = {
+            "region": cloudletMapOne.Region,
+            "cloudlet": {
+                "organization": cloudletMapOne.Operator,
+                "name": cloudletMapOne.CloudletName
+            },
+            "last": 100
+        }
+
+        console.log(`dataBody===>`, dataBody);
 
         let result = await axios({
             url: mcURL() + CLOUDLET_EVENT_LOG_ENDPOINT,
             method: 'post',
-            data: {
-                "region": pRegion,
-                "cloudlet": {
-                    "organization": selectOrg,
-                    "name": cloudletSelectedOne
-                },
-                "last": 100
-            },
+            data: dataBody,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
@@ -979,7 +971,7 @@ export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endT
     try {
         let promiseList = []
         cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-            promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region, startTime = '', endTime = ''))
+            promiseList.push(getCloudletEventLog(cloudletOne, startTime = '', endTime = ''))
         })
 
         let allCloudletEventLogList = await Promise.all(promiseList);

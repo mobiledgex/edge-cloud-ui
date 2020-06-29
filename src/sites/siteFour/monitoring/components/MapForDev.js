@@ -6,7 +6,7 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderPlaceHolderHorizontalBar, showToast} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderPlaceHolderLottieForMap, showToast} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
@@ -728,7 +728,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         render() {
             return (
                 <div style={{flex: 1, height: '100%'}} ref={c => this.outerDiv = c}>
-                    {this.props.mapLoading && renderPlaceHolderHorizontalBar(true, this.outerDiv.getBoundingClientRect().width)}
+                    {this.props.mapLoading && renderPlaceHolderLottieForMap(true)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>

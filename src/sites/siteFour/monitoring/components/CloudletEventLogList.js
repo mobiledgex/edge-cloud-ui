@@ -1,11 +1,10 @@
 // @flow
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
-import {Center} from "../common/PageMonitoringStyles";
-import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
+import {renderPlaceHolderHorizontalBar} from "../service/PageMonitoringCommonService";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
@@ -13,6 +12,7 @@ type Props = {
     cloudletEventLogList: any,
     columnList: any,
     parent: PageMonitoringView,
+    currentCloudlet: string,
 };
 
 function getWindowDimensions() {
@@ -26,12 +26,19 @@ function getWindowDimensions() {
 export default function CloudletEventLogList(props) {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
     let itemHeight = 55
+    const bodyRef = useRef();
+    const [length, setLength] = useState(0);
 
     useEffect(() => {
+        setLength(props.cloudletEventLogList)
+
+        console.log(`cloudletEventLogList===>`, props.cloudletEventLogList);
+
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
 
     }, [props.cloudletEventLogList]);
+
 
     function handleResize() {
         setWindowDimensions(getWindowDimensions());
@@ -153,10 +160,22 @@ export default function CloudletEventLogList(props) {
         )
     }
 
+    function renderEmptyTableForCloudletEventLog() {
+        return (
+
+            <div padding={'none'} align="center" style={{fontSize: 15, color: '#57AA27',}}
+                 colSpan={7} rowSpan={4}>
+                <div style={{fontSize: 17, color: '#57aa27'}}> No Data Available</div>
+            </div>
+        )
+    }
+
     return (
-        <div>
+        <div ref={bodyRef}>
+            {props.parent.state.loading && renderPlaceHolderHorizontalBar(undefined, bodyRef.current.getBoundingClientRect().width, true)}
             {renderTitle(props)}
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}}  stickyheader={true.toString()}>
+
+            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true.toString()}>
                 {!props.parent.state.loading && renderTableHead()}
                 {/*##########################################*/}
                 {/*     tableBody                            */}
@@ -174,11 +193,10 @@ export default function CloudletEventLogList(props) {
                         )}
 
                     </FixedSizeList>
-                    :
-                    <Center style={{height: itemHeight, marginTop: 70}}>
-                        {renderPlaceHolderCircular()}
-                    </Center>
+                    : null
+
                 }
+
                 </tbody>
             </table>
 

@@ -225,7 +225,6 @@ export const defaultHwMapperListForAdmin = [
   todo:  defaultLayoutFor__Admin (Cluster)
   todo:#######################################*/
 export const defaultLayoutForAdminCluster = [
-
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
     {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM

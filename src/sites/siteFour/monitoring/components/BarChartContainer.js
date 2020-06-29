@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {isEmpty, renderEmptyBox, renderPlaceHolderHorizontalBar} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -62,7 +62,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
         return (
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                    {this.props.parent.state.loading && renderPlaceHolderHorizontalBar(undefined, this, true)}
+                    {/*{this.props.parent.state.loading && renderPlaceHolderHorizontalBar(undefined, this, true)}*/}
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
                             {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization
@@ -81,7 +81,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
                                 />
                             </div>
                             :
-                            renderEmptyBox()
+                            renderEmptyMessageBox('Please, select Cloudlet')
                         }
 
                     </div>
