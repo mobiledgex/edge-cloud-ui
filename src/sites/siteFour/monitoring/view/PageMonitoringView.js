@@ -3414,19 +3414,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         key={clusterIndex}
                                         className="gutterRow"
                                         onClick={async () => {
-                                            let clusterCloudletList = []
-                                            if (filteredClusterUsageList.length > 1) {
+                                            if (this.state.userType.includes('dev')) {
+                                                let clusterCloudletList = []
+                                                if (filteredClusterUsageList.length > 1) {
 
-                                                let clusterOne = item.cluster + " | " + item.cloudlet;
-                                                clusterCloudletList.push(clusterOne)
+                                                    let clusterOne = item.cluster + " | " + item.cloudlet;
+                                                    clusterCloudletList.push(clusterOne)
 
-                                                clearInterval(this.intervalForCluster)
-                                                await this.handleOnChangeClusterDropdown(clusterCloudletList)
+                                                    clearInterval(this.intervalForCluster)
+                                                    await this.handleOnChangeClusterDropdown(clusterCloudletList)
 
-                                            } else {// TODO: WHEN 원 클러스터일떄
-                                                clearInterval(this.intervalForCluster)
-                                                await this.setState({legendItemCount: filteredClusterUsageList.length})
-                                                await this.handleOnChangeClusterDropdown(undefined)
+                                                } else {// TODO: WHEN all cluster
+                                                    clearInterval(this.intervalForCluster)
+                                                    await this.setState({legendItemCount: filteredClusterUsageList.length})
+                                                    await this.handleOnChangeClusterDropdown(undefined)
+                                                }
                                             }
                                         }}
                                         span={itemCount === 1 ? 24 : this.state.isLegendExpanded ? 6 : 1}
