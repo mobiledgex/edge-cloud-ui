@@ -5,7 +5,7 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageMonitoringService";
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 
 const FontAwesomeIcon = require('react-fontawesome')
@@ -129,7 +129,7 @@ export default function AppInstEventLogList(props) {
     return (
         <div>
             {renderTitle()}
-            {props.loading ? <div style={{marginTop: 75}}>{renderPlaceHolderLoader()}</div> :
+            {props.loading ? <div style={{marginTop: 75}}>{renderPlaceHolderHorizontalLoader()}</div> :
                 <table size="small" aria-label="a dense table "
                        style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
                        stickyheader={true.toString()}>

@@ -13,11 +13,7 @@ import '../common/PageMonitoringStyles.css'
 import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    renderPlaceHolderLoader
-} from "../service/PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, renderBarLoader} from "../service/PageMonitoringCommonService";
 import type {TypeClusterUsageOne} from "../../../../shared/Types";
 
 type Props = {
@@ -51,6 +47,9 @@ export default function PerformanceSummaryForCluster(props: Props) {
 
     return (
         <React.Fragment>
+            {props.loading && <div>
+                {renderBarLoader(false)}
+            </div>}
             <div
                 className='draggable'
                 style={{
@@ -60,18 +59,19 @@ export default function PerformanceSummaryForCluster(props: Props) {
                     //backgroundColor: 'red'
                 }}
             >
+
                 <Tooltip placement="top" title={'To view a chart of each hardware usage,\n' +
                 'Click the cell.'}>
                     <div className='page_monitoring_title draggable'
                          style={{
-                             flex: .2,
+                             width: 350,
                              marginTop: 5,
                              //backgroundColor: 'red'
                          }}
                     >
                         {props.parent.state.currentClassification} Performance Summary
                     </div>
-                    <div style={{flex: .7}} className='draggable'>
+                    <div style={{flex: .5}} className='draggable'>
                     </div>
                 </Tooltip>
             </div>
@@ -283,9 +283,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
 
                     </Table>
                 </TableContainer> :
-                <div style={{marginTop: 70}}>
-                    {renderPlaceHolderLoader()}
-                </div>
+                null
             }
         </React.Fragment>
     )

@@ -184,7 +184,8 @@ export const defaultLayoutForAdmin = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//performance Grid
+    {i: '7', x: 3, y: 2, w: 1, h: 1, "add": false}
 ];
 
 export const defaultHwMapperListForAdmin = [
@@ -211,13 +212,20 @@ export const defaultHwMapperListForAdmin = [
     },
     {
         id: '5',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
+
     {
         id: '6',
         hwType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
         graphType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
+    },
+
+    {
+        id: '7',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
     },
 ];
 
@@ -339,7 +347,7 @@ export const defaultLayoutForAppInst = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//performance Grid
 ];
 
 export const defaultLayoutMapperForAppInst = [

@@ -33,24 +33,13 @@ import {
     renderPlaceHolder2,
     renderSixGridForAppInstOnCloudlet,
 } from "./PageAdmMonitoringService";
-import {
-    APPINSTANCE_INIT_VALUE,
-    CLASSIFICATION,
-    CONNECTIONS_OPTIONS,
-    HARDWARE_OPTIONS,
-    HARDWARE_TYPE,
-    NETWORK_OPTIONS,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS,
-    USER_TYPE
-} from "../../../../../shared/Constants";
+import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, CONNECTIONS_OPTIONS, HARDWARE_OPTIONS, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS, USER_TYPE} from "../../../../../shared/Constants";
 import type {TypeAppInst, TypeGridInstanceList} from "../../../../../shared/Types";
 import {TypeUtilization} from "../../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import {renderGridLoader2, renderLoaderArea, renderPlaceHolderLoader, showToast, showToast2} from "../../service/PageMonitoringCommonService";
+import {renderGridLoader2, renderLoaderArea, renderPlaceHolderHorizontalLoader, showToast, showToast2} from "../../service/PageMonitoringCommonService";
 import '../../common/PageMonitoringStyles.css'
 import {fetchAppInstList, getAppInstLevelUsageList, getCloudletListAll} from "../service/PageMonitoringMetricService";
 
@@ -642,7 +631,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLoader() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType)}
+                            {this.state.loading ? renderPlaceHolderHorizontalLoader() : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -655,7 +644,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLoader() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType)}
+                            {this.state.loading ? renderPlaceHolderHorizontalLoader() : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType)}
                         </div>
                     </div>
                 </div>
@@ -672,7 +661,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLoader('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType, this)}
+                            {this.state.loading ? renderPlaceHolderHorizontalLoader('network') : makeBarChartDataForInst(this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -685,7 +674,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolderLoader('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType, this)}
+                            {this.state.loading ? renderPlaceHolderHorizontalLoader('network') : makeLineChartDataForAppInst(this, this.state.filteredAppInstUsageList, hwType, this)}
                         </div>
                     </div>
                 </div>
@@ -1094,7 +1083,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                                                     </div>
                                                     <div className='page_monitoring_container'>
 
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderLoader() : renderSixGridForAppInstOnCloudlet(this.state.appInstanceListGroupByCloudlet, this)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolderHorizontalLoader() : renderSixGridForAppInstOnCloudlet(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
 
                                                 </div>

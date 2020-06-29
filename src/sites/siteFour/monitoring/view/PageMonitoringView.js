@@ -48,7 +48,7 @@ import {
 import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartData, renderPlaceHolderLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartData, renderPlaceHolderHorizontalLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -638,7 +638,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.setState({
                         loading: false,
                         bubbleChartLoader: false,
-                    },()=>{
+                    }, () => {
                         console.log(`currentClassification===>`, this.state.currentClassification);
                     })
                 } catch (e) {
@@ -788,8 +788,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                         let newPromiseList2 = await Promise.all(usageEventPromiseList);
-                        //allClusterEventLogList = newPromiseList2[0];
-                        allClusterEventLogList = [];
+                        allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
@@ -1442,7 +1441,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
 
                     return (
-                        this.state.loading ? renderPlaceHolderLoader() :
+                        this.state.loading ? renderPlaceHolderHorizontalLoader() :
                             <MultiHwLineChartContainer
                                 isResizeComplete={this.state.isResizeComplete}
                                 loading={this.state.loading}
@@ -1620,6 +1619,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             handleCloudletDropdown={this.handleOnChangeCloudletDropdown}
                             cloudletEventLogList={this.state.filteredCloudletEventLogList}
                             length={this.state.filteredCloudletEventLogList.length}
+                            loading={this.state.loading}
                         />
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLUSTER_EVENT_LOG) {
@@ -1645,7 +1645,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.DONUTS) {
-                    return this.state.loading ? renderPlaceHolderLoader() :
+                    return this.state.loading ? renderPlaceHolderHorizontalLoader() :
                         <DonutChart
                             parent={this}
                             chartColorList={this.state.chartColorList}

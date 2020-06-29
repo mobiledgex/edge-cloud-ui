@@ -10,7 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     clientStatusList: any,
@@ -51,7 +51,7 @@ export default function ClientStatusTable(props) {
             >
                 <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}}
                            colSpan={7}>
-                    {renderPlaceHolderLoader('sk')}
+                    {renderPlaceHolderHorizontalLoader('sk')}
                 </TableCell>
             </TableRow>
         )
@@ -83,7 +83,6 @@ export default function ClientStatusTable(props) {
 
     return (
         <div ref={bodyRef}>
-            {/*{props.loading && renderPlaceHolderHorizontalBar(undefined, bodyRef.current.getBoundingClientRect().width, false)}*/}
             {renderHeader()}
             <TableContainer
                 component={Paper}

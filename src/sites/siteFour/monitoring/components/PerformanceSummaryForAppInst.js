@@ -11,7 +11,7 @@ import {Progress} from "antd";
 import '../common/PageMonitoringStyles.css'
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {Paper} from "@material-ui/core";
-import {convertByteToMegaGigaByte, renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,
@@ -188,7 +188,7 @@ export default function PerformanceSummaryForAppInst(props) {
                 </TableContainer>
                 :
                 <div style={{marginTop: 70}}>
-                    {renderPlaceHolderLoader()}
+                    {renderPlaceHolderHorizontalLoader()}
                 </div>
             }
         </React.Fragment>

@@ -2,8 +2,8 @@ import React from 'react';
 import '../common/PageMonitoringStyles.css'
 import {FixedSizeList} from "react-window";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {renderBarLoader} from "../service/PageMonitoringCommonService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -155,6 +155,9 @@ export default function ClusterEventLogList(props) {
 
     return (
         <React.Fragment>
+            {props.loading && <div>
+                {renderBarLoader()}
+            </div>}
             {renderTitle(props)}
             <table size="small" aria-label="a dense table"
                    className='thinScrBar'
@@ -172,10 +175,7 @@ export default function ClusterEventLogList(props) {
                             return (renderTableRowOne(index, style))
                         }}
                     </FixedSizeList>
-                    :
-                    <Center style={{marginTop: 70}}>
-                        {renderPlaceHolderLoader()}
-                    </Center>
+                    : null
                 }
             </table>
         </React.Fragment>

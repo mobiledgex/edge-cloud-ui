@@ -1,11 +1,10 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {convertToClassification, handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
-import {makeBubbleChartData, renderPlaceHolderLoader, showToast} from "../service/PageMonitoringCommonService";
+import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
+import {makeBubbleChartData, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Select} from "antd";
 
 const {Option} = Select;
@@ -98,6 +97,9 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                         width: this.props.isBig ? window.innerWidth : null,
                     }}>
                         <>
+                            {this.props.parent.state.loading && <div>
+                                {renderBarLoader()}
+                            </div>}
                             <div className='page_monitoring_title_area draggable' style={{}}>
 
                                 <div style={{
@@ -114,7 +116,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                     >
                                         {this.props.isBig === undefined ?
                                             <div style={{flex: .9, marginTop: 5}}>
-                                                {convertToClassification(this.props.currentClassification)} Bubble Chart
+                                                {/*{convertToClassification(this.props.currentClassification)}*/} Bubble Chart
                                             </div>
                                             : <div style={{width: window.innerWidth * 0.9}}>
 
@@ -168,56 +170,56 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
 
                                 </div>
                             </div>
-                            {this.props.parent.state.loading ? <div style={{marginTop: 80}}>{renderPlaceHolderLoader()}</div> :
-                                <div className='page_monitoring_container'>
-                                    <BubbleChartCore
-                                        className='bubbleChart'
-                                        style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft: -350}}
-                                        graph={{
-                                            zoom: renderZoomLevel(allClusterUsageList.length),
-                                            //zoom: 0.10,
-                                            offsetX: 0.70,
-                                            offsetY: renderOffsetY(allClusterUsageList.length)
-                                        }}
-                                        themeTitle={themeTitle}
-                                        width={this.props.isBig ? window.innerWidth * 0.8 : window.innerWidth * 0.3}
-                                        height={this.props.isBig ? window.innerHeight : 300}
-                                        padding={0} // optional value, number that set the padding between bubbles
-                                        showLegend={false} // optional value, pass false to disable the legend.
-                                        legendPercentage={0} // number that represent the % of with that legend going to use.
-                                        legendFont={{
-                                            //family: 'Candal',
-                                            size: 9,
-                                            color: 'black',
-                                            weight: 'bold',
-                                        }}
-                                        valueFont={{
-                                            //family: 'Righteous',
-                                            size: 12,
-                                            color: 'black',
-                                            //weight: 'bold',
-                                            fontStyle: 'italic',
-                                        }}
-                                        labelFont={{
-                                            family: 'Abel',
-                                            size: 11,
-                                            color: 'black',
-                                            weight: 'bold',
-                                        }}
-                                        bubbleClickFun={async (cluster_cloudlet, index) => {
-                                            try {
-                                                let lineChartDataSet = makeLineChartData(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
-                                                cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
-                                                handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
-                                            } catch (e) {
+                            {!this.props.parent.state.loading &&
+                            <div className='page_monitoring_container'>
+                                <BubbleChartCore
+                                    className='bubbleChart'
+                                    style={{height: this.props.isBig ? window.innerHeight : 350, marginLeft: -350}}
+                                    graph={{
+                                        zoom: renderZoomLevel(allClusterUsageList.length),
+                                        //zoom: 0.10,
+                                        offsetX: 0.70,
+                                        offsetY: renderOffsetY(allClusterUsageList.length)
+                                    }}
+                                    themeTitle={themeTitle}
+                                    width={this.props.isBig ? window.innerWidth * 0.8 : window.innerWidth * 0.3}
+                                    height={this.props.isBig ? window.innerHeight : 300}
+                                    padding={0} // optional value, number that set the padding between bubbles
+                                    showLegend={false} // optional value, pass false to disable the legend.
+                                    legendPercentage={0} // number that represent the % of with that legend going to use.
+                                    legendFont={{
+                                        //family: 'Candal',
+                                        size: 9,
+                                        color: 'black',
+                                        weight: 'bold',
+                                    }}
+                                    valueFont={{
+                                        //family: 'Righteous',
+                                        size: 12,
+                                        color: 'black',
+                                        //weight: 'bold',
+                                        fontStyle: 'italic',
+                                    }}
+                                    labelFont={{
+                                        family: 'Abel',
+                                        size: 11,
+                                        color: 'black',
+                                        weight: 'bold',
+                                    }}
+                                    bubbleClickFun={async (cluster_cloudlet, index) => {
+                                        try {
+                                            let lineChartDataSet = makeLineChartData(this.props.parent.state.filteredClusterUsageList, this.props.parent.state.currentHardwareType, this.props.parent)
+                                            cluster_cloudlet = cluster_cloudlet.toString().split(" | ")[0] + "|" + cluster_cloudlet.toString().split(" | ")[1]
+                                            handleLegendAndBubbleClickedEvent(this.props.parent, cluster_cloudlet, lineChartDataSet)
+                                        } catch (e) {
 
-                                            }
+                                        }
 
-                                        }}
-                                        data={pBubbleChartData}
-                                    />
+                                    }}
+                                    data={pBubbleChartData}
+                                />
 
-                                </div>
+                            </div>
 
                             }
                         </>

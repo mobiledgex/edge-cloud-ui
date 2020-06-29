@@ -4,9 +4,8 @@ import {useEffect, useRef, useState} from 'react';
 import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
-import {renderPlaceHolderCircular} from "../service/PageMonitoringCommonService";
+import {renderBarLoader} from "../service/PageMonitoringCommonService";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
-import {Center} from "../common/PageMonitoringStyles";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -173,7 +172,11 @@ export default function CloudletEventLogList(props) {
 
     return (
         <div ref={bodyRef}>
-            {/*{props.parent.state.loading && renderPlaceHolderHorizontalBar(undefined, bodyRef.current.getBoundingClientRect().width, true)}*/}
+            {props.loading &&
+            <div>
+                {renderBarLoader()}
+            </div>
+            }
             {renderTitle(props)}
 
             <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true.toString()}>
@@ -194,9 +197,7 @@ export default function CloudletEventLogList(props) {
                         )}
 
                     </FixedSizeList>
-                    : <Center style={{height: itemHeight, marginTop: 70}}>
-                        {renderPlaceHolderCircular()}
-                    </Center>
+                    : null
 
                 }
 

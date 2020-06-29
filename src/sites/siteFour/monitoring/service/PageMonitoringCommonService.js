@@ -117,8 +117,8 @@ export const renderEmptyMessageBox = (message: string) => {
                 backgroundColor: 'rgba(0, 12, 15, 0.2)',
                 borderRadius: 8,
                 padding: 8,
-                paddingLeft:15,
-                paddingRight:15,
+                paddingLeft: 15,
+                paddingRight: 15,
             }}>
                 <div style={{fontSize: 17, color: '#57aa27'}}>{message}</div>
             </div>
@@ -126,25 +126,85 @@ export const renderEmptyMessageBox = (message: string) => {
     )
 }
 
+export const renderBarLoader = (isBold = true) => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{
+                 zIndex: 999,
+                 position: 'absolute',
+                 width: isBold ? '98.5%' : '99.7%',
+                 //backgroundColor: 'red'
+             }}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: isBold ? require('../../../../lotties/horizontal-loading-bold') : require('../../../../lotties/horizontal-loading'),
+                }}
+                speed={1}
+                height={20}
+                width={isBold ? '98.5%' : '99.7%'}
+                isStopped={false}
+                isPaused={false}
+                style={{
+                    position: 'absolute',
+                    top: -9,
+                }}
+            />
+        </div>
+    )
+}
 
-export const renderPlaceHolderLoader = (type = '') => {
 
-    if (type === 'sk') {
-        return (
-            <div style={{marginTop: 0,}}>
-                <SkeletonTheme color="#22252C" highlightColor="#444">
-                    <Skeleton count={4} height={38}/>
-                </SkeletonTheme>
-            </div>
-        )
-    } else {
-        return (
-            <div className='page_monitoring_blank_box'
-                 style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
-                <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
-                />
-            </div>
-        )
+export const renderPlaceHolderHorizontalLoader = (type = 'lottieCircle') => {
+
+    try {
+        if (type === 'sk') {
+            return (
+                <div style={{marginTop: 0,}}>
+                    <SkeletonTheme color="#22252C" highlightColor="#444">
+                        <Skeleton count={4} height={38}/>
+                    </SkeletonTheme>
+                </div>
+            )
+        } else if (type === 'lottieCircle') {
+            return (
+                <div className='page_monitoring_blank_box'
+                     style={{
+                         zIndex: 999,
+                         position: 'absolute',
+                         width: '100%',
+                         //backgroundColor: 'red'
+                     }}>
+                    <Lottie
+                        options={{
+                            loop: true,
+                            autoplay: true,
+                            animationData: require('../../../../lotties/horizontal-loading-bold'),
+                        }}
+                        speed={1}
+                        height={20}
+                        width={'100%'}
+                        isStopped={false}
+                        isPaused={false}
+                        style={{
+                            position: 'absolute',
+                            top: -9,
+                        }}
+                    />
+                </div>
+            )
+        } else {
+            return (
+                <div className='page_monitoring_blank_box'
+                     style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
+                    <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+                    />
+                </div>
+            )
+        }
+    } catch (e) {
+        showToast(e.toString())
     }
 
 }
@@ -213,7 +273,7 @@ export const renderPlaceHolderHorizontalBar = (isBar = true, paramWidth, isBold 
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: isBold ? require('../../../../lotties/horizontal-loading-bold') : require('../../../../lotties/18705-horizontal-loading'),
+                        animationData: isBold ? require('../../../../lotties/horizontal-loading-bold') : require('../../../../lotties/horizontal-loading'),
                     }}
                     speed={1}
                     height={30}

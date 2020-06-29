@@ -5,6 +5,7 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import type {TypeChartDataSet} from "../../../../shared/Types";
+import {renderBarLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     parent: PageMonitoringView,
@@ -125,11 +126,13 @@ export default class LineChartContainer extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className='page_monitoring_dual_column' style={{display: 'flex'}}
-                 ref={c => this.outerDiv = c}
-            >
+            <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
+                {this.props.loading &&
+                <div>
+                    {renderBarLoader()}
+                </div>
+                }
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
-                    {/*{this.props.parent.state.loading && renderPlaceHolderHorizontalBar(undefined, this.outerDiv.getBoundingClientRect().width, true)}*/}
                     <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' onClick={() => {
                         }}>
