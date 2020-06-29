@@ -205,6 +205,7 @@ class ClusterInstReg extends React.Component {
             let form = forms[i];
             if (form.field === fields.ipAccess) {
                 form.value = currentForm.value ? constant.IP_ACCESS_DEDICATED : form.value
+                form.rules.disabled = currentForm.value
             }
         }
         if (isInit === undefined || isInit === false) {

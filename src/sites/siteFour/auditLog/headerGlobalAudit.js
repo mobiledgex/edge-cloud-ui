@@ -2,10 +2,10 @@ import React from 'react';
 import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../../actions';
 import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
-import * as serverData from '../services/model/serverData';
-import PopDetailViewer from '../container/popDetailViewer';
+import * as serverData from '../../../services/model/serverData';
+import PopDetailViewer from '../../../container/popDetailViewer';
 import {IconButton, Drawer} from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 

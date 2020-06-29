@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serverData from "../services/model/serverData";
+import * as actions from '../../actions';
+import * as serverData from "../../services/model/serverData";
 import { GridLoader } from "react-spinners";
-import MexAlert from '../hoc/alert/AlertDialog';
+import MexAlert from '../../hoc/alert/AlertDialog';
 import { Dialog } from '@material-ui/core';
 
 

@@ -32,8 +32,8 @@ export const keys = () => ([
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
-  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true},  
-  { field: fields.haStatus, label: 'HA Policy', visible: true},  
+  //{ field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: false},  
+  { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: true},  
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -77,7 +77,6 @@ export const multiDataRequest = (keys, mcRequestList) => {
   let appInstList = [];
   let appList = [];
   let cloudletInfoList = [];
-  let autoProvList = [];
   for (let i = 0; i < mcRequestList.length; i++) {
     let mcRequest = mcRequestList[i];
     let request = mcRequest.request;
@@ -90,9 +89,6 @@ export const multiDataRequest = (keys, mcRequestList) => {
     else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
       cloudletInfoList = mcRequest.response.data
     }
-    else if (request.method === SHOW_AUTO_PROV_POLICY) {
-      autoProvList = mcRequest.response.data
-    }
   }
   if (appInstList && appInstList.length > 0) {
     for (let i = 0; i < appInstList.length; i++) {
@@ -100,18 +96,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
       for (let j = 0; j < appList.length; j++) {
         let app = appList[j]
         if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
-
-          for (let k = 0; k < autoProvList.length; k++) {
-            let autoProv = autoProvList[k]
-            if(autoProv[fields.autoPolicyName] === app[fields.autoPolicyName])
-            {
-              if (autoProv[fields.minActiveInstances] > 0) {
-                appInst[fields.haStatus] = autoProv[fields.minActiveInstances] > 1 ? 'Active-Active' : 'Active-Standby'
-              }
-              break;
-            }
-          }
-
+          appInst[fields.autoPolicyName] = app[fields.autoPolicyName] ? app[fields.autoPolicyName] : 'NA';
           appInst[fields.deployment] = app[fields.deployment];
           appInst[fields.accessType] = app[fields.accessType];
           appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
@@ -214,7 +199,6 @@ const customData = (value) => {
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
   value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
-  value[fields.haStatus] = value[fields.haStatus] ? value[fields.haStatus] : 'None'
   value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
 }
 

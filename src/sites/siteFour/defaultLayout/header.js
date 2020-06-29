@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import HeaderGlobalMini from '../../../container/headerGlobalMini';
-import HeaderGlobalAudit from '../../../container/headerGlobalAudit';
+import HeaderGlobalAudit from '../auditLog/headerGlobalAudit';
 
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import LanguageIcon from '@material-ui/icons/Language';

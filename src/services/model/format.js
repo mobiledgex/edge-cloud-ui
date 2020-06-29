@@ -78,6 +78,9 @@ export const fields = {
     accessPorts: 'accessPorts',
     accessType: 'accessType',
     username: 'username',
+    password:'password',
+    confirmPassword:'confirmPassword',
+    email:'email',
     role: 'role',
     email: 'email',
     emailVerified: 'emailVerified',
@@ -134,8 +137,7 @@ export const fields = {
     triggerTime: 'triggerTime',
     minActiveInstances:'minActiveInstances',
     maxInstances:'maxInstances',
-    fields:'fields',
-    haStatus:'haStatus'
+    fields:'fields'
 }
 
 export const getUserRole = () => {

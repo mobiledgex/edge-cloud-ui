@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import {Field, initialize, reduxForm} from "redux-form";
 import {Form} from "semantic-ui-react";
-import './styles.css';
 
 const validate = values => {
     const errors = {}
