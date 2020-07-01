@@ -1306,6 +1306,45 @@ export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _thi
 }
 
 
+export const makeOrgTreeDropdown = (orgList, devOrgList) => {
+
+    let newOrgList = []
+    orgList.map(item => {
+        newOrgList.push({
+            title: item,
+            value: item
+        })
+    })
+
+    let newDevOrgList = []
+    devOrgList.map(item => {
+        newDevOrgList.push({
+            title: item,
+            value: item
+        })
+    })
+
+
+    const treeData = [
+        {
+            title: 'Operator',
+            value: '0-0',
+            selectable: false,
+            children: newOrgList
+        },
+        {
+            title: 'Developer',
+            value: '0-2',
+            selectable: false,
+            children: newDevOrgList
+        },
+    ];
+
+    return treeData;
+
+}
+
+
 export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
 
     let treeCloudletList = []

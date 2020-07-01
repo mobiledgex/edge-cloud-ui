@@ -1,4 +1,9 @@
-import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+import {
+    Center,
+    ClusterCluoudletAppInstLabel,
+    LegendOuterDiv,
+    PageMonitoringStyles
+} from '../common/PageMonitoringStyles'
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import AppsIcon from '@material-ui/icons/Apps';
 import {SemanticToastContainer} from 'react-semantic-toasts';
@@ -7,7 +12,17 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+import {
+    Button,
+    Col,
+    ConfigProvider,
+    DatePicker,
+    Dropdown as ADropdown,
+    Menu as AMenu,
+    Row,
+    Select,
+    TreeSelect
+} from 'antd';
 import {
     filterByClassification,
     getCloudletClusterNameList,
@@ -23,7 +38,7 @@ import {
     makeid,
     makeLineChartData,
     makeLineChartDataForBigModal,
-    makeMultiLineChartDatas,
+    makeMultiLineChartDatas, makeOrgTreeDropdown,
     makeRegionCloudletClusterTreeDropdown,
     reduceLegendClusterCloudletName,
     reduceString,
@@ -45,10 +60,27 @@ import {
     USER_TYPE,
     USER_TYPE_SHORT
 } from "../../../../shared/Constants";
-import type {TypeBarChartData, TypeCloudlet, TypeCloudletEventLog, TypeCloudletUsage, TypeCluster, TypeClusterUsageOne, TypeGridInstanceList, TypeLineChartData, TypeUtilization} from "../../../../shared/Types";
+import type {
+    TypeBarChartData,
+    TypeCloudlet,
+    TypeCloudletEventLog,
+    TypeCloudletUsage,
+    TypeCluster,
+    TypeClusterUsageOne,
+    TypeGridInstanceList,
+    TypeLineChartData,
+    TypeUtilization
+} from "../../../../shared/Types";
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment";
-import {getOneYearStartEndDatetime, isEmpty, makeBubbleChartData, renderPlaceHolderHorizontalLoader, renderWifiLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    getOneYearStartEndDatetime,
+    isEmpty,
+    makeBubbleChartData,
+    renderPlaceHolderHorizontalLoader,
+    renderWifiLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {
     fetchAppInstList,
     fetchCloudletList,
@@ -84,7 +116,11 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
+import {
+    CustomSwitch,
+    PageDevMonitoringMapDispatchToProps,
+    PageDevMonitoringMapStateToProps
+} from "../common/PageMonitoringProps";
 import AdjustIcon from '@material-ui/icons/Adjust';
 import {
     ADMIN_CLOUDLET_HW_MAPPER_KEY,
@@ -144,7 +180,6 @@ const emptyMessage = () => (
         <div style={{marginLeft: 10, color: 'orange'}}>No data available</div>
     </div>
 );
-
 
 type PageDevMonitoringState = {
     date: string,
@@ -352,6 +387,7 @@ type PageDevMonitoringState = {
     isAdminClusterTreeExpand: boolean,
     currentMapLevel: string,
     isNoCluster: boolean,
+    orgTreeData: any,
 
 }
 
@@ -611,6 +647,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentOrg: 'All Organization',
                     isAdminClusterTreeExpand: true,
                     isNoCluster: false,
+                    orgTreeData: [],
 
                 };
             }
@@ -653,7 +690,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 let uniqOperList = _.uniqBy(operatorList)
                 let newOperList = []
-                newOperList.push('All Operator')
                 uniqOperList.map(item => {
                     newOperList.push(item)
                 })
@@ -668,7 +704,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 let uniqFilteredList = _.uniqBy(filterlist)
                 let newFilteredList = []
-                newFilteredList.push('All Organization')
                 uniqFilteredList.map(item => {
                     newFilteredList.push(item)
                 })
@@ -703,18 +738,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
                         cloudletList = await fetchCloudletList();
                         appInstList = await fetchAppInstList(undefined, this)
-                        let operList = this.makeUniqOper(cloudletList)
-                        let organizationList = this.makeUniqOrganizationName(appInstList)
+                        let operOrgList = this.makeUniqOper(cloudletList)
+                        let devOrgList = this.makeUniqOrganizationName(appInstList)
 
+                        let orgTreeData = makeOrgTreeDropdown(operOrgList, devOrgList)
 
                         console.log(`appInstList====>`, appInstList)
                         console.log(`cloudletList========>`, cloudletList);
-                        console.log(`organizationList====>`, organizationList);
+                        console.log(`organizationList====>`, devOrgList);
 
                         await this.setState({
                             loadingForClientStatus: false,
-                            operList: operList,
-                            organizationList: organizationList,
+                            operList: operOrgList,
+                            organizationList: devOrgList,
+                            orgTreeData: orgTreeData,
                         })
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         //TODO:###################################################################################################################
@@ -2740,21 +2777,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderOperDropdownForAdmin() {
+            renderOrganizationDropdownForAdmin() {
+
 
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label">
-                            Oper
+                            Org
                         </div>
-                        <Select
+                        <TreeSelect
+                            dropdownMatchSelectWidth={false}
+                            dropdownStyle={{
+                                maxHeight: 800, overflow: 'auto', width: '250px'
+                            }}
                             ref={c => this.operSelect = c}
-                            showSearch={true}
-                            dropdownStyle={{}}
-                            listHeight={512}
-                            style={{width: 120, maxHeight: '512px !important'}}
-                            value={this.state.currentOper}
-                            placeholder={'Select Oper'}
+                            listHeight={'100%'}
+                            treeData={this.state.orgTreeData}
+                            placeholder="Select Org"
+                            treeDefaultExpandAll
+                            //value={this.state.value}
                             onSelect={async (value) => {
                                 this.operSelect.blur();
                                 let markerListForMap = []
@@ -2784,29 +2825,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 });
 
                             }}
-                        >
-                            {this.state.operList.map((operOne: any, index) => {
-                                try {
-                                    if (index === 0) {
-                                        return (
-                                            <Option key={index} value={undefined} style={{}}>
-                                                <div style={{marginLeft: 7,}}>{operOne}</div>
-                                            </Option>
-                                        )
-                                    } else {
-                                        return (
-                                            <Option key={index} value={operOne}>
-                                                <div style={{display: 'flex'}}>
-                                                    <div style={{marginLeft: 7,}}>{operOne}</div>
-                                                </div>
-                                            </Option>
-                                        )
-                                    }
-                                } catch (e) {
-
-                                }
-                            })}
-                        </Select>
+                        />
                     </div>
                 )
             }
@@ -3031,95 +3050,92 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
 
                 return (
-                    <ConfigProvider renderEmpty={emptyMessage}>
-
-                        <div className="page_monitoring_dropdown_box"
-                             style={{alignSelf: 'center', justifyContent: 'center'}}>
-                            <div
-                                className="page_monitoring_dropdown_label"
-                                style={{
-                                    marginLeft: this.state.isShowFilter ? 0 : 10,
-                                }}
-                            >
-                                Cluster
-                            </div>
-                            <div style={{width: '100%'}}>
-                                <TreeSelect
-                                    dropdownMatchSelectWidth={false}
-                                    //allowClear={true}
-                                    //disabled={this.state.loading || isEmpty(this.state.currentClusterList)}
-                                    listHeight={800}
-                                    dropdownStyle={{
-                                        maxHeight: 800, overflow: 'auto', width: '420px'
-                                    }}
-                                    showArrow={true}
-                                    maxTagCount={maxTagCount}
-
-                                    size={'middle'}
-                                    onSearch={(value) => {
-                                        this.setState({
-                                            searchClusterValue: value,
-                                        });
-                                    }}
-
-                                    treeCheckable={true}
-                                    showCheckedStrategy={'SHOW_CHILD'}
-                                    style={{height: '30px !important', width: treeSelectWidth}}
-                                    ref={c => this.treeSelectClusterAdmin = c}
-                                    placeholder={'Select Cluster'}
-                                    treeData={this.state.clusterTreeDropdownList}
-                                    treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
-                                    value={this.state.currentClusterList}
-                                    onChange={async (value, label, extra) => {
-                                        /*await this.setState({
-                                            currentMapLevel: MAP_LEVEL.CLUSTER,
-                                            currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
-                                        })*/
-
-                                        console.log(`currentClassification===>`, this.state.currentClassification);
-
-                                        if (!isEmpty(value)) {
-                                            this.setState({currentClusterList: value});
-                                        } else {
-                                            this.resetLocalData()
-                                        }
-                                    }}
-
-                                />
-                            </div>
-                            <div style={{marginLeft: 10,}}>
-                                <Button
-                                    size={'small'}
-                                    onClick={async () => {
-                                        this.appInstSelect.blur();
-                                        this.applyButton.blur();
-                                        await this.setState({
-                                            currentMapLevel: MAP_LEVEL.CLUSTER,
-                                            currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
-                                        })
-                                        if (this.state.currentClusterList !== undefined) {
-                                            //todo: filtering for map
-                                            const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
-                                            await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
-                                            await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
-
-                                            console.log(`currentClassification....3===>`, this.state.currentClassification);
-                                            await this.handleOnChangeClusterDropdown(currentClusterList)
 
 
-                                        } else {
-                                            this.resetLocalData()
-                                        }
-
-
-                                    }}
-                                    ref={c => this.applyButton = c}
-                                >
-                                    Apply
-                                </Button>
-                            </div>
+                    <div className="page_monitoring_dropdown_box"
+                         style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div
+                            className="page_monitoring_dropdown_label"
+                            style={{
+                                marginLeft: this.state.isShowFilter ? 0 : 10,
+                            }}
+                        >
+                            Cluster
                         </div>
-                    </ConfigProvider>
+                        <div style={{width: '100%'}}>
+                            <TreeSelect
+                                dropdownMatchSelectWidth={false}
+                                dropdownStyle={{
+                                    maxHeight: 800, overflow: 'auto', width: '420px'
+                                }}
+                                listHeight={800}
+                                showArrow={true}
+                                maxTagCount={maxTagCount}
+
+                                size={'middle'}
+                                onSearch={(value) => {
+                                    this.setState({
+                                        searchClusterValue: value,
+                                    });
+                                }}
+
+                                treeCheckable={true}
+                                showCheckedStrategy={'SHOW_CHILD'}
+                                style={{height: '30px !important', width: treeSelectWidth}}
+                                ref={c => this.treeSelectClusterAdmin = c}
+                                placeholder={'Select Cluster'}
+                                treeData={this.state.clusterTreeDropdownList}
+                                treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
+                                value={this.state.currentClusterList}
+                                onChange={async (value, label, extra) => {
+                                    /*await this.setState({
+                                        currentMapLevel: MAP_LEVEL.CLUSTER,
+                                        currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
+                                    })*/
+
+                                    console.log(`currentClassification===>`, this.state.currentClassification);
+
+                                    if (!isEmpty(value)) {
+                                        this.setState({currentClusterList: value});
+                                    } else {
+                                        this.resetLocalData()
+                                    }
+                                }}
+
+                            />
+                        </div>
+                        <div style={{marginLeft: 10,}}>
+                            <Button
+                                size={'small'}
+                                onClick={async () => {
+                                    this.appInstSelect.blur();
+                                    this.applyButton.blur();
+                                    await this.setState({
+                                        currentMapLevel: MAP_LEVEL.CLUSTER,
+                                        currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
+                                    })
+                                    if (this.state.currentClusterList !== undefined) {
+                                        //todo: filtering for map
+                                        const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
+                                        await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
+                                        await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
+
+                                        console.log(`currentClassification....3===>`, this.state.currentClassification);
+                                        await this.handleOnChangeClusterDropdown(currentClusterList)
+
+
+                                    } else {
+                                        this.resetLocalData()
+                                    }
+
+
+                                }}
+                                ref={c => this.applyButton = c}
+                            >
+                                Apply
+                            </Button>
+                        </div>
+                    </div>
                 )
             }
 
@@ -3715,7 +3731,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {this.state.userType.toLowerCase().includes('admin') ? //todo: admin
                                 <React.Fragment>
                                     <div style={{marginLeft: 15}}>
-                                        {this.renderOperDropdownForAdmin()}
+                                        {this.renderOrganizationDropdownForAdmin()}
                                     </div>
                                     <div style={{marginLeft: 15}}>
                                         {this.renderCloudletDropdownForAdmin()}
@@ -3822,78 +3838,82 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
 
                 return (
-                    <div style={{
-                        width: this.state.currentWidth,
-                        height: '100%',
-                    }}>
-                        <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}
-                                               currentClassification={this.state.currentClassification}/>
-                        <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
-                                                 selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
-                                                 parent={this}
-                                                 modalIsOpen={this.state.modalIsOpen}
-                                                 cluster={''} contents={''}/>
-                        <BigModalGraphContainer
-                            intervalLoading={this.state.intervalLoading}
-                            chartDataForBigModal={this.state.chartDataForBigModal}
-                            isShowBigGraph={this.state.isShowBigGraph}
-                            parent={this}
-                            popupGraphHWType={this.state.popupGraphHWType}
-                            graphType={this.state.popupGraphType}
-                            isPopupMap={this.state.isPopupMap}
-                            appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
-                            selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
-                            loading={this.state.loading}
-                            currentColorIndex={this.state.currentColorIndex}
-                        />
-
+                    <ConfigProvider renderEmpty={emptyMessage}>
 
                         <div style={{
-                            width: '100%',
+                            width: this.state.currentWidth,
                             height: '100%',
                         }}>
+                            <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}
+                                                   currentClassification={this.state.currentClassification}/>
+                            <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
+                                                     selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
+                                                     parent={this}
+                                                     modalIsOpen={this.state.modalIsOpen}
+                                                     cluster={''} contents={''}/>
+                            <BigModalGraphContainer
+                                intervalLoading={this.state.intervalLoading}
+                                chartDataForBigModal={this.state.chartDataForBigModal}
+                                isShowBigGraph={this.state.isShowBigGraph}
+                                parent={this}
+                                popupGraphHWType={this.state.popupGraphHWType}
+                                graphType={this.state.popupGraphType}
+                                isPopupMap={this.state.isPopupMap}
+                                appInstanceListGroupByCloudlet={this.state.appInstanceListGroupByCloudlet}
+                                selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
+                                loading={this.state.loading}
+                                currentColorIndex={this.state.currentColorIndex}
+                            />
+
+
                             <div style={{
                                 width: '100%',
-                                height: '106%',
+                                height: '100%',
                             }}>
-                                <SemanticToastContainer position={"bottom-center"} color={'red'}/>
+                                <div style={{
+                                    width: '100%',
+                                    height: '106%',
+                                }}>
+                                    <SemanticToastContainer position={"bottom-center"} color={'red'}/>
 
-                                {this.renderHeader()}
+                                    {this.renderHeader()}
 
-                                {this.makeLegend()}
-                                <div className="page_monitoring"
-                                     style={{
-                                         overflowY: 'auto',
-                                         height: this.calcGridHeight(),
-                                         marginTop: 0,
-                                         marginRight: 50,
-                                         width: '100%',
-                                         backgroundColor: this.props.themeType === 'light' ? 'white' : null
-                                     }}>
-                                    {/*{this.renderNoItemMsg()}*/}
-                                    {this.renderGridLayoutByClassification()}
+                                    {this.makeLegend()}
+                                    <div className="page_monitoring"
+                                         style={{
+                                             overflowY: 'auto',
+                                             height: this.calcGridHeight(),
+                                             marginTop: 0,
+                                             marginRight: 50,
+                                             width: '100%',
+                                             backgroundColor: this.props.themeType === 'light' ? 'white' : null
+                                         }}>
+                                        {/*{this.renderNoItemMsg()}*/}
+                                        {this.renderGridLayoutByClassification()}
+                                    </div>
                                 </div>
+                                {/*desc:---------------------------------*/}
+                                {/*desc:terminal button                   */}
+                                {/*desc:---------------------------------*/}
+                                {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
+                                    <div className='page_monitoring_terminal_button' style={{marginBottom: 10}}
+                                         onClick={() => this.setState({openTerminal: true})}
+                                    >
+                                    </div>
+                                    : null
+                                }
                             </div>
-                            {/*desc:---------------------------------*/}
-                            {/*desc:terminal button                   */}
-                            {/*desc:---------------------------------*/}
-                            {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
-                                <div className='page_monitoring_terminal_button' style={{marginBottom: 10}}
-                                     onClick={() => this.setState({openTerminal: true})}
-                                >
-                                </div>
-                                : null
-                            }
-                        </div>
-                        <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen
-                                open={this.state.openTerminal} onClose={() => {
-                            this.setState({openTerminal: false})
-                        }}>
-                            <TerminalViewer data={this.state.terminalData} onClose={() => {
+                            <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen
+                                    open={this.state.openTerminal} onClose={() => {
                                 this.setState({openTerminal: false})
-                            }}/>
-                        </Dialog>
-                    </div>
+                            }}>
+                                <TerminalViewer data={this.state.terminalData} onClose={() => {
+                                    this.setState({openTerminal: false})
+                                }}/>
+                            </Dialog>
+                        </div>
+                    </ConfigProvider>
+
                 )//return End
             }
         }

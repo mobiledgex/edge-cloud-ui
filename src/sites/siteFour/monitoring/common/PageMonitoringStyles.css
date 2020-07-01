@@ -944,3 +944,7 @@ tr td {
     font-weight: normal;
     font-family: "Roboto Light";
 }
+
+.ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
+    background-color: #404040 !important;
+}
