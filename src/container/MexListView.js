@@ -17,8 +17,8 @@ import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 //import Map from '../libs/simpleMaps/with-react-motion/index_clusters';
-import { roundOff } from '../utils/math_util';
 import Map from "../libs/simpleMaps/with-react-motion/pageMap";
+import { roundOff } from '../utils/math_util';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -255,7 +255,7 @@ class MexListView extends React.Component {
                 let cloudletLocation = data[fields.cloudletLocation]
                 let lat = roundOff(cloudletLocation[fields.latitude])
                 let lon = roundOff(cloudletLocation[fields.longitude])
-                return mapDataList.name.includes(data[this.props.requestInfo.nameField]) && coordinates[0] === lon && coordinates[1] === lat
+                return mapDataList.name.includes(data[this.props.requestInfo.nameField]) && coordinates[0] === lat && coordinates[1] === lon
             })
         }
         this.setState({ filterList: filterList })

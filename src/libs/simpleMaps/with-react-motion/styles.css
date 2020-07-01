@@ -41,26 +41,13 @@
     fill: #e6e6e6; stroke: #747474; stroke-width:2;  font-size: 3px; paint-order: stroke;
 }
 
-.map_marker_red {
-    width:20px;
-    height:20px;
-    border-radius: 50%;
+.map_marker {
     border: none;
     text-align: center;
     vertical-align: center;
-    font-size: 16px;
-    background: radial-gradient(transparent, #d32f2f);
-}
-
-.map_marker_green {
-    width:20px;
-    height:20px;
-    border-radius: 50%;
-    border: none;
-    text-align: center;
-    vertical-align: center;
-    font-size: 16px;
-    background: radial-gradient(transparent, #76FF03);
+    font-size: 14px;
+    /*background: radial-gradient(transparent, #d32f2f);*/
+    background: transparent;
 }
 
 .map_tooltip{
