@@ -717,7 +717,7 @@ export const covertUnits = (value, hardwareType, _this) => {
 
         } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
             if (hardwareType === HARDWARE_TYPE.CPU) {
-                return value.toFixed(0) + " %";
+                return value.toFixed(1) + " %";
             } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                 return convertByteToMegaGigaByte(value)
             } else {
