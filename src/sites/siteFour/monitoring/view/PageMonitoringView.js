@@ -34,7 +34,7 @@ import {
     makeBarChartDataForCluster,
     makeClusterMultiDropdownForAdmin,
     makeDropdownForAppInst,
-    makeDropdownForCloudlet,
+    makeDropdownForCloudlet, makeDropdownForCloudletForDevView,
     makeid,
     makeLineChartData,
     makeLineChartDataForBigModal,
@@ -388,6 +388,7 @@ type PageDevMonitoringState = {
     currentMapLevel: string,
     isNoCluster: boolean,
     orgTreeData: any,
+    currentOrgView: string,
 
 }
 
@@ -648,6 +649,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isAdminClusterTreeExpand: true,
                     isNoCluster: false,
                     orgTreeData: [],
+                    currentOrgView: 'all',
 
                 };
             }
@@ -740,12 +742,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         appInstList = await fetchAppInstList(undefined, this)
                         let operOrgList = this.makeUniqOper(cloudletList)
                         let devOrgList = this.makeUniqOrganizationName(appInstList)
-
                         let orgTreeData = makeOrgTreeDropdown(operOrgList, devOrgList)
-
-                        console.log(`appInstList====>`, appInstList)
-                        console.log(`cloudletList========>`, cloudletList);
-                        console.log(`organizationList====>`, devOrgList);
 
                         await this.setState({
                             loadingForClientStatus: false,
@@ -768,8 +765,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:OPERATOR
                         //TODO:###############################################
                         cloudletList = await fetchCloudletList();
-                        let allCloudletEventLogList = []
-                        allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
+                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
                         appInstList = await fetchAppInstList(undefined, this)
                         clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                         await this.setState({
@@ -799,9 +795,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
 
                     }
+
+
+                    console.log(`markerListForMap========>`, markerListForMap);
+
                     await this.setState({
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
                         mapLoading: false,
+                    }, () => {
+                        console.log(`appInstanceListGroupByCloudlet========>`, this.state.appInstanceListGroupByCloudlet);
                     });
 
 
@@ -1562,6 +1564,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
                         return (
                             <MapForAdmin
+
+                                currentOrgView={this.state.currentOrgView}
+                                markerListForAppInst={this.state.filteredAppInstList}
                                 markerList={this.state.appInstanceListGroupByCloudlet}
                                 cloudletList={this.state.filteredCloudletList}
                                 clusterList={this.state.filteredClusterList}
@@ -2773,13 +2778,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            ________________________________________________dropdowns________________________________________________________________________________________________________________________() {
+            _______________DROPDOWN____________________________________________________________________________________________________() {
             }
 
 
             renderOrganizationDropdownForAdmin() {
-
-
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label">
@@ -2796,33 +2799,55 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             placeholder="Select Org"
                             treeDefaultExpandAll
                             //value={this.state.value}
-                            onSelect={async (value) => {
+                            onSelect={async (value, node, extra) => {
                                 this.operSelect.blur();
-                                let markerListForMap = []
                                 let filteredCloudletList = []
-                                if (value === "0") {//todo: all
-                                    filteredCloudletList = this.state.cloudletList
-                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                                let cloudletDropdownList = []
+                                let markerListForMap = []
+                                let currentOrgView = undefined;
+                                //let classfication = undefined
 
-                                } else {//todo:Wnen specific oper
-                                    filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
-                                        return item.Operator === value
+                                //todo: devleoper!
+                                if (node.isDev) {
+                                    await this.setState({currentOrgView: 'dev'})
+                                    let filteredAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => {
+                                        return item.OrganizationName === value
                                     })
-                                    markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+
+                                    markerListForMap = reducer.groupBy(filteredAppInstList, "Cloudlet");
+                                    let uniq_filteredAppInstList = _.uniqBy(filteredAppInstList, 'Cloudlet')
+                                    cloudletDropdownList = makeDropdownForCloudletForDevView(uniq_filteredAppInstList)
+
+
+                                } else {//TODO ; OPER VIEW
+                                    await this.setState({currentOrgView: 'oper'})
+                                    if (value === "0") {//todo: all
+                                        filteredCloudletList = this.state.cloudletList
+                                        markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                                    } else {//todo:Wnen specific oper
+                                        filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
+                                            return item.Operator === value
+                                        })
+                                        markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                                    }
+                                    cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+
                                 }
-                                let cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+
                                 this.setState({
                                     currentOper: value,
                                     filteredCloudletList: filteredCloudletList,
-                                    filteredClusterUsageList: [],
                                     cloudletDropdownList: cloudletDropdownList,
+                                    appInstanceListGroupByCloudlet: markerListForMap,
+                                    filteredClusterUsageList: [],
                                     currentCloudLet: undefined,
                                     filteredCloudletUsageList: [],
                                     currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                     currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
-                                    appInstanceListGroupByCloudlet: markerListForMap,
+                                    currentOrgView: currentOrgView,
 
                                 });
+
 
                             }}
                         />
@@ -2848,11 +2873,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (selectCloudlet) => {
+
+                                let currentCloudlet = selectCloudlet.split("|")[0].trim();
+                                console.log(`selectCloudlet========>`, selectCloudlet);
+
                                 try {
                                     this.cloudletSelectForAdmin.blur();
                                     await this.setState({
                                         currentClusterList: [],
-                                        currentCloudLet: selectCloudlet.split("|")[0].trim(),
+                                        currentCloudLet: currentCloudlet,
                                     })
 
                                     if (selectCloudlet === '0') {//todo:reset filter
@@ -2983,8 +3012,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 loading: false,
                                                 filteredClientStatusList: clientStatusList,
                                                 filteredCloudletEventLogList: cloudletEventLogList,
+                                                currentCloudLet: currentCloudlet,
                                             }, () => {
                                                 console.log(`filteredCloudletEventLogList===>`, this.state.filteredCloudletEventLogList);
+
+                                                console.log(`currentCloudLet========>`, this.state.currentCloudLet);
                                             })
                                         } catch (e) {
                                             throw new Error(e)

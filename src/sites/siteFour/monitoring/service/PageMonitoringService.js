@@ -1312,7 +1312,8 @@ export const makeOrgTreeDropdown = (orgList, devOrgList) => {
     orgList.map(item => {
         newOrgList.push({
             title: item,
-            value: item
+            value: item,
+            isDev: false,
         })
     })
 
@@ -1320,21 +1321,27 @@ export const makeOrgTreeDropdown = (orgList, devOrgList) => {
     devOrgList.map(item => {
         newDevOrgList.push({
             title: item,
-            value: item
+            value: item,
+            isDev: true,
         })
     })
 
 
     const treeData = [
         {
+            title: 'All',
+            value: '0',
+            selectable: true,
+        },
+        {
             title: 'Operator',
-            value: '0-0',
+            value: '1',
             selectable: false,
             children: newOrgList
         },
         {
             title: 'Developer',
-            value: '0-2',
+            value: '2',
             selectable: false,
             children: newDevOrgList
         },
@@ -1416,6 +1423,36 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
     }
 
 }
+
+export const makeDropdownForCloudletForDevView = (pList) => {
+    try {
+
+
+        console.log(`pList========>`, pList);
+
+        let newArrayList = [];
+        newArrayList.push({
+            key: undefined | undefined | undefined,
+            value: undefined | undefined | undefined,
+            text: 'Reset Filter',
+        })
+        pList.map((item: TypeAppInst, index) => {
+            let Cloudlet = item.Cloudlet
+            let CloudletLocation = JSON.stringify(item.CloudletLocation)
+            let cloudletFullOne = Cloudlet + " | " + CloudletLocation + " | " + item.Region
+            newArrayList.push({
+                region: item.Region,
+                key: cloudletFullOne,
+                value: cloudletFullOne,
+                text: Cloudlet,
+            })
+        })
+
+        return newArrayList;
+    } catch (e) {
+
+    }
+};
 
 
 export const makeDropdownForCloudlet = (pList) => {

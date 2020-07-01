@@ -1,6 +1,6 @@
 import React, {createRef} from "react";
 import {Map, Marker, Popup, TileLayer, Tooltip} from "react-leaflet";
-import type {TypeClient, TypeCloudlet} from "../../../../shared/Types";
+import type {TypeAppInst, TypeClient, TypeCloudlet} from "../../../../shared/Types";
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
@@ -9,7 +9,12 @@ import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import '../common/PageMonitoringStyles.css'
@@ -66,6 +71,7 @@ type Props = {
     isShowAppInstPopup: boolean,
     isEnableZoomIn: boolean,
     handleAppInstDropdown: any,
+    currentOrgView: string,
 
 };
 type State = {
@@ -181,7 +187,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
 
         };
 
-
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             try {
 
@@ -192,9 +197,17 @@ export default connect(mapStateToProps, mapDispatchProps)((
                 }
 
                 if (this.props.markerList !== nextProps.markerList) {
+
                     let markerList = nextProps.markerList;
-                    this.setCloudletLocation(markerList)
+
+                    if (nextProps.currentOrgView === 'oper' || nextProps.currentOrgView === 'all') {
+                        this.setCloudletLocation(markerList)
+                    } else {//devorg
+                        this.setCloudletLocationForDevOrg(markerList)
+                    }
+
                 }
+
 
                 //@desc : #############################
                 //@desc:   hide appInstInfoPopup
@@ -244,6 +257,35 @@ export default connect(mapStateToProps, mapDispatchProps)((
             }
 
         }
+
+
+        setCloudletLocationForDevOrg(appInstListOnCloudlet, isMapCenter = false) {
+            try {
+
+
+                let cloudletKeys = Object.keys(appInstListOnCloudlet)
+                let newCloudLetLocationList = this.makeNewCloudletLocationListForDevOrg(appInstListOnCloudlet, cloudletKeys)
+                let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
+                let locKeys = Object.keys(locationGrpList);
+                let locationGroupedCloudletList = this.makeLocationGroupedCloudletList(locationGrpList, locKeys)
+                this.setState({
+                    selectedAppInstIndex: -1,
+                    locationGroupedCloudletList: locationGroupedCloudletList,
+                    appInstanceListGroupByCloudlet: appInstListOnCloudlet,
+                }, () => {
+                    if (locationGroupedCloudletList[0] !== undefined) {
+                        this.setState({
+                            mapCenter: isMapCenter ? this.state.mapCenter : [locationGroupedCloudletList[0].CloudletLocation.latitude, locationGroupedCloudletList[0].CloudletLocation.longitude],
+                            zoom: 2,
+                        })
+                    }
+                })
+            } catch (e) {
+                showToast(e.toString())
+                //throw new Error(e)
+            }
+        }
+
 
         makeLocationGroupedCloudletList(locationGrpedList, locKeys) {
             try {
@@ -298,6 +340,43 @@ export default connect(mapStateToProps, mapDispatchProps)((
                         }
                         CloudletLocation = innerItem.CloudletLocation;
                         Cloudlet = innerItem.CloudletName;
+                        State = innerItem.State;
+                    })
+
+                    newCloudLetLocationList.push({
+                        AppNames: AppNames,
+                        State: State,
+                        CloudletLocation: CloudletLocation,
+                        strCloudletLocation: CloudletLocation.latitude.toString() + "_" + CloudletLocation.longitude.toString(),
+                        Cloudlet: Cloudlet,
+                        isShow: false,
+                        isShowCircle: false,
+                        //ClusterInst: ClusterInst,
+                    })
+                })
+                return newCloudLetLocationList;
+            } catch (e) {
+                throw new Error(e)
+            }
+        }
+
+
+        makeNewCloudletLocationListForDevOrg(appInstListOnCloudlet, cloudletKeys) {
+            try {
+                let newCloudLetLocationList = []
+                cloudletKeys.map((key, index) => {
+                    let AppNames = ''
+                    let CloudletLocation = '';
+                    let Cloudlet = '';
+                    let State = '';
+                    appInstListOnCloudlet[key].map((innerItem: TypeAppInst, index) => {
+                        if (index === (appInstListOnCloudlet[key].length - 1)) {
+                            AppNames += innerItem.State + " | " + innerItem.Cloudlet + " | " + innerItem.Region + " | " + "-" + " | " + "-" + " | " + innerItem.Operator + " | " + innerItem.Cloudlet
+                        } else {
+                            AppNames += innerItem.State + " | " + innerItem.Cloudlet + " | " + innerItem.Region + " | " + "-" + " | " + "-" + " | " + innerItem.Operator + " | " + innerItem.Cloudlet + " , "
+                        }
+                        CloudletLocation = innerItem.CloudletLocation;
+                        Cloudlet = innerItem.Cloudlet;
                         State = innerItem.State;
                     })
 
