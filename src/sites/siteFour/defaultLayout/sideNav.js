@@ -94,6 +94,7 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
+        overflowX: 'auto',
         margin: 5,
         marginTop: 53 /* header height(48) + margin(5) */
     },
