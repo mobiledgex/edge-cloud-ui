@@ -3,7 +3,6 @@ import sizeMe from 'react-sizeme';
 
 import {withRouter} from 'react-router-dom';
 import {Steps} from 'intro.js-react';
-
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../../actions';
@@ -15,7 +14,6 @@ import {MonitoringTutor} from '../../tutorial';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import Lottie from "react-lottie";
 
 let _self = null
 const monitoringSteps = MonitoringTutor();
