@@ -155,6 +155,36 @@ export const renderBarLoader = (isBold = true) => {
     )
 }
 
+export const renderXLoader = () => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{
+                 zIndex: 999,
+                 width: '100%',
+                 position: 'absolute',
+                 height: '100%',
+                 backgroundColor: 'black'
+             }}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../../lotties/x-marks'),
+                }}
+                speed={2}
+                height={50}
+                width={50}
+                isStopped={false}
+                isPaused={false}
+                style={{
+                    position: 'absolute',
+                    top: '45%',
+                }}
+            />
+        </div>
+    )
+}
+
 
 export const renderPlaceHolderHorizontalLoader = (type = 'lottieCircle') => {
 

@@ -35,6 +35,7 @@ import uniqBy from "lodash/uniqBy";
 import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {Tag} from "antd";
 import _ from 'lodash';
+import {fields} from "../../../../services/model/format";
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -1306,12 +1307,16 @@ export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _thi
 }
 
 
-export const makeOrgTreeDropdown = (orgList, devOrgList) => {
+export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
     let newOrgList = []
-    orgList.map(item => {
+    operOrgList.map(item => {
         newOrgList.push({
-            title: item,
+            title: (
+                <div style={{display: 'flex'}}>
+                    <div>{item}</div>
+                </div>
+            ),
             value: item,
             isDev: false,
         })
@@ -1320,11 +1325,23 @@ export const makeOrgTreeDropdown = (orgList, devOrgList) => {
     let newDevOrgList = []
     devOrgList.map(item => {
         newDevOrgList.push({
-            title: item,
+            title: (
+                <div style={{display: 'flex'}}>
+                    <div>{item}</div>
+                    {/*<div style={{marginLeft: 5}}><Tag
+                        style={{background: 'black', borderRadius: 20, borderColor: 'black'}}
+                        color="green">D</Tag></div>*/}
+                </div>
+            ),
             value: item,
             isDev: true,
         })
     })
+
+    /*  <div>
+            <div className="markBox">D</div>
+        </div>
+    */
 
 
     const treeData = [

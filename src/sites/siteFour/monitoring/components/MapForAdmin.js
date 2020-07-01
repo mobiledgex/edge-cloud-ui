@@ -4,7 +4,13 @@ import type {TypeAppInst, TypeClient, TypeCloudlet} from "../../../../shared/Typ
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    groupByKey_,
+    removeDuplicates,
+    renderBarLoader,
+    renderXLoader,
+    showToast
+} from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
@@ -716,6 +722,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
+                            {/*{this.props.loading && renderXLoader()}*/}
                             <Map
                                 center={this.state.mapCenter}
                                 zoom={this.state.zoom}

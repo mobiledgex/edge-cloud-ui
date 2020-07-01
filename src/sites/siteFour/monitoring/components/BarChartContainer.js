@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {isEmpty, renderBarLoader, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderBarLoader, renderEmptyMessageBox, renderXLoader} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -60,12 +60,13 @@ export default class BarChartContainer extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
+            <div className='page_monitoring_dual_column'>
                 {this.props.loading &&
                 <div>
                     {renderBarLoader()}
                 </div>
                 }
+
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>

@@ -167,6 +167,7 @@ import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Lottie from "react-lottie";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -3412,7 +3413,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignItems: 'center',
                                     width: '100%',
                                 }}>
-                                    <CircularProgress style={{color: '#1cecff'}} size={15} thickness={3}/>
+                                    {/*<CircularProgress style={{color: '#1cecff'}} size={15} thickness={3}/>*/}
+                                    <Lottie
+                                        options={{
+                                            loop: true,
+                                            autoplay: true,
+                                            animationData: require('../../../../lotties/x-marks'),
+                                        }}
+                                        speed={2}
+                                        height={30}
+                                        width={30}
+                                        isStopped={false}
+                                        isPaused={false}
+                                        style={{
+                                            position: 'absolute',
+                                            top: -17,
+                                            left: '45%',
+                                        }}
+                                    />
                                 </div>
                             </LegendOuterDiv>
                         )
