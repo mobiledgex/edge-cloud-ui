@@ -324,8 +324,9 @@ export const renderPlaceHolderHorizontalBar = (isBar = true, paramWidth, isBold 
 }
 
 
-export const renderPlaceHolderLottieForMap = (isCloud = false) => {
-    if (isCloud) {
+
+export const renderXMarkForMap = (isXMark = true) => {
+    if (isXMark) {
         return (
             <div className='page_monitoring_blank_box'
                  style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
@@ -333,14 +334,14 @@ export const renderPlaceHolderLottieForMap = (isCloud = false) => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../../lotties/color_cloud.json'),
+                        animationData: require('../../../../lotties/x-marks'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }
                     }}
-                    speed={4.3}
-                    height={70}
-                    width={70}
+                    speed={3}
+                    height={50}
+                    width={50}
                     isStopped={false}
                     isPaused={false}
                     //style={{position: 'absolute', top: 20,}}

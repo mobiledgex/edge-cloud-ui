@@ -3421,13 +3421,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             animationData: require('../../../../lotties/x-marks'),
                                         }}
                                         speed={2}
-                                        height={30}
-                                        width={30}
+                                        height={20}
+                                        width={20}
                                         isStopped={false}
                                         isPaused={false}
                                         style={{
                                             position: 'absolute',
-                                            top: -17,
+                                            top: -11,
                                             left: '45%',
                                         }}
                                     />
