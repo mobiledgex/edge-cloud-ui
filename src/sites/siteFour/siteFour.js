@@ -1,21 +1,19 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 
-import { withRouter } from 'react-router-dom';
-import { Steps } from 'intro.js-react';
-
+import {withRouter} from 'react-router-dom';
+import {Steps} from 'intro.js-react';
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../actions';
-import { GridLoader } from "react-spinners";
+import {GridLoader} from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
 import * as serverData from '../../services/model/serverData';
 import * as constant from '../../constant';
-import { MonitoringTutor } from '../../tutorial';
+import {MonitoringTutor} from '../../tutorial';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import Lottie from "react-lottie";
 
 let _self = null
 const monitoringSteps = MonitoringTutor();
@@ -161,27 +159,11 @@ class SiteFour extends React.Component {
                     /> : null}
                 {(_self.props.loadingSpinner == true) ?
                     <div className="loadingBox" style={{ zIndex: 9999 }}>
-                       {/* <GridLoader
+                        <GridLoader
                             sizeUnit={"px"}
                             size={25}
                             color={'#70b2bc'}
                             loading={_self.props.loadingSpinner}
-                        />*/}
-                        <Lottie
-                            options={{
-                                loop: true,
-                                autoplay: true,
-                                animationData: require('../../lotties/x-marks'),
-                            }}
-                            speed={20}
-                            height={120}
-                            width={120}
-                            isStopped={false}
-                            isPaused={false}
-                            style={{
-                                position: 'absolute',
-                                top: '45%',
-                            }}
                         />
                     </div> : null}
                 <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={_self.state.email} data={_self.props.userInfo.info} helpClick={_self.enableSteps} viewMode={_self.props.ViewMode} userRole={this.state.userRole} />
