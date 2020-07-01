@@ -1163,9 +1163,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         hwType: paramHwType,
                         graphType: graphType,
                     }
-                    //@desc: ######################################
-                    //@desc:  calculate empty space in gridLayout
-                    //@desc: ######################################
                     await this.setState({
                         layoutCloudlet: this.state.layoutCloudlet.concat({
                             i: uniqueId,
@@ -1210,7 +1207,71 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutCluster)
                     reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperCluster)
 
-                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {//todo:CLOUDLET_FOR_ADMIN
+                    showToast('cloudletForAdmin')
+                    //@desc: ##########################
+                    //@desc: CLOUDLET_FOR_ADMIN
+                    //@desc: ##########################
+                    let currentItems = this.state.layoutCloudletAdmin;
+                    let maxY = -1;
+                    if (!isEmpty(currentItems)) {
+                        maxY = maxBy(currentItems, 'y').y
+                    }
+                    let uniqueId = makeid(5)
+                    let mapperList = this.state.layoutMapperCloudletAdmin
+
+                    let itemOne = {
+                        id: uniqueId,
+                        hwType: paramHwType,
+                        graphType: graphType,
+                    }
+
+                    console.log(`cloudletForAdmin========itemOne>`, itemOne);
+
+                    await this.setState({
+                        layoutCloudletAdmin: this.state.layoutCloudletAdmin.concat({
+                            i: uniqueId,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
+                            w: 1,
+                            h: 1,
+                        }),
+                        layoutMapperCloudletAdmin: mapperList.concat(itemOne),
+                    }, () => {
+                    });
+                    reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, this.state.layoutCloudletAdmin)
+                    reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudletAdmin)
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {//todo:CLUSTER_FOR_ADMIN
+                    //@desc: ##########################
+                    //@desc: CLUSTER_FOR_ADMIN
+                    //@desc: ##########################
+                    let currentItems = this.state.layoutAdmin;
+                    let maxY = -1;
+                    if (!isEmpty(currentItems)) {
+                        maxY = maxBy(currentItems, 'y').y
+                    }
+                    let uniqueId = makeid(5)
+                    let mapperList = this.state.layoutMapperAdmin
+
+                    let itemOne = {
+                        id: uniqueId,
+                        hwType: paramHwType,
+                        graphType: graphType,
+                    }
+
+                    await this.setState({
+                        layoutAdmin: this.state.layoutAdmin.concat({
+                            i: uniqueId,
+                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
+                            w: 1,
+                            h: 1,
+                        }),
+                        layoutMapperClusterAdmin: mapperList.concat(itemOne),
+                    });
+                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, this.state.layoutAdmin)
+                    reactLocalStorage.setObject(getUserId() + ADMIN_HW_MAPPER_KEY, this.state.layoutMapperAdmin)
+                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {//todo:APP_INST_FOR_ADMIN
                     //@desc: ##########################
                     //@desc: APPINST
                     //@desc: ##########################
@@ -1493,7 +1554,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     )
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
-
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET || this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
                         chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
                     } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
@@ -1771,6 +1831,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 let graphType = GRID_ITEM_TYPE.LINE;
                                 if (!isEmpty(this.state.layoutMapperCloudletAdmin.find(x => x.id === uniqueIndex))) {
                                     hwType = this.state.layoutMapperCloudletAdmin.find(x => x.id === uniqueIndex).hwType
+
+                                    console.log(`hwType========>`, hwType);
+
                                     graphType = this.state.layoutMapperCloudletAdmin.find(x => x.id === uniqueIndex).graphType
                                     graphType = graphType.toUpperCase()
                                 }
@@ -2805,8 +2868,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 let filteredCloudletList = []
                                 let cloudletDropdownList = []
                                 let markerListForMap = []
-                                let currentOrgView = undefined;
-                                //let classfication = undefined
 
                                 //todo: devleoper!
                                 if (node.isDev) {
@@ -2820,7 +2881,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     cloudletDropdownList = makeDropdownForCloudletForDevView(uniq_filteredAppInstList)
 
 
-                                } else {//TODO ; OPER VIEW
+                                } else {//TODO ; when OPER selected
                                     await this.setState({currentOrgView: 'oper'})
                                     if (value === "0") {//todo: all
                                         filteredCloudletList = this.state.cloudletList
@@ -2830,9 +2891,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             return item.Operator === value
                                         })
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+
+
+                                        console.log(`markerListForMap========>`, markerListForMap);
                                     }
                                     cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
-
                                 }
 
                                 this.setState({
@@ -2845,8 +2908,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     filteredCloudletUsageList: [],
                                     currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                     currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
-                                    currentOrgView: currentOrgView,
-
+                                }, () => {
+                                    console.log(`currentOrgView========>`, this.state.currentOrgView);
                                 });
 
 
@@ -3427,8 +3490,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         isPaused={false}
                                         style={{
                                             position: 'absolute',
-                                            top: -11,
-                                            left: '45%',
+                                            top: -10,
+                                            left: '50%',
                                         }}
                                     />
                                 </div>

@@ -10,10 +10,18 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from "antd";
 import '../common/PageMonitoringStyles.css'
-import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
+import {
+    convertToClassification,
+    handleLegendAndBubbleClickedEvent,
+    makeLineChartData
+} from "../service/PageMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, renderBarLoader} from "../service/PageMonitoringCommonService";
+import {
+    convertByteToMegaGigaByte,
+    convertToMegaGigaForNumber,
+    renderBarLoader
+} from "../service/PageMonitoringCommonService";
 import type {TypeClusterUsageOne} from "../../../../shared/Types";
 
 type Props = {
@@ -69,7 +77,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                              //backgroundColor: 'red'
                          }}
                     >
-                        {props.parent.state.currentClassification} Performance Summary
+                        {convertToClassification(props.parent.state.currentClassification)} Performance Summary
                     </div>
                     <div style={{flex: .5}} className='draggable'>
                     </div>

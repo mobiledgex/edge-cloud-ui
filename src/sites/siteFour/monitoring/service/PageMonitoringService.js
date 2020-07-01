@@ -391,6 +391,7 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
 export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageMonitoringView) => {
     try {
 
+        console.log(`hardwareUsageList========>${hardwareType}`, hardwareUsageList);
 
         if (hardwareUsageList.length === 0) {
             return (
@@ -436,6 +437,8 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED || hardwareType === HARDWARE_TYPE.IPV4_USED) {
                     series = item.ipSeries
                 }
+
+                console.log(`series========>`, series);
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
@@ -685,7 +688,7 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageMonitoringView, cli
 
 export const covertUnits = (value, hardwareType, _this) => {
     try {
-        if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+        if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET || _this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
             if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
                 return value;
             } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {

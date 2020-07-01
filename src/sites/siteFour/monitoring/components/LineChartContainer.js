@@ -5,7 +5,7 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import type {TypeChartDataSet} from "../../../../shared/Types";
-import {renderBarLoader} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderBarLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     parent: PageMonitoringView,
@@ -54,7 +54,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let lineChartDataSet = nextProps.chartDataSet
 
 
-            console.log('lineChartDataSet====>', lineChartDataSet.length);
+            console.log('lineChartDataSet====>', lineChartDataSet);
             console.log('currentColorIndex====>', this.props.currentColorIndex);
 
             let hwType = nextProps.pHardwareType;
@@ -72,8 +72,14 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let hardwareType = lineChartDataSet.hardwareType;
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
+            let isStacked=  this.props.parent.state.isStackedLineChart;
+            console.log(`levelTypeNameList========>`, levelTypeNameList);
+            if (isEmpty(levelTypeNameList.toString())){
+                isStacked= true;
+            }
 
-            const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, this.props.parent.state.isStackedLineChart, hardwareType, false, colorCodeIndexList)
+
+            const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStacked, hardwareType, false, colorCodeIndexList)
 
 
             this.setState({

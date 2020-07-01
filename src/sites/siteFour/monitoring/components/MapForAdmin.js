@@ -205,7 +205,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                 if (this.props.markerList !== nextProps.markerList) {
 
                     let markerList = nextProps.markerList;
-
                     if (nextProps.currentOrgView === 'oper' || nextProps.currentOrgView === 'all') {
                         this.setCloudletLocation(markerList)
                     } else {//devorg

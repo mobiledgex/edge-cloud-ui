@@ -2,7 +2,13 @@
 import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
 import {Dropdown} from "semantic-ui-react";
-import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
+import {
+    CLASSIFICATION,
+    EVENT_LOG_ITEM_LIST,
+    EVENT_LOG_ITEM_LIST_FOR_APPINST,
+    EVENT_LOG_ITEM_LIST_FOR_CLOUDLET,
+    EVENT_LOG_ITEM_LIST_FOR_CLUSTER
+} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -394,14 +400,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     makeHwDropdownList() {
         let hardwareDropdownList = []
-        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
             hardwareDropdownList = this.props.parent.state.hwListForCloudlet
-        } else if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        } else if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
             hardwareDropdownList = this.props.parent.state.hwListForCluster
         } else {
             hardwareDropdownList = this.props.parent.state.hwListForAppInst
         }
-
         return hardwareDropdownList;
     }
 
@@ -435,7 +440,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     }}
                     closable={false}
                     bodyStyle={{
-                        height: window.innerHeight * 0.45,
+                        height: window.innerHeight * 0.6,
                         marginTop: 0,
                         marginLeft: 0,
                         backgroundColor: 'rgb(41, 44, 51)'
