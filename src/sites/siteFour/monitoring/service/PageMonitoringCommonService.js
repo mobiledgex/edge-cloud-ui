@@ -324,7 +324,6 @@ export const renderPlaceHolderHorizontalBar = (isBar = true, paramWidth, isBold 
 }
 
 
-
 export const renderXMarkForMap = (isXMark = true) => {
     if (isXMark) {
         return (
@@ -450,22 +449,22 @@ export const convertToMegaGigaForNumber = (bytes) => {
     let mega = marker * marker; // One MB is 1024 KB
     let giga = marker * marker * marker; // One GB is 1024 MB
     let tera = marker * marker * marker * marker; // One TB is 1024 GB
-    // return bytes if less than a KB
     if (bytes < kilo) return bytes;
-    // return KB if less than a MB
     else if (bytes < mega) return (bytes / kilo).toFixed(decimal) + " K";
-    // return MB if less than a GB
     else if (bytes < giga) return (bytes / mega).toFixed(decimal) + " M";
-    // return GB if less than a TB
     else return (bytes / giga).toFixed(decimal) + " G";
 }
 
 
-export const convertByteToMegaByte2 = (value, hardwareType) => {
-    if (value > 1000000) {
-        return value / 1000000
-    } else {
-        return value;
+export const convertMegaToGiGa = (value) => {
+    try{
+        if (value > 1000) {
+            return (value / 1000).toFixed(0) + ' GB'
+        } else {
+            return value + ' MB';
+        }
+    }catch (e) {
+
     }
 }
 

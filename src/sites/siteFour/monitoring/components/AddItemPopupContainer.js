@@ -154,7 +154,10 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
 
     renderBarChartRadio() {
-        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
+            || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET
+            || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN
+        ) {
             return (
                 <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                     <div

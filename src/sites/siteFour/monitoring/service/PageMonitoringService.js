@@ -24,7 +24,7 @@ import {
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {
-    convertByteToMegaGigaByte,
+    convertByteToMegaGigaByte, convertMegaToGiGa,
     convertToMegaGigaForNumber,
     makeBubbleChartData,
     renderUsageByType
@@ -686,52 +686,55 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageMonitoringView, cli
     }
 };
 
-export const covertUnits = (value, hardwareType, _this) => {
-    try {
-        if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET || _this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
-            if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
-                return value;
-            } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-                return convertByteToMegaGigaByte(value);
-            } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-                return convertByteToMegaGigaByte(value);
-            } else if (hardwareType === HARDWARE_TYPE.NET_SEND || hardwareType === HARDWARE_TYPE.NET_RECV) {
-                return convertToMegaGigaForNumber(value);
-            } else {
-                return convertToMegaGigaForNumber(value);
-            }
-        } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-            if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
-                return value + " %";
-            } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
-                return value + " %";
-            } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                return convertByteToMegaGigaByte(value, hardwareType)
-            } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
-                return convertToMegaGigaForNumber(value);
-            } else if (hardwareType === HARDWARE_TYPE.CPU_MEM_DISK) {
-                return value + " %";
-            } else if (hardwareType === `${HARDWARE_TYPE.UDPRECV} / ${HARDWARE_TYPE.UDPSENT}` || hardwareType === `${HARDWARE_TYPE.TCPCONNS} / ${HARDWARE_TYPE.TCPRETRANS}`) {
-                return convertToMegaGigaForNumber(value);
-            } else if (hardwareType === `${HARDWARE_TYPE.SENDBYTES} / ${HARDWARE_TYPE.RECVBYTES}`) {
-                return convertByteToMegaGigaByte(value);
-            } else {
-                return convertToMegaGigaForNumber(value);
-            }
+export const covertYAxisUnits = (value, hardwareType, _this) => {
+        try {
+            //TODO: CLOUDLET LEVEL
+            if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET || _this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+                if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
+                    return value
+                } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+                    return value + " MB"
+                } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+                    return value + " GB"
+                } else if (hardwareType === HARDWARE_TYPE.NET_SEND || hardwareType === HARDWARE_TYPE.NET_RECV) {
+                    return convertToMegaGigaForNumber(value);
+                } else {
+                    return convertToMegaGigaForNumber(value);
+                }
+            } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+                    return value + " %";
+                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+                    return value + " %";
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                    return convertByteToMegaGigaByte(value, hardwareType)
+                } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
+                    return convertToMegaGigaForNumber(value);
+                } else if (hardwareType === HARDWARE_TYPE.CPU_MEM_DISK) {
+                    return value + " %";
+                } else if (hardwareType === `${HARDWARE_TYPE.UDPRECV} / ${HARDWARE_TYPE.UDPSENT}` || hardwareType === `${HARDWARE_TYPE.TCPCONNS} / ${HARDWARE_TYPE.TCPRETRANS}`) {
+                    return convertToMegaGigaForNumber(value);
+                } else if (hardwareType === `${HARDWARE_TYPE.SENDBYTES} / ${HARDWARE_TYPE.RECVBYTES}`) {
+                    return convertByteToMegaGigaByte(value);
+                } else {
+                    return convertToMegaGigaForNumber(value);
+                }
 
-        } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-            if (hardwareType === HARDWARE_TYPE.CPU) {
-                return value.toFixed(1) + " %";
-            } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                return convertByteToMegaGigaByte(value)
-            } else {
-                return value;
+            } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    return value.toFixed(1) + " %";
+                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    return convertByteToMegaGigaByte(value)
+                } else {
+                    return value;
+                }
             }
+        } catch
+            (e) {
+
         }
-    } catch (e) {
-
     }
-};
+;
 
 
 /**
@@ -795,13 +798,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     // max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
-                        return covertUnits(value, hardwareType, _this,)
+                        return covertYAxisUnits(value, hardwareType, _this,)
                     },
                 },
                 gridLines: {
                     color: "#fff",
                 },
-                //desc: options for 멀티라인차트
                 yAxes: [{
                     id: 'A',
                     type: 'linear',
@@ -809,7 +811,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     ticks: {
                         fontColor: "#CCC", // this here
                         callback(value, index, label) {
-                            return covertUnits(value, hardwareType, _this,)
+                            return covertYAxisUnits(value, hardwareType, _this,)
                         },
                     },
                 }, {

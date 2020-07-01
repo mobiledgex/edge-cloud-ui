@@ -3476,24 +3476,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     alignItems: 'center',
                                     width: '100%',
                                 }}>
-                                    {/*<CircularProgress style={{color: '#1cecff'}} size={15} thickness={3}/>*/}
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../../../../lotties/x-marks'),
-                                        }}
-                                        speed={2}
-                                        height={20}
-                                        width={20}
-                                        isStopped={false}
-                                        isPaused={false}
-                                        style={{
-                                            position: 'absolute',
-                                            top: -10,
-                                            left: '50%',
-                                        }}
-                                    />
+                                    <CircularProgress style={{color: '#1cecff'}} size={15} thickness={3}/>
                                 </div>
                             </LegendOuterDiv>
                         )

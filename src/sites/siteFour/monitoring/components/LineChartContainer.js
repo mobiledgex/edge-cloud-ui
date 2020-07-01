@@ -1,6 +1,10 @@
 // @flow
 import * as React from 'react';
-import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageMonitoringService";
+import {
+    convertToClassification,
+    makeGradientLineChartData,
+    makeLineChartOptions
+} from "../service/PageMonitoringService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
@@ -40,13 +44,14 @@ export default class LineChartContainer extends React.Component<Props, State> {
         this.myInput = React.createRef()
     }
 
-    componentDidMount(): void {
+    async componentDidMount(): void {
         let lineChartDataSet = this.props.chartDataSet
 
 
         let hwType = this.props.pHardwareType;
         let graphType = this.props.graphType;
-        this.setChartData(lineChartDataSet, hwType, graphType)
+
+        await this.setChartData(lineChartDataSet, hwType, graphType)
     }
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
@@ -64,7 +69,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
     }
 
 
-    setChartData(lineChartDataSet, hwType, graphType) {
+    async setChartData(lineChartDataSet, hwType, graphType) {
         try {
             let levelTypeNameList = lineChartDataSet.levelTypeNameList;
             let usageSetList = lineChartDataSet.usageSetList;
@@ -72,17 +77,16 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let hardwareType = lineChartDataSet.hardwareType;
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
-            let isStacked=  this.props.parent.state.isStackedLineChart;
+            let isStackecLineChart = this.props.parent.state.isStackedLineChart;
             console.log(`levelTypeNameList========>`, levelTypeNameList);
-            if (isEmpty(levelTypeNameList.toString())){
-                isStacked= true;
+            if (isEmpty(levelTypeNameList.toString())) {
+                isStackecLineChart = true;
             }
 
+            const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStackecLineChart, hardwareType, false, colorCodeIndexList)
 
-            const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStacked, hardwareType, false, colorCodeIndexList)
 
-
-            this.setState({
+            await this.setState({
                 chartDataSet: chartDataSet,
                 pHardwareType: hwType,
                 graphType: graphType,

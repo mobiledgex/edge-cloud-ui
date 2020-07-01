@@ -3,7 +3,6 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {Card} from "@material-ui/core";
 
 export default function PageMonitoringMain() {
-    const [userRole, setUserRole] = useState(localStorage.getItem('selectRole'));
     const renderMainPage = () => {
         return <PageMonitoringView/>
     }
