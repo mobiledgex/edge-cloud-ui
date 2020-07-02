@@ -32,7 +32,7 @@ import {
     makeBarChartDataForAppInst,
     makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
-    makeClusterMultiDropdownForAdmin,
+    makeClusterMultiDropdownForAdmin, makeCompleteDateTime,
     makeDropdownForAppInst,
     makeDropdownForCloudlet, makeDropdownForCloudletForDevView,
     makeid,
@@ -159,7 +159,6 @@ import MapForOper from "../components/MapForOper";
 import DonutChart from "../components/DonutChart";
 import ClientStatusTable from "../components/ClientStatusTable";
 import MethodUsageCount from "../components/MethodUsageCount";
-import {filteredClientStatusListByAppName, makeCompleteDateTime} from "./temp/PageAdmMonitoringService";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
@@ -2447,7 +2446,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let endTime = makeCompleteDateTime(this.state.endTime);
                         let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                         let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
-
                         this.setState({
                             filteredCloudletUsageList: usageList,
                             allCloudletUsageList: usageList,
@@ -2460,7 +2458,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     throw new Error(e)
                 }
             }
-
 
             renderDateRangeDropdown() {
                 return (

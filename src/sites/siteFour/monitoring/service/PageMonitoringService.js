@@ -32,7 +32,13 @@ import {
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
-import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
+import type {
+    TypeAppInst,
+    TypeClientStatus,
+    TypeCloudlet,
+    TypeCluster,
+    TypeLineChartData
+} from "../../../../shared/Types";
 import {Tag} from "antd";
 import _ from 'lodash';
 import {fields} from "../../../../services/model/format";
@@ -1337,6 +1343,111 @@ export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _thi
     return treeClusterList
 
 }
+
+/**
+ * 시간을 request요청에 맞게끔 변경 처리
+ * @param date
+ * @returns {string}
+ */
+export const makeCompleteDateTime = (date: string) => {
+    let arrayDate = date.split(" ");
+    let completeDateTimeString = arrayDate[0] + "T" + arrayDate[1] + ":00Z";
+    return completeDateTimeString;
+}
+
+
+
+export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+
+    let appName = dataOne.AppName;
+    if (dataOne.AppName.includes('[')) {
+        appName = dataOne.AppName.toString().split('[')[0]
+    }
+
+    if (pStartTime !== '' && pEndTime !== '') {
+
+        let form = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "appinst": {
+                    "app_key": {
+                        "organization": dataOne.OrganizationName,
+                        "name": appName,
+                        "version": dataOne.Version
+                    },
+                    "cluster_inst_key": {
+                        "cluster_key": {"name": dataOne.ClusterInst},
+                        "cloudlet_key": {
+                            "name": dataOne.Cloudlet,
+                            "organization": dataOne.Operator
+                        }
+                    }
+                },
+                "selector": valid,
+                "last": fetchingDataNo,
+                "starttime": pStartTime,
+                "endtime": pEndTime,
+            }
+        }
+        return form;
+
+
+    } else {
+
+        let form = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "appinst": {
+                    "app_key": {
+                        "organization": dataOne.OrganizationName,
+                        "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                        "version": dataOne.Version
+                    },
+                    "cluster_inst_key": {
+                        "cluster_key": {"name": dataOne.ClusterInst},
+                        "cloudlet_key": {
+                            "name": dataOne.Cloudlet,
+                            "organization": dataOne.Operator
+                        }
+                    }
+                },
+                "selector": valid,
+                //"last": 25
+                "last": fetchingDataNo,
+            }
+        }
+
+        return form;
+    }
+}
+
+
+/**
+ *
+ * @param filteredAppInstList
+ * @param allClientStatusList
+ */
+export function filteredClientStatusListByAppName(filteredAppInstList, allClientStatusList) {
+
+    let appNames = []
+    filteredAppInstList.map((item: TypeAppInst, index) => {
+        appNames.push(item.AppName)
+    })
+
+    return allClientStatusList.filter((item: TypeClientStatus, index) => {
+        let count = 0;
+        appNames.map(appNameOne => {
+            if (appNameOne === item.app) {
+                count++;
+            }
+        })
+
+        return count > 0;
+    })
+}
+
 
 
 export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
