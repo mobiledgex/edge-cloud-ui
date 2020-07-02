@@ -19,7 +19,7 @@ import {
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS
+    THEME_OPTIONS, USER_TYPE_SHORT
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
@@ -1260,7 +1260,7 @@ export const convertToClassification = (pClassification) => {
 
 export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true) => {
     let clusterCloudletName = '';
-    if (_this.state.userType.includes('dev')) {
+    if (_this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
         clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
     } else {
         clusterCloudletName = item.cluster
@@ -1356,7 +1356,6 @@ export const makeCompleteDateTime = (date: string) => {
 }
 
 
-
 export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
     let appName = dataOne.AppName;
@@ -1447,7 +1446,6 @@ export function filteredClientStatusListByAppName(filteredAppInstList, allClient
         return count > 0;
     })
 }
-
 
 
 export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {

@@ -370,14 +370,14 @@ export const USAGE_INDEX_FOR_CLUSTER = {
 export const USER_TYPE = {
     DEVELOPER: 'developer',
     OPERATOR: 'operator',
-    AMDIN: 'admin',
+    ADMIN: 'admin',
 
 }
 
 export const USER_TYPE_SHORT = {
     DEV: 'dev',
     OPER: 'oper',
-    AMDIN: 'amdin',
+    ADMIN: 'admin',
 }
 
 export const NETWORK_TYPE = {

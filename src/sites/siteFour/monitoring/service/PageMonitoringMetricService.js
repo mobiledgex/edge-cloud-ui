@@ -177,7 +177,7 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
         console.log(`mergedAppInstanceList====>`, mergedAppInstanceList);
 
         let filteredAppInstList = []
-        if (_this.state.userType.includes(USER_TYPE.AMDIN)) {
+        if (_this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
             filteredAppInstList = mergedAppInstanceList;
         } else {//todo: DEV, OPER
             filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {

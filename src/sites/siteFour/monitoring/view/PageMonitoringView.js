@@ -707,9 +707,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     let clientStatusList = []
                     //TODO:###################################################################################################################
-                    //TODO:       AMDIN
+                    //TODO:    ADMIN
                     //TODO:###################################################################################################################
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                    if (this.state.userType.includes(USER_TYPE.ADMIN)) {
                         cloudletList = await fetchCloudletList();
                         appInstList = await fetchAppInstList(undefined, this)
                         let operOrgList = makeUniqOperOrg(cloudletList)
@@ -781,7 +781,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo:##########################################################
                     //todo: ADMIN usage
                     //todo:############################################################
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                    if (this.state.userType.includes(USER_TYPE.ADMIN)) {
                         //=================ADMIN INIT DATA ===============================
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         //todo:##########################################################
@@ -912,7 +912,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             getDataCount(appInstList, clusterList, cloudletList) {
                 let dataCount;
-                if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                if (this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
                     dataCount = appInstList.length
                 } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                     dataCount = parseInt(clusterList.length) + parseInt(appInstList.length)
@@ -946,7 +946,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 //@fixme: reset bubble chart data
                 let bubbleChartData = []
-                if (!this.state.userType.includes(USER_TYPE.AMDIN)) {
+                if (!this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
                     bubbleChartData = await makeClusterBubbleChartData(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                     await this.setState({
                         bubbleChartData: bubbleChartData,
@@ -977,9 +977,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 clearInterval(this.intervalForAppInst)
                 await this.setState({
                     currentClassification:
-                        this.state.userType.toString().includes(USER_TYPE.DEVELOPER) ? CLASSIFICATION.CLUSTER :
-                            this.state.userType.toString().includes(USER_TYPE.OPERATOR) ? CLASSIFICATION.CLOUDLET :
-                                this.state.userType.toString().includes(USER_TYPE.AMDIN) ? CLASSIFICATION.CLUSTER_FOR_ADMIN : null,
+                        this.state.userType.toString().includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER :
+                            this.state.userType.toString().includes(USER_TYPE_SHORT.OPER) ? CLASSIFICATION.CLOUDLET :
+                                this.state.userType.toString().includes(USER_TYPE_SHORT.ADMIN) ? CLASSIFICATION.CLUSTER_FOR_ADMIN : null,
                     placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
                     placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
                 })
@@ -1847,7 +1847,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             revertToDefaultLayout = async () => {
                 try {
                     //@TODO:ADMIN
-                    if (this.state.userType.includes(USER_TYPE.AMDIN)) {
+                    if (this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
                         reactLocalStorage.remove(getUserId() + ADMIN_LAYOUT_KEY)
                         reactLocalStorage.remove(getUserId() + ADMIN_HW_MAPPER_KEY)
                         reactLocalStorage.remove(getUserId() + ADMIN_CLUSTER_LAYOUT_KEY)
@@ -2752,7 +2752,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 let startTime = makeCompleteDateTime(date[0]);
                                                 let endTime = makeCompleteDateTime(date[1]);
 
-                                                usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.AMDIN))
+                                                usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
                                                 usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
                                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
                                                 usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, undefined, undefined));
@@ -3235,7 +3235,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         key={clusterIndex}
                                         className="gutterRow"
                                         onClick={async () => {
-                                            if (this.state.userType.includes('dev')) {
+                                            if (this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
                                                 let clusterCloudletList = []
                                                 if (filteredClusterUsageList.length > 1) {
 
@@ -3272,7 +3272,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                         {item.cluster}
                                                     </div>
 
-                                                    {this.state.userType.includes('dev') &&
+                                                    {this.state.userType.includes(USER_TYPE_SHORT.DEV) &&
                                                     <div style={{color: 'white',}}>
                                                         &nbsp;[{item.cloudlet}]
                                                     </div>
@@ -3534,7 +3534,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  flex: .7,
                              }}>
                             {this.renderTitleArea()}
-                            {this.state.userType.toLowerCase().includes('admin') ? //todo: admin
+                            {this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.ADMIN) ? //todo: admin
                                 <React.Fragment>
                                     <div style={{marginLeft: 15}}>
                                         {this.renderOrganizationDropdownForAdmin()}
@@ -3550,7 +3550,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.renderAppInstDropdown()}
                                     </div>
                                 </React.Fragment>
-                                : this.state.userType.toLowerCase().includes('dev') ?//todo: dev
+                                : this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.DEV) ?//todo: dev
                                     <React.Fragment>
                                         <div style={{marginLeft: 25}}>
                                             {this.renderClusterTreeDropdown()}
@@ -3614,7 +3614,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             render() {
-                if (!this.state.isExistData && !this.state.userType.includes(USER_TYPE.AMDIN)) {
+                if (!this.state.isExistData && !this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
                     return (
                         <div style={{width: '100%', height: '100%',}}>
                             {this.renderHeader()}
