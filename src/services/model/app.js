@@ -23,7 +23,7 @@ export const keys = () => ([
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
-    { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor', visible: true, filter: true },
+    { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor'},
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports' },
     { field: fields.skipHCPorts, serverField: 'skip_hc_ports', label: 'Skip Health Check' },
     { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
