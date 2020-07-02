@@ -29,6 +29,10 @@ export const mcURL = (isWebSocket) =>
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
 
+        if(serverURL.includes('localhost'))
+        {
+            serverURL = process.env.REACT_APP_API_ENDPOINT  
+        }
         if (isWebSocket) {
             serverURL = serverURL.replace('http', 'ws')
         }
