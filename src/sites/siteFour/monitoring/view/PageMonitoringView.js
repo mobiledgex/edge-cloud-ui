@@ -1100,18 +1100,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
             async addGridItem(paramHwType, graphType) {
                 let uniqueId = undefined
                 let currentLayoutMapper = []
                 let itemOne = {};
                 let currentLayout
-                /*
-                   if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                        currentLayout = this.state.layoutCloudlet;
-                        currentLayoutMapper = this.state.layoutMapperCloudlet
-                    }
-                */
+                /*           if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {                        currentLayout = this.state.layoutCloudlet;                        currentLayoutMapper = this.state.layoutMapperCloudlet                    }                */
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     //@desc: ##########################
                     //@desc: CLOUDLET
@@ -1123,7 +1117,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
                     uniqueId = makeid(5)
                     currentLayoutMapper = this.state.layoutMapperCloudlet
-
                     itemOne = {
                         id: uniqueId,
                         hwType: paramHwType,
@@ -1190,9 +1183,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         hwType: paramHwType,
                         graphType: graphType,
                     }
-
-                    console.log(`cloudletForAdmin========itemOne>`, itemOne);
-
                     await this.setState({
                         layoutCloudletAdmin: this.state.layoutCloudletAdmin.concat({
                             i: uniqueId,
@@ -2413,7 +2403,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentAppInst: fullCurrentAppInst,
                         currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
-                    },()=>{
+                    }, () => {
                         console.log(`filteredAppInstUsageList====>`, this.state.filteredAppInstUsageList);
                     });
 
@@ -3404,7 +3394,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 marginLeft: 0,
                                 flex: 1,
                             }}>
-                                {this.renderAppInstDot(0)}
+                                {this.renderDot(0)}
                                 <ClusterCluoudletAppInstLabel
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                     {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
