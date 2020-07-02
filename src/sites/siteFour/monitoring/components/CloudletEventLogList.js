@@ -56,7 +56,7 @@ export default function CloudletEventLogList(props) {
         if (title === 'UPDATE_START') {
             return "UPD_START"
         } else if (title === 'UPDATE_COMPLETE') {
-            return "UPD_COMPLETE"
+            return "UPD_COMPLT"
         } else if (title === 'UPDATE_ERROR') {
             return "UPD_ERR"
         } else {

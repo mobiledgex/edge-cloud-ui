@@ -26,7 +26,7 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {
     convertByteToMegaGigaByte, convertMegaToGiGa,
     convertToMegaGigaForNumber,
-    makeBubbleChartData,
+    makeClusterBubbleChartData,
     renderUsageByType
 } from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
@@ -329,7 +329,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
 
 export const handleHardwareTabChanges = async (_this: PageMonitoringView, selectedValueOne) => {
     try {
-        if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
             if (selectedValueOne === HARDWARE_TYPE.CPU) {
                 await _this.setState({
                     currentTabIndex: 0
@@ -650,7 +650,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
         chartColorList: selectedChartColorList,
     }, async () => {
         _this.setState({
-            bubbleChartData: await makeBubbleChartData(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
+            bubbleChartData: await makeClusterBubbleChartData(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
         })
     })
 
@@ -701,7 +701,7 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
                 } else {
                     return convertToMegaGigaForNumber(value);
                 }
-            } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+            } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
                 if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
                     return value + " %";
                 } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {

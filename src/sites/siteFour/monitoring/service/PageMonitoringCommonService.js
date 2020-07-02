@@ -457,13 +457,13 @@ export const convertToMegaGigaForNumber = (bytes) => {
 
 
 export const convertMegaToGiGa = (value) => {
-    try{
+    try {
         if (value > 1000) {
             return (value / 1000).toFixed(0) + ' GB'
         } else {
             return value + ' MB';
         }
-    }catch (e) {
+    } catch (e) {
 
     }
 }
@@ -895,54 +895,35 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
 
 }
 
+
 /**
  *
  * @param usageList
  * @param pHardwareType
- * @param themeTitle
+ * @param chartColorList
+ * @param classification
  * @returns {[]}
  */
-export const makeBubbleChartData = (usageList: any, pHardwareType, chartColorList, classification = CLASSIFICATION.CLUSTER) => {
+export const makeClusterBubbleChartData = (usageList, pHardwareType, chartColorList, classification = '') => {
+    let bubbleChartData = []
     try {
+        usageList.map((item, index) => {
+            let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
+            usageValue = usageValue.toFixed(2)
 
-        let bubbleChartData = []
-        if (classification === CLASSIFICATION.CLUSTER) {
+            let clusterCloudletFullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
 
-            usageList.map((item, index) => {
-                let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
-                usageValue = usageValue.toFixed(2)
-
-                let clusterCloudletFullLabel = item.cluster.toString() + ' [' + item.cloudlet.toString().trim() + "]";
-
-                bubbleChartData.push({
-                    type: pHardwareType,
-                    index: index,
-                    label: clusterCloudletFullLabel.toString().substring(0, 17) + "...",
-                    value: usageValue,
-                    favor: usageValue,
-                    fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
-                    cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
-                    color: usageList.length === 1 ? chartColorList[item.colorCodeIndex] : chartColorList[item.colorCodeIndex],
-                })
+            bubbleChartData.push({
+                type: pHardwareType,
+                index: index,
+                label: clusterCloudletFullLabel.toString().substring(0, 17) + "...",
+                value: usageValue,
+                favor: usageValue,
+                fullLabel: item.cluster.toString() + ' [' + item.cloudlet.toString().trim().substring(0, 15) + "]",
+                cluster_cloudlet: item.cluster.toString() + ' | ' + item.cloudlet.toString(),
+                color: usageList.length === 1 ? chartColorList[item.colorCodeIndex] : chartColorList[item.colorCodeIndex],
             })
-        } else {//TODO: APPINST
-            usageList.map((item, index) => {
-                let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
-                usageValue = usageValue.toFixed(1)
-                let label = item.appName.toString() //+ ' [' + item.ClusterInst.toString().trim() + "]";
-
-                bubbleChartData.push({
-                    type: pHardwareType,
-                    index: index,
-                    label: label.toString().substring(0, 17) + "...",
-                    value: usageValue,
-                    favor: usageValue,
-                    fullLabel: item.appName.toString() + ' [' + item.appName.toString().trim().substring(0, 15) + "]",
-                    cluster_cloudlet: item.appName.toString() + ' | ' + item.appName.toString(),
-                    color: usageList.length === 1 ? chartColorList[item.colorCodeIndex] : chartColorList[item.colorCodeIndex],
-                })
-            })
-        }
+        })
 
         return bubbleChartData;
     } catch (e) {

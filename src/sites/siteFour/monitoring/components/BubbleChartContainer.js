@@ -1,11 +1,15 @@
 // @flow
 import * as React from 'react';
 import BubbleChartCore from "./BubbleChartCore";
-import {handleHardwareTabChanges, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
-import {makeBubbleChartData, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
+import {
+    handleHardwareTabChanges,
+    handleLegendAndBubbleClickedEvent,
+    makeLineChartData
+} from "../service/PageMonitoringService";
+import {makeClusterBubbleChartData, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {Select} from "antd";
+import {Select, TreeSelect} from "antd";
 
 const {Option} = Select;
 
@@ -115,15 +119,20 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                          }}
                                     >
                                         {this.props.isBig === undefined ?
-                                            <div style={{flex: .9, marginTop: 5}}>
-                                                {/*{convertToClassification(this.props.currentClassification)}*/} Bubble Chart
+                                            <div style={{flex: .5, marginTop: 5,}}>
+                                                Bubble Chart
                                             </div>
                                             : <div style={{width: window.innerWidth * 0.9}}>
 
                                             </div>
                                         }
-                                        <div style={{flex: .1, marginRight: 50, marginTop: 2,}}>
+                                        <div
+                                            style={{flex: .4, marginRight: -50, marginTop: 2, backgroundColor: 'blue'}}>
                                             <Select
+                                                dropdownMatchSelectWidth={false}
+                                                dropdownStyle={{
+                                                    maxHeight: 800, overflow: 'auto', width: '160px', fontSize: 10,
+                                                }}
                                                 ref={c => this.bubbleChartSelect = c}
                                                 size={'medium'}
                                                 style={{width: 125}}
@@ -131,20 +140,27 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                 placeholder='SELECT HARDWARE'
                                                 defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                                                 value={this.props.parent.state.currentHardwareType}
-                                                onChange={async (value) => {
-                                                    await handleHardwareTabChanges(this.props.parent, value)
+                                                onChange={async (hwType) => {
+                                                    await handleHardwareTabChanges(this.props.parent, hwType)
 
                                                     try {
                                                         let bubbleChartData = []
-                                                        if (this.props.currentClassification === CLASSIFICATION.CLUSTER) {
-                                                            bubbleChartData = makeBubbleChartData(this.props.parent.state.filteredClusterUsageList, value, this.props.parent.state.chartColorList, this.props.parent.state.currentColorIndex);
-                                                        } else {
-                                                            bubbleChartData = makeBubbleChartData(this.props.parent.state.filteredAppInstUsageList, value, this.props.parent.state.chartColorList, this.props.parent.state.currentColorIndex);
+                                                        if (this.props.currentClassification === CLASSIFICATION.CLUSTER || this.props.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+
+                                                            console.log(`bubbleChartData===filteredClusterUsageList=>`, this.props.parent.state.filteredClusterUsageList);
+
+                                                            console.log(`bubbleChartData===currentClassification=>`, this.props.currentClassification);
+                                                            bubbleChartData = makeClusterBubbleChartData(this.props.parent.state.filteredClusterUsageList, hwType, this.props.parent.state.chartColorList, this.props.currentClassification);
+
+                                                            console.log(`bubbleChartData====>`, bubbleChartData)
+                                                        } else {//todo : appInst
+                                                            bubbleChartData = makeClusterBubbleChartData(this.props.parent.state.filteredAppInstUsageList, hwType, this.props.parent.state.chartColorList, this.props.currentClassification);
+                                                            console.log(`bubbleChartData===appInst=>`, bubbleChartData)
                                                         }
 
                                                         this.props.parent.setState({
                                                             bubbleChartData: bubbleChartData,
-                                                            currentHardwareType: value,
+                                                            currentHardwareType: hwType,
                                                         }, () => {
 
                                                             this.bubbleChartSelect.blur();

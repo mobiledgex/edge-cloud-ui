@@ -76,7 +76,7 @@ import moment from "moment";
 import {
     getOneYearStartEndDatetime,
     isEmpty,
-    makeBubbleChartData,
+    makeClusterBubbleChartData,
     renderPlaceHolderHorizontalLoader,
     renderWifiLoader,
     showToast
@@ -789,22 +789,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@todo: map Marker
                     //@todo:#########################################################################
                     let markerListForMap = []
+                    //DESC:MAP_LEVEL.CLOUDLET
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET || this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
                         markerListForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
-                    } else {//TODO:MAP_LEVEL.CLUSTER
+                    } else {//DESC:MAP_LEVEL.CLUSTER
                         let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                         markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
 
                     }
 
-
-                    console.log(`markerListForMap========>`, markerListForMap);
-
                     await this.setState({
                         appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
                         mapLoading: false,
-                    }, () => {
-                        console.log(`appInstanceListGroupByCloudlet========>`, this.state.appInstanceListGroupByCloudlet);
                     });
 
 
@@ -817,9 +813,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo: ADMIN usage
                     //todo:############################################################
                     if (this.state.userType.includes(USER_TYPE.AMDIN)) {
-                        //allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
-
-
+                        //=================ADMIN INIT DATA ===============================
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         //todo:##########################################################
                         //todo: DEVELOPER usage
@@ -835,9 +829,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let regionList = localStorage.getItem('regions').split(",")
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this, true)
-
-                        bubbleChartData = await makeBubbleChartData(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
-
+                        bubbleChartData = await makeClusterBubbleChartData(allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
 
                     } else {
                         //todo:###################################
@@ -986,7 +978,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //@fixme: reset bubble chart data
                 let bubbleChartData = []
                 if (!this.state.userType.includes(USER_TYPE.AMDIN)) {
-                    bubbleChartData = await makeBubbleChartData(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
+                    bubbleChartData = await makeClusterBubbleChartData(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
                     await this.setState({
                         bubbleChartData: bubbleChartData,
                     })
@@ -2587,7 +2579,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             })*/
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
-                        let bubbleChartData = makeBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
+                        let bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
                         let mapMarkerListHashMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
@@ -2923,17 +2915,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Select
                             ref={c => this.cloudletSelectForAdmin = c}
                             showSearch={true}
-                            dropdownStyle={{}}
                             loading={this.state.cloudletDropdownLoading}
                             listHeight={512}
-                            style={{width: 250, maxHeight: '512px !important'}}
+                            style={{width: 210, maxHeight: '512px !important'}}
+                            dropdownMatchSelectWidth={false}
+                            dropdownStyle={{
+                                maxHeight: 800, overflow: 'auto', width: '300px'
+                            }}
                             disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
                             value={this.state.currentCloudLet}
                             placeholder={'Select Cloudlet'}
                             onSelect={async (selectCloudlet) => {
-
                                 let currentCloudlet = selectCloudlet.split("|")[0].trim();
-
                                 try {
                                     this.cloudletSelectForAdmin.blur();
                                     await this.setState({
@@ -3019,6 +3012,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         let clusterTreeDropdownList = []
                                         let clientStatusList = []
                                         let cloudletEventLogList = []
+                                        let bubbleChartData = []
                                         try {
                                             let usageEventPromiseList = []
                                             if (filteredClusterList.length > 0) {
@@ -3037,19 +3031,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 allClusterUsageList = completedPromiseList[2];
                                                 cloudletEventLogList = completedPromiseList[3];
 
-                                                console.log(`clientStatusList====>`, clientStatusList);
-
-
                                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
                                                 clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
                                                 ////todo:  mapFiltering when map for cluster
                                                 this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
+
+                                                //todo:bubble Charts
+                                                bubbleChartData = await makeClusterBubbleChartData(filteredClusterList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
+
                                             } else {
                                                 ////todo:  mapfiltering, when no cluster
                                                 this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
                                             }
 
                                             await this.setState({
+                                                bubbleChartData: bubbleChartData,
                                                 allClusterEventLogList: allClusterEventLogList,
                                                 filteredClusterEventLogList: allClusterEventLogList,
                                                 allAppInstEventLogs: allAppInstEventLogList,
@@ -3069,13 +3065,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 filteredClientStatusList: clientStatusList,
                                                 filteredCloudletEventLogList: cloudletEventLogList,
                                                 currentCloudLet: currentCloudlet,
+                                                isLegendExpanded: false,
                                             }, () => {
-                                                console.log(`filteredCloudletEventLogList===>`, this.state.filteredCloudletEventLogList);
-
-                                                console.log(`currentCloudLet========>`, this.state.currentCloudLet);
                                             })
                                         } catch (e) {
-                                            throw new Error(e)
+                                            showToast(e.toString())
                                         }
 
                                     }
@@ -3451,7 +3445,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            ________________________________________________Legend________________________________________________________________________________________________________________________() {
+            __________LEGEND________________________________________________________________________________________________________________________() {
             }
 
             makeLegend() {
@@ -3782,7 +3776,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return stringLimit;
             }
 
-            ________________________________________________Legend___END________________________________________________________________________________________________________________________() {
+            _________________________________________________________LEGEND________END________________________________________________________________________________________________________________________() {
             }
 
 
@@ -3824,7 +3818,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     <div style={{marginLeft: 15}}>
                                         {this.renderCloudletDropdownForAdmin()}
                                     </div>
-                                    <div style={{marginLeft: 15}}>
+                                    <div style={{marginLeft: 5}}>
                                         {this.renderClusterTreeDropdownForAdmin()}
                                     </div>
 
