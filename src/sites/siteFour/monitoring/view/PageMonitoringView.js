@@ -873,30 +873,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             }
 
-            makeLegendRowCount(cloudletList, clusterList, appInstList, itemCount) {
-                let rowCount = 0
-                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                    itemCount = cloudletList.length
-                    rowCount = Math.ceil(itemCount / 8);
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    itemCount = clusterList.length;
-                    rowCount = Math.ceil(itemCount / 6);
-                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                    itemCount = appInstList.length;
-                    rowCount = Math.ceil(itemCount / 6);
-                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-                    itemCount = appInstList.length;
-                    rowCount = Math.ceil(itemCount / 6);
-                }
-
-                let result = {
-                    itemCount,
-                    rowCount
-                }
-
-                return result
-
-            }
 
             componentWillUnmount(): void {
                 this.props.toggleHeader(true)
@@ -1096,23 +1072,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async addGridItem(paramHwType, graphType) {
-                let uniqueId = undefined
-                let currentLayoutMapper = []
-                let itemOne = {};
-                let currentLayout
-                /*           if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {                        currentLayout = this.state.layoutCloudlet;                        currentLayoutMapper = this.state.layoutMapperCloudlet                    }                */
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     //@desc: ##########################
                     //@desc: CLOUDLET
                     //@desc: ##########################
-                    currentLayout = this.state.layoutCloudlet;
+                    let currentLayout = this.state.layoutCloudlet;
                     let maxY = -1;
                     if (!isEmpty(currentLayout)) {
                         maxY = maxBy(currentLayout, 'y').y
                     }
-                    uniqueId = makeid(5)
-                    currentLayoutMapper = this.state.layoutMapperCloudlet
-                    itemOne = {
+                    let uniqueId = makeid(5)
+                    let currentLayoutMapper = this.state.layoutMapperCloudlet
+                    let itemOne = {
                         id: uniqueId,
                         hwType: paramHwType,
                         graphType: graphType,
