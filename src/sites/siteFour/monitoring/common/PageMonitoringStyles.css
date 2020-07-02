@@ -960,3 +960,11 @@ tr td {
 .ant-select-dropdown-menu-item {
     font-size: 9pt !important;
 }
+
+.ant-tag-blue{
+    background: grey !important;
+    color: lawngreen !important;
+}
+.ant-picker-cell-in-view.ant-picker-cell-in-range::before {
+    background: #96bd2b;
+}

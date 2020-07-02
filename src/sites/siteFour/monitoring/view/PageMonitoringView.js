@@ -1198,7 +1198,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperCluster)
 
                 } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {//todo:CLOUDLET_FOR_ADMIN
-                    showToast('cloudletForAdmin')
                     //@desc: ##########################
                     //@desc: CLOUDLET_FOR_ADMIN
                     //@desc: ##########################
@@ -1775,13 +1774,48 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            ////////////////////////////////////////////
-            ________________________________________________GridLayout________________________________________________________________________________________________________________________() {
+            _______________GridLayout________________________________________________________________________________________________________________________() {
             }
 
-            renderGridLayoutForCloudletAdmin() {
-
+            renderGridLayoutForClassfication() {
+                let currentLayout = [];
+                let currenyLayoutMapper = []
+                let currentLayoutKey = undefined;
+                let currentDefaultLayoutXYPos = []
                 try {
+                    if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+                        currentLayout = this.state.layoutCloudletAdmin;
+                        currenyLayoutMapper = this.state.layoutMapperCloudletAdmin
+                        currentLayoutKey = ADMIN_CLOUDLET_LAYOUT_KEY;
+                        currentDefaultLayoutXYPos = defaultLayoutXYPosForCloudletAdmin
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                        currentLayout = this.state.layoutClusterAdmin;
+                        currenyLayoutMapper = this.state.layoutMapperClusterAdmin
+                        currentLayoutKey = ADMIN_CLUSTER_LAYOUT_KEY
+                        currentDefaultLayoutXYPos = defaultLayoutXYPosForClusterAdmin
+                    } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                        currentLayout = this.state.layoutAdmin;
+                        currenyLayoutMapper = this.state.layoutMapperAdmin
+                        currentLayoutKey = ADMIN_LAYOUT_KEY
+                        currentDefaultLayoutXYPos = defaultLayoutXYPosForAdmin
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                        currentLayout = this.state.layoutCloudlet;
+                        currenyLayoutMapper = this.state.layoutMapperCloudlet
+                        currentLayoutKey = CLOUDLET_LAYOUT_KEY
+                        currentDefaultLayoutXYPos = defaultLayoutXYPosForCloudlet
+                    } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                        currentLayout = this.state.layoutCluster;
+                        currenyLayoutMapper = this.state.layoutMapperCluster
+                        currentLayoutKey = CLUSTER_LAYOUT_KEY
+                        currentDefaultLayoutXYPos = defaultLayoutXYPosForCluster
+                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
+                        currentLayout = this.state.layoutAppInst;
+                        currenyLayoutMapper = this.state.layoutMapperAppInst
+                        currentLayoutKey = APPINST_LAYOUT_KEY
+                        currentDefaultLayoutXYPos = defaultLayoutXYPosForAppInst
+                    }
+
+
                     return (
                         <ResponsiveReactGridLayout
                             isResizable={true}
@@ -1797,7 +1831,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             className='layout page_monitoring_layout_dev_oper'
                             cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutCloudletAdmin}
+                            layout={currentLayout}
                             rowHeight={this.gridItemHeight}
                             onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
                                 let width = newItem.w;
@@ -1808,23 +1842,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }}
                             onLayoutChange={async (layout) => {
                                 this.setState({
-                                    layoutCloudletAdmin: layout,
+                                    [currentLayout]: layout,
                                 }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCloudletAdmin);
-                                    reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, layout)
+                                    await this.calculateEmptyPosInGrid(layout, currentDefaultLayoutXYPos);
+                                    reactLocalStorage.setObject(getUserId() + currentLayoutKey, layout)
                                 });
                             }}
                         >
-                            {this.state.layoutCloudletAdmin.map((item, loopIndex) => {
+                            {currentLayout.map((item, loopIndex) => {
+
+                                console.log(`renderGridLayoutForCloudletAdmin===>${currentLayoutKey}====>`, item);
+
                                 const uniqueIndex = item.i;
                                 let hwType = HARDWARE_TYPE.CPU
                                 let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperCloudletAdmin.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperCloudletAdmin.find(x => x.id === uniqueIndex).hwType
-
-                                    console.log(`hwType========>`, hwType);
-
-                                    graphType = this.state.layoutMapperCloudletAdmin.find(x => x.id === uniqueIndex).graphType
+                                if (!isEmpty(currenyLayoutMapper.find(x => x.id === uniqueIndex))) {
+                                    hwType = currenyLayoutMapper.find(x => x.id === uniqueIndex).hwType
+                                    graphType = currenyLayoutMapper.find(x => x.id === uniqueIndex).graphType
                                     graphType = graphType.toUpperCase()
                                 }
                                 return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
@@ -1832,288 +1866,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         </ResponsiveReactGridLayout>
 
-                    )
-                } catch (e) {
-                    showToast(e.toString())
-                }
-            }
-
-
-            renderGridLayoutForClusterAdmin() {
-                try {
-                    return (
-                        <ResponsiveReactGridLayout
-                            isResizable={true}
-                            draggableHandle=".draggable"
-                            verticalCompact={true}
-                            compactType={'vertical'}
-                            preventCollision={true}
-                            isDraggable={true}
-                            autoSize={true}
-                            style={{
-                                overflowY: this.state.isLegendExpanded ? 'auto' : null,
-                            }}
-                            className='layout page_monitoring_layout_dev_oper'
-                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutClusterAdmin}
-                            rowHeight={this.gridItemHeight}
-                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                let width = newItem.w;
-                                this.setState({
-                                    isResizeComplete: !this.state.isResizeComplete,
-                                    currentWidgetWidth: width,
-                                })
-                            }}
-                            onLayoutChange={async (layout) => {
-
-                                console.log(`currentClassification...renderGridLayoutForClusterAdmin===>`, layout);
-
-
-                                this.setState({
-                                    layoutClusterAdmin: layout,
-                                }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForClusterAdmin);
-                                    reactLocalStorage.setObject(getUserId() + ADMIN_CLUSTER_LAYOUT_KEY, layout)
-                                });
-
-                            }}
-                        >
-                            {this.state.layoutClusterAdmin.map((item, loopIndex) => {
-
-                                const uniqueIndex = item.i;
-                                let hwType = HARDWARE_TYPE.CPU
-                                let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperClusterAdmin.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperClusterAdmin.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperClusterAdmin.find(x => x.id === uniqueIndex).graphType
-                                    graphType = graphType.toUpperCase()
-                                }
-                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                            })}
-
-                        </ResponsiveReactGridLayout>
-
-                    )
-                } catch (e) {
-                    showToast(e.toString())
-                }
-            }
-
-            renderGridLayoutForAppInstAdmin() {
-                try {
-                    return (
-                        <ResponsiveReactGridLayout
-                            isResizable={true}
-                            draggableHandle=".draggable"
-                            verticalCompact={true}
-                            compactType={'vertical'}
-                            preventCollision={true}
-                            isDraggable={true}
-                            autoSize={true}
-                            style={{
-                                backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null,
-                                overflowY: this.state.isLegendExpanded ? 'auto' : null,
-
-                            }}
-                            className='layout page_monitoring_layout_dev_oper'
-                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutAdmin}
-                            rowHeight={this.gridItemHeight}
-                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                let width = newItem.w;
-                                this.setState({
-                                    isResizeComplete: !this.state.isResizeComplete,
-                                    currentWidgetWidth: width,
-                                })
-                            }}
-                            onLayoutChange={async (layout) => {
-                                this.setState({
-                                    layoutAdmin: layout,
-                                }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAdmin);
-                                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, layout)
-                                });
-
-                            }}
-                        >
-                            {this.state.layoutAdmin.map((item, loopIndex) => {
-
-                                console.log('layoutAdmin====>', item)
-
-                                const uniqueIndex = item.i;
-                                let hwType = HARDWARE_TYPE.CPU
-                                let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperAdmin.find(x => x.id === uniqueIndex).graphType
-                                    graphType = graphType.toUpperCase()
-                                }
-                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                            })}
-
-                        </ResponsiveReactGridLayout>
-
-                    )
-                } catch (e) {
-                    showToast(e.toString())
-                }
-            }
-
-
-            renderGridLayoutForCluster() {
-                try {
-                    return (
-                        <ResponsiveReactGridLayout
-                            ref={c => this.clusterGridlayout = c}
-                            isResizable={true}
-                            draggableHandle=".draggable"
-                            verticalCompact={true}
-                            compactType={'vertical'}
-                            preventCollision={true}
-                            isDraggable={true}
-                            autoSize={true}
-                            style={{
-                                backgroundColor: this.props.themeType === THEME_TYPE.LIGHT ? 'white' : null,
-                                overflowY: this.state.isLegendExpanded ? 'auto' : null,
-
-                            }}
-                            className='layout page_monitoring_layout_dev_oper'
-                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutCluster}
-                            rowHeight={this.gridItemHeight}
-                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                let width = newItem.w;
-                                this.setState({
-                                    isResizeComplete: !this.state.isResizeComplete,
-                                    currentWidgetWidth: width,
-                                })
-                            }}
-                            onLayoutChange={async (layout) => {
-                                this.setState({
-                                    layoutCluster: layout,
-                                }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCluster);
-                                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, layout)
-                                });
-
-                            }}
-                        >
-                            {this.state.layoutCluster.map((item, loopIndex) => {
-
-                                const uniqueIndex = item.i;
-                                let hwType = HARDWARE_TYPE.CPU
-                                let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperCluster.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperCluster.find(x => x.id === uniqueIndex).graphType
-                                    graphType = graphType.toUpperCase()
-                                }
-                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                            })}
-
-                        </ResponsiveReactGridLayout>
-
-                    )
-                } catch (e) {
-                    showToast(e.toString())
-                }
-            }
-
-
-            renderGridLayoutForCloudlet() {
-                try {
-                    return (
-                        <ResponsiveReactGridLayout
-                            isResizable={true}
-                            draggableHandle=".draggable"
-                            verticalCompact={true}
-                            compactType={'vertical'}
-                            preventCollision={true}
-                            isDraggable={true}
-                            autoSize={true}
-                            className='layout page_monitoring_layout_dev_oper'
-                            cols={{lg: 4, md: 4, sm: 4, xs: 4, xxs: 4}}
-                            layout={this.state.layoutCloudlet}
-                            rowHeight={this.gridItemHeight}
-                            onResizeStop={(layout: Layout, oldItem: LayoutItem, newItem: LayoutItem, placeholder: LayoutItem, e: MouseEvent, element: HTMLElement) => {
-                                let width = newItem.w;
-                                this.setState({
-                                    isResizeComplete: !this.state.isResizeComplete,
-                                    currentWidgetWidth: width,
-                                })
-                            }}
-                            onLayoutChange={async (layout) => {
-                                this.setState({
-                                    layoutCloudlet: layout,
-                                }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCloudlet);
-                                    reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, layout)
-                                });
-
-                            }}
-                            {...this.props}
-                        >
-                            {this.state.layoutCloudlet.map((item, loopIndex) => {
-                                const uniqueIndex = item.i;
-                                let hwType = HARDWARE_TYPE.CPU
-                                let graphType = GRID_ITEM_TYPE.LINE;
-                                if (!isEmpty(this.state.layoutMapperCloudlet.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperCloudlet.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperCloudlet.find(x => x.id === uniqueIndex).graphType
-                                    graphType = graphType.toUpperCase()
-                                }
-                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-                            })}
-
-                        </ResponsiveReactGridLayout>
-
-                    )
-                } catch (e) {
-                    //showToast(e.toString())
-                }
-            }
-
-
-            renderGridLayoutForAppInst = () => {
-                try {
-                    return (
-                        <ResponsiveReactGridLayout
-                            verticalCompact={true}
-                            compactType={'vertical'}
-                            preventCollision={true}
-                            isResizable={true}
-                            draggableHandle=".draggable"
-                            isDraggable={true}
-                            useCSSTransforms={true}
-                            className={'layout page_monitoring_layout_dev'}
-                            cols={{lg: 3, md: 3, sm: 3, xs: 3, xxs: 3}}
-                            layout={this.state.layoutAppInst}
-                            rowHeight={this.gridItemHeight}
-                            onLayoutChange={async (layout) => {
-                                await this.setState({
-                                    layoutAppInst: layout
-                                }, async () => {
-                                    await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForAppInst);
-                                    let layoutUniqueId = getUserId() + APPINST_LAYOUT_KEY;
-                                    reactLocalStorage.setObject(layoutUniqueId, this.state.layoutAppInst)
-                                });
-
-                            }}
-                        >
-                            {this.state.layoutAppInst.map((item, loopIndex) => {
-
-                                const uniqueIndex = item.i;
-                                let hwType = HARDWARE_TYPE.CPU
-                                let graphType = GRID_ITEM_TYPE.LINE;
-
-                                if (!isEmpty(this.state.layoutMapperAppInst.find(x => x.id === uniqueIndex))) {
-                                    hwType = this.state.layoutMapperAppInst.find(x => x.id === uniqueIndex).hwType
-                                    graphType = this.state.layoutMapperAppInst.find(x => x.id === uniqueIndex).graphType
-                                }
-                                return this.makeGridItemOne(uniqueIndex, hwType, graphType, item)
-
-                            })}
-                        </ResponsiveReactGridLayout>
                     )
                 } catch (e) {
                     showToast(e.toString())
@@ -2539,7 +2291,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({isStream: false})
                     }
 
-
                     if (!isEmpty(selectClusterCloudletList)) {
                         let allClusterUsageList = this.state.allClusterUsageList
                         let filteredClusterUsageList = this.filterClusterUsageListForTreeSelect(allClusterUsageList, selectClusterCloudletList)
@@ -2563,8 +2314,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                             })
                         })
-
-                        console.log(`allClusterEventLogList====>`, this.state.allClusterEventLogList);
 
                         let filteredClusterEventLogList = []
                         this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
@@ -2842,6 +2591,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
                         <TreeSelect
                             dropdownMatchSelectWidth={false}
+                            //showSearch={true}
                             dropdownStyle={{
                                 maxHeight: 800, overflow: 'auto', width: '250px'
                             }}
@@ -2916,7 +2666,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             style={{width: 210, maxHeight: '512px !important'}}
                             dropdownMatchSelectWidth={false}
                             dropdownStyle={{
-                                maxHeight: 800, overflow: 'auto', width: '300px'
+                                maxHeight: 800, overflow: 'auto', width: '333px'
                             }}
                             disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
                             value={this.state.currentCloudLet}
@@ -3065,7 +2815,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             }, () => {
                                             })
                                         } catch (e) {
-                                            showToast(e.toString())
+                                            // showToast(e.toString())
                                         }
 
                                     }
@@ -3846,22 +3596,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderGridLayoutByClassification() {
-                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
-                    return this.renderGridLayoutForCloudletAdmin()
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
-                    return this.renderGridLayoutForClusterAdmin();
-                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-                    return this.renderGridLayoutForAppInstAdmin();
-                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                    return this.renderGridLayoutForCloudlet();
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    return this.renderGridLayoutForCluster();
-                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
-                    return this.renderGridLayoutForAppInst();
-                }
-            }
-
 
             //@fixme:renderNoItemMsg
             //@fixme:renderNoItemMsg
@@ -3959,7 +3693,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                              backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                          }}>
                                         {/*{this.renderNoItemMsg()}*/}
-                                        {this.renderGridLayoutByClassification()}
+                                        {this.renderGridLayoutForClassfication()}
                                     </div>
                                 </div>
                                 {/*desc:---------------------------------*/}

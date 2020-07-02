@@ -833,15 +833,13 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: isBig ? 20 : 5,//@desc: maxTicksLimit
+                        maxTicksLimit: isBig ? 50 : 5,//@desc: maxTicksLimit
                         fontSize: 9,
                         fontColor: 'white',
                         //maxRotation: 0.05,
                         autoSkip: isBig ? false : true,
-                        maxRotation: 0,//xAxis text rotation
-                        minRotation: 0,//xAxis text rotation
-                        /*maxRotation: 45,//xAxis text rotation
-                        minRotation: 45,//xAxis text rotation*/
+                        maxRotation: isBig ? 45 : 0,//xAxis text rotation
+                        minRotation: isBig ? 45 : 0,//xAxis text rotation
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
@@ -1291,7 +1289,7 @@ export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _thi
                                 {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
-                                {reduceString(clusterItemOne.ClusterName, 39)}
+                                {reduceString(clusterItemOne.ClusterName, 37)}
                             </div>
 
                         </div>
