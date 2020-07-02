@@ -24,7 +24,7 @@ import {
     TreeSelect
 } from 'antd';
 import {
-    filterByClassification,
+    filterByClassification, filteredClientStatusListByAppName,
     getCloudletClusterNameList,
     getOnlyCloudletName,
     getUserId,
@@ -704,7 +704,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                     let startTime = makeCompleteDateTime(date[0]);
                     let endTime = makeCompleteDateTime(date[1]);
-
                     let clientStatusList = []
                     //TODO:###################################################################################################################
                     //TODO:    ADMIN
@@ -835,10 +834,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         bubbleChartData: bubbleChartData,
                         allClusterEventLogList: allClusterEventLogList,
                         filteredClusterEventLogList: allClusterEventLogList,
-
                         allAppInstEventLogs: allAppInstEventLogList,
                         filteredAppInstEventLogs: allAppInstEventLogList,
-
                         isReady: true,
                         clusterTreeDropdownList: clusterTreeDropdownList,
                         appInstTreeDropdownList: appInstTreeDropdownList,
@@ -851,10 +848,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         clusterListLoading: false,
                         allClusterUsageList: allClusterUsageList,
                         filteredClusterUsageList: allClusterUsageList,
-
                         allAppInstUsageList: allAppInstUsageList,
                         filteredAppInstUsageList: allAppInstUsageList,
-
                         maxCpu: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumCpuUsage)),
                         maxMem: Math.max.apply(Math, allClusterUsageList.map((o) => o.sumMemUsage)),
                         isRequesting: false,
@@ -1109,8 +1104,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let currentLayoutMapper = []
                 let itemOne = {};
                 let currentLayout
-                /*todo:Cloudlet*/
+
+                /*    if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                        currentLayout = this.state.layoutCloudlet;
+                        currentLayoutMapper = this.state.layoutMapperCloudlet
+                    }*/
+
+
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                    //@desc: ##########################
+                    //@desc: CLOUDLET
+                    //@desc: ##########################
                     currentLayout = this.state.layoutCloudlet;
                     let maxY = -1;
                     if (!isEmpty(currentLayout)) {
@@ -1125,7 +1129,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         graphType: graphType,
                     }
                     await this.setState({
-                        layoutCloudlet: this.state.layoutCloudlet.concat({
+                        layoutCloudlet: currentLayout.concat({
                             i: uniqueId,
                             x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
                             y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
@@ -1138,6 +1142,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
                     reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
                 } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                    //@desc: ##########################
+                    //@desc: CLUSTER
+                    //@desc: ##########################
                     let currentItems = this.state.layoutCluster;
                     let maxY = -1;
                     if (!isEmpty(currentItems)) {
@@ -1151,9 +1158,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         hwType: paramHwType,
                         graphType: graphType,
                     }
-                    //@desc: ######################################
-                    //@desc:  calculate empty space in gridLayout
-                    //@desc: ######################################
                     await this.setState({
                         layoutCluster: this.state.layoutCluster.concat({
                             i: uniqueId,
@@ -1233,7 +1237,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     reactLocalStorage.setObject(getUserId() + ADMIN_HW_MAPPER_KEY, this.state.layoutMapperAdmin)
                 } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {//todo:APP_INST_FOR_ADMIN
                     //@desc: ##########################
-                    //@desc: APPINST
+                    //@desc: APP_INST_FOR_ADMIN
                     //@desc: ##########################
                     let currentItems = this.state.layoutAdmin;
                     let maxY = -1;
@@ -1812,6 +1816,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     currentWidgetWidth: width,
                                 })
                             }}
+                            /* onLayoutChange={async (layout) => {
+                                 this.setState({
+                                     layoutCloudletAdmin: layout,
+                                 }, async () => {
+                                     await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCloudletAdmin);
+                                     reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, layout)
+                                 });
+                             }}*/
                             onLayoutChange={async (layout) => {
                                 this.setState({
                                     [currentLayout]: layout,
@@ -2300,6 +2312,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
+
 
                         let mapMarkerListHashMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
 
