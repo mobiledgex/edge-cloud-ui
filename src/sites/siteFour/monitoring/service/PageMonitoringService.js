@@ -40,7 +40,7 @@ import type {
     TypeLineChartData
 } from "../../../../shared/Types";
 import {Tag} from "antd";
-import _ from 'lodash';
+import _, {sortBy} from 'lodash';
 import {fields} from "../../../../services/model/format";
 
 export function getOnlyCloudletName(cloudletOne) {
@@ -1603,16 +1603,18 @@ export const makeDropdownForCloudletForDevView = (pList) => {
 
     }
 };
-
+export const insert = (arr, index, newItem) => [
+    // part of the array before the specified index
+    ...arr.slice(0, index),
+    // inserted item
+    newItem,
+    // part of the array after the specified index
+    ...arr.slice(index)
+]
 
 export const makeDropdownForCloudlet = (pList) => {
     try {
         let newArrayList = [];
-        newArrayList.push({
-            key: undefined | undefined | undefined,
-            value: undefined | undefined | undefined,
-            text: 'Reset Filter',
-        })
         pList.map((item: TypeCloudlet, index) => {
             let Cloudlet = item.CloudletName
             let CloudletLocation = JSON.stringify(item.CloudletLocation)
@@ -1625,7 +1627,14 @@ export const makeDropdownForCloudlet = (pList) => {
             })
         })
 
-        return newArrayList;
+        newArrayList = sortBy(newArrayList, [object => object.text.toLowerCase()], ['asc']);
+        let nameSortedArrayList = insert(newArrayList, 0, {
+            key: undefined | undefined | undefined,
+            value: undefined | undefined | undefined,
+            text: 'Reset Filter',
+        })
+
+        return nameSortedArrayList;
     } catch (e) {
 
     }
