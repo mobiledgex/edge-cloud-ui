@@ -32,6 +32,7 @@ export const PLATFORM_TYPE_AZURE = 'Azure'
 export const PLATFORM_TYPE_OPEN_GCP = 'GCP'
 export const PLATFORM_TYPE_EDGEBOX = 'Edgebox'
 export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
+export const PLATFORM_TYPE_VSPHERE = 'vSphere'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
 export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
@@ -284,6 +285,8 @@ export const PlatformType = (id) => {
             return PLATFORM_TYPE_EDGEBOX
         case 6:
             return PLATFORM_TYPE_FAKEINFRA
+        case 7:
+            return PLATFORM_TYPE_VSPHERE
         case PLATFORM_TYPE_FAKE:
             return 0
         case PLATFORM_TYPE_DIND:
@@ -298,6 +301,8 @@ export const PlatformType = (id) => {
             return 5
         case PLATFORM_TYPE_FAKEINFRA:
             return 6
+        case PLATFORM_TYPE_VSPHERE:
+            return 7
         default:
             return id
     }
