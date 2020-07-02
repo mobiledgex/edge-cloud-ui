@@ -389,6 +389,7 @@ type PageDevMonitoringState = {
     isNoCluster: boolean,
     orgTreeData: any,
     currentOrgView: string,
+    currentLayout: any,
 
 }
 
@@ -650,6 +651,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isNoCluster: false,
                     orgTreeData: [],
                     currentOrgView: 'all',
+                    currentLayout: [],
 
                 };
             }
@@ -1104,13 +1106,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let currentLayoutMapper = []
                 let itemOne = {};
                 let currentLayout
-
-                /*    if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                /*
+                   if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                         currentLayout = this.state.layoutCloudlet;
                         currentLayoutMapper = this.state.layoutMapperCloudlet
-                    }*/
-
-
+                    }
+                */
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
                     //@desc: ##########################
                     //@desc: CLOUDLET
@@ -2201,6 +2202,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            ______________________________HANDLEONCHANGE____________________________________________________________________________________(){}
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
                 try {
@@ -2360,8 +2362,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
                 try {
+                    alert(fullCurrentAppInst)
                     this.setState({isEmptyChartData: true,})
-
 
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
@@ -2442,9 +2444,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //throw new Error(e)
                     showToast(e.toString())
                 }
-
-
             }
+
+            ______________________________HANDLEONCHANGE__END____________________________________________________________________________________(){}
 
 
             async filterUsageListByDateForCloudlet() {
