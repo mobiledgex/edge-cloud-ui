@@ -1008,7 +1008,7 @@ export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endT
  * @param clusterList
  * @returns {Promise<[]>}
  */
-export const getAllClusterEventLogList = async (clusterList, userType = 'dev') => {
+export const getAllClusterEventLogList = async (clusterList, userType = USER_TYPE_SHORT.DEV) => {
     try {
         let clusterPromiseList = []
         clusterList.map((clusterOne: TypeCluster, index) => {
@@ -1016,8 +1016,6 @@ export const getAllClusterEventLogList = async (clusterList, userType = 'dev') =
         })
 
         let allClusterEventLogs = await Promise.all(clusterPromiseList);
-
-
         let completedEventLogList = []
         allClusterEventLogs.map((item, index) => {
 
@@ -1044,42 +1042,21 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
         let Region = clusterItemOne.Region;
         let Operator = clusterItemOne.Operator;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if (userType.toString().includes(USER_TYPE_SHORT.DEV)) {
-            selectOrg = localStorage.getItem('selectOrg')
-            form = {
-                "region": Region,
-                "clusterinst": {
-                    "cluster_key": {
-                        "name": ClusterName
-                    },
-                    "cloudlet_key": {
-                        "name": Cloudlet,
-                        "organization": Operator,
-
-                    },
-                    "organization": selectOrg
+        selectOrg = localStorage.getItem('selectOrg')
+        form = {
+            "region": Region,
+            "clusterinst": {
+                "cluster_key": {
+                    "name": ClusterName
                 },
-                //"last": 10
-            }
+                "cloudlet_key": {
+                    "name": Cloudlet,
+                    "organization": Operator,
 
-            console.log(`form====>`, form);
-            console.log(`form====>`, store.userToken);
-        } else {//todo admin userType
-
-            form = {
-                "region": Region,
-                "clusterinst": {
-                    "cluster_key": {
-                        "name": ClusterName
-                    },
-                    "cloudlet_key": {
-                        "name": Cloudlet,
-                        "organization": Operator,
-                    },
-                    "organization": clusterItemOne.OrganizationName,
                 },
-                //"last": 10
-            }
+                "organization": userType.toString().includes(USER_TYPE_SHORT.DEV) ? selectOrg : clusterItemOne.OrganizationName
+            },
+            //"last": 10
         }
 
         let result = await axios({
