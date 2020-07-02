@@ -487,7 +487,14 @@ export const PageMonitoringStyles = {
 
     miniTableGrid: {width: '100%', overflowX: 'scroll', marginTop: -5, scrollbarWidth: 'thin'},
     appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
-    miniTableNoData:{
+    mapStatusBox: {
+        height: 45,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: 10,
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    miniTableNoData: {
         color: 'orange',
         marginTop: 25,
         fontSize: 18,

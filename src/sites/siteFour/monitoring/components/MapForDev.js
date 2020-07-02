@@ -18,9 +18,14 @@ import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
+import {
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
+} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
@@ -682,6 +687,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             />
                         </div>
                     </div>
+
                 </Control>
             )
         }
@@ -730,6 +736,22 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
+        renderMapControl2() {
+            return (
+                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                    <Center style={PageMonitoringStyles.mapStatusBox}>
+                        <div style={{}}>
+                            Cluster : {this.props.parent.state.loading ?
+                            <CircularProgress size={12} thickness={3}/> : this.props.clusterList.length}
+                        </div>
+                        <div style={{}}>
+                            AppInst : {this.props.appInstList.length}
+                        </div>
+                    </Center>
+                </Control>
+            )
+        }
+
 
         render() {
             return (
@@ -765,6 +787,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                 />
                                 {this.renderMapControl()}
+                                {this.renderMapControl2()}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {this.makeMapThemeDropDown()}

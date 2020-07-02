@@ -650,12 +650,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                         </div>
                     </Control>
                     <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                        <Center style={{
-                            height: 35,
-                            backgroundColor: 'rgba(0,0,0,0.5)',
-                            padding: 10,
-                            flexDirection: 'column'
-                        }}>
+                        <Center style={PageMonitoringStyles.mapStatusBox}>
                             <div style={{}}>
                                 Cloudlet : {this.props.cloudletList.length}
                             </div>

@@ -1572,6 +1572,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 isEnableZoomIn={!this.state.isEnableZoomIn}
                                 currentClassfication={this.state.currentClassification}
                                 mapLoading={this.state.mapLoading}
+                                appInstList={this.state.filteredAppInstList}
+                                clusterList={this.state.filteredClusterUsageList}
                             />
                         )
                     } else if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET) {
@@ -2688,8 +2690,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                             filteredCloudletList: filteredCloudletList,
                                             filteredAppInstList: filteredAppInstList,
-
                                         })
+
+                                        //todo: ############################################################
+                                        //todo: map data binding
+                                        //todo: ############################################################
+                                        if (filteredClusterList.length > 0) {
+                                            ////todo:  mapFiltering when map for cluster
+                                            this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
+                                        } else {
+                                            ////todo:  mapfiltering, when no cluster
+                                            this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
+                                        }
+                                        await this.setState({
+                                            mapLoading: false,
+                                        })
+
 
                                         let allClusterEventLogList = []
                                         let allAppInstEventLogList = []
@@ -2719,17 +2735,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
                                                 clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
-                                                ////todo:  mapFiltering when map for cluster
-                                                this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
-
                                                 //todo:bubble Charts
                                                 bubbleChartData = await makeClusterBubbleChartData(filteredClusterList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
 
-                                            } else {
-                                                ////todo:  mapfiltering, when no cluster
-                                                this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
                                             }
-
                                             await this.setState({
                                                 bubbleChartData: bubbleChartData,
                                                 allClusterEventLogList: allClusterEventLogList,
