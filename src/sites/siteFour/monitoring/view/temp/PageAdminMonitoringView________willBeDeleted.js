@@ -292,7 +292,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
 
                 await this.setState({
                     //newCloudletList:newCloudletList,
-                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                    markerList: appInstanceListGroupByCloudlet,
                     appInstList: appInstanceList,
                     allAppInstanceList: appInstanceList,
                     isAppInstaceDataReady: true,
@@ -554,7 +554,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                     gridInstanceListMemMax: gridInstanceListMemMax,
                     gridInstanceListCpuMax: gridInstanceListCpuMax,
                     appInstList: appInstanceList,
-                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                    markerList: appInstanceListGroupByCloudlet,
                     loading0: false,
                     dropDownCludsterListOnCloudlet: cloudletSelectBoxList,
                     clusterList: clusterSelectBoxList,

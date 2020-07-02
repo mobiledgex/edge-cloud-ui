@@ -754,6 +754,35 @@ export const listGroupByKey = (items, key) => items.reduce(
     {},
 );
 
+export function makeUniqOperOrg(cloudletList) {
+    let operatorList = []
+    cloudletList.map((item: TypeCloudlet, index) => {
+        operatorList.push(item.Operator)
+    })
+    let uniqOperList = _.uniqBy(operatorList)
+    let newOperList = []
+    uniqOperList.map(item => {
+        newOperList.push(item)
+    })
+
+    return newOperList;
+}
+
+export function makeUniqDevOrg(appInstList) {
+    let filterlist = []
+    appInstList.map((item: TypeAppInst, index) => {
+        filterlist.push(item.OrganizationName)
+    })
+    let uniqFilteredList = _.uniqBy(filterlist)
+    let newFilteredList = []
+    uniqFilteredList.map(item => {
+        newFilteredList.push(item)
+    })
+
+    return newFilteredList;
+}
+
+
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
 
     try {
@@ -1331,9 +1360,6 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
             title: (
                 <div style={{display: 'flex'}}>
                     <div>{item}</div>
-                    {/*<div style={{marginLeft: 5}}><Tag
-                        style={{background: 'black', borderRadius: 20, borderColor: 'black'}}
-                        color="green">D</Tag></div>*/}
                 </div>
             ),
             value: item,
@@ -1341,15 +1367,10 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
         })
     })
 
-    /*  <div>
-            <div className="markBox">D</div>
-        </div>
-    */
-
 
     const treeData = [
         {
-            title: 'All',
+            title: (<div style={{}}>All</div>),
             value: '0',
             selectable: true,
         },

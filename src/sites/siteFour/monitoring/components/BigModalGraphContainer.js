@@ -59,7 +59,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 options: [],
                 graphType: '',
                 popupGraphHWType: '',
-                appInstanceListGroupByCloudlet: [],
+                markerList: [],
                 redraw: false,
             }
         }
@@ -84,7 +84,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                     selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
                     loading: nextProps.loading,
                 }, () => {
-                    //alert(JSON.stringify(this.state.appInstanceListGroupByCloudlet))
+                    //alert(JSON.stringify(this.state.markerList))
                 })
 
             }
