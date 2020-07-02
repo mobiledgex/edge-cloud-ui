@@ -1335,7 +1335,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            removeGridAllItem() {
+            deleteGridAllItem() {
                 if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
                     reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, [])
                     this.setState({
@@ -2092,7 +2092,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={async () => {
-                                        await this.removeGridAllItem();
+                                        await this.deleteGridAllItem();
                                         showToast('All items deleted.')
                                     }}
                         >
