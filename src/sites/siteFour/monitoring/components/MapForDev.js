@@ -744,9 +744,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             Cluster : {this.props.parent.state.loading ?
                             <CircularProgress size={12} thickness={3}/> : this.props.clusterList.length}
                         </div>
-                        <div style={{}}>
+                       {/* <div style={{}}>
                             AppInst : {this.props.appInstList.length}
-                        </div>
+                        </div>*/}
                     </Center>
                 </Control>
             )

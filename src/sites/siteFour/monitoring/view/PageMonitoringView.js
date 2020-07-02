@@ -2548,12 +2548,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     await this.setState({currentOrgView: USER_TYPE_SHORT.OPER})
                                     if (value === "0") {
                                         //todo:#################################
-                                        //todo: when selected all org
+                                        //todo: when selected all org(reset)
                                         //todo:#################################
                                         await this.setState({
                                             allCloudletEventLogList: [],
                                             filteredCloudletEventLogList: [],
                                             filteredClientStatusList: [],
+                                            currentClusterList: [],
+                                            clusterTreeDropdownList: [],
                                         })
                                         filteredCloudletList = this.state.cloudletList
 
