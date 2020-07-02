@@ -3061,7 +3061,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 filteredClientStatusList: clientStatusList,
                                                 filteredCloudletEventLogList: cloudletEventLogList,
                                                 currentCloudLet: currentCloudlet,
-                                                isLegendExpanded: false,
+                                                //isLegendExpanded: false,
                                             }, () => {
                                             })
                                         } catch (e) {

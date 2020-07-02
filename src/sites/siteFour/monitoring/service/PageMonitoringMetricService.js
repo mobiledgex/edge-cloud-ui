@@ -1064,9 +1064,8 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
 
             console.log(`form====>`, form);
             console.log(`form====>`, store.userToken);
-        } else {
+        } else {//todo admin userType
 
-            showToast('admin!!!!!!!!!')
             form = {
                 "region": Region,
                 "clusterinst": {
@@ -1077,6 +1076,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
                         "name": Cloudlet,
                         "organization": Operator,
                     },
+                    "organization": clusterItemOne.OrganizationName,
                 },
                 //"last": 10
             }
