@@ -31,9 +31,6 @@ export default function CloudletEventLogList(props) {
 
     useEffect(() => {
         setLength(props.cloudletEventLogList)
-
-        console.log(`cloudletEventLogList===>`, props.cloudletEventLogList);
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
 
