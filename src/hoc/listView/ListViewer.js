@@ -379,7 +379,7 @@ export default function EnhancedTable(props) {
                                                     return (
                                                         <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
                                                             {field.indexOf('Name') !== -1 ?
-                                                                <Tooltip title={header.customizedData ? header.customizedData(row) : row[field]} arrow>
+                                                                <Tooltip title={header.customizedData ? header.customizedData(row) : row[field] ? row[field] : ''} arrow>
                                                                     <div className={classes.tip}>
                                                                         {header.customizedData ? header.customizedData(row) : row[field]}
                                                                     </div>
