@@ -41,7 +41,6 @@ class ClustersMap extends Component {
             selectedCity: [],
             oldCountry: '',
             unselectCity: '',
-            clickCities: [],
             saveMarker: [],
             keyName: '',
             mapCenter: zoomControls.center
@@ -69,18 +68,10 @@ class ClustersMap extends Component {
                 .ease(d3.easeBack)
                 .attr("r", markerSize[0])
         }
-        let clickMarker = [];
-        if (city) {
-            city.name.map((item, i) => {
-
-                clickMarker.push({ "name": item, "coordinates": city.coordinates, "population": 17843000, "cost": 1 })
-            })
-        }
         this.setState({
             zoom: 4,
             center: city.coordinates,
             detailMode: true,
-            // clickCities: clickMarker
         })
         if(this.props.onClick)
         {
@@ -122,13 +113,6 @@ class ClustersMap extends Component {
             }
         }
 
-        let cloudletStatus = data.map((item) => {
-            if (item[fields.cloudletStatus]) {
-                return ({status: (item[fields.cloudletStatus] !== 2)? 'red' : 'green'})
-            }
-        })
-
-
         let locations = data.map((item) => {
             if (item[fields.cloudletLocation]) {
 
@@ -151,6 +135,18 @@ class ClustersMap extends Component {
             })
             return nameArray;
         }
+
+        const statusList = (key) => {
+
+            let nameArray = [];
+            groupbyData[key].map((item, i) => {
+                console.log('map info', item, item['cloudlet'], item.status)
+
+                nameArray[i] = {name: item['cloudlet'], status: item.status};
+            })
+            return nameArray;
+        }
+
 
         const statusColor = (key) => {
 
@@ -179,7 +175,7 @@ class ClustersMap extends Component {
         }
 
         Object.keys(groupbyData).map((key) => {
-            locationData.push({ "name": cloundletName(key), "coordinates": [groupbyData[key][0]['LAT'], groupbyData[key][0]['LON']],"status":statusColor(key), "population": 17843000, "cost": groupbyData[key].length })
+            locationData.push({ "name": cloundletName(key), "coordinates": [groupbyData[key][0]['LAT'], groupbyData[key][0]['LON']],"status":statusColor(key), "statusList": statusList(key), "cost": groupbyData[key].length })
         })
 
         let cloudlet = data.map((item) => (
@@ -192,7 +188,7 @@ class ClustersMap extends Component {
         let groupbyClData = aggregation.groupBy(cloudlet, 'cloudlet');
 
         Object.keys(groupbyClData).map((key) => {
-            cloudletData.push({ "name": key, "coordinates": [groupbyClData[key][0]['LAT'], groupbyClData[key][0]['LON']], "population": 17843000, "cost": groupbyClData[key].length })
+            cloudletData.push({ "name": key, "coordinates": [groupbyClData[key][0]['LAT'], groupbyClData[key][0]['LON']], "cost": groupbyClData[key].length })
         })
 
 
@@ -211,19 +207,19 @@ class ClustersMap extends Component {
                 }
 
                 nextProps.mapDetails.name.map((item, i) => {
-                    clickMarker.push({ "name": item, "coordinates": nextProps.mapDetails.coordinates, "population": 17843000, "cost": 1 })
+                    clickMarker.push({ "name": item, "coordinates": nextProps.mapDetails.coordinates, "cost": 1 })
                 })
 
                 zoom = 4
                 center = nextProps.mapDetails.coordinates
             }
-            return {mapCenter:mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false, clickCities: clickMarker };
+            return {mapCenter:mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false, };
         }
         return null;
     }
 
     gradientFilter(key) {
-        return `<defs><filter id="inner${key}" x0="-25%" y0="-25%" width="200%" height="200%"><feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"></feGaussianBlur><feOffset dy="2" dx="3"></feOffset><feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${grdColors[key]}" flood-opacity="0.7"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite><feGaussianBlur in="firstfilter" stdDeviation="2" result="blur2"></feGaussianBlur><feOffset dy="-2" dx="-3"></feOffset><feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${grdColors[key]}" flood-opacity="0.7"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="firstfilter" operator="over"></feComposite></filter></defs>`
+        return `<defs><filter id="inner${key}" x0="-25%" y0="-25%" width="200%" height="200%"><feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur><feOffset dy="2" dx="3"></feOffset><feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${grdColors[key]}" flood-opacity="0.5"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite><feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2"></feGaussianBlur><feOffset dy="-2" dx="-3"></feOffset><feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${grdColors[key]}" flood-opacity="0.5"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="firstfilter" operator="over"></feComposite></filter></defs>`
     }
 
 
@@ -250,7 +246,7 @@ class ClustersMap extends Component {
         let pathCloudlet = `<path filter=${gradient} d="M 19.35 10.04 C 18.67 6.59 15.64 4 12 4 C 9.11 4 6.6 5.64 5.35 8.04 C 2.34 8.36 0 10.91 0 14 c 0 3.31 2.69 6 6 6 h 13 c 2.76 0 5 -2.24 5 -5 c 0 -2.64 -2.05 -4.78 -4.65 -4.96 Z"></path>`
         let pathCluster = `<path filter=${gradient} d="M 10 4 H 4 c -1.1 0 -1.99 0.9 -1.99 2 L 2 18 c 0 1.1 0.9 2 2 2 h 16 c 1.1 0 2 -0.9 2 -2 V 8 c 0 -1.1 -0.9 -2 -2 -2 h -8 l -2 -2 Z"></path>`
         let pathApp = `<path filter=${gradient} d="M 12 2 C 8.13 2 5 5.13 5 9 c 0 5.25 7 13 7 13 s 7 -7.75 7 -13 c 0 -3.87 -3.13 -7 -7 -7 Z"></path>`
-        let circle = `<circle cx="12" cy="12" r="12" filter=${gradient}></circle>`
+        let circle = `<circle filter=${gradient} cx="12" cy="12" r="12"></circle>`
 
         let path =
             (config && config.pageId === 'app') ? pathApp
@@ -265,7 +261,7 @@ class ClustersMap extends Component {
                     html: `<div style="width:28px; height:28px">${svgImage}</div>`,
                     iconSize: [28, 28],
                     iconAnchor: [14, 14],
-                    className: 'map_marker'
+                    className: 'map-marker'
                 }
             ))
     }
@@ -283,7 +279,7 @@ class ClustersMap extends Component {
                     {city.name &&
                     <Tooltip
                         direction={'top'}
-                        className={'map_tooltip'}
+                        className={'map-tooltip'}
                     >
                         {city.name.map(one => {
                             return (
@@ -356,26 +352,49 @@ class ClustersMap extends Component {
                                                     this.MarkerMap(this, city, i, { pageId: 'app' })
                                                 ))
                                                 :
-                                                this.state.cities.map((city, i) => (
+                                                this.state.cities.map((city, i) => {
+
+                                                    const initMarker = ref => {
+                                                        if (ref) {
+                                                            ref.leafletElement.openPopup()
+                                                        }
+                                                    }
+
+                                                    return (
                                                     <Marker
+                                                        ref={initMarker}
                                                         position={city.coordinates}
                                                         icon={this.iconMarker(city)}
                                                     >
                                                         {city.name &&
-                                                        <Tooltip
-                                                            permanent={true}
-                                                            direction={'top'}
-                                                            className={'map_tooltip'}
+                                                        <Popup
+                                                            options={{
+                                                                keepInView: true
+                                                            }}
+                                                            className={'map-popup'}
                                                         >
                                                             {city.name.map(one => {
+
+                                                                let key = city.statusList.findIndex(i => i.name === one)
+                                                                let oneStatus = city.statusList[key].status
+
                                                                 return (
-                                                                    <div>{one}</div>
+                                                                    <div
+                                                                        className='map-marker-list'
+                                                                        // onClick={()=> }
+                                                                    >
+                                                                        {one}
+                                                                        <div
+                                                                            style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
+                                                                            className='map-status-mark'
+                                                                        />
+                                                                    </div>
                                                                 )
                                                             })}
-                                                        </Tooltip>
+                                                        </Popup>
                                                         }
                                                     </Marker>
-                                                ))
+                                                )})
                                     }
                                 </Map>
 
