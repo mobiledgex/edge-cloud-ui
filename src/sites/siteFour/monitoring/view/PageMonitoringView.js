@@ -3202,7 +3202,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
-
                 console.log(`filteredClusterUsageList====>`, filteredClusterUsageList);
 
                 return (
