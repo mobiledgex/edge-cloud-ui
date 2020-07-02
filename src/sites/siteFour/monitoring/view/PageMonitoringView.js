@@ -962,13 +962,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     selectedClientLocationListOnAppInst: [],
                     filteredClientStatusList: this.state.allClientStatusList,
                     currentClassification: this.state.userType.includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_ADMIN,
-                }, () => {
-                    console.log(`currentClassification....2===>`, this.state.currentClassification);
-                })
-
-
+                });
             }
-
 
             async reloadDataFromRemote() {
                 clearInterval(this.intervalForAppInst)
