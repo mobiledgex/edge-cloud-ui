@@ -1401,7 +1401,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                                 {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
-                                {clusterItemOne.cluster}
+                                {reduceString(clusterItemOne.cluster, 40)}
                             </div>
 
                         </div>

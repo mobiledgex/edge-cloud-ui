@@ -65,7 +65,7 @@ import type {
     TypeCloudlet,
     TypeCloudletEventLog,
     TypeCloudletUsage,
-    TypeCluster,
+    TypeCluster, TypeClusterEventLog,
     TypeClusterUsageOne,
     TypeGridInstanceList,
     TypeLineChartData,
@@ -797,10 +797,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
 
                     }
-
                     await this.setState({
-                        appInstanceListGroupByCloudlet: !isInterval && markerListForMap,
-                        mapLoading: false,
+                        appInstanceListGroupByCloudlet: !isInterval && markerListForMap, mapLoading: false,
                     });
 
 
@@ -818,7 +816,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //todo:##########################################################
                         //todo: DEVELOPER usage
                         //todo:############################################################
-                        usageEventPromiseList.push(getAllClusterEventLogList(clusterList))
+                        usageEventPromiseList.push(getAllClusterEventLogList(clusterList, USER_TYPE_SHORT.DEV))
                         usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
                         let newPromiseList2 = await Promise.all(usageEventPromiseList);
@@ -2428,7 +2426,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return (
                     <div style={PageMonitoringStyles.streamSwitchDiv}>
                         <div style={PageMonitoringStyles.listItemTitle}>
-                            {/*{this.state.currentClassification}*/} Stream
+                            Stream
                         </div>
                         <div style={PageMonitoringStyles.listItemTitle}>
                             <CustomSwitch
@@ -2569,22 +2567,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         console.log(`allClusterEventLogList====>`, this.state.allClusterEventLogList);
 
                         let filteredClusterEventLogList = []
-                        /*    this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
+                        this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
+                            selectClusterCloudletList.map((innerItem, innerIndex) => {
+                                if (clusterEventLogOne[1] === innerItem.split("|")[0].trim()) {
+                                    filteredClusterEventLogList.push(clusterEventLogOne)
+                                }
+                            })
+                        })
 
-                                selectClusterCloudletList.map((innerItem, innerIndex) => {
-                                    if (clusterEventLogOne[1] === innerItem.split("|")[0].trim()) {
-                                        filteredClusterEventLogList.push(clusterEventLogOne)
-                                    }
-                                })
-                            })*/
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
                         let mapMarkerListHashMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
-
-                        console.log(`userType====>`, this.state.userType);
 
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
@@ -3020,7 +3016,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 let startTime = makeCompleteDateTime(date[0]);
                                                 let endTime = makeCompleteDateTime(date[1]);
 
-                                                usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList))
+                                                usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.AMDIN))
                                                 usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
                                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
                                                 usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, undefined, undefined));
@@ -3152,14 +3148,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 listHeight={800}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
-
                                 size={'middle'}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,
                                     });
                                 }}
-
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
                                 style={{height: '30px !important', width: treeSelectWidth}}
@@ -3169,13 +3163,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
-                                    /*await this.setState({
-                                        currentMapLevel: MAP_LEVEL.CLUSTER,
-                                        currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
-                                    })*/
-
-                                    console.log(`currentClassification===>`, this.state.currentClassification);
-
                                     if (!isEmpty(value)) {
                                         this.setState({currentClusterList: value});
                                     } else {
@@ -3250,6 +3237,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
                         <div style={{width: '100%'}}>
                             <TreeSelect
+                                dropdownMatchSelectWidth={false}
+                                dropdownStyle={{
+                                    maxHeight: 800, overflow: 'auto', width: '520px'
+                                }}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
                                 disabled={this.state.loading}
@@ -3259,9 +3250,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
                                 style={{height: '30px !important', width: treeSelectWidth}}
-                                dropdownStyle={{
-                                    maxHeight: 800, overflow: 'auto', width: '100%'
-                                }}
                                 onSearch={(value) => {
                                     this.setState({
                                         searchClusterValue: value,

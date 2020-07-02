@@ -10,19 +10,11 @@ import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import notification from "antd/es/notification";
 import {makeGradientColor} from "./PageMonitoringService";
-import {CLASSIFICATION, HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
+import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {makeCompleteDateTime} from "../view/temp/PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import Chip from "@material-ui/core/Chip";
-import withStyles from "@material-ui/styles/withStyles";
-
-const OrangeChip = withStyles({
-    root: {
-        backgroundColor: 'orange'
-    }
-})(Chip);
 const FontAwesomeIcon = require('react-fontawesome')
 
 export const noDataArea = () => (
@@ -395,27 +387,6 @@ export const renderPlaceHolderLottiePinJump = (type: string = '') => {
         </div>
     )
 }
-/*
-export const renderPlaceHolderLottie = (type: string = '') => {
-    return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/11052-green-loader-ring_555'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                height={150}
-                width={150}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
-}*/
 
 export const convertByteToMegaByte = (value, hardwareType) => {
     if (value > 1000000) {
@@ -610,68 +581,6 @@ export const lineGraphOptionsForAppInst = (hardwareType) => {
         }
     )
 }
-
-
-/*export const renderUsageByType2 = (usageOne, hardwareType) => {
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return usageOne.sumVCpuUsage;
-    }
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
-        return usageOne.sumFloatingIpsUsage;
-    }
-    if (hardwareType === HARDWARE_TYPE.IPV4) {
-        return usageOne.sumIpv4Usage;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        return usageOne.sumCpuUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return usageOne.sumMemUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return usageOne.sumDiskUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return usageOne.sumRecvBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return usageOne.sumSendBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-}*/
-
-export const sortUsageListByType = (usageList, hardwareType) => {
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        usageList.sort((a, b) => b.sumVCpuUsage - a.sumVCpuUsage);
-    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
-        usageList.sort((a, b) => b.sumFloatingIpsUsage - a.sumFloatingIpsUsage);
-    } else if (hardwareType === HARDWARE_TYPE.IPV4) {
-        usageList.sort((a, b) => b.sumIpv4Usage - a.sumIpv4Usage);
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
-        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
-    }
-    return usageList;
-}
-
 
 export const renderUsageByType = (usageOne, hardwareType, _this) => {
 
@@ -905,8 +814,9 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
  * @returns {[]}
  */
 export const makeClusterBubbleChartData = (usageList, pHardwareType, chartColorList, classification = '') => {
-    let bubbleChartData = []
+
     try {
+        let bubbleChartData = []
         usageList.map((item, index) => {
             let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
             usageValue = usageValue.toFixed(2)
@@ -927,7 +837,7 @@ export const makeClusterBubbleChartData = (usageList, pHardwareType, chartColorL
 
         return bubbleChartData;
     } catch (e) {
-        //showToast(e.toString())
+        //throw new Error(e)
     }
 }
 

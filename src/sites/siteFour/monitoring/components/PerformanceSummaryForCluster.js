@@ -181,8 +181,8 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                     alignItems: 'center',
                                                     justifyContent: 'center'
                                                 }}>
-                                                    {item.cluster.toString()}<br/>
-                                                    [{item.cloudlet.toString()}]
+                                                 {/*   {item.cluster.toString()}<br/>
+                                                    [{item.cloudlet.toString()}]*/}
                                                 </div>
                                             </div>
                                         </TableCell>

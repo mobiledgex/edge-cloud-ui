@@ -19,6 +19,7 @@ type Props = {
     themeTitle: string,
     parent: PageMonitoringView,
     isBubbleChartMaked: boolean,
+    isBig: boolean,
 
 };
 type State = {
@@ -131,7 +132,9 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             <Select
                                                 dropdownMatchSelectWidth={false}
                                                 dropdownStyle={{
-                                                    maxHeight: 800, overflow: 'auto', width: '160px', fontSize: 10,
+                                                    maxHeight: 800,
+                                                    overflow: 'auto',
+                                                    width: '160px',
                                                 }}
                                                 ref={c => this.bubbleChartSelect = c}
                                                 size={'medium'}
@@ -140,29 +143,17 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                                 placeholder='SELECT HARDWARE'
                                                 defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                                                 value={this.props.parent.state.currentHardwareType}
+                                                overlayStyle={{fontSize: 9}}
                                                 onChange={async (hwType) => {
                                                     await handleHardwareTabChanges(this.props.parent, hwType)
 
                                                     try {
                                                         let bubbleChartData = []
-                                                        if (this.props.currentClassification === CLASSIFICATION.CLUSTER || this.props.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
-
-                                                            console.log(`bubbleChartData===filteredClusterUsageList=>`, this.props.parent.state.filteredClusterUsageList);
-
-                                                            console.log(`bubbleChartData===currentClassification=>`, this.props.currentClassification);
-                                                            bubbleChartData = makeClusterBubbleChartData(this.props.parent.state.filteredClusterUsageList, hwType, this.props.parent.state.chartColorList, this.props.currentClassification);
-
-                                                            console.log(`bubbleChartData====>`, bubbleChartData)
-                                                        } else {//todo : appInst
-                                                            bubbleChartData = makeClusterBubbleChartData(this.props.parent.state.filteredAppInstUsageList, hwType, this.props.parent.state.chartColorList, this.props.currentClassification);
-                                                            console.log(`bubbleChartData===appInst=>`, bubbleChartData)
-                                                        }
-
+                                                        bubbleChartData = makeClusterBubbleChartData(this.props.parent.state.filteredClusterUsageList, hwType, this.props.parent.state.chartColorList, this.props.currentClassification);
                                                         this.props.parent.setState({
                                                             bubbleChartData: bubbleChartData,
                                                             currentHardwareType: hwType,
                                                         }, () => {
-
                                                             this.bubbleChartSelect.blur();
                                                         })
 

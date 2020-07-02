@@ -949,3 +949,14 @@ tr td {
     background-color: #404040 !important;
 }
 
+.ant-select-item .ant-select-item-option {
+    flex: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 9px;
+}
+
+.ant-select-dropdown-menu-item {
+    font-size: 9pt !important;
+}

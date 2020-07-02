@@ -1,9 +1,21 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, RECENT_DATA_LIMIT_COUNT, USER_TYPE} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CLOUDLET_METRIC_COLUMN,
+    MEX_PROMETHEUS_APPNAME,
+    RECENT_DATA_LIMIT_COUNT,
+    USER_TYPE,
+    USER_TYPE_SHORT
+} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {
+    isEmpty,
+    makeFormForCloudletLevelMatric,
+    makeFormForClusterLevelMatric,
+    showToast
+} from "./PageMonitoringCommonService";
 import {makeFormForAppLevelUsageList} from "../view/temp/PageAdmMonitoringService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
@@ -996,11 +1008,11 @@ export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endT
  * @param clusterList
  * @returns {Promise<[]>}
  */
-export const getAllClusterEventLogList = async (clusterList) => {
+export const getAllClusterEventLogList = async (clusterList, userType = 'dev') => {
     try {
         let clusterPromiseList = []
         clusterList.map((clusterOne: TypeCluster, index) => {
-            clusterPromiseList.push(getClusterEventLogListOne(clusterOne))
+            clusterPromiseList.push(getClusterEventLogListOne(clusterOne, userType))
         })
 
         let allClusterEventLogs = await Promise.all(clusterPromiseList);
@@ -1023,32 +1035,52 @@ export const getAllClusterEventLogList = async (clusterList) => {
     }
 }
 
-export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => {
+export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType) => {
+    let selectOrg = undefined
+    let form = {};
     try {
-        let selectOrg = localStorage.getItem('selectOrg')
         let Cloudlet = clusterItemOne.Cloudlet;
         let ClusterName = clusterItemOne.ClusterName;
         let Region = clusterItemOne.Region;
         let Operator = clusterItemOne.Operator;
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if (userType.toString().includes(USER_TYPE_SHORT.DEV)) {
+            selectOrg = localStorage.getItem('selectOrg')
+            form = {
+                "region": Region,
+                "clusterinst": {
+                    "cluster_key": {
+                        "name": ClusterName
+                    },
+                    "cloudlet_key": {
+                        "name": Cloudlet,
+                        "organization": Operator,
 
-        let form = {
-            "region": Region,
-            "clusterinst": {
-                "cluster_key": {
-                    "name": ClusterName
+                    },
+                    "organization": selectOrg
                 },
-                "cloudlet_key": {
-                    "name": Cloudlet,
-                    "organization": Operator,
+                //"last": 10
+            }
 
+            console.log(`form====>`, form);
+            console.log(`form====>`, store.userToken);
+        } else {
+
+            showToast('admin!!!!!!!!!')
+            form = {
+                "region": Region,
+                "clusterinst": {
+                    "cluster_key": {
+                        "name": ClusterName
+                    },
+                    "cloudlet_key": {
+                        "name": Cloudlet,
+                        "organization": Operator,
+                    },
                 },
-                "organization": selectOrg
-            },
-            //"last": 10
+                //"last": 10
+            }
         }
-
 
         let result = await axios({
             url: mcURL() + CLUSTER_EVENT_LOG_ENDPOINT,
