@@ -1291,7 +1291,7 @@ export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _thi
                                 {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
-                                {clusterItemOne.ClusterName}
+                                {reduceString(clusterItemOne.ClusterName, 39)}
                             </div>
 
                         </div>
