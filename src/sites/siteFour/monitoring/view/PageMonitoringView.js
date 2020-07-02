@@ -2862,14 +2862,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             treeData={this.state.orgTreeData}
                             placeholder="Select Org"
                             treeDefaultExpandAll
-                            //value={this.state.value}
                             onSelect={async (value, node, extra) => {
                                 this.operSelect.blur();
                                 let filteredCloudletList = []
                                 let cloudletDropdownList = []
                                 let markerListForMap = []
-
-                                //todo: devleoper!
+                                //todo:when  devleoper
                                 if (node.isDev) {
                                     await this.setState({currentOrgView: 'dev'})
                                     let filteredAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => {
@@ -2891,9 +2889,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             return item.Operator === value
                                         })
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
-
-
-                                        console.log(`markerListForMap========>`, markerListForMap);
                                     }
                                     cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
                                 }
@@ -2909,7 +2904,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                     currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
                                 }, () => {
-                                    console.log(`currentOrgView========>`, this.state.currentOrgView);
                                 });
 
 
@@ -2939,7 +2933,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             onSelect={async (selectCloudlet) => {
 
                                 let currentCloudlet = selectCloudlet.split("|")[0].trim();
-                                console.log(`selectCloudlet========>`, selectCloudlet);
 
                                 try {
                                     this.cloudletSelectForAdmin.blur();
@@ -2948,7 +2941,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         currentCloudLet: currentCloudlet,
                                     })
 
-                                    if (selectCloudlet === '0') {//todo:reset filter
+                                    if (selectCloudlet === '0') {//todo:When reset filter
                                         await this.setState({
                                             currentGridIndex: -1,
                                             currentTabIndex: 0,
@@ -3033,11 +3026,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 let startTime = makeCompleteDateTime(date[0]);
                                                 let endTime = makeCompleteDateTime(date[1]);
 
-                                                console.log(`date...startTime===>`, startTime)
-                                                console.log(`date...endTime===>`, endTime)
-
                                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList))
-                                                usageEventPromiseList.push(getClientStatusList(appInstList, startTime, endTime));
+                                                usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
                                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
                                                 usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, undefined, undefined));
 
@@ -3046,6 +3036,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 clientStatusList = completedPromiseList[1];
                                                 allClusterUsageList = completedPromiseList[2];
                                                 cloudletEventLogList = completedPromiseList[3];
+
+                                                console.log(`clientStatusList====>`, clientStatusList);
 
 
                                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
@@ -3089,7 +3081,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }
                                 } catch (e) {
                                     throw new Error(e)
-                                    //showToast('mapError22222222222222222222')
                                 }
                             }}
                         >
@@ -3546,11 +3537,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         span={itemCount === 1 ? 24 : this.state.isLegendExpanded ? 6 : 1}
                                         title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                         style={{
+                                            //background: 'red',
                                             justifyContent: itemCount === 1 ? 'center' : null,
                                             width: itemCount === 1 ? '100%' : this.props.size.width / 4,
                                         }}
                                     >
-                                        {itemCount === 1 ?
+                                        {this.state.filteredClusterList.length === 1 ?
                                             <Center style={{
                                                 marginLeft: 100,
                                                 display: 'flex',

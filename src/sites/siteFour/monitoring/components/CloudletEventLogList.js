@@ -52,6 +52,19 @@ export default function CloudletEventLogList(props) {
         flexDirection: 'column',
     }
 
+    function changeToShortPhrase(title) {
+        if (title === 'UPDATE_START') {
+            return "UPD_START"
+        } else if (title === 'UPDATE_COMPLETE') {
+            return "UPD_COMPLETE"
+        } else if (title === 'UPDATE_ERROR') {
+            return "UPD_ERR"
+        } else {
+            return title;
+        }
+    }
+
+
     function renderTableRow(index, style) {
         return (
             <tr key={index} className='fixedSizeListTableDiv'
@@ -87,7 +100,7 @@ export default function CloudletEventLogList(props) {
                         style={makeTableRowStyle(index, itemHeight)}
                     >
                         <div>
-                            {props.cloudletEventLogList[index][3]}
+                            {changeToShortPhrase(props.cloudletEventLogList[index][3])}
                         </div>
                         <div>
                             {props.cloudletEventLogList[index][4].toLowerCase() === 'up' ?
@@ -163,8 +176,8 @@ export default function CloudletEventLogList(props) {
     function renderEmptyTableForCloudletEventLog() {
         return (
 
-            <div padding={'none'} align="center" style={{fontSize: 15, color: '#57AA27',}}
-                 colSpan={7} rowSpan={4}>
+            <div padding={'none'} align="center"
+                 style={{fontSize: 15, color: '#57AA27', height: '100%', marginTop: 80}}>
                 <div style={{fontSize: 17, color: '#57aa27'}}> No Data Available</div>
             </div>
         )
@@ -179,30 +192,35 @@ export default function CloudletEventLogList(props) {
             }
             {renderTitle(props)}
 
-            <table size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true.toString()}>
-                {!props.parent.state.loading && renderTableHead()}
-                {/*##########################################*/}
-                {/*     tableBody                            */}
-                {/*##########################################*/}
-                <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
-                {!props.parent.state.loading ?
-                    <FixedSizeList
-                        height={179}
-                        itemCount={props.cloudletEventLogList.length}
-                        itemSize={itemHeight}
-                        width={'100%'}
-                    >
-                        {({index, style}) => (
-                            renderTableRow(index, style)
-                        )}
+            {props.cloudletEventLogList.length === 0 ?
+                renderEmptyTableForCloudletEventLog()
+                :
+                <table size="small" aria-label="a dense table "
+                       style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true.toString()}>
+                    {!props.parent.state.loading && renderTableHead()}
+                    {/*##########################################*/}
+                    {/*     tableBody                            */}
+                    {/*##########################################*/}
+                    <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
+                    {!props.parent.state.loading ?
+                        <FixedSizeList
+                            height={179}
+                            itemCount={props.cloudletEventLogList.length}
+                            itemSize={itemHeight}
+                            width={'100%'}
+                        >
+                            {({index, style}) => (
+                                renderTableRow(index, style)
+                            )}
 
-                    </FixedSizeList>
-                    : null
+                        </FixedSizeList>
+                        : null
 
-                }
+                    }
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            }
 
 
         </div>

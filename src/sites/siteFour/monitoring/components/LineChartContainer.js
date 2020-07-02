@@ -51,7 +51,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
         let hwType = this.props.pHardwareType;
         let graphType = this.props.graphType;
 
-        await this.setChartData(lineChartDataSet, hwType, graphType)
+        this.setChartData(lineChartDataSet, hwType, graphType)
     }
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
@@ -86,7 +86,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
             const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStackecLineChart, hardwareType, false, colorCodeIndexList)
 
 
-            await this.setState({
+            this.setState({
                 chartDataSet: chartDataSet,
                 pHardwareType: hwType,
                 graphType: graphType,
@@ -137,11 +137,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
     render() {
         return (
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
-                {this.props.loading &&
-                <div>
-                    {renderBarLoader()}
-                </div>
-                }
+                {this.props.loading && (<div>  {renderBarLoader()} </div>)}
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                         <div className='page_monitoring_title' onClick={() => {

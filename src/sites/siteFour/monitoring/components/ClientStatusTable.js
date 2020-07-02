@@ -10,7 +10,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
-import {renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 type Props = {
     clientStatusList: any,
@@ -73,9 +74,13 @@ export default function ClientStatusTable(props) {
                          flex: 1,
                          marginTop: 5,
                          color: 'white',
+                         display: 'flex',
                      }}
                 >
-                    Client Status For App Inst
+                    Client Status For App Inst {props.loading ?
+                    <div style={{marginLeft: 5,}}>
+                        <CircularProgress size={12} thickness={3}/>
+                    </div> : `[${props.clientStatusList.length}]`}
                 </div>
             </div>
         )
@@ -83,18 +88,20 @@ export default function ClientStatusTable(props) {
 
     return (
         <div ref={bodyRef}>
+            {props.loading && (<div>{renderBarLoader(false)}</div>)}
             {renderHeader()}
             <TableContainer
                 component={Paper}
                 style={{
-                    height: 'auto',
+                    height: '210px',
                     backgroundColor: 'blue !important',
                     width: 'auto',
-                    overflowX: 'scroll'
                 }}
             >
-                <Table ref={tableRef} size="small" aria-label="a dense table " style={{width: '100%', overflowX: 'scroll'}}
-                       stickyHeader={true}>
+                <Table ref={tableRef} size="small" aria-label="a dense table "
+                       style={{width: '100%',}}
+                       stickyHeader={true}
+                >
 
                     <TableHead style={{backgroundColor: '#303030', fontFamily: 'Roboto', fontSize: 20}}
                                fixedheader={true.toString()}>
@@ -122,7 +129,7 @@ export default function ClientStatusTable(props) {
                             </TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody padding={'none'} style={{width: 'auto', overflowX: 'scroll'}}>
+                    <TableBody padding={'none'} style={{width: 'auto', overflow: 'auto !important'}}>
                         {props.clientStatusList !== undefined && props.clientStatusList.map((item: TypeClientStatus, index) => {
                             return (
                                 <TableRow
@@ -193,9 +200,7 @@ export default function ClientStatusTable(props) {
                                 </TableRow>
                             )
                         })}
-                        {props.loading ? renderTableLoader()
-                            : props.clientStatusList.length === 0 ? renderEmptyTable() : null
-                        }
+                        {props.clientStatusList.length === 0 ? renderEmptyTable() : null}
                     </TableBody>
 
                 </Table>

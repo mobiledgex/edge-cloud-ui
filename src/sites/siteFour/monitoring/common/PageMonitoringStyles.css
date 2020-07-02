@@ -715,7 +715,7 @@ tr td {
     border-color: blue;
 }
 
-.tooltip2{
+.tooltip2 {
     font-weight: normal !important;
     opacity: 0.8 !important;
     border-width: 1px !important;
@@ -742,7 +742,7 @@ tr td {
 .mapCloudletTooltipInnerBlack {
     color: black !important;
     padding: 2px;
-   /* font-family: "Roboto Light" !important;*/
+    /* font-family: "Roboto Light" !important;*/
     font-weight: normal !important;
 
 }
@@ -766,7 +766,7 @@ tr td {
 .mapCloudletPopupInner2 {
     color: white;
     padding: 2px;
-    border-width: 0px!important;
+    border-width: 0px !important;
 
 }
 
@@ -948,3 +948,4 @@ tr td {
 .ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
     background-color: #404040 !important;
 }
+

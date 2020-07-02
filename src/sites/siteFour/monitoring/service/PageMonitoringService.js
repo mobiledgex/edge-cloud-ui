@@ -78,7 +78,7 @@ export function renderTitle(props) {
 export function makeTableRowStyle(index, itemHeight) {
     return (
         {
-            flex: .33,
+            flex: .5,
             color: '#C0C6C8',
             backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
             height: itemHeight,
