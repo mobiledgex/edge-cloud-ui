@@ -2663,6 +2663,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     if (selectCloudlet === '0') {//todo:When reset filter
                                         await this.setState({
+                                            allCloudletEventLogList: [],
+                                            filteredCloudletEventLogList: [],
+                                            filteredClientStatusList: [],
+                                        })
+                                        await this.setState({
                                             currentGridIndex: -1,
                                             currentTabIndex: 0,
                                             intervalLoading: false,
