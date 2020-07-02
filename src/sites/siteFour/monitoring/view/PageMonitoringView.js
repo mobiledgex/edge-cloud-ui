@@ -2640,6 +2640,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     } else {//todo: When one Cloudlet
                                         await this.setState({
                                             mapLoading: true,
+                                            loading: true,
                                         })
                                         let selectIndex = 0;
                                         this.state.cloudletList.map((item: TypeCloudlet, index) => {
@@ -2648,13 +2649,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             }
                                         })
 
-
                                         let currentCloudletOne = this.state.cloudletList[selectIndex];
-
                                         let filteredCloudletList = []
                                         filteredCloudletList.push(currentCloudletOne)
 
-                                        await this.setState({loading: true})
                                         let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
 
                                         await this.setState({
@@ -3128,52 +3126,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             __________LEGEND________________________________________________________________________________________________________________________() {
             }
 
-            makeLegend() {
-                try {
-                    if (this.state.loading) {
-                        return (
-                            <LegendOuterDiv style={{height: 35}}>
-                                <div style={{
-                                    display: 'flex',
-                                    alignSelf: 'center',
-                                    position: 'absolute',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: '100%',
-                                }}>
-                                    <CircularProgress style={{color: '#1cecff'}} size={15} thickness={3}/>
-                                </div>
-                            </LegendOuterDiv>
-                        )
-                    } else {
-                        return (
-                            <LegendOuterDiv
-                                style={{
-                                    marginTop: 4,
-
-                                    width: '98.8%'
-                                }}>
-                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.makeClusterLegend(this.state.legendItemCount)
-                                    : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.makeCloudletLegend(this.state.legendItemCount)
-                                        : this.state.currentClassification === CLASSIFICATION.APPINST ? this.makeAppInstLegend(this.state.legendItemCount)
-                                            : this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.makeClusterLegendForAdmin(this.state.legendItemCount)
-                                                : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN ? this.makeClusterLegendForAdmin(this.state.legendItemCount)
-                                                    : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.makeAppInstLegend(this.state.legendItemCount) : null
-                                }
-                            </LegendOuterDiv>
-                        )
-                    }
-                } catch (e) {
-
-                }
-            }
 
             makeClusterLegendForAdmin() {
                 let stringLimit = this.makeStringLimit(CLASSIFICATION.CLUSTER)
                 let itemCount = this.state.legendItemCount;
-                let {filteredClusterUsageList, filteredClusterList} = this.state
-
-
+                let {filteredClusterUsageList} = this.state
                 return (
                     <React.Fragment>
                         <Row gutter={16}
@@ -3186,7 +3143,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
-                            {filteredClusterList.map((item: TypeCluster, clusterIndex) => {
+                            {filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col
                                         key={clusterIndex}
@@ -3196,7 +3153,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 let clusterCloudletList = []
                                                 if (filteredClusterUsageList.length > 1) {
 
-                                                    let clusterOne = item.ClusterName + " | " + item.Cloudlet;
+                                                    let clusterOne = item.cluster + " | " + item.cloudlet;
                                                     clusterCloudletList.push(clusterOne)
 
                                                     clearInterval(this.intervalForCluster)
@@ -3210,7 +3167,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             }
                                         }}
                                         span={itemCount === 1 ? 24 : this.state.isLegendExpanded ? 6 : 1}
-                                        title={!this.state.isLegendExpanded ? item.ClusterName + '[' + item.Cloudlet + ']' : null}
+                                        title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                         style={{
                                             //background: 'red',
                                             justifyContent: itemCount === 1 ? 'center' : null,
@@ -3226,12 +3183,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 {this.renderClusterDot(item.colorCodeIndex)}
                                                 <div style={{display: 'flex', marginLeft: 3,}}>
                                                     <div>
-                                                        {item.ClusterName}
+                                                        {item.cluster}
                                                     </div>
 
                                                     {this.state.userType.includes(USER_TYPE_SHORT.DEV) &&
                                                     <div style={{color: 'white',}}>
-                                                        &nbsp;[{item.Cloudlet}]
+                                                        &nbsp;[{item.cloudlet}]
                                                     </div>
                                                     }
                                                 </div>
@@ -3264,8 +3221,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     isFirstLoad: false,
                                 }, () => {
                                     this.setState({
-                                        legendHeight: Math.ceil(filteredClusterList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight,
-                                        legendRowCount: Math.ceil(filteredClusterList.length / 4)
+                                        legendHeight: Math.ceil(filteredClusterUsageList.length / (this.state.isLegendExpanded ? 4 : 24)) * gridItemOneHeight,
+                                        legendRowCount: Math.ceil(filteredClusterUsageList.length / 4)
                                     }, () => {
                                     })
                                 })
@@ -3474,7 +3431,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 marginLeft: 0,
                                 flex: 1,
                             }}>
-                                {this.renderDot(0)}
+                                {this.renderAppInstDot(0)}
                                 <ClusterCluoudletAppInstLabel
                                     style={{marginLeft: 5, marginRight: 15, marginBottom: -1}}>
                                     {this.state.currentAppInst.split("|")[0]}[{this.state.currentAppVersion}]
@@ -3569,6 +3526,46 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
 
                 return stringLimit;
+            }
+
+            makeLegend() {
+                try {
+                    if (this.state.loading) {
+                        return (
+                            <LegendOuterDiv style={{height: 35}}>
+                                <div style={{
+                                    display: 'flex',
+                                    alignSelf: 'center',
+                                    position: 'absolute',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                }}>
+                                    <CircularProgress style={{color: '#1cecff'}} size={15} thickness={3}/>
+                                </div>
+                            </LegendOuterDiv>
+                        )
+                    } else {
+                        return (
+                            <LegendOuterDiv
+                                style={{
+                                    marginTop: 4,
+
+                                    width: '98.8%'
+                                }}>
+                                {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.makeClusterLegend(this.state.legendItemCount)
+                                    : this.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.makeCloudletLegend(this.state.legendItemCount)
+                                        : this.state.currentClassification === CLASSIFICATION.APPINST ? this.makeAppInstLegend(this.state.legendItemCount)
+                                            : this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.makeClusterLegendForAdmin(this.state.legendItemCount)
+                                                : this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN ? this.makeClusterLegendForAdmin(this.state.legendItemCount)
+                                                    : this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN ? this.makeAppInstLegend(this.state.legendItemCount) : null
+                                }
+                            </LegendOuterDiv>
+                        )
+                    }
+                } catch (e) {
+
+                }
             }
 
             _________________________________________________________LEGEND________END________________________________________________________________________________________________________________________() {
