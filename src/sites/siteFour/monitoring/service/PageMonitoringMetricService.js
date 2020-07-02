@@ -27,6 +27,7 @@ import {
     SHOW_APP_INST_CLIENT_ENDPOINT,
     SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
+import {makeFormForAppLevelUsageList} from "./PageMonitoringService";
 
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitoringView) => {
@@ -396,8 +397,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
 
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
-            console.log('usageListForAllInstance====>', item);
-
             let appName = item.instanceData.AppName
             let Cloudlet = item.instanceData.Cloudlet
             let ClusterInst = item.instanceData.ClusterInst
@@ -531,7 +530,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
 
         return resultWithColorCode;
     } catch (e) {
-        //throw new Error(e.toString())
+        showToast(e.toString())
     }
 
 }

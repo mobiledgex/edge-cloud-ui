@@ -1381,29 +1381,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
 
                         let lineChartDataSet = []
-                        if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+                        if (this.state.currentClassification.toLowerCase().includes('cluster')) {
                             lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
-                        } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                        } else if (this.state.currentClassification.toLowerCase().includes('cloudlet')) {
                             lineChartDataSet = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
                         } else {
                             lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
                         chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this, this.state.currentColorIndex)
-
-                    } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART) {
-
-                        let multiLineChartDataSets = []
-                        if (pHwType.length >= 2) {
-
-                            if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-                                for (let i in pHwType) {
-                                    let lineDataOne = makeLineChartData(this.state.filteredClusterUsageList, pHwType[i], this)
-                                    multiLineChartDataSets.push(lineDataOne);
-                                }
-                            }
-                        }
-                        let _resuit = makeMultiLineChartDatas(multiLineChartDataSets)
-                        chartDataForBigModal = makeLineChartDataForBigModal(_resuit, this)
 
                     } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
                         let chartDataSet = []
@@ -2202,7 +2187,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            ______________________________HANDLEONCHANGE____________________________________________________________________________________(){}
+            ______________________________HANDLEONCHANGE____________________________________________________________________________________() {
+            }
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
                 try {
@@ -2362,9 +2348,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
                 try {
-                    alert(fullCurrentAppInst)
-                    this.setState({isEmptyChartData: true,})
-
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
                     //@desc: ################################
@@ -2422,7 +2405,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     await this.setState({
                         filteredAppInstEventLogs: filteredAppInstEventLogList,
                         currentTabIndex: 0,
-                        currentClassification: this.state.userType.includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.APPINST : CLASSIFICATION.APP_INST_FOR_ADMIN,
+                        currentClassification: this.state.userType.includes('dev') ? CLASSIFICATION.APPINST : CLASSIFICATION.APP_INST_FOR_ADMIN,
                         allAppInstUsageList: appInstUsageList,
                         filteredAppInstUsageList: appInstUsageList,
                         loading: false,
@@ -2430,6 +2413,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentAppInst: fullCurrentAppInst,
                         currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
+                    },()=>{
+                        console.log(`filteredAppInstUsageList====>`, this.state.filteredAppInstUsageList);
                     });
 
                     //desc: ############################
@@ -2446,7 +2431,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            ______________________________HANDLEONCHANGE__END____________________________________________________________________________________(){}
+            ______________________________HANDLEONCHANGE__END____________________________________________________________________________________() {
+            }
 
 
             async filterUsageListByDateForCloudlet() {

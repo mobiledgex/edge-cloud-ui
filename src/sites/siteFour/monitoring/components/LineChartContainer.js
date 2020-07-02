@@ -9,7 +9,7 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import type {TypeChartDataSet} from "../../../../shared/Types";
-import {isEmpty, renderBarLoader} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
 
 type Props = {
     parent: PageMonitoringView,
@@ -55,16 +55,16 @@ export default class LineChartContainer extends React.Component<Props, State> {
     }
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-        if (this.props.chartDataSet !== nextProps.chartDataSet) {
-            let lineChartDataSet = nextProps.chartDataSet
+        try {
+            if (this.props.chartDataSet !== nextProps.chartDataSet) {
+                let lineChartDataSet = nextProps.chartDataSet
 
-
-            console.log('lineChartDataSet====>', lineChartDataSet);
-            console.log('currentColorIndex====>', this.props.currentColorIndex);
-
-            let hwType = nextProps.pHardwareType;
-            let graphType = nextProps.graphType;
-            this.setChartData(lineChartDataSet, hwType, graphType);
+                let hwType = nextProps.pHardwareType;
+                let graphType = nextProps.graphType;
+                this.setChartData(lineChartDataSet, hwType, graphType);
+            }
+        } catch (e) {
+            showToast(e.toString())
         }
     }
 
@@ -78,10 +78,10 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
             let isStackecLineChart = this.props.parent.state.isStackedLineChart;
-            console.log(`levelTypeNameList========>`, levelTypeNameList);
+         /*   console.log(`levelTypeNameList========>`, levelTypeNameList);
             if (isEmpty(levelTypeNameList.toString())) {
                 isStackecLineChart = true;
-            }
+            }*/
 
             const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStackecLineChart, hardwareType, false, colorCodeIndexList)
 
