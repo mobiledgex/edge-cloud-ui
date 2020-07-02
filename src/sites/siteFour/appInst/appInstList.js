@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest, changePowerState } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
-import { showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';

@@ -312,7 +312,7 @@ export default class Calendar extends PureComponent {
                 <View>
                     <div className='audit_calendar_month'>
                         {visibleMonthAndYear}
-                        <IconButton style={{backgroundColor:'transparent'}} onClick={this.onClickCurrentButton}><p style={{backgroundColor:'#388E3B', borderRadius:5, fontSize:12, padding:3}}>{currentTime('D')}</p></IconButton>
+                        <IconButton style={{backgroundColor:'transparent'}} onClick={this.onClickCurrentButton}><p style={{backgroundColor:'#388E3B', borderRadius:5, fontSize:12, padding:'2px 7px 2px 7px'}}>{currentTime('D')}</p></IconButton>
                     </div>
                     <div>
                         <div className='audit_calendar_days'  style={{display:'flex', flexDirection:'row'}}>
