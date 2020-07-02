@@ -3203,6 +3203,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
 
+                console.log(`filteredClusterUsageList====>`, filteredClusterUsageList);
+
                 return (
                     <React.Fragment>
                         <Row gutter={16}
