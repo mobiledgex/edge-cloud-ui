@@ -1447,41 +1447,41 @@ export function filteredClientStatusListByAppName(filteredAppInstList, allClient
     })
 }
 
-export function makeStringLimit(classification) {
+export function makeStringLimit(classification, _this: PageMonitoringView) {
     let stringLimit = 25;
     if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
         if (this.props.size.width > 1600) {
             stringLimit = 27
-        } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1380) {
             stringLimit = 18
-        } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+        } else if (_this.props.size.width < 1380 && this.props.size.width >= 1150) {
             stringLimit = 14
-        } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+        } else if (_this.props.size.width < 1150 && this.props.size.width >= 720) {
             stringLimit = 10
-        } else if (this.props.size.width < 720) {
+        } else if (_this.props.size.width < 720) {
             stringLimit = 4
         }
     } else if (classification === CLASSIFICATION.CLOUDLET) {
         if (this.props.size.width > 1600) {
             stringLimit = 25
-        } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1380) {
             stringLimit = 17
-        } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+        } else if (_this.props.size.width < 1380 && this.props.size.width >= 1150) {
             stringLimit = 14
-        } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+        } else if (_this.props.size.width < 1150 && this.props.size.width >= 720) {
             stringLimit = 10
-        } else if (this.props.size.width < 720) {
+        } else if (_this.props.size.width < 720) {
             stringLimit = 4
         }
 
     } else if (classification === CLASSIFICATION.CLUSTER || classification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
         if (this.props.size.width > 1500) {
             stringLimit = 49
-        } else if (this.props.size.width < 1500 && this.props.size.width >= 1300) {
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1300) {
             stringLimit = 42
-        } else if (this.props.size.width < 1300 && this.props.size.width >= 1100) {
+        } else if (_this.props.size.width < 1300 && this.props.size.width >= 1100) {
             stringLimit = 34
-        } else if (this.props.size.width < 1100) {
+        } else if (_this.props.size.width < 1100) {
             stringLimit = 28
         }
     }

@@ -3254,7 +3254,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <LegendOuterDiv
                                 style={{
                                     marginTop: 4,
-
                                     width: '98.8%'
                                 }}>
                                 {this.state.currentClassification === CLASSIFICATION.CLUSTER ? this.makeClusterLegend(this.state.legendItemCount)
@@ -3268,14 +3267,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         )
                     }
                 } catch (e) {
-
+                    showToast(e.toString())
                 }
             }
 
             makeClusterLegendForAdmin() {
                 let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER_FOR_ADMIN)
                 let itemCount = this.state.legendItemCount;
-                let {filteredClusterUsageList} = this.state
+                let {filteredClusterUsageList} = this.state;
+
                 return (
                     <React.Fragment>
                         <Row gutter={16}
@@ -3288,6 +3288,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
+                            {filteredClusterUsageList.length === 0 &&
+                            <Col
+                                span={24}
+                                className="gutterRow"
+                            >
+                                No Cluster
+                            </Col>
+                            }
                             {filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col
