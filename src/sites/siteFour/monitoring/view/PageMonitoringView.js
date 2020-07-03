@@ -734,9 +734,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:###################################################################################################################
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList(undefined, this))
-                        let newPromiseList = await Promise.all(promiseList);
-                        clusterList = newPromiseList[0];
-                        appInstList = newPromiseList[1];
+                        const [promise0, promise1] = await Promise.all(promiseList);
+                        clusterList = promise0;
+                        appInstList = promise1;
                         clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                     } else {
                         //TODO:###############################################
