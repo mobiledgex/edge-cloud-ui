@@ -23,9 +23,12 @@ import {
     renderBarLoader
 } from "../service/PageMonitoringCommonService";
 import type {TypeClusterUsageOne} from "../../../../shared/Types";
+import AppsIcon from '@material-ui/icons/Apps';
+import PageMonitoringView from "../view/PageMonitoringView";
 
 type Props = {
     filteredUsageList: any,
+    parent: PageMonitoringView,
 };
 
 function getWindowDimensions() {
@@ -155,13 +158,12 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                 alignItems: 'flex-start',
                                                 justifyContent: 'center'
                                             }}>
-                                                <div style={{
-                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[item.colorCodeIndex] : props.parent.state.chartColorList[item.colorCodeIndex],
-                                                    width: 15,
-                                                    height: 15,
-                                                    borderRadius: 50,
-                                                }}>
-                                                </div>
+                                                <AppsIcon
+                                                    style={{
+                                                        fill: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[item.colorCodeIndex] : props.parent.state.chartColorList[item.colorCodeIndex],
+                                                        fontSize: 16,
+                                                        marginTop: 4,
+                                                    }}/>
                                             </div>
                                         </TableCell>
                                         <TableCell padding={'default'} align="center"

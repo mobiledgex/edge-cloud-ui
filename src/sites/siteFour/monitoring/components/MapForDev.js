@@ -741,10 +741,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
                     <Center style={PageMonitoringStyles.mapStatusBox}>
                         <div style={{}}>
-                            Cluster : {this.props.parent.state.loading ?
+                            Cluster : {this.props.loading ?
                             <CircularProgress size={12} thickness={3}/> : this.props.clusterList.length}
                         </div>
-                       {/* <div style={{}}>
+                        {/* <div style={{}}>
                             AppInst : {this.props.appInstList.length}
                         </div>*/}
                     </Center>

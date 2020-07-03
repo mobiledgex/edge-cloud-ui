@@ -31,3 +31,42 @@ export const cloudRedIcon = L.icon({
     iconAnchor: [24, 30],//x,y
     shadowSize: [41, 41]
 });
+
+export const mapTileList = [
+    {
+        url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+        name: 'dark1',
+        value: 0,
+    },
+    {
+        url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
+        name: 'dark2',
+        value: 1,
+    },
+    {
+        url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
+        name: 'dark3',
+        value: 2,
+    },
+
+    {
+        url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
+        name: 'blue',
+        value: 3,
+    },
+    {
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        name: 'light2',
+        value: 4,
+    },
+    {
+        url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
+        name: 'light3',
+        value: 5,
+    },
+    {
+        url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+        name: 'light4',
+        value: 6,
+    },
+]

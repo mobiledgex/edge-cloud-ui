@@ -775,7 +775,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     }
                     await this.setState({
-                        markerList: !isInterval && markerListForMap, mapLoading: false,
+                        markerList: !isInterval && markerListForMap,
+                        mapLoading: false,
                     });
 
 
@@ -867,9 +868,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         legendItemCount: itemCount,
                         legendRowCount: rowCount,
                         filteredCloudletEventLogList: [],
-                    }, () => {
-
-                        console.log('filteredAppInstEventLogs====>', this.state.filteredAppInstEventLogs);
+                        loading: false,
                     });
                 } catch (e) {
                     showToast(e.toString())
@@ -1568,6 +1567,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 mapLoading={this.state.mapLoading}
                                 appInstList={this.state.filteredAppInstList}
                                 clusterList={this.state.filteredClusterUsageList}
+                                loading={this.state.loading}
                             />
                         )
                     } else if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET) {
