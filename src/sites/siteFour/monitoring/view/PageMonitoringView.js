@@ -648,7 +648,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentOper: 'All Operator',
                     cloudletDropdownLoading: false,
                     organizationList: [],
-                    currentOrg: 'All Organization',
+                    currentOrg: undefined,
                     isAdminClusterTreeExpand: true,
                     isNoCluster: false,
                     orgTreeData: [],
@@ -2480,7 +2480,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
                         <TreeSelect
                             dropdownMatchSelectWidth={false}
-                            //showSearch={true}
+                            showSearch={true}
+                            value={this.state.currentOrg}
+                            style={{width: 150, maxHeight: '512px !important', fontSize: '9px !important'}}
                             dropdownStyle={{
                                 maxHeight: 800, overflow: 'auto', width: '250px'
                             }}
@@ -2490,6 +2492,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             placeholder="Select Org"
                             treeDefaultExpandAll
                             onSelect={async (value, node, extra) => {
+                                await this.setState({
+                                    currentOrg: value,
+                                })
                                 this.operSelect.blur();
                                 let filteredCloudletList = []
                                 let cloudletDropdownList = []
@@ -2551,6 +2556,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <Select
                             ref={c => this.cloudletSelectForAdmin = c}
                             showSearch={true}
+                            value={this.state.currentCloudLet}
                             loading={this.state.cloudletDropdownLoading}
                             listHeight={512}
                             style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
@@ -2559,7 +2565,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 maxHeight: 800, overflow: 'auto', width: '333px'
                             }}
                             disabled={this.state.cloudletDropdownList.length === 0 || isEmpty(this.state.cloudletDropdownList) || this.state.loading}
-                            value={this.state.currentCloudLet}
+
                             placeholder={'Select Cloudlet'}
                             onSelect={async (selectCloudlet) => {
                                 let currentCloudlet = selectCloudlet.split("|")[0].trim();
