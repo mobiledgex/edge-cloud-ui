@@ -14,6 +14,7 @@ import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+
 const FontAwesomeIcon = require('react-fontawesome')
 
 export const noDataArea = () => (
@@ -123,23 +124,23 @@ export const renderBarLoader = (isBold = true) => {
              style={{
                  zIndex: 999,
                  position: 'absolute',
-                 width: isBold ? '98.5%' : '99.7%',
+                 width: isBold ? '99.1%' : '100%',
                  //backgroundColor: 'red'
              }}>
             <Lottie
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: isBold ? require('../../../../lotties/horizontal-loading-bold') : require('../../../../lotties/horizontal-loading'),
+                    animationData: isBold ? require('../../../../lotties/blue_bar2') : require('../../../../lotties/blue_bar2_thin'),
                 }}
                 speed={1}
-                height={20}
-                width={isBold ? '98.5%' : '99.7%'}
+                height={10}
+                width={isBold ? '99.1%' : '100%'}
                 isStopped={false}
                 isPaused={false}
                 style={{
                     position: 'absolute',
-                    top: -9,
+                    top: -8,
                 }}
             />
         </div>
