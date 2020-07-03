@@ -128,7 +128,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             </div>
                                         }
                                         <div
-                                            style={{flex: .4, marginRight: -50, marginTop: 2, backgroundColor: 'blue'}}>
+                                            style={{flex: .4, marginRight: -50, marginTop: 2,}}>
                                             <Select
                                                 dropdownMatchSelectWidth={false}
                                                 dropdownStyle={{
