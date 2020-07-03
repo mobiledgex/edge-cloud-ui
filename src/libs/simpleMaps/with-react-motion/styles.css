@@ -80,6 +80,10 @@
     box-shadow: none;
 }
 
+.leaflet-popup-close-button {
+    display: none;
+}
+
 .map-popup .leaflet-popup-content {
     display: flex;
     flex-direction: column;
@@ -96,9 +100,9 @@
 }
 
 .map-status-mark {
-    width:14px;
-    height:14px;
+    width:12px;
+    height:12px;
     border-radius: 50%;
     display: inline-block;
-    margin-left: 5px;
+    margin-right: 5px;
 }

@@ -356,9 +356,19 @@ class ClustersMap extends Component {
 
                                                     const initMarker = ref => {
                                                         if (ref) {
-                                                            ref.leafletElement.openPopup()
+                                                            ref.leafletElement.openPopup();
+                                                            ref.leafletElement.off('click', this.openPopup);
                                                         }
                                                     }
+
+                                                    const assignPopupProperties = popup => {
+
+                                                        if (popup) {
+                                                            popup.leafletElement.options.autoClose = false;
+                                                            popup.leafletElement.options.closeOnClick = false;
+                                                        }
+                                                    }
+
 
                                                     return (
                                                     <Marker
@@ -368,9 +378,7 @@ class ClustersMap extends Component {
                                                     >
                                                         {city.name &&
                                                         <Popup
-                                                            options={{
-                                                                keepInView: true
-                                                            }}
+                                                            ref={popupEl => assignPopupProperties(popupEl)}
                                                             className={'map-popup'}
                                                         >
                                                             {city.name.map(one => {
@@ -383,11 +391,12 @@ class ClustersMap extends Component {
                                                                         className='map-marker-list'
                                                                         // onClick={()=> }
                                                                     >
-                                                                        {one}
                                                                         <div
                                                                             style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
                                                                             className='map-status-mark'
                                                                         />
+                                                                        {one}
+
                                                                     </div>
                                                                 )
                                                             })}
