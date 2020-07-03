@@ -16,15 +16,20 @@ import {
     CHART_COLOR_MONOKAI,
     CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
     RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS, USER_TYPE_SHORT
+    THEME_OPTIONS,
+    USER_TYPE_SHORT,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {
-    convertByteToMegaGigaByte, convertMegaToGiGa,
+    convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
     makeClusterBubbleChartData,
     renderUsageByType
@@ -39,9 +44,11 @@ import type {
     TypeCluster,
     TypeLineChartData
 } from "../../../../shared/Types";
-import {Tag} from "antd";
+import {Select, Tag} from "antd";
 import _, {sortBy} from 'lodash';
-import {fields} from "../../../../services/model/format";
+import {mapTileList} from "../common/MapProperties";
+
+const {Option} = Select;
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -1445,6 +1452,47 @@ export function filteredClientStatusListByAppName(filteredAppInstList, allClient
 
         return count > 0;
     })
+}
+
+export function makeMapThemeDropDown(_this) {
+    return (
+        <Select
+            size={"small"}
+            defaultValue="dark1"
+            style={{width: 70, zIndex: 9999999999}}
+            showArrow={false}
+            bordered={false}
+            ref={c => _this.themeSelect = c}
+            listHeight={550}
+            onChange={async (value) => {
+                try {
+                    let index = value
+                    let lineColor = DARK_LINE_COLOR
+                    let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                    if (Number(index) >= 4) {
+                        lineColor = WHITE_LINE_COLOR;
+                        cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                    }
+                    _this.props.setMapTyleLayer(mapTileList[index].url);
+                    _this.props.setLineColor(lineColor);
+                    _this.props.setCloudletIconColor(cloudletIconColor);
+                    setTimeout(() => {
+                        _this.themeSelect.blur();
+                    }, 250)
+
+                } catch (e) {
+                    throw new Error(e)
+                }
+            }}
+        >
+            {mapTileList.map((item, index) => {
+                return (
+                    <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
+                            value={item.value}>{item.name}</Option>
+                )
+            })}
+        </Select>
+    )
 }
 
 export function makeStringLimit(classification, _this: any) {

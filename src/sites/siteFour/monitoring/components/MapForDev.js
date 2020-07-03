@@ -26,9 +26,9 @@ import {
 } from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {listGroupByKey, reduceString} from "../service/PageMonitoringService";
+import {listGroupByKey, makeMapThemeDropDown, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
-import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
+import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon, mapTileList} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
 
 const {Option} = Select;
@@ -103,49 +103,9 @@ type State = {
 
 };
 
-
 export default connect(mapStateToProps, mapDispatchProps)(
     class MapForDevContainer extends React.Component<Props, State> {
         tooltip = createRef();
-        mapTileList = [
-            {
-                url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
-                name: 'dark1',
-                value: 0,
-            },
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
-                name: 'dark2',
-                value: 1,
-            },
-            {
-                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
-                name: 'dark3',
-                value: 2,
-            },
-
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
-                name: 'blue',
-                value: 3,
-            },
-            {
-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-                name: 'light2',
-                value: 4,
-            },
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
-                name: 'light3',
-                value: 5,
-            },
-            {
-                url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                name: 'light4',
-                value: 6,
-            },
-        ]
-
 
         constructor(props: Props) {
             super(props);
@@ -357,47 +317,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-
-        makeMapThemeDropDown() {
-            return (
-                <Select
-                    size={"small"}
-                    defaultValue="dark1"
-                    style={{width: 70, zIndex: 9999999999}}
-                    showArrow={false}
-                    bordered={false}
-                    ref={c => this.themeSelect = c}
-                    listHeight={550}
-                    onChange={async (value) => {
-                        try {
-                            let index = value
-                            let lineColor = DARK_LINE_COLOR
-                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                            if (Number(index) >= 4) {
-                                lineColor = WHITE_LINE_COLOR;
-                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
-                            }
-                            this.props.setMapTyleLayer(this.mapTileList[index].url);
-                            this.props.setLineColor(lineColor);
-                            this.props.setCloudletIconColor(cloudletIconColor);
-                            setTimeout(() => {
-                                this.themeSelect.blur();
-                            }, 250)
-
-                        } catch (e) {
-                            throw new Error(e)
-                        }
-                    }}
-                >
-                    {this.mapTileList.map((item, index) => {
-                        return (
-                            <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
-                                    value={item.value}>{item.name}</Option>
-                        )
-                    })}
-                </Select>
-            )
-        }
 
         makeClientMarker(objkeyOne, index) {
             let groupedClientList = this.state.clientList;
@@ -737,19 +656,23 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         renderMapControl2() {
-            return (
-                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                    <Center style={PageMonitoringStyles.mapStatusBox}>
-                        <div style={{}}>
-                            Cluster : {this.props.loading ?
-                            <CircularProgress size={12} thickness={3}/> : this.props.clusterList.length}
-                        </div>
-                        {/* <div style={{}}>
+            try {
+                return (
+                    <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                        <Center style={PageMonitoringStyles.mapStatusBox}>
+                            <div style={{}}>
+                                Cluster : {this.props.loading ?
+                                <CircularProgress size={12} thickness={3}/> : this.props.clusterList.length}
+                            </div>
+                            {/* <div style={{}}>
                             AppInst : {this.props.appInstList.length}
                         </div>*/}
-                    </Center>
-                </Control>
-            )
+                        </Center>
+                    </Control>
+                )
+            } catch (e) {
+
+            }
         }
 
 
@@ -790,10 +713,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {this.renderMapControl2()}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                        {this.makeMapThemeDropDown()}
+                                        {makeMapThemeDropDown(this)}
                                     </div>
-                                    : <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 99999}}>
-                                        {this.makeMapThemeDropDown()}
+                                    : <div style={{position: 'absolute', bottom: 50, right: 5, zIndex: 99999}}>
+                                        {makeMapThemeDropDown(this)}
                                     </div>
                                 }
                                 {/*@desc:#####################################..*/}
