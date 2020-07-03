@@ -392,6 +392,7 @@ type PageDevMonitoringState = {
     orgTreeData: any,
     currentOrgView: string,
     currentLayout: any,
+    isExpandOrgDropdown: boolean,
 
 }
 
@@ -654,8 +655,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     orgTreeData: [],
                     currentOrgView: 'all',
                     currentLayout: [],
-
-                };
+                    isExpandOrgDropdown: true,
+                }
             }
 
             async componentWillReceiveProps(nextProps: PageMonitoringProps, nextContext: any): void {
@@ -2490,7 +2491,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             listHeight={'100%'}
                             treeData={this.state.orgTreeData}
                             placeholder="Select Org"
-                            treeDefaultExpandAll
+                            treeDefaultExpandAll={this.state.isExpandOrgDropdown}
+                            onSearch={() => {
+                                this.setState({
+                                    isExpandOrgDropdown: true,
+                                })
+                            }}
                             onSelect={async (value, node, extra) => {
                                 await this.setState({
                                     currentOrg: value,
