@@ -393,6 +393,7 @@ type PageDevMonitoringState = {
     currentOrgView: string,
     currentLayout: any,
     isExpandOrgDropdown: boolean,
+    isShowClusterInLegend: boolean,
 
 }
 
@@ -656,6 +657,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentOrgView: 'all',
                     currentLayout: [],
                     isExpandOrgDropdown: true,
+                    isShowClusterInLegend: false,
                 }
             }
 
@@ -2469,6 +2471,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredCloudletList: this.state.cloudletList,
                     markerList: markerListForMap,
                     isStream: false,
+                    isShowClusterInLegend: false,
                 })
             }
 
@@ -2732,6 +2735,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         }
 
                                     }
+
+                                    await this.setState({
+                                        isShowClusterInLegend: true,
+                                    })
                                 } catch (e) {
                                     throw new Error(e)
                                 }
@@ -3288,10 +3295,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
-                            {filteredClusterUsageList.length === 0 &&
+                            {filteredClusterUsageList.length === 0 && this.state.isShowClusterInLegend &&
                             <Col
                                 span={24}
-                                className="gutterRow"
+                                className="noClusterMsg"
                             >
                                 No Cluster
                             </Col>

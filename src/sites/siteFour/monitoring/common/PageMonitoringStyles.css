@@ -991,7 +991,16 @@ tr td {
     alignSelf: center;
     justifyContent: center;
 }
+
 .rangePicker {
     font-size: 8px !important;
 }
 
+.noClusterMsg {
+    justify-content: center;
+    width: 100%;
+    color: yellow;
+    background: red;
+    align-self: center;
+    text-align: center;
+}
