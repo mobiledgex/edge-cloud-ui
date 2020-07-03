@@ -164,7 +164,7 @@ import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
-import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
+import {UnfoldLess, UnfoldMore, ErrorOutline} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {sortBy, orderBy} from "lodash";
@@ -3260,6 +3260,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         return (
                             <LegendOuterDiv
                                 style={{
+                                    height: 35,
                                     marginTop: 4,
                                     width: '98.8%'
                                 }}>
