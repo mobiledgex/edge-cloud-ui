@@ -1385,16 +1385,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             margin: 0,
                             backgroundColor: this.props.themeType === 'light' ? 'white' : '#292c33'
                         }}
-                        onDoubleClick={async () => {
-                            await this.setState({
-                                isFixGrid: true,
-                                isDraggable: !this.state.isDraggable,
-                                markerList: [],
-                            })
-                            this.setState({
-                                markerList: reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET),
-                            });
-                        }}
                     >
                         <div
                             className='draggable'
