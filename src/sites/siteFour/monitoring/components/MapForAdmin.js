@@ -664,10 +664,10 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                 {this.renderMapControl()}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                        {makeMapThemeDropDown()}
+                                        {makeMapThemeDropDown(this)}
                                     </div>
                                     : <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 99999}}>
-                                        {makeMapThemeDropDown()}
+                                        {makeMapThemeDropDown(this)}
                                     </div>
                                 }
                                 {/*@desc:#####################################..*/}
