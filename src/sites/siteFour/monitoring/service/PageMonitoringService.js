@@ -1447,10 +1447,10 @@ export function filteredClientStatusListByAppName(filteredAppInstList, allClient
     })
 }
 
-export function makeStringLimit(classification, _this: PageMonitoringView) {
+export function makeStringLimit(classification, _this: any) {
     let stringLimit = 25;
     if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-        if (this.props.size.width > 1600) {
+        if (_this.props.size.width > 1600) {
             stringLimit = 27
         } else if (_this.props.size.width < 1500 && this.props.size.width >= 1380) {
             stringLimit = 18
@@ -1462,7 +1462,7 @@ export function makeStringLimit(classification, _this: PageMonitoringView) {
             stringLimit = 4
         }
     } else if (classification === CLASSIFICATION.CLOUDLET) {
-        if (this.props.size.width > 1600) {
+        if (_this.props.size.width > 1600) {
             stringLimit = 25
         } else if (_this.props.size.width < 1500 && this.props.size.width >= 1380) {
             stringLimit = 17
@@ -1475,7 +1475,7 @@ export function makeStringLimit(classification, _this: PageMonitoringView) {
         }
 
     } else if (classification === CLASSIFICATION.CLUSTER || classification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
-        if (this.props.size.width > 1500) {
+        if (_this.props.size.width > 1500) {
             stringLimit = 49
         } else if (_this.props.size.width < 1500 && this.props.size.width >= 1300) {
             stringLimit = 42

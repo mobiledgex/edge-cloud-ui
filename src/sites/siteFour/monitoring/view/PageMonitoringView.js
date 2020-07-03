@@ -3272,7 +3272,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             makeClusterLegendForAdmin() {
-                let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER_FOR_ADMIN)
+                let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER_FOR_ADMIN, this)
                 let itemCount = this.state.legendItemCount;
                 let {filteredClusterUsageList} = this.state;
 
@@ -3364,7 +3364,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             makeClusterLegend() {
-                let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER)
+                let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER, this)
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
                 console.log(`filteredClusterUsageList====>`, filteredClusterUsageList);
@@ -3484,7 +3484,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             makeCloudletLegend(pLegendItemCount) {
-                let stringLimit = makeStringLimit(CLASSIFICATION.CLOUDLET);
+                let stringLimit = makeStringLimit(CLASSIFICATION.CLOUDLET, this);
                 return (
                     <Row gutter={16}
                          style={{
