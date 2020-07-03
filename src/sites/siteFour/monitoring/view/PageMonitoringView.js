@@ -5,6 +5,7 @@ import {
     PageMonitoringStyles
 } from '../common/PageMonitoringStyles'
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import AppsIcon from '@material-ui/icons/Apps';
 import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
@@ -2589,7 +2590,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             filteredAppInstEventLogs: this.state.allAppInstEventLogs,
                                         })
 
-                                    } else {//todo: When one Cloudlet
+                                    } else {//desc: When one Cloudlet
                                         await this.setState({
                                             mapLoading: true,
                                             loading: true,
@@ -2668,10 +2669,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         try {
                                             let usageEventPromiseList = []
                                             if (filteredClusterList.length > 0) {
+                                                await this.setState({currentCloudLet: currentCloudlet,})
                                                 let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                                                 let startTime = makeCompleteDateTime(date[0]);
                                                 let endTime = makeCompleteDateTime(date[1]);
-
                                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
                                                 usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
                                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
@@ -3088,6 +3089,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 return (
                     <div className="page_monitoring_dropdown_box2">
                         <RangePicker
+                            suffixIcon={<DateRangeIcon style={{fill: 'white', fontSize: 15, marginTop: 4,}}/>}
                             separator={"~"}
                             className='rangePicker'
                             style={{fontSize: '5px !important'}}
