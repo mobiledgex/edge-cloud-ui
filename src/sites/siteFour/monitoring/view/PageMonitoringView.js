@@ -2490,7 +2490,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownStyle={{
                                 maxHeight: 800, overflow: 'auto', width: '250px'
                             }}
-                            ref={c => this.operSelect = c}
+                            ref={c => this.orgSelect = c}
                             listHeight={'100%'}
                             treeData={this.state.orgTreeData}
                             placeholder="Select Org"
@@ -2501,10 +2501,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 })
                             }}
                             onSelect={async (value, node, extra) => {
+                                this.orgSelect.blur();
                                 await this.setState({
                                     currentOrg: value,
                                 })
-                                this.operSelect.blur();
                                 let filteredCloudletList = []
                                 let cloudletDropdownList = []
                                 let markerListForMap = []
@@ -3260,7 +3260,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         return (
                             <LegendOuterDiv
                                 style={{
-                                    height: 35,
                                     marginTop: 4,
                                     width: '98.8%'
                                 }}>
