@@ -296,14 +296,15 @@ class ClustersMap extends Component {
     render() {
 
         return (
-            <div>
+            <div className="commom-listView-map">
                 {this.state.detailMode &&
-                    <div className="zoom-inout-reset-clusterMap" style={{ left: 8, bottom: 4, position: 'absolute', display: 'block', zIndex:401 }}>
+                    <div className="zoom-inout-reset-clusterMap" style={{ left: 10, top: 79, position: 'absolute', display: 'block', zIndex:1000 }}>
                         <Button id="mapZoomCtl" size='large' icon onClick={() => this.handleReset()}>
                             <Icon name='compress' />
                         </Button>
                     </div>
                 }
+
                 <ContainerDimensions>
                     {({ width, height }) =>
                         <Motion
