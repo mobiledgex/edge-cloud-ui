@@ -3,7 +3,7 @@ import '../common/PageMonitoringStyles.css'
 import {Center, CenterMethodCount} from "../common/PageMonitoringStyles";
 import type {TypeClientStatus} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
-import {renderBarLoader} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderCircularProgress} from "../service/PageMonitoringCommonService";
 
 const height = 200;
 const outerDiv = {flex: .33, border: '0.5px solid grey', height: height, backgroundColor: 'rgba(0,0,0,.3)', margin: 2}
@@ -61,11 +61,6 @@ export default function MethodUsageCount(props) {
 
     return (
         <div ref={gridBodyRef}>
-            {props.loading &&
-            <div>
-                {renderBarLoader()}
-            </div>
-            }
             {renderHeader()}
             <div style={{
                 height: '100%',
@@ -106,7 +101,9 @@ export default function MethodUsageCount(props) {
                         </div>
                     </CenterMethodCount>
                     :
-                    null
+                    <div style={{marginTop: 65}}>
+                        {renderCircularProgress()}
+                    </div>
                 }
             </div>
         </div>

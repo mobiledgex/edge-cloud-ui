@@ -1,6 +1,12 @@
 // @flow
 import * as React from 'react';
-import {isEmpty, renderBarLoader, renderEmptyMessageBox, renderXLoader} from "../service/PageMonitoringCommonService";
+import {
+    isEmpty,
+    renderBarLoader,
+    renderEmptyMessageBox,
+    renderCircularProgress,
+    renderXLoader
+} from "../service/PageMonitoringCommonService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -61,11 +67,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
     render() {
         return (
             <div className='page_monitoring_dual_column'>
-                {this.props.loading &&
-                <div>
-                    {renderBarLoader()}
-                </div>
-                }
+
 
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
@@ -73,7 +75,9 @@ export default class BarChartContainer extends React.Component<Props, State> {
                             {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization
                         </div>
                     </div>
+
                     <div className='page_monitoring_container'>
+
                         {!this.props.loading && !isEmpty(this.props.chartDataSet) ?
                             <div style={{width: '100%'}}>
                                 <GoogleChart
@@ -85,8 +89,8 @@ export default class BarChartContainer extends React.Component<Props, State> {
                                     options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
                                 />
                             </div>
-                            :
-                            renderEmptyMessageBox("Please Select Cloudlet")
+                            : this.props.loading ? renderCircularProgress()
+                                : renderEmptyMessageBox("Please Select Cloudlet")
                         }
 
                     </div>

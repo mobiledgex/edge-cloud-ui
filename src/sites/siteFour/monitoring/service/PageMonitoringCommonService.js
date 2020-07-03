@@ -230,10 +230,10 @@ export const renderPlaceHolderHorizontalLoader = (type = 'lottieCircle') => {
 
 }
 
-export const renderPlaceHolderCircular = (type: string = '') => {
+export const renderCircularProgress = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '90%',}}>
             <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
         </div>
