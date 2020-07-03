@@ -2467,6 +2467,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     clusterTreeDropdownList: [],
                     filteredCloudletList: this.state.cloudletList,
                     markerList: markerListForMap,
+                    isStream: false,
                 })
             }
 
