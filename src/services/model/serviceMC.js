@@ -28,7 +28,7 @@ export const mcURL = (isWebSocket) =>
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
-
+        
         if (isWebSocket) {
             serverURL = serverURL.replace('http', 'ws')
         }
