@@ -42,6 +42,14 @@
     width: 100%;
 }
 
+.page_monitoring_dropdown_box2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 250px;
+
+}
+
 .page_monitoring_datepicker_box {
     display: flex;
     align-items: flex-end;
@@ -53,6 +61,18 @@
     align-items: center;
     color: rgba(255, 255, 255, 1.0);
     margin-right: 10px;
+    align-self: center;
+    margin-top: 3px;
+    font-weight: normal;
+    margin-bottom: 10px;
+    /*z-index: 10;*/
+}
+
+.page_monitoring_dropdown_label2 {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 1.0);
+    margin-right: 2px;
     align-self: center;
     margin-top: 3px;
     font-weight: normal;

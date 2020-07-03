@@ -961,10 +961,37 @@ tr td {
     font-size: 9pt !important;
 }
 
-.ant-tag-blue{
+.ant-tag-blue {
     background: grey !important;
     color: lawngreen !important;
 }
+
 .ant-picker-cell-in-view.ant-picker-cell-in-range::before {
     background: #96bd2b;
 }
+
+.makeTopRightMenuActionButtonDiv {
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    align-self: flex-end;
+    justify-content: flex-end;
+}
+
+.streamSwitchDiv {
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    height: 30px;
+    width: 90px;
+    marginRight: 5;
+    marginLeft: 5;
+    alignSelf: center;
+    justifyContent: center;
+}
+.rangePicker {
+    font-size: 8px !important;
+}
+

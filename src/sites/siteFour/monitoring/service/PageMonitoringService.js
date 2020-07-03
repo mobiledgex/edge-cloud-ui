@@ -1447,6 +1447,48 @@ export function filteredClientStatusListByAppName(filteredAppInstList, allClient
     })
 }
 
+export function makeStringLimit(classification) {
+    let stringLimit = 25;
+    if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+        if (this.props.size.width > 1600) {
+            stringLimit = 27
+        } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+            stringLimit = 18
+        } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+            stringLimit = 14
+        } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+            stringLimit = 10
+        } else if (this.props.size.width < 720) {
+            stringLimit = 4
+        }
+    } else if (classification === CLASSIFICATION.CLOUDLET) {
+        if (this.props.size.width > 1600) {
+            stringLimit = 25
+        } else if (this.props.size.width < 1500 && this.props.size.width >= 1380) {
+            stringLimit = 17
+        } else if (this.props.size.width < 1380 && this.props.size.width >= 1150) {
+            stringLimit = 14
+        } else if (this.props.size.width < 1150 && this.props.size.width >= 720) {
+            stringLimit = 10
+        } else if (this.props.size.width < 720) {
+            stringLimit = 4
+        }
+
+    } else if (classification === CLASSIFICATION.CLUSTER || classification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+        if (this.props.size.width > 1500) {
+            stringLimit = 49
+        } else if (this.props.size.width < 1500 && this.props.size.width >= 1300) {
+            stringLimit = 42
+        } else if (this.props.size.width < 1300 && this.props.size.width >= 1100) {
+            stringLimit = 34
+        } else if (this.props.size.width < 1100) {
+            stringLimit = 28
+        }
+    }
+
+    return stringLimit;
+}
+
 
 export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
@@ -1480,7 +1522,7 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
     const treeData = [
         {
             title: (<div style={{}}>All</div>),
-            value: '0',
+            value: 'Reset',
             selectable: true,
         },
         {
@@ -1629,8 +1671,9 @@ export const makeDropdownForCloudlet = (pList) => {
 
         newArrayList = sortBy(newArrayList, [object => object.text.toLowerCase()], ['asc']);
         let nameSortedArrayList = insert(newArrayList, 0, {
-            key: undefined | undefined | undefined,
-            value: undefined | undefined | undefined,
+            region: undefined,
+            key: 'Reset',
+            value: undefined,
             text: 'Reset Filter',
         })
 

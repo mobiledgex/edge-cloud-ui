@@ -938,10 +938,10 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
                 "organization": cloudletMapOne.Operator,
                 "name": cloudletMapOne.CloudletName
             },
-            "last": 100
+            //"last": 100
+            "starttime": startTime,
+            "endtime": endTime
         }
-
-        console.log(`dataBody===>`, dataBody);
 
         let result = await axios({
             url: mcURL() + CLOUDLET_EVENT_LOG_ENDPOINT,
