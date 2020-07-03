@@ -39,7 +39,7 @@ import {
     makeLineChartData,
     makeLineChartDataForBigModal,
     makeMultiLineChartDatas, makeOrgTreeDropdown,
-    makeRegionCloudletClusterTreeDropdown, makeUniqDevOrg, makeUniqOperOrg,
+    makeRegionCloudletClusterTreeDropdown, makeStringLimit, makeUniqDevOrg, makeUniqOperOrg,
     reduceLegendClusterCloudletName,
     reduceString,
 } from "../service/PageMonitoringService";
@@ -3106,8 +3106,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         endTime: endTime,
                                     })
 
-                                    //this.filterUsageListByDateForCloudlet()
 
+                                    //todo:filterUsageListByDateForCloudletFor___ADMIN
+                                    //todo:filterUsageListByDateForCloudletFor___ADMIN
+                                    //todo:filterUsageListByDateForCloudletFor___ADMIN
                                     try {
                                         if (this.state.startTime !== '' && this.state.endTime !== '') {
                                             this.setState({
@@ -3117,8 +3119,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             })
                                             let startTime = makeCompleteDateTime(this.state.startTime);
                                             let endTime = makeCompleteDateTime(this.state.endTime);
-
                                             console.log(`filteredCloudletList====>`, this.state.filteredCloudletList);
+                                            console.log(`filteredCloudletList====startTime>`, startTime)
+                                            console.log(`filteredCloudletList====endTime>`, endTime)
 
                                             let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                                             let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
@@ -3129,6 +3132,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 filteredClientStatusList: clientStatusList,
                                                 loading: false,
                                                 loadingForClientStatus: false,
+                                                filteredCloudletEventLogList: filteredCloudletEventLog,
                                             })
                                         }
                                     } catch (e) {
@@ -3252,7 +3256,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 }
             }
-
 
             makeClusterLegendForAdmin() {
                 let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER_FOR_ADMIN)

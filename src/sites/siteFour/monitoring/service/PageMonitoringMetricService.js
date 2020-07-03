@@ -974,14 +974,15 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
 /**
  *
  * @param cloudletList
+ * @param startTime
+ * @param endTime
  * @returns {Promise<[]>}
  */
 export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '') => {
-
     try {
         let promiseList = []
         cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-            promiseList.push(getCloudletEventLog(cloudletOne, startTime = '', endTime = ''))
+            promiseList.push(getCloudletEventLog(cloudletOne, startTime, endTime))
         })
 
         let allCloudletEventLogList = await Promise.all(promiseList);
