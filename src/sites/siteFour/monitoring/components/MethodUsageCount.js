@@ -61,10 +61,14 @@ export default function MethodUsageCount(props) {
 
     return (
         <div ref={gridBodyRef}>
+            {props.loading &&
+            <div>
+                {renderBarLoader()}
+            </div>
+            }
             {renderHeader()}
             <div style={{
                 height: '100%',
-                //backgroundColor: 'red'
             }}>
                 {!props.loading && props.clientStatusList !== undefined ?
                     <CenterMethodCount style={{height: height}}>
@@ -101,9 +105,7 @@ export default function MethodUsageCount(props) {
                         </div>
                     </CenterMethodCount>
                     :
-                    <div style={{marginTop: 65}}>
-                        {renderCircularProgress()}
-                    </div>
+                    null
                 }
             </div>
         </div>

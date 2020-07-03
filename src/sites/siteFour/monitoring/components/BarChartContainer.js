@@ -67,8 +67,11 @@ export default class BarChartContainer extends React.Component<Props, State> {
     render() {
         return (
             <div className='page_monitoring_dual_column'>
-
-
+                {this.props.loading &&
+                <div>
+                    {renderBarLoader()}
+                </div>
+                }
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
@@ -89,8 +92,7 @@ export default class BarChartContainer extends React.Component<Props, State> {
                                     options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
                                 />
                             </div>
-                            : this.props.loading ? renderCircularProgress()
-                                : renderEmptyMessageBox("Please Select Cloudlet")
+                            : renderEmptyMessageBox("Please Select Cloudlet")
                         }
 
                     </div>

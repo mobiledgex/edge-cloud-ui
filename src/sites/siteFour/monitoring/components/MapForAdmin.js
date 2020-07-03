@@ -630,12 +630,10 @@ export default connect(mapStateToProps, mapDispatchProps)((
         render() {
             return (
                 <div ref={c => this.element = c} style={{flex: 1, height: '100%'}}>
-                    {/*{this.props.loading && renderBarLoader(false)}*/}
-                    {this.props.parent.state.mapLoading && renderXMarkForMap(true)}
+                    {this.props.parent.state.mapLoading  && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
-                            {/*{this.props.loading && renderXLoader()}*/}
                             <Map
                                 center={this.state.mapCenter}
                                 zoom={this.state.zoom}
