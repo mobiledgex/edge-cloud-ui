@@ -1563,7 +1563,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 isShowAppInstPopup={this.state.isShowAppInstPopup}
                                 selectedAppInstIndex={this.state.selectedAppInstIndex}
                                 isEnableZoomIn={!this.state.isEnableZoomIn}
-                                currentClassfication={this.state.currentClassification}
+                                currentClassification={this.state.currentClassification}
                                 mapLoading={this.state.mapLoading}
                                 appInstList={this.state.filteredAppInstList}
                                 clusterList={this.state.filteredClusterUsageList}

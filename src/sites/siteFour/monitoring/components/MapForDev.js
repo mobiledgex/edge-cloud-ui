@@ -74,6 +74,7 @@ type Props = {
     appInstList: any,
     clusterList: any,
     mapLoading: boolean,
+    currentClassification: string,
 
 };
 type State = {
@@ -708,7 +709,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                 />
                                 {this.renderMapControl()}
-                                {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN && this.renderMapControlForCount()}
+                                {this.props.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN || this.props.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.renderMapControlForCount() : null}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
