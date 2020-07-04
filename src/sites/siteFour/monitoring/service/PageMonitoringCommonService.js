@@ -118,6 +118,12 @@ export const renderEmptyMessageBox = (message: string) => {
     )
 }
 
+export const renderSmallProgressLoader = () => {
+    return (
+        <CircularProgress size={12} thickness={3} style={{marginBottom: -2, color: '#1cecff'}}/>
+    )
+}
+
 export const renderBarLoader = (isBold = true) => {
     return (
         <div className='page_monitoring_blank_box'

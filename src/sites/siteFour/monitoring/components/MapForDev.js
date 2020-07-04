@@ -6,7 +6,7 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
@@ -652,14 +652,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             <div style={{display: 'flex'}}>
                                 Cluster :
                                 <div style={{flex: .5, marginLeft: 5,}}>
-                                    {this.props.loading ? <CircularProgress size={12} thickness={3} style={{marginBottom: -2, color: '#1cecff'}}/> : this.props.clusterList.length}
+                                    {this.props.loading ? renderSmallProgressLoader() : this.props.clusterList.length}
                                 </div>
 
                             </div>
                             <div style={{display: 'flex'}}>
-                                AppInst :
+                                App Inst :
                                 <div style={{flex: .5, marginLeft: 5,}}>
-                                    {this.props.loading ? <CircularProgress size={12} thickness={3} style={{marginBottom: -2, color: '#1cecff'}}/> : this.props.appInstList.length}
+                                    {this.props.loading ? renderSmallProgressLoader() : this.props.appInstList.length}
                                 </div>
                             </div>
                         </div>
