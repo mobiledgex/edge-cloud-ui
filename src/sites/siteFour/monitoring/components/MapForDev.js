@@ -652,14 +652,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             <div style={{display: 'flex'}}>
                                 Cluster :
                                 <div style={{flex: .5, marginLeft: 5,}}>
-                                    {this.props.loading ? <CircularProgress size={10} thickness={3} style={{marginBottom: -2}}/> : this.props.clusterList.length}
+                                    {this.props.loading ? <CircularProgress size={12} thickness={3} style={{marginBottom: -2, color: '#1cecff'}}/> : this.props.clusterList.length}
                                 </div>
 
                             </div>
                             <div style={{display: 'flex'}}>
                                 AppInst :
                                 <div style={{flex: .5, marginLeft: 5,}}>
-                                    {this.props.loading ? <CircularProgress size={10} thickness={3} style={{marginBottom: -2}}/> : this.props.appInstList.length}
+                                    {this.props.loading ? <CircularProgress size={12} thickness={3} style={{marginBottom: -2, color: '#1cecff'}}/> : this.props.appInstList.length}
                                 </div>
                             </div>
                         </div>
