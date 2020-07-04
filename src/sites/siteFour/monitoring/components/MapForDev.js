@@ -653,7 +653,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
                         <div style={PageMonitoringStyles.mapStatusBox}>
                             <div style={{display: 'flex'}}>
-                                Cluster :
+                                Cluster&nbsp;&nbsp;&nbsp;:
                                 <div style={{flex: .5, marginLeft: 5,}}>
                                     {this.props.loading ? renderSmallProgressLoader(-1) : this.props.clusterList.length}
                                 </div>

@@ -567,16 +567,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                             </div>
                         </div>
                     </Control>
-                    <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                        <Center style={PageMonitoringStyles.mapStatusBox}>
-                            <div style={{}}>
-                                Cloudlet : {this.props.cloudletList.length}
-                            </div>
-                            <div style={{}}>
-                                Cluster : {this.props.clusterList.length}
-                            </div>
-                        </Center>
-                    </Control>
+
 
                 </React.Fragment>
             )
@@ -626,11 +617,26 @@ export default connect(mapStateToProps, mapDispatchProps)((
             )
         }
 
+        renderCounterDiv() {
+            return (
+                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                    <Center style={PageMonitoringStyles.mapStatusBoxCloudlet}>
+                        <div style={{}}>
+                            Cloudlet : {this.props.cloudletList.length}
+                        </div>
+                        {/*  <div style={{}}>
+                            Cluster&nbsp;&nbsp;&nbsp;: {this.props.clusterList.length}
+                        </div>*/}
+                    </Center>
+                </Control>
+            )
+        }
+
 
         render() {
             return (
                 <div ref={c => this.element = c} style={{flex: 1, height: '100%'}}>
-                    {this.props.parent.state.mapLoading  && renderBarLoader(false)}
+                    {this.props.parent.state.mapLoading && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
@@ -660,6 +666,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                     style={{zIndex: 1}}
                                 />
                                 {this.renderMapControl()}
+                                {this.renderCounterDiv()}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
