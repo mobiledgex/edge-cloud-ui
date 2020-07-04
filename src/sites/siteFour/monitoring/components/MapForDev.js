@@ -18,6 +18,7 @@ import {listGroupByKey, makeMapThemeDropDown, reduceString} from "../service/Pag
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
+import {CLASSIFICATION} from "../../../../shared/Constants";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -701,14 +702,13 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     this.map = ref;
                                 }}
                             >
-
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}
                                     style={{zIndex: 1}}
                                 />
                                 {this.renderMapControl()}
-                                {this.renderMapControlForCount()}
+                                {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN && this.renderMapControlForCount()}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
