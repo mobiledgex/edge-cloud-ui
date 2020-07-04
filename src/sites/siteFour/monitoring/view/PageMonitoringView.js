@@ -3081,7 +3081,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 ref={c => this.appInstSelect = c}
                                 dropdownStyle={{}}
                                 //style={{width: 220}}
-                                style={{width: 170, maxHeight: '512px !important', fontSize: '9px !important'}}
+                                style={{width: 170, maxHeight: '512px !important', fontSize: '6px !important'}}
                                 disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
                                 placeholder={this.state.appInstSelectBoxPlaceholder}
