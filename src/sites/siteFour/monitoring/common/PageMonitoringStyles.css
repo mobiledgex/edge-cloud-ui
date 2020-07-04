@@ -1003,3 +1003,7 @@ tr td {
     align-self: center;
     text-align: center;
 }
+
+.ant-picker-range {
+    background-color: #23232E !important;
+}
