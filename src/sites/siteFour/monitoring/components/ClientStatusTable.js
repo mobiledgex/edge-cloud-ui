@@ -10,7 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
-import {renderBarLoader, renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderPlaceHolderHorizontalLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 type Props = {
@@ -79,7 +79,9 @@ export default function ClientStatusTable(props) {
                 >
                     Client Status For App Inst {props.loading ?
                     <div style={{marginLeft: 5,}}>
-                        <CircularProgress size={12} thickness={3}/>
+                        <div style={{}}>
+                            {renderSmallProgressLoader(0)}
+                        </div>
                     </div> : `[${props.clientStatusList.length}]`}
                 </div>
             </div>

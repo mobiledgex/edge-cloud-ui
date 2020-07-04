@@ -118,9 +118,15 @@ export const renderEmptyMessageBox = (message: string) => {
     )
 }
 
-export const renderSmallProgressLoader = () => {
+
+/**
+ *
+ * @param marginBottom
+ * @returns {*}
+ */
+export const renderSmallProgressLoader = (marginBottom: 0) => {
     return (
-        <CircularProgress size={12} thickness={3} style={{marginBottom: -2, color: '#1cecff'}}/>
+        <CircularProgress size={12} thickness={3} style={{marginBottom: marginBottom, color: '#1cecff'}}/>
     )
 }
 

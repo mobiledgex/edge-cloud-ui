@@ -655,14 +655,14 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             <div style={{display: 'flex'}}>
                                 Cluster :
                                 <div style={{flex: .5, marginLeft: 5,}}>
-                                    {this.props.loading ? renderSmallProgressLoader() : this.props.clusterList.length}
+                                    {this.props.loading ? renderSmallProgressLoader(-1) : this.props.clusterList.length}
                                 </div>
 
                             </div>
                             <div style={{display: 'flex'}}>
                                 App Inst :
                                 <div style={{flex: .5, marginLeft: 5,}}>
-                                    {this.props.loading ? renderSmallProgressLoader() : this.props.appInstList.length}
+                                    {this.props.loading ? renderSmallProgressLoader(-1) : this.props.appInstList.length}
                                 </div>
                             </div>
                         </div>
