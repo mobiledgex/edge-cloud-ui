@@ -120,7 +120,7 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                          }}
                                     >
                                         {this.props.isBig === undefined ?
-                                            <div style={{flex: .5, marginTop: 5,}}>
+                                            <div style={{flex: .5, marginTop: 7,}}>
                                                 Bubble Chart
                                             </div>
                                             : <div style={{width: window.innerWidth * 0.9}}>
@@ -128,16 +128,16 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
                                             </div>
                                         }
                                         <div
-                                            style={{flex: .4, marginRight: -50, marginTop: 2,}}>
+                                            style={{flex: .4, marginRight: -50, marginTop: 0,}}>
                                             <Select
                                                 dropdownMatchSelectWidth={false}
                                                 dropdownStyle={{
                                                     maxHeight: 800,
                                                     overflow: 'auto',
-                                                    width: '160px',
+                                                    width: '110px',
                                                 }}
                                                 ref={c => this.bubbleChartSelect = c}
-                                                size={'medium'}
+                                                //size={'medium'}
                                                 style={{width: 125}}
                                                 disabled={this.props.parent.state.bubbleChartLoader}
                                                 placeholder='SELECT HARDWARE'
