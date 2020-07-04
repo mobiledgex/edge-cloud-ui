@@ -2452,6 +2452,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //todo: all org dropdown(reset)
                 //todo:#################################
                 let markerListForMap = reducer.groupBy(this.state.cloudletList, CLASSIFICATION.CloudletName);
+
+
                 await this.setState({
                     allCloudletEventLogList: [],
                     filteredCloudletEventLogList: [],
@@ -2462,6 +2464,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     markerList: markerListForMap,
                     isStream: false,
                     isShowClusterInLegend: false,
+                }, () => {
+
                 })
             }
 
@@ -2511,18 +2515,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                 } else {//TODO ; when operator selected
                                     await this.setState({currentOrgView: USER_TYPE_SHORT.OPER})
+                                    //TODO: WHEN ALL
                                     if (value === "0" || value === "Reset") {
                                         let filteredCloudletList = this.state.cloudletList
-                                        this.handleResetForAdmin()
+                                        await this.handleResetForAdmin()
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                                        cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
                                     } else {//todo:Wnen specific oper
                                         filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
                                             return item.Operator === value
                                         })
-
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+                                        cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
                                     }
-                                    cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+
                                 }
 
                                 this.setState({
@@ -2718,7 +2724,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 filteredClientStatusList: clientStatusList,
                                                 filteredCloudletEventLogList: cloudletEventLogList,
                                                 currentCloudLet: currentCloudlet,
-                                                isLegendExpanded: false,
+                                                //isLegendExpanded: false,
                                             }, () => {
                                             })
                                         } catch (e) {

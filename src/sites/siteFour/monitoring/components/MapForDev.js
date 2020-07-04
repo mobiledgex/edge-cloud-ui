@@ -6,29 +6,17 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {
-    groupByKey_,
-    removeDuplicates,
-    renderBarLoader,
-    renderXMarkForMap,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, makeMapThemeDropDown, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
-import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon, mapTileList} from "../common/MapProperties";
+import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
 
 const {Option} = Select;
@@ -81,6 +69,7 @@ type Props = {
     isShowAppInstPopup: boolean,
     isEnableZoomIn: boolean,
     handleAppInstDropdown: any,
+    loading: boolean,
 
 };
 type State = {
@@ -655,19 +644,25 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
-        renderMapControl2() {
+        renderMapControlForCount() {
             try {
                 return (
                     <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
-                        <Center style={PageMonitoringStyles.mapStatusBox}>
-                            <div style={{}}>
-                                Cluster : {this.props.loading ?
-                                <CircularProgress size={12} thickness={3}/> : this.props.clusterList.length}
+                        <div style={PageMonitoringStyles.mapStatusBox}>
+                            <div style={{display: 'flex'}}>
+                                Cluster :
+                                <div style={{flex: .5, marginLeft: 5,}}>
+                                    {this.props.loading ? <CircularProgress size={10} thickness={3} style={{marginBottom: -2}}/> : this.props.clusterList.length}
+                                </div>
+
                             </div>
-                            {/* <div style={{}}>
-                            AppInst : {this.props.appInstList.length}
-                        </div>*/}
-                        </Center>
+                            <div style={{display: 'flex'}}>
+                                AppInst :
+                                <div style={{flex: .5, marginLeft: 5,}}>
+                                    {this.props.loading ? <CircularProgress size={10} thickness={3} style={{marginBottom: -2}}/> : this.props.appInstList.length}
+                                </div>
+                            </div>
+                        </div>
                     </Control>
                 )
             } catch (e) {
@@ -710,7 +705,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     style={{zIndex: 1}}
                                 />
                                 {this.renderMapControl()}
-                                {this.renderMapControl2()}
+                                {this.renderMapControlForCount()}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
