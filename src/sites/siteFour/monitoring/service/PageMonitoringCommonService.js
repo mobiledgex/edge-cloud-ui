@@ -133,7 +133,7 @@ export const renderBarLoader = (isBold = true) => {
                     autoplay: true,
                     animationData: isBold ? require('../../../../lotties/blue_bar2') : require('../../../../lotties/blue_bar2_thin'),
                 }}
-                speed={1}
+                speed={0.5}
                 height={10}
                 width={isBold ? '99.1%' : '100%'}
                 isStopped={false}

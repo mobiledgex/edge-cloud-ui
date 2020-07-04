@@ -2600,6 +2600,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.setState({
                                             mapLoading: true,
                                             loading: true,
+                                            //filteredClientStatusList: [],
                                         })
                                         let selectIndex = 0;
                                         this.state.cloudletList.map((item: TypeCloudlet, index) => {
@@ -2717,7 +2718,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 filteredClientStatusList: clientStatusList,
                                                 filteredCloudletEventLogList: cloudletEventLogList,
                                                 currentCloudLet: currentCloudlet,
-                                                //isLegendExpanded: false,
+                                                isLegendExpanded: false,
                                             }, () => {
                                             })
                                         } catch (e) {
