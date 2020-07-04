@@ -70,6 +70,9 @@ type Props = {
     isEnableZoomIn: boolean,
     handleAppInstDropdown: any,
     loading: boolean,
+    appInstList: any,
+    clusterList: any,
+    mapLoading: boolean,
 
 };
 type State = {
