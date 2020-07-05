@@ -14,6 +14,7 @@ import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+import AppsIcon from "@material-ui/icons/Apps";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -756,12 +757,24 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
             placement: 'bottomLeft',
             duration: time,
             message: title,
+            style: {
+                background: 'green',
+                color: 'white',
+            }
         });
     } else {
         notification.warning({
-            placement: 'topLeft',
+            placement: 'bottomLeft',
             duration: time,
             message: title,
+            style: {
+                background: 'red',
+                color: 'white',
+            },
+            icon: (<div>
+                <AppsIcon
+                    style={{fill: 'white', fontSize: 18, marginTop: 4,}}/>
+            </div>)
         });
     }
 }

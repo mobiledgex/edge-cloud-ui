@@ -2645,7 +2645,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                                         if (filteredClusterList.length === 0) {
-                                            showToast('no cluster')
+                                            showToast('no cluster', undefined, false)
                                         }
 
                                         await this.setState({
@@ -2821,6 +2821,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         searchClusterValue: value,
                                     });
                                 }}
+                                treeDefaultExpandAll={true}
+                                //treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
                                 //style={{height: '30px !important', width: treeSelectWidth}}
@@ -2828,7 +2830,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 ref={c => this.treeSelectClusterAdmin = c}
                                 placeholder={'Select Cluster'}
                                 treeData={this.state.clusterTreeDropdownList}
-                                treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
+
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
                                     if (!isEmpty(value)) {
