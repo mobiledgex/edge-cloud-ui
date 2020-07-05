@@ -759,7 +759,7 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
             message: title,
             style: {
                 background: 'green',
-                color: 'white',
+                color: 'white !important',
             }
         });
     } else {
@@ -769,7 +769,7 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
             message: title,
             style: {
                 background: 'red',
-                color: 'white',
+                color: 'white !important',
             },
             icon: (<div>
                 <AppsIcon

@@ -951,7 +951,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentClassification:
                         this.state.userType.toString().includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER :
                             this.state.userType.toString().includes(USER_TYPE_SHORT.OPER) ? CLASSIFICATION.CLOUDLET :
-                                this.state.userType.toString().includes(USER_TYPE_SHORT.ADMIN) ? CLASSIFICATION.CLUSTER_FOR_ADMIN : null,
+                                this.state.userType.toString().includes(USER_TYPE_SHORT.ADMIN) ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : null,
                     placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
                     placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
                 })
@@ -3738,11 +3738,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
+            //@fixme:#################
             //@fixme:renderNoItemMsg
-            //@fixme:renderNoItemMsg
-            //@fixme:renderNoItemMsg
+            //@fixme:#################
             renderNoItemMsg() {
-                if (!this.state.loading && this.state.currentClassification === CLASSIFICATION.CLOUDLET && this.state.layoutCloudlet.length === 0 ||
+                if (
+                    !this.state.loading && this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN && this.state.layoutCloudletAdmin.length === 0 ||
+                    !this.state.loading && this.state.currentClassification === CLASSIFICATION.CLOUDLET && this.state.layoutCloudlet.length === 0 ||
                     !this.state.loading && this.state.currentClassification === CLASSIFICATION.CLUSTER && this.state.layoutCluster.length === 0 ||
                     !this.state.loading && this.state.currentClassification === CLASSIFICATION.APPINST && this.state.layoutAppInst.length === 0
                 ) {
@@ -3751,7 +3753,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             marginLeft: 15,
                             marginTop: 10,
                             fontSize: 25,
-                            color: 'orange'
+                            color: 'green'
                         }}>No Item</div>
                     )
                 }
@@ -3832,7 +3834,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                              width: '100%',
                                              backgroundColor: this.props.themeType === 'light' ? 'white' : null
                                          }}>
-                                        {/*{this.renderNoItemMsg()}*/}
+                                        {this.renderNoItemMsg()}
                                         {this.renderGridLayoutForClassfication()}
                                     </div>
                                 </div>
