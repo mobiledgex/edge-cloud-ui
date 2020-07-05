@@ -757,24 +757,20 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
             placement: 'bottomLeft',
             duration: time,
             message: title,
-            style: {
-                background: 'green',
-                color: 'white !important',
-            }
         });
     } else {
         notification.warning({
             placement: 'bottomLeft',
             duration: time,
             message: title,
-            style: {
+           /* style: {
                 background: 'red',
                 color: 'white !important',
             },
             icon: (<div>
                 <AppsIcon
                     style={{fill: 'white', fontSize: 18, marginTop: 4,}}/>
-            </div>)
+            </div>)*/
         });
     }
 }
