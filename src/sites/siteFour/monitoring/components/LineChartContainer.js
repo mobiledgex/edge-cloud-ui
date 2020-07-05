@@ -9,7 +9,7 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import type {TypeChartDataSet} from "../../../../shared/Types";
-import {renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderEmptyMessageBox, showToast} from "../service/PageMonitoringCommonService";
 
 type Props = {
     parent: PageMonitoringView,
@@ -47,7 +47,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
     async componentDidMount(): void {
         let lineChartDataSet = this.props.chartDataSet
 
-
         let hwType = this.props.pHardwareType;
         let graphType = this.props.graphType;
 
@@ -78,8 +77,11 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
             let isStackecLineChart = this.props.parent.state.isStackedLineChart;
 
-            const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStackecLineChart, hardwareType, false, colorCodeIndexList)
+            if (colorCodeIndexList.length === 1) {
+                isStackecLineChart = true
+            }
 
+            const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStackecLineChart, hardwareType, false, colorCodeIndexList)
 
             this.setState({
                 chartDataSet: chartDataSet,
@@ -140,7 +142,9 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             {convertToClassification(this.props.currentClassification)} {this.props.pHardwareType !== undefined && this.makeToShortTitle(this.props.pHardwareType)}
                         </div>
                     </div>
-                    {this.state.chartDataSet !== undefined ?
+                    {this.props.chartDataSet === undefined ?
+                        renderEmptyMessageBox("No Data Available")
+                        :
                         <div className='page_monitoring_container'>
                             <div style={{
                                 position: 'relative',
@@ -155,8 +159,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
                                 }
                             </div>
                         </div>
-                        :
-                        <div> no data</div>
                     }
 
                 </div>

@@ -1455,11 +1455,25 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                     let chartDataSets: TypeLineChartData = [];
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET || this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
-                        chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
-                    } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
-                        chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
-                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST || this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
-                        chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
+                        if (isEmpty(this.state.filteredCloudletUsageList)) {//TODO:CLOUDLET
+                            chartDataSets = undefined;
+                        } else {
+                            chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
+                        }
+
+                        console.log('chartDataSets===>', chartDataSets);
+                    } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {//TODO:CLUSTER
+                        if (isEmpty(this.state.filteredClusterUsageList)) {
+                            chartDataSets = undefined;
+                        } else {
+                            chartDataSets = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
+                        }
+                    } else if (this.state.currentClassification === CLASSIFICATION.APPINST || this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {//TODO:APPINST
+                        if (isEmpty(this.state.filteredAppInstUsageList)) {
+                            chartDataSets = undefined;
+                        } else {
+                            chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
+                        }
                     }
 
                     return (
@@ -1965,7 +1979,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         this.setState({
                                             isStackedLineChart: !this.state.isStackedLineChart,
                                         }, () => {
-                                            //alert(this.state.isStackedLineChart)
                                         })
                                     }}
                         >
