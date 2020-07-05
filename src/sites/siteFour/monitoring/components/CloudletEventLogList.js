@@ -4,7 +4,7 @@ import {useEffect, useRef, useState} from 'react';
 import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
-import {renderBarLoader} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
 
 const FontAwesomeIcon = require('react-fontawesome')
@@ -170,15 +170,6 @@ export default function CloudletEventLogList(props) {
         )
     }
 
-    function renderEmptyTableForCloudletEventLog() {
-        return (
-
-            <div padding={'none'} align="center"
-                 style={{fontSize: 15, color: '#57AA27', height: '100%', marginTop: 80}}>
-                <div style={{fontSize: 17, color: '#57aa27'}}> No Data Available</div>
-            </div>
-        )
-    }
 
     return (
         <div ref={bodyRef}>
@@ -190,7 +181,9 @@ export default function CloudletEventLogList(props) {
             {renderTitle(props)}
 
             {props.cloudletEventLogList.length === 0 ?
-                renderEmptyTableForCloudletEventLog()
+                <div style={{marginTop: 80}}>
+                    {renderEmptyMessageBox("No Data Available")}
+                </div>
                 :
                 <table size="small" aria-label="a dense table "
                        style={{width: '100%', overflowX: 'scroll', marginTop: -5}} stickyheader={true.toString()}>
