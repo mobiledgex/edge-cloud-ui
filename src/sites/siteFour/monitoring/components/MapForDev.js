@@ -439,7 +439,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                  key={appIndex * cloudletIndex}
                             >
                                 <Ripples
-
                                     style={{marginLeft: 5,}}
                                     color='#1cecff'
                                     during={500}
