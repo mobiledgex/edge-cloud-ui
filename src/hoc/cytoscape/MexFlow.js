@@ -2,7 +2,6 @@ import React from 'react';
 import cytoscape from 'cytoscape';
 import { style } from './style';
 import { defaultFlow } from './clusterElements'
-import { element } from 'prop-types';
 
 export const FLOW_ADD = 'add'
 export const FLOW_REMOVE = 'remove'
@@ -24,9 +23,7 @@ class MexFlow extends React.Component {
     this.flowIdList = []
   }
 
-
-
-  renderCytoscapeElement(elements) {
+  renderCytoscapeElement() {
     this.cy = cytoscape(
       {
         container: document.getElementById('cy'),
@@ -40,6 +37,7 @@ class MexFlow extends React.Component {
           padding: 5
         }
       });
+
     this.cy.userZoomingEnabled(false)
     this.cy.zoom({
       level: 1.0,
@@ -64,8 +62,7 @@ class MexFlow extends React.Component {
     )
   }
 
-  addFlowdata = (flowData) =>
-  {
+  addFlowdata = (flowData) => {
     flowData.dataList.map(element => {
       this.cy.add({
         group: 'nodes',
@@ -83,14 +80,15 @@ class MexFlow extends React.Component {
     }
   }
 
-  updateCyFlow = (flowData,) => {
+  updateCyFlow = (flowData) => {
     if (this.flowIdList.includes(flowData.id)) {
-      flowData.removeId.map(id => {
-        this.cy.remove(this.cy.$(`#${id}`));
-      })
       var index = this.flowIdList.indexOf(flowData.id);
       if (index !== -1) this.flowIdList.splice(index, 1);
     }
+
+    flowData.removeId.map(id => {
+      this.cy.remove(this.cy.$(`#${id}`));
+    })
 
     this.flowIdList.push(flowData.id)
     if (flowData && flowData.dataList) {
@@ -108,10 +106,30 @@ class MexFlow extends React.Component {
 
   componentDidMount() {
     this.renderCytoscapeElement();
-    this.addFlowdata(defaultFlow())
+    if (this.props.flowInstance) {
+      this.props.flowInstance.map(element => {
+        this.cy.add({
+          group: element.type,
+          data: element.data,
+          position: element.position
+        })
+      })
+    }
+    else {
+      this.addFlowdata(defaultFlow())
+    }
   }
 
   componentWillUnmount() {
+    let elementList = []
+    this.cy.nodes().map(ele => {
+      elementList.push({ type: 'nodes', data: ele.data(), position: ele.position() })
+    })
+
+    this.cy.edges().map(ele => {
+      elementList.push({ type: 'edges', data: ele.data() })
+    })
+    this.props.saveFlowInstance(elementList)
     this.cy.destroy()
   }
 }

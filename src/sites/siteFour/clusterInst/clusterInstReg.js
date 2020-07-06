@@ -35,7 +35,8 @@ class ClusterInstReg extends React.Component {
             mapData: [],
             stepsArray: [],
             activeIndex: 0,
-            flowData: { id: 0 }
+            flowData: { id: 0 },
+            flowInstance : undefined
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -286,11 +287,16 @@ class ClusterInstReg extends React.Component {
             </div>
         )
 
+    saveFlowInstance = (data)=>
+    {
+        this.setState({flowInstance : data})
+    }
+
     getGraph = () =>
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
                 <Suspense fallback={<div></div>}>
-                    <MexFlow flowData={this.state.flowData} flowAction />
+                    <MexFlow flowData={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
                 </Suspense>
             </div>
         )
