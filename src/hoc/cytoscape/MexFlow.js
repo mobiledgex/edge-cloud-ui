@@ -65,19 +65,11 @@ class MexFlow extends React.Component {
   addFlowdata = (flowData) => {
     flowData.dataList.map(element => {
       this.cy.add({
-        group: 'nodes',
+        group: element.type,
         data: element.data,
         position: element.position
       })
     })
-    if (flowData.edgeList) {
-      flowData.edgeList.map(element => {
-        this.cy.add({
-          group: 'edges',
-          data: element.data
-        })
-      })
-    }
   }
 
   updateCyFlow = (flowData) => {
@@ -94,7 +86,6 @@ class MexFlow extends React.Component {
     if (flowData && flowData.dataList) {
       this.addFlowdata(flowData)
     }
-
   }
 
   componentDidUpdate(prevProps, prevState) {

@@ -36,7 +36,7 @@ class ClusterInstReg extends React.Component {
             stepsArray: [],
             activeIndex: 0,
             flowData: { id: 0 },
-            flowInstance : undefined
+            flowInstance: undefined
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -287,9 +287,8 @@ class ClusterInstReg extends React.Component {
             </div>
         )
 
-    saveFlowInstance = (data)=>
-    {
-        this.setState({flowInstance : data})
+    saveFlowInstance = (data) => {
+        this.setState({ flowInstance: data })
     }
 
     getGraph = () =>
