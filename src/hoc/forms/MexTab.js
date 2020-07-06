@@ -6,15 +6,15 @@ const MexCheckbox = (props) => {
 
     const getPanes = () => {
         return form.panes.map((pane, i) => {
-            return { menuItem: <Menu.Item key={i}><label style={{color:'#74AA19'}}>{pane.label}</label></Menu.Item>, render: () => <Tab.Pane>{pane.tab}</Tab.Pane> }
+            return { menuItem: <Menu.Item onClick={pane.onClick} key={i}><label style={{ color: '#74AA19' }}>{pane.label}</label></Menu.Item>, render: () => <Tab.Pane>{pane.tab}</Tab.Pane> }
         })
     }
     const getForm = () => (
         <Tab
-            menu = {{inverted:true, attached:true, tabular:true}}  
-            //activeIndex={props.activeIndex ? props.activeIndex : 0}
-            panes={getPanes()} 
-            style={{ width: '100%', height:'100%'}} />
+            menu={{ inverted: true, attached: true, tabular: true }}
+            activeIndex={props.activeIndex ? props.activeIndex : 0}
+            panes={getPanes()}
+            style={{ width: '100%', height: '100%' }} />
     )
     return (
         getForm()

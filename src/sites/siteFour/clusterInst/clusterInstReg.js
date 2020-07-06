@@ -301,8 +301,8 @@ class ClusterInstReg extends React.Component {
         )
 
     getPanes = () => ([
-        { label: 'Graph', tab: this.getGraph() },
-        { label: 'Cloudlets', tab: this.getMap() }
+        { label: 'Cloudlets', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
+        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
     ])
     /**
      * Tab block

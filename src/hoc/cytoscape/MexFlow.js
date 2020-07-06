@@ -2,6 +2,7 @@ import React from 'react';
 import cytoscape from 'cytoscape';
 import { style } from './style';
 import { defaultFlow } from './clusterElements'
+import { flow } from 'lodash';
 
 export const FLOW_ADD = 'add'
 export const FLOW_REMOVE = 'remove'
@@ -108,6 +109,9 @@ class MexFlow extends React.Component {
     }
     else {
       this.addFlowdata(defaultFlow())
+      if (this.props.flowData.id !== 0) {
+        this.addFlowdata(this.props.flowData)
+      }
     }
   }
 
