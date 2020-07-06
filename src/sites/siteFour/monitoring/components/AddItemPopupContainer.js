@@ -15,6 +15,7 @@ import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMon
 import Button from "@material-ui/core/Button";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import {showToast} from "../service/PageMonitoringCommonService";
+import {convertToClassification} from "../service/PageMonitoringService";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -311,7 +312,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             })
                         }}
                         value={this.state.currentItemType}
-                        options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? EVENT_LOG_ITEM_LIST_FOR_CLUSTER : EVENT_LOG_ITEM_LIST_FOR_APPINST}
+                        options={this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase()) ? EVENT_LOG_ITEM_LIST_FOR_CLUSTER : EVENT_LOG_ITEM_LIST_FOR_APPINST}
                     />
                 </div>
             </div>
@@ -457,7 +458,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             {this.renderPrevBtn2()}
                             {this.state.loading ? <div style={{marginLeft: 20,}}><CircularProgress/></div> : null}
                             <div className='page_monitoring_popup_title'>
-                                Add Item [{this.props.parent.state.currentClassification}]
+                                Add Item [{convertToClassification(this.props.parent.state.currentClassification)}]
                             </div>
                         </div>
                         <div className='page_monitoring_popup_title_divide'/>
@@ -498,9 +499,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*todo:############################*/}
                         {/*@todo:TABLE TYPE             */}
                         {/*todo:############################*/}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderTableSelectForAppInst_Cluster() : null}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderTableSelectForAppInst_Cluster() : null}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderTableSelectForCloudlet() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase()) ? this.renderTableSelectForCloudlet() : null}
 
 
                         {this.state.isShowTableType === false && this.state.isShowHWDropDown === false &&

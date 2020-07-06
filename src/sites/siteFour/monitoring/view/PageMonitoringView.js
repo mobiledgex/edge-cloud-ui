@@ -766,7 +766,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@todo: map Marker
                     //@todo:#########################################################################
                     let markerListForMap = []
-                    //DESC:MAP_LEVEL.CLOUDLET
+                    //todo:MAP_LEVEL.CLOUDLET
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET || this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
                         markerListForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
                     } else {//DESC:MAP_LEVEL.CLUSTER
@@ -1076,187 +1076,80 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async addGridItem(paramHwType, graphType) {
-                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-                    //@desc: ##########################
-                    //@desc: CLOUDLET
-                    //@desc: ##########################
-                    let currentLayout = this.state.layoutCloudlet;
-                    let maxY = -1;
-                    if (!isEmpty(currentLayout)) {
-                        maxY = maxBy(currentLayout, 'y').y
-                    }
-                    let uniqueId = makeid(5)
-                    let currentLayoutMapper = this.state.layoutMapperCloudlet
-                    let itemOne = {
-                        id: uniqueId,
-                        hwType: paramHwType,
-                        graphType: graphType,
-                    }
-                    await this.setState({
-                        layoutCloudlet: currentLayout.concat({
-                            i: uniqueId,
-                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
-                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: this.makeGridItemWidth(graphType),
-                            h: this.makeGridIItemHeight(graphType),
-                        }),
-                        layoutMapperCloudlet: currentLayoutMapper.concat(itemOne),
-                    })
-
-                    reactLocalStorage.setObject(getUserId() + CLOUDLET_LAYOUT_KEY, this.state.layoutCloudlet)
-                    reactLocalStorage.setObject(getUserId() + CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudlet)
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {
-                    //@desc: ##########################
-                    //@desc: CLUSTER
-                    //@desc: ##########################
-                    let currentItems = this.state.layoutCluster;
-                    let maxY = -1;
-                    if (!isEmpty(currentItems)) {
-                        maxY = maxBy(currentItems, 'y').y
-                    }
-                    let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperCluster
-
-                    let itemOne = {
-                        id: uniqueId,
-                        hwType: paramHwType,
-                        graphType: graphType,
-                    }
-                    await this.setState({
-                        layoutCluster: this.state.layoutCluster.concat({
-                            i: uniqueId,
-                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
-                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: this.makeGridItemWidth(graphType),
-                            h: this.makeGridIItemHeight(graphType),
-                        }),
-                        layoutMapperCluster: mapperList.concat(itemOne),
-                    })
-
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_LAYOUT_KEY, this.state.layoutCluster)
-                    reactLocalStorage.setObject(getUserId() + CLUSTER_HW_MAPPER_KEY, this.state.layoutMapperCluster)
-
-                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {//todo:CLOUDLET_FOR_ADMIN
-                    //@desc: ##########################
-                    //@desc: CLOUDLET_FOR_ADMIN
-                    //@desc: ##########################
-                    let currentItems = this.state.layoutCloudletAdmin;
-                    let maxY = -1;
-                    if (!isEmpty(currentItems)) {
-                        maxY = maxBy(currentItems, 'y').y
-                    }
-                    let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperCloudletAdmin
-
-                    let itemOne = {
-                        id: uniqueId,
-                        hwType: paramHwType,
-                        graphType: graphType,
-                    }
-                    await this.setState({
-                        layoutCloudletAdmin: this.state.layoutCloudletAdmin.concat({
-                            i: uniqueId,
-                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
-                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: 1,
-                            h: 1,
-                        }),
-                        layoutMapperCloudletAdmin: mapperList.concat(itemOne),
-                    }, () => {
-                    });
-                    reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, this.state.layoutCloudletAdmin)
-                    reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_HW_MAPPER_KEY, this.state.layoutMapperCloudletAdmin)
-                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {//todo:CLUSTER_FOR_ADMIN
-                    //@desc: ##########################
-                    //@desc: CLUSTER_FOR_ADMIN
-                    //@desc: ##########################
-                    let currentItems = this.state.layoutAdmin;
-                    let maxY = -1;
-                    if (!isEmpty(currentItems)) {
-                        maxY = maxBy(currentItems, 'y').y
-                    }
-                    let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperAdmin
-
-                    let itemOne = {
-                        id: uniqueId,
-                        hwType: paramHwType,
-                        graphType: graphType,
-                    }
-
-                    await this.setState({
-                        layoutAdmin: this.state.layoutAdmin.concat({
-                            i: uniqueId,
-                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
-                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: 1,
-                            h: 1,
-                        }),
-                        layoutMapperClusterAdmin: mapperList.concat(itemOne),
-                    });
-                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, this.state.layoutAdmin)
-                    reactLocalStorage.setObject(getUserId() + ADMIN_HW_MAPPER_KEY, this.state.layoutMapperAdmin)
-                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {//todo:APP_INST_FOR_ADMIN
-                    //@desc: ##########################
-                    //@desc: APP_INST_FOR_ADMIN
-                    //@desc: ##########################
-                    let currentItems = this.state.layoutAdmin;
-                    let maxY = -1;
-                    if (!isEmpty(currentItems)) {
-                        maxY = maxBy(currentItems, 'y').y
-                    }
-                    let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperAdmin
-
-                    let itemOne = {
-                        id: uniqueId,
-                        hwType: paramHwType,
-                        graphType: graphType,
-                    }
-
-                    await this.setState({
-                        layoutAdmin: this.state.layoutAdmin.concat({
-                            i: uniqueId,
-                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
-                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: 1,
-                            h: 1,
-                        }),
-                        layoutMapperAdmin: mapperList.concat(itemOne),
-                    });
-                    reactLocalStorage.setObject(getUserId() + ADMIN_LAYOUT_KEY, this.state.layoutAdmin)
-                    reactLocalStorage.setObject(getUserId() + ADMIN_HW_MAPPER_KEY, this.state.layoutMapperAdmin)
-                } else {
-                    //@desc: ##########################
-                    //@desc: APPINST
-                    //@desc: ##########################
-                    let currentItems = this.state.layoutAppInst;
-                    let maxY = -1;
-                    if (!isEmpty(currentItems)) {
-                        maxY = maxBy(currentItems, 'y').y
-                    }
-                    let uniqueId = makeid(5)
-                    let mapperList = this.state.layoutMapperAppInst
-
-                    let itemOne = {
-                        id: uniqueId,
-                        hwType: paramHwType,
-                        graphType: graphType,
-                    }
-
-                    await this.setState({
-                        layoutAppInst: this.state.layoutAppInst.concat({
-                            i: uniqueId,
-                            x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
-                            y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
-                            w: 1,
-                            h: 1,
-                        }),
-                        layoutMapperAppInst: mapperList.concat(itemOne),
-                    });
-                    reactLocalStorage.setObject(getUserId() + APPINST_LAYOUT_KEY, this.state.layoutAppInst)
-                    reactLocalStorage.setObject(getUserId() + APPINST_HW_MAPPER_KEY, this.state.layoutMapperAppInst)
+                let currentLayout = undefined
+                let currentLayoutMapper = undefined
+                let currentLayoutName = undefined;
+                let currentLayoutMapperName = undefined;
+                let currentLayoutKey = undefined;
+                let currentLayoutHwMapperKey = undefined;
+                if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {//@todo: CLOUDLET
+                    currentLayout = this.state.layoutCloudlet;
+                    currentLayoutMapper = this.state.layoutMapperCloudlet
+                    currentLayoutName = 'layoutCloudlet';
+                    currentLayoutMapperName = 'layoutMapperCloudlet';
+                    currentLayoutKey = CLOUDLET_LAYOUT_KEY;
+                    currentLayoutHwMapperKey = CLOUDLET_HW_MAPPER_KEY;
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER) {//@todo: CLUSTER
+                    currentLayout = this.state.layoutCluster
+                    currentLayoutMapper = this.state.layoutMapperCluster
+                    currentLayoutName = 'layoutCluster';
+                    currentLayoutMapperName = 'layoutMapperCluster';
+                    currentLayoutKey = CLUSTER_LAYOUT_KEY;
+                    currentLayoutHwMapperKey = CLUSTER_HW_MAPPER_KEY;
+                } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {//@todo: APPINST
+                    currentLayout = this.state.layoutAppInst
+                    currentLayoutMapper = this.state.layoutMapperAppInst
+                    currentLayoutName = 'layoutAppInst';
+                    currentLayoutMapperName = 'layoutMapperAppInst';
+                    currentLayoutKey = APPINST_LAYOUT_KEY;
+                    currentLayoutHwMapperKey = APPINST_HW_MAPPER_KEY;
+                } else if (this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {//@todo: CLOUDLET_FOR_ADMIN
+                    currentLayout = this.state.layoutCloudletAdmin
+                    currentLayoutMapper = this.state.layoutMapperCloudletAdmin
+                    currentLayoutName = 'layoutCloudletAdmin';
+                    currentLayoutMapperName = 'layoutMapperCloudletAdmin';
+                    currentLayoutKey = ADMIN_CLOUDLET_LAYOUT_KEY;
+                    currentLayoutHwMapperKey = ADMIN_CLOUDLET_HW_MAPPER_KEY;
+                } else if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {//@todo: CLUSTER_FOR_ADMIN
+                    currentLayout = this.state.layoutClusterAdmin
+                    currentLayoutMapper = this.state.layoutMapperClusterAdmin
+                    currentLayoutName = 'layoutClusterAdmin';
+                    currentLayoutMapperName = 'layoutMapperClusterAdmin';
+                    currentLayoutKey = ADMIN_CLUSTER_LAYOUT_KEY;
+                    currentLayoutHwMapperKey = ADMIN_CLUSTER_HW_MAPPER_KEY;
+                } else if (this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {//@todo: APP_INST_FOR_ADMIN
+                    currentLayout = this.state.layoutAdmin
+                    currentLayoutMapper = this.state.layoutMapperAdmin
+                    currentLayoutName = 'layoutAdmin';
+                    currentLayoutMapperName = 'layoutMapperAdmin';
+                    currentLayoutKey = ADMIN_LAYOUT_KEY;
+                    currentLayoutHwMapperKey = ADMIN_HW_MAPPER_KEY;
                 }
+
+                //todo : common Layout manipulation
+                let maxY = -1;
+                if (!isEmpty(currentLayout)) {
+                    maxY = maxBy(currentLayout, 'y').y
+                }
+                let uniqueId = makeid(5)
+                let itemOne = {
+                    id: uniqueId,
+                    hwType: paramHwType,
+                    graphType: graphType,
+                }
+                await this.setState({
+                    [currentLayoutName]: currentLayout.concat({
+                        i: uniqueId,
+                        x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                        y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
+                        w: this.makeGridItemWidth(graphType),
+                        h: this.makeGridIItemHeight(graphType),
+                    }),
+                    [currentLayoutMapperName]: currentLayoutMapper.concat(itemOne),
+                })
+
+                reactLocalStorage.setObject(getUserId() + currentLayoutKey, currentLayout)
+                reactLocalStorage.setObject(getUserId() + currentLayoutHwMapperKey, currentLayoutMapper)
             }
 
             deleteGridItem(index) {
@@ -1460,8 +1353,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         } else {
                             chartDataSets = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
                         }
-
-                        console.log('chartDataSets===>', chartDataSets);
                     } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {//TODO:CLUSTER
                         if (isEmpty(this.state.filteredClusterUsageList)) {
                             chartDataSets = undefined;
@@ -1587,6 +1478,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET) {
                         return (
                             <MapForOper
+                                mapLoading={this.state.mapLoading}
                                 isEnableZoom={true}
                                 currentClassification={this.state.currentClassification}
                                 parent={this}
@@ -2189,21 +2081,29 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentColorIndex: cloudletIndex,
 
                         });
-                    } else {//todo: When allCloudlet
-                        this.setState({
-                            currentCloudLet: undefined,
-                            filteredCloudletUsageList: this.state.allCloudletUsageList,
-                            filteredCloudletList: this.state.cloudletList,
-                            toggleOperMapZoom: !this.state.toggleOperMapZoom,
-                            filteredClientStatusList: this.state.allClientStatusList,
-                            currentClassification: this.state.userType.includes("admin") ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : CLASSIFICATION.CLOUDLET,
-                            currentClusterList: undefined,
-                            currentOperLevel: undefined,
-                            filteredCloudletEventLogList: this.state.allCloudletEventLogList,
-                        })
+                    } else {//todo: When allCloudlet (RESET)
+                        if (this.state.currentClassification.toLowerCase().includes("admin")) {
+                            let allCloudletList = this.state.cloudletList
+                            let markerList = reducer.groupBy(allCloudletList, CLASSIFICATION.CloudletName);
+                            let cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
+                            await this.setState({
+                                markerList: markerList,
+                                cloudletDropdownList: cloudletDropdownList,
+                                currentCloudLet: undefined,
+                                filteredClusterList: [],
+                                filteredClusterUsageList: [],
+                                filteredCloudletUsageList: this.state.allCloudletUsageList,
+                                filteredCloudletList: this.state.cloudletList,
+                                toggleOperMapZoom: !this.state.toggleOperMapZoom,
+                                filteredClientStatusList: this.state.allClientStatusList,
+                                currentClassification: this.state.userType.includes("admin") ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : CLASSIFICATION.CLOUDLET,
+                                currentClusterList: undefined,
+                                currentOperLevel: undefined,
+                                filteredCloudletEventLogList: this.state.allCloudletEventLogList,
+                            })
+                        }
                     }
                 } catch (e) {
-
                     showToast(e.toString())
                 }
             }
