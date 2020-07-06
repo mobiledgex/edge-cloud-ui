@@ -65,7 +65,7 @@ class CloudletList extends React.Component {
 
 
     requestInfo = () => {
-        let mode = (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer')? cloudletSteps.stepsCloudletDev : cloudletSteps.stepsCloudlet
+        let mode = (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer')? null : cloudletSteps.stepsCloudlet
         return ({
             id: 'Cloudlets',
             headerLabel: 'Cloudlets',
