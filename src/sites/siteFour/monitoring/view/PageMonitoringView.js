@@ -813,10 +813,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                     }
 
-
+                    /*TODO: CLOUDLET DROPDOWN LIST*/
                     let cloudletDropdownList = makeDropdownForCloudlet(cloudletList)
-                    let dataCount = this.getDataCount(appInstList, clusterList, cloudletList)
+
                     /*TODO: LEGEND ROW COUNTING*/
+                    let dataCount = this.getDataCount(appInstList, clusterList, cloudletList)
                     let itemCount = 0;
                     let rowCount = 0;
                     if (this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
@@ -832,7 +833,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         itemCount = appInstList.length;
                         rowCount = Math.ceil(itemCount / 6);
                     }
-
                     let legendHeight = Math.round(allCloudletUsageList.length / 4) * gridItemOneHeight
 
 
@@ -907,7 +907,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     markerListForMap = reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET);
                 }
 
-
                 await this.setState({
                     currentGridIndex: -1,
                     currentTabIndex: 0,
@@ -920,7 +919,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
                     markerList: markerListForMap,
                 })
-                //@fixme: reset bubble chart data
+
+                //@todo: reset bubble chart data
                 let bubbleChartData = []
                 if (!this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
                     bubbleChartData = await makeClusterBubbleChartData(this.state.allClusterUsageList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
@@ -1008,7 +1008,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             setClusterInterval() {
                 this.intervalForCluster = setInterval(async () => {
                     try {
-
                         this.setState({intervalLoading: true})
                         let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT, '', '', this);
                         this.setChartDataForBigModal(filteredClusterUsageList)
@@ -1333,7 +1332,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             multiLineChartDataSets.push(lineDataOne);
                         }
                     }
-
                     return (
                         this.state.loading ? renderPlaceHolderHorizontalLoader() :
                             <MultiHwLineChartContainer
@@ -1403,8 +1401,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         )
                     } else if (this.state.currentClassification === CLASSIFICATION.APPINST) {
                         barChartDataSet = makeBarChartDataForAppInst(this.state.filteredAppInstUsageList, pHwType, this)
-
-
                         return (
                             <BarChartContainer
                                 isResizeComplete={this.state.isResizeComplete} parent={this}
@@ -1414,7 +1410,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             />
                         )
                     }
-
 
                 } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BUBBLE) {
                     return (
@@ -1430,10 +1425,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
                         return (
                             <MapForAdmin
-
                                 currentOrgView={this.state.currentOrgView}
                                 markerListForAppInst={this.state.filteredAppInstList}
-                                //markerList={this.state.appInstanceListGroupByCloudlet}
                                 markerList={this.state.markerList}
                                 cloudletList={this.state.filteredCloudletList}
                                 clusterList={this.state.filteredClusterList}
@@ -1658,14 +1651,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     currentWidgetWidth: width,
                                 })
                             }}
-                            /* onLayoutChange={async (layout) => {
-                                 this.setState({
-                                     layoutCloudletAdmin: layout,
-                                 }, async () => {
-                                     await this.calculateEmptyPosInGrid(layout, defaultLayoutXYPosForCloudletAdmin);
-                                     reactLocalStorage.setObject(getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY, layout)
-                                 });
-                             }}*/
                             onLayoutChange={async (layout) => {
                                 this.setState({
                                     [currentLayout]: layout,
@@ -2665,7 +2650,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             renderClusterTreeDropdownForAdmin() {
-
                 let treeSelectWidth = 350;
                 let maxTagCount = 2;
                 if (this.props.size.width >= 1600) {
@@ -2683,8 +2667,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
 
                 return (
-
-
                     <div className="page_monitoring_dropdown_box"
                          style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div
@@ -3012,11 +2994,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         startTime: stateTime,
                                         endTime: endTime,
                                     })
-
-
+                                    //todo:##########################################
                                     //todo:filterUsageListByDateForCloudletFor___ADMIN
-                                    //todo:filterUsageListByDateForCloudletFor___ADMIN
-                                    //todo:filterUsageListByDateForCloudletFor___ADMIN
+                                    //todo:##########################################
                                     try {
                                         if (this.state.startTime !== '' && this.state.endTime !== '') {
                                             this.setState({
@@ -3026,7 +3006,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             })
                                             let startTime = makeCompleteDateTime(this.state.startTime);
                                             let endTime = makeCompleteDateTime(this.state.endTime);
-
                                             let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                                             let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
                                             let filteredCloudletEventLog = await getAllCloudletEventLogs(this.state.filteredCloudletList, startTime, endTime);
@@ -3598,10 +3577,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-
-            //@fixme:#################
-            //@fixme:renderNoItemMsg
-            //@fixme:#################
             renderNoItemMsg() {
                 if (
                     !this.state.loading && this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN && this.state.layoutCloudletAdmin.length === 0 ||
