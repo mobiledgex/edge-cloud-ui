@@ -7,15 +7,26 @@ import {
     EVENT_LOG_ITEM_LIST,
     EVENT_LOG_ITEM_LIST_FOR_APPINST,
     EVENT_LOG_ITEM_LIST_FOR_CLOUDLET,
-    EVENT_LOG_ITEM_LIST_FOR_CLUSTER
+    EVENT_LOG_ITEM_LIST_FOR_CLUSTER, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USER_TYPE_SHORT
 } from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import Button from "@material-ui/core/Button";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {showToast} from "../service/PageMonitoringCommonService";
-import {convertToClassification} from "../service/PageMonitoringService";
+import {isEmpty, makeClusterBubbleChartData, showToast} from "../service/PageMonitoringCommonService";
+import {convertToClassification, getCloudletClusterNameList, makeClusterMultiDropdownForAdmin, makeCompleteDateTime} from "../service/PageMonitoringService";
+import type {TypeAppInst, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
+import {
+    fetchAppInstList,
+    fetchClusterList,
+    getAllCloudletEventLogs,
+    getAllClusterEventLogList,
+    getClientStatusList,
+    getCloudletUsageList,
+    getClusterLevelUsageList
+} from "../service/PageMonitoringMetricService";
+import moment from "moment";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -301,19 +312,56 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 </div>
 
                 <div className='page_monitoring_form_column_right'>
-                    <Dropdown
-                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
-                        selectOnBlur={false}
+                    <Select
+                        ref={c => this.tableTypeSelect2 = c}
+                        showSearch={true}
+                        listHeight={512}
+                        style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{
+                            maxHeight: 800, overflow: 'auto', width: '333px'
+                        }}
                         placeholder="Select Item"
-                        selection
-                        onChange={async (e, {value}) => {
+                        onChange={async (value) => {
+                            this.tableTypeSelect2.blur();
                             this.setState({
                                 currentItemType: value,
                             })
                         }}
-                        value={this.state.currentItemType}
-                        options={this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase()) ? EVENT_LOG_ITEM_LIST_FOR_CLUSTER : EVENT_LOG_ITEM_LIST_FOR_APPINST}
-                    />
+                    >
+                        {this.props.parent.state.currentClassification.toLowerCase().includes('cluster') ?
+                            //TODO: CLUSTER
+                            EVENT_LOG_ITEM_LIST_FOR_CLUSTER.map((tableOne: any, index) => {
+                                return (
+                                    <Option key={index} value={tableOne.value}>
+                                        <div style={{display: 'flex'}}>
+                                            <div
+                                                style={{
+                                                    marginLeft: 7,
+                                                }}
+                                            >{tableOne.text}
+                                            </div>
+                                        </div>
+                                    </Option>
+                                )
+                            })
+                            ://TODO: APPINST
+                            EVENT_LOG_ITEM_LIST_FOR_APPINST.map((tableOne: any, index) => {
+                                return (
+                                    <Option key={index} value={tableOne.value}>
+                                        <div style={{display: 'flex'}}>
+                                            <div
+                                                style={{
+                                                    marginLeft: 7,
+                                                }}
+                                            >{tableOne.text}
+                                            </div>
+                                        </div>
+                                    </Option>
+                                )
+                            })
+                        }
+                    </Select>
                 </div>
             </div>
         )
@@ -330,19 +378,38 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 </div>
 
                 <div className='page_monitoring_form_column_right'>
-                    <Dropdown
-                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
-                        selectOnBlur={false}
+                    <Select
+                        ref={c => this.tableTypeSelect = c}
+                        showSearch={true}
+                        listHeight={512}
+                        style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{
+                            maxHeight: 800, overflow: 'auto', width: '333px'
+                        }}
                         placeholder="Select Item"
-                        selection
-                        onChange={async (e, {value}) => {
+                        onChange={async (value) => {
+                            this.tableTypeSelect.blur();
                             this.setState({
                                 currentItemType: value,
                             })
                         }}
-                        value={this.state.currentItemType}
-                        options={EVENT_LOG_ITEM_LIST_FOR_CLOUDLET}
-                    />
+                    >
+                        {EVENT_LOG_ITEM_LIST_FOR_CLOUDLET.map((tableOne: any, index) => {
+                            return (
+                                <Option key={index} value={tableOne.value}>
+                                    <div style={{display: 'flex'}}>
+                                        <div
+                                            style={{
+                                                marginLeft: 7,
+                                            }}
+                                        >{tableOne.text}
+                                        </div>
+                                    </div>
+                                </Option>
+                            )
+                        })}
+                    </Select>
                 </div>
             </div>
         )
@@ -473,6 +540,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 onChange={(e) => {
                                     let selectedItem = e.target.value;
 
+                                    alert(selectedItem.toString())
                                     this.setState({
                                         currentItemType: selectedItem,
                                     });
