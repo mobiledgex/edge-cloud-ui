@@ -24,8 +24,6 @@ import { fields } from '../../../services/model/format'
 const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03"]
 const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
-const EULatLng = [53, 13]
-const USLatLng =     [41,-74]
 
 let _self = null;
 
@@ -145,7 +143,6 @@ class ClustersMap extends Component {
 
             let nameArray = [];
             groupbyData[key].map((item, i) => {
-                console.log('map info', item, item['cloudlet'], item.status)
 
                 nameArray[i] = {name: item['cloudlet'], status: item.status};
             })
@@ -299,7 +296,6 @@ class ClustersMap extends Component {
     }
 
     render() {
-        console.log('20200706', this.state.mapCenter)
 
         return (
             <div className="commom-listView-map">
