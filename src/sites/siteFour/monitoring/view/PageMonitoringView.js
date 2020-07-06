@@ -1316,14 +1316,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this.______makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this.___makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
 
-            ______makeGridItemOneBody(pHwType, graphType) {
+            ___makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
@@ -2352,8 +2352,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 //todo: all org dropdown(reset)
                 //todo:#################################
                 let markerListForMap = reducer.groupBy(this.state.cloudletList, CLASSIFICATION.CloudletName);
-
-
                 await this.setState({
                     allCloudletEventLogList: [],
                     filteredCloudletEventLogList: [],
@@ -2364,9 +2362,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     markerList: markerListForMap,
                     isStream: false,
                     isShowClusterInLegend: false,
-                }, () => {
-
-                })
+                });
             }
 
 
@@ -2441,9 +2437,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     filteredCloudletUsageList: [],
                                     currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                     currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
-                                }, () => {
                                 });
-
 
                             }}
                         />
@@ -2502,11 +2496,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             filteredAppInstEventLogs: this.state.allAppInstEventLogs,
                                         })
 
-                                    } else {//desc: When one Cloudlet
+                                    } else {//todo: When one Cloudlet
                                         await this.setState({
                                             mapLoading: true,
                                             loading: true,
-                                            //filteredClientStatusList: [],
                                         })
                                         let selectIndex = 0;
                                         this.state.cloudletList.map((item: TypeCloudlet, index) => {
@@ -2543,7 +2536,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             return item.Cloudlet === currentCloudletOne.CloudletName;
                                         })
 
-
                                         if (filteredClusterList.length === 0) {
                                             showToast('no cluster', undefined, false)
                                         }
@@ -2561,10 +2553,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         //todo: ############################################################
                                         if (filteredClusterList.length > 0) {
                                             ////todo:  mapFiltering when map for cluster
-                                            this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
+                                            await this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
                                         } else {
                                             ////todo:  mapfiltering, when no cluster
-                                            this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
+                                            await this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
                                         }
                                         await this.setState({
                                             mapLoading: false,
@@ -2722,10 +2714,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     });
                                 }}
                                 treeDefaultExpandAll={true}
-                                //treeDefaultExpandAll={this.state.isAdminClusterTreeExpand}
                                 treeCheckable={true}
                                 showCheckedStrategy={'SHOW_CHILD'}
-                                //style={{height: '30px !important', width: treeSelectWidth}}
                                 style={{width: treeSelectWidth, maxHeight: '512px !important', fontSize: '9px !important'}}
                                 ref={c => this.treeSelectClusterAdmin = c}
                                 placeholder={'Select Cluster'}
@@ -2762,7 +2752,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                                     } else {
-                                        this.resetLocalData()
+                                        await this.resetLocalData()
                                     }
 
 
@@ -2836,7 +2826,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (!isEmpty(value)) {
                                         this.setState({currentClusterList: value});
                                     } else {
-                                        this.resetLocalData()
+                                        await this.resetLocalData()
                                     }
 
                                 }}
@@ -3129,9 +3119,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         />
                     </div>
                 )
-            }
-
-            __________LEGEND________________________________________________________________________________________________________________________() {
             }
 
             makeLegend() {
