@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Card} from "@material-ui/core";
 
