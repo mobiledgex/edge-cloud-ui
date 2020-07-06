@@ -1594,9 +1594,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
             }
 
-            _______________GridLayout________________________________________________________________________________________________________________________() {
-            }
-
             renderGridLayoutForClassfication() {
                 let currentLayout = [];
                 let currenyLayoutMapper = []
@@ -1766,10 +1763,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     showToast(e.toString())
                 }
             }
-
-            ________________________________________________GridLayout___END________________________________________________________________________________________________________________________() {
-            }
-
 
             async makeDropdownColorChange() {
                 let newClusterList = []
@@ -2032,7 +2025,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            ______________________________HANDLEONCHANGE____________________________________________________________________________________() {
+            __________HANDLEONCHANGE____________________________________________________________________________________() {
             }
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
@@ -2283,10 +2276,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            ______________________________HANDLEONCHANGE__END____________________________________________________________________________________() {
-            }
-
-
             async filterUsageListByDateForCloudlet() {
                 try {
                     if (this.state.startTime !== '' && this.state.endTime !== '') {
@@ -2353,7 +2342,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            _______________DROPDOWN____________________________________________________________________________________________________() {
+            __________DROPDOWN____________________________________________________________________________________________________() {
             }
 
             async handleResetForAdmin() {
@@ -3527,11 +3516,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </div>
                 )
             }
-
-
-            _________________________________________________________LEGEND________END________________________________________________________________________________________________________________________() {
-            }
-
 
             renderTitleArea() {
                 return (
