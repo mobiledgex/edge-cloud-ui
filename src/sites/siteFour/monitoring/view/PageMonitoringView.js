@@ -1418,6 +1418,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
                         return (
                             <MapForAdmin
+                                handleOnChangeCloudletDropdownForAdmin={this.handleOnChangeCloudletDropdownForAdmin}
                                 currentOrgView={this.state.currentOrgView}
                                 markerListForAppInst={this.state.filteredAppInstList}
                                 markerList={this.state.markerList}
@@ -2001,7 +2002,176 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </div>
                 )
             }
+
             __________HANDLEONCHANGE____________________________________________________________________________________() {
+            }
+
+            handleOnChangeCloudletDropdownForAdmin = async (selectCloudlet) => {
+
+                console.log('selectCloudlet===>', selectCloudlet);
+
+                let currentCloudlet = selectCloudlet.split("|")[0].trim();
+                try {
+                    this.cloudletSelectForAdmin.blur();
+                    await this.setState({
+                        currentClusterList: [],
+                        currentCloudLet: currentCloudlet,
+                        markerList: [],
+                    })
+
+                    if (selectCloudlet === '0') {//todo:When reset filter
+                        await this.setState({
+                            allCloudletEventLogList: [],
+                            filteredCloudletEventLogList: [],
+                            filteredClientStatusList: [],
+                        })
+                        await this.setState({
+                            currentGridIndex: -1,
+                            currentTabIndex: 0,
+                            intervalLoading: false,
+                            filteredCloudletList: this.state.cloudletList,
+                            currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                            filteredClusterUsageList: [],
+                            filteredCloudletUsageList: [],
+                            filteredClusterList: this.state.allClusterList,
+                            filteredAppInstList: this.state.appInstList,
+                            filteredClusterEventLogList: this.state.allClusterEventLogList,
+                            filteredAppInstEventLogs: this.state.allAppInstEventLogs,
+                        })
+
+                    } else {//todo: When one Cloudlet
+                        await this.setState({
+                            mapLoading: true,
+                            loading: true,
+                        })
+                        let selectIndex = 0;
+                        this.state.cloudletList.map((item: TypeCloudlet, index) => {
+                            if (item.CloudletName === selectCloudlet.split("|")[0].trim()) {
+                                selectIndex = index;
+                            }
+                        })
+
+                        let currentCloudletOne = this.state.cloudletList[selectIndex];
+                        let filteredCloudletList = []
+                        filteredCloudletList.push(currentCloudletOne)
+
+                        let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
+
+                        await this.setState({
+                            filteredCloudletUsageList: cloudletUsageList,
+                        })
+
+                        let promiseList = []
+                        promiseList.push(fetchClusterList())
+                        promiseList.push(fetchAppInstList(undefined, this))
+                        let newPromiseList = await Promise.all(promiseList);
+                        let clusterList = newPromiseList[0];
+                        let appInstList = newPromiseList[1];
+
+                        let filteredClusterList = []
+                        clusterList.map((item: TypeCluster, index) => {
+                            if (item.Cloudlet === currentCloudletOne.CloudletName) {
+                                filteredClusterList.push(item)
+                            }
+                        })
+
+                        let filteredAppInstList = appInstList.filter((item: TypeAppInst, index) => {
+                            return item.Cloudlet === currentCloudletOne.CloudletName;
+                        })
+
+                        if (filteredClusterList.length === 0) {
+                            showToast('no cluster', undefined, false)
+                        }
+
+                        await this.setState({
+                            isNoCluster: filteredClusterList.length === 0,
+                            filteredClusterList: filteredClusterList,
+                            currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
+                            filteredCloudletList: filteredCloudletList,
+                            filteredAppInstList: filteredAppInstList,
+                        })
+
+                        //todo: ############################################################
+                        //todo: map data binding
+                        //todo: ############################################################
+                        if (filteredClusterList.length > 0) {
+                            ////todo:  mapFiltering when map for cluster
+                            await this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
+                        } else {
+                            ////todo:  mapfiltering, when no cluster
+                            await this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
+                        }
+                        await this.setState({
+                            mapLoading: false,
+                        })
+
+
+                        let allClusterEventLogList = []
+                        let allAppInstEventLogList = []
+                        let allClusterUsageList = []
+                        let cloudletClusterListMap = []
+                        let clusterTreeDropdownList = []
+                        let clientStatusList = []
+                        let cloudletEventLogList = []
+                        let bubbleChartData = []
+                        try {
+                            let usageEventPromiseList = []
+                            if (filteredClusterList.length > 0) {
+                                await this.setState({currentCloudLet: currentCloudlet,})
+                                let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                                let startTime = makeCompleteDateTime(date[0]);
+                                let endTime = makeCompleteDateTime(date[1]);
+                                usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
+                                usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
+                                usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                                usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
+
+                                let completedPromiseList = await Promise.all(usageEventPromiseList);
+                                allClusterEventLogList = completedPromiseList[0];
+                                clientStatusList = completedPromiseList[1];
+                                allClusterUsageList = completedPromiseList[2];
+                                cloudletEventLogList = completedPromiseList[3];
+
+                                cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
+                                clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
+                                //todo:bubble Charts
+                                bubbleChartData = await makeClusterBubbleChartData(filteredClusterList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
+
+                            }
+                            await this.setState({
+                                bubbleChartData: bubbleChartData,
+                                allClusterEventLogList: allClusterEventLogList,
+                                filteredClusterEventLogList: allClusterEventLogList,
+                                allAppInstEventLogs: allAppInstEventLogList,
+                                filteredAppInstEventLogs: allAppInstEventLogList,
+                                isReady: true,
+                                clusterTreeDropdownList: clusterTreeDropdownList,
+                                allClusterList: clusterList,
+                                isAppInstaceDataReady: true,
+                                appInstList: appInstList,
+                                dropdownRequestLoading: false,
+                                clusterListLoading: false,
+                                allClusterUsageList: allClusterUsageList,
+                                filteredClusterUsageList: allClusterUsageList,
+                                isRequesting: false,
+                                mapLoading: false,
+                                loading: false,
+                                filteredClientStatusList: clientStatusList,
+                                filteredCloudletEventLogList: cloudletEventLogList,
+                                currentCloudLet: currentCloudlet,
+                                //isLegendExpanded: false,
+                            }, () => {
+                            })
+                        } catch (e) {
+                            // showToast(e.toString())
+                        }
+                    }
+                    await this.setState({
+                        isShowClusterInLegend: true,
+                    })
+                } catch (e) {
+                    throw new Error(e)
+                }
             }
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
@@ -2443,168 +2613,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                             placeholder={'Select Cloudlet'}
                             onSelect={async (selectCloudlet) => {
-                                let currentCloudlet = selectCloudlet.split("|")[0].trim();
-                                try {
-                                    this.cloudletSelectForAdmin.blur();
-                                    await this.setState({
-                                        currentClusterList: [],
-                                        currentCloudLet: currentCloudlet,
-                                        markerList: [],
-                                    })
-
-                                    if (selectCloudlet === '0') {//todo:When reset filter
-                                        await this.setState({
-                                            allCloudletEventLogList: [],
-                                            filteredCloudletEventLogList: [],
-                                            filteredClientStatusList: [],
-                                        })
-                                        await this.setState({
-                                            currentGridIndex: -1,
-                                            currentTabIndex: 0,
-                                            intervalLoading: false,
-                                            filteredCloudletList: this.state.cloudletList,
-                                            currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                                            filteredClusterUsageList: [],
-                                            filteredCloudletUsageList: [],
-                                            filteredClusterList: this.state.allClusterList,
-                                            filteredAppInstList: this.state.appInstList,
-                                            filteredClusterEventLogList: this.state.allClusterEventLogList,
-                                            filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                                        })
-
-                                    } else {//todo: When one Cloudlet
-                                        await this.setState({
-                                            mapLoading: true,
-                                            loading: true,
-                                        })
-                                        let selectIndex = 0;
-                                        this.state.cloudletList.map((item: TypeCloudlet, index) => {
-                                            if (item.CloudletName === selectCloudlet.split("|")[0].trim()) {
-                                                selectIndex = index;
-                                            }
-                                        })
-
-                                        let currentCloudletOne = this.state.cloudletList[selectIndex];
-                                        let filteredCloudletList = []
-                                        filteredCloudletList.push(currentCloudletOne)
-
-                                        let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
-
-                                        await this.setState({
-                                            filteredCloudletUsageList: cloudletUsageList,
-                                        })
-
-                                        let promiseList = []
-                                        promiseList.push(fetchClusterList())
-                                        promiseList.push(fetchAppInstList(undefined, this))
-                                        let newPromiseList = await Promise.all(promiseList);
-                                        let clusterList = newPromiseList[0];
-                                        let appInstList = newPromiseList[1];
-
-                                        let filteredClusterList = []
-                                        clusterList.map((item: TypeCluster, index) => {
-                                            if (item.Cloudlet === currentCloudletOne.CloudletName) {
-                                                filteredClusterList.push(item)
-                                            }
-                                        })
-
-                                        let filteredAppInstList = appInstList.filter((item: TypeAppInst, index) => {
-                                            return item.Cloudlet === currentCloudletOne.CloudletName;
-                                        })
-
-                                        if (filteredClusterList.length === 0) {
-                                            showToast('no cluster', undefined, false)
-                                        }
-
-                                        await this.setState({
-                                            isNoCluster: filteredClusterList.length === 0,
-                                            filteredClusterList: filteredClusterList,
-                                            currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                                            filteredCloudletList: filteredCloudletList,
-                                            filteredAppInstList: filteredAppInstList,
-                                        })
-
-                                        //todo: ############################################################
-                                        //todo: map data binding
-                                        //todo: ############################################################
-                                        if (filteredClusterList.length > 0) {
-                                            ////todo:  mapFiltering when map for cluster
-                                            await this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList, selectCloudlet)
-                                        } else {
-                                            ////todo:  mapfiltering, when no cluster
-                                            await this.filterMapDataForAdmin(filteredClusterList, filteredCloudletList)
-                                        }
-                                        await this.setState({
-                                            mapLoading: false,
-                                        })
-
-
-                                        let allClusterEventLogList = []
-                                        let allAppInstEventLogList = []
-                                        let allClusterUsageList = []
-                                        let cloudletClusterListMap = []
-                                        let clusterTreeDropdownList = []
-                                        let clientStatusList = []
-                                        let cloudletEventLogList = []
-                                        let bubbleChartData = []
-                                        try {
-                                            let usageEventPromiseList = []
-                                            if (filteredClusterList.length > 0) {
-                                                await this.setState({currentCloudLet: currentCloudlet,})
-                                                let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
-                                                let startTime = makeCompleteDateTime(date[0]);
-                                                let endTime = makeCompleteDateTime(date[1]);
-                                                usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
-                                                usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
-                                                usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                                                usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
-
-                                                let completedPromiseList = await Promise.all(usageEventPromiseList);
-                                                allClusterEventLogList = completedPromiseList[0];
-                                                clientStatusList = completedPromiseList[1];
-                                                allClusterUsageList = completedPromiseList[2];
-                                                cloudletEventLogList = completedPromiseList[3];
-
-                                                cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
-                                                clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
-                                                //todo:bubble Charts
-                                                bubbleChartData = await makeClusterBubbleChartData(filteredClusterList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
-
-                                            }
-                                            await this.setState({
-                                                bubbleChartData: bubbleChartData,
-                                                allClusterEventLogList: allClusterEventLogList,
-                                                filteredClusterEventLogList: allClusterEventLogList,
-                                                allAppInstEventLogs: allAppInstEventLogList,
-                                                filteredAppInstEventLogs: allAppInstEventLogList,
-                                                isReady: true,
-                                                clusterTreeDropdownList: clusterTreeDropdownList,
-                                                allClusterList: clusterList,
-                                                isAppInstaceDataReady: true,
-                                                appInstList: appInstList,
-                                                dropdownRequestLoading: false,
-                                                clusterListLoading: false,
-                                                allClusterUsageList: allClusterUsageList,
-                                                filteredClusterUsageList: allClusterUsageList,
-                                                isRequesting: false,
-                                                mapLoading: false,
-                                                loading: false,
-                                                filteredClientStatusList: clientStatusList,
-                                                filteredCloudletEventLogList: cloudletEventLogList,
-                                                currentCloudLet: currentCloudlet,
-                                                //isLegendExpanded: false,
-                                            }, () => {
-                                            })
-                                        } catch (e) {
-                                            // showToast(e.toString())
-                                        }
-                                    }
-                                    await this.setState({
-                                        isShowClusterInLegend: true,
-                                    })
-                                } catch (e) {
-                                    throw new Error(e)
-                                }
+                                await this.handleOnChangeCloudletDropdownForAdmin(selectCloudlet)
                             }}
                         >
                             {this.state.cloudletDropdownList.map((cloudletOne: any, index) => {

@@ -172,6 +172,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                         this.setCloudletLocationForDevOrg(markerList)
                     }
 
+
                 }
 
 
@@ -418,13 +419,16 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     style={{cursor: 'pointer', pointerEvents: 'auto'}}
 
                 >
-                    {cloudlets.map((item, index) => {
+                    {cloudlets.map((cloudletOne, index) => {
                         return (
                             <div
+                                onClick={() => {
+                                    alert(cloudletOne)
+                                }}
                                 key={index}
                                 className='mapCloudletTooltipInnerBlack'
                             >
-                                {item}
+                                {cloudletOne}
                             </div>
                         )
                     })}
@@ -433,22 +437,27 @@ export default connect(mapStateToProps, mapDispatchProps)((
             )
         }
 
+
         renderCloudletMarkerPopup(cloudlets) {
             return (
                 <Popup
-                    className='tooltip2'
+                    className='tooltipForAdmin'
                     offset={[0, 0]}
                     opacity={0.7}
-                    style={{width: '200px !important'}}
+                    style={{width: 'auto'}}
                 >
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                        {cloudlets.map((item, index) => {
+                        {cloudlets.map((cloudletOne, index) => {
                             return (
                                 <div
+                                    onClick={() => {
+                                        let cloudletFull = cloudletOne + " | " + cloudletOne
+                                        this.props.handleOnChangeCloudletDropdownForAdmin(cloudletFull)
+                                    }}
                                     key={index}
-                                    className='mapCloudletTooltipInner'
+                                    className='mapCloudletTooltipInnerForAdmin'
                                 >
-                                    {item}
+                                    {cloudletOne}
                                 </div>
                             )
                         })}
