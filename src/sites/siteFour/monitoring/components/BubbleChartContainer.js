@@ -41,8 +41,6 @@ export default class BubbleChartContainer extends React.Component<Props, State> 
         this.setState({
             bubbleChartData: this.props.bubbleChartData,
         }, () => {
-
-            console.log('bubbleChartData===>', this.state.bubbleChartData);
         })
     }
 

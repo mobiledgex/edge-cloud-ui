@@ -685,7 +685,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         loading: false,
                         bubbleChartLoader: false,
                     }, () => {
-                        console.log(`currentClassification===>`, this.state.currentClassification);
                     })
                 } catch (e) {
 
@@ -2268,7 +2267,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
                         clusterSelectBoxPlaceholder: 'Select Cluster',
                     }, () => {
-                        console.log(`filteredAppInstUsageList====>`, this.state.filteredAppInstUsageList);
                     });
 
                     //desc: ############################
@@ -2771,7 +2769,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
                                         await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
 
-                                        console.log(`currentClassification....3===>`, this.state.currentClassification);
                                         await this.handleOnChangeClusterDropdown(currentClusterList)
 
 
@@ -3053,9 +3050,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             })
                                             let startTime = makeCompleteDateTime(this.state.startTime);
                                             let endTime = makeCompleteDateTime(this.state.endTime);
-                                            console.log(`filteredCloudletList====>`, this.state.filteredCloudletList);
-                                            console.log(`filteredCloudletList====startTime>`, startTime)
-                                            console.log(`filteredCloudletList====endTime>`, endTime)
 
                                             let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                                             let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
@@ -3286,7 +3280,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER, this)
                 let itemCount = this.state.legendItemCount;
                 let filteredClusterUsageList = this.state.filteredClusterUsageList
-                console.log(`filteredClusterUsageList====>`, filteredClusterUsageList);
 
                 return (
                     <React.Fragment>

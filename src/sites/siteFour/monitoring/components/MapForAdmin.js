@@ -366,15 +366,11 @@ export default connect(mapStateToProps, mapDispatchProps)((
         setCloudletLocation(appInstListOnCloudlet, isMapCenter = false) {
             try {
 
-                console.log(`setCloudletLocation====>`, appInstListOnCloudlet);
-
                 let cloudletKeys = Object.keys(appInstListOnCloudlet)
                 let newCloudLetLocationList = this.makeNewCloudletLocationList(appInstListOnCloudlet, cloudletKeys)
                 let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
                 let locKeys = Object.keys(locationGrpList);
                 let locationGroupedCloudletList = this.makeLocationGroupedCloudletList(locationGrpList, locKeys)
-
-                console.log(`setCloudletLocation===2=>`, locationGroupedCloudletList);
 
                 this.setState({
                     selectedAppInstIndex: -1,
@@ -464,7 +460,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
         renderCloudletMarkers = () => (
             this.state.locationGroupedCloudletList.map((cloudletOne: TypeCloudlet, cloudletIndex) => {
                 let cloudlets = cloudletOne.Cloudlet.toString().split(',');
-                console.log(`listAppName====>`, cloudletOne.AppNames.toString().split(" | ")[0]);
                 return (
                     <React.Fragment>
                         <Marker

@@ -175,8 +175,6 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
         })
 
 
-        console.log(`mergedAppInstanceList====>`, mergedAppInstanceList);
-
         let filteredAppInstList = []
         if (_this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
             filteredAppInstList = mergedAppInstanceList;
@@ -191,8 +189,6 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
             item.colorCodeIndex = index;
             resultWithColorCode.push(item)
         })
-
-        console.log('resultWithColorCode===>', resultWithColorCode)
 
 
         return resultWithColorCode;
@@ -292,8 +288,6 @@ export const fetchClusterList = async () => {
                 })
             }
         })
-
-        console.log(`showClusterList====>`, showClusterList);
 
 
         let finalResult = []

@@ -243,8 +243,6 @@ export function getCloudletClusterNameListForAppInst(appInst: TypeAppInst) {
 
     let uniqClusterNameList = uniqBy(clusterNameList, MONITORING_CATE_SELECT_TYPE.CLUSTERINST)
 
-    console.log('uniqClusterNameList====>', uniqClusterNameList);
-
     let result = {
         cloudletNameList: uniqCloudletNameList,
         clusterNameList: uniqClusterNameList,
@@ -404,8 +402,6 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
 export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageMonitoringView) => {
     try {
 
-        console.log(`hardwareUsageList========>${hardwareType}`, hardwareUsageList);
-
         if (hardwareUsageList.length === 0) {
             return (
                 <div style={PageMonitoringStyles.noData}>
@@ -451,8 +447,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.ipSeries
                 }
 
-                console.log(`series========>`, series);
-
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
                 if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
@@ -493,8 +487,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 hardwareType,
                 colorCodeIndexList,
             }
-
-            console.log('_result====>', _result);
 
             return _result
         }
@@ -1237,8 +1229,6 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 datasets: finalSeriesDataSets,
             }
 
-            console.log('chartDataSet====>', chartDataSet);
-
             return chartDataSet;
         };
 
@@ -1634,8 +1624,6 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
         treeCloudletList.push(newCloudletOne);
     })
 
-    console.log(`operTreeList==1==>`, treeCloudletList);
-
     if (isShowRegion) {//TODO: ADD REGION PARENT
         let regionTreeList = []
         allRegionList.map((regionOne, regionIndex) => {
@@ -1667,8 +1655,6 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 export const makeDropdownForCloudletForDevView = (pList) => {
     try {
 
-
-        console.log(`pList========>`, pList);
 
         let newArrayList = [];
         newArrayList.push({
