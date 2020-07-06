@@ -24,6 +24,8 @@ import { fields } from '../../../services/model/format'
 const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03"]
 const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
+const EULatLng = [53, 13]
+const USLatLng =     [41,-74]
 
 let _self = null;
 
@@ -43,7 +45,7 @@ class ClustersMap extends Component {
             unselectCity: '',
             saveMarker: [],
             keyName: '',
-            mapCenter: zoomControls.center
+            mapCenter: zoomControls.center,
         }
         // this.handleCityClick = this.handleCityClick.bind(this)
         this.dir = 1;
@@ -51,8 +53,7 @@ class ClustersMap extends Component {
 
     handleReset = () => {
         this.setState({
-            center: zoomControls.center,
-            zoom: 3,
+            mapCenter:(this.props.region === 'US') ? [41,-74] : [53,13],
             detailMode: false
         })
         if(this.props.onClick)
@@ -61,16 +62,20 @@ class ClustersMap extends Component {
         }
     }
 
+    handleRefresh = () => {
+        this.setState({mapCenter: this.state.detailMode? this.state.mapCenter : (this.props.region === 'US') ? [41,-74] : [53,13]})
+    }
+
+
     handleCityClick = (city) =>{
-        if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
-            d3.selectAll('.rsm-markers').selectAll(".levelFive")
-                .transition()
-                .ease(d3.easeBack)
-                .attr("r", markerSize[0])
-        }
+        // if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
+        //     d3.selectAll('.rsm-markers').selectAll(".levelFive")
+        //         .transition()
+        //         .ease(d3.easeBack)
+        //         .attr("r", markerSize[0])
+        // }
         this.setState({
-            zoom: 4,
-            center: city.coordinates,
+            mapCenter: city.coordinates,
             detailMode: true,
         })
         if(this.props.onClick)
@@ -91,7 +96,7 @@ class ClustersMap extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         let initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         let data = nextProps.locData ? initialData : initialData.filter((item) => item[fields.state] == 5);
-        let mapCenter = (nextProps.mapCenter) ? nextProps.mapCenter : [53,13];
+        let mapCenter = (prevState.detailMode)? prevState.mapCenter : (nextProps.region === 'US') ? [41,-74] : [53,13];
 
         function reduceUp(value) {
             return Math.round(value)
@@ -294,11 +299,19 @@ class ClustersMap extends Component {
     }
 
     render() {
+        console.log('20200706', this.state.mapCenter)
 
         return (
             <div className="commom-listView-map">
+
+
+                <div className="zoom-inout-reset-clusterMap" style={{ left: 10, top: 79, position: 'absolute', zIndex:1000 }}>
+                    <Button id="mapZoomCtl" size='small' icon onClick={() => this.handleRefresh()}>
+                        <Icon name='redo' />
+                    </Button>
+                </div>
                 {this.state.detailMode &&
-                    <div className="zoom-inout-reset-clusterMap" style={{ left: 10, top: 79, position: 'absolute', display: 'block', zIndex:1000 }}>
+                    <div className="zoom-inout-reset-clusterMap" style={{ left: 10, top: 117, position: 'absolute', zIndex:1000 }}>
                         <Button id="mapZoomCtl" size='large' icon onClick={() => this.handleReset()}>
                             <Icon name='compress' />
                         </Button>
@@ -332,6 +345,7 @@ class ClustersMap extends Component {
                                     zoomControl={true}
                                     boundsOptions={{padding: [50, 50]}}
                                     scrollWheelZoom={true}
+                                    viewport={this.state.mapCenter}
                                 >
                                     <TileLayer
                                         url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"

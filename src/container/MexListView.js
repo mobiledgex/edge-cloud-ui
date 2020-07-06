@@ -35,7 +35,6 @@ class MexListView extends React.Component {
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
-            refresh: true,
         };
         this.filterText = ''
         this.requestCount = 0;
@@ -267,13 +266,16 @@ class MexListView extends React.Component {
     /*Action Block*/
     listView = () => {
         let isMap = this.props.requestInfo.isMap && this.state.showMap
-        let mapCenter = (this.selectedRegion === 'US')? [41,-74] : [53,13]
 
         return (
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 300 }}>
-                        <Map dataList={this.state.filterList} id={this.props.requestInfo.id} onClick={this.onMapClick} mapDetails={this.mapDetails} mapCenter={mapCenter}/>*/}
+                        <Map dataList={this.state.filterList}
+                             id={this.props.requestInfo.id}
+                             onClick={this.onMapClick}
+                             region={this.selectedRegion}
+                             mapDetails={this.mapDetails}/>
                     </div> : null
                 }
                 <MexListViewer keys={this.keys} dataList={this.state.filterList}
