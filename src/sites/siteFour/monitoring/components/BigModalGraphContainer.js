@@ -14,6 +14,7 @@ import * as actions from "../../../../actions";
 import {renderCircleLoaderForMap, renderWifiLoader} from "../service/PageMonitoringCommonService";
 import {convertToClassification, makeLineChartOptions} from "../service/PageMonitoringService";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
+
 const FA = require('react-fontawesome')
 
 const mapStateToProps = (state) => {
@@ -155,11 +156,16 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                                         {this.props.isLoading && renderCircleLoaderForMap()}
                                     </div>
                                 </div>
-                                : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER ?
+                                : this.state.graphType === GRID_ITEM_TYPE.LINE &&
+                                this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
+                                || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN
+                                || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET
+                                || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN
+                                    ?
                                     <div style={{display: 'flex'}}>
                                         {this.renderPrevBtn()}
                                         <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
-                                            Cluster {this.props.popupGraphHWType} Utilization
+                                            {convertToClassification(this.props.parent.state.currentClassification)} {this.props.popupGraphHWType} Utilization
                                             {this.props.intervalLoading &&
                                             <div style={{
                                                 backgroundColor: 'transparent',
@@ -221,10 +227,8 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                                 <div style={{height: 'calc(100% - 62px)'}}>
                                     <Bar_Column_Chart
                                         width={"100%"}
-                                        //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
                                         height={'100%'}
                                         chartType={this.state.graphType === GRID_ITEM_TYPE.BAR ? 'BarChart' : 'ColumnChart'}
-                                        //chartType={'ColumnChart'}
                                         loader={<div><CircularProgress style={{color: '#1cecff',}}/>
                                         </div>}
                                         data={this.state.chartDataForRendering}

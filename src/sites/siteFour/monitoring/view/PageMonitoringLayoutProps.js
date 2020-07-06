@@ -175,7 +175,7 @@ export const defaultHwMapperListForCluster = [
 
 ];
 /*todo:#####################################
-  todo:  defaultLayoutFor__Admin (AppInst)
+  todo: Default Admin (AppInst)
   todo:#######################################*/
 export const defaultLayoutForAdmin = [
 
@@ -230,7 +230,7 @@ export const defaultHwMapperListForAdmin = [
 ];
 
 /*todo:#####################################
-  todo:  defaultLayoutFor__Admin (Cluster)
+  todo: Default Admin (Cluster)
   todo:#######################################*/
 export const defaultLayoutForAdminCluster = [
     {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
@@ -283,7 +283,7 @@ export const defaultHwMapperListForAdminCluster = [
 ];
 
 /*todo:#####################################
-  todo:  defaultLayoutFor__Admin (Cloudlet)
+  todo:  Default Admin (Cloudlet)
   todo:#######################################*/
 export const defaultLayoutForAdminCloudlet = [
 
@@ -300,7 +300,7 @@ export const defaultHwMapperListForAdminCloudlet = [
     {
         id: '1',
         hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
-        graphType: GRID_ITEM_TYPE.BAR,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '2',
@@ -311,7 +311,7 @@ export const defaultHwMapperListForAdminCloudlet = [
     {
         id: '3',
         hwType: HARDWARE_TYPE_FOR_GRID.memUsed,
-        graphType: GRID_ITEM_TYPE.BAR,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '4',
@@ -321,7 +321,7 @@ export const defaultHwMapperListForAdminCloudlet = [
     {
         id: '5',
         hwType: HARDWARE_TYPE_FOR_GRID.diskUsed,
-        graphType: GRID_ITEM_TYPE.BAR,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '6',
@@ -677,18 +677,6 @@ export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster";
 
 export const ADMIN_LAYOUT_KEY = "_layout_admin";
 export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //todo : for test

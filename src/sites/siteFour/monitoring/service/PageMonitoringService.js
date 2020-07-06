@@ -410,7 +410,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             )
         } else {
             let classificationName = '';
-            let levelTypeNameList = [];
+            let cloudletClusterAppInstNameList = [];
             let usageSetList = [];
             let dateTimeList = [];
             let series = [];
@@ -449,11 +449,11 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
-                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
-                } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                } else if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase())) {
                     classificationName = item.cloudlet
-                } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                } else if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase())) {
                     classificationName = item.instance.AppName
                 }
 
@@ -465,7 +465,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     dateOne = dateOne.toString().split("T");
                     dateTimeList.push(dateOne[1]);
                 }
-                levelTypeNameList.push(classificationName);
+                cloudletClusterAppInstNameList.push(classificationName);
                 usageSetList.push(usageList);
                 colorCodeIndexList.push(item.colorCodeIndex);
             });
@@ -481,7 +481,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             }
 
             let _result = {
-                levelTypeNameList,
+                levelTypeNameList: cloudletClusterAppInstNameList,
                 usageSetList,
                 newDateTimeList,
                 hardwareType,
@@ -1082,10 +1082,6 @@ export const simpleGraphOptions = {
                 autoSkip: true,
                 maxRotation: 0,//xAxis text rotation
                 minRotation: 0,//xAxis text rotation
-                /*
-                maxRotation: 45,//xAxis text rotation
-                minRotation: 45,//xAxis text rotation
-                */
                 padding: 10,
                 labelOffset: 0,
                 callback(value, index, label) {
@@ -1119,14 +1115,19 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonito
             let newDateTimeList = lineChartDataSet.newDateTimeList
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
+            let isStackedLineChart = _this.state.isStackedLineChart;
+            if (colorCodeIndexList.length === 1) {
+                isStackedLineChart = true;
+            }
+
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
                 let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
                 let dataSetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
-                    borderWidth: 3.5,//todo:라인 두께
-                    fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
+                    borderWidth: 3.5,//todo:line border width
+                    fill: isStackedLineChart,
                     backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
                     borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
                     lineTension: 0.5,

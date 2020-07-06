@@ -1233,13 +1233,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
 
                         let lineChartDataSet = []
-                        if (this.state.currentClassification.toLowerCase().includes('cluster')) {
+                        if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
                             lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
-                        } else if (this.state.currentClassification.toLowerCase().includes('cloudlet')) {
+                        } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase())) {
                             lineChartDataSet = makeLineChartData(this.state.filteredCloudletUsageList, pHwType, this)
-                        } else {
+                        } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase())) {
                             lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
+
+                        console.log('lineChartDataSet===>', lineChartDataSet);
+
                         chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this, this.state.currentColorIndex)
 
                     } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
@@ -1804,8 +1807,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Fetch Locally Stored Data
                             </div>
                         </AMenu.Item>
-                        {/*{this.state.currentClassification !== CLASSIFICATION.CLOUDLET &&
-                        }*/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
@@ -1857,7 +1858,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*desc: ######################*/}
                         {/*desc:Stacked Line Chart     */}
                         {/*desc: ######################*/}
-                        <AMenu.Item style={{display: 'flex'}}
+                        {/*<AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
                                         this.setState({
@@ -1878,7 +1879,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                 />
                             </div>
-                        </AMenu.Item>
+                        </AMenu.Item>*/}
                         {/*desc:#########################################*/}
                         {/*desc:____Menu Changing Graph Theme Color_____ */}
                         {/*desc:#########################################*/}
