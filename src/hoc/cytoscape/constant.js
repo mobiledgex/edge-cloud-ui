@@ -1,0 +1,1 @@
+export const SHAPE_ROUND_RECTANGLE = 'round-rectangle'
