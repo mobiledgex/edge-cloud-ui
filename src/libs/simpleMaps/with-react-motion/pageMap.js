@@ -402,10 +402,12 @@ class ClustersMap extends Component {
                                                                         className='map-marker-list'
                                                                         // onClick={()=> }
                                                                     >
+                                                                        {this.props.id === "Cloudlets" &&
                                                                         <div
                                                                             style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
                                                                             className='map-status-mark'
                                                                         />
+                                                                        }
                                                                         {one}
 
                                                                     </div>
