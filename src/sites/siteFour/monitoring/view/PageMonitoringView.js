@@ -434,11 +434,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let adminCloudletLayout = getUserId() + ADMIN_CLOUDLET_LAYOUT_KEY
                 let adminCloudletLayoutMapper = getUserId() + ADMIN_CLOUDLET_HW_MAPPER_KEY
 
-
                 let themeKey = getUserId() + "_mon_theme";
                 let themeTitle = getUserId() + "_mon_theme_title";
-
-
                 //@fixme: DELETE GRID LAYOUT
                 /*reactLocalStorage.remove(adminCloudletLayout)
                 reactLocalStorage.remove(adminCloudletLayoutMapper)*/
@@ -768,7 +765,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo:MAP_LEVEL.CLOUDLET
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET || this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
                         markerListForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
-                    } else {//DESC:MAP_LEVEL.CLUSTER
+                    } else {//todo:MAP_LEVEL.CLUSTER
                         let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
                         markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
 
@@ -1230,7 +1227,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     let chartDataForBigModal = []
                     if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
-
                         let lineChartDataSet = []
                         if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
                             lineChartDataSet = makeLineChartData(this.state.filteredClusterUsageList, pHwType, this)
@@ -1239,7 +1235,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase())) {
                             lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
-
                         chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this, this.state.currentColorIndex)
 
                     } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
@@ -1261,7 +1256,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isMapUpdate: true,
                     });
                 } catch (e) {
-
                     showToast(e.toString())
                 }
             }
@@ -1297,7 +1291,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 <MaterialIcon size={'tiny'} icon='aspect_ratio' color={'white'}/>
                             </div>
                             }
-
                             {/*desc:############################*/}
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
@@ -2008,7 +2001,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     </div>
                 )
             }
-
             __________HANDLEONCHANGE____________________________________________________________________________________() {
             }
 
@@ -3695,7 +3687,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </Dialog>
                         </div>
                     </ConfigProvider>
-
                 )//return End
             }
         }
