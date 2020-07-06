@@ -2622,9 +2622,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         } catch (e) {
                                             // showToast(e.toString())
                                         }
-
                                     }
-
                                     await this.setState({
                                         isShowClusterInLegend: true,
                                     })
