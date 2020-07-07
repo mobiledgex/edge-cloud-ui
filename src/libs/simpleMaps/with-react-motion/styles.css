@@ -107,6 +107,10 @@
     margin-right: 5px;
 }
 
+.commom-listView-map .leaflet-bar {
+    box-shadow: none;
+}
+
 .commom-listView-map .leaflet-bar a, .leaflet-bar a:hover {
     background-color: rgba(117,122,133,.65);
     color: rgba(255,255,255,.7);
