@@ -4,28 +4,16 @@ import type {TypeAppInst, TypeClient, TypeCloudlet} from "../../../../shared/Typ
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {
-    groupByKey_,
-    removeDuplicates,
-    renderBarLoader,
-    renderXLoader, renderXMarkForMap,
-    showToast
-} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {
-    DARK_CLOUTLET_ICON_COLOR,
-    DARK_LINE_COLOR,
-    WHITE_CLOUTLET_ICON_COLOR,
-    WHITE_LINE_COLOR
-} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import '../common/PageMonitoringStyles.css'
 import {listGroupByKey, makeMapThemeDropDown} from "../service/PageMonitoringService";
-import {cloudBlueIcon, cloudGreenIcon, mapTileList} from "../common/MapProperties";
+import {cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -493,22 +481,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
                         <div style={PageMonitoringStyles.mapControlDiv}>
-                            {/* <div
-                                style={{
-                                    backgroundColor: 'transparent',
-                                    height: 30,
-                                    width: 30,
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignSelf: 'center'
-                                }}
-                            >
-                                <Icon
-                                    name='redo'
-                                    onClick={this.props.parent.handleResetForAdmin()}
-                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                                />
-                            </div>*/}
                             <div
                                 style={{backgroundColor: 'transparent', height: 30}}
                                 onClick={() => {
@@ -623,14 +595,11 @@ export default connect(mapStateToProps, mapDispatchProps)((
 
         renderCounterDiv() {
             return (
-                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                <Control position="bottomleft" style={{marginTop: 3, display: 'flex',}}>
                     <Center style={PageMonitoringStyles.mapStatusBoxCloudlet}>
                         <div style={{}}>
                             Cloudlet : {this.props.cloudletList.length}
                         </div>
-                        {/*  <div style={{}}>
-                            Cluster&nbsp;&nbsp;&nbsp;: {this.props.clusterList.length}
-                        </div>*/}
                     </Center>
                 </Control>
             )

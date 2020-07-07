@@ -521,7 +521,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         renderMapControl() {
             return (
-                <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
+                <Control position="bottomleft" style={{marginTop: 3, display: 'flex',}}>
 
                     <div style={PageMonitoringStyles.mapControlDiv}>
                         {this.props.currentClassification === CLASSIFICATION.CLUSTER || this.props.currentClassification === CLASSIFICATION.APPINST ?
