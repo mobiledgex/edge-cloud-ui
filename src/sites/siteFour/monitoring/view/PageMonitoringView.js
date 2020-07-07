@@ -2002,10 +2002,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             handleOnChangeCloudletDropdownForAdmin = async (selectCloudlet) => {
-
-
-                let currentCloudlet = selectCloudlet.split("|")[0].trim();
+                let currentCloudlet = undefined
                 try {
+                    currentCloudlet = selectCloudlet.split("|")[0].trim()
                     this.cloudletSelectForAdmin.blur();
                     await this.setState({
                         currentClusterList: [],
@@ -2303,7 +2302,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentAppInst: undefined,
                             currentAppInstNameVersion: undefined,
                             filteredClusterList: filteredClusterList,
-                            currentOperLevel: CLASSIFICATION.CLUSTER,
                             filteredClusterEventLogList: filteredClusterEventLogList,
                             currentColorIndex: -1,
                             legendItemCount: filteredClusterUsageList.length,
@@ -2459,7 +2457,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList = [], selectCloudletOne = '') {
                 let newMarketListMap = {}
+
+                console.log('filteredClusterList====>', filteredClusterList);
+
                 if (filteredClusterList.length > 0) {
+
                     ////todo:  mapFiltering(CLUSTER)
                     let markerListHashMap = reducer.groupBy(appInstList, CLASSIFICATION.CLOUDLET);
                     let selectedCloudletName = selectCloudletOne.toString().split(" | ")[0].toString().trim();
@@ -2467,13 +2469,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
                     await this.setState({
                         currentMapLevel: MAP_LEVEL.CLUSTER,
-                        currentCloudLet: CLASSIFICATION.CLUSTER_FOR_ADMIN,
+                        currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
                         markerList: newMarketListMap,
                     })
                 } else {////todo:  mapfiltering (CLOUDLET_FOR_ADMIN)
                     newMarketListMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
                     await this.setState({
                         isNoCluster: true,
+                        currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                         currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
                         markerList: newMarketListMap,
                     })
@@ -2697,6 +2700,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
                                     if (!isEmpty(value)) {
+                                        await this.setState({
+                                            currentMapLevel: MAP_LEVEL.CLUSTER,
+                                        })
                                         this.setState({currentClusterList: value});
                                     } else {
                                         await this.setState({
@@ -2712,6 +2718,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Button
                                 size={'small'}
                                 onClick={async () => {
+
                                     this.appInstSelect.blur();
                                     this.applyButton.blur();
                                     await this.setState({
@@ -2719,13 +2726,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
                                     })
                                     if (this.state.currentClusterList !== undefined) {
-                                        //todo: filtering for map
                                         const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
-                                        await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
                                         await this.handleOnChangeClusterDropdown(currentClusterList)
-                                        await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
-
-
                                     } else {
                                         await this.resetLocalData()
                                     }
