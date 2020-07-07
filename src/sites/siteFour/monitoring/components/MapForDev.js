@@ -13,7 +13,7 @@ import {Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, makeMapThemeDropDown, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
@@ -522,22 +522,25 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
                     <div style={PageMonitoringStyles.mapControlDiv}>
-                        <div
-                            style={{
-                                backgroundColor: 'transparent',
-                                height: 30,
-                                width: 30,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignSelf: 'center'
-                            }}
-                        >
-                            <Icon
-                                name='redo'
-                                onClick={this.handleRefresh}
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
+                        {this.props.currentClassification === CLASSIFICATION.CLUSTER || this.props.currentClassification === CLASSIFICATION.APPINST ?
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}
+                            >
+                                <Icon
+                                    name='redo'
+                                    onClick={this.handleRefresh}
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div> :
+                            null
+                        }
                         <div
                             style={{backgroundColor: 'transparent', height: 30}}
                             onClick={() => {
