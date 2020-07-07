@@ -2003,7 +2003,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             handleOnChangeCloudletDropdownForAdmin = async (selectCloudlet) => {
 
-                console.log('selectCloudlet===>', selectCloudlet);
 
                 let currentCloudlet = selectCloudlet.split("|")[0].trim();
                 try {
@@ -2288,12 +2287,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
-
                         let mapMarkerListHashMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
-
-                        console.log('1111...mapMarkerListHashMap====>', mapMarkerListHashMap);
-                        console.log('1111..ilteredAppInstList====>', filteredAppInstList);
-
 
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
@@ -2727,12 +2721,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (this.state.currentClusterList !== undefined) {
                                         //todo: filtering for map
                                         const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
-
-                                        console.log('filteredAppInstList..filteredCloudletList====>', filteredCloudletList)
-                                        console.log('filteredAppInstList..filteredAppInstList====>', filteredAppInstList)
-                                        console.log('filteredAppInstList...currentClusterList====>', currentClusterList);
-
-
                                         await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
                                         await this.handleOnChangeClusterDropdown(currentClusterList)
                                         await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
