@@ -479,7 +479,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
             return (
                 <React.Fragment>
                     <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
-
                         <div style={PageMonitoringStyles.mapControlDiv}>
                             <div
                                 style={{backgroundColor: 'transparent', height: 30}}
@@ -595,11 +594,14 @@ export default connect(mapStateToProps, mapDispatchProps)((
 
         renderCounterDiv() {
             return (
-                <Control position="bottomleft" style={{marginTop: 3, display: 'flex',}}>
+                <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
                     <Center style={PageMonitoringStyles.mapStatusBoxCloudlet}>
                         <div style={{}}>
                             Cloudlet : {this.props.cloudletList.length}
                         </div>
+                        {/*  <div style={{}}>
+                            Cluster&nbsp;&nbsp;&nbsp;: {this.props.clusterList.length}
+                        </div>*/}
                     </Center>
                 </Control>
             )
