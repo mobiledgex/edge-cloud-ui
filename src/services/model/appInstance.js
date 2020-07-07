@@ -2,7 +2,7 @@ import * as formatter from './format'
 import uuid from 'uuid'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
-import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO, SHOW_AUTO_PROV_POLICY } from './endPointTypes'
 import {FORMAT_FULL_DATE_TIME} from '../../utils/date_util'
 let fields = formatter.fields;
 
@@ -32,7 +32,8 @@ export const keys = () => ([
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
-  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true},  
+  //{ field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: false},  
+  { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false},  
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -95,6 +96,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
       for (let j = 0; j < appList.length; j++) {
         let app = appList[j]
         if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
+          appInst[fields.autoPolicyName] = app[fields.autoPolicyName] ? app[fields.autoPolicyName] : 'NA';
           appInst[fields.deployment] = app[fields.deployment];
           appInst[fields.accessType] = app[fields.accessType];
           appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
@@ -107,6 +109,8 @@ export const multiDataRequest = (keys, mcRequestList) => {
           appInst[fields.cloudletStatus] = cloudletInfo[fields.state]
         }
       }
+
+
       appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
     }
   }

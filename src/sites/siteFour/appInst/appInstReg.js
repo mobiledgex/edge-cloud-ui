@@ -13,6 +13,7 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getClusterInstList } from '../../../services/model/clusterInstance';
+import { getFlavorList } from '../../../services/model/flavor';
 import { getAppList } from '../../../services/model/app';
 import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
 
@@ -36,6 +37,7 @@ class ClusterInstReg extends React.Component {
         this.cloudletList = []
         this.clusterInstList = []
         this.privacyPolicyList = []
+        this.flavorList = []
         this.appList = []
         //To avoid refecthing data from server
     }
@@ -73,6 +75,14 @@ class ClusterInstReg extends React.Component {
         }
         this.updateUI(form)
         this.appNameValueChange(form, forms, true)
+        this.setState({ forms: forms })
+    }
+
+    getFlavorInfo = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
+        }
+        this.updateUI(form)
         this.setState({ forms: forms })
     }
 
@@ -257,6 +267,11 @@ class ClusterInstReg extends React.Component {
                     this.getClusterInstInfo(region, form, forms)
                 }
             }
+            else if (form.field === fields.flavorName) {
+                if (isInit === undefined || isInit === false) {
+                    this.getFlavorInfo(region, form, forms)
+                }
+            }
             else if (form.field === fields.appName) {
                 if (isInit === undefined || isInit === false) {
                     this.getAppInfo(region, form, forms)
@@ -332,13 +347,14 @@ class ClusterInstReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Create App Instances', formType: 'Header', visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} App Instances`, formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, fullData: true, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
             { field: fields.operatorName, label: 'Operator', formType: 'Select', placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: 'MultiSelect', placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
+            { field: fields.flavorName, label: 'Flavor', formType: 'Select', placeholder: 'Select Flavor', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false },
             { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false },
@@ -481,6 +497,9 @@ class ClusterInstReg extends React.Component {
                         case fields.cloudletName:
                             form.options = this.cloudletList
                             break;
+                        case fields.flavorName:
+                            form.options = this.flavorList
+                            break;
                         case fields.clusterName:
                             form.options = this.clusterInstList
                             break;
@@ -546,6 +565,11 @@ class ClusterInstReg extends React.Component {
                 clusterInst[fields.operatorName] = data[fields.operatorName]
                 clusterInst[fields.clusterdeveloper] = data[fields.clusterdeveloper]
                 this.clusterInstList.push(clusterInst)
+
+                let flavor = {}
+                flavor[fields.region] = data[fields.region]
+                flavor[fields.flavorName] = data[fields.flavorName]
+                this.flavorList.push(flavor)
 
                 let multiFormCount = 0
                 if (data[fields.configs]) {

@@ -168,11 +168,7 @@ export const CloudletTutor = () => {
             stepsCloudletDev: [
                 {
                     element: '.createAppInst0',
-                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
-                },
-                {
-                    element: '.progressIndicator',
-                    intro: 'Click to View Detail Progress'
+                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to view cloudlets.'
                 }
             ],
             stepsCloudletReg: [

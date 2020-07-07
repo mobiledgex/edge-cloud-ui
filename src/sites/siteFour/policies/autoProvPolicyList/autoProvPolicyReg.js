@@ -7,7 +7,7 @@ import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM } from '.
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import * as serverData from '../../../../services/model/serverData';
-import { fields, getOrganization } from '../../../../services/model/format';
+import { fields, getOrganization, updateFields } from '../../../../services/model/format';
 
 import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
@@ -180,7 +180,15 @@ class AutoProvPolicyReg extends React.Component {
 
     onCreateAutoProvPolicy = async (data) => {
         if (data[fields.deployClientCount] || data[fields.minActiveInstances]) {
-            let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updateAutoProvPolicy(this.state.forms, data, this.props.data) : createAutoProvPolicy(data))
+            let requestType = createAutoProvPolicy
+            if (this.isUpdate) {
+                let updateFieldList = updateFields(this, this.state.forms, data, this.props.data)
+                if (updateFieldList.length > 0) {
+                    data[fields.fields] = updateFieldList
+                    requestType = updateAutoProvPolicy
+                }
+            }
+            let mcRequest = await serverData.sendRequest(this, requestType(data))
             if (mcRequest && mcRequest.response) {
                 let response = mcRequest.response;
                 if (response.status === 200) {
@@ -331,7 +339,7 @@ class AutoProvPolicyReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Create Auto Provisioning Policy', formType: 'Header', visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Provisioning Policy`, formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to' },
             { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true, tip: 'Policy name' },

@@ -4,11 +4,11 @@ import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Box } fro
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../../actions';
 import { IconButton, Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import Calendar from '../components/horizontal_calendar/Calendar';
-import * as dateUtil from '../utils/date_util'
+import Calendar from '../../../components/horizontal_calendar/Calendar';
+import * as dateUtil from '../../../utils/date_util'
 import CheckIcon from '@material-ui/icons/Check';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -36,14 +36,15 @@ class HeaderAuditLog extends React.Component {
             dayData: [],
             groups: [],
             groupsErrorCount: 0,
-            dropDownValue: "Individual"
+            dropDownValue: "Individual",
+            selectedDate : dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)
         }
     }
 
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.devData !== prevState.devData) {
-            let dayData = filterDataByDate(nextProps.devData, dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE))
+            let dayData = filterDataByDate(nextProps.devData, prevState.selectedDate)
             return { dayData: dayData, devData: nextProps.devData, unCheckedErrorCount: nextProps.unCheckedErrorCount, errorCount: nextProps.errorCount }
         }
         return null
@@ -104,9 +105,10 @@ class HeaderAuditLog extends React.Component {
     }
 
     handleDateChange = (selectDate, index) => {
-        this.setState({dayData:[]})
+        this.setState({ dayData: [] })
         setTimeout(() => {
-            let dayData = filterDataByDate(this.props.devData, dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf()))
+            this.setState({ selectedDate: dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf())})
+            let dayData = filterDataByDate(this.props.devData, this.state.selectedDate)
             if (this.state.dropDownValue === 'Group') {
                 this.dropDownOnChange(null, { value: "Group" }, dayData)
             }

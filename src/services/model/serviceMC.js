@@ -9,8 +9,12 @@ export function getEP() {
     return EP;
 }
 
-const updateServerRequestCount = (requestData) =>
+const updateServerRequestCount = (requestData, self) =>
 {
+    if(self)
+    {
+        showSpinner(self, false)
+    }
     if(requestData && requestData.method && !requestData.method.toLowerCase().includes('show') && !requestData.method.toLowerCase().includes('stream'))
     {
         localStorage.setItem('ServerRequestCount', parseInt(localStorage.getItem('ServerRequestCount'))+1)
@@ -24,7 +28,7 @@ export const mcURL = (isWebSocket) =>
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
-
+        
         if (isWebSocket) {
             serverURL = serverURL.replace('http', 'ws')
         }
@@ -111,7 +115,9 @@ function responseStatus(self, status)
     {
         case 504:
             valid = false
-            self.props.handleAlertInfo('error', '504 Gateway Timeout')
+            if (self.props.handleAlertInfo) {
+                self.props.handleAlertInfo('error', '504 Gateway Timeout')
+            }
             break;
     }
     return valid
@@ -159,15 +165,14 @@ export function sendMultiRequest(self, requestDataList, callback) {
         })
         axios.all(promise)
             .then(responseList => {
-                updateServerRequestCount(requestDataList[0])
+                updateServerRequestCount(requestDataList[0], self)
                 responseList.map((response, i) => {
                     resResults.push(EP.formatData(requestDataList[i], response));
                 })
-                showSpinner(self, false)
                 callback(resResults);
 
             }).catch(error => {
-                updateServerRequestCount(requestDataList[0])
+                updateServerRequestCount(requestDataList[0], self)
                 if (error.response && responseStatus(self, error.response.status)) {
                     responseError(self, requestDataList[0], error, callback)
                 }
@@ -182,11 +187,10 @@ export const sendSyncRequest = async (self, request) => {
             {
                 headers: getHeader(request)
             });
-        updateServerRequestCount(request)
-        showSpinner(self, false)
+        updateServerRequestCount(request, self)
         return EP.formatData(request, response);
     } catch (error) {
-        updateServerRequestCount(request)
+        updateServerRequestCount(request, self)
         if (error.response && responseStatus(self, error.response.status)) {
             responseError(self, request, error)
         }
@@ -200,11 +204,10 @@ export const sendSyncRequestWithError = async (self, request) => {
             {
                 headers: getHeader(request)
             });
-        updateServerRequestCount(request)
-        request.showSpinner === undefined && showSpinner(self, false)
+        updateServerRequestCount(request, self)
         return EP.formatData(request, response);
     } catch (error) {
-        updateServerRequestCount(request)
+        updateServerRequestCount(request, self)
         if (error.response && responseStatus(self, error.response.status)) {
             return { request: request, error: error }
         }
@@ -220,12 +223,11 @@ export function sendRequest(self, request, callback) {
             headers: getHeader(request)
         })
         .then(function (response) {
-            updateServerRequestCount(request)
-            showSpinner(self, false)
+            updateServerRequestCount(request, self)
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
-            updateServerRequestCount(request)
+            updateServerRequestCount(request, self)
             if (error.response && responseStatus(self, error.response.status)) {
                 responseError(self, request, error, callback)
             }

@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import HeaderGlobalMini from '../../../container/headerGlobalMini';
-import HeaderGlobalAudit from '../../../container/headerGlobalAudit';
+import HeaderGlobalAudit from '../auditLog/headerGlobalAudit';
 
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
@@ -166,7 +166,7 @@ export default function Header(props) {
                     <HeaderGlobalAudit />
                     <IconButton style={{ backgroundColor: 'transparent'}} aria-label="help" color="inherit"
                         onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
-                        <HelpOutlineOutlinedIcon fontSize='default' />
+                        <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'} />
                     </IconButton>
                     <MexVirtualSelect open={openPreferences} close={()=>{setOpenPreferences(false)}} data={timezones()} header={'Select Timezone'}/>
                     <HeaderGlobalMini email={props.email} data={props.data}/>

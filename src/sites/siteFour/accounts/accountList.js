@@ -25,10 +25,16 @@ class OrganizationList extends React.Component {
         this.keys = Object.assign([], keys);
     }
 
+   
+
     /**Action menu block */
+    deleteVisible = (data) => {
+        return data[fields.username] !== 'mexadmin'
+    }
+
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteAccount }
+            { label: 'Delete', visible:this.deleteVisible, onClick: deleteAccount }
         ]
     }
     /*Action menu block*/

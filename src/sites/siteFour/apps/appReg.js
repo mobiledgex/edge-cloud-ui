@@ -730,7 +730,7 @@ class AppReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Create Apps', formType: 'Header', visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: 'Header', visible: true },
             { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name' },

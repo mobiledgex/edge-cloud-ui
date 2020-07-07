@@ -19,7 +19,7 @@ import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import { GridLoader } from 'react-spinners';
 
 const EntranceGlob = lazy(() => import('./sites/login/entranceGlob'));
-const VerifyContent = lazy(() => import('./container/verifyContent'));
+const VerifyContent = lazy(() => import('./sites/login/verifyContent'));
 const SiteFour = lazy(() => import('./sites/siteFour/siteFour'))
 
 let self = null;

@@ -738,7 +738,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 let sumFloatingIpsMax = 0
                 let sumIpv4Used = 0;
                 let sumIpv4Max = 0;
-
                 series.map((item, innerIndex) => {
 
                     let netSendSeriesOne = item[getIndex(columns, CLOUDLET_METRIC_COLUMN.netSend)]

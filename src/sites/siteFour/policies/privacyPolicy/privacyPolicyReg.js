@@ -25,6 +25,7 @@ class AutoProvPolicyReg extends React.Component {
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.organizationList = []
         this.cloudletList = []
+        this.isUpdate = this.props.action === 'Update'
     }
 
     validateRemoteCIDR=(form)=>
@@ -144,12 +145,12 @@ class AutoProvPolicyReg extends React.Component {
     )
 
     getForms = () => ([
-        { label: 'Create Privacy Policy', formType: 'Header', visible: true },
+        { label: `${this.isUpdate ? 'Update' : 'Create'} Privacy Policy`, formType: 'Header', visible: true },
         { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region' },
         { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
         { field: fields.privacyPolicyName, label: 'Privacy Policy Name', formType: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: 'Checkbox', visible: true, value: false },
-        { label: 'Outbound Security Rules', formType: 'Header', forms: [{ formType: 'IconButton', icon: 'add', style:{ color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true },
+        { label: 'Outbound Security Rules', formType: 'Header', forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true },
     ])
 
     addRulesForm = (e, form) => {
@@ -213,18 +214,11 @@ class AutoProvPolicyReg extends React.Component {
             {
                 data[fields.outboundSecurityRules] = outboundSecurityRules;
             }
-            let mcRequest = await serverData.sendRequest(this, this.props.action === 'Update' ? updatePrivacyPolicy(data) : createPrivacyPolicy(data))
+            let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updatePrivacyPolicy(data) : createPrivacyPolicy(data))
             if (mcRequest && mcRequest.response) {
                 let response = mcRequest.response
                 if (response.status === 200) {
-                    let msg = 'Created'
-                    switch (this.props.action) {
-                        case 'Update':
-                            msg = 'updated'
-                            break;
-                        default:
-                            msg = 'created'
-                    }
+                    let msg = this.isUpdate ? 'updated' : 'created'
                     let policyName = mcRequest.request.data.privacypolicy.key.name;
                     this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} successfully`)
                     this.props.onClose(true)
@@ -311,7 +305,7 @@ class AutoProvPolicyReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.getForms();
         forms.push(
-            { label: `${this.props.action ? this.props.action : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate : true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate : true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
 
         if (data) {

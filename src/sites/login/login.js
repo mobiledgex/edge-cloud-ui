@@ -7,9 +7,10 @@ import * as actions from '../../actions';
 import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
-import RegistryUserForm from '../../components/reduxForm/RegistryUserForm';
-import RegistryResetForm from '../../components/reduxForm/registryResetForm';
+import RegistryUserForm from './signup';
+import RegistryResetForm from '../../components/reduxForm/resetPassword';
 import PublicIP from 'public-ip';
+import { fields } from '../../services/model/format';
 
 
 const host = window.location.host;
@@ -126,19 +127,7 @@ const FormResendVerify = (props) => (
 
     </Grid>
 )
-const FormSignUpContainer = (props) => (
-    <Grid className="signUpBD">
-        <Grid.Row>
-            <span className='title'>Create New Account</span>
-        </Grid.Row>
-        <RegistryUserForm onSubmit={(a, b) => console.log('20190906 ProfileForm was submitted', a, b)} userInfo={{ username: props.self.state.username, email: props.self.state.email, commitDone: props.self.state.commitDone }} />
-        <Grid.Row>
-            <span>
-                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
-            </span>
-        </Grid.Row>
-    </Grid>
-)
+
 
 const SuccessMsg = (props) => (
     <Grid className="signUpBD">
@@ -248,8 +237,6 @@ class Login extends Component {
                 this.setState({ email: nextProps.values.email, username: nextProps.values.username })
                 if (nextProps.loginMode === 'resetPass') {
                     this.resetPassword(nextProps.values.password)
-                } else {
-                    this.createUser(nextProps)
                 }
             }
 
@@ -288,13 +275,13 @@ class Login extends Component {
         }
     }
 
-    createUser = async (nextProps) => {
-        let mcRequest = await serverData.createUser(this, {
-            name: nextProps.values.username,
-            passhash: nextProps.values.password,
-            email: nextProps.values.email,
+    createUser = async (data) => {
+        let mcRequest = await serverData.createUser(self, {
+            name: data[fields.username],
+            passhash: data[fields.password],
+            email: data[fields.email],
             verify: {
-                email: nextProps.values.email,
+                email: data[fields.email],
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
                 callbackurl: `https://${host}/#/verify`,
@@ -445,6 +432,20 @@ class Login extends Component {
         };
     }
 
+    signUpForm = () => (
+        <Grid className="signUpBD">
+            <Grid.Row>
+                <span className='title'>Create New Account</span>
+            </Grid.Row>
+            <RegistryUserForm createUser={this.createUser}/>
+            <Grid.Row>
+                <span style={{marginTop:30}}>
+                    By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
+                </span>
+            </Grid.Row>
+        </Grid>
+    )
+
     render() {
         return (
             <Container>
@@ -461,7 +462,7 @@ class Login extends Component {
                                         (this.state.successCreate || this.state.errorCreate) ?
                                             <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
                                             :
-                                            <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} lastFormValue={this.state.lastFromValue} />
+                                            this.signUpForm()
                                         : (this.state.loginMode === 'signuped') ?
                                             (this.state.successCreate || this.state.errorCreate) ?
                                                 <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
