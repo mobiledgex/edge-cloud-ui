@@ -717,9 +717,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:###################################################################################################################
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList(undefined, this))
-                        const [promise0, promise1] = await Promise.all(promiseList);
-                        clusterList = promise0;
-                        appInstList = promise1;
+                        const [promiseClusterList, promiseAppInstList] = await Promise.all(promiseList);
+                        clusterList = promiseClusterList;
+                        appInstList = promiseAppInstList;
                         clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                     } else {
                         //TODO:###############################################
@@ -733,7 +733,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             loadingForClientStatus: false,
                             allCloudletEventLogList: allCloudletEventLogList,
                             filteredCloudletEventLogList: allCloudletEventLogList,
-
                         })
                     }
 
@@ -917,10 +916,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredClientStatusList: this.state.allClientStatusList,
                     currentClassification: this.state.userType.includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_ADMIN,
                 });
-
-                await this.setState({
-                    currentMapLevel: this.state.currentClassification.includes("cluster") ? MAP_LEVEL.CLUSTER : MAP_LEVEL.CLOUDLET_FOR_ADMIN,
-                })
 
                 let markerListForMap = []
                 if (this.state.currentMapLevel === MAP_LEVEL.CLUSTER) {
@@ -1459,6 +1454,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 appInstList={this.state.filteredAppInstList}
                                 clusterList={this.state.filteredClusterUsageList}
                                 loading={this.state.loading}
+                                cloudletList={this.state.cloudletList}
                             />
                         )
                     } else if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET) {
@@ -2295,6 +2291,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let mapMarkerListHashMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
 
+                        console.log('1111...mapMarkerListHashMap====>', mapMarkerListHashMap);
+                        console.log('1111..ilteredAppInstList====>', filteredAppInstList);
+
+
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
                             bubbleChartData: bubbleChartData,
@@ -2705,6 +2705,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (!isEmpty(value)) {
                                         this.setState({currentClusterList: value});
                                     } else {
+                                        await this.setState({
+                                            currentMapLevel: MAP_LEVEL.CLUSTER,
+                                        })
                                         this.resetLocalData()
                                     }
                                 }}
@@ -2811,8 +2814,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         this.setState({currentClusterList: value});
                                     } else {
                                         await this.setState({
-                                            currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN
+                                            currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
+                                            currentMapLevel: MAP_LEVEL.CLUSTER,
                                         })
+
                                         await this.resetLocalData()
                                     }
 

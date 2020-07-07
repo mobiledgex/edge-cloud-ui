@@ -73,8 +73,10 @@ type Props = {
     loading: boolean,
     appInstList: any,
     clusterList: any,
+    cloudletList: any,
     mapLoading: boolean,
     currentClassification: string,
+
 
 };
 type State = {
@@ -716,7 +718,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
                                     </div>
-                                    : <div style={{position: 'absolute', bottom: 20, right: 5, zIndex: 99999}}>
+                                    : <div style={{position: 'absolute', bottom: 50, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
                                     </div>
                                 }
