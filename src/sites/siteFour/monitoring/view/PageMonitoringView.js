@@ -2033,7 +2033,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         await this.setState({
                             filteredCloudletUsageList: cloudletUsageList,
-                        },()=>{
+                        }, () => {
                         })
 
                         let promiseList = []
@@ -3077,6 +3077,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            __________LEGEND____________________________________________________________________________________________________() {
+            }
+
             makeLegend() {
                 try {
                     if (this.state.loading) {
@@ -3178,7 +3181,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 {this.renderClusterDot(item.colorCodeIndex)}
                                                 <div style={{display: 'flex', marginLeft: 3,}}>
                                                     <div>
-                                                        {item.cluster}
+                                                        {reduceString(item.cluster, 35)}
                                                     </div>
                                                 </div>
                                             </Center>

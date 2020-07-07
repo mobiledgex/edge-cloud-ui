@@ -1502,7 +1502,7 @@ export function makeStringLimit(classification, _this: any) {
             stringLimit = 4
         }
 
-    } else if (classification === CLASSIFICATION.CLUSTER || classification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+    } else if (classification === CLASSIFICATION.CLUSTER) {
         if (_this.props.size.width > 1500) {
             stringLimit = 49
         } else if (_this.props.size.width < 1500 && this.props.size.width >= 1300) {
@@ -1511,6 +1511,16 @@ export function makeStringLimit(classification, _this: any) {
             stringLimit = 34
         } else if (_this.props.size.width < 1100) {
             stringLimit = 28
+        }
+    } else if (classification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+        if (_this.props.size.width > 1500) {
+            stringLimit = 30
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1300) {
+            stringLimit = 22
+        } else if (_this.props.size.width < 1300 && this.props.size.width >= 1100) {
+            stringLimit = 15
+        } else if (_this.props.size.width < 1100) {
+            stringLimit = 7
         }
     }
 

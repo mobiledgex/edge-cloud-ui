@@ -26,8 +26,8 @@ const DEFAULT_VIEWPORT = {
     zoom: 13,
 }
 
-const bottomDivHeight = 200;
-const hwMarginTop = 10;
+const bottomDivHeight = 185;
+const hwMarginTop = 5;
 const hwFontSize = 12;
 
 const mapStateToProps = (state) => {
@@ -771,7 +771,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     flex: .49,
                     marginLeft: 30,
                     borderRadius: 10,
-                    marginTop: -22,
+                    marginTop: -25,
                 }}>
                     <Center style={{height: bottomDivHeight,}}>
                         <div>
