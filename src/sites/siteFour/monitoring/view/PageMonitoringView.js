@@ -2718,7 +2718,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Button
                                 size={'small'}
                                 onClick={async () => {
-
                                     this.appInstSelect.blur();
                                     this.applyButton.blur();
                                     await this.setState({
@@ -2731,7 +2730,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     } else {
                                         await this.resetLocalData()
                                     }
-
 
                                 }}
                                 ref={c => this.applyButton = c}
