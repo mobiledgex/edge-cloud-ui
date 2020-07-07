@@ -1747,7 +1747,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
                 let cloudletClusterNameMap = getCloudletClusterNameList(this.state.filteredClusterList)
                 let allRegionList = localStorage.getItem('regions').split(",")
-                let clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(allRegionList, cloudletClusterNameMap.cloudletNameList, this.state.allClusterUsageList, this)
+                let clusterTreeDropdownList = []
+                if (this.state.currentClassification.includes(USER_TYPE_SHORT.ADMIN)) {
+                    clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterNameMap.cloudletNameList, this.state.allClusterUsageList, this,)
+                } else {
+                    clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(allRegionList, cloudletClusterNameMap.cloudletNameList, this.state.allClusterUsageList, this)
+                }
                 await this.setState({
                     clusterTreeDropdownList: clusterTreeDropdownList,
                 })
