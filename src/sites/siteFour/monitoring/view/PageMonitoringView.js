@@ -2457,9 +2457,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async filterMapDataForAdmin(filteredClusterList, filteredCloudletList, appInstList = [], selectCloudletOne = '') {
                 let newMarketListMap = {}
-
-                console.log('filteredClusterList====>', filteredClusterList);
-
                 if (filteredClusterList.length > 0) {
 
                     ////todo:  mapFiltering(CLUSTER)
