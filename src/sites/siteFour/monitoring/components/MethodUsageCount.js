@@ -86,7 +86,7 @@ export default function MethodUsageCount(props) {
                                     {countReady ? FindCloudletCountTotal : <CircularProgress size={'small'}/>}
                                 </div>
                                 <div style={{background: 'transparent'}}>
-                                    <Sparklines data={[0, 0, FindCloudletCountTotal, 0, 0]}>
+                                    <Sparklines data={[0, 1, FindCloudletCountTotal, 5, 0]}>
                                         <SparklinesLine color="green"/>
                                     </Sparklines>
                                 </div>
@@ -102,7 +102,7 @@ export default function MethodUsageCount(props) {
                                 {countReady ? RegisterClientCountTotal : <CircularProgress size={'small'}/>}
                             </div>
                             <div style={{background: 'transparent'}}>
-                                <Sparklines data={[0, 0, RegisterClientCountTotal, 0, 0]}>
+                                <Sparklines data={[0, 3, RegisterClientCountTotal, 2, 0]}>
                                     <SparklinesLine color="orange"/>
                                 </Sparklines>
                             </div>

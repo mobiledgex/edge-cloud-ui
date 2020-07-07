@@ -762,8 +762,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
-
-        renderCloudletDashBoardForAdmin() {
+        renderCloudletHwUsageDashBoardForAdmin() {
             return (
                 <div style={{
                     backgroundColor: 'transparent',
@@ -908,7 +907,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         }}
                                     >
                                         {this.state.cloudletUsageOne !== undefined && this.renderCloudletInfoForAdmin()}
-                                        {this.state.cloudletUsageOne !== undefined && this.renderCloudletDashBoardForAdmin()}
+                                        {this.state.cloudletUsageOne !== undefined && this.renderCloudletHwUsageDashBoardForAdmin()}
                                     </div>
                                     : null
                                 }
