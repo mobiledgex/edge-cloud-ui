@@ -766,7 +766,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let clusterTreeDropdownList = []
                     let appInstTreeDropdownList = [];
                     let bubbleChartData = []
-                    let allCloudletEventLogList = []
                     //todo:##########################################################
                     //todo: ADMIN usage
                     //todo:############################################################
@@ -783,7 +782,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         allClusterEventLogList = newPromiseList2[0];
                         allAppInstEventLogList = newPromiseList2[1];
                         allClusterUsageList = newPromiseList2[2];
-                        cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         let regionList = localStorage.getItem('regions').split(",")
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this, true)
@@ -1832,32 +1830,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Revert To The Default Layout
                             </div>
                         </AMenu.Item>
-
-                        {/*desc: ######################*/}
-                        {/*desc:Stacked Line Chart     */}
-                        {/*desc: ######################*/}
-                        {/*<AMenu.Item style={{display: 'flex'}}
-                                    key="1"
-                                    onClick={() => {
-                                        this.setState({
-                                            isStackedLineChart: !this.state.isStackedLineChart,
-                                        }, () => {
-                                        })
-                                    }}
-                        >
-                            <MaterialIcon icon={'show_chart'} color={'white'}/>
-                            <div style={PageMonitoringStyles.listItemTitle}>
-                                Stacked Line Chart
-                            </div>
-                            <div style={PageMonitoringStyles.listItemTitle}>
-                                <CustomSwitch
-                                    size="small"
-                                    checked={this.state.isStackedLineChart}
-                                    color="primary"
-
-                                />
-                            </div>
-                        </AMenu.Item>*/}
                         {/*desc:#########################################*/}
                         {/*desc:____Menu Changing Graph Theme Color_____ */}
                         {/*desc:#########################################*/}
@@ -2974,6 +2946,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
+            ranges = {
+                'Last 24 hours': [moment().subtract(1, 'd'), moment().subtract(0, 'd')],
+                'Last 3 Days': [moment().subtract(3, 'd'), moment().subtract(0, 'd')],
+                'Last 7 Days': [moment().subtract(6, 'd'), moment().subtract(0, 'd')],
+                'Last 15 Days': [moment().subtract(14, 'd'), moment().subtract(0, 'd')],
+                'Last 30 Days': [moment().subtract(29, 'd'), moment().subtract(0, 'd')],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().date(-29), moment().date(-1)],
+                'Last 2 Months': [moment().subtract(59, 'd'), moment().subtract(0, 'd')],
+                'Last 3 Months': [moment().subtract(89, 'd'), moment().subtract(0, 'd')],
+                'Last 6 Months': [moment().subtract(179, 'd'), moment().subtract(0, 'd')],
+                'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
+                'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
+                'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
+            }
+
             renderDateRangeDropdownForAdmin() {
                 return (
                     <div className="page_monitoring_dropdown_box2">
@@ -3029,21 +3017,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
 
                             }}
-                            ranges={{
-                                'Last 24 hours': [moment().subtract(1, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Days': [moment().subtract(3, 'd'), moment().subtract(0, 'd')],
-                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(0, 'd')],
-                                'Last 15 Days': [moment().subtract(15, 'd'), moment().subtract(0, 'd')],
-                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(0, 'd')],
-                                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                'Last Month': [moment().date(-30), moment().date(-1)],
-                                'Last 2 Months': [moment().subtract(60, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Months': [moment().subtract(90, 'd'), moment().subtract(0, 'd')],
-                                'Last 6 Months': [moment().subtract(180, 'd'), moment().subtract(0, 'd')],
-                                'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
-                            }}
+                            ranges={this.ranges}
                         />
                     </div>
                 )
@@ -3079,21 +3053,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
 
                             }}
-                            ranges={{
-                                'Last 24 hours': [moment().subtract(1, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Days': [moment().subtract(3, 'd'), moment().subtract(0, 'd')],
-                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(0, 'd')],
-                                'Last 15 Days': [moment().subtract(15, 'd'), moment().subtract(0, 'd')],
-                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(0, 'd')],
-                                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                'Last Month': [moment().date(-30), moment().date(-1)],
-                                'Last 2 Months': [moment().subtract(60, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Months': [moment().subtract(90, 'd'), moment().subtract(0, 'd')],
-                                'Last 6 Months': [moment().subtract(180, 'd'), moment().subtract(0, 'd')],
-                                'Last 1 Year': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
-                                'Last 2 Year': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
-                                'Last 3 Year': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
-                            }}
+                            ranges={this.ranges}
                         />
                     </div>
                 )
