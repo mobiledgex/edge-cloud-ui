@@ -431,15 +431,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo: admin layout(Cloudlet)
                     layoutCloudletAdmin: isEmpty(reactLocalStorage.get(adminCloudletLayout)) ? defaultLayoutForAdminCloudlet : reactLocalStorage.getObject(adminCloudletLayout),
                     layoutMapperCloudletAdmin: isEmpty(reactLocalStorage.get(adminCloudletLayoutMapper)) ? defaultHwMapperListForAdminCloudlet : reactLocalStorage.getObject(adminCloudletLayoutMapper),
-
-
                     //todo: admin layout(Cluster)
                     layoutClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayout)) ? defaultLayoutForAdminCluster : reactLocalStorage.getObject(adminClusterLayout),
                     layoutMapperClusterAdmin: isEmpty(reactLocalStorage.get(adminClusterLayoutMapper)) ? defaultHwMapperListForAdminCluster : reactLocalStorage.getObject(adminClusterLayoutMapper),
                     //todo: admin layout(appInst)
                     layoutAdmin: isEmpty(reactLocalStorage.get(adminLayout)) ? defaultLayoutForAdmin : reactLocalStorage.getObject(adminLayout),
                     layoutMapperAdmin: isEmpty(reactLocalStorage.get(adminLayoutMapper)) ? defaultHwMapperListForAdmin : reactLocalStorage.getObject(adminLayoutMapper),
-
 
                     //todo:dev layout
                     layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
@@ -2792,10 +2789,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.applyButton.blur();
                                     if (this.state.currentClusterList !== undefined) {
                                         let selectClusterCloudletList = this.state.currentClusterList
-                                        this.handleOnChangeClusterDropdown(selectClusterCloudletList)
+                                        await this.handleOnChangeClusterDropdown(selectClusterCloudletList)
 
                                     } else {
-                                        this.resetLocalData()
+                                        await this.resetLocalData()
                                     }
 
 
@@ -3653,6 +3650,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.setState({openTerminal: false})
                                 }}/>
                             </Dialog>
+
                         </div>
                     </ConfigProvider>
                 )//return End
