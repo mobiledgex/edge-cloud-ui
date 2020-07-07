@@ -2921,7 +2921,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Select
                                 ref={c => this.appInstSelect = c}
                                 dropdownStyle={{}}
-                                //style={{width: 220}}
                                 style={{width: 170, maxHeight: '512px !important', fontSize: '6px !important'}}
                                 disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
@@ -3042,8 +3041,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         startTime: stateTime,
                                         endTime: endTime,
                                     })
-
-                                    this.filterUsageListByDateForCloudlet()
+                                    await this.filterUsageListByDateForCloudlet()
 
                                 } catch (e) {
 
