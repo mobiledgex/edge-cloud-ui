@@ -4,9 +4,10 @@ import {Center, CenterMethodCount} from "../common/PageMonitoringStyles";
 import type {TypeClientStatus} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
 import {renderBarLoader, renderCircularProgress} from "../service/PageMonitoringCommonService";
+import {Sparklines, SparklinesLine} from 'react-sparklines';
 
 const height = 200;
-const outerDiv = {flex: .33, border: '0.5px solid grey', height: height, backgroundColor: 'rgba(0,0,0,.3)', margin: 2}
+
 
 export default function MethodUsageCount(props) {
     const [countReady, setCountReady] = useState(false);
@@ -14,6 +15,8 @@ export default function MethodUsageCount(props) {
     const [RegisterClientCountTotal, setRegisterClientCountTotal] = useState(false);
     const [VerifyLocationCountTotal, setVerifyLocationCountTotal] = useState(false);
     const gridBodyRef = useRef();
+
+    const outerDiv = {flex: .33, border: '0.5px solid grey', height: height, backgroundColor: 'rgba(0,0,0,.3)', margin: 2}
 
     useEffect(() => {
         if (props.clientStatusList !== undefined) {
@@ -73,13 +76,20 @@ export default function MethodUsageCount(props) {
                 {!props.loading && props.clientStatusList !== undefined ?
                     <CenterMethodCount style={{height: height}}>
                         <div style={outerDiv}>
-                            <Center style={{fontSize: 20, height: height / 2}}>
-                                Find
-                                <br/>
-                                Cloudlet
-                            </Center>
-                            <div style={{marginTop: 5, color: 'green', fontSize: 40, fontWeight: 'bold'}}>
-                                {countReady ? FindCloudletCountTotal : <CircularProgress size={'small'}/>}
+                            <div>
+                                <Center style={{fontSize: 20, height: height / 2}}>
+                                    Find
+                                    <br/>
+                                    Cloudlet
+                                </Center>
+                                <div style={{marginTop: 5, color: 'green', fontSize: 40, fontWeight: 'bold'}}>
+                                    {countReady ? FindCloudletCountTotal : <CircularProgress size={'small'}/>}
+                                </div>
+                                <div style={{background: 'transparent'}}>
+                                    <Sparklines data={[0, 0, FindCloudletCountTotal, 0, 0]}>
+                                        <SparklinesLine color="green"/>
+                                    </Sparklines>
+                                </div>
                             </div>
                         </div>
                         <div style={outerDiv}>
@@ -91,6 +101,11 @@ export default function MethodUsageCount(props) {
                             <div style={{marginTop: 5, color: 'orange', fontSize: 40, fontWeight: 'bold'}}>
                                 {countReady ? RegisterClientCountTotal : <CircularProgress size={'small'}/>}
                             </div>
+                            <div style={{background: 'transparent'}}>
+                                <Sparklines data={[0, 0, RegisterClientCountTotal, 0, 0]}>
+                                    <SparklinesLine color="orange"/>
+                                </Sparklines>
+                            </div>
                         </div>
                         <div style={outerDiv}>
                             <Center style={{fontSize: 20, height: height / 2}}>
@@ -100,7 +115,11 @@ export default function MethodUsageCount(props) {
                             </Center>
                             <div style={{marginTop: 5, color: '#0783FF', fontSize: 40, fontWeight: 'bold'}}>
                                 {countReady ? VerifyLocationCountTotal : <CircularProgress size={'small'}/>}
-
+                            </div>
+                            <div style={{background: 'transparent'}}>
+                                <Sparklines data={[0, 0, VerifyLocationCountTotal, 0, 0]}>
+                                    <SparklinesLine color="#0783FF"/>
+                                </Sparklines>
                             </div>
                         </div>
                     </CenterMethodCount>
