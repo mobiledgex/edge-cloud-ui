@@ -12,6 +12,11 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         height: 50,
     },
+    trPaddingFirst: {
+        width: '100%', padding: 2,
+        margin: 2, marginTop: -5, marginBottom: 5,
+        fontSize: 13,
+    },
     trPadding2: {
         width: '100%', padding: 2,
         margin: 2, marginTop: 5, marginBottom: 5,

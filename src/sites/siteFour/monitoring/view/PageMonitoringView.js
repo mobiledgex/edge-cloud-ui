@@ -2135,7 +2135,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 filteredCloudletEventLogList: cloudletEventLogList,
                                 currentCloudLet: currentCloudlet,
                                 currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
-                                //isLegendExpanded: false,
+                                isLegendExpanded: filteredClusterList.length <= 6,
+                            },()=>{
                             });
                         } catch (e) {
                             // showToast(e.toString())
@@ -3196,7 +3197,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     {this.renderClusterDot(item.colorCodeIndex)}
                                                 </Center>
                                                 <Center className="clusterCloudletBox">
-                                                    {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded)}
+                                                    {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded, this.state.filteredClusterList.length)}
                                                 </Center>
                                             </div>
 

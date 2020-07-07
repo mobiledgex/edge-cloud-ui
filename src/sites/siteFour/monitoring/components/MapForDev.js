@@ -724,8 +724,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         </div>
                     </div>
                     <hr/>
-                    <table style={{width: '100%', marginTop: 10, marginLeft: 10}}>
-                        <tr style={PageMonitoringStyles.trPadding2}>
+                    <table style={{width: '100%', marginTop: -3, marginLeft: 10}}>
+                        <tr style={PageMonitoringStyles.trPaddingFirst}>
                             <td style={PageMonitoringStyles.width50}>
                                 <b>Operator</b>
                             </td>
