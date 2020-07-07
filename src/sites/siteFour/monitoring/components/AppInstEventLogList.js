@@ -5,9 +5,9 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageMonitoringService";
-import {renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
+import {renderBarLoader} from "../service/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {time, FORMAT_FULL_DATE, FORMAT_FULL_TIME} from '../../../../utils/date_util'
+import {FORMAT_FULL_DATE, FORMAT_FULL_TIME, time} from '../../../../utils/date_util'
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -129,136 +129,139 @@ export default function AppInstEventLogList(props) {
 
     return (
         <div>
+            {props.loading && <div>
+                {renderBarLoader(true)}
+            </div>}
             {renderTitle()}
-            {props.loading ? <div style={{marginTop: 75}}>{renderPlaceHolderHorizontalLoader()}</div> :
-                <table size="small" aria-label="a dense table "
-                       style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
-                       stickyheader={true.toString()}>
+            {!props.loading &&
+            <table size="small" aria-label="a dense table "
+                   style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
+                   stickyheader={true.toString()}>
 
-                    {renderHeader()}
-                    {/*todo:tableBody*/}
-                    {/*todo:tableBody*/}
-                    <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
-                    {!props.loading && props.eventLogList.length > 0 ?
-                        <FixedSizeList
-                            height={179}
-                            itemCount={props.eventLogList.length}
-                            itemSize={itemHeight}
-                            width={'100%'}
-                        >
-                            {({index, style}) => {
-                                return (
-                                    <tr key={index} className='fixedSizeListTableDiv'
-                                        style={style}
-                                    >
-                                        <React.Fragment>
-                                            {/*time(date)*/}
-                                            <td padding={'none'} align="center" valign={'center'}
-                                                style={{
-                                                    flex: .25,
-                                                    color: 'white',
-                                                    backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                                    height: itemHeight,
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    flexDirection: 'column',
-                                                }}>
-                                                <div style={{}}>
-                                                    <div style={{marginLeft: 2}}>
-                                                        {time(FORMAT_FULL_DATE, props.eventLogList[index][0])}
+                {renderHeader()}
+                {/*todo:tableBody*/}
+                {/*todo:tableBody*/}
+                <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
+                {!props.loading && props.eventLogList.length > 0 ?
+                    <FixedSizeList
+                        height={179}
+                        itemCount={props.eventLogList.length}
+                        itemSize={itemHeight}
+                        width={'100%'}
+                    >
+                        {({index, style}) => {
+                            return (
+                                <tr key={index} className='fixedSizeListTableDiv'
+                                    style={style}
+                                >
+                                    <React.Fragment>
+                                        {/*time(date)*/}
+                                        <td padding={'none'} align="center" valign={'center'}
+                                            style={{
+                                                flex: .25,
+                                                color: 'white',
+                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                height: itemHeight,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexDirection: 'column',
+                                            }}>
+                                            <div style={{}}>
+                                                <div style={{marginLeft: 2}}>
+                                                    {time(FORMAT_FULL_DATE, props.eventLogList[index][0])}
+                                                </div>
+                                                <div style={{marginLeft: 2}}>
+                                                    {time(FORMAT_FULL_TIME, props.eventLogList[index][0])}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        {/*App*/}
+                                        <td padding={'none'} align="center"
+                                            style={{
+                                                flex: .5,
+                                                color: '#C0C6C8',
+                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                height: itemHeight
+                                            }}>
+                                            <React.Fragment>
+                                                <div style={{color: 'white'}}>
+                                                    {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{AppInst}*/}
+                                                    &nbsp;[{props.eventLogList[index][2]}] {/*version*/}
+                                                </div>
+                                                <div style={{fontSize: 12,}}>
+                                                    <div>
+                                                        {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
                                                     </div>
-                                                    <div style={{marginLeft: 2}}>
-                                                        {time(FORMAT_FULL_TIME, props.eventLogList[index][0])}
+                                                    <div style={{color: 'yellow'}}>
+                                                        [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
                                                     </div>
                                                 </div>
-                                            </td>
-                                            {/*App*/}
-                                            <td padding={'none'} align="center"
-                                                style={{
-                                                    flex: .5,
-                                                    color: '#C0C6C8',
-                                                    backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                                    height: itemHeight
-                                                }}>
-                                                <React.Fragment>
-                                                    <div style={{color: 'white'}}>
-                                                        {props.eventLogList[index][1].toString().substring(0, 15)} {/*-{AppInst}*/}
-                                                        &nbsp;[{props.eventLogList[index][2]}] {/*version*/}
-                                                    </div>
-                                                    <div style={{fontSize: 12,}}>
-                                                        <div>
-                                                            {reduceString(props.eventLogList[index][3], 30)} {/*cluster*/}
-                                                        </div>
-                                                        <div style={{color: 'yellow'}}>
-                                                            [{reduceString(props.eventLogList[index][5], 30)}] {/*cloudlet*/}
-                                                        </div>
-                                                    </div>
-                                                </React.Fragment>
-                                            </td>
-                                            {/*event[Status]*/}
-                                            <td padding={'none'} align="center"
-                                                style={{
-                                                    flex: .25,
-                                                    color: '#C0C6C8',
-                                                    backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
-                                                    height: itemHeight,
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    flexDirection: 'column',
+                                            </React.Fragment>
+                                        </td>
+                                        {/*event[Status]*/}
+                                        <td padding={'none'} align="center"
+                                            style={{
+                                                flex: .25,
+                                                color: '#C0C6C8',
+                                                backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
+                                                height: itemHeight,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexDirection: 'column',
 
-                                                }}>
-                                                <div style={{fontSize: 10, color: 'white'}}>
-                                                    {reduceEventName(props.eventLogList[index][8])}
-                                                </div>
-                                                <div>
-                                                    {props.eventLogList[index][9].toLowerCase() === 'up' ?
-                                                        <FontAwesomeIcon
-                                                            name="arrow-up" style={{
-                                                            fontSize: 15,
-                                                            color: 'green',
-                                                            cursor: 'pointer',
-                                                            marginTop: 2
-                                                        }}
-                                                        />
-                                                        :
-                                                        <FontAwesomeIcon
-                                                            name="arrow-down" style={{
-                                                            fontSize: 15,
-                                                            color: 'red',
-                                                            cursor: 'pointer',
-                                                            marginTop: 2
-                                                        }}
-                                                        />
-                                                    }
+                                            }}>
+                                            <div style={{fontSize: 10, color: 'white'}}>
+                                                {reduceEventName(props.eventLogList[index][8])}
+                                            </div>
+                                            <div>
+                                                {props.eventLogList[index][9].toLowerCase() === 'up' ?
+                                                    <FontAwesomeIcon
+                                                        name="arrow-up" style={{
+                                                        fontSize: 15,
+                                                        color: 'green',
+                                                        cursor: 'pointer',
+                                                        marginTop: 2
+                                                    }}
+                                                    />
+                                                    :
+                                                    <FontAwesomeIcon
+                                                        name="arrow-down" style={{
+                                                        fontSize: 15,
+                                                        color: 'red',
+                                                        cursor: 'pointer',
+                                                        marginTop: 2
+                                                    }}
+                                                    />
+                                                }
 
-                                                </div>
-                                            </td>
-                                        </React.Fragment>
+                                            </div>
+                                        </td>
+                                    </React.Fragment>
 
-                                    </tr>
-                                )
-                            }}
+                                </tr>
+                            )
+                        }}
 
-                        </FixedSizeList>
-                        :
-                        null
-                    }
-                    </tbody>
-                    {!props.loading && props.eventLogList.length === 0 && <div style={{
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        alignItems: 'center',
-                        fontSize: 15,
-                        display: 'flex'
-                    }}>
-                        <div style={PageMonitoringStyles.miniTableNoData}>
-                            No Data
-                        </div>
+                    </FixedSizeList>
+                    :
+                    null
+                }
+                </tbody>
+                {!props.loading && props.eventLogList.length === 0 && <div style={{
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    fontSize: 15,
+                    display: 'flex'
+                }}>
+                    <div style={PageMonitoringStyles.miniTableNoData}>
+                        No Data
                     </div>
-                    }
-                </table>
+                </div>
+                }
+            </table>
             }
 
 

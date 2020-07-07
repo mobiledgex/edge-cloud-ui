@@ -11,7 +11,7 @@ import {Progress} from "antd";
 import '../common/PageMonitoringStyles.css'
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {Paper} from "@material-ui/core";
-import {convertByteToMegaGigaByte, renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, renderBarLoader} from "../service/PageMonitoringCommonService";
 
 type Props = {
     filteredUsageList: any,
@@ -22,9 +22,8 @@ export default function PerformanceSummaryForAppInst(props) {
     useEffect(() => {
     }, [props.filteredUsageList]);
 
-
-    return (
-        <React.Fragment>
+    function renderHeader() {
+        return (
             <div
                 className='.draggable'
                 style={{
@@ -44,7 +43,15 @@ export default function PerformanceSummaryForAppInst(props) {
                     App Inst Performance Summary
                 </div>
             </div>
+        )
+    }
 
+    return (
+        <React.Fragment>
+            {props.loading && <div>
+                {renderBarLoader(false)}
+            </div>}
+            {renderHeader()}
             {!props.loading ?
                 <TableContainer
                     component={Paper}
@@ -187,9 +194,7 @@ export default function PerformanceSummaryForAppInst(props) {
                     </Table>
                 </TableContainer>
                 :
-                <div style={{marginTop: 70}}>
-                    {renderPlaceHolderHorizontalLoader()}
-                </div>
+                null
             }
         </React.Fragment>
     )

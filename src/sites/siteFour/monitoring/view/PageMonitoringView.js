@@ -2213,26 +2213,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         });
                     } else {//todo: When allCloudlet (RESET)
-                        if (this.state.currentClassification.toLowerCase().includes("admin")) {
-                            let allCloudletList = this.state.cloudletList
-                            let markerList = reducer.groupBy(allCloudletList, CLASSIFICATION.CloudletName);
-                            let cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
-                            await this.setState({
-                                markerList: markerList,
-                                cloudletDropdownList: cloudletDropdownList,
-                                currentCloudLet: undefined,
-                                filteredClusterList: [],
-                                filteredClusterUsageList: [],
-                                filteredCloudletUsageList: this.state.allCloudletUsageList,
-                                filteredCloudletList: this.state.cloudletList,
-                                toggleOperMapZoom: !this.state.toggleOperMapZoom,
-                                filteredClientStatusList: this.state.allClientStatusList,
-                                currentClassification: this.state.userType.includes("admin") ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : CLASSIFICATION.CLOUDLET,
-                                currentClusterList: undefined,
-                                currentOperLevel: undefined,
-                                filteredCloudletEventLogList: this.state.allCloudletEventLogList,
-                            })
-                        }
+                        let allCloudletList = this.state.cloudletList
+                        let markerList = reducer.groupBy(allCloudletList, CLASSIFICATION.CloudletName);
+                        let cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
+                        await this.setState({
+                            markerList: markerList,
+                            cloudletDropdownList: cloudletDropdownList,
+                            currentCloudLet: undefined,
+                            filteredClusterList: [],
+                            filteredClusterUsageList: [],
+                            filteredCloudletUsageList: this.state.allCloudletUsageList,
+                            filteredCloudletList: this.state.cloudletList,
+                            toggleOperMapZoom: !this.state.toggleOperMapZoom,
+                            filteredClientStatusList: this.state.allClientStatusList,
+                            currentClassification: this.state.userType.includes("admin") ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : CLASSIFICATION.CLOUDLET,
+                            currentClusterList: undefined,
+                            currentOperLevel: undefined,
+                            filteredCloudletEventLogList: this.state.allCloudletEventLogList,
+                        })
                     }
                 } catch (e) {
                     showToast(e.toString())
