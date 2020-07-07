@@ -3659,9 +3659,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     height: '106%',
                                 }}>
                                     <SemanticToastContainer position={"bottom-center"} color={'red'}/>
-
                                     {this.renderHeader()}
-
                                     {this.makeLegend()}
                                     <div className="page_monitoring"
                                          style={{
@@ -3676,9 +3674,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.renderGridLayoutForClassfication()}
                                     </div>
                                 </div>
-                                {/*desc:---------------------------------*/}
-                                {/*desc:terminal button                   */}
-                                {/*desc:---------------------------------*/}
+                                {/*todo:---------------------------------*/}
+                                {/*todo:terminal button                   */}
+                                {/*todo:---------------------------------*/}
                                 {this.state.currentClassification === CLASSIFICATION.APPINST && this.state.terminalData ?
                                     <div className='page_monitoring_terminal_button' style={{marginBottom: 10}}
                                          onClick={() => this.setState({openTerminal: true})}
