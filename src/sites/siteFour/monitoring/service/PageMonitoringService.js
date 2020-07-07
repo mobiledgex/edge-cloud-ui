@@ -1642,16 +1642,9 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
 }
 
-export const makeDropdownForCloudletForDevView = (pList) => {
+export const makeCloudletDropdownForAdmin = (pList) => {
     try {
-
-
         let newArrayList = [];
-        newArrayList.push({
-            key: undefined | undefined | undefined,
-            value: undefined | undefined | undefined,
-            text: 'Reset Filter',
-        })
         pList.map((item: TypeAppInst, index) => {
             let Cloudlet = item.Cloudlet
             let CloudletLocation = JSON.stringify(item.CloudletLocation)

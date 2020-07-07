@@ -19,11 +19,11 @@ import {
     makeBarChartDataForAppInst,
     makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
+    makeCloudletDropdownForAdmin,
     makeClusterMultiDropdownForAdmin,
     makeCompleteDateTime,
     makeDropdownForAppInst,
     makeDropdownForCloudlet,
-    makeDropdownForCloudletForDevView,
     makeid,
     makeLineChartData,
     makeLineChartDataForBigModal,
@@ -2550,7 +2550,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                     markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.Cloudlet);
                                     let uniqFilteredAppInstList = _.uniqBy(filteredAppInstList, CLASSIFICATION.Cloudlet)
-                                    cloudletDropdownList = makeDropdownForCloudletForDevView(uniqFilteredAppInstList)
+                                    cloudletDropdownList = makeCloudletDropdownForAdmin(uniqFilteredAppInstList)
 
                                 } else {//TODO ; when operator selected
                                     await this.setState({currentOrgView: USER_TYPE_SHORT.OPER})
