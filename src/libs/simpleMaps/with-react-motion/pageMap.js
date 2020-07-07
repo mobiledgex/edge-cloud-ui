@@ -44,8 +44,10 @@ class ClustersMap extends Component {
             saveMarker: [],
             keyName: '',
             mapCenter: zoomControls.center,
+            currentPos: null
         }
         // this.handleCityClick = this.handleCityClick.bind(this)
+        this.handleMapClick = this.handleMapClick.bind(this);
         this.dir = 1;
     }
 
@@ -92,9 +94,12 @@ class ClustersMap extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+
+        let createMode = nextProps.onMapClick ? true : false
+
         let initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         let data = nextProps.locData ? initialData : initialData.filter((item) => item[fields.state] == 5);
-        let mapCenter = (prevState.detailMode)? prevState.mapCenter : (nextProps.region === 'US') ? [41,-74] : [53,13];
+        let mapCenter = (createMode)? prevState.currentPos : (prevState.detailMode)? prevState.mapCenter : (nextProps.region === 'US') ? [41,-74] : [53,13];
 
         function reduceUp(value) {
             return Math.round(value)
@@ -215,7 +220,7 @@ class ClustersMap extends Component {
                 zoom = 4
                 center = nextProps.mapDetails.coordinates
             }
-            return {mapCenter:mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false, };
+            return {mapCenter:mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false};
         }
         return null;
     }
@@ -295,6 +300,30 @@ class ClustersMap extends Component {
         )
     }
 
+    handleMapClick(e){
+
+        if (this.props.id == 'Cloudlets') {
+            let _lat = Math.round(e.latlng['lat'])
+            let _lng = Math.round(e.latlng['lng'])
+
+            this.setState({ currentPos: [_lat, _lng]});
+
+            let location = { lat: _lat, long: _lng }
+            let locationData = [
+                {
+                    "name": '',
+                    "coordinates": [_lat, _lng],
+                    "cost": 3
+                }]
+            if(this.props.onMapClick)
+            {
+                this.props.onMapClick(location)
+            }
+            this.setState({ cities: locationData, mapCenter: [0,0]})
+            //_self.forceUpdate();
+        }
+    }
+
     render() {
 
         return (
@@ -342,6 +371,7 @@ class ClustersMap extends Component {
                                     boundsOptions={{padding: [50, 50]}}
                                     scrollWheelZoom={true}
                                     viewport={this.state.mapCenter}
+                                    onClick={this.handleMapClick}
                                 >
                                     <TileLayer
                                         url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
@@ -403,10 +433,10 @@ class ClustersMap extends Component {
                                                                         // onClick={()=> }
                                                                     >
                                                                         {this.props.id === "Cloudlets" &&
-                                                                        <div
-                                                                            style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
-                                                                            className='map-status-mark'
-                                                                        />
+                                                                            <div
+                                                                                style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
+                                                                                className='map-status-mark'
+                                                                            />
                                                                         }
                                                                         {one}
 

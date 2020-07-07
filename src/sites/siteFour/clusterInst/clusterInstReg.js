@@ -32,7 +32,7 @@ class ClusterInstReg extends React.Component {
             forms: [],
             mapData: [],
             stepsArray: [],
-            mapCenter: [53, 13]
+            region:'',
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -93,8 +93,7 @@ class ClusterInstReg extends React.Component {
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
-        let mapCenter = (region === 'US')? [41, -74] : [53, 13];
-
+        this.setState({region: region})
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.operatorName) {
@@ -121,7 +120,6 @@ class ClusterInstReg extends React.Component {
         }
         this.requestedRegionList.push(region);
 
-        this.setState({mapCenter: mapCenter});
     }
 
     organizationValueChange = (currentForm, forms, isInit) =>{
@@ -284,7 +282,7 @@ class ClusterInstReg extends React.Component {
     getMap = () =>
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-                <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' mapCenter={this.state.mapCenter}></Map>
+                <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' region={this.state.region}></Map>
             </div>
         )
 
