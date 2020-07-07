@@ -1,9 +1,4 @@
-import {
-    Center,
-    ClusterCluoudletAppInstLabel,
-    LegendOuterDiv,
-    PageMonitoringStyles
-} from '../common/PageMonitoringStyles'
+import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import AppsIcon from '@material-ui/icons/Apps';
@@ -13,19 +8,10 @@ import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
+import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
 import {
-    Button,
-    Col,
-    ConfigProvider,
-    DatePicker,
-    Dropdown as ADropdown,
-    Menu as AMenu,
-    Row,
-    Select,
-    TreeSelect
-} from 'antd';
-import {
-    filterByClassification, filteredClientStatusListByAppName,
+    filterByClassification,
+    filteredClientStatusListByAppName,
     getCloudletClusterNameList,
     getOnlyCloudletName,
     getUserId,
@@ -33,14 +19,19 @@ import {
     makeBarChartDataForAppInst,
     makeBarChartDataForCloudlet,
     makeBarChartDataForCluster,
-    makeClusterMultiDropdownForAdmin, makeCompleteDateTime,
+    makeClusterMultiDropdownForAdmin,
+    makeCompleteDateTime,
     makeDropdownForAppInst,
-    makeDropdownForCloudlet, makeDropdownForCloudletForDevView,
+    makeDropdownForCloudlet,
+    makeDropdownForCloudletForDevView,
     makeid,
     makeLineChartData,
     makeLineChartDataForBigModal,
-    makeMultiLineChartDatas, makeOrgTreeDropdown,
-    makeRegionCloudletClusterTreeDropdown, makeStringLimit, makeUniqDevOrg, makeUniqOperOrg,
+    makeOrgTreeDropdown,
+    makeRegionCloudletClusterTreeDropdown,
+    makeStringLimit,
+    makeUniqDevOrg,
+    makeUniqOperOrg,
     reduceLegendClusterCloudletName,
     reduceString,
 } from "../service/PageMonitoringService";
@@ -66,7 +57,8 @@ import type {
     TypeCloudlet,
     TypeCloudletEventLog,
     TypeCloudletUsage,
-    TypeCluster, TypeClusterEventLog,
+    TypeCluster,
+    TypeClusterEventLog,
     TypeClusterUsageOne,
     TypeGridInstanceList,
     TypeLineChartData,
@@ -117,11 +109,7 @@ import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForApp
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {
-    CustomSwitch,
-    PageDevMonitoringMapDispatchToProps,
-    PageDevMonitoringMapStateToProps
-} from "../common/PageMonitoringProps";
+import {CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import AdjustIcon from '@material-ui/icons/Adjust';
 import {
     ADMIN_CLOUDLET_HW_MAPPER_KEY,
@@ -164,10 +152,9 @@ import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
 import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
-import {UnfoldLess, UnfoldMore, ErrorOutline} from "@material-ui/icons";
+import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {sortBy, orderBy} from "lodash";
 
 
 const {RangePicker} = DatePicker;
@@ -897,24 +884,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async resetLocalData() {
-                let markerListForMap = []
-                if (this.state.currentMapLevel === MAP_LEVEL.CLUSTER) {
-                    markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
-                } else {//todo: MAP_LEVEL.ADMIN
-                    markerListForMap = reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET);
-                }
-
                 await this.setState({
                     currentGridIndex: -1,
                     currentTabIndex: 0,
                     intervalLoading: false,
-                    currentClassification: CLASSIFICATION.CLUSTER,
                     filteredClusterUsageList: this.state.allClusterUsageList,
                     filteredClusterList: this.state.allClusterList,
                     filteredAppInstList: this.state.appInstList,
                     filteredClusterEventLogList: this.state.allClusterEventLogList,
                     filteredAppInstEventLogs: this.state.allAppInstEventLogs,
-                    markerList: markerListForMap,
                 })
 
                 //@todo: reset bubble chart data
@@ -939,6 +917,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     filteredClientStatusList: this.state.allClientStatusList,
                     currentClassification: this.state.userType.includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER : CLASSIFICATION.CLUSTER_FOR_ADMIN,
                 });
+
+                await this.setState({
+                    currentMapLevel: this.state.currentClassification.includes("cluster") ? MAP_LEVEL.CLUSTER : MAP_LEVEL.CLOUDLET_FOR_ADMIN,
+                })
+
+                let markerListForMap = []
+                if (this.state.currentMapLevel === MAP_LEVEL.CLUSTER) {
+                    if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                        let filteredAppInstList = this.state.appInstList.filter((appInstOne: TypeAppInst, index) => {
+                            return appInstOne.Cloudlet === this.state.currentCloudLet
+                        })
+                        markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
+                    } else {
+                        markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
+                    }
+                } else {//todo: MAP_LEVEL.ADMIN
+                    markerListForMap = reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET);
+                }
+                await this.setState({
+                    markerList: markerListForMap,
+                })
             }
 
             async reloadDataFromRemote() {
@@ -2725,10 +2724,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (this.state.currentClusterList !== undefined) {
                                         //todo: filtering for map
                                         const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
-                                        await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
-                                        await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
 
+                                        console.log('filteredAppInstList..filteredCloudletList====>', filteredCloudletList)
+                                        console.log('filteredAppInstList..filteredAppInstList====>', filteredAppInstList)
+                                        console.log('filteredAppInstList...currentClusterList====>', currentClusterList);
+
+
+                                        await this.setState({currentMapLevel: MAP_LEVEL.CLUSTER})
                                         await this.handleOnChangeClusterDropdown(currentClusterList)
+                                        await this.filterMapDataForAdmin(999999, filteredCloudletList, filteredAppInstList, undefined)
 
 
                                     } else {
@@ -2806,6 +2810,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     if (!isEmpty(value)) {
                                         this.setState({currentClusterList: value});
                                     } else {
+                                        await this.setState({
+                                            currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN
+                                        })
                                         await this.resetLocalData()
                                     }
 

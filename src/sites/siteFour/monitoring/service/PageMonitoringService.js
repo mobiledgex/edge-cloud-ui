@@ -28,22 +28,11 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeClusterBubbleChartData,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import uniqBy from "lodash/uniqBy";
-import type {
-    TypeAppInst,
-    TypeClientStatus,
-    TypeCloudlet,
-    TypeCluster,
-    TypeLineChartData
-} from "../../../../shared/Types";
+import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {Select, Tag} from "antd";
 import _, {sortBy} from 'lodash';
 import {mapTileList} from "../common/MapProperties";
@@ -707,10 +696,10 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
                     return convertToMegaGigaForNumber(value);
                 }
             } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
-                if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+                if (hardwareType === HARDWARE_TYPE.CPU) {
                     return value + " %";
                 } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
-                    return value + " %";
+                    return value.toFixed(2) + " %";
                 } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     return convertByteToMegaGigaByte(value, hardwareType)
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
@@ -1116,7 +1105,7 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonito
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
             let isStackedLineChart = _this.state.isStackedLineChart;
-            if (colorCodeIndexList.length === 1) {
+            if (colorCodeIndexList !== undefined && colorCodeIndexList.length === 1) {
                 isStackedLineChart = true;
             }
 
