@@ -475,6 +475,9 @@ export default connect(mapStateToProps, mapDispatchProps)((
             })
         )
 
+
+
+
         renderMapControl() {
             return (
                 <React.Fragment>
