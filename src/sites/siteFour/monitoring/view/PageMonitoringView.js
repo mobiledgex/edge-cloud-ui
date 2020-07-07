@@ -2549,10 +2549,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         let filteredCloudletList = this.state.cloudletList
                                         await this.handleResetForAdmin()
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
-
-
-                                        console.log('markerListForMap===>', markerListForMap);
                                         cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
+
                                     } else {//todo:Wnen specific oper
                                         filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
                                             return item.Operator === value

@@ -162,8 +162,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     cloudletOne: this.props.cloudletList[0],
                     cloudletUsageList: this.props.cloudletUsageList,
                 }, () => {
-                    console.log('cloudletOne===>', this.state.cloudletOne);
-                    console.log('cloudletUsageOne===>', this.state.cloudletUsageOne);
                 })
 
                 let markerList = this.props.markerList
@@ -323,9 +321,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     locationGroupedCloudletList: locationGroupedCloudletList,
                     appInstanceListGroupByCloudlet: appInstListOnCloudlet,
                 }, () => {
-
-                    console.log('locationGroupedCloudletList===>', locationGroupedCloudletList[0]);
-
                     if (locationGroupedCloudletList[0] !== undefined) {
                         this.setState({
                             mapCenter: [locationGroupedCloudletList[0].CloudletLocation.latitude, locationGroupedCloudletList[0].CloudletLocation.longitude],
