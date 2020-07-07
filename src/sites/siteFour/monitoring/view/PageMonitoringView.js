@@ -2013,6 +2013,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudlet = selectCloudlet.split("|")[0].trim()
                     this.cloudletSelectForAdmin.blur();
                     await this.setState({
+                        currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
                         currentClusterList: [],
                         currentCloudLet: currentCloudlet,
                         markerList: [],
@@ -2158,9 +2159,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 filteredClientStatusList: clientStatusList,
                                 filteredCloudletEventLogList: cloudletEventLogList,
                                 currentCloudLet: currentCloudlet,
+                                currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                 //isLegendExpanded: false,
-                            }, () => {
-                            })
+                            });
                         } catch (e) {
                             // showToast(e.toString())
                         }
@@ -2470,7 +2471,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     newMarketListMap = {[selectedCloudletName]: filteredAppInstList,}
                     await this.setState({
                         currentMapLevel: MAP_LEVEL.CLUSTER,
-                        currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
                         markerList: newMarketListMap,
                     })
                 } else {////todo:  mapfiltering (CLOUDLET_FOR_ADMIN)
