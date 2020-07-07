@@ -127,7 +127,7 @@ module.exports = {
                                             //todo:##########################################
                                             //todo: less variable for antd dark theme
                                             //todo:##########################################
-                                            '@light': '#615e5e',
+                                            '@light': '#fff',
                                             '@dark': '#000',
                                             '@heading-color': 'fade(@light, 85)',
                                             //'@text-color': 'fade(@light, 65)',
