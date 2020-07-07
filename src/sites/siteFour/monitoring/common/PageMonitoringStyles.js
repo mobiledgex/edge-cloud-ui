@@ -17,6 +17,11 @@ export const PageMonitoringStyles = {
         margin: 2, marginTop: 5, marginBottom: 5,
         fontSize: 13,
     },
+    trPadding3: {
+        width: '100%', padding: 2,
+        margin: 2, marginTop: 5, marginBottom: 15,
+        fontSize: 13,
+    },
     width50: {width: '50%'},
     appPopupDiv: {
         fontSize: 14,
@@ -188,6 +193,7 @@ export const PageMonitoringStyles = {
         borderRadius: 3,
         width: '30px',
         height: 'auto',
+        marginTop: 10,
         paddingLeft: 4,
         justifyContent: 'center',
         alignItems: 'center',

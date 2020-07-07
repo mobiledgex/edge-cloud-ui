@@ -1274,6 +1274,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.APP_INST_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP
                             && <div className="maxize page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
@@ -1298,14 +1299,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this.___makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this.________makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
 
-            ___makeGridItemOneBody(pHwType, graphType) {
+            ________makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
@@ -1412,6 +1413,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 markerListForAppInst={this.state.filteredAppInstList}
                                 markerList={this.state.markerList}
                                 cloudletList={this.state.filteredCloudletList}
+                                cloudletUsageList={this.state.filteredCloudletUsageList}
+                                count={this.state.filteredCloudletUsageList.length}
                                 clusterList={this.state.filteredClusterList}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
                                 isMapUpdate={this.state.isMapUpdate}
@@ -1432,6 +1435,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     } else if (this.state.currentMapLevel === MAP_LEVEL.CLUSTER) {
                         return (
                             <MapForDev
+                                cloudletUsageList={this.state.filteredCloudletUsageList}
+                                ////////////////////////////////////
                                 markerList={this.state.markerList}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
                                 isMapUpdate={this.state.isMapUpdate}
@@ -2028,6 +2033,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         await this.setState({
                             filteredCloudletUsageList: cloudletUsageList,
+                        },()=>{
                         })
 
                         let promiseList = []
@@ -2433,7 +2439,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     <Center>
                         <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                             <CloudQueueIcon
-                                style={{fill: this.state.cloudletDropdownList.length === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index - 1], fontSize: legendIconSize, marginTop: 4,}}/>
+                                style={{
+                                    fill: this.state.cloudletDropdownList.length === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index - 1],
+                                    fontSize: legendIconSize,
+                                    marginTop: 4,
+                                }}/>
                         </div>
                     </Center>
                 )
@@ -2533,11 +2543,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                 } else {//TODO ; when operator selected
                                     await this.setState({currentOrgView: USER_TYPE_SHORT.OPER})
-                                    //TODO: WHEN ALL
+                                    //TODO: WHEN ALL(reset)
                                     if (value === "0" || value === "Reset") {
                                         let filteredCloudletList = this.state.cloudletList
                                         await this.handleResetForAdmin()
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
+
+
+                                        console.log('markerListForMap===>', markerListForMap);
                                         cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
                                     } else {//todo:Wnen specific oper
                                         filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {

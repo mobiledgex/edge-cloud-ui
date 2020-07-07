@@ -21,7 +21,6 @@ const DEFAULT_VIEWPORT = {
     zoom: 13,
 }
 
-
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -66,6 +65,8 @@ type Props = {
     isEnableZoomIn: boolean,
     handleAppInstDropdown: any,
     currentOrgView: string,
+    currentClassification: string,
+    filteredCloudletUsageList: any,
 
 };
 type State = {
@@ -142,7 +143,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
 
         };
 
-        async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+        async componentWillReceiveProps(nextProps: any, nextContext: any): void {
             try {
 
                 if (this.props.isEnableZoomIn !== nextProps.isEnableZoomIn) {
@@ -159,8 +160,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     } else {//devorg
                         this.setCloudletLocationForDevOrg(markerList)
                     }
-
-
                 }
 
 
@@ -476,8 +475,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
         )
 
 
-
-
         renderMapControl() {
             return (
                 <React.Fragment>
@@ -611,6 +608,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
         }
 
 
+
         render() {
             return (
                 <div ref={c => this.element = c} style={{flex: 1, height: '100%'}}>
@@ -649,7 +647,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
                                     </div>
-                                    : <div style={{position: 'absolute', bottom: 50, right: 5, zIndex: 99999}}>
+                                    : <div style={{position: 'absolute', top: 40, right: 0, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
                                     </div>
                                 }
@@ -661,6 +659,9 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                         {this.renderCloudletMarkers()}
                                     </React.Fragment>
                                 </React.Fragment>
+
+
+
                             </Map>
                         </div>
 

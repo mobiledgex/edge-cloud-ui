@@ -1439,7 +1439,7 @@ export function makeMapThemeDropDown(_this) {
         <Select
             size={"small"}
             defaultValue="dark1"
-            style={{width: 70, zIndex: 9999999999}}
+            style={{width: 70, zIndex: 9999999999, height: 15, background: 'black !important'}}
             showArrow={false}
             bordered={false}
             ref={c => _this.themeSelect = c}

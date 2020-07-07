@@ -440,10 +440,10 @@ export const convertToMegaGigaForNumber = (bytes) => {
 }
 
 
-export const convertMegaToGiGa = (value) => {
+export const convertMegaToGiGa = (value, isShowUnit=true) => {
     try {
         if (value > 1000) {
-            return (value / 1000).toFixed(0) + ' GB'
+            return isShowUnit ? (value / 1000).toFixed(0) + ' GB' : (value / 1000).toFixed(0)
         } else {
             return value + ' MB';
         }

@@ -1,24 +1,24 @@
 import React, {createRef} from "react";
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
-import type {TypeAppInst, TypeClient} from "../../../../shared/Types";
+import type {TypeAppInst, TypeClient, TypeCloudlet, TypeCloudletUsage} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
+import {convertMegaToGiGa, groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import {Select} from 'antd'
+import {Progress, Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {listGroupByKey, makeMapThemeDropDown, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
-import {CLASSIFICATION} from "../../../../shared/Constants";
+import {CLASSIFICATION, CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -26,6 +26,9 @@ const DEFAULT_VIEWPORT = {
     zoom: 13,
 }
 
+const bottomDivHeight = 200;
+const hwMarginTop = 10;
+const hwFontSize = 12;
 
 const mapStateToProps = (state) => {
     return {
@@ -76,6 +79,8 @@ type Props = {
     cloudletList: any,
     mapLoading: boolean,
     currentClassification: string,
+    cloudletUsageList: any,
+    cloudletUsageListCount: number,
 
 
 };
@@ -96,6 +101,10 @@ type State = {
     isEnableZoomIn: boolean,
     isCloudletClustering: boolean,
     currentTimeZone: string,
+    cloudletUsageList: any,
+    cloudletUsageListCount: number,
+    cloudletUsageOne: TypeCloudletUsage,
+    cloudletOne: TypeCloudlet,
 
 };
 
@@ -134,6 +143,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 isEnableZoomIn: false,
                 isCloudletClustering: false,
                 currentTimeZone: undefined,
+                cloudletUsageList: [],
+                cloudletUsageListCount: 0,
+                cloudletUsageOne: undefined,
+                cloudletOne: undefined,
 
             };
 
@@ -143,11 +156,22 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         componentDidMount = async () => {
             try {
+
+                await this.setState({
+                    cloudletUsageOne: this.props.cloudletUsageList[0],
+                    cloudletOne: this.props.cloudletList[0],
+                    cloudletUsageList: this.props.cloudletUsageList,
+                }, () => {
+                    console.log('cloudletOne===>', this.state.cloudletOne);
+                    console.log('cloudletUsageOne===>', this.state.cloudletUsageOne);
+                })
+
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
 
+
             } catch (e) {
-                throw new Error(e)
+                //throw new Error(e)
             }
 
         };
@@ -161,10 +185,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         isEnableZoomIn: false,
                     })
                 }
-
                 if (this.props.markerList !== nextProps.markerList) {
                     let markerList = nextProps.markerList;
-                    this.setCloudletLocation(markerList)
+                    this.setCloudletLocation(markerList, true)
                 }
 
                 //@desc : #############################
@@ -300,9 +323,12 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     locationGroupedCloudletList: locationGroupedCloudletList,
                     appInstanceListGroupByCloudlet: appInstListOnCloudlet,
                 }, () => {
+
+                    console.log('locationGroupedCloudletList===>', locationGroupedCloudletList[0]);
+
                     if (locationGroupedCloudletList[0] !== undefined) {
                         this.setState({
-                            mapCenter: isMapCenter ? this.state.mapCenter : [locationGroupedCloudletList[0].CloudletLocation.latitude, locationGroupedCloudletList[0].CloudletLocation.longitude],
+                            mapCenter: [locationGroupedCloudletList[0].CloudletLocation.latitude, locationGroupedCloudletList[0].CloudletLocation.longitude],
                             zoom: 2,
                         })
                     }
@@ -679,10 +705,136 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
+        renderCloudletInfoForAdmin() {
+            return (
+                <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
+                >
+                    <div style={{
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        marginTop: 0,
+                        fontFamily: 'Roboto',
+                        display: 'flex',
+                    }}>
+                        <div style={{color: 'white', marginLeft: 5}}>
+                            <Icon name='cloud'/>
+                        </div>
+                        <div style={{marginLeft: 5}}>
+                            {this.state.cloudletOne.CloudletName}
+                        </div>
+                    </div>
+                    <hr/>
+                    <table style={{width: '100%', marginTop: 10, marginLeft: 10}}>
+                        <tr style={PageMonitoringStyles.trPadding2}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>Operator</b>
+                            </td>
+                            <td style={PageMonitoringStyles.width50}>
+                                {this.state.cloudletOne.Operator}
+                            </td>
+                        </tr>
+                        <tr style={PageMonitoringStyles.trPadding2}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>Ip_support</b>
+                            </td>
+                            <td style={PageMonitoringStyles.width50}>
+                                {this.state.cloudletOne.Ip_support}
+                            </td>
+                        </tr>
+                        <tr style={PageMonitoringStyles.trPadding2}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>Num_dynamic_ips</b>
+                            </td>
+                            <td style={PageMonitoringStyles.width50}>
+                                {this.state.cloudletOne.Num_dynamic_ips}
+                            </td>
+                        </tr>
+                        <tr style={PageMonitoringStyles.trPadding2}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>State</b>
+                            </td>
+                            <td style={{width: '50%', color: 'yellow'}}>
+                                {CLOUDLET_CLUSTER_STATE[this.state.cloudletOne.State]}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            )
+        }
+
+
+        renderCloudletDashBoardForAdmin() {
+            return (
+                <div style={{
+                    backgroundColor: 'transparent',
+                    height: '100%',
+                    flex: .49,
+                    marginLeft: 30,
+                    borderRadius: 10,
+                    marginTop: -22,
+                }}>
+                    <Center style={{height: bottomDivHeight,}}>
+                        <div>
+                            <Progress
+                                strokeColor={'green'}
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                style={{fontSize: 7}}
+                                percent={this.state.cloudletUsageOne.usedVCpuCount / this.state.cloudletUsageOne.maxVCpuCount * 100}
+                                strokeWidth={10}
+                                format={(percent, successPercent) => {
+                                    return parseInt(this.state.cloudletUsageOne.usedVCpuCount.toFixed(0)) + "/" + this.state.cloudletUsageOne.maxVCpuCount;
+                                }}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                vCPU
+                            </div>
+                        </div>
+                        <div style={{width: 15}}/>
+                        <div>
+                            <Progress
+                                style={{fontSize: 7}}
+                                strokeColor='orange'
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                percent={Math.round(this.state.cloudletUsageOne.usedMemUsage / this.state.cloudletUsageOne.maxMemUsage * 100)}
+                                format={(percent, successPercent) => {
+                                    return convertMegaToGiGa(parseInt(this.state.cloudletUsageOne.usedMemUsage.toFixed(0)), false) + "/" + convertMegaToGiGa(parseInt(this.state.cloudletUsageOne.maxMemUsage), false);
+                                }}
+                                strokeWidth={10}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                MEM
+                            </div>
+                        </div>
+                        <div style={{width: 15}}/>
+                        <div>
+                            <Progress
+                                strokeColor='rgb(7, 131, 255)'
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                percent={Math.ceil((this.state.cloudletUsageOne.usedDiskUsage / this.state.cloudletUsageOne.maxDiskUsage) * 100)}
+                                strokeWidth={10}
+                                format={(percent, successPercent) => {
+                                    return this.state.cloudletUsageOne.usedDiskUsage + "/" + this.state.cloudletUsageOne.maxDiskUsage;
+                                }}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                DISK
+                            </div>
+                        </div>
+                    </Center>
+                </div>
+            )
+        }
+
 
         render() {
             return (
-                <div style={{flex: 1, height: '100%'}} ref={c => this.outerDiv = c}>
+                <div style={{flex: 1, height: '90%'}} ref={c => this.outerDiv = c}>
                     {this.props.mapLoading && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
@@ -718,7 +870,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
                                     </div>
-                                    : <div style={{position: 'absolute', bottom: 50, right: 5, zIndex: 99999}}>
+                                    : <div style={{position: 'absolute', top: 65, right: 0, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
                                     </div>
                                 }
@@ -737,6 +889,29 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         {this.renderCloudletMarkers()}
                                     </React.Fragment>
                                 </React.Fragment>
+
+                                {/*todo:#####################*/}
+                                {/*todo:bottom dash board*/}
+                                {/*todo:#####################*/}
+                                {this.props.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ?
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: 0,
+                                            background: 'rgba(0, 0, 0, 0.5)',
+                                            width: '100%',
+                                            height: bottomDivHeight,
+                                            zIndex: 99999,
+                                            padding: 10,
+                                            marginLeft: 0,
+                                            display: 'flex'
+                                        }}
+                                    >
+                                        {this.state.cloudletUsageOne !== undefined && this.renderCloudletInfoForAdmin()}
+                                        {this.state.cloudletUsageOne !== undefined && this.renderCloudletDashBoardForAdmin()}
+                                    </div>
+                                    : null
+                                }
                             </Map>
                         </div>
 

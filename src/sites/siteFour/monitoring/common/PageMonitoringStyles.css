@@ -1025,3 +1025,10 @@ tr td {
 .ant-picker-range {
     background-color: #23232E !important;
 }
+
+.ant-progress-text {
+    font-size: 0.6em !important;
+    font-style: normal;
+    line-height: 1;
+    font-weight: 600;
+}
