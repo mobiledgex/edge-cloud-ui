@@ -770,7 +770,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     flex: .49,
                     marginLeft: 30,
                     borderRadius: 10,
-                    marginTop: -25,
+                    marginTop: 0,
                 }}>
                     <Center style={{height: bottomDivHeight,}}>
                         <div>
