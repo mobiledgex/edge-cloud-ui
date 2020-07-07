@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Map, Marker, Popup, TileLayer} from "react-leaflet";
 import * as L from 'leaflet';
-import {isEmpty, renderBarLoader, renderXMarkForMap} from "../service/PageMonitoringCommonService";
+import {isEmpty, renderBarLoader} from "../service/PageMonitoringCommonService";
 import type {TypeAppInst, TypeCloudlet} from "../../../../shared/Types";
 import {changeClassficationTxt, listGroupByKey} from "../service/PageMonitoringService";
 import Control from "react-leaflet-control";

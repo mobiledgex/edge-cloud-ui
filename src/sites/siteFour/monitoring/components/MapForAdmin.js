@@ -599,14 +599,10 @@ export default connect(mapStateToProps, mapDispatchProps)((
                         <div style={{}}>
                             Cloudlet : {this.props.cloudletList.length}
                         </div>
-                        {/*  <div style={{}}>
-                            Cluster&nbsp;&nbsp;&nbsp;: {this.props.clusterList.length}
-                        </div>*/}
                     </Center>
                 </Control>
             )
         }
-
 
 
         render() {
@@ -659,9 +655,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                         {this.renderCloudletMarkers()}
                                     </React.Fragment>
                                 </React.Fragment>
-
-
-
                             </Map>
                         </div>
 
