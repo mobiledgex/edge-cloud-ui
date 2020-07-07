@@ -2412,7 +2412,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
             renderDotForCloudlet(index) {
                 return (
                     <Center>
@@ -2424,6 +2423,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 borderRadius: 50,
                             }}
                         >
+                        </div>
+                    </Center>
+                )
+            }
+
+            renderDotForCloudletIcons(index) {
+                return (
+                    <Center>
+                        <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
+                            <CloudQueueIcon
+                                style={{fill: this.state.cloudletDropdownList.length === 1 ? this.state.chartColorList[this.state.currentColorIndex] : this.state.chartColorList[index - 1], fontSize: legendIconSize, marginTop: 4,}}/>
                         </div>
                     </Center>
                 )
