@@ -2139,7 +2139,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isShowClusterInLegend: true,
                     })
                 } catch (e) {
-                    throw new Error(e)
+                    //throw new Error(e)
                 }
             }
 
@@ -2209,7 +2209,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                     }
                 } catch (e) {
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
             }
 
