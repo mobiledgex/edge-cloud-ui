@@ -9,6 +9,10 @@ export type TypeUtilization = {
     "vCpuMax": number,
     "vCpuUsed": number,
 }
+export type TypeLegendRowCount = {
+    itemCount: number,
+    rowCount: number,
+}
 
 export type TypeGridInstanceList = {
     sumAcceptsConnection: number;
@@ -114,7 +118,7 @@ export type TypeCloudlet = {
     Platform_type: number,
     State: number,
     Progress: string,
-    colorCodeIndex:number,
+    colorCodeIndex: number,
 }
 
 export type TypeCloudletEventLog = {
@@ -215,6 +219,12 @@ export type TypeClusterUsageOne = {
     colorCodeIndex: number,
 
 }
+
+export type TypeCloudletClusterListMap = {
+    cloudletNameList: any,
+    clusterNameList: any,
+}
+
 export type TypeAppInst = {
 
     "Region": string,
@@ -241,6 +251,7 @@ export type TypeAppInst = {
     "Status": any,
     "Revision": number,
     "HealthCheck": number,
+    colorCodeIndex: number,
 }
 
 export type TypeBarChartData = {
@@ -256,9 +267,9 @@ export type TypeLineChartData = {
     hardwareType: string,
 }
 
-export type TypeChartDataSet ={
+export type TypeChartDataSet = {
     labels: any,
-    datasets:any,
+    datasets: any,
     isNoData: boolean
 }
 

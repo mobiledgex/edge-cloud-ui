@@ -12,9 +12,19 @@ export const PageMonitoringStyles = {
         alignSelf: 'center',
         height: 50,
     },
+    trPaddingFirst: {
+        width: '100%', padding: 2,
+        margin: 2, marginTop: -5, marginBottom: 5,
+        fontSize: 13,
+    },
     trPadding2: {
         width: '100%', padding: 2,
         margin: 2, marginTop: 5, marginBottom: 5,
+        fontSize: 13,
+    },
+    trPadding3: {
+        width: '100%', padding: 2,
+        margin: 2, marginTop: 5, marginBottom: 15,
         fontSize: 13,
     },
     width50: {width: '50%'},
@@ -35,8 +45,9 @@ export const PageMonitoringStyles = {
         display: 'flex',
         cursor: 'pointer',
         height: 30,
-        width: 150,
-        marginRight: 20,
+        width: 90,
+        marginRight: 5,
+        marginLeft: 5,
         alignSelf: 'center',
         justifyContent: 'center',
     },
@@ -187,6 +198,7 @@ export const PageMonitoringStyles = {
         borderRadius: 3,
         width: '30px',
         height: 'auto',
+        marginTop: 10,
         paddingLeft: 4,
         justifyContent: 'center',
         alignItems: 'center',
@@ -487,7 +499,28 @@ export const PageMonitoringStyles = {
 
     miniTableGrid: {width: '100%', overflowX: 'scroll', marginTop: -5, scrollbarWidth: 'thin'},
     appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
-    miniTableNoData:{
+    mapStatusBox: {
+        height: 48,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        paddingLeft: 11,
+        paddingTop: 7,
+        paddingBottom: 3,
+        paddingRight: 11,
+        borderRadius: 5,
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    mapStatusBoxCloudlet: {
+        height: 25,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: 10,
+        paddingLeft: 11,
+        paddingRight: 11,
+        borderRadius: 5,
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    miniTableNoData: {
         color: 'orange',
         marginTop: 25,
         fontSize: 18,
@@ -654,13 +687,13 @@ export const Center2 = styled.div`
 `
 
 
-export const ClusterCluoudletLabel = styled.div`
+export const ClusterCluoudletAppInstLabel = styled.div`
   justify-content: center;
   text-align: center;
   flex-direction: row;
   display : flex;
   align-self: center;
-  font-size: 13px;
+  font-size: 12px;
   marginLeft:50px;
 `
 

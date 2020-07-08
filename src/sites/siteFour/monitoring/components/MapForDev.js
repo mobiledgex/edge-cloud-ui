@@ -1,25 +1,25 @@
 import React, {createRef} from "react";
-import * as L from 'leaflet';
 import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
-import type {TypeAppInst, TypeClient} from "../../../../shared/Types";
+import type {TypeAppInst, TypeClient, TypeCloudlet, TypeCloudletUsage} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates} from "../service/PageMonitoringCommonService";
+import {convertMegaToGiGa, groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
-import {Select} from 'antd'
+import {Progress, Select} from 'antd'
 import {connect} from "react-redux";
 import * as actions from "../../../../actions";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR, WHITE_CLOUTLET_ICON_COLOR, WHITE_LINE_COLOR} from "../../../../shared/Constants";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import '../common/PageMonitoringStyles.css'
-import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {listGroupByKey, reduceString} from "../service/PageDevOperMonitoringService";
+import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {listGroupByKey, makeMapThemeDropDown, reduceString} from "../service/PageMonitoringService";
 import MomentTimezone from "moment-timezone";
-import { getMexTimezone } from "../../../../utils/sharedPreferences_util";
+import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
+import '../common/PageMonitoringStyles.css'
+import {CLASSIFICATION, CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
+import {getMexTimezone} from "../../../../utils/sharedPreferences_util";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
@@ -27,31 +27,9 @@ const DEFAULT_VIEWPORT = {
     zoom: 13,
 }
 
-let cellphoneIcon = L.icon({
-    iconUrl: require('../images/cellhone_white003.png'),
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
-
-let cloudGreenIcon = L.icon({
-    iconUrl: require('../images/cloud_green.png'),
-    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-    iconSize: [40, 21],
-    iconAnchor: [20, 21],
-    shadowSize: [41, 41]
-});
-
-let cloudBlueIcon = L.icon({
-    iconUrl: require('../images/cloud_blue2.png'),
-    //shadowUrl : 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png',
-    iconSize: [45, 39],//todo: width, height
-    iconAnchor: [24, 30],//x,y
-    shadowSize: [41, 41]
-});
-
+const bottomDivHeight = 185;
+const hwMarginTop = 5;
+const hwFontSize = 12;
 
 const mapStateToProps = (state) => {
     return {
@@ -80,7 +58,7 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 type Props = {
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     markerList: Array,
     selectedClientLocationListOnAppInst: any,
     isMapUpdate: boolean,
@@ -96,6 +74,16 @@ type Props = {
     isShowAppInstPopup: boolean,
     isEnableZoomIn: boolean,
     handleAppInstDropdown: any,
+    loading: boolean,
+    appInstList: any,
+    clusterList: any,
+    cloudletList: any,
+    mapLoading: boolean,
+    currentClassification: string,
+    cloudletUsageList: any,
+    cloudletUsageListCount: number,
+    currentCloudletMap: any,
+
 
 };
 type State = {
@@ -115,51 +103,16 @@ type State = {
     isEnableZoomIn: boolean,
     isCloudletClustering: boolean,
     currentTimeZone: string,
+    cloudletUsageList: any,
+    cloudletUsageListCount: number,
+    cloudletUsageOne: TypeCloudletUsage,
+    cloudletOne: TypeCloudlet,
 
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(
     class MapForDevContainer extends React.Component<Props, State> {
         tooltip = createRef();
-        mapTileList = [
-            {
-                url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
-                name: 'dark1',
-                value: 0,
-            },
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-midnight/{z}/{x}/{y}.png',
-                name: 'dark2',
-                value: 1,
-            },
-            {
-                url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
-                name: 'dark3',
-                value: 2,
-            },
-
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-flatblue/{z}/{x}/{y}.png',
-                name: 'blue',
-                value: 3,
-            },
-            {
-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-                name: 'light2',
-                value: 4,
-            },
-            {
-                url: 'https://cartocdn_{s}.global.ssl.fastly.net/base-antique/{z}/{x}/{y}.png',
-                name: 'light3',
-                value: 5,
-            },
-            {
-                url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                name: 'light4',
-                value: 6,
-            },
-        ]
-
 
         constructor(props: Props) {
             super(props);
@@ -192,6 +145,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 isEnableZoomIn: false,
                 isCloudletClustering: false,
                 currentTimeZone: undefined,
+                cloudletUsageList: [],
+                cloudletUsageListCount: 0,
+                cloudletUsageOne: undefined,
+                cloudletOne: undefined,
 
             };
 
@@ -201,11 +158,20 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
         componentDidMount = async () => {
             try {
+
+
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
 
+                await this.setState({
+                    cloudletUsageOne: this.props.cloudletUsageList[0],
+                    cloudletUsageList: this.props.cloudletUsageList,
+                }, () => {
+                });
+
+
             } catch (e) {
-                throw new Error(e)
+                //throw new Error(e)
             }
 
         };
@@ -220,9 +186,17 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     })
                 }
 
+                if (this.props.cloudletList !== nextProps.cloudletList) {
+                    await this.setState({
+                        cloudletUsageOne: this.props.cloudletUsageList[0],
+                        cloudletOne: this.props.cloudletList[0],
+                        cloudletUsageList: this.props.cloudletUsageList,
+                    });
+                }
+
                 if (this.props.markerList !== nextProps.markerList) {
                     let markerList = nextProps.markerList;
-                    this.setCloudletLocation(markerList)
+                    this.setCloudletLocation(markerList, true)
                 }
 
                 //@desc : #############################
@@ -345,8 +319,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-        setCloudletLocation(appInstListOnCloudlet, isMapCenter = false) {
+        async setCloudletLocation(appInstListOnCloudlet, isMapCenter = false) {
             try {
+
                 let cloudletKeys = Object.keys(appInstListOnCloudlet)
                 let newCloudLetLocationList = this.makeNewCloudletLocationList(appInstListOnCloudlet, cloudletKeys)
                 let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
@@ -360,57 +335,17 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 }, () => {
                     if (locationGroupedCloudletList[0] !== undefined) {
                         this.setState({
-                            mapCenter: isMapCenter ? this.state.mapCenter : [locationGroupedCloudletList[0].CloudletLocation.latitude, locationGroupedCloudletList[0].CloudletLocation.longitude],
+                            mapCenter: [locationGroupedCloudletList[0].CloudletLocation.latitude, locationGroupedCloudletList[0].CloudletLocation.longitude],
                             zoom: 2,
                         })
                     }
                 })
             } catch (e) {
-                throw new Error(e)
+                showToast(e.toString())
+                //throw new Error(e)
             }
         }
 
-
-        makeMapThemeDropDown() {
-            return (
-                <Select
-                    size={"small"}
-                    defaultValue="dark1"
-                    style={{width: 70, zIndex: 9999999999}}
-                    showArrow={false}
-                    bordered={false}
-                    ref={c => this.themeSelect = c}
-                    listHeight={550}
-                    onChange={async (value) => {
-                        try {
-                            let index = value
-                            let lineColor = DARK_LINE_COLOR
-                            let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
-                            if (Number(index) >= 4) {
-                                lineColor = WHITE_LINE_COLOR;
-                                cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
-                            }
-                            this.props.setMapTyleLayer(this.mapTileList[index].url);
-                            this.props.setLineColor(lineColor);
-                            this.props.setCloudletIconColor(cloudletIconColor);
-                            setTimeout(() => {
-                                this.themeSelect.blur();
-                            }, 250)
-
-                        } catch (e) {
-                            throw new Error(e)
-                        }
-                    }}
-                >
-                    {this.mapTileList.map((item, index) => {
-                        return (
-                            <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
-                                    value={item.value}>{item.name}</Option>
-                        )
-                    })}
-                </Select>
-            )
-        }
 
         makeClientMarker(objkeyOne, index) {
             let groupedClientList = this.state.clientList;
@@ -419,7 +354,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
             return (
                 <MarkerClusterGroup key={index}>
                     {groupedClientList[objkeyOne].map((item, i) => {
-                        
                         return (
                             <React.Fragment key={i}>
                                 <Marker
@@ -540,7 +474,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                  key={appIndex * cloudletIndex}
                             >
                                 <Ripples
-
                                     style={{marginLeft: 5,}}
                                     color='#1cecff'
                                     during={500}
@@ -585,7 +518,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             }
                         >
                             <Tooltip
-                                className='mapCloudletTooltip'
+                                className='mapCloudletTooltipDev'
                                 direction='right'
                                 offset={[14, -10]}//x,y
                                 opacity={0.8}
@@ -600,7 +533,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     return (
                                         <div
                                             key={index}
-                                            className='mapCloudletTooltipInner'
+                                            className='mapCloudletTooltipInnerBlack'
                                         >
                                             {item}
                                         </div>
@@ -624,22 +557,25 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <Control position="topleft" style={{marginTop: 3, display: 'flex',}}>
 
                     <div style={PageMonitoringStyles.mapControlDiv}>
-                        <div
-                            style={{
-                                backgroundColor: 'transparent',
-                                height: 30,
-                                width: 30,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignSelf: 'center'
-                            }}
-                        >
-                            <Icon
-                                name='redo'
-                                onClick={this.handleRefresh}
-                                style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
-                            />
-                        </div>
+                        {this.props.currentClassification === CLASSIFICATION.CLUSTER || this.props.currentClassification === CLASSIFICATION.APPINST ?
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    height: 30,
+                                    width: 30,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignSelf: 'center'
+                                }}
+                            >
+                                <Icon
+                                    name='redo'
+                                    onClick={this.handleRefresh}
+                                    style={{fontSize: 20, color: 'white', cursor: 'pointer'}}
+                                />
+                            </div> :
+                            null
+                        }
                         <div
                             style={{backgroundColor: 'transparent', height: 30}}
                             onClick={() => {
@@ -701,6 +637,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             />
                         </div>
                     </div>
+
                 </Control>
             )
         }
@@ -715,11 +652,22 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             width: '100%',
                             height: 30
                         }}>
-                            <div className='page_monitoring_title' style={{
-                                backgroundColor: 'transparent',
-                                flex: .38
-                            }}>
+                            <div className='page_monitoring_title'
+                                 style={{
+                                     backgroundColor: 'transparent',
+                                     flex: .2
+                                 }}
+                            >
                                 Deployed Instance
+                            </div>
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    flex: .8,
+                                    marginLeft: -8,
+                                }}
+                            >
+                                {makeMapThemeDropDown(this)}
                             </div>
 
                         </div>
@@ -749,10 +697,162 @@ export default connect(mapStateToProps, mapDispatchProps)(
             )
         }
 
+        renderMapControlForCount() {
+            try {
+                return (
+                    <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
+                        <div style={PageMonitoringStyles.mapStatusBox}>
+                            <div style={{display: 'flex'}}>
+                                Cluster&nbsp;&nbsp;&nbsp;:
+                                <div style={{flex: .5, marginLeft: 5,}}>
+                                    {this.props.loading ? renderSmallProgressLoader(-1) : this.props.clusterList.length}
+                                </div>
+
+                            </div>
+                            <div style={{display: 'flex'}}>
+                                App Inst :
+                                <div style={{flex: .5, marginLeft: 5,}}>
+                                    {this.props.loading ? renderSmallProgressLoader(-1) : this.props.appInstList.length}
+                                </div>
+                            </div>
+                        </div>
+                    </Control>
+                )
+            } catch (e) {
+
+            }
+        }
+
+        renderCloudletInfoForAdmin() {
+            return (
+                <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
+                >
+                    <div style={{
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        marginTop: 0,
+                        fontFamily: 'Roboto',
+                        display: 'flex',
+                    }}>
+                        <div style={{color: 'white', marginLeft: 5}}>
+                            <Icon name='cloud'/>
+                        </div>
+                        <div style={{marginLeft: 5}}>
+                            {this.props.currentCloudletMap.CloudletName}
+                        </div>
+                    </div>
+                    <hr/>
+                    <table style={{width: '100%', marginTop: -3, marginLeft: 10}}>
+                        <tr style={PageMonitoringStyles.trPaddingFirst}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>Operator</b>
+                            </td>
+                            <td style={PageMonitoringStyles.width50}>
+                                {this.props.currentCloudletMap.Operator}
+                            </td>
+                        </tr>
+                        <tr style={PageMonitoringStyles.trPadding2}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>Ip_support</b>
+                            </td>
+                            <td style={PageMonitoringStyles.width50}>
+                                {this.props.currentCloudletMap.Ip_support}
+                            </td>
+                        </tr>
+                        <tr style={PageMonitoringStyles.trPadding2}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>Num_dynamic_ips</b>
+                            </td>
+                            <td style={PageMonitoringStyles.width50}>
+                                {this.props.currentCloudletMap.Num_dynamic_ips}
+                            </td>
+                        </tr>
+                        <tr style={PageMonitoringStyles.trPadding2}>
+                            <td style={PageMonitoringStyles.width50}>
+                                <b>State</b>
+                            </td>
+                            <td style={{width: '50%', color: 'yellow'}}>
+                                {CLOUDLET_CLUSTER_STATE[this.props.currentCloudletMap.State]}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            )
+        }
+
+        renderCloudletHwUsageDashBoardForAdmin() {
+            return (
+                <div style={{
+                    backgroundColor: 'transparent',
+                    height: '100%',
+                    flex: .49,
+                    marginLeft: 30,
+                    borderRadius: 10,
+                    marginTop: -30,
+                }}>
+                    <Center style={{height: bottomDivHeight,}}>
+                        <div>
+                            <Progress
+                                strokeColor={'green'}
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                style={{fontSize: 7}}
+                                percent={this.state.cloudletUsageOne.usedVCpuCount / this.state.cloudletUsageOne.maxVCpuCount * 100}
+                                strokeWidth={10}
+                                format={(percent, successPercent) => {
+                                    return parseInt(this.state.cloudletUsageOne.usedVCpuCount.toFixed(0)) + "/" + this.state.cloudletUsageOne.maxVCpuCount;
+                                }}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                vCPU
+                            </div>
+                        </div>
+                        <div style={{width: 15}}/>
+                        <div>
+                            <Progress
+                                style={{fontSize: 7}}
+                                strokeColor='orange'
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                percent={Math.round(this.state.cloudletUsageOne.usedMemUsage / this.state.cloudletUsageOne.maxMemUsage * 100)}
+                                format={(percent, successPercent) => {
+                                    return convertMegaToGiGa(parseInt(this.state.cloudletUsageOne.usedMemUsage.toFixed(0)), false) + "/" + convertMegaToGiGa(parseInt(this.state.cloudletUsageOne.maxMemUsage), false);
+                                }}
+                                strokeWidth={10}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                MEM(GB)
+                            </div>
+                        </div>
+                        <div style={{width: 15}}/>
+                        <div>
+                            <Progress
+                                strokeColor='rgb(7, 131, 255)'
+                                type="circle"
+                                width={100}
+                                trailColor='#262626'
+                                percent={Math.ceil((this.state.cloudletUsageOne.usedDiskUsage / this.state.cloudletUsageOne.maxDiskUsage) * 100)}
+                                strokeWidth={10}
+                                format={(percent, successPercent) => {
+                                    return this.state.cloudletUsageOne.usedDiskUsage + "/" + this.state.cloudletUsageOne.maxDiskUsage;
+                                }}
+                            />
+                            <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                                DISK(GB)
+                            </div>
+                        </div>
+                    </Center>
+                </div>
+            )
+        }
+
 
         render() {
             return (
-                <React.Fragment>
+                <div style={{flex: 1, height: '90%'}} ref={c => this.outerDiv = c}>
+                    {this.props.mapLoading && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
                         <div style={{height: '100%', width: '100%', zIndex: 1}}>
@@ -776,20 +876,18 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     this.map = ref;
                                 }}
                             >
-
                                 <TileLayer
                                     url={this.props.currentTyleLayer}
                                     minZoom={2}
                                     style={{zIndex: 1}}
                                 />
                                 {this.renderMapControl()}
+                                {this.props.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN || this.props.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ? this.renderMapControlForCount() : null}
                                 {this.props.isFullScreenMap ?
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
-                                        {this.makeMapThemeDropDown()}
+                                        {makeMapThemeDropDown(this)}
                                     </div>
-                                    : <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 99999}}>
-                                        {this.makeMapThemeDropDown()}
-                                    </div>
+                                    : null
                                 }
                                 {/*@desc:#####################################..*/}
                                 {/*@desc: Client Markers  (MarkerClusterGroup)...*/}
@@ -806,11 +904,34 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         {this.renderCloudletMarkers()}
                                     </React.Fragment>
                                 </React.Fragment>
+
+                                {/*todo:#####################*/}
+                                {/*todo:bottom dash board*/}
+                                {/*todo:#####################*/}
+                                {this.props.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ?
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: 0,
+                                            background: 'rgba(0, 0, 0, 0.5)',
+                                            width: '100%',
+                                            height: bottomDivHeight,
+                                            zIndex: 99999,
+                                            padding: 10,
+                                            marginLeft: 0,
+                                            display: 'flex'
+                                        }}
+                                    >
+                                        {this.props.currentCloudletMap !== undefined && this.renderCloudletInfoForAdmin()}
+                                        {this.state.cloudletUsageOne !== undefined && this.renderCloudletHwUsageDashBoardForAdmin()}
+                                    </div>
+                                    : null
+                                }
                             </Map>
                         </div>
 
                     </div>
-                </React.Fragment>
+                </div>
             );
         }
     }

@@ -4,7 +4,7 @@ import randomColor from 'randomcolor'
 let moreColors = randomColor({
     count: 500,
 });
-export const RECENT_DATA_LIMIT_COUNT = 25
+export const RECENT_DATA_LIMIT_COUNT = 20
 
 export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
@@ -161,6 +161,7 @@ export const USAGE_TYPE = {
 export const CLASSIFICATION = {
     CLUSTER_FOR_OPER: 'ClusterForOper',
     CLOUDLET: 'Cloudlet',
+    Cloudlet: 'Cloudlet',
     CloudletName: 'CloudletName',
     cloudlet: 'cloudlet',
     APP_NAME: 'AppName',
@@ -173,7 +174,20 @@ export const CLASSIFICATION = {
     VERSION: 'Version',
     CLUSTER: 'Cluster',
     REGION: 'Region',
+    APP_INST_FOR_ADMIN: 'appInstForAdmin',
+    CLUSTER_FOR_ADMIN: 'clusterForAdmin',
+    CLOUDLET_FOR_ADMIN: 'cloudletForAdmin',
 }
+
+export const MAP_LEVEL = {
+    CLOUDLET_FOR_ADMIN: 'CLOUDLET_FOR_ADMIN',
+    CLOUDLET: 'CLOUDLET',
+    CLUSTER: 'CLUSTER',
+    //APPINST: 'APPINST',
+}
+
+
+export const SEPARATOR = " | ";
 
 export const gridItemOneHeight = 22.3;
 
@@ -354,10 +368,16 @@ export const USAGE_INDEX_FOR_CLUSTER = {
 }
 
 export const USER_TYPE = {
-    OPERATOR: 'operator',
     DEVELOPER: 'developer',
-    AMDIN: 'admin',
+    OPERATOR: 'operator',
+    ADMIN: 'admin',
 
+}
+
+export const USER_TYPE_SHORT = {
+    DEV: 'dev',
+    OPER: 'oper',
+    ADMIN: 'admin',
 }
 
 export const NETWORK_TYPE = {
@@ -365,22 +385,6 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
-/*export const GRID_ITEM_TYPE = {
-    LINE: 'LINE',
-    BAR: 'BAR',
-    COLUMN: 'COLUMN',
-    BUBBLE: 'BUBBLE',
-    MAP: 'MAP',
-    TABLE: 'TABLE',
-    DONUTS: 'DONUTS',
-    CLUSTER_LIST: 'CLUSTER_LIST',
-    CLUSTER_EVENTLOG_LIST: 'CLUSTER_EVENTLOG_LIST',
-    APP_INST_EVENT_LOG: 'APP_INST_EVENT_LOG',
-    PERFORMANCE_SUM: 'PERFORMANCE_SUM',
-    CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
-    METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
-    MULTI_LINE_CHART: 'MULTI_LINE_CHART'
-}*/
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
     //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},

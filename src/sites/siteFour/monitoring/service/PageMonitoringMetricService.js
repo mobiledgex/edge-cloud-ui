@@ -6,7 +6,8 @@ import {
     CLOUDLET_METRIC_COLUMN,
     MEX_PROMETHEUS_APPNAME,
     RECENT_DATA_LIMIT_COUNT,
-    USER_TYPE
+    USER_TYPE,
+    USER_TYPE_SHORT
 } from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {
@@ -15,8 +16,7 @@ import {
     makeFormForClusterLevelMatric,
     showToast
 } from "./PageMonitoringCommonService";
-import {makeFormForAppLevelUsageList} from "./PageAdmMonitoringService";
-import PageDevMonitoring, {source} from "../view/PageDevOperMonitoringView";
+import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
     APP_INST_METRICS_ENDPOINT,
@@ -27,9 +27,10 @@ import {
     SHOW_APP_INST_CLIENT_ENDPOINT,
     SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
+import {makeFormForAppLevelUsageList} from "./PageMonitoringService";
 
 
-export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonitoring) => {
+export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitoringView) => {
     try {
 
         let AppName = pCurrentAppInst.split('|')[0].trim()
@@ -143,7 +144,14 @@ export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageDevMonito
 
 }
 
-export const fetchAppInstList = async (pRegionList = localStorage.getItem('regions').split(","), type: string = '') => {
+
+/**
+ *
+ * @param pRegionList
+ * @param _this
+ * @returns {Promise<[]>}
+ */
+export const fetchAppInstList = async (pRegionList: string[] = localStorage.getItem('regions').split(","), _this: PageMonitoringView) => {
     try {
         let promiseList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -166,9 +174,15 @@ export const fetchAppInstList = async (pRegionList = localStorage.getItem('regio
             mergedAppInstanceList = mergedList;
         })
 
-        let filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {
-            return item.AppName !== MEX_PROMETHEUS_APPNAME
-        })
+
+        let filteredAppInstList = []
+        if (_this.state.userType.includes(USER_TYPE_SHORT.ADMIN)) {
+            filteredAppInstList = mergedAppInstanceList;
+        } else {//todo: DEV, OPER
+            filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {
+                return item.AppName !== MEX_PROMETHEUS_APPNAME
+            })
+        }
 
         let resultWithColorCode = []
         filteredAppInstList.map((item, index) => {
@@ -208,11 +222,10 @@ export const fetchCloudletList = async () => {
         })
 
         let userType = localStorage.getItem('selectRole').toString().toLowerCase();
-        let currentSelectedOrg = localStorage.getItem('selectOrg').toString().trim();
-
 
         //@todo: when oper role
         if (userType.includes(USER_TYPE.OPERATOR)) {
+            let currentSelectedOrg = localStorage.getItem('selectOrg').toString().trim();
             let result = mergedCloudletList.filter((item: TypeCloudlet, index) => {
                 return item.Operator === currentSelectedOrg
             })
@@ -278,7 +291,10 @@ export const fetchClusterList = async () => {
 
 
         let finalResult = []
-        if (localStorage.getItem('selectRole').includes('Oper')) {
+
+        if (localStorage.getItem('selectRole').includes('Admin')) {
+            finalResult = mergedClusterList;
+        } else if (localStorage.getItem('selectRole').includes('Oper')) {
             finalResult = mergedClusterList;
         } else {
             //todo: Filter to fetch only those belonging to the current organization
@@ -339,7 +355,7 @@ export const getCloudletListAll = async () => {
 }
 
 
-export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
+export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
 
         let instanceBodyList = []
@@ -352,7 +368,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
         let promiseList = []
         for (let index = 0; index < instanceBodyList.length; index++) {
-            promiseList.push(getAppLevelMetric(instanceBodyList[index]))
+            promiseList.push(getAppInstLevelMetric(instanceBodyList[index]))
         }
 
 
@@ -376,6 +392,8 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         let allUsageList = []
         usageListForAllInstance.map((item, index) => {
             let appName = item.instanceData.AppName
+            let Cloudlet = item.instanceData.Cloudlet
+            let ClusterInst = item.instanceData.ClusterInst
 
             let sumMemUsage = 0;
             let sumDiskUsage = 0;
@@ -456,7 +474,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                     allUsageList.push({
                         instance: item.instanceData,
                         columns: columns,
-                        appName: appName,
                         sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
                         sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
                         sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
@@ -470,7 +487,9 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         diskSeriesList,
                         networkSeriesList,
                         connectionsSeriesList,
-
+                        appName,
+                        Cloudlet,
+                        ClusterInst,
                     })
 
                 } else {//@todo: If series data is null
@@ -486,7 +505,9 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
                         sumHandledConnection: 0,
                         sumAcceptsConnection: 0,
                         values: [],
-                        appName: appName,
+                        appName,
+                        Cloudlet,
+                        ClusterInst,
                     })
                 }
             }
@@ -503,7 +524,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
         return resultWithColorCode;
     } catch (e) {
-        //throw new Error(e.toString())
+        showToast(e.toString())
     }
 
 }
@@ -518,7 +539,7 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
  * @param pEndTime
  * @returns {Promise<[]|Array>}
  */
-export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', _this: PageDevMonitoring) => {
+export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', _this: PageMonitoringView) => {
     try {
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -852,7 +873,7 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
     })
 }
 
-export const getAppLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
+export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: mcURL() + APP_INST_METRICS_ENDPOINT,
@@ -899,23 +920,26 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
 }
 
 
-export const getCloudletEventLog = async (cloudletSelectedOne, pRegion, startTime = '', endTime = '') => {
+export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTime = '', endTime = '') => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        let selectOrg = localStorage.getItem('selectOrg')
+        let dataBody = {}
+        dataBody = {
+            "region": cloudletMapOne.Region,
+            "cloudlet": {
+                "organization": cloudletMapOne.Operator,
+                "name": cloudletMapOne.CloudletName
+            },
+            //"last": 100
+            "starttime": startTime,
+            "endtime": endTime
+        }
 
         let result = await axios({
             url: mcURL() + CLOUDLET_EVENT_LOG_ENDPOINT,
             method: 'post',
-            data: {
-                "region": pRegion,
-                "cloudlet": {
-                    "organization": selectOrg,
-                    "name": cloudletSelectedOne
-                },
-                "last": 100
-            },
+            data: dataBody,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
@@ -943,14 +967,15 @@ export const getCloudletEventLog = async (cloudletSelectedOne, pRegion, startTim
 /**
  *
  * @param cloudletList
+ * @param startTime
+ * @param endTime
  * @returns {Promise<[]>}
  */
 export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '') => {
-
     try {
         let promiseList = []
         cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-            promiseList.push(getCloudletEventLog(cloudletOne.CloudletName, cloudletOne.Region, startTime = '', endTime = ''))
+            promiseList.push(getCloudletEventLog(cloudletOne, startTime, endTime))
         })
 
         let allCloudletEventLogList = await Promise.all(promiseList);
@@ -975,16 +1000,14 @@ export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endT
  * @param clusterList
  * @returns {Promise<[]>}
  */
-export const getAllClusterEventLogList = async (clusterList) => {
+export const getAllClusterEventLogList = async (clusterList, userType = USER_TYPE_SHORT.DEV) => {
     try {
         let clusterPromiseList = []
         clusterList.map((clusterOne: TypeCluster, index) => {
-            clusterPromiseList.push(getClusterEventLogListOne(clusterOne))
+            clusterPromiseList.push(getClusterEventLogListOne(clusterOne, userType))
         })
 
         let allClusterEventLogs = await Promise.all(clusterPromiseList);
-
-
         let completedEventLogList = []
         allClusterEventLogs.map((item, index) => {
 
@@ -1002,17 +1025,17 @@ export const getAllClusterEventLogList = async (clusterList) => {
     }
 }
 
-export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => {
+export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType) => {
+    let selectOrg = undefined
+    let form = {};
     try {
-        let selectOrg = localStorage.getItem('selectOrg')
         let Cloudlet = clusterItemOne.Cloudlet;
         let ClusterName = clusterItemOne.ClusterName;
         let Region = clusterItemOne.Region;
         let Operator = clusterItemOne.Operator;
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-        let form = {
+        selectOrg = localStorage.getItem('selectOrg')
+        form = {
             "region": Region,
             "clusterinst": {
                 "cluster_key": {
@@ -1023,11 +1046,10 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster) => 
                     "organization": Operator,
 
                 },
-                "organization": selectOrg
+                "organization": userType.toString().includes(USER_TYPE_SHORT.DEV) ? selectOrg : clusterItemOne.OrganizationName
             },
             //"last": 10
         }
-
 
         let result = await axios({
             url: mcURL() + CLUSTER_EVENT_LOG_ENDPOINT,
@@ -1219,7 +1241,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
     let cloudlet = appInst.Cloudlet
     let cloudletorg = appInst.OrganizationName
     let ver = appInst.Version
-
 
 
     seriesValues.map(item => {
