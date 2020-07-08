@@ -1978,7 +1978,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            __________HANDLEONCHANGE____________________________________________________________________________________() {
+            _________HANDLEONCHANGE____________________________________________________________________________________() {
             }
 
             handleOnChangeCloudletDropdownForAdmin = async (selectCloudlet) => {
@@ -2136,7 +2136,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 currentCloudLet: currentCloudlet,
                                 currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                 isLegendExpanded: filteredClusterList.length <= 6,
-                            },()=>{
+                            }, () => {
                             });
                         } catch (e) {
                             // showToast(e.toString())
