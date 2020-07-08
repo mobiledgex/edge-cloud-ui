@@ -3,7 +3,7 @@ import '../common/PageMonitoringStyles.css'
 import {Progress} from "antd";
 import {Center} from "../common/PageMonitoringStyles";
 import {CLASSIFICATION} from "../../../../shared/Constants";
-import {changeClassficationTxt} from "../service/PageDevOperMonitoringService";
+import {changeClassficationTxt} from "../service/PageMonitoringService";
 
 export default function DonutChart(props) {
     const [count, setCount] = useState(-1);

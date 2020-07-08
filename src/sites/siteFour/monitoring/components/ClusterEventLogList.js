@@ -1,10 +1,10 @@
 import React from 'react';
 import '../common/PageMonitoringStyles.css'
 import {FixedSizeList} from "react-window";
-import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageDevOperMonitoringService";
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {time, FORMAT_FULL_DATE, FORMAT_FULL_TIME} from '../../../../utils/date_util'
+import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
+import {renderBarLoader} from "../service/PageMonitoringCommonService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
+import {FORMAT_FULL_DATE, FORMAT_FULL_TIME, time} from "../../../../utils/date_util";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -87,7 +87,7 @@ export default function ClusterEventLogList(props) {
 
     function renderTableRowOne(index, style) {
         try {
-            let eventLog  = props.eventLogList[index]
+            let eventLog = props.eventLogList[index]
             return (
                 <tr key={index} className='fixedSizeListTableDiv'
                     style={style}
@@ -157,6 +157,9 @@ export default function ClusterEventLogList(props) {
 
     return (
         <React.Fragment>
+            {props.loading && <div>
+                {renderBarLoader()}
+            </div>}
             {renderTitle(props)}
             <table size="small" aria-label="a dense table"
                    className='thinScrBar'
@@ -166,7 +169,7 @@ export default function ClusterEventLogList(props) {
                 {!props.loading ?
                     <FixedSizeList
                         height={179}
-                        itemCount={props.eventLogList.length}
+                        itemCount={props.eventLogList !== undefined ? props.eventLogList.length : 0}
                         itemSize={itemHeight}
                         width={'100%'}
                     >
@@ -174,10 +177,7 @@ export default function ClusterEventLogList(props) {
                             return (renderTableRowOne(index, style))
                         }}
                     </FixedSizeList>
-                    :
-                    <Center style={{marginTop: 70}}>
-                        {renderPlaceHolderLoader()}
-                    </Center>
+                    : null
                 }
             </table>
         </React.Fragment>

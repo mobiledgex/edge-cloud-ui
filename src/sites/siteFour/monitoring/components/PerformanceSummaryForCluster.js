@@ -10,18 +10,25 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from "antd";
 import '../common/PageMonitoringStyles.css'
-import {handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageDevOperMonitoringService";
+import {
+    convertToClassification,
+    handleLegendAndBubbleClickedEvent,
+    makeLineChartData
+} from "../service/PageMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
 import {
     convertByteToMegaGigaByte,
     convertToMegaGigaForNumber,
-    renderPlaceHolderLoader
+    renderBarLoader
 } from "../service/PageMonitoringCommonService";
 import type {TypeClusterUsageOne} from "../../../../shared/Types";
+import AppsIcon from '@material-ui/icons/Apps';
+import PageMonitoringView from "../view/PageMonitoringView";
 
 type Props = {
     filteredUsageList: any,
+    parent: PageMonitoringView,
 };
 
 function getWindowDimensions() {
@@ -51,6 +58,9 @@ export default function PerformanceSummaryForCluster(props: Props) {
 
     return (
         <React.Fragment>
+            {props.loading && <div>
+                {renderBarLoader(false)}
+            </div>}
             <div
                 className='draggable'
                 style={{
@@ -60,18 +70,19 @@ export default function PerformanceSummaryForCluster(props: Props) {
                     //backgroundColor: 'red'
                 }}
             >
+
                 <Tooltip placement="top" title={'To view a chart of each hardware usage,\n' +
                 'Click the cell.'}>
                     <div className='page_monitoring_title draggable'
                          style={{
-                             flex: .2,
+                             width: 350,
                              marginTop: 5,
                              //backgroundColor: 'red'
                          }}
                     >
-                        {props.parent.state.currentClassification} Performance Summary
+                        {convertToClassification(props.parent.state.currentClassification)} Performance Summary
                     </div>
-                    <div style={{flex: .7}} className='draggable'>
+                    <div style={{flex: .5}} className='draggable'>
                     </div>
                 </Tooltip>
             </div>
@@ -147,13 +158,12 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                                 alignItems: 'flex-start',
                                                 justifyContent: 'center'
                                             }}>
-                                                <div style={{
-                                                    backgroundColor: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[item.colorCodeIndex] : props.parent.state.chartColorList[item.colorCodeIndex],
-                                                    width: 15,
-                                                    height: 15,
-                                                    borderRadius: 50,
-                                                }}>
-                                                </div>
+                                                <AppsIcon
+                                                    style={{
+                                                        fill: props.filteredUsageList.length === 1 ? props.parent.state.chartColorList[item.colorCodeIndex] : props.parent.state.chartColorList[item.colorCodeIndex],
+                                                        fontSize: 16,
+                                                        marginTop: 4,
+                                                    }}/>
                                             </div>
                                         </TableCell>
                                         <TableCell padding={'default'} align="center"
@@ -283,9 +293,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
 
                     </Table>
                 </TableContainer> :
-                <div style={{marginTop: 70}}>
-                    {renderPlaceHolderLoader()}
-                </div>
+                null
             }
         </React.Fragment>
     )

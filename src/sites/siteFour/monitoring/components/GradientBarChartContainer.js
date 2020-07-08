@@ -1,13 +1,13 @@
 // @flow
 import * as React from 'react';
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {Bar, HorizontalBar} from "react-chartjs-2";
 import 'chartjs-plugin-labels'
-import {barChartOptions2, GradientBarChartOptions1} from "../service/PageDevOperMonitoringService";
+import {barChartOptions2, GradientBarChartOptions1} from "../service/PageMonitoringService";
 
 
 type Props = {
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,
