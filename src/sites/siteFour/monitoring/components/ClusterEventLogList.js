@@ -4,7 +4,7 @@ import {FixedSizeList} from "react-window";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
 import {renderBarLoader} from "../service/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import {FORMAT_FULL_DATE, FORMAT_FULL_TIME} from "../../../../utils/date_util";
+import {FORMAT_FULL_DATE, FORMAT_FULL_TIME, time} from "../../../../utils/date_util";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -87,7 +87,7 @@ export default function ClusterEventLogList(props) {
 
     function renderTableRowOne(index, style) {
         try {
-            let eventLog  = props.eventLogList[index]
+            let eventLog = props.eventLogList[index]
             return (
                 <tr key={index} className='fixedSizeListTableDiv'
                     style={style}
