@@ -2308,9 +2308,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         });
 
                     } else {//todo:when allCluster selected
-                        this.resetLocalData();
+                        await this.resetLocalData();
                     }
-
                     //desc: ############################
                     //desc: setStream
                     //desc: ############################
