@@ -19,6 +19,7 @@ import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
 import {CLASSIFICATION, CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
+import {getMexTimezone} from "../../../../utils/sharedPreferences_util";
 
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {

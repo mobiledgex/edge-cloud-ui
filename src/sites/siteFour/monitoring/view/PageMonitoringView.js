@@ -2260,22 +2260,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
 
                         let filteredAppInstList = []
-                        this.state.appInstList.map((appInstOne, index) => {
-                            selectClusterCloudletList.map((innerItem, innerIndex) => {
-                                if (appInstOne.ClusterInst === innerItem.split("|")[0].trim() && appInstOne.Cloudlet === innerItem.split("|")[1].trim()) {
-                                    filteredAppInstList.push(appInstOne)
-                                }
-                            })
-                        })
-
                         let filteredClusterEventLogList = []
-                        this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
-                            selectClusterCloudletList.map((innerItem, innerIndex) => {
-                                if (clusterEventLogOne[1] === innerItem.split("|")[0].trim()) {
-                                    filteredClusterEventLogList.push(clusterEventLogOne)
-                                }
+                        try{
+                            this.state.appInstList.map((appInstOne, index) => {
+                                selectClusterCloudletList.map((innerItem, innerIndex) => {
+                                    if (appInstOne.ClusterInst === innerItem.split("|")[0].trim() && appInstOne.Cloudlet === innerItem.split("|")[1].trim()) {
+                                        filteredAppInstList.push(appInstOne)
+                                    }
+                                })
                             })
-                        })
+
+
+                            this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
+                                selectClusterCloudletList.map((innerItem, innerIndex) => {
+                                    if (clusterEventLogOne[1] === innerItem.split("|")[0].trim()) {
+                                        filteredClusterEventLogList.push(clusterEventLogOne)
+                                    }
+                                })
+                            })
+                        }catch (e) {
+                            showToast('sdlkflk!999997777777')
+                        }
 
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
@@ -2321,7 +2326,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         await this.setState({isStream: false})
                     }
                 } catch (e) {
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
             }
 
@@ -2843,9 +2848,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Button
                                 ref={c => this.resetBtn = c}
                                 size={'small'}
-                                onClick={() => {
+                                onClick={async () => {
                                     this.resetBtn.blur();
-                                    this.resetLocalData();
+                                    await this.resetLocalData();
                                 }}
                             >
                                 Reset
