@@ -2278,7 +2278,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 })
                             })
                         } catch (e) {
-                            showToast('sdlkflk!999997777777')
+
                         }
 
 
