@@ -2528,7 +2528,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             dropdownMatchSelectWidth={false}
                             showSearch={true}
                             value={this.state.currentOrg}
-                            style={{width: 150, maxHeight: '512px !important', fontSize: '9px !important'}}
+                            style={{width: 100, maxHeight: '512px !important', fontSize: '9px !important'}}
                             dropdownStyle={{
                                 maxHeight: 800, overflow: 'auto', width: '250px'
                             }}
@@ -2784,7 +2784,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <TreeSelect
                                 dropdownMatchSelectWidth={false}
                                 dropdownStyle={{
-                                    maxHeight: 800, overflow: 'auto', width: '520px'
+                                    maxHeight: 800, overflow: 'auto', width: '420px'
                                 }}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
