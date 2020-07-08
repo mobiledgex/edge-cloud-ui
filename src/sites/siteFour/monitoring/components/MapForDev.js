@@ -776,7 +776,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     flex: .49,
                     marginLeft: 30,
                     borderRadius: 10,
-                    marginTop: 0,
+                    marginTop: -30,
                 }}>
                     <Center style={{height: bottomDivHeight,}}>
                         <div>
@@ -811,7 +811,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 strokeWidth={10}
                             />
                             <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                MEM
+                                MEM(GB)
                             </div>
                         </div>
                         <div style={{width: 15}}/>
@@ -828,7 +828,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 }}
                             />
                             <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
-                                DISK
+                                DISK(GB)
                             </div>
                         </div>
                     </Center>
