@@ -1438,7 +1438,7 @@ export function filteredClientStatusListByAppName(filteredAppInstList, allClient
 export function makeMapThemeDropDown(_this) {
     return (
         <Select
-            size={"small"}
+            //size={"small"}
             defaultValue="dark1"
             style={{width: 70, zIndex: 112312, height: 15, background: 'black !important',}}
             showArrow={false}
