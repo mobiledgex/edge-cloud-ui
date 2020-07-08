@@ -355,7 +355,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 <MarkerClusterGroup key={index}>
                     {groupedClientList[objkeyOne].map((item, index) => {
                         return (
-                            <React.Fragment>
+                            <React.Fragment key={index}>
                                 <Marker
                                     icon={cellphoneIcon}
                                     position={

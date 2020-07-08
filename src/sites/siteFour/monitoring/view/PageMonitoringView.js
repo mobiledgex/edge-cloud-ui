@@ -6,6 +6,7 @@ import {SemanticToastContainer} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {withSize} from 'react-sizeme';
+import uniqBy from 'lodash/uniqBy'
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
 import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
@@ -2108,7 +2109,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             let usageEventPromiseList = []
                             if (filteredClusterList.length > 0) {
                                 await this.setState({currentCloudLet: currentCloudletName,})
-                                let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
+                                let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]
                                 let startTime = makeCompleteDateTime(date[0]);
                                 let endTime = makeCompleteDateTime(date[1]);
                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
@@ -2557,7 +2558,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     })
 
                                     markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.Cloudlet);
-                                    let uniqFilteredAppInstList = _.uniqBy(filteredAppInstList, CLASSIFICATION.Cloudlet)
+                                    let uniqFilteredAppInstList = uniqBy(filteredAppInstList, CLASSIFICATION.Cloudlet)
                                     cloudletDropdownList = makeDropdownForCloudletForDevView(uniqFilteredAppInstList)
 
                                 } else {//TODO ; when operator selected
