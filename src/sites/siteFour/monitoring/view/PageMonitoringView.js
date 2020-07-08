@@ -107,7 +107,7 @@ import BarChartContainer from "../components/BarChartContainer";
 import PerformanceSummaryForCluster from "../components/PerformanceSummaryForCluster";
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import AppInstEventLogList from "../components/AppInstEventLogList";
-import {fields} from '../../../../services/model/format'
+import {fields, getUserRole} from '../../../../services/model/format'
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
 import {CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import AdjustIcon from '@material-ui/icons/Adjust';
@@ -155,7 +155,7 @@ import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
 import MapForAdmin from "../components/MapForAdmin";
 import * as dateUtil from '../../../../utils/date_util'
-import { getMexTimezone } from '../../../../utils/sharedPreferences_util';
+import {getMexTimezone} from '../../../../utils/sharedPreferences_util';
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const {RangePicker} = DatePicker;
@@ -382,6 +382,7 @@ type PageDevMonitoringState = {
     isExpandOrgDropdown: boolean,
     isShowClusterInLegend: boolean,
     currentCloudletMap: any,
+    timezoneChange: boolean,
 
 }
 
@@ -640,6 +641,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isExpandOrgDropdown: true,
                     isShowClusterInLegend: false,
                     currentCloudletMap: {},
+                    timezoneChange: true,
                 }
             }
 
@@ -653,12 +655,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             componentDidMount = async () => {
                 moment.tz.setDefault(getMexTimezone())
                 window.addEventListener('MexTimezoneChangeEvent', () => {
-                    this.setState({ timezoneChange: !this.state.timezoneChange })
+                    this.setState({timezoneChange: !this.state.timezoneChange})
                     setTimeout(() => {
-                        this.setState({ timezoneChange: !this.state.timezoneChange })
+                        this.setState({timezoneChange: !this.state.timezoneChange})
                     }, 100)
-                    if(getUserRole().includes('Developer'))
-                    {
+                    if (getUserRole().includes('Developer')) {
                         this.resetLocalData();
                     }
                 }, false);
@@ -2261,7 +2262,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let filteredAppInstList = []
                         let filteredClusterEventLogList = []
-                        try{
+                        try {
                             this.state.appInstList.map((appInstOne, index) => {
                                 selectClusterCloudletList.map((innerItem, innerIndex) => {
                                     if (appInstOne.ClusterInst === innerItem.split("|")[0].trim() && appInstOne.Cloudlet === innerItem.split("|")[1].trim()) {
@@ -2278,7 +2279,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }
                                 })
                             })
-                        }catch (e) {
+                        } catch (e) {
                             showToast('sdlkflk!999997777777')
                         }
 
