@@ -353,9 +353,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
             return (
                 <MarkerClusterGroup key={index}>
-                    {groupedClientList[objkeyOne].map((item, index) => {
+                    {groupedClientList[objkeyOne].map((item, i) => {
                         return (
-                            <React.Fragment>
+                            <React.Fragment key={i}>
                                 <Marker
                                     icon={cellphoneIcon}
                                     position={
@@ -384,7 +384,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*@desc:#####################################..*/}
                                 <Polyline
                                     //dashArray={['30,1,30']}
-                                    id={index}
+                                    id={i}
                                     smoothFactor={2.0}
 
                                     positions={[
