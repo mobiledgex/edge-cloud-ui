@@ -2,7 +2,6 @@ import React from 'react';
 import cytoscape from 'cytoscape';
 import { style } from './style';
 import { defaultFlow } from './clusterElements'
-import { flow } from 'lodash';
 
 export const FLOW_ADD = 'add'
 export const FLOW_REMOVE = 'remove'
@@ -11,6 +10,7 @@ export const FLOW_UPDATE = 'update'
 const cyStyle = {
   height: '50vh',
   width: '45vw',
+  transition: 'width 0.5s',
   backgroundColor: '#1A1C21'
 };
 
@@ -47,14 +47,10 @@ class MexFlow extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.flowData.id !== state.flowData.id) {
+    if (props.flowData && (props.flowData.id !== state.flowData.id)) {
       return { flowData: props.flowData }
     }
     return null
-  }
-
-  onClickB = () => {
-    this.cy.$('#1').data('label', 'Direct')
   }
 
   render() {
@@ -91,7 +87,7 @@ class MexFlow extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     let flowData = this.props.flowData
-    if (flowData.id !== 0) {
+    if (flowData && flowData.id !== 0) {
       this.updateCyFlow(flowData)
     }
   }
@@ -103,13 +99,14 @@ class MexFlow extends React.Component {
         this.cy.add({
           group: element.type,
           data: element.data,
-          position: element.position
+          position: element.position,
+          classes: element.classes
         })
       })
     }
     else {
       this.addFlowdata(defaultFlow())
-      if (this.props.flowData.id !== 0) {
+      if (this.props.flowData && this.props.flowData.id !== 0) {
         this.addFlowdata(this.props.flowData)
       }
     }

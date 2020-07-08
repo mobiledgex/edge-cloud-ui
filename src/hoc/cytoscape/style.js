@@ -10,13 +10,17 @@ export const style = [
             'border-width': function (ele) { return ele.data('bw') ? ele.data('bw') : 0 },
             'background-image': function (ele) { return ele.data('bi') ? ele.data('bi') : 'none' },
             'background-opacity': function (ele) { return ele.data('bi') ? 0 : 1 },
-            'color': 'white',
+            'color': function (ele) { return ele.data('tc') ? ele.data('tc') : 'white' },
             'content': 'data(label)',
             'text-valign': 'center',
             'text-halign': 'center',
+            'z-index-compare':'manual',
+            'z-index':function (ele) { return ele.data('zi') ? ele.data('zi') : 0 },
             "shape": "data(shape)",
             'height': "data(height)",
             'width': "data(width)",
+            'text-halign':function (ele) { return ele.data('tha') ? ele.data('tha') : 'center' },
+            'text-valign':function (ele) { return ele.data('tva') ? ele.data('tva') : 'center' }
         }
     },
     {
@@ -37,7 +41,9 @@ export const style = [
             'source-endpoint': function (ele) { return ele.data('se') ? ele.data('se') : '0% 0%' },
             'target-endpoint': function (ele) { return ele.data('te') ? ele.data('te') : '0% 0%' },
             'source-distance-from-node': function (ele) { return ele.data('sdn') ? ele.data('sdn') : '0px' },
-            'target-distance-from-node': function (ele) { return ele.data('tdn') ? ele.data('tdn') : '0px' }
+            'target-distance-from-node': function (ele) { return ele.data('tdn') ? ele.data('tdn') : '0px' },
+            'z-index':function (ele) { return ele.data('zi') ? ele.data('zi') : -1 },
+            'line-color':function (ele) { return ele.data('lc') ? ele.data('lc') : '#BEBEBE' }
         }
     },
     {

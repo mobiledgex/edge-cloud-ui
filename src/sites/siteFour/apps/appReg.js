@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
@@ -21,6 +21,9 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { appTutor } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
+import * as clusterFlow from '../../../hoc/cytoscape/clusterElements'
+const MexFlow = React.lazy(() => import('../../../hoc/cytoscape/MexFlow'));
+
 
 const appSteps = appTutor();
 
@@ -29,12 +32,15 @@ class AppReg extends React.Component {
         super(props);
         this.state = {
             forms: [],
-            stepsArray: []
+            stepsArray: [],
+            showGraph: false,
+            flowData: { id: 0 },
+            flowInstance: undefined
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
         this.regions = cloneDeep(props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion)
-        if(!this.isUpdate){this.regions.splice(0, 0, 'All')}
+        if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.flavorList = []
         this.privacyPolicyList = []
         this.autoProvPolicyList = []
@@ -43,6 +49,8 @@ class AppReg extends React.Component {
         this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
         this.originalData = undefined
         this.expandAdvanceMenu = false
+        this.tlsCount = 0 
+        this.portCount = 0
     }
 
     validatePortRange = (form) => {
@@ -65,8 +73,7 @@ class AppReg extends React.Component {
         this.reloadForms()
     }
 
-    onManifestLoad = (data, extra)=>
-    {
+    onManifestLoad = (data, extra) => {
         let form = extra.form
         let manifestForm = form.parent.form.forms[0]
         manifestForm.value = data
@@ -74,7 +81,7 @@ class AppReg extends React.Component {
     }
 
     addManifestData = (e, form) => {
-        uploadData(e, this.onManifestLoad, {form:form})
+        uploadData(e, this.onManifestLoad, { form: form })
     }
 
     deploymentManifestForm = () => ([
@@ -87,10 +94,10 @@ class AppReg extends React.Component {
 
     portForm = () => ([
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: true, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1},
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 2},
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2 },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3 },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
     ])
 
     getPortForm = (form) => {
@@ -108,13 +115,13 @@ class AppReg extends React.Component {
     }
 
     multiPortForm = () => ([
-        { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Please select protocol', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 1 },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 2},
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm, update: true }
+        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2 },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3 },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
     ])
 
     getMultiPortForm = (form) => {
@@ -132,20 +139,23 @@ class AppReg extends React.Component {
     }
 
     removeMultiForm = (e, form) => {
+        this.portCount = this.portCount + 1
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
             this.setState({
-                forms: updateForms
+                forms: updateForms, 
+                flowData: clusterFlow.portFlowNoTLS(this.portCount - this.tlsCount)
             })
         }
     }
 
     addMultiForm = (e, form) => {
+        this.portCount = this.portCount - 1
         let parent = form.parent;
         let forms = this.state.forms;
         forms.splice(parent.id + 1, 0, form.multiForm());
-        this.setState({ forms: forms })
+        this.setState({ forms: forms, flowData: clusterFlow.portFlowNoTLS(this.portCount - this.tlsCount) })
     }
 
     updateImagePath = (forms, form) => {
@@ -224,7 +234,7 @@ class AppReg extends React.Component {
             }
         })
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.setState({ forms: forms, showGraph:currentForm.value !== constant.DEPLOYMENT_TYPE_HELM, flowData:clusterFlow.deploymentTypeFlow(currentForm.value) })
         }
     }
 
@@ -280,8 +290,7 @@ class AppReg extends React.Component {
         }
     }
 
-    regionDependentDataUpdate = (region, forms, isInit)=>
-    {
+    regionDependentDataUpdate = (region, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.autoPolicyName) {
@@ -304,8 +313,7 @@ class AppReg extends React.Component {
 
     regionValueChange = (currentForm, forms, isInit) => {
         let regions = currentForm.value;
-        if(regions.includes('All'))
-        {
+        if (regions.includes('All')) {
             regions = cloneDeep(this.regions)
             regions.splice(0, 1)
         }
@@ -315,10 +323,9 @@ class AppReg extends React.Component {
                 this.requestedRegionList.push(region)
             })
         }
-        else
-        {
+        else {
             let region = this.isUpdate ? currentForm.value : undefined
-            this.regionDependentDataUpdate(region, forms, isInit) 
+            this.regionDependentDataUpdate(region, forms, isInit)
         }
     }
 
@@ -365,8 +372,14 @@ class AppReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.setState({ forms: forms, showGraph: true, flowData:clusterFlow.ipAccessFlowApp(currentForm.value, constant.APP) })
         }
+    }
+
+    tlsValueChange = (form, forms, isInit)=>
+    {
+        this.tlsCount = form.value ? this.tlsCount + 1 : this.tlsCount - 1
+        this.setState({flowData : clusterFlow.portFlow(this.tlsCount)})
     }
 
     checkForms = (form, forms, isInit) => {
@@ -384,6 +397,9 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.tls) {
+            this.tlsValueChange(form, forms, isInit)
         }
         else if (form.field === fields.accessType) {
             this.accessTypeChange(form, forms, isInit)
@@ -425,11 +441,9 @@ class AppReg extends React.Component {
     }
 
     onAddResponse = (mcRequestList) => {
-        if(mcRequestList && mcRequestList.length > 0)
-        {
-            mcRequestList.map(mcRequest=>{
-                if(mcRequest.response)
-                {
+        if (mcRequestList && mcRequestList.length > 0) {
+            mcRequestList.map(mcRequest => {
+                if (mcRequest.response) {
                     let data = mcRequest.request.data;
                     this.props.handleAlertInfo('success', `App ${data.app.key.name} added successfully`)
                     this.props.onClose(true)
@@ -489,8 +503,7 @@ class AppReg extends React.Component {
                 if (ports.length > 0) {
                     data[fields.accessPorts] = ports
 
-                    if(skipHCPorts.length > 0)
-                    {
+                    if (skipHCPorts.length > 0) {
                         data[fields.skipHCPorts] = skipHCPorts
                     }
                     if (annotations.length > 0) {
@@ -513,8 +526,7 @@ class AppReg extends React.Component {
                     else {
                         let regions = data[fields.region]
                         let requestDataList = []
-                        if(regions.includes('All'))
-                        {
+                        if (regions.includes('All')) {
                             regions = cloneDeep(this.regions)
                             regions.splice(0, 1)
                         }
@@ -552,8 +564,7 @@ class AppReg extends React.Component {
                             requestDataList.push(createApp(requestData))
                         })
 
-                        if(requestDataList && requestDataList.length > 0)
-                        {
+                        if (requestDataList && requestDataList.length > 0) {
                             serverData.sendMultiRequest(this, requestDataList, this.onAddResponse)
                         }
                     }
@@ -646,8 +657,7 @@ class AppReg extends React.Component {
                     let portMaxNo = portInfo[1];
                     let tls = false
                     let skipHCPort = skipHCPortArray.includes(portArray[i].replace(':tls', ''))
-                    if(portInfo.length === 3 && portInfo[2] === 'tls')
-                    {
+                    if (portInfo.length === 3 && portInfo[2] === 'tls') {
                         tls = true
                     }
                     let portMinNo = undefined
@@ -739,7 +749,7 @@ class AppReg extends React.Component {
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: true, tip: 'URI of where image resides' },
-            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy:true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, tip: 'Upgrade App Instances running in the cloudlets' },
             { label: 'Ports', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
@@ -803,11 +813,24 @@ class AppReg extends React.Component {
         this.props.onClose(true)
     }
 
+    saveFlowInstance = (data) => {
+        this.setState({ flowInstance: data })
+    }
+
     render() {
         return (
             <div className="round_panel">
                 <div className="grid_table" >
-                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ width: this.state.showGraph ? '50vw' : '100vw', transition: 'width 0.5s' }}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </div>
+                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '50vw' : '0vw', transition: 'width 0.5s', border: '1px solid white', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21' }}>
+                            <Suspense fallback={<div></div>}>
+                                <MexFlow flowData={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
+                            </Suspense>
+                        </div> : null}
+                    </div>
                 </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>

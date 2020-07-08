@@ -168,7 +168,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms, activeIndex: 1, flowData: currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? clusterFlow.k8Master() : clusterFlow.docker() })
+            this.setState({ forms: forms, activeIndex: 1, flowData: clusterFlow.deploymentTypeFlow(currentForm.value)})
         }
     }
 
@@ -181,7 +181,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms, activeIndex: 1, flowData: currentForm.value === constant.IP_ACCESS_DEDICATED ? clusterFlow.dedicated() : clusterFlow.shared() })
+            this.setState({ forms: forms, activeIndex: 1, flowData: clusterFlow.ipAccessFlow(currentForm.value) })
         }
     }
 
