@@ -1986,15 +1986,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletName = selectCloudlet.split("|")[0].trim()
                     this.cloudletSelectForAdmin.blur();
 
-                    let filteredCloudletList2 = this.state.filteredCloudletList.filter((item: TypeCloudlet, index) => {
-                        return item.CloudletName = currentCloudletName
-                    })
                     await this.setState({
                         currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
                         currentClusterList: [],
                         currentCloudLet: currentCloudletName,
                         markerList: [],
-                        currentCloudletMap: filteredCloudletList2[0],
                     }, () => {
 
                         console.log('filteredCloudletList2===>', this.state.currentCloudletMap);
@@ -2040,6 +2036,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         await this.setState({
                             filteredCloudletUsageList: cloudletUsageList,
+                            currentCloudletMap: currentCloudletOne,
                         }, () => {
                         })
 
@@ -2146,6 +2143,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }, () => {
                             });
                         } catch (e) {
+                            alert('sdlfksdlfklsdflk!!!')
                             // showToast(e.toString())
                         }
                     }
