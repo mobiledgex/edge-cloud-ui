@@ -81,6 +81,7 @@ type Props = {
     currentClassification: string,
     cloudletUsageList: any,
     cloudletUsageListCount: number,
+    currentCloudlet2: any,
 
 
 };
@@ -157,15 +158,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
         componentDidMount = async () => {
             try {
 
-                await this.setState({
-                    cloudletUsageOne: this.props.cloudletUsageList[0],
-                    cloudletOne: this.props.cloudletList[0],
-                    cloudletUsageList: this.props.cloudletUsageList,
-                }, () => {
-                })
 
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
+
+                await this.setState({
+                    cloudletUsageOne: this.props.cloudletUsageList[0],
+                    cloudletUsageList: this.props.cloudletUsageList,
+                }, () => {
+                });
 
 
             } catch (e) {
@@ -183,6 +184,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         isEnableZoomIn: false,
                     })
                 }
+
+                if (this.props.cloudletList !== nextProps.cloudletList) {
+                    await this.setState({
+                        cloudletUsageOne: this.props.cloudletUsageList[0],
+                        cloudletOne: this.props.cloudletList[0],
+                        cloudletUsageList: this.props.cloudletUsageList,
+                    });
+                }
+
                 if (this.props.markerList !== nextProps.markerList) {
                     let markerList = nextProps.markerList;
                     this.setCloudletLocation(markerList, true)
@@ -308,8 +318,9 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         }
 
-        setCloudletLocation(appInstListOnCloudlet, isMapCenter = false) {
+        async setCloudletLocation(appInstListOnCloudlet, isMapCenter = false) {
             try {
+
                 let cloudletKeys = Object.keys(appInstListOnCloudlet)
                 let newCloudLetLocationList = this.makeNewCloudletLocationList(appInstListOnCloudlet, cloudletKeys)
                 let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
@@ -726,7 +737,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             <Icon name='cloud'/>
                         </div>
                         <div style={{marginLeft: 5}}>
-                            {this.state.cloudletOne.CloudletName}
+                            {this.props.currentCloudlet2.CloudletName}
                         </div>
                     </div>
                     <hr/>
@@ -736,7 +747,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>Operator</b>
                             </td>
                             <td style={PageMonitoringStyles.width50}>
-                                {this.state.cloudletOne.Operator}
+                                {this.props.currentCloudlet2.Operator}
                             </td>
                         </tr>
                         <tr style={PageMonitoringStyles.trPadding2}>
@@ -744,7 +755,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>Ip_support</b>
                             </td>
                             <td style={PageMonitoringStyles.width50}>
-                                {this.state.cloudletOne.Ip_support}
+                                {this.props.currentCloudlet2.Ip_support}
                             </td>
                         </tr>
                         <tr style={PageMonitoringStyles.trPadding2}>
@@ -752,7 +763,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>Num_dynamic_ips</b>
                             </td>
                             <td style={PageMonitoringStyles.width50}>
-                                {this.state.cloudletOne.Num_dynamic_ips}
+                                {this.props.currentCloudlet2.Num_dynamic_ips}
                             </td>
                         </tr>
                         <tr style={PageMonitoringStyles.trPadding2}>
@@ -760,7 +771,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>State</b>
                             </td>
                             <td style={{width: '50%', color: 'yellow'}}>
-                                {CLOUDLET_CLUSTER_STATE[this.state.cloudletOne.State]}
+                                {CLOUDLET_CLUSTER_STATE[this.props.currentCloudlet2.State]}
                             </td>
                         </tr>
                     </table>
@@ -910,7 +921,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             display: 'flex'
                                         }}
                                     >
-                                        {this.state.cloudletUsageOne !== undefined && this.renderCloudletInfoForAdmin()}
+                                        {this.props.currentCloudlet2 !== undefined && this.renderCloudletInfoForAdmin()}
                                         {this.state.cloudletUsageOne !== undefined && this.renderCloudletHwUsageDashBoardForAdmin()}
                                     </div>
                                     : null

@@ -381,6 +381,7 @@ type PageDevMonitoringState = {
     currentLayout: any,
     isExpandOrgDropdown: boolean,
     isShowClusterInLegend: boolean,
+    currentCloudlet2: any,
 
 }
 
@@ -639,6 +640,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentLayout: [],
                     isExpandOrgDropdown: true,
                     isShowClusterInLegend: false,
+                    currentCloudlet2: {},
                 }
             }
 
@@ -1435,6 +1437,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         return (
                             <MapForDev
                                 cloudletUsageList={this.state.filteredCloudletUsageList}
+                                currentCloudlet2={this.state.currentCloudlet2}
                                 markerList={this.state.markerList}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
                                 isMapUpdate={this.state.isMapUpdate}
@@ -1980,15 +1983,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             handleOnChangeCloudletDropdownForAdmin = async (selectCloudlet) => {
-                let currentCloudlet = undefined
+                let currentCloudletName = undefined
                 try {
-                    currentCloudlet = selectCloudlet.split("|")[0].trim()
+                    currentCloudletName = selectCloudlet.split("|")[0].trim()
                     this.cloudletSelectForAdmin.blur();
+
+                    let filteredCloudletList2 = this.state.filteredCloudletList.filter((item: TypeCloudlet, index) => {
+                        return item.CloudletName = currentCloudletName
+                    })
                     await this.setState({
                         currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
                         currentClusterList: [],
-                        currentCloudLet: currentCloudlet,
+                        currentCloudLet: currentCloudletName,
                         markerList: [],
+                        currentCloudlet2: filteredCloudletList2[0],
+                    }, () => {
+
+                        console.log('filteredCloudletList2===>', this.state.currentCloudlet2);
                     })
 
                     if (selectCloudlet === '0') {//todo:When reset filter
@@ -2090,7 +2101,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         try {
                             let usageEventPromiseList = []
                             if (filteredClusterList.length > 0) {
-                                await this.setState({currentCloudLet: currentCloudlet,})
+                                await this.setState({currentCloudLet: currentCloudletName,})
                                 let date = [moment().subtract(this.lastDay, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]
                                 let startTime = makeCompleteDateTime(date[0]);
                                 let endTime = makeCompleteDateTime(date[1]);
@@ -2131,7 +2142,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 loading: false,
                                 filteredClientStatusList: clientStatusList,
                                 filteredCloudletEventLogList: cloudletEventLogList,
-                                currentCloudLet: currentCloudlet,
+                                currentCloudLet: currentCloudletName,
                                 currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                 isLegendExpanded: filteredClusterList.length <= 6,
                             }, () => {
