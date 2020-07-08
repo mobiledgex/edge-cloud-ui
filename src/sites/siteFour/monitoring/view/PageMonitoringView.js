@@ -1435,7 +1435,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         return (
                             <MapForDev
                                 cloudletUsageList={this.state.filteredCloudletUsageList}
-                                ////////////////////////////////////
                                 markerList={this.state.markerList}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
                                 isMapUpdate={this.state.isMapUpdate}
