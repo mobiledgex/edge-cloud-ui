@@ -690,6 +690,26 @@ export const ADMIN_LAYOUT_KEY = "_layout_admin2";
 export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin2";*/
 
 
+/*export const layoutCloudlet ='layoutCloudlet'
+export const layoutMapperCloudlet ='layoutMapperCloudlet'
+
+export const layoutCluster ='layoutCluster'
+export const layoutMapperCluster ='layoutMapperCluster'
+
+export const layoutAppInst ='layoutAppInst'
+export const layoutMapperAppInst ='layoutMapperAppInst'
+
+
+export const layoutCloudletAdmin ='layoutCloudletAdmin'
+export const layoutMapperCloudletAdmin ='layoutMapperCloudletAdmin'
+
+export const layoutClusterAdmin ='layoutClusterAdmin'
+export const layoutMapperClusterAdmin ='layoutMapperClusterAdmin'
+
+export const layoutAdmin ='layoutAdmin'
+export const layoutMapperAdmin ='layoutMapperAdmin'*/
+
+
 
 
 

@@ -767,7 +767,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo: ADMIN usage
                     //todo:############################################################
                     if (this.state.userType.includes(USER_TYPE.ADMIN)) {
-                        //=================ADMIN INIT DATA ===============================
+                        //=================ADMIN INITAIL DATA ===============================
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         //todo:##########################################################
                         //todo: DEVELOPER usage
@@ -775,10 +775,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         usageEventPromiseList.push(getAllClusterEventLogList(clusterList, USER_TYPE_SHORT.DEV))
                         usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
-                        let newPromiseList2 = await Promise.all(usageEventPromiseList);
-                        allClusterEventLogList = newPromiseList2[0];
-                        allAppInstEventLogList = newPromiseList2[1];
-                        allClusterUsageList = newPromiseList2[2];
+                        const [promise0, promise1, promise2] = await Promise.all(usageEventPromiseList);
+                        allClusterEventLogList = promise0;
+                        allAppInstEventLogList = promise1;
+                        allClusterUsageList = promise2;
                         let regionList = localStorage.getItem('regions').split(",")
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                         clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterUsageList, this, true)
@@ -1299,14 +1299,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this.________makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this._____makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
-
-            ________makeGridItemOneBody(pHwType, graphType) {
+            _____makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
