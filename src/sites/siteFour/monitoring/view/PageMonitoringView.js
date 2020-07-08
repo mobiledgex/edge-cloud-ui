@@ -2005,8 +2005,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentCloudLet: currentCloudletName,
                         markerList: [],
                     }, () => {
-
-                        console.log('filteredCloudletList2===>', this.state.currentCloudletMap);
                     })
 
                     if (selectCloudlet === '0') {//todo:When reset filter
