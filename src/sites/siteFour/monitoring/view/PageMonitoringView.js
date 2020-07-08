@@ -196,7 +196,6 @@ type PageDevMonitoringState = {
     clusterSelectBoxPlaceholder: string,
     appInstSelectBoxPlaceholder: string,
     currentCloudLet: string,
-    currentCloudLet2: string,
     currentAppInst: string,
     isReady: boolean,
     isModalOpened: false,
@@ -381,7 +380,7 @@ type PageDevMonitoringState = {
     currentLayout: any,
     isExpandOrgDropdown: boolean,
     isShowClusterInLegend: boolean,
-    currentCloudlet2: any,
+    currentCloudletMap: any,
 
 }
 
@@ -469,7 +468,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     appInstSelectBoxPlaceholder: 'Select App Inst',
                     currentRegion: 'ALL',
                     currentCloudLet: undefined,
-                    currentCloudLet2: undefined,
                     currentClusterList: undefined,
                     currentAppInst: undefined,
                     isModalOpened: false,
@@ -640,7 +638,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentLayout: [],
                     isExpandOrgDropdown: true,
                     isShowClusterInLegend: false,
-                    currentCloudlet2: {},
+                    currentCloudletMap: {},
                 }
             }
 
@@ -1437,7 +1435,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         return (
                             <MapForDev
                                 cloudletUsageList={this.state.filteredCloudletUsageList}
-                                currentCloudlet2={this.state.currentCloudlet2}
+                                currentCloudletMap={this.state.currentCloudletMap}
                                 markerList={this.state.markerList}
                                 currentWidgetWidth={this.state.currentWidgetWidth}
                                 isMapUpdate={this.state.isMapUpdate}
@@ -1996,10 +1994,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         currentClusterList: [],
                         currentCloudLet: currentCloudletName,
                         markerList: [],
-                        currentCloudlet2: filteredCloudletList2[0],
+                        currentCloudletMap: filteredCloudletList2[0],
                     }, () => {
 
-                        console.log('filteredCloudletList2===>', this.state.currentCloudlet2);
+                        console.log('filteredCloudletList2===>', this.state.currentCloudletMap);
                     })
 
                     if (selectCloudlet === '0') {//todo:When reset filter

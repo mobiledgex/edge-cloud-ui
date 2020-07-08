@@ -81,7 +81,7 @@ type Props = {
     currentClassification: string,
     cloudletUsageList: any,
     cloudletUsageListCount: number,
-    currentCloudlet2: any,
+    currentCloudletMap: any,
 
 
 };
@@ -737,7 +737,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                             <Icon name='cloud'/>
                         </div>
                         <div style={{marginLeft: 5}}>
-                            {this.props.currentCloudlet2.CloudletName}
+                            {this.props.currentCloudletMap.CloudletName}
                         </div>
                     </div>
                     <hr/>
@@ -747,7 +747,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>Operator</b>
                             </td>
                             <td style={PageMonitoringStyles.width50}>
-                                {this.props.currentCloudlet2.Operator}
+                                {this.props.currentCloudletMap.Operator}
                             </td>
                         </tr>
                         <tr style={PageMonitoringStyles.trPadding2}>
@@ -755,7 +755,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>Ip_support</b>
                             </td>
                             <td style={PageMonitoringStyles.width50}>
-                                {this.props.currentCloudlet2.Ip_support}
+                                {this.props.currentCloudletMap.Ip_support}
                             </td>
                         </tr>
                         <tr style={PageMonitoringStyles.trPadding2}>
@@ -763,7 +763,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>Num_dynamic_ips</b>
                             </td>
                             <td style={PageMonitoringStyles.width50}>
-                                {this.props.currentCloudlet2.Num_dynamic_ips}
+                                {this.props.currentCloudletMap.Num_dynamic_ips}
                             </td>
                         </tr>
                         <tr style={PageMonitoringStyles.trPadding2}>
@@ -771,7 +771,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 <b>State</b>
                             </td>
                             <td style={{width: '50%', color: 'yellow'}}>
-                                {CLOUDLET_CLUSTER_STATE[this.props.currentCloudlet2.State]}
+                                {CLOUDLET_CLUSTER_STATE[this.props.currentCloudletMap.State]}
                             </td>
                         </tr>
                     </table>
@@ -921,7 +921,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                             display: 'flex'
                                         }}
                                     >
-                                        {this.props.currentCloudlet2 !== undefined && this.renderCloudletInfoForAdmin()}
+                                        {this.props.currentCloudletMap !== undefined && this.renderCloudletInfoForAdmin()}
                                         {this.state.cloudletUsageOne !== undefined && this.renderCloudletHwUsageDashBoardForAdmin()}
                                     </div>
                                     : null
