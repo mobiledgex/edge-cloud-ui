@@ -560,10 +560,20 @@ export default connect(mapStateToProps, mapDispatchProps)((
                         }}>
                             <div className='page_monitoring_title' style={{
                                 backgroundColor: 'transparent',
-                                flex: .38
+                                flex: .2
                             }}>
                                 Deployed Instance
                             </div>
+                            <div
+                                style={{
+                                    backgroundColor: 'transparent',
+                                    flex: .8,
+                                    marginLeft: -8,
+                                }}
+                            >
+                                {makeMapThemeDropDown(this)}
+                            </div>
+
 
                         </div>
                     </div>
@@ -643,9 +653,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                     <div style={{position: 'absolute', top: 5, right: 5, zIndex: 99999}}>
                                         {makeMapThemeDropDown(this)}
                                     </div>
-                                    : <div style={{position: 'absolute', top: 40, right: 0, zIndex: 99999}}>
-                                        {makeMapThemeDropDown(this)}
-                                    </div>
+                                    : null
                                 }
                                 {/*@desc:#####################################..*/}
                                 {/*@desc:Cloudlet Markers                    ...*/}

@@ -1440,13 +1440,14 @@ export function makeMapThemeDropDown(_this) {
         <Select
             size={"small"}
             defaultValue="dark1"
-            style={{width: 70, zIndex: 9999999999, height: 15, background: 'black !important'}}
+            style={{width: 70, zIndex: 112312, height: 15, background: 'black !important',}}
             showArrow={false}
-            bordered={false}
+            bordered={true}
             ref={c => _this.themeSelect = c}
             listHeight={550}
             onChange={async (value) => {
                 try {
+                    _this.themeSelect.blur();
                     let index = value
                     let lineColor = DARK_LINE_COLOR
                     let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
@@ -1462,7 +1463,7 @@ export function makeMapThemeDropDown(_this) {
                     }, 250)
 
                 } catch (e) {
-                    throw new Error(e)
+                    //throw new Error(e)
                 }
             }}
         >
