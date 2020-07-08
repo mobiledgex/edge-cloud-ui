@@ -6,6 +6,7 @@ import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {renderBarLoader, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
+import {FORMAT_FULL_DATE, FORMAT_FULL_TIME} from "../../../../utils/date_util";
 
 const FontAwesomeIcon = require('react-fontawesome')
 type Props = {
@@ -74,10 +75,10 @@ export default function CloudletEventLogList(props) {
                     >
                         <div>
                             <div style={{marginLeft: 2}}>
-                                {props.cloudletEventLogList[index][0].toString().split('T')[0]}
+                                {time(FORMAT_FULL_DATE, props.cloudletEventLogList[index][0])}
                             </div>
                             <div style={{marginLeft: 2}}>
-                                {props.cloudletEventLogList[index][0].toString().split('T')[1].substring(0, 8)}
+                                {time(FORMAT_FULL_TIME, props.cloudletEventLogList[index][0])}
                             </div>
                         </div>
                     </td>

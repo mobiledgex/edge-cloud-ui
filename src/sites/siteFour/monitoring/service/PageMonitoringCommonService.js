@@ -5,7 +5,6 @@ import {toast} from "react-semantic-toasts";
 import Lottie from "react-lottie";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import moment from "moment";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import notification from "antd/es/notification";
@@ -14,7 +13,7 @@ import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import AppsIcon from "@material-ui/icons/Apps";
+import * as dateUtil from "../../../../utils/date_util";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -735,9 +734,8 @@ export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, date
 export const getOneYearStartEndDatetime = () => {
 
     let arrDateTime = []
-    let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
-    let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
-
+    let startTime = makeCompleteDateTime(dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)));
+    let endTime = makeCompleteDateTime(dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)));
     arrDateTime.push(startTime)
     arrDateTime.push(endTime)
 

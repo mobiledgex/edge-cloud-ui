@@ -36,6 +36,7 @@ import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineC
 import {Select, Tag} from "antd";
 import _, {sortBy} from 'lodash';
 import {mapTileList} from "../common/MapProperties";
+import * as dateUtil from  '../../../../utils/date_util'
 
 const {Option} = Select;
 
@@ -450,9 +451,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 for (let j in series) {
                     let usageOne = series[j][hardWareUsageIndex];
                     usageList.push(usageOne);
-                    let dateOne = series[j]["0"];
-                    dateOne = dateOne.toString().split("T");
-                    dateTimeList.push(dateOne[1]);
+                    dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, series[j]["0"]));
                 }
                 cloudletClusterAppInstNameList.push(classificationName);
                 usageSetList.push(usageList);
