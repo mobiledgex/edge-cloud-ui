@@ -8,13 +8,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {Line as ReactChartJsLine} from "react-chartjs-2";
 import {GridLoader, PulseLoader} from "react-spinners";
 import notification from "antd/es/notification";
-import {makeGradientColor} from "./PageDevOperMonitoringService";
+import {makeCompleteDateTime, makeGradientColor} from "./PageMonitoringService";
 import {HARDWARE_TYPE, USAGE_TYPE} from "../../../../shared/Constants";
-import {makeCompleteDateTime} from "./PageAdmMonitoringService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import * as dateUtil from '../../../../utils/date_util'
+import * as dateUtil from "../../../../utils/date_util";
+
+const FontAwesomeIcon = require('react-fontawesome')
 
 export const noDataArea = () => (
     <div style={PageMonitoringStyles.center3}>
@@ -97,33 +98,155 @@ export const renderGridLoader = () => {
     )
 }
 
-
-export const renderPlaceHolderLoader = (type = '') => {
-
-    if (type === 'sk') {
-        return (
-            <div style={{marginTop: 0,}}>
-                <SkeletonTheme color="#22252C" highlightColor="#444">
-                    <Skeleton count={4} height={38}/>
-                </SkeletonTheme>
+export const renderEmptyMessageBox = (message: string) => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{height: '100%'}}>
+            <div style={{
+                alignSelf: "center",
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 12, 15, 0.2)',
+                borderRadius: 8,
+                padding: 8,
+                paddingLeft: 15,
+                paddingRight: 15,
+            }}>
+                <div style={{fontSize: 17, color: '#57aa27'}}>{message}</div>
             </div>
-        )
-    } else {
-        return (
-            <div className='page_monitoring_blank_box'
-                 style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
-                <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
-                />
-            </div>
-        )
+        </div>
+    )
+}
+
+
+/**
+ *
+ * @param marginBottom
+ * @returns {*}
+ */
+export const renderSmallProgressLoader = (marginBottom: 0) => {
+    return (
+        <CircularProgress size={12} thickness={3} style={{marginBottom: marginBottom, color: '#1cecff'}}/>
+    )
+}
+
+export const renderBarLoader = (isBold = true) => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{
+                 zIndex: 999,
+                 position: 'absolute',
+                 width: isBold ? '99.1%' : '100%',
+                 //backgroundColor: 'red'
+             }}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: isBold ? require('../../../../lotties/blue_bar2') : require('../../../../lotties/blue_bar2_thin'),
+                }}
+                speed={0.5}
+                height={10}
+                width={isBold ? '99.1%' : '100%'}
+                isStopped={false}
+                isPaused={false}
+                style={{
+                    position: 'absolute',
+                    top: -8,
+                }}
+            />
+        </div>
+    )
+}
+
+export const renderXLoader = () => {
+    return (
+        <div className='page_monitoring_blank_box'
+             style={{
+                 zIndex: 999,
+                 width: '100%',
+                 position: 'absolute',
+                 height: '100%',
+                 backgroundColor: 'black'
+             }}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../../lotties/x-marks'),
+                }}
+                speed={2}
+                height={50}
+                width={50}
+                isStopped={false}
+                isPaused={false}
+                style={{
+                    position: 'absolute',
+                    top: '45%',
+                }}
+            />
+        </div>
+    )
+}
+
+
+export const renderPlaceHolderHorizontalLoader = (type = 'lottieCircle') => {
+
+    try {
+        if (type === 'sk') {
+            return (
+                <div style={{marginTop: 0,}}>
+                    <SkeletonTheme color="#22252C" highlightColor="#444">
+                        <Skeleton count={4} height={38}/>
+                    </SkeletonTheme>
+                </div>
+            )
+        } else if (type === 'lottieCircle') {
+            return (
+                <div className='page_monitoring_blank_box'
+                     style={{
+                         zIndex: 999,
+                         position: 'absolute',
+                         width: '100%',
+                         //backgroundColor: 'red'
+                     }}>
+                    <Lottie
+                        options={{
+                            loop: true,
+                            autoplay: true,
+                            animationData: require('../../../../lotties/horizontal-loading-bold'),
+                        }}
+                        speed={1}
+                        height={20}
+                        width={'100%'}
+                        isStopped={false}
+                        isPaused={false}
+                        style={{
+                            position: 'absolute',
+                            top: -9,
+                        }}
+                    />
+                </div>
+            )
+        } else {
+            return (
+                <div className='page_monitoring_blank_box'
+                     style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
+                    <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
+                    />
+                </div>
+            )
+        }
+    } catch (e) {
+        showToast(e.toString())
     }
 
 }
 
-export const renderPlaceHolderCircular = (type: string = '') => {
+export const renderCircularProgress = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
-             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%',}}>
+             style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '90%',}}>
             <CircularProgress style={{color: '#70b2bc', zIndex: 1, fontSize: 100}}
             />
         </div>
@@ -168,31 +291,93 @@ export const removeDuplicates = (paramArrayList, key) => {
     return newArray;
 }
 
-export const renderPlaceHolderLottiePinJump2 = (type: string = '') => {
-    return (
-        <div className='page_monitoring_blank_box'
-             style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../../lotties/6698-location-pin22222'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                speed={2.9}
-                height={220}
-                width={220}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
+
+export const renderPlaceHolderHorizontalBar = (isBar = true, paramWidth, isBold = false) => {
+    if (isBar) {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{
+                     zIndex: 999,
+                     position: 'absolute',
+                     //top: '1%',
+                     width: paramWidth,
+                     //backgroundColor: 'red'
+                 }}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: isBold ? require('../../../../lotties/horizontal-loading-bold') : require('../../../../lotties/horizontal-loading'),
+                    }}
+                    speed={1}
+                    height={30}
+                    isStopped={false}
+                    isPaused={false}
+                    style={{
+                        position: 'absolute',
+                        top: -15,
+                        //marginLeft: '-10%',
+                        justifyContent: 'center',
+                        alignItem: 'center',
+                        alignSelf: 'center'
+                    }}
+                />
+            </div>
+        )
+    }
 }
 
 
-export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
+export const renderXMarkForMap = (isXMark = true) => {
+    if (isXMark) {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../../../../lotties/x-marks'),
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    }}
+                    speed={3}
+                    height={50}
+                    width={50}
+                    isStopped={false}
+                    isPaused={false}
+                    //style={{position: 'absolute', top: 20,}}
+                />
+            </div>
+        )
+    } else {
+        return (
+            <div className='page_monitoring_blank_box'
+                 style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../../../../lotties/6698-location-pin22222'),
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    }}
+                    speed={2.9}
+                    height={220}
+                    width={220}
+                    isStopped={false}
+                    isPaused={false}
+                />
+            </div>
+        )
+    }
+
+
+}
+
+export const renderPlaceHolderLottiePinJump = (type: string = '') => {
     return (
         <div className='page_monitoring_blank_box'
              style={{zIndex: 999999999999, position: 'absolute', top: '1%', left: '1%'}}>
@@ -205,36 +390,15 @@ export const renderPlaceHolderLottiePinJump3 = (type: string = '') => {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
                 }}
-                speed={2.0}
-                height={105}
-                width={105}
+                speed={20}
+                height={100}
+                width={100}
                 isStopped={false}
                 isPaused={false}
             />
         </div>
     )
 }
-/*
-export const renderPlaceHolderLottie = (type: string = '') => {
-    return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../lotties/11052-green-loader-ring_555'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                height={150}
-                width={150}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
-}*/
 
 export const convertByteToMegaByte = (value, hardwareType) => {
     if (value > 1000000) {
@@ -268,22 +432,22 @@ export const convertToMegaGigaForNumber = (bytes) => {
     let mega = marker * marker; // One MB is 1024 KB
     let giga = marker * marker * marker; // One GB is 1024 MB
     let tera = marker * marker * marker * marker; // One TB is 1024 GB
-    // return bytes if less than a KB
     if (bytes < kilo) return bytes;
-    // return KB if less than a MB
     else if (bytes < mega) return (bytes / kilo).toFixed(decimal) + " K";
-    // return MB if less than a GB
     else if (bytes < giga) return (bytes / mega).toFixed(decimal) + " M";
-    // return GB if less than a TB
     else return (bytes / giga).toFixed(decimal) + " G";
 }
 
 
-export const convertByteToMegaByte2 = (value, hardwareType) => {
-    if (value > 1000000) {
-        return value / 1000000
-    } else {
-        return value;
+export const convertMegaToGiGa = (value, isShowUnit=true) => {
+    try {
+        if (value > 1000) {
+            return isShowUnit ? (value / 1000).toFixed(0) + ' GB' : (value / 1000).toFixed(0)
+        } else {
+            return value + ' MB';
+        }
+    } catch (e) {
+
     }
 }
 
@@ -429,68 +593,6 @@ export const lineGraphOptionsForAppInst = (hardwareType) => {
         }
     )
 }
-
-
-/*export const renderUsageByType2 = (usageOne, hardwareType) => {
-
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        return usageOne.sumVCpuUsage;
-    }
-    if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
-        return usageOne.sumFloatingIpsUsage;
-    }
-    if (hardwareType === HARDWARE_TYPE.IPV4) {
-        return usageOne.sumIpv4Usage;
-    }
-
-    if (hardwareType === HARDWARE_TYPE.CPU) {
-        return usageOne.sumCpuUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.MEM) {
-        return usageOne.sumMemUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.DISK) {
-        return usageOne.sumDiskUsage
-    }
-    if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return usageOne.sumRecvBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return usageOne.sumSendBytes
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-        return usageOne.sumActiveConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
-        return usageOne.sumHandledConnection
-    }
-
-    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-        return usageOne.sumAcceptsConnection
-    }
-}*/
-
-export const sortUsageListByType = (usageList, hardwareType) => {
-    if (hardwareType === HARDWARE_TYPE.VCPU) {
-        usageList.sort((a, b) => b.sumVCpuUsage - a.sumVCpuUsage);
-    } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
-    } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
-    } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS) {
-        usageList.sort((a, b) => b.sumFloatingIpsUsage - a.sumFloatingIpsUsage);
-    } else if (hardwareType === HARDWARE_TYPE.IPV4) {
-        usageList.sort((a, b) => b.sumIpv4Usage - a.sumIpv4Usage);
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
-        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
-    }
-    return usageList;
-}
-
 
 export const renderUsageByType = (usageOne, hardwareType, _this) => {
 
@@ -656,9 +758,17 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
         });
     } else {
         notification.warning({
-            placement: 'topLeft',
+            placement: 'bottomLeft',
             duration: time,
             message: title,
+           /* style: {
+                background: 'red',
+                color: 'white !important',
+            },
+            icon: (<div>
+                <AppsIcon
+                    style={{fill: 'white', fontSize: 18, marginTop: 4,}}/>
+            </div>)*/
         });
     }
 }
@@ -713,16 +823,18 @@ export const hardwareTypeToUsageKey = (hwType: string) => {
 
 }
 
+
 /**
  *
  * @param usageList
  * @param pHardwareType
- * @param themeTitle
+ * @param chartColorList
+ * @param classification
  * @returns {[]}
  */
-export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, chartColorList) => {
-    try {
+export const makeClusterBubbleChartData = (usageList, pHardwareType, chartColorList, classification = '') => {
 
+    try {
         let bubbleChartData = []
         usageList.map((item, index) => {
             let usageValue: number = item[hardwareTypeToUsageKey(pHardwareType)]
@@ -744,7 +856,7 @@ export const makeBubbleChartDataForCluster = (usageList: any, pHardwareType, cha
 
         return bubbleChartData;
     } catch (e) {
-        //showToast(e.toString())
+        //throw new Error(e)
     }
 }
 

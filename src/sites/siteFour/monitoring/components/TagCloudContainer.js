@@ -76,7 +76,6 @@ export default class TagCloudContainer extends React.Component<Props, State> {
 
                                 return (
                                     <div onClick={() => {
-                                        alert('slkdfldkf')
                                     }} style={{fontSize: randNo, fontWeight: randNo2, fontFamily: 'Black Ops One', color: CHART_COLOR_MONOKAI[index]}}>{item.cluster}[{item.cloudlet}] </div>
                                 )
                             })}

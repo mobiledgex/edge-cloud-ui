@@ -1,21 +1,16 @@
 // @flow
 import * as React from 'react';
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import {renderPlaceHolderHorizontalLoader} from "../service/PageMonitoringCommonService";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import {Line} from "react-chartjs-2";
-import {
-    convertHWType,
-    makeGradientLineChartData,
-    makeGradientLineChartDataForOneColor,
-    makeLineChartOptions
-} from "../service/PageDevOperMonitoringService";
+import {convertHWType, makeGradientLineChartData, makeLineChartOptions} from "../service/PageMonitoringService";
 
 type Props = {
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,
@@ -97,7 +92,7 @@ export default class BarAndLineChartContainer extends React.Component<Props, Sta
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {this.props.loading ? renderPlaceHolderLoader() :
+                        {this.props.loading ? renderPlaceHolderHorizontalLoader() :
                             this.props.filteredCloudletListLength > 1 ?
                                 <div style={{width: '100%'}}>
                                     <GoogleChart
