@@ -2104,12 +2104,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
                                 usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
-
-                                let completedPromiseList = await Promise.all(usageEventPromiseList);
-                                allClusterEventLogList = completedPromiseList[0];
-                                clientStatusList = completedPromiseList[1];
-                                allClusterUsageList = completedPromiseList[2];
-                                cloudletEventLogList = completedPromiseList[3];
+                                let completedPromiseList = await Promise.allSettled(usageEventPromiseList);
+                                allClusterEventLogList = completedPromiseList["0"].value;
+                                clientStatusList = completedPromiseList["1"].value
+                                allClusterUsageList = completedPromiseList["2"].value
+                                cloudletEventLogList = completedPromiseList["3"].value
 
                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
                                 clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
@@ -2143,7 +2142,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }, () => {
                             });
                         } catch (e) {
-                            alert('sdlfksdlfklsdflk!!!')
                             // showToast(e.toString())
                         }
                     }
