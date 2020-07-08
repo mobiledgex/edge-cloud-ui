@@ -34,7 +34,7 @@ import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUti
 import uniqBy from "lodash/uniqBy";
 import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {Select, Tag} from "antd";
-import _, {sortBy} from 'lodash';
+import sortBy from 'lodash/sortBy';
 import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from  '../../../../utils/date_util'
 
@@ -752,7 +752,7 @@ export function makeUniqOperOrg(cloudletList) {
     cloudletList.map((item: TypeCloudlet, index) => {
         operatorList.push(item.Operator)
     })
-    let uniqOperList = _.uniqBy(operatorList)
+    let uniqOperList = uniqBy(operatorList)
     let newOperList = []
     uniqOperList.map(item => {
         newOperList.push(item)
@@ -766,7 +766,7 @@ export function makeUniqDevOrg(appInstList) {
     appInstList.map((item: TypeAppInst, index) => {
         filterlist.push(item.OrganizationName)
     })
-    let uniqFilteredList = _.uniqBy(filterlist)
+    let uniqFilteredList = uniqBy(filterlist)
     let newFilteredList = []
     uniqFilteredList.map(item => {
         newFilteredList.push(item)
