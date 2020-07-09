@@ -1,32 +1,14 @@
 // @flow
 import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
-import {Dropdown} from "semantic-ui-react";
-import {
-    CLASSIFICATION,
-    EVENT_LOG_ITEM_LIST,
-    EVENT_LOG_ITEM_LIST_FOR_APPINST,
-    EVENT_LOG_ITEM_LIST_FOR_CLOUDLET,
-    EVENT_LOG_ITEM_LIST_FOR_CLUSTER, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USER_TYPE_SHORT
-} from "../../../../shared/Constants";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import Button from "@material-ui/core/Button";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {isEmpty, makeClusterBubbleChartData, showToast} from "../service/PageMonitoringCommonService";
-import {convertToClassification, getCloudletClusterNameList, makeClusterMultiDropdownForAdmin, makeCompleteDateTime} from "../service/PageMonitoringService";
-import type {TypeAppInst, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
-import {
-    fetchAppInstList,
-    fetchClusterList,
-    getAllCloudletEventLogs,
-    getAllClusterEventLogList,
-    getClientStatusList,
-    getCloudletUsageList,
-    getClusterLevelUsageList
-} from "../service/PageMonitoringMetricService";
-import moment from "moment";
+import {showToast} from "../service/PageMonitoringCommonService";
+import {convertToClassification} from "../service/PageMonitoringService";
 
 const FA = require('react-fontawesome')
 type Props = {
