@@ -420,8 +420,7 @@ class ClustersMap extends Component {
                                     zoom={zoom}
                                     duration={1.2}
                                     style={{width: '100%', height: '100%'}}
-                                    easeLinearity={1}
-                                    useFlyTo={true}
+                                    easeLinearity={2}
                                     dragging={true}
                                     zoomControl={true}
                                     boundsOptions={{padding: [50, 50]}}
