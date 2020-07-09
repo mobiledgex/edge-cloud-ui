@@ -269,7 +269,7 @@ class MexListView extends React.Component {
         return (
             <div className="mexListView">
                 {isMap ?
-                    <div className='panel_worldmap' style={{ height: 500 }}>
+                    <div className='panel_worldmap' style={{ height: 400 }}>
                         <Map dataList={this.state.filterList}
                              id={this.props.requestInfo.id}
                              onClick={this.onMapClick}
