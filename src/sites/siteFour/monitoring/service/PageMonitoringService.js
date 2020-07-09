@@ -34,7 +34,8 @@ import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
 import {Progress, Select, Tag} from "antd";
-import {sortBy, uniqBy} from 'lodash';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
@@ -1586,7 +1587,7 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
 export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
 
-    try{
+    try {
         let treeCloudletList = []
         cloudletList.map((cloudletOne, cloudletIndex) => {
             let newCloudletOne = {
@@ -1652,8 +1653,8 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
         } else {
             return treeCloudletList
         }
-    }catch (e) {
-        
+    } catch (e) {
+
     }
 
 }
@@ -1684,7 +1685,7 @@ export const makeDropdownForCloudletForDevView = (pList) => {
     }
 };
 
-export function  renderCloudletInfoForAdmin(pCurrentCloudletMap) {
+export function renderCloudletInfoForAdmin(pCurrentCloudletMap) {
     return (
         <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
         >
@@ -1740,7 +1741,6 @@ export function  renderCloudletInfoForAdmin(pCurrentCloudletMap) {
         </div>
     )
 }
-
 
 
 /**
