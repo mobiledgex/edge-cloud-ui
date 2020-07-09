@@ -64,7 +64,8 @@ class MexFlow extends React.Component {
       this.cy.add({
         group: element.type,
         data: element.data,
-        position: element.position
+        position: element.position,
+        classes: element.classes
       })
     })
   }
@@ -99,8 +100,7 @@ class MexFlow extends React.Component {
         this.cy.add({
           group: element.type,
           data: element.data,
-          position: element.position,
-          classes: element.classes
+          position: element.position
         })
       })
     }

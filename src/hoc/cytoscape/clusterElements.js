@@ -7,8 +7,11 @@ export const ICON_UNLOCK = 'unlock'
 export const defaultFlow = (type) => (
     {
         id: 100, dataList: [
-            { type: 'nodes', data: { id: 100, shape: SHAPE_ROUND_RECTANGLE, label: `External Network`, width: 10, height: 200, bg: '#FFF', tr: -1.5708, tmx: -15, zi:1 }, position: { x: 100, y: 185 } },
-            { type: 'nodes', data: { id: 101, shape: SHAPE_ROUND_RECTANGLE, label: `Internal Network`, width: 700, height: 10, bg: '#FFF', tmy: 15, zi: 1 }, position: { x: 600, y: 300 } }
+            { type: 'nodes', data: { id: 100, shape: SHAPE_ROUND_RECTANGLE, label: `External Network`, width: 10, height: 200, bg: '#FFF', tr: -1.5708, tmx: -15, zi: 1 }, position: { x: 100, y: 185 } },
+            { type: 'nodes', data: { id: 101, shape: SHAPE_ROUND_RECTANGLE, label: `Internal Network`, width: 700, height: 10, bg: '#FFF', tmy: 15, zi: 1 }, position: { x: 600, y: 300 } },
+            { type: 'nodes', data: { id: 102, shape: SHAPE_ROUND_RECTANGLE, width: 1, height: 1, bg: '#FFF' }, position: { x: 500, y: 300 } },
+            { type: 'nodes', data: { id: 103, shape: SHAPE_ROUND_RECTANGLE, width: 1, height: 1, bg: '#FFF' }, position: { x: 700, y: 300 } },
+            { type: 'nodes', data: { id: 104, shape: SHAPE_ROUND_RECTANGLE, width: 1, height: 1, bg: '#FFF' }, position: { x: 800, y: 300 } }
         ]
     }
 )
@@ -22,7 +25,7 @@ export const ipAccessFlow = (id, type) => {
                 { type: 'edges', data: { id: 1001, source: 100, target: 1 } },
                 { type: 'edges', data: { id: 1101, source: 1, target: 101, te: '-43% -43%', as: 'none' } }
             ],
-            removeId: [1, 1101, 1001]
+            removeId: [1, 1001, 1101]
         }
     )
 }
@@ -66,10 +69,15 @@ export const ipAccessFlowApp = (id, type) => {
             id: 1, dataList: [
                 { type: 'nodes', data: { id: 1, shape: SHAPE_ROUND_RECTANGLE, label: 'ROOT LB', width: 170, height: 100, bg: '#FFF', tva: 'top', tmy: -10, zi: 1 }, position: { x: 300, y: 185 } },
                 { type: 'nodes', data: { id: 10001, shape: SHAPE_ELLIPSE, label: 'LB', width: 100, height: 60, bg: '#8893D0', zi: 2 }, position: { x: 300, y: 185 } },
+                { type: 'nodes', data: { id: 10002, shape: SHAPE_ELLIPSE, width: 1, height: 1, bg: '#8893D0' }, position: { x: 267, y: 200 } },
+                { type: 'nodes', data: { id: 10003, shape: SHAPE_ELLIPSE, width: 1, height: 1, bg: '#8893D0' }, position: { x: 340, y: 200 } },
                 { type: 'edges', data: { id: 1001, source: 100, target: 1 } },
-                { type: 'edges', data: { id: 1101, source: 1, target: 101, te: '-43% -43%', as: 'none' } }
+                { type: 'edges', data: { id: 1101, source: 1, target: 101, te: '-43% -43%', as: 'none' } },
+                { type: 'edges', data: { id: 10010002, source: 100, target: 10002, zi: 3, as: 'none', ls: 'dashed', lc: '#a2f19f', se: '0% 8%' } },
+                { type: 'edges', data: { id: 1000210003, source: 10002, target: 10003, zi: 3, as: 'none', ls: 'dashed', lc: '#a2f19f' } },
+                { type: 'edges', data: { id: 10003102, source: 10003, target: 102, zi: 3, as: 'none', ls: 'dashed', te: '-20% 10%', lc: '#a2f19f' }, classes: 'taxi' }
             ],
-            removeId: [1, 1101, 1001, 10001]
+            removeId: [1, 10001, 10002, 10003, 1001, 1101, 10010002, 1000210003, 1003102]
         }
     )
 }
@@ -78,58 +86,41 @@ export const portFlow = (count, type) => {
     return (
         {
             id: 3, dataList: count === 0 ? [] : [
-                { type: 'nodes', data: { id: 3, shape: SHAPE_ELLIPSE, width: 80, height: 40, bg: '#8893D0', bi: renderNode(ICON_LOCK, 10).svg, zi: 3 }, position: { x: 267, y: 165 } },
+                { type: 'nodes', data: { id: 3, shape: SHAPE_ELLIPSE, label: 'TLS Termination', lfs: 10, width: 80, height: 40, bg: '#8893D0', bi: renderNode(ICON_LOCK, 10).svg, zi: 3, tmy: -18, tc: 'black' }, position: { x: 267, y: 165 } },
                 { type: 'nodes', data: { id: 30001, shape: SHAPE_ELLIPSE, width: 80, height: 40, bg: '#8893D0', bi: renderNode(ICON_UNLOCK, 10).svg, zi: 3 }, position: { x: 340, y: 165 } },
-                { type: 'edges', data: { id: 330001, source: 3, target: 30001, zi: 3, as: 'none', ls: 'dashed', lc:'#a2f19f' } },
-                { type: 'edges', data: { id: 30000101, source: 30001, target: 101, zi: 3, as: 'none', ls: 'dashed', te: '-20% 10%', lc:'#a2f19f' } },
+                { type: 'edges', data: { id: 1003, source: 100, target: 3, zi: 3, as: 'none', ls: 'dashed', lc: '#a2f19f', se: '0% -10%' } },
+                { type: 'edges', data: { id: 330001, source: 3, target: 30001, zi: 3, as: 'none', ls: 'dashed', lc: '#a2f19f' } },
+                { type: 'edges', data: { id: 30000102, source: 30001, target: 102, zi: 3, as: 'none', ls: 'dashed', lc: '#a2f19f' }, classes: 'taxi' },
             ],
-            removeId: [3, 30001, 330001, 30000101]
-        }
-    )
-}
-
-export const portFlowNoTLS = (count, type) => {
-    return (
-        {
-            id: 4, dataList: count === 0 ? [] : [
-                { type: 'nodes', data: { id: 4, shape: SHAPE_ELLIPSE, width: 1, height: 1, bg: '#8893D0'}, position: { x: 267, y: 200 } },
-                { type: 'nodes', data: { id: 40001, shape: SHAPE_ELLIPSE, width: 1, height: 1, bg: '#8893D0' }, position: { x: 340, y: 200 } },
-                { type: 'edges', data: { id: 440001, source: 4, target: 40001, zi: 3, as: 'none', ls: 'dashed', lc:'#a2f19f' } },
-                { type: 'edges', data: { id: 40000101, source: 40001, target: 101, zi: 3, as: 'none', ls: 'dashed', te: '-20% 10%', lc:'#a2f19f' } },
-            ],
-            removeId: [4, 40001, 440001, 40000101]
+            removeId: [3, 30001, 1003, 330001, 30000102]
         }
     )
 }
 
 export const deploymentTypeFlow = (id, type) => {
-    let label = undefined
-    let color = '#00abed'
-    switch (id) {
-        case constant.DEPLOYMENT_TYPE_KUBERNETES:
-            color = '#3A589E'
-            label = 'K8s Master'
-            break;
-        case constant.DEPLOYMENT_TYPE_DOCKER:
-            label = 'Docker'
-            break;
-        case constant.DEPLOYMENT_TYPE_VM:
-            label = 'VM'
-            break;
-    }
-    if (label) {
-        let dataList = []
-        dataList.push({ type: 'nodes', data: { id: 2, shape: SHAPE_ROUND_RECTANGLE, label: label, width: 170, height: 110, bg: color, zi: 1 }, position: { x: 600, y: 185 } })
-        dataList.push({ type: 'edges', data: { id: 2101, source: 2, target: 101, te: '0% 0%', as: 'none' } })
-        dataList.push({ type: 'edges', data: { id: 1012, source: 101, target: 2, as: 'none', ls: 'dashed', se: '-20% 10%', zi: 3, lc:'#a2f19f' } })
-        dataList.push({ type: 'edges', data: { id: 21011, source: 2, target: 101, as: 'none', ls: 'dashed', zi: 3, te: '20% 20%', lc:'#a2f19f' } })
+
+    let dataList = []
+
+    if (id === constant.DEPLOYMENT_TYPE_KUBERNETES || id === constant.DEPLOYMENT_TYPE_DOCKER) {
         if (id === constant.DEPLOYMENT_TYPE_KUBERNETES) {
-            dataList.push({ type: 'nodes', data: { id: 20001, shape: SHAPE_ROUND_RECTANGLE, width: 170, height: 100, bg: '#FFB97F', bw: 1 }, position: { x: 900, y: 185 } })
-            dataList.push({ type: 'nodes', data: { id: 20002, shape: SHAPE_ROUND_RECTANGLE, width: 170, height: 100, bg: '#FFB97F', bw: 1 }, position: { x: 905, y: 190 } })
-            dataList.push({ type: 'nodes', data: { id: 20003, shape: SHAPE_ROUND_RECTANGLE, label: 'K8s Nodes', width: 170, height: 100, bg: '#FFB97F', bw: 1, zi: 1 }, position: { x: 910, y: 195 } })
+            dataList.push({ type: 'nodes', data: { id: 2, shape: SHAPE_ROUND_RECTANGLE, label: 'K8s Master', width: 170, height: 110, bg: '#3A589E', zi: 1, tmy: -10 }, position: { x: 600, y: 185 } })
+            dataList.push({ type: 'edges', data: { id: 1022, source: 102, target: 2, as: 'none', ls: 'dashed', zi: 3, lc: '#a2f19f', te: '60% 0%' }, classes: 'taxi' })
+            dataList.push({ type: 'edges', data: { id: 2103, source: 2, target: 103, as: 'none', ls: 'dashed', zi: 3, se: '60% 0%', lc: '#a2f19f' } })
+            dataList.push({ type: 'nodes', data: { id: 20001, label: 'K8s Nodes', shape: SHAPE_ROUND_RECTANGLE, width: 170, height: 100, bg: '#FFF', bw: 1, tva: 'top', tmy: -10 }, position: { x: 900, y: 185 } })
+            dataList.push({ type: 'nodes', data: { id: 20002, shape: SHAPE_ROUND_RECTANGLE, width: 170, height: 100, bg: '#FFF', bw: 1 }, position: { x: 905, y: 190 } })
+            dataList.push({ type: 'nodes', data: { id: 20003, shape: SHAPE_ROUND_RECTANGLE, width: 170, height: 100, bg: '#FFF', bw: 1, zi: 1 }, position: { x: 910, y: 195 } })
+            dataList.push({ type: 'nodes', data: { id: 20004, shape: SHAPE_ELLIPSE, label: 'App', width: 100, height: 50, bg: '#FFB97F', bw: 1, zi: 4 }, position: { x: 910, y: 195 } })
             dataList.push({ type: 'edges', data: { id: 20003101, source: 20003, target: 101, te: '44% 44%', as: 'none' } })
-            dataList.push({ type: 'edges', data: { id: 1012003, source: 101, target: 20003, ls: 'dashed', zi: 3, se: '20% 20%', lc:'#a2f19f' } })
+            dataList.push({ type: 'edges', data: { id: 10420004, source: 104, target: 20004, ls: 'dashed', zi: 3, lc: '#a2f19f', tdn: '50px' }, classes: 'taxi' })
+            dataList.push({ type: 'edges', data: { id: 103104, source: 103, target: 104, ls: 'dashed', zi: 3, lc: '#a2f19f', as: 'none' } })
         }
-        return ({ id: 2, dataList: dataList, removeId: [2, 2101, 1012, 21011, 20001, 20002, 20003, 20003101, 1012003] })
+        else if (id === constant.DEPLOYMENT_TYPE_DOCKER) {
+            dataList.push({ type: 'nodes', data: { id: 2, shape: SHAPE_ROUND_RECTANGLE, label: 'Docker VM', width: 170, height: 110, bg: '#00abed', zi: 1, tva: 'top', tmy: -10 }, position: { x: 600, y: 185 } })
+            dataList.push({ type: 'nodes', data: { id: 20004, shape: SHAPE_ELLIPSE, label: 'App', width: 100, height: 50, bg: '#FFB97F', bw: 1, zi: 4 }, position: { x: 600, y: 185 } })
+            dataList.push({ type: 'edges', data: { id: 1022, source: 102, target: 2, ls: 'dashed', zi: 3, lc: '#a2f19f', tdn: '50px' }, classes: 'taxi' })
+        }
+        dataList.push({ type: 'edges', data: { id: 2101, source: 2, target: 101, as: 'none' } })
+        return ({ id: 2, dataList: dataList, removeId: [2, 2101, 1022, 2103, 20001, 20002, 20003, 20004, 20003101, 10420004, 103104] })
     }
+
 }

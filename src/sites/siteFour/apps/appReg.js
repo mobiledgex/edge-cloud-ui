@@ -50,7 +50,6 @@ class AppReg extends React.Component {
         this.originalData = undefined
         this.expandAdvanceMenu = false
         this.tlsCount = 0 
-        this.portCount = 0
     }
 
     validatePortRange = (form) => {
@@ -139,23 +138,20 @@ class AppReg extends React.Component {
     }
 
     removeMultiForm = (e, form) => {
-        this.portCount = this.portCount + 1
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
             this.setState({
-                forms: updateForms, 
-                flowData: clusterFlow.portFlowNoTLS(this.portCount - this.tlsCount)
+                forms: updateForms
             })
         }
     }
 
     addMultiForm = (e, form) => {
-        this.portCount = this.portCount - 1
         let parent = form.parent;
         let forms = this.state.forms;
         forms.splice(parent.id + 1, 0, form.multiForm());
-        this.setState({ forms: forms, flowData: clusterFlow.portFlowNoTLS(this.portCount - this.tlsCount) })
+        this.setState({ forms: forms })
     }
 
     updateImagePath = (forms, form) => {
@@ -207,6 +203,7 @@ class AppReg extends React.Component {
                     [constant.ACCESS_TYPE_LOAD_BALANCER] :
                     [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
+                //setTimeout(()=>this.setState({flowData:clusterFlow.ipAccessFlowApp(form.value, constant.APP)}), 10)
                 this.accessTypeChange(form, forms, isInit)
                 return form
             }

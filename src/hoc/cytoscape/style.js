@@ -20,7 +20,8 @@ export const style = [
             'height': "data(height)",
             'width': "data(width)",
             'text-halign':function (ele) { return ele.data('tha') ? ele.data('tha') : 'center' },
-            'text-valign':function (ele) { return ele.data('tva') ? ele.data('tva') : 'center' }
+            'text-valign':function (ele) { return ele.data('tva') ? ele.data('tva') : 'center' },
+            'font-size':function (ele) { return ele.data('lfs') ? ele.data('lfs') : 18 }
         }
     },
     {
@@ -86,9 +87,9 @@ export const style = [
         "selector": "edge.taxi",
         "style": {
             "curve-style": "taxi",
-            "taxi-direction": "downward",
-            "taxi-turn": 20,
-            "taxi-turn-min-distance": 5
+            "taxi-direction": 'vertical',
+            "taxi-turn": 100,
+            "taxi-turn-min-distance": 20
         }
     }
 ]
