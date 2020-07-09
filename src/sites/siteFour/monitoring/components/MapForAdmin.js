@@ -142,7 +142,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                 await this.setState({
                     cloudletUsageOne: this.props.cloudletUsageList[0],
                 },()=>{
-                    console.log(`cloudletUsageOne====>`,this.state.cloudletUsageOne);
                 });
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
