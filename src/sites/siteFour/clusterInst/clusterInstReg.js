@@ -17,7 +17,6 @@ import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getAutoScalePolicyList } from '../../../services/model/autoScalePolicy';
 //Map
-//import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
 import Map from "../../../libs/simpleMaps/with-react-motion/pageMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {clusterInstTutor} from "../../../tutorial";
