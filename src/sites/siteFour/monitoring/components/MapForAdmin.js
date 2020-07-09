@@ -12,9 +12,12 @@ import * as actions from "../../../../actions";
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import '../common/PageMonitoringStyles.css'
-import {listGroupByKey, makeMapThemeDropDown} from "../service/PageMonitoringService";
+import {listGroupByKey, makeMapThemeDropDown, renderCloudletHwUsageDashBoardForAdmin, renderCloudletInfoForAdmin} from "../service/PageMonitoringService";
 import {cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 
+const bottomDivHeight = 185;
+const hwMarginTop = 5;
+const hwFontSize = 12;
 const {Option} = Select;
 const DEFAULT_VIEWPORT = {
     center: [51.505, -0.09],
@@ -86,6 +89,7 @@ type State = {
     isEnableZoomIn: boolean,
     isCloudletClustering: boolean,
     currentTimeZone: string,
+    cloudletUsageOne: any,
 
 };
 
@@ -134,6 +138,9 @@ export default connect(mapStateToProps, mapDispatchProps)((
 
         componentDidMount = async () => {
             try {
+                await this.setState({
+                    cloudletUsageOne: this.props.cloudletUsageList[0],
+                });
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
 
@@ -154,6 +161,9 @@ export default connect(mapStateToProps, mapDispatchProps)((
 
                 if (this.props.markerList !== nextProps.markerList) {
 
+                    await this.setState({
+                        cloudletUsageOne: nextProps.cloudletUsageList[0],
+                    })
                     let markerList = nextProps.markerList;
                     if (nextProps.currentOrgView === 'oper' || nextProps.currentOrgView === 'all') {
                         this.setCloudletLocation(markerList)
@@ -607,7 +617,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                 <Control position="topright" style={{marginTop: 3, display: 'flex',}}>
                     <Center style={PageMonitoringStyles.mapStatusBoxCloudlet}>
                         <div style={{}}>
-                            Cloudlet : {this.props.cloudletList.length}
+                            Cloudlet : {this.props.parent.state.cloudletCount}
                         </div>
                     </Center>
                 </Control>
@@ -663,6 +673,24 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                         {this.renderCloudletMarkers()}
                                     </React.Fragment>
                                 </React.Fragment>
+                                {this.props.cloudletList.length === 1 &&
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        background: 'rgba(0, 0, 0, 0.5)',
+                                        width: '100%',
+                                        height: bottomDivHeight,
+                                        zIndex: 99999,
+                                        padding: 10,
+                                        marginLeft: 0,
+                                        display: 'flex'
+                                    }}
+                                >
+                                    {this.props.currentCloudletMap !== undefined && renderCloudletInfoForAdmin(this.props.currentCloudletMap)}
+                                    {this.state.cloudletUsageOne !== undefined && renderCloudletHwUsageDashBoardForAdmin(this.state.cloudletUsageOne, bottomDivHeight, hwMarginTop, hwFontSize)}
+                                </div>
+                                }
                             </Map>
                         </div>
 
