@@ -48,7 +48,6 @@ import {
     HARDWARE_TYPE,
     MAP_LEVEL,
     NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS_LIST,
     USER_TYPE,
     USER_TYPE_SHORT
@@ -385,7 +384,7 @@ type PageDevMonitoringState = {
     currentCloudletMap: any,
     timezoneChange: boolean,
     cloudletCount: number,
-    recentDataLimitCount: number,
+    dataLimitCount: number,
 
 }
 
@@ -646,7 +645,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletMap: {},
                     timezoneChange: true,
                     cloudletCount: 0,
-                    recentDataLimitCount: 20,
+                    dataLimitCount: 100,
                 }
             }
 
@@ -793,7 +792,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //todo:############################################################
                         usageEventPromiseList.push(getAllClusterEventLogList(clusterList, USER_TYPE_SHORT.DEV))
                         usageEventPromiseList.push(getAllAppInstEventLogs());
-                        usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                        usageEventPromiseList.push(getClusterLevelUsageList(clusterList, "*", this.state.dataLimitCount))
                         const [promise0, promise1, promise2] = await Promise.all(usageEventPromiseList);
                         allClusterEventLogList = promise0;
                         allAppInstEventLogList = promise1;
@@ -807,7 +806,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //todo:###################################
                         //TODO:OPERATOR usage
                         //todo:###################################
-                        allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                        allCloudletUsageList = await getCloudletUsageList(cloudletList, "*", this.state.dataLimitCount, startTime, endTime);
                     }
 
                     /*TODO: CLOUDLET DROPDOWN LIST*/
@@ -950,34 +949,33 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async reloadDataFromRemote() {
-                alert(this.state.recentDataLimitCount)
 
-                /* clearInterval(this.intervalForAppInst)
-                 await this.setState({
-                     currentClassification:
-                         this.state.userType.toString().includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER :
-                             this.state.userType.toString().includes(USER_TYPE_SHORT.OPER) ? CLASSIFICATION.CLOUDLET :
-                                 this.state.userType.toString().includes(USER_TYPE_SHORT.ADMIN) ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : null,
-                     placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
-                     placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
-                 })
-                 await this.setState({
-                     cloudLetSelectBoxClearable: true,
-                 })
-                 await this.setState({
-                     loading: true,
-                     dropdownRequestLoading: true
-                 })
-                 await this.loadInitData();
-                 this.setState({
-                     loading: false,
-                 })
-                 await this.setState({
-                     currentRegion: 'ALL',
-                     currentCloudLet: undefined,
-                     currentClusterList: undefined,
-                     currentAppInst: '',
-                 })*/
+                clearInterval(this.intervalForAppInst)
+                await this.setState({
+                    currentClassification:
+                        this.state.userType.toString().includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER :
+                            this.state.userType.toString().includes(USER_TYPE_SHORT.OPER) ? CLASSIFICATION.CLOUDLET :
+                                this.state.userType.toString().includes(USER_TYPE_SHORT.ADMIN) ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : null,
+                    placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
+                    placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
+                })
+                await this.setState({
+                    cloudLetSelectBoxClearable: true,
+                })
+                await this.setState({
+                    loading: true,
+                    dropdownRequestLoading: true
+                })
+                await this.loadInitData();
+                this.setState({
+                    loading: false,
+                })
+                await this.setState({
+                    currentRegion: 'ALL',
+                    currentCloudLet: undefined,
+                    currentClusterList: undefined,
+                    currentAppInst: '',
+                })
 
             }
 
@@ -1016,7 +1014,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 this.intervalForCluster = setInterval(async () => {
                     try {
                         this.setState({intervalLoading: true})
-                        let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT, '', '', this);
+                        let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", this.state.dataLimitCount, '', '', this);
                         this.setChartDataForBigModal(filteredClusterUsageList)
                         this.setState({
                             intervalLoading: false,
@@ -1037,7 +1035,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 try {
                     this.intervalForAppInst = setInterval(async () => {
                         this.setState({intervalLoading: true,})
-                        let allAppInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT);
+                        let allAppInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", this.state.dataLimitCount);
                         this.setChartDataForBigModal(allAppInstUsageList)
                         this.setState({
                             intervalLoading: false,
@@ -2122,7 +2120,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 let endTime = makeCompleteDateTime(date[1]);
                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
                                 usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
-                                usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", RECENT_DATA_LIMIT_COUNT))
+                                usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
                                 usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
                                 let completedPromiseList = await Promise.allSettled(usageEventPromiseList);
                                 allClusterEventLogList = completedPromiseList["0"].value;
@@ -2380,7 +2378,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                     let arrDateTime = getOneYearStartEndDatetime();
-                    let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+                    let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", this.state.dataLimitCount, arrDateTime[0], arrDateTime[1]);
                     fullCurrentAppInst = fullCurrentAppInst.trim();
                     fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
 
@@ -2431,7 +2429,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                         let startTime = makeCompleteDateTime(this.state.startTime);
                         let endTime = makeCompleteDateTime(this.state.endTime);
-                        let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                        let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
                         let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
                         this.setState({
                             filteredCloudletUsageList: usageList,
@@ -3005,29 +3003,79 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderGraphDataCount() {
+            renderGraphDataCountDropdown() {
+                let count = [
+                   /*
+                    {
+                        text: `3000 [4.5 hours]`,
+                        value: 3000
+                    },
+                    {
+                        text: '2000 [3 hours]',
+                        value: 2000
+                    },*/
+                    {
+                        text: '1000 [2 hours]',
+                        value: 1000
+                    },
+                    {
+                        text: '750 [1 hour]',
+                        value: 750
+                    },
+                    {
+                        text: '500 [40 mins]',
+                        value: 500
+                    },
+                    {
+                        text: '250 [20 mins]',
+                        value: 250
+                    },
+                    {
+                        text: '100 [8 mins]',
+                        value: 100
+                    },
+                    {
+                        text: '50 [4 mins]',
+                        value: 50
+                    },
+                    {
+                        text: '20 [2 mins]',
+                        value: 20
+                    },
+
+                ]
+
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label" style={{width: 50}}>
-                            count
+                        <div className="page_monitoring_dropdown_label" style={{width: 100}}>
+                            Data Count
                         </div>
-                        <div style={{width: 70, marginLeft: -10}}>
+                        <div style={{width: 70, marginLeft: -25}}>
                             <Select
                                 ref={c => this.recentDataLimitCountRef = c}
-                                dropdownStyle={{}}
-                                style={{width: 80, maxHeight: '512px !important', fontSize: '6px !important'}}
-                                value={this.state.recentDataLimitCount}
-                                //placeholder={this.state.appInstSelectBoxPlaceholder}
+                                dropdownMatchSelectWidth={false}
+                                dropdownStyle={{
+                                    maxHeight: '512px !important',
+                                    overflowY: 'auto',
+                                    overflowAnchor: 'none',
+                                    width: 150,
+                                }}
+                                style={{width: 188, fontSize: '6px !important'}}
+                                value={this.state.dataLimitCount}
+                                placeholder={'Select Data Count'}
                                 onChange={async (value) => {
-                                    this.setState({
-                                        recentDataLimitCount: value,
+                                    this.recentDataLimitCountRef.blur()
+                                    await this.setState({
+                                        dataLimitCount: value,
+                                    }, () => {
+                                        console.log(`dataLimitCount====>`, this.state.dataLimitCount);
                                     })
-
+                                    this.reloadDataFromRemote()
                                 }}
                             >
-                                {[20, 50, 100, 200, 300, 400, 500, 600, 1000].map(item => {
+                                {count.reverse().map(item => {
                                     return (
-                                        <Option value={item}>{item}</Option>
+                                        <Option value={item.value}>{item.text}</Option>
                                     )
                                 })}
                             </Select>
@@ -3089,7 +3137,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             })
                                             let startTime = makeCompleteDateTime(this.state.startTime);
                                             let endTime = makeCompleteDateTime(this.state.endTime);
-                                            let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                                            let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
                                             let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
                                             let filteredCloudletEventLog = await getAllCloudletEventLogs(this.state.filteredCloudletList, startTime, endTime);
                                             this.setState({
@@ -3597,7 +3645,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             {this.renderAppInstDropdown()}
                                         </div>
                                         <div style={{marginLeft: 25}}>
-                                            {this.renderGraphDataCount()}
+                                            {this.renderGraphDataCountDropdown()}
                                         </div>
                                     </React.Fragment>
                                     ://TODO:오퍼레이터

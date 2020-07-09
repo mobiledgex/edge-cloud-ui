@@ -1,21 +1,9 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {
-    APP_INST_MATRIX_HW_USAGE_INDEX,
-    CLOUDLET_METRIC_COLUMN,
-    MEX_PROMETHEUS_APPNAME,
-    RECENT_DATA_LIMIT_COUNT,
-    USER_TYPE,
-    USER_TYPE_SHORT
-} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {
-    isEmpty,
-    makeFormForCloudletLevelMatric,
-    makeFormForClusterLevelMatric,
-    showToast
-} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -355,14 +343,14 @@ export const getCloudletListAll = async () => {
 }
 
 
-export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
+export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
 
         let instanceBodyList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         for (let index = 0; index < appInstanceList.length; index++) {
             //todo: Create a data FORM format for requests
-            let instanceInfoOneForm = makeFormForAppLevelUsageList(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
+            let instanceInfoOneForm = makeFormForAppLevelUsageList(appInstanceList[index], pHardwareType, store.userToken, dataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
 
@@ -474,14 +462,14 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
                     allUsageList.push({
                         instance: item.instanceData,
                         columns: columns,
-                        sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
-                        sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
-                        sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
-                        sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
-                        sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
-                        sumActiveConnection: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
-                        sumHandledConnection: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
-                        sumAcceptsConnection: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
+                        sumCpuUsage: sumCpuUsage / dataLimitCount,
+                        sumMemUsage: Math.ceil(sumMemUsage / dataLimitCount),
+                        sumDiskUsage: Math.ceil(sumDiskUsage / dataLimitCount),
+                        sumRecvBytes: Math.ceil(sumRecvBytes / dataLimitCount),
+                        sumSendBytes: Math.ceil(sumSendBytes / dataLimitCount),
+                        sumActiveConnection: Math.ceil(sumActiveConnection / dataLimitCount),
+                        sumHandledConnection: Math.ceil(sumHandledConnection / dataLimitCount),
+                        sumAcceptsConnection: Math.ceil(sumAcceptsConnection / dataLimitCount),
                         cpuSeriesList,
                         memSeriesList,
                         diskSeriesList,
@@ -534,19 +522,20 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, r
  *
  * @param clusterList
  * @param pHardwareType
- * @param recentDataLimitCount
  * @param pStartTime
  * @param pEndTime
  * @returns {Promise<[]|Array>}
  */
-export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '', _this: PageMonitoringView) => {
+export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', _this: PageMonitoringView) => {
     try {
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
 
         for (let index = 0; index < clusterList.length; index++) {
-            let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+            //let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+
+            let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, dataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
 
@@ -618,16 +607,16 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                     dev: clusterList[index].Region,
                     cloudlet: clusterList[index].Cloudlet,
                     operator: clusterList[index].Operator,
-                    sumUdpSent: sumUdpSent / RECENT_DATA_LIMIT_COUNT,
-                    sumUdpRecv: sumUdpRecv / RECENT_DATA_LIMIT_COUNT,
-                    sumUdpRecvErr: sumUdpRecvErr / RECENT_DATA_LIMIT_COUNT,
-                    sumTcpConns: sumTcpConns / RECENT_DATA_LIMIT_COUNT,
-                    sumTcpRetrans: sumTcpRetrans / RECENT_DATA_LIMIT_COUNT,
-                    sumSendBytes: sumSendBytes / RECENT_DATA_LIMIT_COUNT,
-                    sumRecvBytes: sumRecvBytes / RECENT_DATA_LIMIT_COUNT,
-                    sumMemUsage: sumMemUsage / RECENT_DATA_LIMIT_COUNT,
-                    sumDiskUsage: sumDiskUsage / RECENT_DATA_LIMIT_COUNT,
-                    sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
+                    sumUdpSent: sumUdpSent / dataLimitCount,
+                    sumUdpRecv: sumUdpRecv / dataLimitCount,
+                    sumUdpRecvErr: sumUdpRecvErr / dataLimitCount,
+                    sumTcpConns: sumTcpConns / dataLimitCount,
+                    sumTcpRetrans: sumTcpRetrans / dataLimitCount,
+                    sumSendBytes: sumSendBytes / dataLimitCount,
+                    sumRecvBytes: sumRecvBytes / dataLimitCount,
+                    sumMemUsage: sumMemUsage / dataLimitCount,
+                    sumDiskUsage: sumDiskUsage / dataLimitCount,
+                    sumCpuUsage: sumCpuUsage / dataLimitCount,
                     columns: columns,
                     udpSeriesList,
                     tcpSeriesList,
@@ -683,19 +672,18 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
  *
  * @param cloudletList
  * @param pHardwareType
- * @param recentDataLimitCount
  * @param pStartTime
  * @param pEndTime
  * @returns {Promise<[]>}
  */
-export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '') => {
 
     try {
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
         for (let index = 0; index < cloudletList.length; index++) {
-            let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+            let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, dataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
 
@@ -787,16 +775,16 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
                 })
 
                 usageList.push({
-                    usedVCpuCount: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
-                    usedMemUsage: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
-                    usedDiskUsage: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
-                    usedRecvBytes: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
-                    usedSendBytes: sumNetSend / RECENT_DATA_LIMIT_COUNT,
-                    usedFloatingIpsUsage: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
-                    usedIpv4Usage: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
-                    maxVCpuCount: sumvCpuMax / RECENT_DATA_LIMIT_COUNT,
-                    maxMemUsage: sumMemMax / RECENT_DATA_LIMIT_COUNT,
-                    maxDiskUsage: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
+                    usedVCpuCount: sumVirtualCpuUsed / dataLimitCount,
+                    usedMemUsage: sumMemUsed / dataLimitCount,
+                    usedDiskUsage: sumDiskUsed / dataLimitCount,
+                    usedRecvBytes: sumNetRecv / dataLimitCount,
+                    usedSendBytes: sumNetSend / dataLimitCount,
+                    usedFloatingIpsUsage: sumFloatingIpsUsed / dataLimitCount,
+                    usedIpv4Usage: sumIpv4Used / dataLimitCount,
+                    maxVCpuCount: sumvCpuMax / dataLimitCount,
+                    maxMemUsage: sumMemMax / dataLimitCount,
+                    maxDiskUsage: sumDiskMax / dataLimitCount,
                     columns: columns,
                     series: series,
                     ipSeries: ipSeries,

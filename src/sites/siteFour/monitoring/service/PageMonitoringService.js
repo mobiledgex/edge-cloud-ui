@@ -21,7 +21,6 @@ import {
     DARK_LINE_COLOR,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
     THEME_OPTIONS,
     USER_TYPE_SHORT,
     WHITE_CLOUTLET_ICON_COLOR,
@@ -463,7 +462,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             //@desc: cut List with RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = [];
             for (let i in dateTimeList) {
-                if (i < RECENT_DATA_LIMIT_COUNT) {
+                if (i < _this.state.dataLimitCount) {
                     let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
                     let timeOne = splitDateTimeArrayList[0].replace("T", "T");
                     newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
@@ -777,8 +776,30 @@ export function makeUniqDevOrg(appInstList) {
     return newFilteredList;
 }
 
+export function makeMaxTickLimit(pDataLimitCount) {
+
+    if (pDataLimitCount === 2000) {
+        return 120
+    } else if (pDataLimitCount === 1000) {
+        return 100
+    } else if (pDataLimitCount === 750) {
+        return 70
+    } else if (pDataLimitCount === 500) {
+        return 50
+    } else if (pDataLimitCount === 250) {
+        return 50
+    } else if (pDataLimitCount === 100) {
+        return 50
+    } else if (pDataLimitCount === 50) {
+        return 50
+    } else if (pDataLimitCount === 20) {
+        return 50;
+    }
+}
+
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
+
 
     try {
         let options = {
@@ -857,24 +878,18 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: isBig ? 50 : 5,//@desc: maxTicksLimit
+                        maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        //autoSkip: isBig ? false : true,
                         fontSize: 9,
                         fontColor: 'white',
-                        //maxRotation: 0.05,
-                        autoSkip: isBig ? false : true,
                         maxRotation: isBig ? 45 : 0,//xAxis text rotation
                         minRotation: isBig ? 45 : 0,//xAxis text rotation
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
-                            if (RECENT_DATA_LIMIT_COUNT >= 50) {
-                                if (index % 2 === 0)
-                                    return '';
-                                else
-                                    return value;
-                            } else {
-                                return value;
-                            }
+
+                            return value;
+
 
                         },
                     },
