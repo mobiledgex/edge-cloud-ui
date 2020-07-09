@@ -3127,7 +3127,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGraphDataCountDropdown() {
                 const content = (
                     <div>
-                        <div style={{color: 'yellow', fontWeight: 'bold'}}>Set the time of metric data to be displayed on the graph</div>
+                        <div style={{color: 'yellow', fontWeight: 'normal'}}>Set the time of metric data to be displayed on the graph</div>
                     </div>
                 );
 
