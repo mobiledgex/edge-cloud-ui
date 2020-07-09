@@ -1,14 +1,14 @@
 // @flow
 import * as React from 'react';
 import {Modal as AModal, notification, Radio, Select} from "antd";
-import {Dropdown} from "semantic-ui-react";
-import {CLASSIFICATION, EVENT_LOG_ITEM_LIST, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
+import {CLASSIFICATION, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import Button from "@material-ui/core/Button";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import {showToast} from "../service/PageMonitoringCommonService";
+import {convertToClassification} from "../service/PageMonitoringService";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -148,7 +148,10 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
 
     renderBarChartRadio() {
-        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
+            || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET
+            || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN
+        ) {
             return (
                 <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
                     <div
@@ -291,19 +294,56 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 </div>
 
                 <div className='page_monitoring_form_column_right'>
-                    <Dropdown
-                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
-                        selectOnBlur={false}
+                    <Select
+                        ref={c => this.tableTypeSelect2 = c}
+                        showSearch={true}
+                        listHeight={512}
+                        style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{
+                            maxHeight: 800, overflow: 'auto', width: '333px'
+                        }}
                         placeholder="Select Item"
-                        selection
-                        onChange={async (e, {value}) => {
+                        onChange={async (value) => {
+                            this.tableTypeSelect2.blur();
                             this.setState({
                                 currentItemType: value,
                             })
                         }}
-                        value={this.state.currentItemType}
-                        options={this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? EVENT_LOG_ITEM_LIST_FOR_CLUSTER : EVENT_LOG_ITEM_LIST_FOR_APPINST}
-                    />
+                    >
+                        {this.props.parent.state.currentClassification.toLowerCase().includes('cluster') ?
+                            //TODO: CLUSTER
+                            EVENT_LOG_ITEM_LIST_FOR_CLUSTER.map((tableOne: any, index) => {
+                                return (
+                                    <Option key={index} value={tableOne.value}>
+                                        <div style={{display: 'flex'}}>
+                                            <div
+                                                style={{
+                                                    marginLeft: 7,
+                                                }}
+                                            >{tableOne.text}
+                                            </div>
+                                        </div>
+                                    </Option>
+                                )
+                            })
+                            ://TODO: APPINST
+                            EVENT_LOG_ITEM_LIST_FOR_APPINST.map((tableOne: any, index) => {
+                                return (
+                                    <Option key={index} value={tableOne.value}>
+                                        <div style={{display: 'flex'}}>
+                                            <div
+                                                style={{
+                                                    marginLeft: 7,
+                                                }}
+                                            >{tableOne.text}
+                                            </div>
+                                        </div>
+                                    </Option>
+                                )
+                            })
+                        }
+                    </Select>
                 </div>
             </div>
         )
@@ -320,19 +360,38 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                 </div>
 
                 <div className='page_monitoring_form_column_right'>
-                    <Dropdown
-                        style={PageMonitoringStyles.dropDownForClusterCloudlet3}
-                        selectOnBlur={false}
+                    <Select
+                        ref={c => this.tableTypeSelect = c}
+                        showSearch={true}
+                        listHeight={512}
+                        style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{
+                            maxHeight: 800, overflow: 'auto', width: '333px'
+                        }}
                         placeholder="Select Item"
-                        selection
-                        onChange={async (e, {value}) => {
+                        onChange={async (value) => {
+                            this.tableTypeSelect.blur();
                             this.setState({
                                 currentItemType: value,
                             })
                         }}
-                        value={this.state.currentItemType}
-                        options={EVENT_LOG_ITEM_LIST_FOR_CLOUDLET}
-                    />
+                    >
+                        {EVENT_LOG_ITEM_LIST_FOR_CLOUDLET.map((tableOne: any, index) => {
+                            return (
+                                <Option key={index} value={tableOne.value}>
+                                    <div style={{display: 'flex'}}>
+                                        <div
+                                            style={{
+                                                marginLeft: 7,
+                                            }}
+                                        >{tableOne.text}
+                                        </div>
+                                    </div>
+                                </Option>
+                            )
+                        })}
+                    </Select>
                 </div>
             </div>
         )
@@ -394,14 +453,13 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     makeHwDropdownList() {
         let hardwareDropdownList = []
-        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+        if (this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET || this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
             hardwareDropdownList = this.props.parent.state.hwListForCloudlet
-        } else if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        } else if (this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
             hardwareDropdownList = this.props.parent.state.hwListForCluster
         } else {
             hardwareDropdownList = this.props.parent.state.hwListForAppInst
         }
-
         return hardwareDropdownList;
     }
 
@@ -435,7 +493,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     }}
                     closable={false}
                     bodyStyle={{
-                        height: window.innerHeight * 0.45,
+                        height: window.innerHeight * 0.6,
                         marginTop: 0,
                         marginLeft: 0,
                         backgroundColor: 'rgb(41, 44, 51)'
@@ -449,7 +507,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             {this.renderPrevBtn2()}
                             {this.state.loading ? <div style={{marginLeft: 20,}}><CircularProgress/></div> : null}
                             <div className='page_monitoring_popup_title'>
-                                Add Item [{this.props.parent.state.currentClassification}]
+                                Add Item [{convertToClassification(this.props.parent.state.currentClassification)}]
                             </div>
                         </div>
                         <div className='page_monitoring_popup_title_divide'/>
@@ -464,6 +522,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                 onChange={(e) => {
                                     let selectedItem = e.target.value;
 
+                                    alert(selectedItem.toString())
                                     this.setState({
                                         currentItemType: selectedItem,
                                     });
@@ -476,7 +535,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                                     {this.renderColumnChartRadio()}
                                     {this.renderTableRadio()}
                                     {this.renderMapRadio()}
-                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
+                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
+                                    || this.props.parent.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN
+                                    || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
                                 </div>
                             </Radio.Group>
                         </div>
@@ -488,9 +549,9 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         {/*todo:############################*/}
                         {/*@todo:TABLE TYPE             */}
                         {/*todo:############################*/}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderTableSelectForAppInst_Cluster() : null}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER ? this.renderTableSelectForAppInst_Cluster() : null}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification === CLASSIFICATION.CLOUDLET ? this.renderTableSelectForCloudlet() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
+                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase()) ? this.renderTableSelectForCloudlet() : null}
 
 
                         {this.state.isShowTableType === false && this.state.isShowHWDropDown === false &&

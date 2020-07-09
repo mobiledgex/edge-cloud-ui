@@ -174,8 +174,166 @@ export const defaultHwMapperListForCluster = [
     },
 
 ];
+/*todo:#####################################
+  todo: Default Admin (AppInst)
+  todo:#######################################*/
+export const defaultLayoutForAdmin = [
 
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//performance Grid
+    {i: '7', x: 3, y: 2, w: 1, h: 1, "add": false}
+];
 
+export const defaultHwMapperListForAdmin = [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: HARDWARE_TYPE_FOR_GRID.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '5',
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+
+    {
+        id: '6',
+        hwType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
+        graphType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
+    },
+
+    {
+        id: '7',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
+    },
+];
+
+/*todo:#####################################
+  todo: Default Admin (Cluster)
+  todo:#######################################*/
+export const defaultLayoutForAdminCluster = [
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//CPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//performance Grid
+    {i: '7', x: 3, y: 2, w: 1, h: 1, "add": false}
+];
+
+export const defaultHwMapperListForAdminCluster = [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.CPU,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: GRID_ITEM_TYPE.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.MEM,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '4',
+        hwType: HARDWARE_TYPE_FOR_GRID.BUBBLE,
+        graphType: GRID_ITEM_TYPE.BUBBLE,
+    },
+    {
+        id: '5',
+
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '6',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.PERFORMANCE_SUM,
+    },
+    {
+        id: '7',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
+    },
+];
+
+/*todo:#####################################
+  todo:  Default Admin (Cloudlet)
+  todo:#######################################*/
+export const defaultLayoutForAdminCloudlet = [
+
+    {i: '1', x: 0, y: 0, w: 1, h: 1, "add": false},//vCPU
+    {i: '2', x: 1, y: 0, w: 2, h: 2, "add": false, "static": false},//MAP
+    {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//findCloudlet_widget
+    {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
+    {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},//DONUTS
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//
+    {i: '7', x: 3, y: 2, w: 1, h: 1, "add": false}
+];
+
+export const defaultHwMapperListForAdminCloudlet = [
+    {
+        id: '1',
+        hwType: HARDWARE_TYPE_FOR_GRID.vCpuUsed,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '2',
+        hwType: HARDWARE_TYPE_FOR_GRID.MAP,
+        graphType: GRID_ITEM_TYPE.MAP,
+    },
+
+    {
+        id: '3',
+        hwType: HARDWARE_TYPE_FOR_GRID.memUsed,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '4',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.METHOD_USAGE_COUNT,
+    },
+    {
+        id: '5',
+        hwType: HARDWARE_TYPE_FOR_GRID.diskUsed,
+        graphType: GRID_ITEM_TYPE.LINE,
+    },
+    {
+        id: '6',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLIENT_STATUS_TABLE,
+    },
+    {
+        id: '7',
+        hwType: undefined,
+        graphType: GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG,
+    },
+];
 
 /*
 desc:#####################################
@@ -189,7 +347,7 @@ export const defaultLayoutForAppInst = [
     {i: '3', x: 0, y: 1, w: 1, h: 1, "add": false},//MEM
     {i: '4', x: 3, y: 0, w: 1, h: 1, "add": false},//DISK
     {i: '5', x: 3, y: 1, w: 1, h: 1, "add": false},
-    {i: '6', x: 0, y: 2, w: 4, h: 1, "add": false},//performance Grid
+    {i: '6', x: 0, y: 2, w: 3, h: 1, "add": false},//performance Grid
 ];
 
 export const defaultLayoutMapperForAppInst = [
@@ -345,6 +503,125 @@ export const defaultLayoutXYPosForCluster = [
     {x: 3, y: 8},
 ]
 
+export const defaultLayoutXYPosForAdmin = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+    //////////// 4,5,6 row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
+    /////////// 7,8,9rd row
+    {x: 0, y: 6},
+    {x: 1, y: 6},
+    {x: 2, y: 6},
+    {x: 3, y: 6},
+
+    {x: 0, y: 7},
+    {x: 1, y: 7},
+    {x: 2, y: 7},
+    {x: 3, y: 7},
+
+    {x: 0, y: 8},
+    {x: 1, y: 8},
+    {x: 2, y: 8},
+    {x: 3, y: 8},
+]
+
+
+export const defaultLayoutXYPosForCloudletAdmin = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+    //////////// 4,5,6 row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
+    /////////// 7,8,9rd row
+    {x: 0, y: 6},
+    {x: 1, y: 6},
+    {x: 2, y: 6},
+    {x: 3, y: 6},
+
+    {x: 0, y: 7},
+    {x: 1, y: 7},
+    {x: 2, y: 7},
+    {x: 3, y: 7},
+
+    {x: 0, y: 8},
+    {x: 1, y: 8},
+    {x: 2, y: 8},
+    {x: 3, y: 8},
+]
+
+export const defaultLayoutXYPosForClusterAdmin = [
+    {x: 0, y: 0},
+    {x: 1, y: 0},
+    {x: 3, y: 0},
+    {x: 0, y: 1},
+    {x: 3, y: 1},
+    {x: 0, y: 2},
+    //////////// 4,5,6 row
+    {x: 0, y: 3},
+    {x: 1, y: 3},
+    {x: 2, y: 3},
+    {x: 3, y: 3},
+
+    {x: 0, y: 4},
+    {x: 1, y: 4},
+    {x: 2, y: 4},
+    {x: 3, y: 4},
+
+    {x: 0, y: 5},
+    {x: 1, y: 5},
+    {x: 2, y: 5},
+    {x: 3, y: 5},
+    /////////// 7,8,9rd row
+    {x: 0, y: 6},
+    {x: 1, y: 6},
+    {x: 2, y: 6},
+    {x: 3, y: 6},
+
+    {x: 0, y: 7},
+    {x: 1, y: 7},
+    {x: 2, y: 7},
+    {x: 3, y: 7},
+
+    {x: 0, y: 8},
+    {x: 1, y: 8},
+    {x: 2, y: 8},
+    {x: 3, y: 8},
+]
+
+
 export const defaultLayoutXYPosForAppInst = [
     {x: 0, y: 0},
     {x: 1, y: 0},
@@ -386,11 +663,54 @@ export const defaultLayoutXYPosForAppInst = [
 
 export const CLOUDLET_LAYOUT_KEY = "_layout_cloudlet";
 export const CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_cloudlet";
-export const CLUSTER_FOR_OPER_LAYOUT_KEY = "_layout_cluster_oper";
-export const CLUSTER_FOR_OPER_HW_MAPPER_KEY = "_layout_mapper_cluster_oper";
 export const CLUSTER_LAYOUT_KEY = "_layout";
 export const CLUSTER_HW_MAPPER_KEY = "_layout_mapper";
 export const APPINST_LAYOUT_KEY = "_layout2";
 export const APPINST_HW_MAPPER_KEY = "_layout2_mapper";
+
+
+export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet";
+export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet";
+
+export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster";
+export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster";
+
+export const ADMIN_LAYOUT_KEY = "_layout_admin";
+export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
+
+
+//todo : for test
+/*export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet2";
+export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet2";
+
+export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster2";
+export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster2";
+
+export const ADMIN_LAYOUT_KEY = "_layout_admin2";
+export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin2";*/
+
+
+/*export const layoutCloudlet ='layoutCloudlet'
+export const layoutMapperCloudlet ='layoutMapperCloudlet'
+
+export const layoutCluster ='layoutCluster'
+export const layoutMapperCluster ='layoutMapperCluster'
+
+export const layoutAppInst ='layoutAppInst'
+export const layoutMapperAppInst ='layoutMapperAppInst'
+
+
+export const layoutCloudletAdmin ='layoutCloudletAdmin'
+export const layoutMapperCloudletAdmin ='layoutMapperCloudletAdmin'
+
+export const layoutClusterAdmin ='layoutClusterAdmin'
+export const layoutMapperClusterAdmin ='layoutMapperClusterAdmin'
+
+export const layoutAdmin ='layoutAdmin'
+export const layoutMapperAdmin ='layoutMapperAdmin'*/
+
+
+
+
 
 

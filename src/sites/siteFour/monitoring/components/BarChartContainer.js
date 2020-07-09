@@ -1,16 +1,21 @@
 // @flow
 import * as React from 'react';
-import {renderPlaceHolderLoader} from "../service/PageMonitoringCommonService";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
+import {
+    isEmpty,
+    renderBarLoader,
+    renderEmptyMessageBox,
+    renderCircularProgress,
+    renderXLoader
+} from "../service/PageMonitoringCommonService";
+import PageMonitoringView from "../view/PageMonitoringView";
 import {Chart as GoogleChart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {HARDWARE_TYPE} from "../../../../shared/Constants";
-import {convertHWType} from "../service/PageDevOperMonitoringService";
+import {convertHWType} from "../service/PageMonitoringService";
 
 type Props = {
-    parent: PageDevMonitoring,
+    parent: PageMonitoringView,
     pHardwareType: string,
     graphType: string,
     chartDataSet: any,
@@ -37,9 +42,13 @@ export default class BarChartContainer extends React.Component<Props, State> {
         }
     }
 
+    componentDidMount(): void {
+    }
+
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
 
         if (this.props.chartDataSet !== nextProps.chartDataSet && nextProps.chartDataSet !== undefined) {
+
             this.setState({
                 chartDataSet: nextProps.chartDataSet,
                 pHardwareType: nextProps.pHardwareType,
@@ -55,18 +64,24 @@ export default class BarChartContainer extends React.Component<Props, State> {
 
     }
 
-
     render() {
         return (
-            <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
+            <div className='page_monitoring_dual_column'>
+                {this.props.loading &&
+                <div>
+                    {renderBarLoader()}
+                </div>
+                }
                 <div className='page_monitoring_dual_container' style={{flex: 1}}>
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title'>
                             {this.props.parent.convertToClassification(this.props.parent.state.currentClassification)} {convertHWType(this.props.pHardwareType)} Utilization
                         </div>
                     </div>
+
                     <div className='page_monitoring_container'>
-                        {this.props.loading ? renderPlaceHolderLoader() :
+
+                        {!this.props.loading && !isEmpty(this.props.chartDataSet) ?
                             <div style={{width: '100%'}}>
                                 <GoogleChart
                                     key={this.state.isResizeComplete}
@@ -77,20 +92,13 @@ export default class BarChartContainer extends React.Component<Props, State> {
                                     options={this.state.graphType === GRID_ITEM_TYPE.BAR ? barChartOption(this.state.chartDataSet.hardwareType) : columnChartOption(this.state.chartDataSet.hardwareType)}
                                 />
                             </div>
+                            : renderEmptyMessageBox("Please Select Cloudlet")
                         }
+
                     </div>
                 </div>
             </div>
 
         )
     };
-};
-
-
-/*
-<MonitoringConsumer>
-    {(context: MonitoringContextInterface) => (
-
-    )}
-</MonitoringConsumer>
-*/
+}

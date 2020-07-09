@@ -16,25 +16,30 @@ import {
     CHART_COLOR_MONOKAI,
     CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
+    CLOUDLET_CLUSTER_STATE,
+    DARK_CLOUTLET_ICON_COLOR,
+    DARK_LINE_COLOR,
     HARDWARE_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    THEME_OPTIONS
+    MONITORING_CATE_SELECT_TYPE,
+    THEME_OPTIONS,
+    USER_TYPE_SHORT,
+    WHITE_CLOUTLET_ICON_COLOR,
+    WHITE_LINE_COLOR
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
-import PageDevMonitoring from "../view/PageDevOperMonitoringView";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    makeBubbleChartDataForCluster,
-    renderUsageByType
-} from "./PageMonitoringCommonService";
+import PageMonitoringView from "../view/PageMonitoringView";
+import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import uniqBy from "lodash/uniqBy";
-import Chip from "@material-ui/core/Chip";
-import type {TypeAppInst, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
-import * as dateUtil from  '../../../../utils/date_util'
-//import _ from 'lodash';
+import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
+import {Progress, Select, Tag} from "antd";
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
+import {mapTileList} from "../common/MapProperties";
+import * as dateUtil from '../../../../utils/date_util'
+import {Icon} from "semantic-ui-react";
+
+const {Option} = Select;
 
 export function getOnlyCloudletName(cloudletOne) {
     return cloudletOne.toString().split(" | ")[0].trim();
@@ -66,7 +71,8 @@ export function renderTitle(props) {
                      color: 'white'
                  }}
             >
-                {props.currentClassification} Event Log
+                {convertToClassification(props.currentClassification)} Event Log
+
             </div>
 
         </div>
@@ -76,7 +82,7 @@ export function renderTitle(props) {
 export function makeTableRowStyle(index, itemHeight) {
     return (
         {
-            flex: .33,
+            flex: .5,
             color: '#C0C6C8',
             backgroundColor: index % 2 === 0 ? '#1D2025' : '#22252C',
             height: itemHeight,
@@ -173,7 +179,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType, userType = '') =>
 };
 
 
-export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageDevMonitoring) => {
+export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageMonitoringView) => {
     try {
         if (usageList.length === 0) {
             return "";
@@ -207,6 +213,35 @@ export const makeBarChartDataForCluster = (usageList, hardwareType, _this: PageD
 };
 
 
+export function getCloudletClusterNameListForAppInst(appInst: TypeAppInst) {
+    let cloudletNameList = []
+    appInst.map((item: TypeAppInst, index) => {
+        cloudletNameList.push({
+            CloudletName: item.Cloudlet,
+            Region: item.Region,
+        })
+    })
+
+    let uniqCloudletNameList = uniqBy(cloudletNameList, 'CloudletName')
+
+    let clusterNameList = [];
+    appInst.map((item: TypeAppInst, index) => {
+        clusterNameList.push({
+            ClusterInst: item.ClusterInst,
+            Cloudlet: item.Cloudlet,
+        })
+    })
+
+    let uniqClusterNameList = uniqBy(clusterNameList, MONITORING_CATE_SELECT_TYPE.CLUSTERINST)
+
+    let result = {
+        cloudletNameList: uniqCloudletNameList,
+        clusterNameList: uniqClusterNameList,
+    }
+
+    return result
+}
+
 /**
  *
  * @param clusterList
@@ -218,6 +253,7 @@ export function getCloudletClusterNameList(clusterList: TypeCluster) {
         cloudletNameList.push({
             CloudletName: item.Cloudlet,
             Region: item.Region,
+            oper: item.Operator,
         })
     })
 
@@ -246,7 +282,7 @@ export function getCloudletClusterNameList(clusterList: TypeCluster) {
  * @param _this
  * @returns {string|{chartDataList: [], hardwareType: *}}
  */
-export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageDevMonitoring) => {
+export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: PageMonitoringView) => {
     try {
         let typedUsageList = [];
         if (hardwareType === HARDWARE_TYPE.CPU) {
@@ -293,9 +329,9 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
 };
 
 
-export const handleHardwareTabChanges = async (_this: PageDevMonitoring, selectedValueOne) => {
+export const handleHardwareTabChanges = async (_this: PageMonitoringView, selectedValueOne) => {
     try {
-        if (_this.state.currentClassification === CLASSIFICATION.CLUSTER) {
+        if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
             if (selectedValueOne === HARDWARE_TYPE.CPU) {
                 await _this.setState({
                     currentTabIndex: 0
@@ -354,9 +390,8 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
  * @param _this
  * @returns {{levelTypeNameList: [], hardwareType: string, usageSetList: [], newDateTimeList: []}|*}
  */
-export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageDevMonitoring) => {
+export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageMonitoringView) => {
     try {
-
 
         if (hardwareUsageList.length === 0) {
             return (
@@ -366,7 +401,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             )
         } else {
             let classificationName = '';
-            let levelTypeNameList = [];
+            let cloudletClusterAppInstNameList = [];
             let usageSetList = [];
             let dateTimeList = [];
             let series = [];
@@ -405,11 +440,11 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
 
-                if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+                if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
-                } else if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
+                } else if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase())) {
                     classificationName = item.cloudlet
-                } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
+                } else if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase())) {
                     classificationName = item.instance.AppName
                 }
 
@@ -419,15 +454,14 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     usageList.push(usageOne);
                     dateTimeList.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, series[j]["0"]));
                 }
-                levelTypeNameList.push(classificationName);
+                cloudletClusterAppInstNameList.push(classificationName);
                 usageSetList.push(usageList);
                 colorCodeIndexList.push(item.colorCodeIndex);
             });
 
-            //@desc: cut List with RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = [];
             for (let i in dateTimeList) {
-                if (i < RECENT_DATA_LIMIT_COUNT) {
+                if (i < _this.state.dataLimitCount) {
                     let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
                     let timeOne = splitDateTimeArrayList[0].replace("T", "T");
                     newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
@@ -435,7 +469,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
             }
 
             let _result = {
-                levelTypeNameList,
+                levelTypeNameList: cloudletClusterAppInstNameList,
                 usageSetList,
                 newDateTimeList,
                 hardwareType,
@@ -609,7 +643,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
         chartColorList: selectedChartColorList,
     }, async () => {
         _this.setState({
-            bubbleChartData: await makeBubbleChartDataForCluster(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
+            bubbleChartData: await makeClusterBubbleChartData(_this.state.filteredClusterUsageList, _this.state.currentHardwareType, _this.state.chartColorList, _this.state.currentColorIndex),
         })
     })
 
@@ -621,7 +655,7 @@ export const handleThemeChanges = async (themeTitle, _this) => {
  * @param clickedItem
  * @param lineChartDataSet
  */
-export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clickedItem, lineChartDataSet) => {
+export const handleLegendAndBubbleClickedEvent = (_this: PageMonitoringView, clickedItem, lineChartDataSet) => {
     try {
 
         let selectedIndex = 0;
@@ -645,52 +679,55 @@ export const handleLegendAndBubbleClickedEvent = (_this: PageDevMonitoring, clic
     }
 };
 
-export const covertUnits = (value, hardwareType, _this) => {
-    try {
-        if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET) {
-            if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
-                return value;
-            } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-                return convertByteToMegaGigaByte(value);
-            } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-                return convertByteToMegaGigaByte(value);
-            } else if (hardwareType === HARDWARE_TYPE.NET_SEND || hardwareType === HARDWARE_TYPE.NET_RECV) {
-                return convertToMegaGigaForNumber(value);
-            } else {
-                return convertToMegaGigaForNumber(value);
-            }
-        } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
-            if (hardwareType === HARDWARE_TYPE.CPU || hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
-                return value + " %";
-            } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
-                return value + " %";
-            } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
-                return convertByteToMegaGigaByte(value, hardwareType)
-            } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
-                return convertToMegaGigaForNumber(value);
-            } else if (hardwareType === HARDWARE_TYPE.CPU_MEM_DISK) {
-                return value + " %";
-            } else if (hardwareType === `${HARDWARE_TYPE.UDPRECV} / ${HARDWARE_TYPE.UDPSENT}` || hardwareType === `${HARDWARE_TYPE.TCPCONNS} / ${HARDWARE_TYPE.TCPRETRANS}`) {
-                return convertToMegaGigaForNumber(value);
-            } else if (hardwareType === `${HARDWARE_TYPE.SENDBYTES} / ${HARDWARE_TYPE.RECVBYTES}`) {
-                return convertByteToMegaGigaByte(value);
-            } else {
-                return convertToMegaGigaForNumber(value);
-            }
+export const covertYAxisUnits = (value, hardwareType, _this) => {
+        try {
+            //TODO: CLOUDLET LEVEL
+            if (_this.state.currentClassification === CLASSIFICATION.CLOUDLET || _this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+                if (hardwareType === HARDWARE_TYPE.VCPU_USED) {
+                    return value
+                } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
+                    return value + " MB"
+                } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
+                    return value + " GB"
+                } else if (hardwareType === HARDWARE_TYPE.NET_SEND || hardwareType === HARDWARE_TYPE.NET_RECV) {
+                    return convertToMegaGigaForNumber(value);
+                } else {
+                    return convertToMegaGigaForNumber(value);
+                }
+            } else if (_this.state.currentClassification === CLASSIFICATION.CLUSTER || _this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    return value + " %";
+                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
+                    return value.toFixed(2) + " %";
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                    return convertByteToMegaGigaByte(value, hardwareType)
+                } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
+                    return convertToMegaGigaForNumber(value);
+                } else if (hardwareType === HARDWARE_TYPE.CPU_MEM_DISK) {
+                    return value + " %";
+                } else if (hardwareType === `${HARDWARE_TYPE.UDPRECV} / ${HARDWARE_TYPE.UDPSENT}` || hardwareType === `${HARDWARE_TYPE.TCPCONNS} / ${HARDWARE_TYPE.TCPRETRANS}`) {
+                    return convertToMegaGigaForNumber(value);
+                } else if (hardwareType === `${HARDWARE_TYPE.SENDBYTES} / ${HARDWARE_TYPE.RECVBYTES}`) {
+                    return convertByteToMegaGigaByte(value);
+                } else {
+                    return convertToMegaGigaForNumber(value);
+                }
 
-        } else if (_this.state.currentClassification === CLASSIFICATION.APPINST) {
-            if (hardwareType === HARDWARE_TYPE.CPU) {
-                return value.toFixed(4) + " %";
-            } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                return convertByteToMegaGigaByte(value)
-            } else {
-                return value;
+            } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    return value.toFixed(3) + " %";
+                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    return convertByteToMegaGigaByte(value)
+                } else {
+                    return value;
+                }
             }
+        } catch
+            (e) {
+
         }
-    } catch (e) {
-
     }
-};
+;
 
 
 /**
@@ -710,7 +747,60 @@ export const listGroupByKey = (items, key) => items.reduce(
     {},
 );
 
+export function makeUniqOperOrg(cloudletList) {
+    let operatorList = []
+    cloudletList.map((item: TypeCloudlet, index) => {
+        operatorList.push(item.Operator)
+    })
+    let uniqOperList = uniqBy(operatorList)
+    let newOperList = []
+    uniqOperList.map(item => {
+        newOperList.push(item)
+    })
+
+    return newOperList;
+}
+
+export function makeUniqDevOrg(appInstList) {
+    let filterlist = []
+    appInstList.map((item: TypeAppInst, index) => {
+        filterlist.push(item.OrganizationName)
+    })
+    let uniqFilteredList = uniqBy(filterlist)
+    let newFilteredList = []
+    uniqFilteredList.map(item => {
+        newFilteredList.push(item)
+    })
+
+    return newFilteredList;
+}
+
+export function makeMaxTickLimit(pDataLimitCount) {
+
+    if (pDataLimitCount === 2000) {
+        return 120
+    } else if (pDataLimitCount === 1000) {
+        return 100
+    } else if (pDataLimitCount === 750) {
+        return 70
+    } else if (pDataLimitCount === 500) {
+        return 50
+    } else if (pDataLimitCount === 250) {
+        return 50
+    } else if (pDataLimitCount === 100) {
+        return 50
+    } else if (pDataLimitCount === 50) {
+        return 50
+    } else if (pDataLimitCount === 20) {
+        return 50;
+    } else if (pDataLimitCount === 10) {
+        return 50;
+    }
+}
+
+
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
+
 
     try {
         let options = {
@@ -718,19 +808,6 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             animation: {
                 duration: 500
             },
-            /* tooltips: {
-                 callbacks: {
-                     label: function (tooltipItem, data) {
-                         var dataset = data.datasets[tooltipItem.datasetIndex];
-                         var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-                         var currentValue = dataset.data[tooltipItem.index];
-                         return currentValue.toFixed(2).toString();
-                     },
-                     title: function (tooltipItem, data) {
-                         return data.datasets[tooltipItem[0].index]['label'];
-                     }
-                 }
-             },*/
             maintainAspectRatio: false,
             responsive: true,
             datasetStrokeWidth: 1,
@@ -767,13 +844,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     // max: 100,//todo max value
                     fontColor: 'white',
                     callback(value, index, label) {
-                        return covertUnits(value, hardwareType, _this,)
+                        return covertYAxisUnits(value, hardwareType, _this,)
                     },
                 },
                 gridLines: {
                     color: "#fff",
                 },
-                //desc: options for 멀티라인차트
                 yAxes: [{
                     id: 'A',
                     type: 'linear',
@@ -781,7 +857,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     ticks: {
                         fontColor: "#CCC", // this here
                         callback(value, index, label) {
-                            return covertUnits(value, hardwareType, _this,)
+                            return covertYAxisUnits(value, hardwareType, _this,)
                         },
                     },
                 }, {
@@ -803,26 +879,18 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: isBig ? 20 : 5,//@desc: maxTicksLimit
+                        maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        //autoSkip: isBig ? false : true,
                         fontSize: 9,
                         fontColor: 'white',
-                        //maxRotation: 0.05,
-                        autoSkip: isBig ? false : true,
-                        maxRotation: 0,//xAxis text rotation
-                        minRotation: 0,//xAxis text rotation
-                        /*maxRotation: 45,//xAxis text rotation
-                        minRotation: 45,//xAxis text rotation*/
+                        maxRotation: isBig ? 45 : 0,//xAxis text rotation
+                        minRotation: isBig ? 45 : 0,//xAxis text rotation
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
-                            if (RECENT_DATA_LIMIT_COUNT >= 50) {
-                                if (index % 2 === 0)
-                                    return '';
-                                else
-                                    return value;
-                            } else {
-                                return value;
-                            }
+
+                            return value;
+
 
                         },
                     },
@@ -1020,10 +1088,6 @@ export const simpleGraphOptions = {
                 autoSkip: true,
                 maxRotation: 0,//xAxis text rotation
                 minRotation: 0,//xAxis text rotation
-                /*
-                maxRotation: 45,//xAxis text rotation
-                minRotation: 45,//xAxis text rotation
-                */
                 padding: 10,
                 labelOffset: 0,
                 callback(value, index, label) {
@@ -1048,7 +1112,7 @@ export const simpleGraphOptions = {
 }
 
 
-export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMonitoring, currentColorIndex = -1) => {
+export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonitoringView, currentColorIndex = -1) => {
     try {
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
@@ -1057,14 +1121,19 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageDevMon
             let newDateTimeList = lineChartDataSet.newDateTimeList
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
+            let isStackedLineChart = _this.state.isStackedLineChart;
+            if (colorCodeIndexList !== undefined && colorCodeIndexList.length === 1) {
+                isStackedLineChart = true;
+            }
+
             let finalSeriesDataSets = [];
             for (let index in usageSetList) {
                 let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
                 let dataSetsOne = {
                     label: levelTypeNameList[index],
                     radius: 0,
-                    borderWidth: 3.5,//todo:라인 두께
-                    fill: _this.state.isStackedLineChart,// @desc:fill BackgroundArea
+                    borderWidth: 3.5,//todo:line border width
+                    fill: isStackedLineChart,
                     backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
                     borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
                     lineTension: 0.5,
@@ -1127,7 +1196,7 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  * @param colorCodeIndexList
  * @returns {function(*=): {datasets: *, labels: *}}
  */
-export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageDevMonitoring, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
+export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageMonitoringView, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
     try {
 
         const lineChartData = (canvas) => {
@@ -1162,12 +1231,11 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
             }
 
 
-
-
             let chartDataSet = {
                 labels: newDateTimeList,
                 datasets: finalSeriesDataSets,
             }
+
             return chartDataSet;
         };
 
@@ -1179,21 +1247,29 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
 
 
 export const convertToClassification = (pClassification) => {
-    if (pClassification === CLASSIFICATION.APPINST) {
+    if (pClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+        return CLASSIFICATION.CLOUDLET
+    } else if (pClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+        return CLASSIFICATION.CLUSTER
+    } else if (pClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
         return CLASSIFICATION.APP_INST
-    }
-    if (pClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
+    } else if (pClassification === CLASSIFICATION.APPINST) {
+        return CLASSIFICATION.APP_INST
+    } else if (pClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
         return CLASSIFICATION.CLUSTER
     } else {
         return pClassification.toString().replace("_", " ")
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageDevMonitoring, stringLimit, isLegendExpanded = true) => {
-    //let limitCharLength = _this.state.isLegendExpanded ? 14 : 7
+export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
 
-    let clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
-
+    let clusterCloudletName = '';
+    if (_this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
+        clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
+    } else {
+        clusterCloudletName = item.cluster
+    }
     return (
         <div style={{display: 'flex'}}>
             <div>
@@ -1225,87 +1301,381 @@ export function convertHWType(hwType) {
     }
 }
 
-/**
- *
- * @param allRegionList
- * @param cloudletList
- * @param clusterList
- * @param _this
- * @returns {[]}
- */
-export const makeClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this) => {
 
-    let treeCloudletList = []
+export const makeClusterMultiDropdownForAdmin = (cloudletList, clusterList, _this,) => {
+
+    let treeClusterList = []
     cloudletList.map((cloudletOne, cloudletIndex) => {
         let newCloudletOne = {
             title: (
-                <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
-                    <Chip
-                        color="primary"
-                        size="small"
-                        label="Cloudlet"
-                        style={{
-                            color: 'white',
-                            backgroundColor: '#34373E'
-                        }}
-                    />
+                <div>
+                    {cloudletOne.CloudletName}
                 </div>
             ),
-
             value: cloudletOne.CloudletName,
             children: [],
-            region: cloudletOne.Region
+            region: cloudletOne.Region,
+            oper: cloudletOne.oper,
+            selectable: true,
+
         };
 
-        clusterList.map((clusterOne, innerIndex) => {
-            if (clusterOne.cloudlet === cloudletOne.CloudletName) {
+        clusterList.map((clusterItemOne: TypeCluster, innerIndex) => {
+            if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
                 newCloudletOne.children.push({
                     title: (
                         <div style={{display: 'flex'}}>
                             <Center style={{width: 15,}}>
-                                {_this.renderDot(clusterOne.colorCodeIndex, 10)}
+                                {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                             </Center>
                             <div style={{marginLeft: 5,}}>
-                                {clusterOne.cluster}
+                                {reduceString(clusterItemOne.ClusterName, 37)}
                             </div>
 
                         </div>
                     ),
-                    value: clusterOne.cluster + " | " + cloudletOne.CloudletName,
+                    value: clusterItemOne.ClusterName + " | " + cloudletOne.CloudletName,
                     isParent: false,
+
                 })
             }
         })
 
-        treeCloudletList.push(newCloudletOne);
+        treeClusterList.push(newCloudletOne);
     })
 
-    //@desc:RegionList
-    let regionTreeList = []
-    allRegionList.map((regionOne, regionIndex) => {
-        let regionMapOne = {
-            title: (
-                <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
-                    {regionOne}
-                </div>
-            ),
-            value: regionOne,
-            children: []
-        };
 
-        treeCloudletList.map((innerItem, innerIndex) => {
-            if (regionOne === innerItem.region) {
-                regionMapOne.children.push(innerItem)
-            }
-        })
-        regionTreeList.push(regionMapOne)
-    })
+    return treeClusterList
 
-    return regionTreeList;
+}
+
+/**
+ * 시간을 request요청에 맞게끔 변경 처리
+ * @param date
+ * @returns {string}
+ */
+export const makeCompleteDateTime = (date: string) => {
+    let arrayDate = date.split(" ");
+    let completeDateTimeString = arrayDate[0] + "T" + arrayDate[1] + ":00Z";
+    return completeDateTimeString;
 }
 
 
-export const makeDropdownForCloudlet = (pList) => {
+export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+
+    let appName = dataOne.AppName;
+    if (dataOne.AppName.includes('[')) {
+        appName = dataOne.AppName.toString().split('[')[0]
+    }
+
+    if (pStartTime !== '' && pEndTime !== '') {
+
+        let form = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "appinst": {
+                    "app_key": {
+                        "organization": dataOne.OrganizationName,
+                        "name": appName,
+                        "version": dataOne.Version
+                    },
+                    "cluster_inst_key": {
+                        "cluster_key": {"name": dataOne.ClusterInst},
+                        "cloudlet_key": {
+                            "name": dataOne.Cloudlet,
+                            "organization": dataOne.Operator
+                        }
+                    }
+                },
+                "selector": valid,
+                "last": fetchingDataNo,
+                "starttime": pStartTime,
+                "endtime": pEndTime,
+            }
+        }
+        return form;
+
+
+    } else {
+
+        let form = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "appinst": {
+                    "app_key": {
+                        "organization": dataOne.OrganizationName,
+                        "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                        "version": dataOne.Version
+                    },
+                    "cluster_inst_key": {
+                        "cluster_key": {"name": dataOne.ClusterInst},
+                        "cloudlet_key": {
+                            "name": dataOne.Cloudlet,
+                            "organization": dataOne.Operator
+                        }
+                    }
+                },
+                "selector": valid,
+                //"last": 25
+                "last": fetchingDataNo,
+            }
+        }
+
+        return form;
+    }
+}
+
+
+/**
+ *
+ * @param filteredAppInstList
+ * @param allClientStatusList
+ */
+export function filteredClientStatusListByAppName(filteredAppInstList, allClientStatusList) {
+
+    let appNames = []
+    filteredAppInstList.map((item: TypeAppInst, index) => {
+        appNames.push(item.AppName)
+    })
+
+    return allClientStatusList.filter((item: TypeClientStatus, index) => {
+        let count = 0;
+        appNames.map(appNameOne => {
+            if (appNameOne === item.app) {
+                count++;
+            }
+        })
+
+        return count > 0;
+    })
+}
+
+export function makeMapThemeDropDown(_this) {
+    return (
+        <Select
+            //size={"small"}
+            defaultValue="dark1"
+            style={{width: 70, zIndex: 112312, height: 15, background: 'black !important',}}
+            showArrow={false}
+            bordered={true}
+            ref={c => _this.themeSelect = c}
+            listHeight={550}
+            onChange={async (value) => {
+                try {
+                    _this.themeSelect.blur();
+                    let index = value
+                    let lineColor = DARK_LINE_COLOR
+                    let cloudletIconColor = DARK_CLOUTLET_ICON_COLOR
+                    if (Number(index) >= 4) {
+                        lineColor = WHITE_LINE_COLOR;
+                        cloudletIconColor = WHITE_CLOUTLET_ICON_COLOR
+                    }
+                    _this.props.setMapTyleLayer(mapTileList[index].url);
+                    _this.props.setLineColor(lineColor);
+                    _this.props.setCloudletIconColor(cloudletIconColor);
+                    setTimeout(() => {
+                        _this.themeSelect.blur();
+                    }, 250)
+
+                } catch (e) {
+                    //throw new Error(e)
+                }
+            }}
+        >
+            {mapTileList.map((item, index) => {
+                return (
+                    <Option key={index} style={{color: 'white'}} defaultChecked={index === 0}
+                            value={item.value}>{item.name}</Option>
+                )
+            })}
+        </Select>
+    )
+}
+
+export function makeStringLimit(classification, _this: any) {
+    let stringLimit = 25;
+    if (classification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
+        if (_this.props.size.width > 1600) {
+            stringLimit = 27
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1380) {
+            stringLimit = 18
+        } else if (_this.props.size.width < 1380 && this.props.size.width >= 1150) {
+            stringLimit = 14
+        } else if (_this.props.size.width < 1150 && this.props.size.width >= 720) {
+            stringLimit = 10
+        } else if (_this.props.size.width < 720) {
+            stringLimit = 4
+        }
+    } else if (classification === CLASSIFICATION.CLOUDLET) {
+        if (_this.props.size.width > 1600) {
+            stringLimit = 25
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1380) {
+            stringLimit = 17
+        } else if (_this.props.size.width < 1380 && this.props.size.width >= 1150) {
+            stringLimit = 14
+        } else if (_this.props.size.width < 1150 && this.props.size.width >= 720) {
+            stringLimit = 10
+        } else if (_this.props.size.width < 720) {
+            stringLimit = 4
+        }
+
+    } else if (classification === CLASSIFICATION.CLUSTER) {
+        if (_this.props.size.width > 1500) {
+            stringLimit = 49
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1300) {
+            stringLimit = 42
+        } else if (_this.props.size.width < 1300 && this.props.size.width >= 1100) {
+            stringLimit = 34
+        } else if (_this.props.size.width < 1100) {
+            stringLimit = 28
+        }
+    } else if (classification === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+        if (_this.props.size.width > 1500) {
+            stringLimit = 30
+        } else if (_this.props.size.width < 1500 && this.props.size.width >= 1300) {
+            stringLimit = 22
+        } else if (_this.props.size.width < 1300 && this.props.size.width >= 1100) {
+            stringLimit = 15
+        } else if (_this.props.size.width < 1100) {
+            stringLimit = 7
+        }
+    }
+
+    return stringLimit;
+}
+
+
+export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
+
+    let newOrgList = []
+    operOrgList.map(item => {
+        newOrgList.push({
+            title: (
+                <div style={{display: 'flex'}}>
+                    <div>{item}</div>
+                </div>
+            ),
+            value: item,
+            isDev: false,
+        })
+    })
+
+    let newDevOrgList = []
+    devOrgList.map(item => {
+        newDevOrgList.push({
+            title: (
+                <div style={{display: 'flex'}}>
+                    <div>{item}</div>
+                </div>
+            ),
+            value: item,
+            isDev: true,
+        })
+    })
+
+
+    const treeData = [
+        {
+            title: (<div style={{}}>All</div>),
+            value: 'Reset',
+            selectable: true,
+        },
+        {
+            title: 'Operator',
+            value: '1',
+            selectable: false,
+            children: newOrgList
+        },
+        {
+            title: 'Developer',
+            value: '2',
+            selectable: false,
+            children: newDevOrgList
+        },
+    ];
+
+    return treeData;
+
+}
+
+
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
+
+    try {
+        let treeCloudletList = []
+        cloudletList.map((cloudletOne, cloudletIndex) => {
+            let newCloudletOne = {
+                title: (
+                    <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
+                        <Tag color="grey" style={{color: 'black'}}>Cloudlet</Tag>
+                    </div>
+                ),
+                value: cloudletOne.CloudletName,
+                children: [],
+                region: cloudletOne.Region,
+                oper: cloudletOne.oper,
+                selectable: true,
+
+            };
+
+            clusterList.map((clusterItemOne: any, innerIndex) => {
+                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+                    newCloudletOne.children.push({
+                        title: (
+                            <div style={{display: 'flex'}}>
+                                <Center style={{width: 15,}}>
+                                    {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
+                                </Center>
+                                <div style={{marginLeft: 5,}}>
+                                    {reduceString(clusterItemOne.cluster, 40)}
+                                </div>
+
+                            </div>
+                        ),
+                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                        isParent: false,
+
+                    })
+                }
+            })
+
+            treeCloudletList.push(newCloudletOne);
+        })
+
+        if (isShowRegion) {//TODO: ADD REGION PARENT
+            let regionTreeList = []
+            allRegionList.map((regionOne, regionIndex) => {
+                let regionMapOne = {
+                    title: (
+                        <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
+                            {regionOne}
+                        </div>
+                    ),
+                    value: regionOne,
+                    children: []
+                };
+
+                treeCloudletList.map((innerItem, innerIndex) => {
+                    if (regionOne === innerItem.region) {
+                        regionMapOne.children.push(innerItem)
+                    }
+                })
+                regionTreeList.push(regionMapOne)
+            })
+
+            return regionTreeList;
+        } else {
+            return treeCloudletList
+        }
+    } catch (e) {
+
+    }
+
+}
+
+export const makeDropdownForCloudletForDevView = (pList) => {
     try {
         let newArrayList = [];
         newArrayList.push({
@@ -1313,6 +1683,171 @@ export const makeDropdownForCloudlet = (pList) => {
             value: undefined | undefined | undefined,
             text: 'Reset Filter',
         })
+        pList.map((item: TypeAppInst, index) => {
+            let Cloudlet = item.Cloudlet
+            let CloudletLocation = JSON.stringify(item.CloudletLocation)
+            let cloudletFullOne = Cloudlet + " | " + CloudletLocation + " | " + item.Region
+            newArrayList.push({
+                region: item.Region,
+                key: cloudletFullOne,
+                value: cloudletFullOne,
+                text: Cloudlet,
+            })
+        })
+
+        return newArrayList;
+    } catch (e) {
+
+    }
+};
+
+export function renderCloudletInfoForAdmin(pCurrentCloudletMap) {
+    return (
+        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
+        >
+            <div style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                marginTop: 0,
+                fontFamily: 'Roboto',
+                display: 'flex',
+            }}>
+                <div style={{color: 'white', marginLeft: 5}}>
+                    <Icon name='cloud'/>
+                </div>
+                <div style={{marginLeft: 5}}>
+                    {pCurrentCloudletMap.CloudletName}
+                </div>
+            </div>
+            <hr/>
+            <table style={{width: '100%', marginTop: -3, marginLeft: 10}}>
+                <tr style={PageMonitoringStyles.trPaddingFirst}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>Operator</b>
+                    </td>
+                    <td style={PageMonitoringStyles.width50}>
+                        {pCurrentCloudletMap.Operator}
+                    </td>
+                </tr>
+                <tr style={PageMonitoringStyles.trPadding2}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>Ip_support</b>
+                    </td>
+                    <td style={PageMonitoringStyles.width50}>
+                        {pCurrentCloudletMap.Ip_support}
+                    </td>
+                </tr>
+                <tr style={PageMonitoringStyles.trPadding2}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>Num_dynamic_ips</b>
+                    </td>
+                    <td style={PageMonitoringStyles.width50}>
+                        {pCurrentCloudletMap.Num_dynamic_ips}
+                    </td>
+                </tr>
+                <tr style={PageMonitoringStyles.trPadding2}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>State</b>
+                    </td>
+                    <td style={{width: '50%', color: 'yellow'}}>
+                        {CLOUDLET_CLUSTER_STATE[pCurrentCloudletMap.State]}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    )
+}
+
+
+/**
+ *
+ * @param pCloudletUsageOne
+ * @param bottomDivHeight
+ * @param hwMarginTop
+ * @param hwFontSize
+ * @returns {*}
+ */
+export function renderCloudletHwUsageDashBoardForAdmin(pCloudletUsageOne, bottomDivHeight, hwMarginTop, hwFontSize) {
+    return (
+        <div style={{
+            backgroundColor: 'transparent',
+            height: '100%',
+            flex: .49,
+            marginLeft: 30,
+            borderRadius: 10,
+            marginTop: -30,
+        }}>
+            <Center style={{height: bottomDivHeight,}}>
+                <div>
+                    <Progress
+                        strokeColor={'green'}
+                        type="circle"
+                        width={100}
+                        trailColor='#262626'
+                        style={{fontSize: 7}}
+                        percent={pCloudletUsageOne.usedVCpuCount / pCloudletUsageOne.maxVCpuCount * 100}
+                        strokeWidth={10}
+                        format={(percent, successPercent) => {
+                            return parseInt(pCloudletUsageOne.usedVCpuCount.toFixed(0)) + "/" + pCloudletUsageOne.maxVCpuCount;
+                        }}
+                    />
+                    <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                        vCPU
+                    </div>
+                </div>
+                <div style={{width: 15}}/>
+                <div>
+                    <Progress
+                        style={{fontSize: 7}}
+                        strokeColor='orange'
+                        type="circle"
+                        width={100}
+                        trailColor='#262626'
+                        percent={Math.round(pCloudletUsageOne.usedMemUsage / pCloudletUsageOne.maxMemUsage * 100)}
+                        format={(percent, successPercent) => {
+                            return convertMegaToGiGa(parseInt(pCloudletUsageOne.usedMemUsage.toFixed(0)), false) + "/" + convertMegaToGiGa(parseInt(pCloudletUsageOne.maxMemUsage), false);
+                        }}
+                        strokeWidth={10}
+                    />
+                    <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                        MEM(GB)
+                    </div>
+                </div>
+                <div style={{width: 15}}/>
+                <div>
+                    <Progress
+                        strokeColor='rgb(7, 131, 255)'
+                        type="circle"
+                        width={100}
+                        trailColor='#262626'
+                        percent={Math.ceil((pCloudletUsageOne.usedDiskUsage / pCloudletUsageOne.maxDiskUsage) * 100)}
+                        strokeWidth={10}
+                        format={(percent, successPercent) => {
+                            return pCloudletUsageOne.usedDiskUsage + "/" + pCloudletUsageOne.maxDiskUsage;
+                        }}
+                    />
+                    <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                        DISK(GB)
+                    </div>
+                </div>
+            </Center>
+        </div>
+    )
+}
+
+
+export const insert = (arr, index, newItem) => [
+    // part of the array before the specified index
+    ...arr.slice(0, index),
+    // inserted item
+    newItem,
+    // part of the array after the specified index
+    ...arr.slice(index)
+]
+
+export const makeDropdownForCloudlet = (pList) => {
+    try {
+        let newArrayList = [];
         pList.map((item: TypeCloudlet, index) => {
             let Cloudlet = item.CloudletName
             let CloudletLocation = JSON.stringify(item.CloudletLocation)
@@ -1325,7 +1860,15 @@ export const makeDropdownForCloudlet = (pList) => {
             })
         })
 
-        return newArrayList;
+        newArrayList = sortBy(newArrayList, [object => object.text.toLowerCase()], ['asc']);
+        let nameSortedArrayList = insert(newArrayList, 0, {
+            region: undefined,
+            key: 'Reset',
+            value: undefined,
+            text: 'Reset Filter',
+        })
+
+        return nameSortedArrayList;
     } catch (e) {
 
     }
@@ -1355,7 +1898,7 @@ export const makeDropdownForAppInst = (appInstList) => {
             let specifiedAppInstOne = AppName + " | " + Cloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheck + " | " + Operator + " | " + JSON.stringify(CloudletLocation);
             appInstDropdownList.push({
                 key: specifiedAppInstOne,
-                value: specifiedAppInstOne,
+                value: specifiedAppInstOne + " | " + JSON.stringify(item),
                 text: AppName.trim() + " [" + Version.toString().trim() + "]",
             })
         })
@@ -1659,6 +2202,7 @@ export const barChartOptions2 = {
 
 
 export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, currentColorIndex = -1) => {
+
     try {
         if (usageList.length === 0) {
             return "";
@@ -1675,7 +2219,6 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, curr
                 {role: "style"},
                 {role: 'annotation'}
             ]);
-
             for (let index = 0; index < usageList.length; index++) {
 
                 let tooltipOne = `<div style="background-color:black ;color: white; padding: 15px; font-size: 9pt; font-style: italic; font-family: Roboto; min-width: 200px; border: solid 1px rgba(255, 255, 255, .2) ">
@@ -1707,6 +2250,7 @@ export const makeBarChartDataForCloudlet = (usageList, hardwareType, _this, curr
                 chartDataList,
                 hardwareType,
             };
+
             return chartDataSet
         }
     } catch (e) {
