@@ -434,7 +434,7 @@ class ClustersMap extends Component {
                                     />
 
                                     <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 1000}}>
-                                        <Button aria-controls="map_theme" aria-haspopup="true" onClick={this.handleThemeClick}>
+                                        <Button className='map_theme_button' aria-controls="map_theme" aria-haspopup="true" onClick={this.handleThemeClick}>
                                             {mapTileList[this.state.selectedIndex].name}
                                         </Button>
                                         <Menu
