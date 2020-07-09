@@ -274,7 +274,7 @@ class ClustersMap extends Component {
 
         let colorKey = city.status === 'red'? 0
             : city.status === 'orange'?  1
-            : (config && config .pageId === 'cloudlet') ? 2
+            : (config && config .pageId === 'cloudlet') ? 5
             : (config && config .pageId === 'cluster') ? 3
             : (config && config .pageId === 'app') ? 4
             : 5;
