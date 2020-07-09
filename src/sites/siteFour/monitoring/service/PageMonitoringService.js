@@ -16,6 +16,7 @@ import {
     CHART_COLOR_MONOKAI,
     CHART_COLOR_URBAN_SKYLINE,
     CLASSIFICATION,
+    CLOUDLET_CLUSTER_STATE,
     DARK_CLOUTLET_ICON_COLOR,
     DARK_LINE_COLOR,
     HARDWARE_TYPE,
@@ -28,15 +29,16 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
-import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
-import uniqBy from "lodash/uniqBy";
 import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
-import {Select, Tag} from "antd";
+import {Progress, Select, Tag} from "antd";
 import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 import {mapTileList} from "../common/MapProperties";
-import * as dateUtil from  '../../../../utils/date_util'
+import * as dateUtil from '../../../../utils/date_util'
+import {Icon} from "semantic-ui-react";
 
 const {Option} = Select;
 
@@ -457,6 +459,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 usageSetList.push(usageList);
                 colorCodeIndexList.push(item.colorCodeIndex);
             });
+
             //@desc: cut List with RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = [];
             for (let i in dateTimeList) {
@@ -1584,78 +1587,80 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
 export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
 
-    let treeCloudletList = []
-    cloudletList.map((cloudletOne, cloudletIndex) => {
-        let newCloudletOne = {
-            title: (
-                <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
-                    <Tag color="grey" style={{color: 'black'}}>Cloudlet</Tag>
-                </div>
-            ),
-            value: cloudletOne.CloudletName,
-            children: [],
-            region: cloudletOne.Region,
-            oper: cloudletOne.oper,
-            selectable: true,
-
-        };
-
-        clusterList.map((clusterItemOne: any, innerIndex) => {
-            if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
-                newCloudletOne.children.push({
-                    title: (
-                        <div style={{display: 'flex'}}>
-                            <Center style={{width: 15,}}>
-                                {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
-                            </Center>
-                            <div style={{marginLeft: 5,}}>
-                                {reduceString(clusterItemOne.cluster, 40)}
-                            </div>
-
-                        </div>
-                    ),
-                    value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
-                    isParent: false,
-
-                })
-            }
-        })
-
-        treeCloudletList.push(newCloudletOne);
-    })
-
-    if (isShowRegion) {//TODO: ADD REGION PARENT
-        let regionTreeList = []
-        allRegionList.map((regionOne, regionIndex) => {
-            let regionMapOne = {
+    try {
+        let treeCloudletList = []
+        cloudletList.map((cloudletOne, cloudletIndex) => {
+            let newCloudletOne = {
                 title: (
-                    <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
-                        {regionOne}
+                    <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
+                        <Tag color="grey" style={{color: 'black'}}>Cloudlet</Tag>
                     </div>
                 ),
-                value: regionOne,
-                children: []
+                value: cloudletOne.CloudletName,
+                children: [],
+                region: cloudletOne.Region,
+                oper: cloudletOne.oper,
+                selectable: true,
+
             };
 
-            treeCloudletList.map((innerItem, innerIndex) => {
-                if (regionOne === innerItem.region) {
-                    regionMapOne.children.push(innerItem)
+            clusterList.map((clusterItemOne: any, innerIndex) => {
+                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+                    newCloudletOne.children.push({
+                        title: (
+                            <div style={{display: 'flex'}}>
+                                <Center style={{width: 15,}}>
+                                    {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
+                                </Center>
+                                <div style={{marginLeft: 5,}}>
+                                    {reduceString(clusterItemOne.cluster, 40)}
+                                </div>
+
+                            </div>
+                        ),
+                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                        isParent: false,
+
+                    })
                 }
             })
-            regionTreeList.push(regionMapOne)
+
+            treeCloudletList.push(newCloudletOne);
         })
 
-        return regionTreeList;
-    } else {
-        return treeCloudletList
+        if (isShowRegion) {//TODO: ADD REGION PARENT
+            let regionTreeList = []
+            allRegionList.map((regionOne, regionIndex) => {
+                let regionMapOne = {
+                    title: (
+                        <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
+                            {regionOne}
+                        </div>
+                    ),
+                    value: regionOne,
+                    children: []
+                };
+
+                treeCloudletList.map((innerItem, innerIndex) => {
+                    if (regionOne === innerItem.region) {
+                        regionMapOne.children.push(innerItem)
+                    }
+                })
+                regionTreeList.push(regionMapOne)
+            })
+
+            return regionTreeList;
+        } else {
+            return treeCloudletList
+        }
+    } catch (e) {
+
     }
 
 }
 
 export const makeDropdownForCloudletForDevView = (pList) => {
     try {
-
-
         let newArrayList = [];
         newArrayList.push({
             key: undefined | undefined | undefined,
@@ -1679,6 +1684,142 @@ export const makeDropdownForCloudletForDevView = (pList) => {
 
     }
 };
+
+export function renderCloudletInfoForAdmin(pCurrentCloudletMap) {
+    return (
+        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
+        >
+            <div style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                marginTop: 0,
+                fontFamily: 'Roboto',
+                display: 'flex',
+            }}>
+                <div style={{color: 'white', marginLeft: 5}}>
+                    <Icon name='cloud'/>
+                </div>
+                <div style={{marginLeft: 5}}>
+                    {pCurrentCloudletMap.CloudletName}
+                </div>
+            </div>
+            <hr/>
+            <table style={{width: '100%', marginTop: -3, marginLeft: 10}}>
+                <tr style={PageMonitoringStyles.trPaddingFirst}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>Operator</b>
+                    </td>
+                    <td style={PageMonitoringStyles.width50}>
+                        {pCurrentCloudletMap.Operator}
+                    </td>
+                </tr>
+                <tr style={PageMonitoringStyles.trPadding2}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>Ip_support</b>
+                    </td>
+                    <td style={PageMonitoringStyles.width50}>
+                        {pCurrentCloudletMap.Ip_support}
+                    </td>
+                </tr>
+                <tr style={PageMonitoringStyles.trPadding2}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>Num_dynamic_ips</b>
+                    </td>
+                    <td style={PageMonitoringStyles.width50}>
+                        {pCurrentCloudletMap.Num_dynamic_ips}
+                    </td>
+                </tr>
+                <tr style={PageMonitoringStyles.trPadding2}>
+                    <td style={PageMonitoringStyles.width50}>
+                        <b>State</b>
+                    </td>
+                    <td style={{width: '50%', color: 'yellow'}}>
+                        {CLOUDLET_CLUSTER_STATE[pCurrentCloudletMap.State]}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    )
+}
+
+
+/**
+ *
+ * @param pCloudletUsageOne
+ * @param bottomDivHeight
+ * @param hwMarginTop
+ * @param hwFontSize
+ * @returns {*}
+ */
+export function renderCloudletHwUsageDashBoardForAdmin(pCloudletUsageOne, bottomDivHeight, hwMarginTop, hwFontSize) {
+    return (
+        <div style={{
+            backgroundColor: 'transparent',
+            height: '100%',
+            flex: .49,
+            marginLeft: 30,
+            borderRadius: 10,
+            marginTop: -30,
+        }}>
+            <Center style={{height: bottomDivHeight,}}>
+                <div>
+                    <Progress
+                        strokeColor={'green'}
+                        type="circle"
+                        width={100}
+                        trailColor='#262626'
+                        style={{fontSize: 7}}
+                        percent={pCloudletUsageOne.usedVCpuCount / pCloudletUsageOne.maxVCpuCount * 100}
+                        strokeWidth={10}
+                        format={(percent, successPercent) => {
+                            return parseInt(pCloudletUsageOne.usedVCpuCount.toFixed(0)) + "/" + pCloudletUsageOne.maxVCpuCount;
+                        }}
+                    />
+                    <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                        vCPU
+                    </div>
+                </div>
+                <div style={{width: 15}}/>
+                <div>
+                    <Progress
+                        style={{fontSize: 7}}
+                        strokeColor='orange'
+                        type="circle"
+                        width={100}
+                        trailColor='#262626'
+                        percent={Math.round(pCloudletUsageOne.usedMemUsage / pCloudletUsageOne.maxMemUsage * 100)}
+                        format={(percent, successPercent) => {
+                            return convertMegaToGiGa(parseInt(pCloudletUsageOne.usedMemUsage.toFixed(0)), false) + "/" + convertMegaToGiGa(parseInt(pCloudletUsageOne.maxMemUsage), false);
+                        }}
+                        strokeWidth={10}
+                    />
+                    <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                        MEM(GB)
+                    </div>
+                </div>
+                <div style={{width: 15}}/>
+                <div>
+                    <Progress
+                        strokeColor='rgb(7, 131, 255)'
+                        type="circle"
+                        width={100}
+                        trailColor='#262626'
+                        percent={Math.ceil((pCloudletUsageOne.usedDiskUsage / pCloudletUsageOne.maxDiskUsage) * 100)}
+                        strokeWidth={10}
+                        format={(percent, successPercent) => {
+                            return pCloudletUsageOne.usedDiskUsage + "/" + pCloudletUsageOne.maxDiskUsage;
+                        }}
+                    />
+                    <div style={{marginTop: hwMarginTop, fontSize: hwFontSize}}>
+                        DISK(GB)
+                    </div>
+                </div>
+            </Center>
+        </div>
+    )
+}
+
+
 export const insert = (arr, index, newItem) => [
     // part of the array before the specified index
     ...arr.slice(0, index),
