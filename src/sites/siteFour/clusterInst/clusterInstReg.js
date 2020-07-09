@@ -17,7 +17,7 @@ import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
 import { getAutoScalePolicyList } from '../../../services/model/autoScalePolicy';
 //Map
-import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
+import Map from "../../../libs/simpleMaps/with-react-motion/pageMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {clusterInstTutor} from "../../../tutorial";
 
@@ -31,6 +31,7 @@ class ClusterInstReg extends React.Component {
             forms: [],
             mapData: [],
             stepsArray: [],
+            region:'',
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -91,6 +92,7 @@ class ClusterInstReg extends React.Component {
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
+        this.setState({region: region})
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.operatorName) {
@@ -115,7 +117,8 @@ class ClusterInstReg extends React.Component {
                 }
             }
         }
-        this.requestedRegionList.push(region)
+        this.requestedRegionList.push(region);
+
     }
 
     organizationValueChange = (currentForm, forms, isInit) =>{
@@ -278,7 +281,7 @@ class ClusterInstReg extends React.Component {
     getMap = () =>
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-                <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' zoomControl={{ center: [0, 0], zoom: 1.5 }}></Map>
+                <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' region={this.state.region}></Map>
             </div>
         )
 
