@@ -1316,13 +1316,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this._____makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this._________________makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
-            _____makeGridItemOneBody(pHwType, graphType) {
+            _________________makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
@@ -1446,6 +1446,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 currentClassfication={this.state.currentClassification}
                                 mapLoading={this.state.mapLoading}
                                 loading={this.state.loading}
+                                currentCloudletMap={this.state.currentCloudletMap}
                             />
                         )
                     } else if (this.state.currentMapLevel === MAP_LEVEL.CLUSTER) {
@@ -2043,17 +2044,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             }
                         })
 
-                        let currentCloudletOne = this.state.cloudletList[selectIndex];
+                        let currentCloudletMapOne = this.state.cloudletList[selectIndex];
                         let filteredCloudletList = []
-                        filteredCloudletList.push(currentCloudletOne)
+                        filteredCloudletList.push(currentCloudletMapOne)
 
                         let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
 
                         await this.setState({
                             filteredCloudletUsageList: cloudletUsageList,
-                            currentCloudletMap: currentCloudletOne,
-                        }, () => {
-                        })
+                            currentCloudletMap: currentCloudletMapOne,
+                        });
 
                         let promiseList = []
                         promiseList.push(fetchClusterList())
@@ -2064,13 +2064,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let filteredClusterList = []
                         clusterList.map((item: TypeCluster, index) => {
-                            if (item.Cloudlet === currentCloudletOne.CloudletName) {
+                            if (item.Cloudlet === currentCloudletMapOne.CloudletName) {
                                 filteredClusterList.push(item)
                             }
                         })
 
                         let filteredAppInstList = appInstList.filter((item: TypeAppInst, index) => {
-                            return item.Cloudlet === currentCloudletOne.CloudletName;
+                            return item.Cloudlet === currentCloudletMapOne.CloudletName;
                         })
 
                         if (filteredClusterList.length === 0) {
