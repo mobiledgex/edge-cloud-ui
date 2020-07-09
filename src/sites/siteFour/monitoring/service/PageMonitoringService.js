@@ -794,6 +794,8 @@ export function makeMaxTickLimit(pDataLimitCount) {
         return 50
     } else if (pDataLimitCount === 20) {
         return 50;
+    } else if (pDataLimitCount === 10) {
+        return 50;
     }
 }
 

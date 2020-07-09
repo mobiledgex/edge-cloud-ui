@@ -11,7 +11,7 @@ import {withSize} from 'react-sizeme';
 import uniqBy from 'lodash/uniqBy'
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu as AMenu, Row, Select, TreeSelect} from 'antd';
+import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu as AMenu, Popover, Row, Select, TreeSelect} from 'antd';
 import {
     filterByClassification,
     filteredClientStatusListByAppName,
@@ -3006,43 +3006,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderGraphDataCountDropdown() {
-                return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'flex-start', marginLeft: -18}}>
-                        <div style={{width: 25, marginLeft: 0}}>
-                            <Select
-                                showArrow={false}
-                                ref={c => this.recentDataLimitCountRef = c}
-                                dropdownMatchSelectWidth={false}
-                                style={{width: 70, fontSize: '15px !important', fontWeight: 'bold', color: '#77BD25'}}
-                                dropdownStyle={{
-                                    maxHeight: '512px !important',
-                                    overflowY: 'auto',
-                                    overflowAnchor: 'none',
-                                    width: 200,
-                                }}
-                                value={this.state.dataLimitCount}
-                                placeholder={'Select Data Count'}
-                                onChange={async (value) => {
-                                    this.recentDataLimitCountRef.blur()
-                                    await this.setState({
-                                        dataLimitCount: value,
-                                    }, () => {
-                                        console.log(`dataLimitCount====>`, this.state.dataLimitCount);
-                                    })
-                                    this.reloadDataFromRemote()
-                                }}
-                            >
-                                {graphDataCount.reverse().map(item => {
-                                    return (
-                                        <Option value={item.value}>{item.text.split('[')[0].trim()}</Option>
-                                    )
-                                })}
-                            </Select>
-                        </div>
-                    </div>
-                )
-            }
+
 
             ranges = {
                 'Last 24 hours': [dateUtil.subtractDays(1), dateUtil.subtractDays(0)],
@@ -3158,6 +3122,51 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             ranges={this.ranges}
                         />
                     </div>
+                )
+            }
+
+            renderGraphDataCountDropdown() {
+                const content = (
+                    <div>
+                        <div style={{color: 'yellow', fontWeight: 'bold'}}>Set the number of metric data to be displayed on the graph</div>
+                    </div>
+                );
+
+                return (
+                    <Popover content={content} trigger="click">
+                        <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'flex-start', marginLeft: -18}}>
+                            <div style={{width: 25, marginLeft: 0}}>
+                                <Select
+                                    showArrow={false}
+                                    ref={c => this.recentDataLimitCountRef = c}
+                                    dropdownMatchSelectWidth={false}
+                                    style={{width: 70, fontSize: '15px !important', fontWeight: 'bold', color: '#fff'}}
+                                    dropdownStyle={{
+                                        maxHeight: '512px !important',
+                                        overflowY: 'auto',
+                                        overflowAnchor: 'none',
+                                        width: 200,
+                                    }}
+                                    value={this.state.dataLimitCount}
+                                    placeholder={'Select Data Count'}
+                                    onChange={async (value) => {
+                                        this.recentDataLimitCountRef.blur()
+                                        await this.setState({
+                                            dataLimitCount: value,
+                                        });
+                                        this.reloadDataFromRemote()
+                                    }}
+                                >
+                                    {graphDataCount.reverse().map(item => {
+                                        return (
+                                            <Option value={item.value}>{item.text.split('[')[0].trim()}</Option>
+                                        )
+                                    })}
+                                </Select>
+                            </div>
+                        </div>
+                    </Popover>
+
                 )
             }
 
@@ -3607,7 +3616,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div style={{marginLeft: 25}}>
                                             {this.renderAppInstDropdown()}
                                         </div>
-                                        <div style={{marginLeft: 100}}>
+                                        <div style={{marginLeft: 30}}>
                                             {this.renderGraphDataCountDropdown()}
                                         </div>
                                     </React.Fragment>
@@ -3619,7 +3628,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div style={{marginLeft: 25}}>
                                             {this.renderDateRangeDropdown()}
                                         </div>
-                                        <div style={{marginLeft: 0}}>
+                                        <div style={{marginLeft: 30}}>
                                             {this.renderGraphDataCountDropdown()}
                                         </div>
                                     </React.Fragment>

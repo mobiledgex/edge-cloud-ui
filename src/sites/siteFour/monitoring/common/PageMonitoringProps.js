@@ -70,15 +70,6 @@ export const ColorLinearProgress = withStyles({
 })(LinearProgress);
 
 export const graphDataCount = [
-    /*
-     {
-         text: `3000 [4.5 hours]`,
-         value: 3000
-     },
-     {
-         text: '2000 [3 hours]',
-         value: 2000
-     },*/
     {
         text: '1000 [2 hours]',
         value: 1000
@@ -106,6 +97,10 @@ export const graphDataCount = [
     {
         text: '20 [2 mins]',
         value: 20
+    },
+    {
+        text: '10 [1 mins]',
+        value: 10
     },
 
 ]
