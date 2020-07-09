@@ -335,7 +335,7 @@ class ClustersMap extends Component {
 
     handleMapClick(e){
 
-        if (this.props.id == 'Cloudlets') {
+        if (this.props.onMapClick) {
             let _lat = Math.round(e.latlng['lat'])
             let _lng = Math.round(e.latlng['lng'])
 
@@ -348,11 +348,10 @@ class ClustersMap extends Component {
                     "coordinates": [_lat, _lng],
                     "cost": 3
                 }]
-            if(this.props.onMapClick)
-            {
-                this.props.onMapClick(location)
-            }
-            this.setState({ cities: locationData, mapCenter: [0,0]})
+
+            this.props.onMapClick(location)
+
+            this.setState({ cities: locationData})
             //_self.forceUpdate();
         }
     }
