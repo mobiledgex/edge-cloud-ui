@@ -72,6 +72,7 @@ module.exports = {
                 'no-loop-func': 'off',
                 'no-unused-expressions': 'off',
                 'no-sequences': 'off',
+                'no-whitespace-before-property': 'off'
             }
         }
     },

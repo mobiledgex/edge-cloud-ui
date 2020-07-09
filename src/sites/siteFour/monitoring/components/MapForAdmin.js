@@ -70,6 +70,7 @@ type Props = {
     currentOrgView: string,
     currentClassification: string,
     filteredCloudletUsageList: any,
+    locationGroupedCloudletList: any,
 
 };
 type State = {
@@ -140,6 +141,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
             try {
                 await this.setState({
                     cloudletUsageOne: this.props.cloudletUsageList[0],
+                },()=>{
                 });
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
@@ -583,8 +585,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                             >
                                 {makeMapThemeDropDown(this)}
                             </div>
-
-
                         </div>
                     </div>
                     }
