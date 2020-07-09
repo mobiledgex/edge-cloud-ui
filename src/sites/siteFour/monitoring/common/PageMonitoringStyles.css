@@ -1033,7 +1033,7 @@ tr td {
     font-weight: 600;
 }
 
-/*.ant-select-selection-item {
-    align-self: center;
-}*/
-
+.ant-select-selection-item {
+    opacity: 0.9;
+    font-size: 15px !important;
+}

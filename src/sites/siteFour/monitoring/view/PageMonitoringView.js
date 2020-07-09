@@ -1,4 +1,6 @@
 import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+import type {PageMonitoringProps} from "../common/PageMonitoringProps";
+import {CustomSwitch, graphDataCount, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from '../common/PageMonitoringProps'
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import AppsIcon from '@material-ui/icons/Apps';
@@ -108,8 +110,6 @@ import PerformanceSummaryForCluster from "../components/PerformanceSummaryForClu
 import PerformanceSummaryForAppInst from "../components/PerformanceSummaryForAppInst";
 import AppInstEventLogList from "../components/AppInstEventLogList";
 import {fields, getUserRole} from '../../../../services/model/format'
-import type {PageMonitoringProps} from "../common/PageMonitoringProps";
-import {CustomSwitch, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from "../common/PageMonitoringProps";
 import AdjustIcon from '@material-ui/icons/Adjust';
 import {
     ADMIN_CLOUDLET_HW_MAPPER_KEY,
@@ -2051,7 +2051,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredCloudletList = []
                         filteredCloudletList.push(currentCloudletMapOne)
 
-                        let cloudletUsageList = await getCloudletUsageList(filteredCloudletList)
+                        let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]
+                        let startTime = makeCompleteDateTime(date[0]);
+                        let endTime = makeCompleteDateTime(date[1]);
+                        let cloudletUsageList = await getCloudletUsageList(filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
 
                         await this.setState({
                             filteredCloudletUsageList: cloudletUsageList,
@@ -3004,63 +3007,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             renderGraphDataCountDropdown() {
-                let count = [
-                   /*
-                    {
-                        text: `3000 [4.5 hours]`,
-                        value: 3000
-                    },
-                    {
-                        text: '2000 [3 hours]',
-                        value: 2000
-                    },*/
-                    {
-                        text: '1000 [2 hours]',
-                        value: 1000
-                    },
-                    {
-                        text: '750 [1 hour]',
-                        value: 750
-                    },
-                    {
-                        text: '500 [40 mins]',
-                        value: 500
-                    },
-                    {
-                        text: '250 [20 mins]',
-                        value: 250
-                    },
-                    {
-                        text: '100 [8 mins]',
-                        value: 100
-                    },
-                    {
-                        text: '50 [4 mins]',
-                        value: 50
-                    },
-                    {
-                        text: '20 [2 mins]',
-                        value: 20
-                    },
-
-                ]
-
                 return (
-                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
-                        <div className="page_monitoring_dropdown_label" style={{width: 100}}>
-                            Data Count
-                        </div>
-                        <div style={{width: 70, marginLeft: -25}}>
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'flex-start', marginLeft: -18}}>
+                        <div style={{width: 25, marginLeft: 0}}>
                             <Select
+                                showArrow={false}
                                 ref={c => this.recentDataLimitCountRef = c}
                                 dropdownMatchSelectWidth={false}
+                                style={{width: 70, fontSize: '15px !important', fontWeight: 'bold', color: '#77BD25'}}
                                 dropdownStyle={{
                                     maxHeight: '512px !important',
                                     overflowY: 'auto',
                                     overflowAnchor: 'none',
-                                    width: 150,
+                                    width: 200,
                                 }}
-                                style={{width: 188, fontSize: '6px !important'}}
                                 value={this.state.dataLimitCount}
                                 placeholder={'Select Data Count'}
                                 onChange={async (value) => {
@@ -3073,9 +3033,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.reloadDataFromRemote()
                                 }}
                             >
-                                {count.reverse().map(item => {
+                                {graphDataCount.reverse().map(item => {
                                     return (
-                                        <Option value={item.value}>{item.text}</Option>
+                                        <Option value={item.value}>{item.text.split('[')[0].trim()}</Option>
                                     )
                                 })}
                             </Select>
@@ -3634,6 +3594,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     <div style={{marginLeft: 5}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN && this.renderDateRangeDropdownForAdmin()}
                                     </div>
+                                    <div style={{marginLeft: 25}}>
+                                        {this.renderGraphDataCountDropdown()}
+                                    </div>
                                 </React.Fragment>
                                 : this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.DEV) ?//todo: dev
                                     <React.Fragment>
@@ -3644,7 +3607,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div style={{marginLeft: 25}}>
                                             {this.renderAppInstDropdown()}
                                         </div>
-                                        <div style={{marginLeft: 25}}>
+                                        <div style={{marginLeft: 100}}>
                                             {this.renderGraphDataCountDropdown()}
                                         </div>
                                     </React.Fragment>
@@ -3655,6 +3618,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         </div>
                                         <div style={{marginLeft: 25}}>
                                             {this.renderDateRangeDropdown()}
+                                        </div>
+                                        <div style={{marginLeft: 0}}>
+                                            {this.renderGraphDataCountDropdown()}
                                         </div>
                                     </React.Fragment>
                             }

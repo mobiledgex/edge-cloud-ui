@@ -68,3 +68,45 @@ export const ColorLinearProgress = withStyles({
         backgroundColor: '#24add0',
     },
 })(LinearProgress);
+
+export const graphDataCount = [
+    /*
+     {
+         text: `3000 [4.5 hours]`,
+         value: 3000
+     },
+     {
+         text: '2000 [3 hours]',
+         value: 2000
+     },*/
+    {
+        text: '1000 [2 hours]',
+        value: 1000
+    },
+    {
+        text: '750 [1 hour]',
+        value: 750
+    },
+    {
+        text: '500 [40 mins]',
+        value: 500
+    },
+    {
+        text: '250 [20 mins]',
+        value: 250
+    },
+    {
+        text: '100 [8 mins]',
+        value: 100
+    },
+    {
+        text: '50 [4 mins]',
+        value: 50
+    },
+    {
+        text: '20 [2 mins]',
+        value: 20
+    },
+
+]
+
