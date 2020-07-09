@@ -14,7 +14,7 @@ import { fields, getOrganization, updateFields } from '../../../services/model/f
 import { getOrganizationList } from '../../../services/model/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../services/model/cloudlet';
 //Map
-import Map from '../../../libs/simpleMaps/with-react-motion/index_clusters';
+import Map from "../../../libs/simpleMaps/with-react-motion/pageMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { CloudletTutor } from "../../../tutorial";
 import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';
@@ -38,6 +38,7 @@ class CloudletReg extends React.Component {
             cloudletManifest: undefined,
             showCloudletManifest: false,
             showManifest: false,
+            mapCenter: [53,13]
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -93,6 +94,7 @@ class CloudletReg extends React.Component {
                 let cloudlet = {}
                 cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
                 this.setState({ mapData: [cloudlet] })
+                this.setState({ mapCenter: [latitude, longitude] })
             }
             else {
                 this.setState({ mapData: [] })
@@ -219,7 +221,7 @@ class CloudletReg extends React.Component {
     getMap = () =>
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-                <Map locData={this.state.mapData} id={'Cloudlets'} reg='cloudletAndClusterMap' zoomControl={{ center: [0, 0], zoom: 1.5 }} onMapClick={this.onMapClick}></Map>
+                <Map locData={this.state.mapData} id={'Cloudlets'} reg='cloudletAndClusterMap' onMapClick={this.onMapClick}  mapCenter={this.state.mapCenter}></Map>
             </div>
         )
 
