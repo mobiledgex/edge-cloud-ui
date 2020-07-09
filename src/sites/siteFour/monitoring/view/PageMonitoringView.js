@@ -2678,18 +2678,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-
             renderClusterTreeDropdownForAdmin() {
-                let treeSelectWidth = 350;
+                let treeSelectWidth = 250;
                 let maxTagCount = 2;
                 if (this.props.size.width >= 1600) {
-                    treeSelectWidth = 350;
-                    maxTagCount = 1
-                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
                     treeSelectWidth = 250;
                     maxTagCount = 1
-                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
+                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
                     treeSelectWidth = 150;
+                    maxTagCount = 1
+                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
+                    treeSelectWidth = 50;
                     maxTagCount = 1
                 } else if (this.props.size.width <= 1100) {
                     treeSelectWidth = 50;
