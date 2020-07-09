@@ -2498,23 +2498,29 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async handleResetForAdmin() {
-                clearInterval(this.intervalForAppInst)
-                clearInterval(this.intervalForCluster)
-                //todo:#################################
-                //todo: all org dropdown(reset)
-                //todo:#################################
-                let markerListForMap = reducer.groupBy(this.state.cloudletList, CLASSIFICATION.CloudletName);
-                await this.setState({
-                    allCloudletEventLogList: [],
-                    filteredCloudletEventLogList: [],
-                    filteredClientStatusList: [],
-                    currentClusterList: [],
-                    clusterTreeDropdownList: [],
-                    filteredCloudletList: this.state.cloudletList,
-                    markerList: markerListForMap,
-                    isStream: false,
-                    isShowClusterInLegend: false,
-                });
+                try {
+                    clearInterval(this.intervalForAppInst)
+                    clearInterval(this.intervalForCluster)
+                    //todo:#################################
+                    //todo: all org dropdown(reset)
+                    //todo:#################################
+                    let markerListForMap = reducer.groupBy(this.state.cloudletList, CLASSIFICATION.CloudletName);
+                    await this.setState({
+                        allCloudletEventLogList: [],
+                        filteredCloudletEventLogList: [],
+                        filteredClientStatusList: [],
+                        currentClusterList: [],
+                        clusterTreeDropdownList: [],
+                        allAppInstDropdown: [],
+                        currentAppInstNameVersion: undefined,
+                        filteredCloudletList: this.state.cloudletList,
+                        markerList: markerListForMap,
+                        isStream: false,
+                        isShowClusterInLegend: false,
+                    });
+                } catch (e) {
+                    throw new Error(e)
+                }
             }
 
 
@@ -2574,7 +2580,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     //TODO : #############################
                                     await this.setState({currentOrgView: USER_TYPE_SHORT.OPER})
                                     //TODO: WHEN ALL(reset)
-                                    if (value === "0" || value === "Reset") {
+                                    if (value === "Reset") {
                                         let filteredCloudletList = this.state.cloudletList
                                         await this.handleResetForAdmin()
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
@@ -2591,7 +2597,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                                 this.setState({
                                     currentOper: value,
-                                    cloudletCount: cloudletDropdownList.length-1,
+                                    cloudletCount: cloudletDropdownList.length - 1,
                                     filteredCloudletList: filteredCloudletList,
                                     cloudletDropdownList: cloudletDropdownList,
                                     markerList: markerListForMap,
