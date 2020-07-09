@@ -70,6 +70,7 @@ type Props = {
     currentOrgView: string,
     currentClassification: string,
     filteredCloudletUsageList: any,
+    locationGroupedCloudletList: any,
 
 };
 type State = {
@@ -583,8 +584,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                             >
                                 {makeMapThemeDropDown(this)}
                             </div>
-
-
                         </div>
                     </div>
                     }
