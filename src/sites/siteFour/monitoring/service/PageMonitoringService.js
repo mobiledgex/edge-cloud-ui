@@ -459,7 +459,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 colorCodeIndexList.push(item.colorCodeIndex);
             });
 
-            //@desc: cut List with RECENT_DATA_LIMIT_COUNT
             let newDateTimeList = [];
             for (let i in dateTimeList) {
                 if (i < _this.state.dataLimitCount) {
