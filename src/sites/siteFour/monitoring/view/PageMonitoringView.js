@@ -385,6 +385,7 @@ type PageDevMonitoringState = {
     currentCloudletMap: any,
     timezoneChange: boolean,
     cloudletCount: number,
+    recentDataLimitCount: number,
 
 }
 
@@ -645,6 +646,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletMap: {},
                     timezoneChange: true,
                     cloudletCount: 0,
+                    recentDataLimitCount: 20,
                 }
             }
 
@@ -948,32 +950,34 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async reloadDataFromRemote() {
-                clearInterval(this.intervalForAppInst)
-                await this.setState({
-                    currentClassification:
-                        this.state.userType.toString().includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER :
-                            this.state.userType.toString().includes(USER_TYPE_SHORT.OPER) ? CLASSIFICATION.CLOUDLET :
-                                this.state.userType.toString().includes(USER_TYPE_SHORT.ADMIN) ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : null,
-                    placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
-                    placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
-                })
-                await this.setState({
-                    cloudLetSelectBoxClearable: true,
-                })
-                await this.setState({
-                    loading: true,
-                    dropdownRequestLoading: true
-                })
-                await this.loadInitData();
-                this.setState({
-                    loading: false,
-                })
-                await this.setState({
-                    currentRegion: 'ALL',
-                    currentCloudLet: undefined,
-                    currentClusterList: undefined,
-                    currentAppInst: '',
-                })
+                alert(this.state.recentDataLimitCount)
+
+                /* clearInterval(this.intervalForAppInst)
+                 await this.setState({
+                     currentClassification:
+                         this.state.userType.toString().includes(USER_TYPE_SHORT.DEV) ? CLASSIFICATION.CLUSTER :
+                             this.state.userType.toString().includes(USER_TYPE_SHORT.OPER) ? CLASSIFICATION.CLOUDLET :
+                                 this.state.userType.toString().includes(USER_TYPE_SHORT.ADMIN) ? CLASSIFICATION.CLOUDLET_FOR_ADMIN : null,
+                     placeHolderStateTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(364)),
+                     placeHolderEndTime: dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0)),
+                 })
+                 await this.setState({
+                     cloudLetSelectBoxClearable: true,
+                 })
+                 await this.setState({
+                     loading: true,
+                     dropdownRequestLoading: true
+                 })
+                 await this.loadInitData();
+                 this.setState({
+                     loading: false,
+                 })
+                 await this.setState({
+                     currentRegion: 'ALL',
+                     currentCloudLet: undefined,
+                     currentClusterList: undefined,
+                     currentAppInst: '',
+                 })*/
 
             }
 
@@ -1833,6 +1837,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <div style={PageMonitoringStyles.listItemTitle}>
                                 Reload
                             </div>
+
                         </AMenu.Item>
 
                         {/*todo: ######################*/}
@@ -2995,6 +3000,38 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 })}
                             </Select>
                         </div>
+
+                    </div>
+                )
+            }
+
+            renderGraphDataCount() {
+                return (
+                    <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
+                        <div className="page_monitoring_dropdown_label" style={{width: 50}}>
+                            count
+                        </div>
+                        <div style={{width: 70, marginLeft: -10}}>
+                            <Select
+                                ref={c => this.recentDataLimitCountRef = c}
+                                dropdownStyle={{}}
+                                style={{width: 80, maxHeight: '512px !important', fontSize: '6px !important'}}
+                                value={this.state.recentDataLimitCount}
+                                //placeholder={this.state.appInstSelectBoxPlaceholder}
+                                onChange={async (value) => {
+                                    this.setState({
+                                        recentDataLimitCount: value,
+                                    })
+
+                                }}
+                            >
+                                {[20, 50, 100, 200, 300, 400, 500, 600, 1000].map(item => {
+                                    return (
+                                        <Option value={item}>{item}</Option>
+                                    )
+                                })}
+                            </Select>
+                        </div>
                     </div>
                 )
             }
@@ -3558,6 +3595,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                         <div style={{marginLeft: 25}}>
                                             {this.renderAppInstDropdown()}
+                                        </div>
+                                        <div style={{marginLeft: 25}}>
+                                            {this.renderGraphDataCount()}
                                         </div>
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
