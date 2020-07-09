@@ -19,7 +19,7 @@ class MexFlow extends React.Component {
     super(props);
     this.renderCytoscapeElement = this.renderCytoscapeElement.bind(this);
     this.state = {
-      flowData: { id: 0 }
+      flowDataList: []
     }
     this.flowIdList = []
   }
@@ -47,8 +47,8 @@ class MexFlow extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.flowData && (props.flowData.id !== state.flowData.id)) {
-      return { flowData: props.flowData }
+    if (props.flowDataList && props.flowDataList !== state.flowDataList) {
+      return { flowDataList: props.flowDataList }
     }
     return null
   }
@@ -70,26 +70,28 @@ class MexFlow extends React.Component {
     })
   }
 
-  updateCyFlow = (flowData) => {
-    if (this.flowIdList.includes(flowData.id)) {
-      var index = this.flowIdList.indexOf(flowData.id);
-      if (index !== -1) this.flowIdList.splice(index, 1);
-    }
+  updateCyFlow = (flowDataList) => {
+    flowDataList.map(flowData => {
+      if (this.flowIdList.includes(flowData.id)) {
+        var index = this.flowIdList.indexOf(flowData.id);
+        if (index !== -1) this.flowIdList.splice(index, 1);
+      }
 
-    flowData.removeId.map(id => {
-      this.cy.remove(this.cy.$(`#${id}`));
+      flowData.removeId.map(id => {
+        this.cy.remove(this.cy.$(`#${id}`));
+      })
+
+      this.flowIdList.push(flowData.id)
+      if (flowData && flowData.dataList) {
+        this.addFlowdata(flowData)
+      }
     })
-
-    this.flowIdList.push(flowData.id)
-    if (flowData && flowData.dataList) {
-      this.addFlowdata(flowData)
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let flowData = this.props.flowData
-    if (flowData && flowData.id !== 0) {
-      this.updateCyFlow(flowData)
+    let flowDataList = this.props.flowDataList
+    if (flowDataList && flowDataList.length > 0) {
+      this.updateCyFlow(flowDataList)
     }
   }
 
@@ -106,8 +108,11 @@ class MexFlow extends React.Component {
     }
     else {
       this.addFlowdata(defaultFlow())
-      if (this.props.flowData && this.props.flowData.id !== 0) {
-        this.addFlowdata(this.props.flowData)
+      let flowDataList = this.props.flowDataList
+      if (flowDataList && flowDataList.length > 0) {
+        flowDataList.map(flowData => {
+          this.addFlowdata(flowData)
+        })
       }
     }
   }

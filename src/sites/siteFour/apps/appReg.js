@@ -34,7 +34,7 @@ class AppReg extends React.Component {
             forms: [],
             stepsArray: [],
             showGraph: false,
-            flowData: { id: 0 },
+            flowData: [],
             flowInstance: undefined
         }
         this.isUpdate = this.props.isUpdate
@@ -49,7 +49,7 @@ class AppReg extends React.Component {
         this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
         this.originalData = undefined
         this.expandAdvanceMenu = false
-        this.tlsCount = 0 
+        this.tlsCount = 0
     }
 
     validatePortRange = (form) => {
@@ -183,7 +183,8 @@ class AppReg extends React.Component {
         }
     }
 
-    deploymentValueChange = (currentForm, forms, isInit) => {
+    deploymentValueChange = (currentForm, forms, isInit, flowDataList) => {
+        flowDataList.push(clusterFlow.deploymentTypeFlow(currentForm.value))
         forms = forms.filter((form) => {
             if (form.field === fields.imageType) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? constant.IMAGE_TYPE_HELM :
@@ -203,8 +204,7 @@ class AppReg extends React.Component {
                     [constant.ACCESS_TYPE_LOAD_BALANCER] :
                     [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
-                //setTimeout(()=>this.setState({flowData:clusterFlow.ipAccessFlowApp(form.value, constant.APP)}), 10)
-                this.accessTypeChange(form, forms, isInit)
+                this.accessTypeChange(form, forms, isInit, flowDataList)
                 return form
             }
             else if (form.label === 'Configs') {
@@ -231,7 +231,7 @@ class AppReg extends React.Component {
             }
         })
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms, showGraph:currentForm.value !== constant.DEPLOYMENT_TYPE_HELM, flowData:clusterFlow.deploymentTypeFlow(currentForm.value) })
+            this.setState({ forms: forms })
         }
     }
 
@@ -350,7 +350,8 @@ class AppReg extends React.Component {
         })
     }
 
-    accessTypeChange = (currentForm, forms, isInit) => {
+    accessTypeChange = (currentForm, forms, isInit, flowDataList) => {
+        flowDataList.push(clusterFlow.ipAccessFlowApp(currentForm.value))
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.ports) {
@@ -369,17 +370,17 @@ class AppReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms, showGraph: true, flowData:clusterFlow.ipAccessFlowApp(currentForm.value, constant.APP) })
+            this.setState({ forms: forms })
         }
     }
 
-    tlsValueChange = (form, forms, isInit)=>
-    {
+    tlsValueChange = (form, forms, isInit, flowDataList) => {
         this.tlsCount = form.value ? this.tlsCount + 1 : this.tlsCount - 1
-        this.setState({flowData : clusterFlow.portFlow(this.tlsCount)})
+        flowDataList.push(clusterFlow.portFlow(this.tlsCount))
     }
 
     checkForms = (form, forms, isInit) => {
+        let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
         }
@@ -390,16 +391,19 @@ class AppReg extends React.Component {
             this.versionValueChange(form, forms, isInit)
         }
         else if (form.field === fields.deployment) {
-            this.deploymentValueChange(form, forms, isInit)
+            this.deploymentValueChange(form, forms, isInit, flowDataList)
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
         }
         else if (form.field === fields.tls) {
-            this.tlsValueChange(form, forms, isInit)
+            this.tlsValueChange(form, forms, isInit, flowDataList)
         }
         else if (form.field === fields.accessType) {
-            this.accessTypeChange(form, forms, isInit)
+            this.accessTypeChange(form, forms, isInit, flowDataList)
+        }
+        if (flowDataList.length > 0) {
+            this.setState({ showGraph: true, flowData: flowDataList })
         }
     }
 
@@ -824,7 +828,7 @@ class AppReg extends React.Component {
                         </div>
                         {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '50vw' : '0vw', transition: 'width 0.5s', border: '1px solid white', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21' }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowData={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
+                                <MexFlow flowDataList={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
                             </Suspense>
                         </div> : null}
                     </div>
