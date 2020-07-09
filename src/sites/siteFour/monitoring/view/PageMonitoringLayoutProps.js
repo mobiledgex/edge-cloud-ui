@@ -668,49 +668,23 @@ export const CLUSTER_HW_MAPPER_KEY = "_layout_mapper";
 export const APPINST_LAYOUT_KEY = "_layout2";
 export const APPINST_HW_MAPPER_KEY = "_layout2_mapper";
 
-
-export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet";
+//todo : for real
+/*export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet";
 export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet";
-
 export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster";
 export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster";
-
 export const ADMIN_LAYOUT_KEY = "_layout_admin";
-export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
+export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";*/
+
+
 
 
 //todo : for test
-/*export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet2";
+export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet2";
 export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet2";
 
 export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster2";
 export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster2";
 
 export const ADMIN_LAYOUT_KEY = "_layout_admin2";
-export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin2";*/
-
-
-/*export const layoutCloudlet ='layoutCloudlet'
-export const layoutMapperCloudlet ='layoutMapperCloudlet'
-
-export const layoutCluster ='layoutCluster'
-export const layoutMapperCluster ='layoutMapperCluster'
-
-export const layoutAppInst ='layoutAppInst'
-export const layoutMapperAppInst ='layoutMapperAppInst'
-
-
-export const layoutCloudletAdmin ='layoutCloudletAdmin'
-export const layoutMapperCloudletAdmin ='layoutMapperCloudletAdmin'
-
-export const layoutClusterAdmin ='layoutClusterAdmin'
-export const layoutMapperClusterAdmin ='layoutMapperClusterAdmin'
-
-export const layoutAdmin ='layoutAdmin'
-export const layoutMapperAdmin ='layoutMapperAdmin'*/
-
-
-
-
-
-
+export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin2";

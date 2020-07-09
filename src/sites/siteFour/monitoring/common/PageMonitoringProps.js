@@ -71,35 +71,35 @@ export const ColorLinearProgress = withStyles({
 
 export const graphDataCount = [
     {
-        text: '1000 [2 hours]',
+        text: '2 hours',
         value: 1000
     },
     {
-        text: '750 [1 hour]',
+        text: '1 hour',
         value: 750
     },
     {
-        text: '500 [40 mins]',
+        text: '40 mins',
         value: 500
     },
     {
-        text: '250 [20 mins]',
+        text: '20 mins',
         value: 250
     },
     {
-        text: '100 [8 mins]',
+        text: '8 mins',
         value: 100
     },
     {
-        text: '50 [4 mins]',
+        text: '4 mins',
         value: 50
     },
     {
-        text: '20 [2 mins]',
+        text: '2 mins',
         value: 20
     },
     {
-        text: '10 [1 mins]',
+        text: '1.5 min',
         value: 10
     },
 
