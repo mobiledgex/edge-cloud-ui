@@ -10,7 +10,7 @@ export const FLOW_UPDATE = 'update'
 const cyStyle = {
   height: '50vh',
   width: '45vw',
-  transition: 'width 0.5s',
+  // transition: 'width 3s',
   backgroundColor: '#1A1C21'
 };
 
@@ -47,6 +47,7 @@ class MexFlow extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
+    console.log('Rahul1234', props.data)
     if (props.flowDataList && props.flowDataList !== state.flowDataList) {
       return { flowDataList: props.flowDataList }
     }
@@ -60,30 +61,34 @@ class MexFlow extends React.Component {
   }
 
   addFlowdata = (flowData) => {
-    flowData.dataList.map(element => {
-      this.cy.add({
-        group: element.type,
-        data: element.data,
-        position: element.position,
-        classes: element.classes
+    if (flowData) {
+      flowData.dataList.map(element => {
+        this.cy.add({
+          group: element.type,
+          data: element.data,
+          position: element.position,
+          classes: element.classes
+        })
       })
-    })
+    }
   }
 
   updateCyFlow = (flowDataList) => {
     flowDataList.map(flowData => {
-      if (this.flowIdList.includes(flowData.id)) {
-        var index = this.flowIdList.indexOf(flowData.id);
-        if (index !== -1) this.flowIdList.splice(index, 1);
-      }
+      if (flowData) {
+        if (this.flowIdList.includes(flowData.id)) {
+          var index = this.flowIdList.indexOf(flowData.id);
+          if (index !== -1) this.flowIdList.splice(index, 1);
+        }
 
-      flowData.removeId.map(id => {
-        this.cy.remove(this.cy.$(`#${id}`));
-      })
+        flowData.removeId.map(id => {
+          this.cy.remove(this.cy.$(`#${id}`));
+        })
 
-      this.flowIdList.push(flowData.id)
-      if (flowData && flowData.dataList) {
-        this.addFlowdata(flowData)
+        this.flowIdList.push(flowData.id)
+        if (flowData && flowData.dataList) {
+          this.addFlowdata(flowData)
+        }
       }
     })
   }

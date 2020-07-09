@@ -39,6 +39,7 @@ export const style = [
             'line-style': function (ele) { return ele.data('ls') ? ele.data('ls') : 'solid' },
             'curve-style': function (ele) { return ele.data('cs') ? ele.data('cs') : 'straight' },
             'target-arrow-shape': function (ele) { return ele.data('as') ? ele.data('as') : 'triangle' },
+            'target-arrow-color': function (ele) { return ele.data('tac') ? ele.data('tac') : '#BEBEBE' },
             'source-endpoint': function (ele) { return ele.data('se') ? ele.data('se') : '0% 0%' },
             'target-endpoint': function (ele) { return ele.data('te') ? ele.data('te') : '0% 0%' },
             'source-distance-from-node': function (ele) { return ele.data('sdn') ? ele.data('sdn') : '0px' },

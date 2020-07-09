@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -183,8 +183,7 @@ class AppReg extends React.Component {
         }
     }
 
-    deploymentValueChange = (currentForm, forms, isInit, flowDataList) => {
-        flowDataList.push(clusterFlow.deploymentTypeFlow(currentForm.value))
+    deploymentValueChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
             if (form.field === fields.imageType) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? constant.IMAGE_TYPE_HELM :
@@ -204,7 +203,7 @@ class AppReg extends React.Component {
                     [constant.ACCESS_TYPE_LOAD_BALANCER] :
                     [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
-                this.accessTypeChange(form, forms, isInit, flowDataList)
+                this.accessTypeChange(form, forms, isInit)
                 return form
             }
             else if (form.label === 'Configs') {
@@ -350,8 +349,7 @@ class AppReg extends React.Component {
         })
     }
 
-    accessTypeChange = (currentForm, forms, isInit, flowDataList) => {
-        flowDataList.push(clusterFlow.ipAccessFlowApp(currentForm.value))
+    accessTypeChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.ports) {
@@ -374,9 +372,8 @@ class AppReg extends React.Component {
         }
     }
 
-    tlsValueChange = (form, forms, isInit, flowDataList) => {
+    tlsValueChange = (form, forms, isInit) => {
         this.tlsCount = form.value ? this.tlsCount + 1 : this.tlsCount - 1
-        flowDataList.push(clusterFlow.portFlow(this.tlsCount))
     }
 
     checkForms = (form, forms, isInit) => {
@@ -391,16 +388,23 @@ class AppReg extends React.Component {
             this.versionValueChange(form, forms, isInit)
         }
         else if (form.field === fields.deployment) {
-            this.deploymentValueChange(form, forms, isInit, flowDataList)
+            this.deploymentValueChange(form, forms, isInit)
+            let data = formattedData(forms)
+            flowDataList.push(clusterFlow.deploymentTypeFlow(data))
+            flowDataList.push(clusterFlow.ipAccessFlowApp(data))
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
         }
         else if (form.field === fields.tls) {
-            this.tlsValueChange(form, forms, isInit, flowDataList)
+            this.tlsValueChange(form, forms, isInit)
+            flowDataList.push(clusterFlow.portFlow(this.tlsCount))
         }
         else if (form.field === fields.accessType) {
-            this.accessTypeChange(form, forms, isInit, flowDataList)
+            this.accessTypeChange(form, forms, isInit)
+            let data = formattedData(forms)
+            flowDataList.push(clusterFlow.deploymentTypeFlow(data))
+            flowDataList.push(clusterFlow.ipAccessFlowApp(data))
         }
         if (flowDataList.length > 0) {
             this.setState({ showGraph: true, flowData: flowDataList })
@@ -823,10 +827,10 @@ class AppReg extends React.Component {
             <div className="round_panel">
                 <div className="grid_table" >
                     <div style={{ display: 'flex' }}>
-                        <div style={{ width: this.state.showGraph ? '50vw' : '100vw', transition: 'width 0.5s' }}>
+                        <div style={{ width: this.state.showGraph ? '50vw' : '100vw' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
-                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '50vw' : '0vw', transition: 'width 0.5s', border: '1px solid white', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21' }}>
+                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '50vw' : '0vw', border: '1px solid white', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21' }}>
                             <Suspense fallback={<div></div>}>
                                 <MexFlow flowDataList={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
                             </Suspense>
