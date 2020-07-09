@@ -384,6 +384,7 @@ type PageDevMonitoringState = {
     isShowClusterInLegend: boolean,
     currentCloudletMap: any,
     timezoneChange: boolean,
+    cloudletCount: number,
 
 }
 
@@ -643,6 +644,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isShowClusterInLegend: false,
                     currentCloudletMap: {},
                     timezoneChange: true,
+                    cloudletCount: 0,
                 }
             }
 
@@ -721,6 +723,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             operList: operOrgList,
                             organizationList: devOrgList,
                             orgTreeData: orgTreeData,
+                            cloudletCount: cloudletList.length,
                         })
                     } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
                         //TODO:###################################################################################################################
@@ -2494,9 +2497,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-            __________DROPDOWN____________________________________________________________________________________________________() {
-            }
-
             async handleResetForAdmin() {
                 clearInterval(this.intervalForAppInst)
                 clearInterval(this.intervalForCluster)
@@ -2518,7 +2518,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            renderOrganizationDropdownForAdmin() {
+            __________DROPDOWN____________________________________________________________________________________________________() {
+            }
+
+
+            renderOrgDropdownForAdmin() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                         <div className="page_monitoring_dropdown_label">
@@ -2547,21 +2551,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 await this.setState({
                                     currentOrg: value,
                                 })
+
                                 let filteredCloudletList = []
                                 let cloudletDropdownList = []
                                 let markerListForMap = []
-                                //todo:when developer
+                                //TODO : #############################
+                                //todo:  when select developer options
+                                //TODO : #############################
                                 if (node.isDev) {
                                     await this.setState({currentOrgView: USER_TYPE_SHORT.DEV})
                                     let filteredAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => {
                                         return item.OrganizationName === value
                                     })
-
                                     markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.Cloudlet);
                                     let uniqFilteredAppInstList = uniqBy(filteredAppInstList, CLASSIFICATION.Cloudlet)
                                     cloudletDropdownList = makeDropdownForCloudletForDevView(uniqFilteredAppInstList)
 
-                                } else {//TODO ; when operator selected
+
+                                } else {
+                                    //TODO : #############################
+                                    //TODO ; when selected operator option
+                                    //TODO : #############################
                                     await this.setState({currentOrgView: USER_TYPE_SHORT.OPER})
                                     //TODO: WHEN ALL(reset)
                                     if (value === "0" || value === "Reset") {
@@ -2579,9 +2589,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }
 
                                 }
-
                                 this.setState({
                                     currentOper: value,
+                                    cloudletCount: cloudletDropdownList.length-1,
                                     filteredCloudletList: filteredCloudletList,
                                     cloudletDropdownList: cloudletDropdownList,
                                     markerList: markerListForMap,
@@ -3519,7 +3529,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.ADMIN) ? //todo: admin
                                 <React.Fragment>
                                     <div style={{marginLeft: 15}}>
-                                        {this.renderOrganizationDropdownForAdmin()}
+                                        {this.renderOrgDropdownForAdmin()}
                                     </div>
                                     <div style={{marginLeft: 15}}>
                                         {this.renderCloudletDropdownForAdmin()}
