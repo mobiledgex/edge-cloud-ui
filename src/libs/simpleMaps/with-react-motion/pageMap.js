@@ -1,27 +1,19 @@
 
 import React, { Component } from "react"
-import {Map, CircleMarker, Popup, Tooltip, TileLayer, LayersControl, Marker, Path} from "react-leaflet";
+import {Map, Popup, Tooltip, TileLayer, LayersControl, Marker, Path} from "react-leaflet";
 import { Button, Icon, List } from 'semantic-ui-react';
 import ContainerDimensions from 'react-container-dimensions';
 import isEqual from 'lodash/isEqual';
 import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
-import { scaleLinear } from "d3-scale"
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import L from 'leaflet';
 //redux
 import { connect } from 'react-redux';
-
-import RadialGradientSVG from '../../../chartGauge/radialGradientSVG';
-
 import * as aggregation from '../../../utils';
-import ReactTooltip from 'react-tooltip';
-//style
-import styles from '../../../css/worldMapStyles';
 import './styles.css';
-import CountryCode from '../../../libs/country-codes-lat-long-alpha3';
 import { fields } from '../../../services/model/format'
 import * as actions from "../../../actions";
 
