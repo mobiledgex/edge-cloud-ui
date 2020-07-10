@@ -9,7 +9,7 @@ export const FLOW_UPDATE = 'update'
 
 const cyStyle = {
   height: '50vh',
-  width: '45vw',
+  width: '40vw',
   // transition: 'width 3s',
   backgroundColor: '#1A1C21'
 };
@@ -22,6 +22,13 @@ class MexFlow extends React.Component {
       flowDataList: []
     }
     this.flowIdList = []
+    this.edgeFlowList = [
+      { id: [1, 3], active: true },
+      { id: [2, 4], active: false },
+      { id: [5], active: false },
+      { id: [6], active: false },
+      { id: [7], active: false },
+      { id: [8], active: false }]
   }
 
   renderCytoscapeElement() {
@@ -47,7 +54,6 @@ class MexFlow extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log('Rahul1234', props.data)
     if (props.flowDataList && props.flowDataList !== state.flowDataList) {
       return { flowDataList: props.flowDataList }
     }
@@ -100,6 +106,38 @@ class MexFlow extends React.Component {
     }
   }
 
+  highlightNextEle = () => {
+    if (!this.cy.destroyed()) {
+      if (this.cy.$('#99901').length > 0) {
+        for (let i = 0; i < this.edgeFlowList.length; i++) {
+          let flow = this.edgeFlowList[i]
+          if (flow.active) {
+            let count = 0
+            flow.active = false;
+            flow.id.map(id => {
+              if (this.cy.$(`#9990${id}`).length > 0) {
+                count++
+                this.cy.$(`#9990${id}`).animate({
+                  style: { 'line-color': '#66bb6a', 'target-arrow-color': '#66bb6a' }
+                }, {
+                  duration: 500
+                }
+                ).delay(1000).animate({
+                  style: { 'line-color': 'white', 'target-arrow-color': 'white' }
+                })
+              }
+            })
+            this.edgeFlowList[this.edgeFlowList.length === i + 1 ? 0 : i + 1].active = true
+            if (count > 0) {
+              break;
+            }
+          }
+        }
+      }
+      setTimeout(this.highlightNextEle, 1000);
+    }
+  };
+
   componentDidMount() {
     this.renderCytoscapeElement();
     if (this.props.flowInstance) {
@@ -119,6 +157,7 @@ class MexFlow extends React.Component {
           this.addFlowdata(flowData)
         })
       }
+      this.highlightNextEle()
     }
   }
 

@@ -825,14 +825,14 @@ class AppReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
+                <div className="" >
                     <div style={{ display: 'flex' }}>
-                        <div style={{ width: this.state.showGraph ? '50vw' : '100vw' }}>
+                        <div style={{ width: this.state.showGraph ? '53%' : '100vw', overflow: 'auto', height:'95vh' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
-                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '50vw' : '0vw', border: '1px solid white', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21' }}>
+                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
+                                <MexFlow flowDataList={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance}/>
                             </Suspense>
                         </div> : null}
                     </div>

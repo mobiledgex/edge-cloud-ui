@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA } from '../../../hoc/forms/MexForms';
-import MexTab from '../../../hoc/forms/MexTab';
+import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';

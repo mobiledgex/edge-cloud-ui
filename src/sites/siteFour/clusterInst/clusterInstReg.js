@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { Grid } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT } from '../../../hoc/forms/MexForms';
-import MexTab from '../../../hoc/forms/MexTab';
+import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -305,7 +305,7 @@ class ClusterInstReg extends React.Component {
 
     getPanes = () => ([
         { label: 'Cloudlets', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
-        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
+        //{ label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
     ])
     /**
      * Tab block
@@ -329,17 +329,13 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column width={8}>
-                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                            </Grid.Column>
-                            <Grid.Column width={8}>
-                                <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
+                <div style={{ display: 'flex' }}>
+                    <div style={{ width: '53%', overflow: 'auto', height: '95vh' }}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    </div>
+                    <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
+                        <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
+                    </div>
                 </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
