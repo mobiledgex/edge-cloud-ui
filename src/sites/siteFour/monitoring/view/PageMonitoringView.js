@@ -385,6 +385,7 @@ type PageDevMonitoringState = {
     timezoneChange: boolean,
     cloudletCount: number,
     dataLimitCount: number,
+    isShowCountPopover: boolean,
 
 }
 
@@ -646,6 +647,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     timezoneChange: true,
                     cloudletCount: 0,
                     dataLimitCount: 100,
+                    isShowCountPopover: false,
                 }
             }
 
@@ -2678,18 +2680,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-
             renderClusterTreeDropdownForAdmin() {
-                let treeSelectWidth = 350;
+                let treeSelectWidth = 250;
                 let maxTagCount = 2;
                 if (this.props.size.width >= 1600) {
-                    treeSelectWidth = 350;
-                    maxTagCount = 1
-                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
                     treeSelectWidth = 250;
                     maxTagCount = 1
-                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
+                } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
                     treeSelectWidth = 150;
+                    maxTagCount = 1
+                } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
+                    treeSelectWidth = 50;
                     maxTagCount = 1
                 } else if (this.props.size.width <= 1100) {
                     treeSelectWidth = 50;
@@ -3007,7 +3008,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-
             ranges = {
                 'Last 24 hours': [dateUtil.subtractDays(1), dateUtil.subtractDays(0)],
                 'Last 3 Days': [dateUtil.subtractDays(3), dateUtil.subtractDays(0)],
@@ -3128,12 +3128,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGraphDataCountDropdown() {
                 const content = (
                     <div>
-                        <div style={{color: 'yellow', fontWeight: 'bold'}}>Set the number of metric data to be displayed on the graph</div>
+                        <div style={{color: '#fff', fontWeight: 'bold'}}>Set the number of metric data to be displayed on the graph</div>
                     </div>
                 );
 
+
                 return (
-                    <Popover content={content} trigger="click">
+                    <Popover
+                        content={content} trigger="click"
+                        visible={this.state.isShowCountPopover}
+                        onVisibleChange={(visible) => {
+                            this.setState({
+                                isShowCountPopover: visible,
+                            });
+                        }}
+                    >
                         <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'flex-start', marginLeft: -18}}>
                             <div style={{width: 25, marginLeft: 0}}>
                                 <Select
@@ -3149,19 +3158,32 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                     value={this.state.dataLimitCount}
                                     placeholder={'Select Data Count'}
-                                    onChange={async (value) => {
-                                        this.recentDataLimitCountRef.blur()
-                                        await this.setState({
-                                            dataLimitCount: value,
-                                        });
-                                        this.reloadDataFromRemote()
+                                    dropdownRender={() => {
+                                        return (
+                                            <div>
+                                                <AMenu ref={c => this.menuRef = c} style={{display: 'hidden'}}>
+                                                    {graphDataCount.map(item => {
+                                                        return (
+                                                            <AMenu.Item
+                                                                onClick={async (e) => {
+                                                                    this.recentDataLimitCountRef.blur();
+                                                                    await this.setState({
+                                                                        dataLimitCount: item.value,
+                                                                        isShowCountPopover: false,
+                                                                    });
+                                                                    await this.reloadDataFromRemote()
+                                                                }}
+                                                            >
+                                                                <span>{item.text}</span>
+                                                                <span style={{color: '#77BD25'}}>&nbsp;&nbsp;{item.time}</span>
+                                                            </AMenu.Item>
+                                                        )
+                                                    })}
+                                                </AMenu>
+                                            </div>
+                                        )
                                     }}
                                 >
-                                    {graphDataCount.reverse().map(item => {
-                                        return (
-                                            <Option value={item.value}>{item.text.split('[')[0].trim()}</Option>
-                                        )
-                                    })}
                                 </Select>
                             </div>
                         </div>
