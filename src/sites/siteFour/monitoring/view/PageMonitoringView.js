@@ -11,7 +11,7 @@ import {withSize} from 'react-sizeme';
 import uniqBy from 'lodash/uniqBy'
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu as AMenu, Popover, Row, Select, TreeSelect} from 'antd';
+import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu, Menu as AMenu, Popover, Row, Select, TreeSelect} from 'antd';
 import {
     filterByClassification,
     filteredClientStatusListByAppName,
@@ -385,6 +385,7 @@ type PageDevMonitoringState = {
     timezoneChange: boolean,
     cloudletCount: number,
     dataLimitCount: number,
+    isShowCountPopover: boolean,
 
 }
 
@@ -645,7 +646,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletMap: {},
                     timezoneChange: true,
                     cloudletCount: 0,
-                    dataLimitCount: 75,
+                    dataLimitCount: 100,
+                    isShowCountPopover: false,
                 }
             }
 
@@ -3006,7 +3008,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-
             ranges = {
                 'Last 24 hours': [dateUtil.subtractDays(1), dateUtil.subtractDays(0)],
                 'Last 3 Days': [dateUtil.subtractDays(3), dateUtil.subtractDays(0)],
@@ -3124,15 +3125,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderGraphDataTimeCountDropdown() {
+            renderGraphDataCountDropdown() {
                 const content = (
                     <div>
-                        <div style={{color: 'yellow', fontWeight: 'normal'}}>Set the time of metric data to be displayed on the graph</div>
+                        <div style={{color: '#fff', fontWeight: 'bold'}}>Set the number of metric data to be displayed on the graph</div>
                     </div>
                 );
 
+
                 return (
-                    <Popover content={content} trigger="click">
+                    <Popover
+                        content={content} trigger="click"
+                        visible={this.state.isShowCountPopover}
+                        onVisibleChange={(visible) => {
+                            this.setState({
+                                isShowCountPopover: visible,
+                            });
+                        }}
+                    >
                         <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'flex-start', marginLeft: -18}}>
                             <div style={{width: 25, marginLeft: 0}}>
                                 <Select
@@ -3148,19 +3158,32 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     }}
                                     value={this.state.dataLimitCount}
                                     placeholder={'Select Data Count'}
-                                    onChange={async (value) => {
-                                        this.recentDataLimitCountRef.blur()
-                                        await this.setState({
-                                            dataLimitCount: value,
-                                        });
-                                        this.reloadDataFromRemote()
+                                    dropdownRender={() => {
+                                        return (
+                                            <div>
+                                                <Menu ref={c => this.menuRef = c} style={{display: 'hidden'}}>
+                                                    {graphDataCount.map(item => {
+                                                        return (
+                                                            <Menu.Item
+                                                                onClick={async (e) => {
+                                                                    this.recentDataLimitCountRef.blur();
+                                                                    await this.setState({
+                                                                        dataLimitCount: item.value,
+                                                                        isShowCountPopover: false,
+                                                                    });
+                                                                    await this.reloadDataFromRemote()
+                                                                }}
+                                                            >
+                                                                <span>{item.text}</span>
+                                                                <span style={{color: '#77BD25'}}>&nbsp;&nbsp;{item.time}</span>
+                                                            </Menu.Item>
+                                                        )
+                                                    })}
+                                                </Menu>
+                                            </div>
+                                        )
                                     }}
                                 >
-                                    {graphDataCount.reverse().map(item => {
-                                        return (
-                                            <Option value={item.value}>{item.text.split('[')[0].trim()}</Option>
-                                        )
-                                    })}
                                 </Select>
                             </div>
                         </div>
@@ -3603,7 +3626,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN && this.renderDateRangeDropdownForAdmin()}
                                     </div>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderGraphDataTimeCountDropdown()}
+                                        {this.renderGraphDataCountDropdown()}
                                     </div>
                                 </React.Fragment>
                                 : this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.DEV) ?//todo: dev
@@ -3616,7 +3639,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             {this.renderAppInstDropdown()}
                                         </div>
                                         <div style={{marginLeft: 30}}>
-                                            {this.renderGraphDataTimeCountDropdown()}
+                                            {this.renderGraphDataCountDropdown()}
                                         </div>
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
@@ -3628,7 +3651,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             {this.renderDateRangeDropdown()}
                                         </div>
                                         <div style={{marginLeft: 30}}>
-                                            {this.renderGraphDataTimeCountDropdown()}
+                                            {this.renderGraphDataCountDropdown()}
                                         </div>
                                     </React.Fragment>
                             }

@@ -775,23 +775,25 @@ export function makeUniqDevOrg(appInstList) {
     return newFilteredList;
 }
 
-
 export function makeMaxTickLimit(pDataLimitCount) {
-    if (pDataLimitCount === 1350) {
+
+    if (pDataLimitCount === 2000) {
         return 120
-    } else if (pDataLimitCount === 900) {
+    } else if (pDataLimitCount === 1000) {
         return 100
     } else if (pDataLimitCount === 750) {
         return 70
-    } else if (pDataLimitCount === 450) {
+    } else if (pDataLimitCount === 500) {
         return 50
-    } else if (pDataLimitCount === 225) {
+    } else if (pDataLimitCount === 250) {
         return 50
-    } else if (pDataLimitCount === 75) {
+    } else if (pDataLimitCount === 100) {
         return 50
-    } else if (pDataLimitCount === 37) {
+    } else if (pDataLimitCount === 50) {
         return 50
-    } else if (pDataLimitCount === 7) {
+    } else if (pDataLimitCount === 20) {
+        return 50;
+    } else if (pDataLimitCount === 10) {
         return 50;
     }
 }
@@ -877,7 +879,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: !isBig ? 6 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
                         //autoSkip: isBig ? false : true,
                         fontSize: 9,
                         fontColor: 'white',
