@@ -6,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css';
 import { connect } from 'react-redux';
 import * as actions from './actions';
 import * as serverData from './services/model/serverData';
-import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
+import { LOCAL_STRAGE_KEY } from './constant'
 //insert pages
 import './app.css';
 import './css/index.css';
