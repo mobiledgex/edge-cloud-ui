@@ -646,7 +646,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletMap: {},
                     timezoneChange: true,
                     cloudletCount: 0,
-                    dataLimitCount: 100,
+                    dataLimitCount: 50,
                     isShowCountPopover: false,
                 }
             }
@@ -1296,7 +1296,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP
-                            && <div className="maxize page_monitoring_widget_icon"
+                            && <div className="page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
                                 <MaterialIcon size={'tiny'} icon='aspect_ratio' color={'white'}/>

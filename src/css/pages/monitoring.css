@@ -465,8 +465,9 @@ page_monitoring_dashboard_dev {
     display: inline-block;
     font-size: 18px;
     width: 27px;
-    height: 20px;
+    height: 25px;
     margin-left: 5px;
+    cursor: pointer;
 }
 
 .page_monitoring_title_select { /* 드롭다운 메뉴가 옆에 있을 때 타이틀 */
