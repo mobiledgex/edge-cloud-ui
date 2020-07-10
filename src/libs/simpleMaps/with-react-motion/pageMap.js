@@ -111,13 +111,14 @@ class ClustersMap extends Component {
         //         .ease(d3.easeBack)
         //         .attr("r", markerSize[0])
         // }
-        this.setState({
-            mapCenter: city.coordinates,
-            detailMode: true,
-        })
-        if(this.props.onClick)
-        {
-            this.props.onClick(city)
+        if (!this.props.onMapClick) {
+            this.setState({
+                mapCenter: city.coordinates,
+                detailMode: true,
+            })
+            if (this.props.onClick) {
+                this.props.onClick(city)
+            }
         }
     }
 
@@ -316,7 +317,7 @@ class ClustersMap extends Component {
                     icon={this.iconMarker(city, config)}
                     onClick={() => this.handleCityClick(city)}
                 >
-                    {city.name &&
+                    {city.name && !this.props.onMapClick &&
                     <Tooltip
                         direction={'top'}
                         className={'map-tooltip'}
@@ -335,7 +336,7 @@ class ClustersMap extends Component {
 
     handleMapClick(e){
 
-        if (this.props.id == 'Cloudlets') {
+        if (this.props.onMapClick) {
             let _lat = Math.round(e.latlng['lat'])
             let _lng = Math.round(e.latlng['lng'])
 
@@ -348,11 +349,10 @@ class ClustersMap extends Component {
                     "coordinates": [_lat, _lng],
                     "cost": 3
                 }]
-            if(this.props.onMapClick)
-            {
-                this.props.onMapClick(location)
-            }
-            this.setState({ cities: locationData, mapCenter: [0,0]})
+
+            this.props.onMapClick(location)
+
+            this.setState({ cities: locationData})
             //_self.forceUpdate();
         }
     }
