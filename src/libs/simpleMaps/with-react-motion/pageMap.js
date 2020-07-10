@@ -111,13 +111,14 @@ class ClustersMap extends Component {
         //         .ease(d3.easeBack)
         //         .attr("r", markerSize[0])
         // }
-        this.setState({
-            mapCenter: city.coordinates,
-            detailMode: true,
-        })
-        if(this.props.onClick)
-        {
-            this.props.onClick(city)
+        if (!this.props.onMapClick) {
+            this.setState({
+                mapCenter: city.coordinates,
+                detailMode: true,
+            })
+            if (this.props.onClick) {
+                this.props.onClick(city)
+            }
         }
     }
 
@@ -316,7 +317,7 @@ class ClustersMap extends Component {
                     icon={this.iconMarker(city, config)}
                     onClick={() => this.handleCityClick(city)}
                 >
-                    {city.name &&
+                    {city.name && !this.props.onMapClick &&
                     <Tooltip
                         direction={'top'}
                         className={'map-tooltip'}
