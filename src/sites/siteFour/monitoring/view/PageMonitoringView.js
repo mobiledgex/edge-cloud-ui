@@ -11,7 +11,7 @@ import {withSize} from 'react-sizeme';
 import uniqBy from 'lodash/uniqBy'
 import {connect} from 'react-redux';
 import {Dialog, Toolbar} from '@material-ui/core'
-import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu, Menu as AMenu, Popover, Row, Select, TreeSelect} from 'antd';
+import {Button, Col, ConfigProvider, DatePicker, Dropdown as ADropdown, Menu as AMenu, Popover, Row, Select, TreeSelect} from 'antd';
 import {
     filterByClassification,
     filteredClientStatusListByAppName,
@@ -3161,10 +3161,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     dropdownRender={() => {
                                         return (
                                             <div>
-                                                <Menu ref={c => this.menuRef = c} style={{display: 'hidden'}}>
+                                                <AMenu ref={c => this.menuRef = c} style={{display: 'hidden'}}>
                                                     {graphDataCount.map(item => {
                                                         return (
-                                                            <Menu.Item
+                                                            <AMenu.Item
                                                                 onClick={async (e) => {
                                                                     this.recentDataLimitCountRef.blur();
                                                                     await this.setState({
@@ -3176,10 +3176,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                             >
                                                                 <span>{item.text}</span>
                                                                 <span style={{color: '#77BD25'}}>&nbsp;&nbsp;{item.time}</span>
-                                                            </Menu.Item>
+                                                            </AMenu.Item>
                                                         )
                                                     })}
-                                                </Menu>
+                                                </AMenu>
                                             </div>
                                         )
                                     }}
