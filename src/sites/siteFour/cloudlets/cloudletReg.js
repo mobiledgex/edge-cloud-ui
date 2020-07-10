@@ -14,7 +14,7 @@ import { fields, getOrganization, updateFields } from '../../../services/model/f
 import { getOrganizationList } from '../../../services/model/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../services/model/cloudlet';
 //Map
-import Map from "../../../libs/simpleMaps/with-react-motion/pageMap"
+import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { CloudletTutor } from "../../../tutorial";
 import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';

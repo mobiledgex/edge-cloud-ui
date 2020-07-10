@@ -1,7 +1,6 @@
-
 import React, { Component } from "react"
-import {Map, Popup, Tooltip, TileLayer, LayersControl, Marker, Path} from "react-leaflet";
-import { Button, Icon, List } from 'semantic-ui-react';
+import {Map, Popup, Tooltip, TileLayer, Marker} from "react-leaflet";
+import { Button, Icon } from 'semantic-ui-react';
 import ContainerDimensions from 'react-container-dimensions';
 import isEqual from 'lodash/isEqual';
 import { Motion, spring } from "react-motion"
@@ -12,16 +11,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import L from 'leaflet';
 //redux
 import { connect } from 'react-redux';
-import * as aggregation from '../../../utils';
+import * as aggregation from '../../utils';
 import './styles.css';
-import { fields } from '../../../services/model/format'
-import * as actions from "../../../actions";
+import { fields } from '../../services/model/format'
+import * as actions from "../../actions";
 
 const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03"]
 const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
-
-let _self = null;
 
 let mapTileList = [
     {
@@ -65,7 +62,6 @@ let mapTileList = [
 class ClustersMap extends Component {
     constructor() {
         super()
-        _self = this;
         this.state = {
             center: zoomControls.center,
             zoom: zoomControls.zoom,
@@ -126,9 +122,7 @@ class ClustersMap extends Component {
         if (this.props.zoomControl) {
             this.setState({ center: this.props.zoomControl.center, zoom: this.props.zoomControl.zoom })
         }
-
-        let _self = this;
-        _self.setState({ oldCountry: this.state.selectedCity })
+        this.setState({ oldCountry: this.state.selectedCity })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -275,9 +269,9 @@ class ClustersMap extends Component {
 
         let colorKey = city.status === 'red'? 0
             : city.status === 'orange'?  1
-            : (config && config .pageId === 'cloudlet') ? 5
-            : (config && config .pageId === 'cluster') ? 3
-            : (config && config .pageId === 'app') ? 4
+            : (config && config.pageId === 'cloudlet') ? 5
+            : (config && config.pageId === 'cluster') ? 3
+            : (config && config.pageId === 'app') ? 4
             : 5;
 
         let gradient = this.gradientFilter(colorKey);
@@ -353,7 +347,6 @@ class ClustersMap extends Component {
             this.props.onMapClick(location)
 
             this.setState({ cities: locationData})
-            //_self.forceUpdate();
         }
     }
 
