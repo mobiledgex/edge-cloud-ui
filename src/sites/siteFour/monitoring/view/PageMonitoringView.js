@@ -386,6 +386,8 @@ type PageDevMonitoringState = {
     cloudletCount: number,
     dataLimitCount: number,
     isShowCountPopover: boolean,
+    dataLimitCount: number,
+    dataLimitCountText: string,
 
 }
 
@@ -646,8 +648,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletMap: {},
                     timezoneChange: true,
                     cloudletCount: 0,
-                    dataLimitCount: 50,
                     isShowCountPopover: false,
+                    dataLimitCount: 50,
+                    dataLimitCountText: '4 mins',
                 }
             }
 
@@ -3128,21 +3131,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGraphDataCountDropdown() {
                 const content = (
                     <div>
-                        <div style={{color: '#fff', fontWeight: 'bold'}}>Set the number of metric data to be displayed on the graph</div>
+                        <div style={{color: '#fff', fontWeight: 'bold'}}>Set time of metric data to be displayed on the graph</div>
                     </div>
                 );
 
-
                 return (
-                    <Popover
-                        content={content} trigger="click"
-                        visible={this.state.isShowCountPopover}
-                        onVisibleChange={(visible) => {
-                            this.setState({
-                                isShowCountPopover: visible,
-                            });
-                        }}
-                    >
+                    <Popover content={content} trigger="click">
                         <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'flex-start', marginLeft: -18}}>
                             <div style={{width: 25, marginLeft: 0}}>
                                 <Select
@@ -3154,36 +3148,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         maxHeight: '512px !important',
                                         overflowY: 'auto',
                                         overflowAnchor: 'none',
-                                        width: 200,
+                                        width: 100,
                                     }}
                                     value={this.state.dataLimitCount}
                                     placeholder={'Select Data Count'}
-                                    dropdownRender={() => {
-                                        return (
-                                            <div>
-                                                <AMenu ref={c => this.menuRef = c} style={{display: 'hidden'}}>
-                                                    {graphDataCount.map(item => {
-                                                        return (
-                                                            <AMenu.Item
-                                                                onClick={async (e) => {
-                                                                    this.recentDataLimitCountRef.blur();
-                                                                    await this.setState({
-                                                                        dataLimitCount: item.value,
-                                                                        isShowCountPopover: false,
-                                                                    });
-                                                                    await this.reloadDataFromRemote()
-                                                                }}
-                                                            >
-                                                                <span>{item.text}</span>
-                                                                <span style={{color: '#77BD25'}}>&nbsp;&nbsp;{item.time}</span>
-                                                            </AMenu.Item>
-                                                        )
-                                                    })}
-                                                </AMenu>
-                                            </div>
-                                        )
+                                    onChange={async (value) => {
+                                        this.recentDataLimitCountRef.blur()
+                                        await this.setState({
+                                            dataLimitCount: value,
+                                        });
+                                        this.reloadDataFromRemote()
                                     }}
                                 >
+                                    {graphDataCount.reverse().map(item => {
+                                        return (
+                                            <Option value={item.value}>{item.text}</Option>
+                                        )
+                                    })}
                                 </Select>
                             </div>
                         </div>
@@ -3191,6 +3172,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 )
             }
+
 
             __________LEGEND____________________________________________________________________________________________________() {
             }
