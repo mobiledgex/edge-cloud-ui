@@ -306,20 +306,17 @@ class CloudletReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-                    {this.state.showCloudletManifest ?
-                        this.state.cloudletManifest ? this.cloudletManifestForm() : null :
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column width={8}>
-                                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                                </Grid.Column>
-                                <Grid.Column width={8}>
-                                    <MexTab form={{ panes: this.getPanes() }} />
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>}
-                </div>
+                {this.state.showCloudletManifest ?
+                    this.state.cloudletManifest ? this.cloudletManifestForm() : null :
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ width: '53%', overflow: 'auto', height: '95vh' }}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </div>
+                        <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
+                            <MexTab form={{ panes: this.getPanes() }} />
+                        </div>
+                    </div>
+                }
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
         )

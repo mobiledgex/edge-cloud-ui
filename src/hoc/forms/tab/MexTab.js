@@ -7,7 +7,7 @@ const MexCheckbox = (props) => {
 
     const getPanes = () => {
         return form.panes.map((pane, i) => {
-            return { menuItem: <Menu.Item onClick={pane.onClick} key={i}><label style={{ color: '#74AA19'}}>{pane.label}</label></Menu.Item>, render: () => <Tab.Pane>{pane.tab}</Tab.Pane> }
+            return { menuItem: <Menu.Item onClick={pane.onClick} key={i}><label style={{ color: '#FFF'}}>{pane.label}</label></Menu.Item>, render: () => <Tab.Pane>{pane.tab}</Tab.Pane> }
         })
     }
     const getForm = () => (
