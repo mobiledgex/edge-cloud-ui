@@ -3157,7 +3157,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.setState({
                                             dataLimitCount: value,
                                         });
-                                        this.reloadDataFromRemote()
+                                        await this.reloadDataFromRemote()
                                     }}
                                 >
                                     {graphDataCount.reverse().map(item => {
@@ -3351,7 +3351,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         span={itemCount === 1 ? 24 : this.state.isLegendExpanded ? 6 : 1}
                                         title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                         style={{
-                                            //background: 'red',
                                             justifyContent: itemCount === 1 ? 'center' : null,
                                             width: itemCount === 1 ? '100%' : this.props.size.width / 4,
                                         }}
