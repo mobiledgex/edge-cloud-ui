@@ -9,7 +9,7 @@ export const FLOW_UPDATE = 'update'
 
 const cyStyle = {
   height: '50vh',
-  width: '40vw',
+  width: '100%',
   // transition: 'width 3s',
   backgroundColor: '#1A1C21'
 };
@@ -45,11 +45,10 @@ class MexFlow extends React.Component {
           padding: 5
         }
       });
-
     this.cy.userZoomingEnabled(false)
     this.cy.zoom({
-      level: 1.0,
-      renderedPosition: { x: 150, y: 100 }
+      level: screen.width/2400,
+      renderedPosition: { x: 50, y: 50 }
     });
   }
 

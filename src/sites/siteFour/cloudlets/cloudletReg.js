@@ -1,7 +1,6 @@
 import React from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
-import { Grid } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA } from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/tab/MexTab';
@@ -309,7 +308,7 @@ class CloudletReg extends React.Component {
                 {this.state.showCloudletManifest ?
                     this.state.cloudletManifest ? this.cloudletManifestForm() : null :
                     <div style={{ display: 'flex' }}>
-                        <div style={{ width: '53%', overflow: 'auto', height: '95vh' }}>
+                        <div style={{ width: '52%', overflow: 'auto', height: '95vh' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                         <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: 'transparent', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>

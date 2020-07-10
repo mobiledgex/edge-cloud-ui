@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Grid } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT } from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/tab/MexTab';
@@ -305,7 +304,7 @@ class ClusterInstReg extends React.Component {
 
     getPanes = () => ([
         { label: 'Cloudlet Locations', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
-        //{ label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
+        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
     ])
     /**
      * Tab block
@@ -330,7 +329,7 @@ class ClusterInstReg extends React.Component {
         return (
             <div className="round_panel">
                 <div style={{ display: 'flex' }}>
-                    <div style={{ width: '53%', overflow: 'auto', height: '95vh' }}>
+                    <div style={{ width: '52%', overflow: 'auto', height: '95vh' }}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </div>
                     <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: 'transparent', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>

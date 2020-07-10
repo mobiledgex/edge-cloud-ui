@@ -827,7 +827,7 @@ class AppReg extends React.Component {
             <div className="round_panel">
                 <div className="" >
                     <div style={{ display: 'flex' }}>
-                        <div style={{ width: this.state.showGraph ? '53%' : '100vw', overflow: 'auto', height:'95vh' }}>
+                        <div style={{ width: this.state.showGraph ? '52%' : '100vw', overflow: 'auto', height:'95vh' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                         {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
