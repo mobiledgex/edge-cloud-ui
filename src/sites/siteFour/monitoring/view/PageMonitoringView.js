@@ -645,7 +645,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletMap: {},
                     timezoneChange: true,
                     cloudletCount: 0,
-                    dataLimitCount: 100,
+                    dataLimitCount: 75,
                 }
             }
 
@@ -3124,7 +3124,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderGraphDataCountDropdown() {
+            renderGraphDataTimeCountDropdown() {
                 const content = (
                     <div>
                         <div style={{color: 'yellow', fontWeight: 'normal'}}>Set the time of metric data to be displayed on the graph</div>
@@ -3603,7 +3603,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN && this.renderDateRangeDropdownForAdmin()}
                                     </div>
                                     <div style={{marginLeft: 25}}>
-                                        {this.renderGraphDataCountDropdown()}
+                                        {this.renderGraphDataTimeCountDropdown()}
                                     </div>
                                 </React.Fragment>
                                 : this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.DEV) ?//todo: dev
@@ -3616,7 +3616,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             {this.renderAppInstDropdown()}
                                         </div>
                                         <div style={{marginLeft: 30}}>
-                                            {this.renderGraphDataCountDropdown()}
+                                            {this.renderGraphDataTimeCountDropdown()}
                                         </div>
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
@@ -3628,7 +3628,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             {this.renderDateRangeDropdown()}
                                         </div>
                                         <div style={{marginLeft: 30}}>
-                                            {this.renderGraphDataCountDropdown()}
+                                            {this.renderGraphDataTimeCountDropdown()}
                                         </div>
                                     </React.Fragment>
                             }

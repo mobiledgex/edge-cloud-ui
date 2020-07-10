@@ -775,25 +775,23 @@ export function makeUniqDevOrg(appInstList) {
     return newFilteredList;
 }
 
-export function makeMaxTickLimit(pDataLimitCount) {
 
-    if (pDataLimitCount === 2000) {
+export function makeMaxTickLimit(pDataLimitCount) {
+    if (pDataLimitCount === 1350) {
         return 120
-    } else if (pDataLimitCount === 1000) {
+    } else if (pDataLimitCount === 900) {
         return 100
     } else if (pDataLimitCount === 750) {
         return 70
-    } else if (pDataLimitCount === 500) {
+    } else if (pDataLimitCount === 450) {
         return 50
-    } else if (pDataLimitCount === 250) {
+    } else if (pDataLimitCount === 225) {
         return 50
-    } else if (pDataLimitCount === 100) {
+    } else if (pDataLimitCount === 75) {
         return 50
-    } else if (pDataLimitCount === 50) {
+    } else if (pDataLimitCount === 37) {
         return 50
-    } else if (pDataLimitCount === 20) {
-        return 50;
-    } else if (pDataLimitCount === 10) {
+    } else if (pDataLimitCount === 7) {
         return 50;
     }
 }
