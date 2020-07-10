@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import {Modal as AModal} from "antd";
+import {Modal as AModal} from 'antd';
 import {CLASSIFICATION} from "../../../../shared/Constants";
 import {Line} from "react-chartjs-2";
 import {Chart as Bar_Column_Chart} from "react-google-charts";

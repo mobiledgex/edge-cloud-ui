@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import '../common/PageMonitoringStyles.css'
-import {Progress} from "antd";
+import {Progress} from 'antd';
 import {Center} from "../common/PageMonitoringStyles";
 import {CLASSIFICATION} from "../../../../shared/Constants";
 import {changeClassficationTxt} from "../service/PageMonitoringService";
