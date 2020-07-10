@@ -304,7 +304,7 @@ class ClusterInstReg extends React.Component {
         )
 
     getPanes = () => ([
-        { label: 'Cloudlets', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
+        { label: 'Cloudlet Locations', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
         //{ label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
     ])
     /**
@@ -333,7 +333,7 @@ class ClusterInstReg extends React.Component {
                     <div style={{ width: '53%', overflow: 'auto', height: '95vh' }}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </div>
-                    <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
+                    <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: 'transparent', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
                         <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
                     </div>
                 </div>

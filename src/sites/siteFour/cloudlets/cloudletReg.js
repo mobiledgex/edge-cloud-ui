@@ -226,7 +226,7 @@ class CloudletReg extends React.Component {
         )
 
     getPanes = () => ([
-        { label: 'Cloudlets', tab: this.getMap() }
+        { label: 'Cloudlet Location', tab: this.getMap() }
     ])
     /**
      * Tab block
@@ -312,7 +312,7 @@ class CloudletReg extends React.Component {
                         <div style={{ width: '53%', overflow: 'auto', height: '95vh' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
-                        <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
+                        <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: 'transparent', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
                             <MexTab form={{ panes: this.getPanes() }} />
                         </div>
                     </div>

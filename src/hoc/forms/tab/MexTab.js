@@ -12,7 +12,7 @@ const MexCheckbox = (props) => {
     }
     const getForm = () => (
         <Tab
-            menu={{ inverted: true, attached: true, tabular: true, color:'rgb(42, 44, 50)' }}
+            menu={{ inverted: true, attached: true, tabular: true }}
             activeIndex={props.activeIndex ? props.activeIndex : 0}
             panes={getPanes()}
             style={{ width: '100%', height: '100%'}} />
