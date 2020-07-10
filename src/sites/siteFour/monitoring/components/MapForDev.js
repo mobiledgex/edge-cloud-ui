@@ -775,7 +775,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 {/*todo:#####################*/}
                                 {/*todo:bottom dash board*/}
                                 {/*todo:#####################*/}
-                                {this.props.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN ?
+                                {this.props.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN
+                                || this.props.currentClassification === CLASSIFICATION.CLUSTER_FOR_ADMIN
+                                || this.props.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN
+                                    ?
                                     <div
                                         style={{
                                             position: 'absolute',
