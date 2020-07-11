@@ -47,7 +47,7 @@ class MexFlow extends React.Component {
       });
     this.cy.userZoomingEnabled(false)
     this.cy.zoom({
-      level: screen.width/2400,
+      level: (window.screen.width)/2400,
       renderedPosition: { x: 50, y: 50 }
     });
   }
