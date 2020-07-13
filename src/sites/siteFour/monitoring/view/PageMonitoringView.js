@@ -49,7 +49,7 @@ import {
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
     MAP_LEVEL,
-    NETWORK_TYPE,
+    NETWORK_TYPE, NO_APPS, NO_CLUSTER,
     THEME_OPTIONS_LIST,
     USER_TYPE,
     USER_TYPE_SHORT
@@ -700,8 +700,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let listOne = markerMapObjectForMap[item.CloudletName];
                     if (listOne === undefined) {
                         markerMapObjectForMap[item.CloudletName] = [{
-                            AppName: 'No Apps',
-                            ClusterInst: 'No Cluster',
+                            AppName: NO_APPS,
+                            ClusterInst: NO_CLUSTER,
                             Cloudlet: item.CloudletName,
                             CloudletLocation: item.CloudletLocation,
                         }];

@@ -460,6 +460,8 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER = [
     {text: 'SEND BYTES', value: 'SENDBYTES'},
 ]
 
+export const NO_APPS = 'No Apps'
+export const NO_CLUSTER = 'No Cluster'
 
 export const INSTANCE_TEST_OPTIONS = [
     {text: 'redhong_inst', value: 'redhong_inst'},

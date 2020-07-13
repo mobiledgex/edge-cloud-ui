@@ -18,7 +18,7 @@ import {listGroupByKey, makeMapThemeDropDown, reduceString, renderCloudletHwUsag
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
-import {CLASSIFICATION} from "../../../../shared/Constants";
+import {CLASSIFICATION, NO_APPS} from "../../../../shared/Constants";
 import {getMexTimezone} from "../../../../utils/sharedPreferences_util";
 
 const {Option} = Select;
@@ -462,7 +462,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         }
 
                         let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
-                        if (AppName !== 'No Apps') {
+                        if (AppName !== NO_APPS) {
                             return (
                                 <div style={PageMonitoringStyles.appPopupDiv}
                                      key={appIndex * cloudletIndex}
