@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, CHECKBOX, ICON_BUTTON, TEXT_AREA } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, CHECKBOX, ICON_BUTTON, TEXT_AREA, formattedData } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -20,6 +20,10 @@ import { createAppInst, updateAppInst } from '../../../services/model/appInstanc
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {appInstTutor} from "../../../tutorial";
 
+import * as clusterFlow from '../../../hoc/cytoscape/clusterElements'
+import { flow } from 'lodash';
+const MexFlow = React.lazy(() => import('../../../hoc/cytoscape/MexFlow'));
+
 const appInstSteps = appInstTutor();
 
 class ClusterInstReg extends React.Component {
@@ -28,6 +32,8 @@ class ClusterInstReg extends React.Component {
         this.state = {
             forms: [],
             stepsArray: [],
+            showGraph: false,
+            flowDataList: []
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -39,6 +45,7 @@ class ClusterInstReg extends React.Component {
         this.privacyPolicyList = []
         this.flavorList = []
         this.appList = []
+        this.updateFlowDataList = []
         //To avoid refecthing data from server
     }
 
@@ -175,7 +182,7 @@ class ClusterInstReg extends React.Component {
         return form
     }
 
-    versionValueChange = (currentForm, forms, isInit) => {
+    versionValueChange = (currentForm, forms, isInit, flowDataList) => {
         //hide cluster and autoCluster if deployment type is vm
         let nForms = []
         let appName = undefined;
@@ -219,6 +226,11 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                 })
+                flowDataList.push(clusterFlow.ipAccessFlowApp(app))
+                flowDataList.push(clusterFlow.deploymentTypeFlow(app))
+                if (app[fields.accessPorts]) {
+                    flowDataList.push(clusterFlow.portFlow(app[fields.accessPorts].includes('tls') ? 1 : 0))
+                }
                 break;
             }
             else
@@ -365,6 +377,7 @@ class ClusterInstReg extends React.Component {
     }
 
     checkForms = (form, forms, isInit, data) => {
+        let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
         }
@@ -384,10 +397,20 @@ class ClusterInstReg extends React.Component {
             this.appNameValueChange(form, forms, isInit)
         }
         else if (form.field === fields.version) {
-            this.versionValueChange(form, forms, isInit)
+            this.versionValueChange(form, forms, isInit, flowDataList)
         }
         else if (form.field === fields.ipAccess) {
             this.ipAccessValueChange(form, forms, isInit, data)
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(clusterFlow.clusterFlow(finalData))
+        }
+        if (flowDataList.length > 0) {
+            if (isInit) {
+                this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+            }
+            else {
+                this.setState({ showGraph: true, flowDataList: flowDataList })
+            }
         }
     }
 
@@ -633,6 +656,12 @@ class ClusterInstReg extends React.Component {
             forms: forms
         })
 
+        if (this.isUpdate) {
+            this.setState({
+                showGraph: true,
+                flowDataList: this.updateFlowDataList
+            })
+        }
     }
 
     stepperClose = () => {
@@ -645,9 +674,16 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms}  isUpdate={this.isUpdate}/>
-                </div>
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ width: this.state.showGraph ? '52%' : '100vw', overflow: 'auto', height:'95vh' }}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate}/>
+                        </div>
+                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
+                            <Suspense fallback={<div></div>}>
+                                <MexFlow flowDataList={this.state.flowDataList}/>
+                            </Suspense>
+                        </div> : null}
+                    </div>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
         )

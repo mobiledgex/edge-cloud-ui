@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal, notification, Radio, Select} from "antd";
+import {Modal as AModal, notification, Radio, Select} from 'antd';
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
