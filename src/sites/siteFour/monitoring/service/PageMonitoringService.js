@@ -32,7 +32,7 @@ import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
-import {Progress, Select, Tag} from "antd";
+import {Progress, Select, Tag} from 'antd';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 import {mapTileList} from "../common/MapProperties";

@@ -1,10 +1,9 @@
 import React from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
-import { Grid } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA } from '../../../hoc/forms/MexForms';
-import MexTab from '../../../hoc/forms/MexTab';
+import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -14,7 +13,7 @@ import { fields, getOrganization, updateFields } from '../../../services/model/f
 import { getOrganizationList } from '../../../services/model/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../services/model/cloudlet';
 //Map
-import Map from "../../../libs/simpleMaps/with-react-motion/pageMap"
+import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { CloudletTutor } from "../../../tutorial";
 import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';
@@ -226,7 +225,7 @@ class CloudletReg extends React.Component {
         )
 
     getPanes = () => ([
-        { label: 'Cloudlets', tab: this.getMap() }
+        { label: 'Cloudlet Location', tab: this.getMap() }
     ])
     /**
      * Tab block
@@ -306,20 +305,17 @@ class CloudletReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-                    {this.state.showCloudletManifest ?
-                        this.state.cloudletManifest ? this.cloudletManifestForm() : null :
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column width={8}>
-                                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                                </Grid.Column>
-                                <Grid.Column width={8}>
-                                    <MexTab form={{ panes: this.getPanes() }} />
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>}
-                </div>
+                {this.state.showCloudletManifest ?
+                    this.state.cloudletManifest ? this.cloudletManifestForm() : null :
+                    <div style={{ display: 'flex' }}>
+                        <div style={{ width: '52%', overflow: 'auto', height: '95vh' }}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </div>
+                        <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: 'transparent', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
+                            <MexTab form={{ panes: this.getPanes() }} />
+                        </div>
+                    </div>
+                }
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
         )
