@@ -8,7 +8,7 @@ import Control from "react-leaflet-control";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {Icon} from "semantic-ui-react";
 import {CLASSIFICATION, CLOUDLET_CLUSTER_STATE} from "../../../../shared/Constants";
-import {Progress} from 'antd';
+import {Progress} from "antd";
 
 let cloudGreenIcon = L.icon({
     iconUrl: require('../images/cloud_green.png'),

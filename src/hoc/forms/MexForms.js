@@ -32,33 +32,6 @@ export const BUTTON = 'Button'
 export const MULTI_FORM = 'MultiForm'
 export const SELECT_RADIO_TREE = 'SelectRadioTree'
 
-/***
-     * Map values from form to field
-     * ***/
-export const formattedData = (forms) => {
-    let data = {};
-    for (let i = 0; i < forms.length; i++) {
-        let form = forms[i];
-        if (form.field) {
-            if (form.forms) {
-                data[form.uuid] = {};
-                let subForms = form.forms
-                for (let j = 0; j < subForms.length; j++) {
-                    let subForm = subForms[j];
-                    if (subForm.field) {
-                        data[form.uuid][subForm.field] = subForm.value;
-                    }
-                }
-
-            }
-            else {
-                data[form.field] = form.value;
-            }
-        }
-    }
-    return data
-}
-
 const MexForms = (props) => {
     let forms = props.forms
 
@@ -119,10 +92,12 @@ const MexForms = (props) => {
                 let rules = form.rules;
                 if (rules) {
                     if (rules.required) {
-                        if (form.formType === SELECT_RADIO_TREE) {
+                        if(form.formType === SELECT_RADIO_TREE)
+                        {
                             let dependentForm = forms[form.dependentData[0].index]
                             let values = dependentForm.value
-                            if (dependentForm.value.includes('All')) {
+                            if(dependentForm.value.includes('All'))
+                            {
                                 values = cloneDeep(dependentForm.options)
                                 values.splice(0, 1)
                             }
@@ -153,6 +128,34 @@ const MexForms = (props) => {
         return valid
     }
 
+    /***
+     * Map values from form to field
+     * ***/
+    const formattedData = () => {
+        let data = {};
+        let forms = props.forms
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field) {
+                if (form.forms) {
+                    data[form.uuid] = {};
+                    let subForms = form.forms
+                    for (let j = 0; j < subForms.length; j++) {
+                        let subForm = subForms[j];
+                        if (subForm.field) {
+                            data[form.uuid][subForm.field] = subForm.value;
+                        }
+                    }
+
+                }
+                else {
+                    data[form.field] = form.value;
+                }
+            }
+        }
+        return data
+    }
+
     const onSubmit = (form) => {
         let valid = true;
         if (form.validate) {
@@ -165,7 +168,7 @@ const MexForms = (props) => {
             }
         }
         if (valid && form.onClick) {
-            form.onClick(formattedData(props.forms));
+            form.onClick(formattedData());
         }
         else if (props.reloadForms) {
             props.reloadForms()
@@ -202,11 +205,11 @@ const MexForms = (props) => {
     const loadButton = (form, index) => {
         return (
             form.formType === ICON_BUTTON ?
-                form.label ?
-                    <Tooltip key={index} title={form.label} aria-label="icon">
-                        <IconButton style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
-                    </Tooltip> :
-                    <IconButton key={index} style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
+                form.label ? 
+                <Tooltip key={index} title={form.label} aria-label="icon">
+                    <IconButton style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
+                </Tooltip> :
+                <IconButton key={index} style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
                 :
                 form.formType === BUTTON ?
                     <MexButton
@@ -220,8 +223,8 @@ const MexForms = (props) => {
         form.id = { id: index }
         let subForms = form.forms
         return (
-            <Grid style={{ width: '100%' }} key={index}>
-                <Grid.Row className={'formHeader-' + index} columns={2} key={uuid() + '' + index}>
+            <Grid style={{width:'100%'}} key={index}>
+                <Grid.Row className={'formHeader-'+index} columns={2} key={uuid() + '' + index}>
                     <Grid.Column width={15} className='detail_item'>
                         <h2 style={{ color: "white", display: 'inline' }}>{form.label}
                             {
@@ -270,11 +273,11 @@ const MexForms = (props) => {
                                 loadInputForms(form, required, disabled) :
                                 form.formType === SELECT ?
                                     loadDropDownForms(form, required, disabled) :
-                                    form.formType === CHECKBOX ?
-                                        <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> :
-                                        form.formType === ICON_BUTTON || form.formType === BUTTON ?
-                                            loadButton(form, i) :
-                                            null
+                                        form.formType === CHECKBOX ?
+                                            <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> :
+                                            form.formType === ICON_BUTTON || form.formType === BUTTON ?
+                                                loadButton(form, i) :
+                                                null
                         }
                     </Grid.Column> : null
             )
@@ -283,20 +286,24 @@ const MexForms = (props) => {
 
     const showTip = (form) => {
         return (
-            <Tooltip title={form.tip.split('\n').map((info, i) => { return <strong key={i}>{info}<br /></strong> })} aria-label="tip">
+            <Tooltip title={form.tip.split('\n').map((info, i)=>{return <strong key={i}>{info}<br/></strong>})} aria-label="tip">
                 {getIcon('help')}
             </Tooltip>
         )
     }
 
-    const checkRole = (form) => {
+    const checkRole = (form)=>
+    {
         let currentRole = localStorage.selectRole
         let roles = form.roles
-        if (roles) {
+        if(roles)
+        {
             form.visible = false;
-            for (let i = 0; i < roles.length; i++) {
+            for(let i=0;i<roles.length;i++)
+            {
                 let role = roles[i]
-                if (role === currentRole) {
+                if(role === currentRole)
+                {
                     form.visible = true
                 }
             }
@@ -328,7 +335,7 @@ const MexForms = (props) => {
                                 form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === SELECT_RADIO_TREE ?
-                                        <MexSelectTree form={form} forms={forms} onChange={onValueSelect} /> :
+                                        <MexSelectTree form={form} forms={forms} onChange={onValueSelect}/> :
                                         form.formType === INPUT || form.formType === TEXT_AREA ?
                                             loadInputForms(form, required, disabled) :
                                             form.formType === CHECKBOX ?
@@ -374,7 +381,7 @@ const MexForms = (props) => {
                         {forms.map((form, i) => {
                             return (form.formType === BUTTON ?
                                 <MexButton
-                                    className={'formButton-' + i}
+                                    className = {'formButton-'+i}
                                     form={form}
                                     key={i}
                                     onClick={onSubmit} />

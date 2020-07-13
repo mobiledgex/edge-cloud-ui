@@ -7,8 +7,9 @@ import {
     makeLineChartData
 } from "../service/PageMonitoringService";
 import {makeClusterBubbleChartData, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
-import {HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
-import {Select} from 'antd';
+import PageMonitoringView from "../view/PageMonitoringView";
+import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER} from "../../../../shared/Constants";
+import {Select, TreeSelect} from "antd";
 
 const {Option} = Select;
 
