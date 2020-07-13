@@ -21,7 +21,7 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { appTutor } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
-import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 
@@ -34,8 +34,7 @@ class AppReg extends React.Component {
             forms: [],
             stepsArray: [],
             showGraph: false,
-            flowDataList: [],
-            flowInstance: undefined
+            flowDataList: []
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -836,10 +835,6 @@ class AppReg extends React.Component {
         this.props.onClose(true)
     }
 
-    saveFlowInstance = (data) => {
-        this.setState({ flowInstance: data })
-    }
-
     render() {
         return (
             <div className="round_panel">
@@ -850,7 +845,7 @@ class AppReg extends React.Component {
                         </div>
                         {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance}/>
+                                <MexFlow flowDataList={this.state.flowDataList} flowObject={clusterFlow}/>
                             </Suspense>
                         </div> : null}
                     </div>

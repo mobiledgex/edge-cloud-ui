@@ -20,7 +20,7 @@ import { createAppInst, updateAppInst } from '../../../services/model/appInstanc
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {appInstTutor} from "../../../tutorial";
 
-import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const appInstSteps = appInstTutor();
@@ -679,7 +679,7 @@ class ClusterInstReg extends React.Component {
                         </div>
                         {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowDataList}/>
+                                <MexFlow flowDataList={this.state.flowDataList} flowObject={clusterFlow}/>
                             </Suspense>
                         </div> : null}
                     </div>

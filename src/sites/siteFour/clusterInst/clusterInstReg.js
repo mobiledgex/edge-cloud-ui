@@ -20,7 +20,7 @@ import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { clusterInstTutor } from "../../../tutorial";
 
-import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const clusterInstSteps = clusterInstTutor();
@@ -184,7 +184,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms, activeIndex: 1,  })
+            this.setState({ forms: forms })
         }
     }
 
@@ -312,7 +312,7 @@ class ClusterInstReg extends React.Component {
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
                 <Suspense fallback={<div></div>}>
-                    <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
+                    <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} flowObject={clusterFlow} />
                 </Suspense>
             </div>
         )
