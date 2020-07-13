@@ -2324,13 +2324,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         }
 
-
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
-
-
-                        //let mapMarkerObjectForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
                         let mapMarkerObjectForMap = this.makeMapMarkerObjectForDev(filteredAppInstList, filteredCloudletList)
 
                         await this.setState({
