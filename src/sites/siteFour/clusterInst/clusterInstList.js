@@ -27,6 +27,8 @@ class ClusterInstView extends React.Component {
         this.action = '';
         this.data = {};
         this.keys = keys();
+        this.multiStepperHeader = [{ label: 'Cluster', field: fields.clusterName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
+
     }
 
     onRegClose = (isEdited) => {
@@ -51,6 +53,12 @@ class ClusterInstView extends React.Component {
         ]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteClusterInst, icon: 'delete', warning: 'delete all the selected Cluster Instances', multiStepperHeader: this.multiStepperHeader },
+        ]
+    }
+
     requestInfo = () => {
         return ({
             id: 'ClusterInst',
@@ -60,6 +68,7 @@ class ClusterInstView extends React.Component {
             streamType: streamClusterInst,
             isRegion: true,
             isMap: true,
+            selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.onAdd,
@@ -93,7 +102,7 @@ class ClusterInstView extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 };
