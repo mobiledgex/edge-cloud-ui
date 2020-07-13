@@ -776,25 +776,7 @@ export function makeUniqDevOrg(appInstList) {
 }
 
 
-
-/*
-    text: '1 min',value: 10
-
-    text: '2 min',value: 20
-
-    text: '4 mins',value: 50
-
-    text: '8 mins',value: 100
-
-    text: '20 mins',value: 250
-
-    text: '40 mins',value: 500
-
-    text: '1 hour',value: 750
-
-    text: '2 hours',value: 1000
-
-*/
+/*    text: '1 min',value: 10,    text: '2 min',value: 20,    text: '4 mins',value: 50,    text: '8 mins',value: 100,    text: '20 mins',value: 250,    text: '40 mins',value: 500,    text: '1 hour',value: 750,    text: '2 hours',value: 1000*/
 export function makeMaxTickLimit(pDataLimitCount) {
 
     if (pDataLimitCount === 2000) {
