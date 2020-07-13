@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, formattedData } from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
@@ -34,7 +34,7 @@ class ClusterInstReg extends React.Component {
             mapData: [],
             stepsArray: [],
             activeIndex: 0,
-            flowData: { id: 0 },
+            flowDataList: [],
             flowInstance: undefined,
             region:'',
         }
@@ -49,6 +49,7 @@ class ClusterInstReg extends React.Component {
         this.privacyPolicyList = []
         this.autoScalePolicyList = []
         this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
+        this.updateFlowDataList = []
     }
 
     getCloudletInfo = async (form, forms) => {
@@ -170,7 +171,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms, activeIndex: 1, flowData: clusterFlow.deploymentTypeFlow(currentForm.value)})
+            this.setState({ forms: forms})
         }
     }
 
@@ -183,7 +184,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms, activeIndex: 1, flowData: clusterFlow.ipAccessFlow(currentForm.value) })
+            this.setState({ forms: forms, activeIndex: 1,  })
         }
     }
 
@@ -214,7 +215,8 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit, data) => {
+        let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
         }
@@ -226,15 +228,27 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
         }
         else if (form.field === fields.ipAccess) {
             this.ipAccessValueChange(form, forms, isInit)
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(clusterFlow.ipAccessFlow(finalData))
         }
         else if (form.field === fields.cloudletName) {
             this.cloudletValueChange(form, forms, isInit)
         }
         else if (form.field === fields.reservable) {
             this.reservableChange(form, forms, isInit)
+        }
+        if (flowDataList.length > 0) {
+            if (isInit) {
+                this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+            }
+            else {
+                this.setState({ flowDataList: flowDataList, activeIndex: 1 })
+            }
         }
     }
 
@@ -297,7 +311,7 @@ class ClusterInstReg extends React.Component {
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
                 <Suspense fallback={<div></div>}>
-                    <MexFlow flowData={this.state.flowData} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
+                    <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} />
                 </Suspense>
             </div>
         )
@@ -459,13 +473,20 @@ class ClusterInstReg extends React.Component {
             this.updateUI(form)
             if (data) {
                 form.value = data[form.field]
-                this.checkForms(form, forms, true)
+                this.checkForms(form, forms, true, data)
             }
         }
 
         this.setState({
             forms: forms
         })
+
+        if (this.isUpdate) {
+            this.setState({
+                showGraph: true,
+                flowDataList: this.updateFlowDataList
+            })
+        }
 
     }
 
