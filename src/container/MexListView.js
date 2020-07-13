@@ -16,7 +16,7 @@ import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import Map from "../libs/simpleMaps/with-react-motion/pageMap";
+import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
 
 class MexListView extends React.Component {

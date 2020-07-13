@@ -1,0 +1,23 @@
+.ui.inverted.menu  {
+    background: rgb(42, 44, 50) !important;
+}
+
+.ui.tabular.menu .item {
+    border-right: 1px solid transparent;
+    border-top: 2px solid transparent;
+    padding: .92857143em 1.42857143em;
+}
+
+.ui.tabular.menu .active.item {
+    border-top-width: 1px;
+    border-color: #43464B;
+    margin-bottom: -1px;
+    box-shadow: none;
+    border-radius: .28571429rem .28571429rem 0 0!important;
+}
+
+
+
+.ui.attached.segment {
+    border: 1px solid #43464B !important;
+}

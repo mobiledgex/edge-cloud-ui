@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import Login from './login';
-import { LOCAL_STRAGE_KEY } from '../../components/utils/Settings';
+import { LOCAL_STRAGE_KEY } from '../../constant';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import HeaderGlobalMini from '../../container/headerGlobalMini';

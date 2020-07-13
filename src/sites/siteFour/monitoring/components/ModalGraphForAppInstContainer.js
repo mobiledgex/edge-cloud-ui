@@ -1,8 +1,7 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal} from "antd";
+import {Modal as AModal} from antd;
 import {Line} from 'react-chartjs-2';
-import PageMonitoringView from "../view/PageMonitoringView";
 import type {TypeLineChartData2} from "../../../../shared/Types";
 import {convertByteToMegaByte} from "../service/PageMonitoringCommonService";
 import {makeGradientColorOne} from "../service/PageMonitoringService";
