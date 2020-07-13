@@ -649,7 +649,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     timezoneChange: true,
                     cloudletCount: 0,
                     isShowCountPopover: false,
-                    dataLimitCount: 20,//2mins
+                    dataLimitCount: 50,//4mins
                     dataLimitCountText: '4 mins',
                 }
             }
