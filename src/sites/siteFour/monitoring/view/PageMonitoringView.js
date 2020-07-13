@@ -386,6 +386,8 @@ type PageDevMonitoringState = {
     cloudletCount: number,
     dataLimitCount: number,
     isShowCountPopover: boolean,
+    dataLimitCount: number,
+    dataLimitCountText: string,
 
 }
 
@@ -646,8 +648,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     currentCloudletMap: {},
                     timezoneChange: true,
                     cloudletCount: 0,
-                    dataLimitCount: 100,
                     isShowCountPopover: false,
+                    dataLimitCount: 50,
+                    dataLimitCountText: '4 mins',
                 }
             }
 
@@ -1296,7 +1299,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP
-                            && <div className="maxize page_monitoring_widget_icon"
+                            && <div className="page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
                                 <MaterialIcon size={'tiny'} icon='aspect_ratio' color={'white'}/>
@@ -3128,21 +3131,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             renderGraphDataCountDropdown() {
                 const content = (
                     <div>
-                        <div style={{color: '#fff', fontWeight: 'bold'}}>Set the number of metric data to be displayed on the graph</div>
+                        <div style={{color: '#fff', fontWeight: 'bold'}}>Set time of metric data to be displayed on the graph</div>
                     </div>
                 );
 
-
                 return (
-                    <Popover
-                        content={content} trigger="click"
-                        visible={this.state.isShowCountPopover}
-                        onVisibleChange={(visible) => {
-                            this.setState({
-                                isShowCountPopover: visible,
-                            });
-                        }}
-                    >
+                    <Popover content={content} trigger="click">
                         <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'flex-start', marginLeft: -18}}>
                             <div style={{width: 25, marginLeft: 0}}>
                                 <Select
@@ -3154,36 +3148,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         maxHeight: '512px !important',
                                         overflowY: 'auto',
                                         overflowAnchor: 'none',
-                                        width: 200,
+                                        width: 100,
                                     }}
                                     value={this.state.dataLimitCount}
                                     placeholder={'Select Data Count'}
-                                    dropdownRender={() => {
-                                        return (
-                                            <div>
-                                                <AMenu ref={c => this.menuRef = c} style={{display: 'hidden'}}>
-                                                    {graphDataCount.map(item => {
-                                                        return (
-                                                            <AMenu.Item
-                                                                onClick={async (e) => {
-                                                                    this.recentDataLimitCountRef.blur();
-                                                                    await this.setState({
-                                                                        dataLimitCount: item.value,
-                                                                        isShowCountPopover: false,
-                                                                    });
-                                                                    await this.reloadDataFromRemote()
-                                                                }}
-                                                            >
-                                                                <span>{item.text}</span>
-                                                                <span style={{color: '#77BD25'}}>&nbsp;&nbsp;{item.time}</span>
-                                                            </AMenu.Item>
-                                                        )
-                                                    })}
-                                                </AMenu>
-                                            </div>
-                                        )
+                                    onChange={async (value) => {
+                                        this.recentDataLimitCountRef.blur()
+                                        await this.setState({
+                                            dataLimitCount: value,
+                                        });
+                                        await this.reloadDataFromRemote()
                                     }}
                                 >
+                                    {graphDataCount.reverse().map(item => {
+                                        return (
+                                            <Option value={item.value}>{item.text}</Option>
+                                        )
+                                    })}
                                 </Select>
                             </div>
                         </div>
@@ -3191,6 +3172,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 )
             }
+
 
             __________LEGEND____________________________________________________________________________________________________() {
             }
@@ -3369,7 +3351,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         span={itemCount === 1 ? 24 : this.state.isLegendExpanded ? 6 : 1}
                                         title={!this.state.isLegendExpanded ? item.cluster + '[' + item.cloudlet + ']' : null}
                                         style={{
-                                            //background: 'red',
                                             justifyContent: itemCount === 1 ? 'center' : null,
                                             width: itemCount === 1 ? '100%' : this.props.size.width / 4,
                                         }}
