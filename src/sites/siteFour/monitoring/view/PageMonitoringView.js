@@ -694,7 +694,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             };
 
-            makeMapMarkerListForDev(orgAppInstList, cloudletList) {
+            makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
                 let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
                 cloudletList.map(item => {
                     let listOne = markerMapObjectForMap[item.CloudletName];
@@ -794,7 +794,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         markerMapObjectForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
                     } else {//todo:MAP_LEVEL.CLUSTER
                         let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
-                        markerMapObjectForMap = this.makeMapMarkerListForDev(orgAppInstList, cloudletList)
+                        markerMapObjectForMap = this.makeMapMarkerObjectForDev(orgAppInstList, cloudletList)
                     }
                     await this.setState({
                         markerList: !isInterval && markerMapObjectForMap,
@@ -964,7 +964,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
                     } else {//todo: Cluster for Dev
                         let orgAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'));
-                        markerListForMap = this.makeMapMarkerListForDev(orgAppInstList, this.state.cloudletList)
+                        markerListForMap = this.makeMapMarkerObjectForDev(orgAppInstList, this.state.cloudletList)
                     }
                 } else {//todo: MAP_LEVEL.ADMIN
                     markerListForMap = reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET);
@@ -2332,7 +2332,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                         //let mapMarkerObjectForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
-                        let mapMarkerObjectForMap = this.makeMapMarkerListForDev(filteredAppInstList, filteredCloudletList)
+                        let mapMarkerObjectForMap = this.makeMapMarkerObjectForDev(filteredAppInstList, filteredCloudletList)
 
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
