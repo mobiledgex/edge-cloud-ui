@@ -709,7 +709,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 })
 
                 return markerMapObjectForMap;
-
             }
 
 
