@@ -20,8 +20,8 @@ import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { clusterInstTutor } from "../../../tutorial";
 
-import * as clusterFlow from '../../../hoc/cytoscape/clusterElements'
-const MexFlow = React.lazy(() => import('../../../hoc/cytoscape/MexFlow'));
+import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const clusterInstSteps = clusterInstTutor();
 
@@ -230,6 +230,7 @@ class ClusterInstReg extends React.Component {
             this.deploymentValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
+            flowDataList.push(clusterFlow.ipAccessFlow({}))
         }
         else if (form.field === fields.ipAccess) {
             this.ipAccessValueChange(form, forms, isInit)
