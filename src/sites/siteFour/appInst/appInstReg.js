@@ -20,9 +20,8 @@ import { createAppInst, updateAppInst } from '../../../services/model/appInstanc
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {appInstTutor} from "../../../tutorial";
 
-import * as clusterFlow from '../../../hoc/cytoscape/clusterElements'
-import { flow } from 'lodash';
-const MexFlow = React.lazy(() => import('../../../hoc/cytoscape/MexFlow'));
+import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const appInstSteps = appInstTutor();
 

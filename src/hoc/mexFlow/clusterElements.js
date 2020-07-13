@@ -18,11 +18,11 @@ export const defaultFlow = () => (
 )
 
 export const ipAccessFlow = (data) => {
-    let label = data[fields.ipAccess]
+    let label = data[fields.ipAccess] ? data[fields.ipAccess].toUpperCase() : ''
     return (
         {
             id: 1, dataList: [
-                { type: 'nodes', data: { id: 1, shape: SHAPE_ROUND_RECTANGLE, label: label, width: 170, height: 100, bg: '#8893D0', zi: 1 }, position: { x: 300, y: 185 } },
+                { type: 'nodes', data: { id: 1, shape: SHAPE_ROUND_RECTANGLE, label: `${label} ROOT LB`, width: 170, height: 100, bg: '#8893D0', zi: 1, lfs:12 }, position: { x: 300, y: 185 } },
                 { type: 'edges', data: { id: 1001, source: 100, target: 1 } },
                 { type: 'edges', data: { id: 1101, source: 1, target: 101, te: '-43% -43%', as: 'none' } }
             ],
