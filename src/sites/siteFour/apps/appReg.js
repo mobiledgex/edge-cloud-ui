@@ -50,6 +50,7 @@ class AppReg extends React.Component {
         this.originalData = undefined
         this.expandAdvanceMenu = false
         this.tlsCount = 0
+        this.updateFlowDataList = []
     }
 
     validatePortRange = (form) => {
@@ -373,10 +374,13 @@ class AppReg extends React.Component {
     }
 
     tlsValueChange = (form, forms, isInit) => {
-        this.tlsCount = form.value ? this.tlsCount + 1 : this.tlsCount - 1
+        if(!isInit)
+        {
+            this.tlsCount = form.value ? this.tlsCount + 1 : this.tlsCount - 1
+        }
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
@@ -389,9 +393,9 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
-            let data = formattedData(forms)
-            flowDataList.push(clusterFlow.deploymentTypeFlow(data))
-            flowDataList.push(clusterFlow.ipAccessFlowApp(data))
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
+            flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
@@ -402,12 +406,17 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.accessType) {
             this.accessTypeChange(form, forms, isInit)
-            let data = formattedData(forms)
-            flowDataList.push(clusterFlow.deploymentTypeFlow(data))
-            flowDataList.push(clusterFlow.ipAccessFlowApp(data))
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
+            flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
         }
         if (flowDataList.length > 0) {
-            this.setState({ showGraph: true, flowDataList: flowDataList })
+            if (isInit) {
+                this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+            }
+            else {
+                this.setState({ showGraph: true, flowDataList: flowDataList })
+            }
         }
     }
 
@@ -782,7 +791,7 @@ class AppReg extends React.Component {
                 }
                 else {
                     form.value = data[form.field]
-                    this.checkForms(form, forms, true)
+                    this.checkForms(form, forms, true, data)
                 }
             }
         }
@@ -792,6 +801,8 @@ class AppReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
+            this.tlsCount = data[fields.accessPorts] ? (data[fields.accessPorts].match(/tls/g) || []).length : 0;
+            this.updateFlowDataList.push(clusterFlow.portFlow(this.tlsCount))
             this.originalData = Object.assign({}, data)
             await this.loadDefaultData(forms, data)
         }
@@ -808,6 +819,13 @@ class AppReg extends React.Component {
         this.setState({
             forms: forms
         })
+
+        if (this.isUpdate) {
+            this.setState({
+                showGraph: true,
+                flowDataList: this.updateFlowDataList
+            })
+        }
 
     }
 

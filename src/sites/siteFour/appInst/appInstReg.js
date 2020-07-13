@@ -401,15 +401,16 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.ipAccess) {
             this.ipAccessValueChange(form, forms, isInit, data)
-            let finalData = this.isUpdate ? data : formattedData(forms)
+            let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(clusterFlow.clusterFlow(finalData))
         }
-        if (flowDataList.length > 0 && !this.isUpdate) {
-            this.setState({ showGraph: true, flowDataList: flowDataList })
-        }
-        else
-        {
-            this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+        if (flowDataList.length > 0) {
+            if (isInit) {
+                this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+            }
+            else {
+                this.setState({ showGraph: true, flowDataList: flowDataList })
+            }
         }
     }
 
