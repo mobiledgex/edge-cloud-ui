@@ -26,7 +26,7 @@ export const defaultFlow = () => (
 export const privateFlow = (data) => {
     let dataList = []
     if (data[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED) {
-        dataList.push({ type: 'nodes', data: { id: 1, shape: SHAPE_ELLIPSE, width: 100, height: 100, bg: '#FFF', bi: svgIcons.renderNode(svgIcons.ICON_CLOSE, 1, '#D4272D', 100, 3, 2.25).svg }, position: { x: 400, y: 295 } })
+        dataList.push({ type: 'nodes', data: { id: 1, shape: SHAPE_ELLIPSE, width: 100, height: 100, bg: '#FFF', bi: svgIcons.renderNode(svgIcons.ICON_CLOSE, 1, '#D4272D', 100, 3, 2.25).svg }, position: { x: 400, y: 292 } })
     }
     return (
         {
