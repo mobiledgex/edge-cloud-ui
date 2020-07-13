@@ -649,7 +649,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     timezoneChange: true,
                     cloudletCount: 0,
                     isShowCountPopover: false,
-                    dataLimitCount: 50,
+                    dataLimitCount: 20,//2mins
                     dataLimitCountText: '4 mins',
                 }
             }
@@ -694,6 +694,24 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             };
 
+            makeMapMarkerListForDev(orgAppInstList, cloudletList) {
+                let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                cloudletList.map(item => {
+                    let listOne = markerMapObjectForMap[item.CloudletName];
+                    if (listOne === undefined) {
+                        markerMapObjectForMap[item.CloudletName] = [{
+                            AppName: 'No Apps',
+                            ClusterInst: 'No Cluster',
+                            Cloudlet: item.CloudletName,
+                            CloudletLocation: item.CloudletLocation,
+                        }];
+                    }
+                })
+
+                return markerMapObjectForMap;
+
+            }
+
 
             async loadInitData(isInterval: boolean = false) {
                 let promiseList = []
@@ -735,11 +753,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:###################################################################################################################
                         //TODO:       DEVELOPER
                         //TODO:###################################################################################################################
+                        promiseList.push(fetchCloudletList())
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList(undefined, this))
-                        const [promiseClusterList, promiseAppInstList] = await Promise.all(promiseList);
+                        const [promiseCloudletList, promiseClusterList, promiseAppInstList] = await Promise.all(promiseList);
+                        cloudletList = promiseCloudletList;
                         clusterList = promiseClusterList;
                         appInstList = promiseAppInstList;
+
                         clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
                     } else {
                         //TODO:###############################################
@@ -767,17 +788,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //@todo:#########################################################################
                     //@todo: map Marker
                     //@todo:#########################################################################
-                    let markerListForMap = []
+                    let markerMapObjectForMap = []
                     //todo:MAP_LEVEL.CLOUDLET
                     if (this.state.currentMapLevel === MAP_LEVEL.CLOUDLET || this.state.currentMapLevel === MAP_LEVEL.CLOUDLET_FOR_ADMIN) {
-                        markerListForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
+                        markerMapObjectForMap = reducer.groupBy(cloudletList, CLASSIFICATION.CloudletName);
                     } else {//todo:MAP_LEVEL.CLUSTER
                         let orgAppInstList = appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
-                        markerListForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-
+                        markerMapObjectForMap = this.makeMapMarkerListForDev(orgAppInstList, cloudletList)
                     }
                     await this.setState({
-                        markerList: !isInterval && markerListForMap,
+                        markerList: !isInterval && markerMapObjectForMap,
                         mapLoading: false,
                     });
 
@@ -942,8 +962,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             return appInstOne.Cloudlet === this.state.currentCloudLet
                         })
                         markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
-                    } else {
-                        markerListForMap = reducer.groupBy(this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg')), CLASSIFICATION.CLOUDLET);
+                    } else {//todo: Cluster for Dev
+                        let orgAppInstList = this.state.appInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'));
+                        markerListForMap = this.makeMapMarkerListForDev(orgAppInstList, this.state.cloudletList)
                     }
                 } else {//todo: MAP_LEVEL.ADMIN
                     markerListForMap = reducer.groupBy(this.state.appInstList, CLASSIFICATION.CLOUDLET);
@@ -2251,6 +2272,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async handleOnChangeClusterDropdown(selectClusterCloudletList) {
+
                 try {
                     if (this.state.isStream === false) {
                         clearInterval(this.intervalForAppInst)
@@ -2275,20 +2297,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let filteredAppInstList = []
                         let filteredClusterEventLogList = []
+                        let filteredCloudletList = []
                         try {
                             this.state.appInstList.map((appInstOne, index) => {
-                                selectClusterCloudletList.map((innerItem, innerIndex) => {
-                                    if (appInstOne.ClusterInst === innerItem.split("|")[0].trim() && appInstOne.Cloudlet === innerItem.split("|")[1].trim()) {
+                                selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
+                                    if (appInstOne.ClusterInst === clusterCloudletOne.split("|")[0].trim() && appInstOne.Cloudlet === clusterCloudletOne.split("|")[1].trim()) {
                                         filteredAppInstList.push(appInstOne)
                                     }
                                 })
                             })
-
-
                             this.state.allClusterEventLogList.map((clusterEventLogOne: TypeClusterEventLog, index) => {
                                 selectClusterCloudletList.map((innerItem, innerIndex) => {
                                     if (clusterEventLogOne[1] === innerItem.split("|")[0].trim()) {
                                         filteredClusterEventLogList.push(clusterEventLogOne)
+                                    }
+                                })
+                            })
+
+                            this.state.cloudletList.map((cloudletOne: TypeCloudlet, index) => {
+                                selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
+                                    if (cloudletOne.CloudletName === clusterCloudletOne.split("|")[1].trim()) {
+                                        filteredCloudletList.push(cloudletOne)
                                     }
                                 })
                             })
@@ -2301,7 +2330,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
-                        let mapMarkerListHashMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
+
+                        //let mapMarkerObjectForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET);
+                        let mapMarkerObjectForMap = this.makeMapMarkerListForDev(filteredAppInstList, filteredCloudletList)
 
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
@@ -2313,7 +2344,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             allAppInstDropdown: appInstDropdown,
                             appInstSelectBoxPlaceholder: 'Select App Inst',
                             filteredAppInstList: filteredAppInstList,
-                            markerList: mapMarkerListHashMap,//todo mapdata
+                            markerList: mapMarkerObjectForMap,//todo mapdata
                             currentAppInst: undefined,
                             currentAppInstNameVersion: undefined,
                             filteredClusterList: filteredClusterList,
@@ -2778,7 +2809,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 )
             }
 
-            renderClusterTreeDropdown() {
+            renderClusterTreeDropdownForDev() {
                 let treeSelectWidth = 500;
                 let maxTagCount = 3;
                 if (this.props.size.width >= 1600) {
@@ -2856,6 +2887,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     this.applyButton.blur();
                                     if (this.state.currentClusterList !== undefined) {
                                         let selectClusterCloudletList = this.state.currentClusterList
+
+
                                         await this.handleOnChangeClusterDropdown(selectClusterCloudletList)
 
                                     } else {
@@ -3613,7 +3646,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 : this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.DEV) ?//todo: dev
                                     <React.Fragment>
                                         <div style={{marginLeft: 25}}>
-                                            {this.renderClusterTreeDropdown()}
+                                            {this.renderClusterTreeDropdownForDev()}
                                         </div>
 
                                         <div style={{marginLeft: 25}}>
