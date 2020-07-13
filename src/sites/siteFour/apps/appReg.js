@@ -21,8 +21,8 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { appTutor } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
-import * as clusterFlow from '../../../hoc/cytoscape/clusterElements'
-const MexFlow = React.lazy(() => import('../../../hoc/cytoscape/MexFlow'));
+import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 
 const appSteps = appTutor();
