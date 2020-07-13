@@ -8,7 +8,7 @@ export const FLOW_REMOVE = 'remove'
 export const FLOW_UPDATE = 'update'
 
 const cyStyle = {
-  height: '70vh',
+  height: '100%',
   width: '100%',
   // transition: 'width 3s',
   backgroundColor: '#1A1C21'
@@ -50,6 +50,7 @@ class MexFlow extends React.Component {
       level: (window.screen.width)/2400,
       renderedPosition: { x: 50, y: 50 }
     });
+    this.cy.autolock(true)
   }
 
   static getDerivedStateFromProps(props, state) {

@@ -227,7 +227,7 @@ class ClusterInstReg extends React.Component {
                     }
                 })
                 flowDataList.push(clusterFlow.ipAccessFlowApp(app))
-                flowDataList.push(clusterFlow.deploymentTypeFlow(app))
+                flowDataList.push(clusterFlow.deploymentTypeFlow(app, constant.APP))
                 if (app[fields.accessPorts]) {
                     flowDataList.push(clusterFlow.portFlow(app[fields.accessPorts].includes('tls') ? 1 : 0))
                 }

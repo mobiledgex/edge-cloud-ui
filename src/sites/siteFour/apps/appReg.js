@@ -394,7 +394,7 @@ class AppReg extends React.Component {
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
+            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData, constant.APP))
             flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
         }
         else if (form.field === fields.protocol) {
@@ -407,7 +407,7 @@ class AppReg extends React.Component {
         else if (form.field === fields.accessType) {
             this.accessTypeChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
+            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData, constant.APP))
             flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
         }
         if (flowDataList.length > 0) {
