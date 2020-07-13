@@ -18,7 +18,7 @@ import {listGroupByKey, makeMapThemeDropDown, reduceString, renderCloudletHwUsag
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
-import {CLASSIFICATION} from "../../../../shared/Constants";
+import {CLASSIFICATION, NO_APPS} from "../../../../shared/Constants";
 import {getMexTimezone} from "../../../../utils/sharedPreferences_util";
 
 const {Option} = Select;
@@ -159,6 +159,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
         componentDidMount = async () => {
             try {
                 let markerList = this.props.markerList
+
                 this.setCloudletLocation(markerList, true)
                 await this.setState({
                     cloudletUsageOne: this.props.cloudletUsageList[0],
@@ -461,36 +462,50 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         }
 
                         let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
-
-                        return (
-                            <div style={PageMonitoringStyles.appPopupDiv}
-                                 key={appIndex * cloudletIndex}
-                            >
-                                <Ripples
-                                    style={{marginLeft: 5,}}
-                                    color='#1cecff'
-                                    during={500}
-                                    onClick={async () => {
-                                        try {
-                                            await this.setState({selectedAppInstIndex: appIndex})
-                                            await this.props.handleOnChangeAppInstDropdown(fullAppInstOne)
-
-                                        } catch (e) {
-                                            throw new Error(e)
-                                        }
-                                    }}
+                        if (AppName !== NO_APPS) {
+                            return (
+                                <div style={PageMonitoringStyles.appPopupDiv}
+                                     key={appIndex * cloudletIndex}
                                 >
-                                    {reduceString(AppName.toString(), 25)} [{Version}]
+                                    <Ripples
+                                        style={{marginLeft: 5,}}
+                                        color='#1cecff'
+                                        during={500}
+                                        onClick={async () => {
+                                            try {
+                                                await this.setState({selectedAppInstIndex: appIndex})
+                                                await this.props.handleOnChangeAppInstDropdown(fullAppInstOne)
+
+                                            } catch (e) {
+                                                throw new Error(e)
+                                            }
+                                        }}
+                                    >
+                                        {reduceString(AppName.toString(), 25)} [{Version}]
+                                        <div style={{
+                                            color: '#77BD25',
+                                            fontSize: 12
+                                        }}>
+                                            &nbsp;&nbsp;[{reduceString(ClusterInst.trim(), 25)}]
+                                        </div>
+                                        {this.renderAppHealthCheckState(HealthCheckStatus)}
+                                    </Ripples>
+                                </div>
+                            )
+                        } else {//todo: when no apps.
+                            return (
+                                <div style={PageMonitoringStyles.appPopupDiv}
+                                     key={appIndex * cloudletIndex}
+                                >
                                     <div style={{
                                         color: '#77BD25',
                                         fontSize: 12
                                     }}>
-                                        &nbsp;&nbsp;[{reduceString(ClusterInst.trim(), 25)}]
+                                        No App
                                     </div>
-                                    {this.renderAppHealthCheckState(HealthCheckStatus)}
-                                </Ripples>
-                            </div>
-                        )
+                                </div>
+                            )
+                        }
                     })}
                 </Popup>
             )
