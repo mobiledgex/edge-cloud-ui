@@ -307,6 +307,7 @@ class ClustersMap extends Component {
         return (
             (!isNaN(city.coordinates[0])) ?
                 <Marker
+                    key={i}
                     position={city.coordinates}
                     icon={this.iconMarker(city, config)}
                     onClick={() => this.handleCityClick(city)}
@@ -316,9 +317,9 @@ class ClustersMap extends Component {
                         direction={'top'}
                         className={'map-tooltip'}
                     >
-                        {city.name.map(one => {
+                        {city.name.map((one, index) => {
                             return (
-                                <div>{one}</div>
+                                <div key={index}>{one}</div>
                             )
                         })}
                     </Tooltip>

@@ -8,7 +8,7 @@ export const FLOW_REMOVE = 'remove'
 export const FLOW_UPDATE = 'update'
 
 const cyStyle = {
-  height: '50vh',
+  height: '70vh',
   width: '100%',
   // transition: 'width 3s',
   backgroundColor: '#1A1C21'
@@ -68,12 +68,17 @@ class MexFlow extends React.Component {
   addFlowdata = (flowData) => {
     if (flowData) {
       flowData.dataList.map(element => {
-        this.cy.add({
-          group: element.type,
-          data: element.data,
-          position: element.position,
-          classes: element.classes
-        })
+        if (element.type === 'update') {
+          this.cy.$(`#${element.data.id}`).data('label', element.data.label)
+        }
+        else {
+          this.cy.add({
+            group: element.type,
+            data: element.data,
+            position: element.position,
+            classes: element.classes
+          })
+        }
       })
     }
   }
@@ -169,7 +174,9 @@ class MexFlow extends React.Component {
     this.cy.edges().map(ele => {
       elementList.push({ type: 'edges', data: ele.data() })
     })
-    this.props.saveFlowInstance(elementList)
+    if (this.props.saveFlowInstance) {
+      this.props.saveFlowInstance(elementList)
+    }
     this.cy.destroy()
   }
 }

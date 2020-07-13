@@ -115,21 +115,6 @@ export const deploymentTypeFlow = (data, type) => {
      })
 }
 
-export const clusterFlow = (data) => {
-    let dataList = []
-    if (data[fields.autoClusterInstance] || (data[fields.clusterName] && data[fields.clusterName].includes('autocluster'))) {
-        dataList.push({ type: 'update', data: { id: 1, label: `${data[fields.ipAccess] ? data[fields.ipAccess].toUpperCase() : ''} ROOT LB` } })
-        if (data[fields.ipAccess] === constant.IP_ACCESS_SHARED) {
-            dataList.push({ type: 'nodes', data: { id: 4, shape: SHAPE_ROUND_RECTANGLE, label: `Other Clusters/App VM`, width: 200, height: 1, bg: '#FFF', tmy: 15 }, position: { x: 250, y: 400 } })
-            dataList.push({ type: 'edges', data: { id: 4100011, source: 10001, target: 4, ls: 'dashed', zi: 1, lc: '#3A589E', tac: '#3A589E', te: '-10% -10%' } })
-            dataList.push({ type: 'edges', data: { id: 4100012, source: 10001, target: 4, ls: 'dashed', zi: 1, lc: '#3A589E', tac: '#3A589E' } })
-        }
-    }
-    return ({
-        id: 4, dataList: dataList, removeId: [4, 4100011, 4100012]
-    })
-}
-
 
 
 
