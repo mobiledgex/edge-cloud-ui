@@ -108,7 +108,7 @@ class CloudletReg extends React.Component {
         }
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.platformType) {
             this.platformTypeValueChange(form, forms, isInit)
@@ -118,13 +118,13 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === fields.infraApiAccess) {
             this.infraAPIAccessChange(form, forms, isInit)
-            let data = formattedData(forms)
-            flowDataList.push(cloudletFLow.privateFlow(data))
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(cloudletFLow.privateFlow(finalData))
         }
 
         if (flowDataList.length > 0) {
             if (isInit) {
-                //this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+                this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
             }
             else {
                 this.setState({ flowDataList: flowDataList, activeIndex: 1 })
@@ -507,7 +507,7 @@ class CloudletReg extends React.Component {
                 }
                 else {
                     form.value = data[form.field]
-                    this.checkForms(form, forms, true)
+                    this.checkForms(form, forms, true, data)
                 }
             }
             //Todo if more such functions required must be moved to mexforms
@@ -555,6 +555,13 @@ class CloudletReg extends React.Component {
         this.setState({
             forms: forms
         })
+
+        if (this.isUpdate) {
+            this.setState({
+                showGraph: true,
+                flowDataList: this.updateFlowDataList
+            })
+        }
 
     }
 
