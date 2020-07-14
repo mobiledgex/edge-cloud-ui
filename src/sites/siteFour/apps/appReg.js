@@ -21,7 +21,7 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { appTutor } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
-import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+import * as appFlow from '../../../hoc/mexFlow/appFlow'
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 
@@ -34,8 +34,7 @@ class AppReg extends React.Component {
             forms: [],
             stepsArray: [],
             showGraph: false,
-            flowDataList: [],
-            flowInstance: undefined
+            flowDataList: []
         }
         this.isUpdate = this.props.isUpdate
         let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
@@ -204,6 +203,7 @@ class AppReg extends React.Component {
                     [constant.ACCESS_TYPE_LOAD_BALANCER] :
                     [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
+                this.tlsCount = form.value === constant.ACCESS_TYPE_DIRECT ? 0 : this.tlsCount
                 this.accessTypeChange(form, forms, isInit)
                 return form
             }
@@ -351,6 +351,7 @@ class AppReg extends React.Component {
     }
 
     accessTypeChange = (currentForm, forms, isInit) => {
+        this.tlsCount = currentForm.value === constant.ACCESS_TYPE_DIRECT ? 0 : this.tlsCount
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.ports) {
@@ -394,21 +395,23 @@ class AppReg extends React.Component {
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData, constant.APP))
-            flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
+            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.APP))
+            flowDataList.push(appFlow.ipAccessFlowApp(finalData))
+            flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
         }
         else if (form.field === fields.tls) {
             this.tlsValueChange(form, forms, isInit)
-            flowDataList.push(clusterFlow.portFlow(this.tlsCount))
+            flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
         else if (form.field === fields.accessType) {
             this.accessTypeChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData, constant.APP))
-            flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
+            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.APP))
+            flowDataList.push(appFlow.ipAccessFlowApp(finalData))
+            flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
         if (flowDataList.length > 0) {
             if (isInit) {
@@ -802,7 +805,7 @@ class AppReg extends React.Component {
         let forms = this.formKeys()
         if (data) {
             this.tlsCount = data[fields.accessPorts] ? (data[fields.accessPorts].match(/tls/g) || []).length : 0;
-            this.updateFlowDataList.push(clusterFlow.portFlow(this.tlsCount))
+            this.updateFlowDataList.push(appFlow.portFlow(this.tlsCount))
             this.originalData = Object.assign({}, data)
             await this.loadDefaultData(forms, data)
         }
@@ -836,10 +839,6 @@ class AppReg extends React.Component {
         this.props.onClose(true)
     }
 
-    saveFlowInstance = (data) => {
-        this.setState({ flowInstance: data })
-    }
-
     render() {
         return (
             <div className="round_panel">
@@ -850,7 +849,7 @@ class AppReg extends React.Component {
                         </div>
                         {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance}/>
+                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow}/>
                             </Suspense>
                         </div> : null}
                     </div>
