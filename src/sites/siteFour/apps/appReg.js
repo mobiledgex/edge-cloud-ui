@@ -203,6 +203,7 @@ class AppReg extends React.Component {
                     [constant.ACCESS_TYPE_LOAD_BALANCER] :
                     [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT]
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
+                this.tlsCount = form.value === constant.ACCESS_TYPE_DIRECT ? 0 : this.tlsCount
                 this.accessTypeChange(form, forms, isInit)
                 return form
             }
@@ -350,6 +351,7 @@ class AppReg extends React.Component {
     }
 
     accessTypeChange = (currentForm, forms, isInit) => {
+        this.tlsCount = currentForm.value === constant.ACCESS_TYPE_DIRECT ? 0 : this.tlsCount
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.ports) {
@@ -395,6 +397,7 @@ class AppReg extends React.Component {
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(clusterFlow.deploymentTypeFlow(finalData, constant.APP))
             flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
+            flowDataList.push(clusterFlow.portFlow(this.tlsCount))
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
@@ -408,6 +411,7 @@ class AppReg extends React.Component {
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(clusterFlow.deploymentTypeFlow(finalData, constant.APP))
             flowDataList.push(clusterFlow.ipAccessFlowApp(finalData))
+            flowDataList.push(clusterFlow.portFlow(this.tlsCount))
         }
         if (flowDataList.length > 0) {
             if (isInit) {
