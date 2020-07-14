@@ -105,6 +105,7 @@ export const fields = {
     caCertdata:'caCertdata',
     clusterdeveloper:'clusterdeveloper',
     containerVersion:'containerVersion',
+    vmImageVersion:'vmImageVersion',
     configs:'configs',
     config:'config',
     kind:'kind',
@@ -222,6 +223,13 @@ export const formatData = (response, body, keys, customData, isUnique) => {
         alert(e)
     }
     return values
+}
+
+const getType = (p) => {
+    if (Array.isArray(p)) return 'array';
+    else if (typeof p == 'string') return 'string';
+    else if (p != null && typeof p == 'object') return 'object';
+    else return 'other';
 }
 
 export const compareObjects = (newData, oldData, ignoreCase) => {
