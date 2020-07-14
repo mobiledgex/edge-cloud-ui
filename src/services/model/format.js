@@ -225,13 +225,6 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     return values
 }
 
-const getType = (p) => {
-    if (Array.isArray(p)) return 'array';
-    else if (typeof p == 'string') return 'string';
-    else if (p != null && typeof p == 'object') return 'object';
-    else return 'other';
-}
-
 export const compareObjects = (newData, oldData, ignoreCase) => {
     if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
         return true
