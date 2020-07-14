@@ -33,6 +33,9 @@ export const getKey = (data, isCreate) => {
         if (data[fields.containerVersion]) {
             cloudlet.container_version = data[fields.containerVersion]
         }
+        if (data[fields.envVars]) {
+            cloudlet.env_var = data[fields.envVars]
+        }
         if (data[fields.fields]) {
             cloudlet.fields = data[fields.fields]
         }
