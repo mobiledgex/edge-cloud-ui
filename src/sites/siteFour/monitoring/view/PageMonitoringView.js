@@ -890,7 +890,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         loading: false,
                     });
                 } catch (e) {
-                    throw new Error(e)
+                   //showToast(e.toString())
                 }
 
             }
