@@ -11,6 +11,6 @@ export default function PageMonitoringMain() {
             </Card>
         );
     } catch (e) {
-        showToast(e.toString())
+        //showToast(e.toString())
     }
 }
