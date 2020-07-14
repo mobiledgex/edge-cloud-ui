@@ -102,5 +102,13 @@ export const style = [
             'transition-property': 'background-color, line-color, target-arrow-color',
             'transition-duration': '0.5s'
         }
-    }
+    },
+    {
+        "selector": "node[points]",
+        "style": {
+          "shape-polygon-points": "data(points)",
+          "label": "polygon\n(custom points)",
+          "text-wrap": "wrap"
+        }
+      }
 ]

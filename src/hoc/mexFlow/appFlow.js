@@ -1,9 +1,16 @@
 import * as constant from '../../constant'
+import {SHAPE_ROUND_RECTANGLE, SHAPE_ELLIPSE} from './flowConstant'
 import { fields } from '../../services/model/format'
 import * as svgIcons from './svgicons'
-export const SHAPE_ROUND_RECTANGLE = 'round-rectangle'
-export const SHAPE_ELLIPSE = 'ellipse'
 const flowColor = 'white';
+
+export const edgeFlowList = [
+    { id: [1, 3], active: true },
+    { id: [2, 4], active: false },
+    { id: [5], active: false },
+    { id: [6], active: false },
+    { id: [7], active: false },
+    { id: [8], active: false }]
 
 export const defaultFlow = () => (
     {

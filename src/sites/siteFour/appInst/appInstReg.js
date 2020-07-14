@@ -20,7 +20,7 @@ import { createAppInst, updateAppInst } from '../../../services/model/appInstanc
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import {appInstTutor} from "../../../tutorial";
 
-import * as clusterFlow from '../../../hoc/mexFlow/clusterElements'
+import * as appFlow from '../../../hoc/mexFlow/appFlow'
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const appInstSteps = appInstTutor();
@@ -225,10 +225,10 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                 })
-                flowDataList.push(clusterFlow.ipAccessFlowApp(app))
-                flowDataList.push(clusterFlow.deploymentTypeFlow(app, constant.APP))
+                flowDataList.push(appFlow.ipAccessFlowApp(app))
+                flowDataList.push(appFlow.deploymentTypeFlow(app, constant.APP))
                 if (app[fields.accessPorts]) {
-                    flowDataList.push(clusterFlow.portFlow(app[fields.accessPorts].includes('tls') ? 1 : 0))
+                    flowDataList.push(appFlow.portFlow(app[fields.accessPorts].includes('tls') ? 1 : 0))
                 }
                 break;
             }
@@ -401,7 +401,7 @@ class ClusterInstReg extends React.Component {
         else if (form.field === fields.ipAccess) {
             this.ipAccessValueChange(form, forms, isInit, data)
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(clusterFlow.clusterFlow(finalData))
+            flowDataList.push(appFlow.clusterFlow(finalData))
         }
         if (flowDataList.length > 0) {
             if (isInit) {
@@ -679,7 +679,7 @@ class ClusterInstReg extends React.Component {
                         </div>
                         {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowDataList}/>
+                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow}/>
                             </Suspense>
                         </div> : null}
                     </div>
