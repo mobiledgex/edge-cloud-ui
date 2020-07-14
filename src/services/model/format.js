@@ -105,6 +105,7 @@ export const fields = {
     caCertdata:'caCertdata',
     clusterdeveloper:'clusterdeveloper',
     containerVersion:'containerVersion',
+    vmImageVersion:'vmImageVersion',
     configs:'configs',
     config:'config',
     kind:'kind',
@@ -137,7 +138,8 @@ export const fields = {
     triggerTime: 'triggerTime',
     minActiveInstances:'minActiveInstances',
     maxInstances:'maxInstances',
-    fields:'fields'
+    fields:'fields',
+    envVars:'envVars'
 }
 
 export const getUserRole = () => {

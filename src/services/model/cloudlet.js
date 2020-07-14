@@ -33,6 +33,12 @@ export const getKey = (data, isCreate) => {
         if (data[fields.containerVersion]) {
             cloudlet.container_version = data[fields.containerVersion]
         }
+        if (data[fields.vmImageVersion]) {
+            cloudlet.vm_image_version = data[fields.vmImageVersion]
+        }
+        if (data[fields.envVars]) {
+            cloudlet.env_var = data[fields.envVars]
+        }
         if (data[fields.fields]) {
             cloudlet.fields = data[fields.fields]
         }
@@ -157,7 +163,9 @@ export const keys = () => ([
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
+    { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
+    { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
     { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name'},
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name'},

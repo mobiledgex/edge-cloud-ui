@@ -2,7 +2,7 @@ import React, {Suspense} from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA , formattedData} from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA , ICON_BUTTON, formattedData} from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
@@ -108,7 +108,7 @@ class CloudletReg extends React.Component {
         }
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.platformType) {
             this.platformTypeValueChange(form, forms, isInit)
@@ -118,13 +118,13 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === fields.infraApiAccess) {
             this.infraAPIAccessChange(form, forms, isInit)
-            let data = formattedData(forms)
-            flowDataList.push(cloudletFLow.privateFlow(data))
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(cloudletFLow.privateFlow(finalData))
         }
 
         if (flowDataList.length > 0) {
             if (isInit) {
-                //this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+                this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
             }
             else {
                 this.setState({ flowDataList: flowDataList, activeIndex: 1 })
@@ -176,8 +176,9 @@ class CloudletReg extends React.Component {
     }
 
     onCreate = async (data) => {
-        let forms = this.state.forms
         if (data) {
+            let forms = this.state.forms
+            let envVars = undefined
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
@@ -185,14 +186,20 @@ class CloudletReg extends React.Component {
                     let multiFormData = data[uuid]
                     if (multiFormData) {
                         if (form.field === fields.cloudletLocation) {
-                            multiFormData.timestamp = {}
                             multiFormData.latitude = parseInt(multiFormData.latitude)
                             multiFormData.longitude = parseInt(multiFormData.longitude)
                             data[fields.cloudletLocation] = multiFormData
                         }
+                        else if (multiFormData[fields.key] && multiFormData[fields.value]) {
+                            envVars = envVars ? envVars : {}
+                            envVars[multiFormData[fields.key]] = multiFormData[fields.value]
+                        }
                     }
                     data[uuid] = undefined
                 }
+            }
+            if (envVars) {
+                data[fields.envVars] = envVars
             }
             if (this.props.isUpdate) {
                 let updateFieldList = updateFields(this, forms, data, this.props.data)
@@ -277,7 +284,6 @@ class CloudletReg extends React.Component {
             this.setState({
                 stepsArray: []
             })
-            this.props.onClose(true)
         }
     }
 
@@ -385,7 +391,7 @@ class CloudletReg extends React.Component {
                             form.options = [constant.IP_SUPPORT_DYNAMIC];
                             break;
                         case fields.platformType:
-                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK];
+                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VSPHERE];
                             break;
                         case fields.infraApiAccess:
                             form.options = this.infraApiAccessList;
@@ -399,12 +405,33 @@ class CloudletReg extends React.Component {
         }
     }
 
-    loadDefaultData = async (data) => {
+    loadDefaultData = async (forms, data) => {
         if (data) {
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
             this.setState({ mapData: [data] })
+
+            let multiFormCount = 0
+            if (data[fields.envVars]) {
+                let envVarsArray = data[fields.envVars]
+                Object.keys(envVarsArray).map(item=>{
+                    let envForms = this.envForm()
+                    let key = item
+                    let value = envVarsArray[item]
+                    for (let j = 0; j < envForms.length; j++) {
+                        let envForm = envForms[j]
+                        if (envForm.field === fields.key) {
+                            envForm.value = key
+                        }
+                        else if (envForm.field === fields.value) {
+                            envForm.value = value
+                        }
+                    }
+                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
+                    multiFormCount += 1
+                })
+            }
         }
     }
 
@@ -419,6 +446,35 @@ class CloudletReg extends React.Component {
         ]
     }
 
+    /*Multi Form*/
+    envForm = () => ([
+        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 6, visible: true },
+        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 6, visible: true },
+        this.isUpdate ? {} :
+            { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
+    ])
+
+    getEnvForm = (form) => {
+        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.envForm(), width: 3, visible: true })
+    }
+    
+    removeMultiForm = (e, form) => {
+        if (form.parent) {
+            let updateForms = Object.assign([], this.state.forms)
+            updateForms.splice(form.parent.id, 1);
+            this.setState({
+                forms: updateForms
+            })
+        }
+    }
+
+    addMultiForm = (e, form) => {
+        let parent = form.parent;
+        let forms = this.state.forms;
+        forms.splice(parent.id + 1, 0, form.multiForm());
+        this.setState({ forms: forms })
+    }
+
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet`, formType: 'Header', visible: true },
@@ -430,12 +486,14 @@ class CloudletReg extends React.Component {
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version' },
+            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
             { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network' },
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
-            { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' }
+            { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
+            { field: fields.envVars, label: 'Environment Variable', formType: 'Header', forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' }   
         ]
     }
 
@@ -449,7 +507,7 @@ class CloudletReg extends React.Component {
                 }
                 else {
                     form.value = data[form.field]
-                    this.checkForms(form, forms, true)
+                    this.checkForms(form, forms, true, data)
                 }
             }
             //Todo if more such functions required must be moved to mexforms
@@ -463,6 +521,7 @@ class CloudletReg extends React.Component {
     }
 
     getFormData = async (data) => {
+        let forms = this.formKeys()
         if (data) {
             if (this.props.isManifest) {
                 this.setState({ showCloudletManifest: true })
@@ -473,7 +532,7 @@ class CloudletReg extends React.Component {
                 }
             }
             else {
-                await this.loadDefaultData(data)
+                await this.loadDefaultData(forms, data)
             }
         }
         else {
@@ -486,7 +545,6 @@ class CloudletReg extends React.Component {
                 }
             }
         }
-        let forms = this.formKeys()
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
@@ -497,6 +555,13 @@ class CloudletReg extends React.Component {
         this.setState({
             forms: forms
         })
+
+        if (this.isUpdate) {
+            this.setState({
+                showGraph: true,
+                flowDataList: this.updateFlowDataList
+            })
+        }
 
     }
 
