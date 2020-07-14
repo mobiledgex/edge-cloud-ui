@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA , formattedData} from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
@@ -24,6 +24,9 @@ import { downloadData } from '../../../utils/file_util'
 import GetAppIcon from '@material-ui/icons/GetApp';
 import CloseIcon from '@material-ui/icons/Close';
 
+import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
+const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
+
 const cloudletSteps = CloudletTutor();
 
 class CloudletReg extends React.Component {
@@ -37,6 +40,9 @@ class CloudletReg extends React.Component {
             cloudletManifest: undefined,
             showCloudletManifest: false,
             showManifest: false,
+            activeIndex: 0,
+            flowDataList: [],
+            flowInstance: undefined,
             mapCenter: [53,13]
         }
         this.isUpdate = this.props.isUpdate
@@ -48,6 +54,7 @@ class CloudletReg extends React.Component {
         this.operatorList = [];
         this.cloudletData = undefined;
         this.canCloseStepper = true;
+        this.updateFlowDataList = []
     }
 
     platformTypeValueChange = (currentForm, forms, isInit) => {
@@ -102,6 +109,7 @@ class CloudletReg extends React.Component {
     }
 
     checkForms = (form, forms, isInit) => {
+        let flowDataList = []
         if (form.field === fields.platformType) {
             this.platformTypeValueChange(form, forms, isInit)
         }
@@ -110,6 +118,17 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === fields.infraApiAccess) {
             this.infraAPIAccessChange(form, forms, isInit)
+            let data = formattedData(forms)
+            flowDataList.push(cloudletFLow.privateFlow(data))
+        }
+
+        if (flowDataList.length > 0) {
+            if (isInit) {
+                //this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
+            }
+            else {
+                this.setState({ flowDataList: flowDataList, activeIndex: 1 })
+            }
         }
     }
 
@@ -217,6 +236,20 @@ class CloudletReg extends React.Component {
     /**
      * Tab block
      */
+
+    saveFlowInstance = (data) => {
+        this.setState({ flowInstance: data })
+    }
+
+    getGraph = () =>
+    (
+        <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
+            <Suspense fallback={<div></div>}>
+                <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} flowObject={cloudletFLow} />
+            </Suspense>
+        </div>
+    )
+
     getMap = () =>
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
@@ -225,7 +258,8 @@ class CloudletReg extends React.Component {
         )
 
     getPanes = () => ([
-        { label: 'Cloudlet Location', tab: this.getMap() }
+        { label: 'Cloudlet Location', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
+        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
     ])
     /**
      * Tab block
@@ -312,7 +346,7 @@ class CloudletReg extends React.Component {
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                         <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: 'transparent', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
-                            <MexTab form={{ panes: this.getPanes() }} />
+                            <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
                         </div>
                     </div>
                 }
