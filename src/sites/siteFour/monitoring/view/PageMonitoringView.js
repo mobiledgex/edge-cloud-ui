@@ -890,7 +890,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         loading: false,
                     });
                 } catch (e) {
-                   //showToast(e.toString())
+                    throw new Error("loadInitData error")
                 }
 
             }

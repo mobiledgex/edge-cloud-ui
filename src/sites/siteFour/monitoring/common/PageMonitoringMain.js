@@ -1,7 +1,6 @@
 import React from "react";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Card} from "@material-ui/core";
-import {showToast} from "../service/PageMonitoringCommonService";
 
 export default function PageMonitoringMain() {
     try {
