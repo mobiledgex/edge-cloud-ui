@@ -1,7 +1,6 @@
 import React from 'react';
 import cytoscape from 'cytoscape';
 import { style } from './style';
-import { defaultFlow } from './clusterElements'
 
 export const FLOW_ADD = 'add'
 export const FLOW_REMOVE = 'remove'
@@ -17,21 +16,14 @@ const cyStyle = {
 class MexFlow extends React.Component {
   constructor(props) {
     super(props);
-    this.renderCytoscapeElement = this.renderCytoscapeElement.bind(this);
+    this.createFlowInstance = this.createFlowInstance.bind(this);
     this.state = {
       flowDataList: []
     }
     this.flowIdList = []
-    this.edgeFlowList = [
-      { id: [1, 3], active: true },
-      { id: [2, 4], active: false },
-      { id: [5], active: false },
-      { id: [6], active: false },
-      { id: [7], active: false },
-      { id: [8], active: false }]
   }
 
-  renderCytoscapeElement() {
+  createFlowInstance() {
     this.cy = cytoscape(
       {
         container: document.getElementById('cy'),
@@ -47,7 +39,7 @@ class MexFlow extends React.Component {
       });
     this.cy.userZoomingEnabled(false)
     this.cy.zoom({
-      level: (window.screen.width)/2400,
+      level: (window.screen.width) / 2400,
       renderedPosition: { x: 50, y: 50 }
     });
     this.cy.autolock(true)
@@ -111,11 +103,12 @@ class MexFlow extends React.Component {
     }
   }
 
-  highlightNextEle = () => {
+  highlightNetworkFlow = () => {
     if (!this.cy.destroyed()) {
       if (this.cy.$('#99901').length > 0) {
-        for (let i = 0; i < this.edgeFlowList.length; i++) {
-          let flow = this.edgeFlowList[i]
+        let edgeFlowList = this.props.flowObject.edgeFlowList
+        for (let i = 0; i < edgeFlowList.length; i++) {
+          let flow = edgeFlowList[i]
           if (flow.active) {
             let count = 0
             flow.active = false;
@@ -132,21 +125,22 @@ class MexFlow extends React.Component {
                 })
               }
             })
-            this.edgeFlowList[this.edgeFlowList.length === i + 1 ? 0 : i + 1].active = true
+            edgeFlowList[edgeFlowList.length === i + 1 ? 0 : i + 1].active = true
             if (count > 0) {
               break;
             }
           }
         }
       }
-      setTimeout(this.highlightNextEle, 1000);
+      setTimeout(this.highlightNetworkFlow, 1000);
     }
   };
 
   componentDidMount() {
-    this.renderCytoscapeElement();
+    this.createFlowInstance();
     if (this.props.flowInstance) {
       this.props.flowInstance.map(element => {
+        
         this.cy.add({
           group: element.type,
           data: element.data,
@@ -155,14 +149,14 @@ class MexFlow extends React.Component {
       })
     }
     else {
-      this.addFlowdata(defaultFlow())
+      this.addFlowdata(this.props.flowObject.defaultFlow())
       let flowDataList = this.props.flowDataList
       if (flowDataList && flowDataList.length > 0) {
         flowDataList.map(flowData => {
           this.addFlowdata(flowData)
         })
       }
-      this.highlightNextEle()
+      this.highlightNetworkFlow()
     }
   }
 
