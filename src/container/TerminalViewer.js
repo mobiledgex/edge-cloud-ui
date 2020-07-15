@@ -285,10 +285,10 @@ class MexTerminal extends Component {
 
     getForms = (containerIds) => (
         [
-            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions([RUN_COMMAND, SHOW_LOGS]), value: RUN_COMMAND },
+            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions([RUN_COMMAND, SHOW_LOGS]), value: this.request },
             { field: 'Container', label: 'Container', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(containerIds), value: containerIds[0] },
             { field: 'Command', label: 'Command', formType: 'Input', rules: { required: true }, visible: this.request === RUN_COMMAND ? true : false, labelStyle: style.label, style: style.cmdLine },
-            { uuid: 'ShowLogs', field: 'LogOptions', formType: 'MultiForm', visible: this.request === 'Show Logs' ? true : false, forms: this.getLogOptions(), width: 4 },
+            { uuid: 'ShowLogs', field: 'LogOptions', formType: 'MultiForm', visible: this.request === SHOW_LOGS ? true : false, forms: this.getLogOptions(), width: 4 },
             { label: 'Connect', formType: 'Button', style: style.button, onClick: this.onConnect, validate: true }
         ])
 
