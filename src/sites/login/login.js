@@ -261,8 +261,8 @@ class Login extends Component {
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Welcome to the Edge! Thank you for signing up.
                             To login to your account, you must first validate your email address.
-                            An email has been sent to  ${email} with a link to authenticate your account. 
-                            All the new accounts are locked by default. Please contact support@mobiledgex.com to have us unlock it`
+                            A verification email has been sent to ${email} to verify your account. 
+                            All the new accounts are locked by default. Please contact support@mobiledgex.com to unlock it`
             this.setState({ successCreate: true, loginMode: 'signuped', successMsg: 'Account created', resultMsg: msgTxt })
         }
 
@@ -383,7 +383,7 @@ class Login extends Component {
                 errorMessage = mcRequest.error.response.data.message
                 if(errorMessage === 'Account is locked, please contact MobiledgeX support')
                 {
-                    errorMessage = 'Your account is locked, please contact support@mobiledgex.com to have us unlock it'
+                    errorMessage = 'Your account is locked, please contact support@mobiledgex.com to unlock it'
                 }
             }
             this.props.handleAlertInfo('error', errorMessage)
