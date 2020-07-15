@@ -179,7 +179,7 @@ class AppReg extends React.Component {
                 `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}` :
                 deployment === constant.DEPLOYMENT_TYPE_HELM ?
                     `https://chart.registry.com/charts:${organizationName}/${appName}` :
-                    `docker.mobiledgex.net/${organizationName}/images/${appName}:${version}`
+                    `docker.mobiledgex.net/${organizationName.toLowerCase()}/images/${appName.toLowerCase()}:${version.toLowerCase()}`
         }
     }
 
