@@ -46,6 +46,7 @@ export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
 export const ADMIN_MANAGER = 'AdminManager'
 export const OPERATOR_MANAGER = 'OperatorManager'
 export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
+export const DEVELOPER_VIEWER = 'DeveloperViewer'
 
 export const CONFIG_ENV_VAR = 'Environment Variables'
 export const CONFIG_HELM_CUST = 'Helm Customization'
