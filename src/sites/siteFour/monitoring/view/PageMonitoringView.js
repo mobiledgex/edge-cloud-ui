@@ -892,7 +892,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         loading: false,
                     });
                 } catch (e) {
-                    //throw new Error("loadInitData error")
+                    throw new Error("loadInitData error")
                 }
 
             }
