@@ -55,7 +55,7 @@ export const getKey = (data, isCreate) => {
         app.deployment = data[fields.deployment]
         app.image_type = constant.imageType(data[fields.imageType])
         if (data[fields.imagePath]) {
-            app.image_path = data[fields.imagePath].toLowerCase()
+            app.image_path = data[fields.imagePath]
         }
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts].toLowerCase()
