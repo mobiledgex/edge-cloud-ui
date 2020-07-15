@@ -22,6 +22,7 @@ import { appTutor } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
+import { Grid } from 'semantic-ui-react';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 
@@ -842,18 +843,18 @@ class AppReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="" >
-                    <div style={{ display: 'flex' }}>
-                        <div style={{ width: this.state.showGraph ? '52%' : '100vw', overflow: 'auto', height:'95vh' }}>
+                <Grid style={{ display: 'flex' }}>
+                    <Grid.Row>
+                        <Grid.Column width={this.state.showGraph ? 8: 16} style={{ overflow: 'auto', height: '90vh' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </div>
-                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
+                        </Grid.Column>
+                        {this.state.showGraph ? <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow}/>
+                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                             </Suspense>
-                        </div> : null}
-                    </div>
-                </div>
+                        </Grid.Column> : null}
+                    </Grid.Row>
+                </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
         )
