@@ -124,6 +124,9 @@ export const clusterKey = (data, isCreate) => {
         if (data[fields.autoScalePolicyName]) {
             clusterinst.auto_scale_policy = data[fields.autoScalePolicyName]
         }
+        if (data[fields.fields]) {
+            clusterinst.fields = data[fields.fields]
+        }
     }
     return ({
         region: data[fields.region],
@@ -144,7 +147,6 @@ export const createClusterInst = (self, data, callback) => {
 
 export const updateClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
-    requestData.clusterinst.fields = ['14']
     let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }

@@ -8,10 +8,11 @@ import AutoProvPolicyReg from './autoProvPolicyReg'
 //model
 import { fields } from '../../../../services/model/format';
 import * as constant from '../../../../constant';
-import { keys, showAutoProvPolicies, deleteAutoProvPolicy } from '../../../../services/model/autoProvisioningPolicy';
+import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/model/autoProvisioningPolicy';
+import { showApps } from '../../../../services/model/app';
 //list
 import MexListView from '../../../../container/MexListView';
-import {PolicyTutor} from "../../../../tutorial";
+import { PolicyTutor } from "../../../../tutorial";
 
 
 const policySteps = PolicyTutor();
@@ -24,53 +25,61 @@ class AutoProvPolicy extends React.Component {
         }
     }
 
-    onRegClose = (isEdited)=>
-    {
+    onRegClose = (isEdited) => {
         this.setState({ currentView: null })
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> });
+        this.setState({ currentView: <AutoProvPolicyReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
     onAddCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={constant.ADD_CLOUDLET} onClose={this.onRegClose}/> });
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={constant.ADD_CLOUDLET} onClose={this.onRegClose} /> });
     }
 
     onDeleteCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={constant.DELETE_CLOUDLET} onClose={this.onRegClose}/> });
+        this.setState({ currentView: <AutoProvPolicyReg data={data} action={constant.DELETE_CLOUDLET} onClose={this.onRegClose} /> });
     }
 
-    onDeleteCloudletVisible = (data) =>
-    {
+    onDeleteCloudletVisible = (data) => {
         return data[fields.cloudletCount] > 0
+    }
+
+    onDelete = (data, success, errorInfo)=>
+    {
+        if(!success, errorInfo)
+        {
+            if (errorInfo.message === 'Policy in use by App') {
+                this.props.handleAlertInfo('error', `Policy in use by App${data[fields.apps].length > 1 ? 's' : ''} ${data[fields.apps]}`)
+            }
+        }
     }
 
     actionMenu = () => {
         return [
-        { label: 'Update', onClick: this.onAdd },
-        { label: 'Add Cloudlet', onClick: this.onAddCloudlet },
-        { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet },
-        { label: 'Delete', onClick: deleteAutoProvPolicy }]
+            { label: 'Update', onClick: this.onAdd },
+            { label: 'Add Cloudlet', onClick: this.onAddCloudlet },
+            { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet },
+            { label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete }]
     }
 
     requestInfo = () => {
         return ({
             headerLabel: 'Auto Provisioning Policy',
             nameField: fields.autoPolicyName,
-            requestType: [showAutoProvPolicies],
+            requestType: [showAutoProvPolicies, showApps],
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
             keys: keys,
             onAdd: this.onAdd,
-            viewMode : policySteps.stepsPolicy
+            viewMode: policySteps.stepsPolicy
         })
     }
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
         )
     }
 };

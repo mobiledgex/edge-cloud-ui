@@ -194,6 +194,7 @@ export const sendSyncRequest = async (self, request) => {
         if (error.response && responseStatus(self, error.response.status)) {
             responseError(self, request, error)
         }
+        return { request: request, error: error }
     }
 }
 
