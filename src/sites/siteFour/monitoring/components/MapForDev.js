@@ -237,7 +237,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     })
                 }
             } catch (e) {
-                throw new Error(e)
+                throw new Error("mapForDev componentWillReceiveProps")
             }
 
         }
@@ -275,7 +275,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                 return locationGroupedCloudletList;
             } catch (e) {
-                throw new Error(e)
+                throw new Error("mapForDev makeLocationGroupedCloudletList")
             }
         }
 
@@ -309,7 +309,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 })
                 return newCloudLetLocationList;
             } catch (e) {
-                throw new Error(e)
+                throw new Error("mapForDev makeNewCloudletLocationList")
             }
         }
 
@@ -335,8 +335,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     }
                 })
             } catch (e) {
-                showToast(e.toString())
-                //throw new Error(e)
+                throw new Error("mapForDev setCloudletLocation")
             }
         }
 
