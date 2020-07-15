@@ -883,9 +883,7 @@ export function makeMaxTickLimit(pDataLimitCount) {
         tooltipEl.style.left = positionX + tooltip.caretX + 'px'
         tooltipEl.style.top = positionY + tooltip.caretY + 'px'
     }
-
 }*/
-
 
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef) => {
     try {
