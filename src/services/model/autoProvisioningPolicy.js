@@ -1,15 +1,15 @@
 import { TYPE_JSON } from '../../constant'
 import * as formatter from './format'
 import * as serverData from './serverData'
-import {getCloudletKey} from './cloudlet'
-import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, UPDATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET } from './endPointTypes'
+import { getCloudletKey } from './cloudlet'
+import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, UPDATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET, SHOW_APP } from './endPointTypes'
 
 let fields = formatter.fields
 
 export const keys = [
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
-  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter:true },
-  { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter:true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
+  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true },
+  { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter: true },
   { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Request Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.minActiveInstances, serverField: 'min_active_instances', label: 'Min Active Instances', sortable: true, visible: false, dataType: 'Integer' },
@@ -24,8 +24,7 @@ export const keys = [
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ]
 
-const getKey = (data)=>
-{
+const getKey = (data) => {
   return { organization: data[fields.organizationName], name: data[fields.autoPolicyName] }
 }
 
@@ -41,8 +40,7 @@ const getAutoProvCloudletKey = (data, isCreate) => {
   })
 }
 
-const getCloudletList = (data) =>
-{
+const getCloudletList = (data) => {
   let cloudlets = data[fields.cloudlets]
   let cloudletList = undefined
   if (cloudlets && cloudlets.length > 0) {
@@ -95,22 +93,53 @@ export const deleteAutoProvPolicy = (data) => {
 
 export const createAutoProvPolicy = (data) => {
   let requestData = getAutoProvKey(data, true)
-  return { method: CREATE_AUTO_PROV_POLICY, data: requestData}
+  return { method: CREATE_AUTO_PROV_POLICY, data: requestData }
 }
 
 export const updateAutoProvPolicy = (data) => {
   let requestData = getAutoProvKey(data, true)
-  return { method: UPDATE_AUTO_PROV_POLICY, data: requestData}
+  return { method: UPDATE_AUTO_PROV_POLICY, data: requestData }
 }
 
 export const addAutoProvCloudletKey = (data) => {
   let requestData = getAutoProvCloudletKey(data, true)
-  return { method: ADD_AUTO_PROV_POLICY_CLOUDLET, data: requestData}
+  return { method: ADD_AUTO_PROV_POLICY_CLOUDLET, data: requestData }
 }
 
 export const deleteAutoProvCloudletKey = (data) => {
   let requestData = getAutoProvCloudletKey(data, true)
-  return { method: REMOVE_AUTO_PROV_POLICY_CLOUDLET, data: requestData}
+  return { method: REMOVE_AUTO_PROV_POLICY_CLOUDLET, data: requestData }
+}
+
+export const multiDataRequest = (keys, mcRequestList) => {
+  let autoProvList = [];
+  let appList = [];
+  for (let i = 0; i < mcRequestList.length; i++) {
+    let mcRequest = mcRequestList[i];
+    let request = mcRequest.request;
+    if (request.method === SHOW_AUTO_PROV_POLICY) {
+      autoProvList = mcRequest.response.data
+    }
+    else if (request.method === SHOW_APP) {
+      appList = mcRequest.response.data
+    }
+  }
+  if (autoProvList && autoProvList.length > 0) {
+    for (let i = 0; i < autoProvList.length; i++) {
+      let autoProv = autoProvList[i]
+      let apps = []
+      for (let j = 0; j < appList.length; j++) {
+        let app = appList[j]
+        if (autoProv[fields.autoPolicyName] === app[fields.autoPolicyName]) {
+          apps.push(app[fields.appName])
+        }
+      }
+      if (apps.length > 0) {
+        autoProv[fields.apps] = apps
+      }
+    }
+  }
+  return autoProvList;
 }
 
 /** 
