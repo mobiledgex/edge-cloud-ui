@@ -655,7 +655,7 @@ class ClusterInstReg extends React.Component {
             forms: forms
         })
 
-        if (this.isUpdate) {
+        if (this.isUpdate || this.props.isLaunch) {
             this.setState({
                 showGraph: true,
                 flowDataList: this.updateFlowDataList
