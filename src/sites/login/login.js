@@ -383,7 +383,7 @@ class Login extends Component {
                 errorMessage = mcRequest.error.response.data.message
                 if(errorMessage === 'Account is locked, please contact MobiledgeX support')
                 {
-                    errorMessage = 'MobiledgeX locks all new accounts. Please contact support@mobiledgex.com to have us unlock it'
+                    errorMessage = 'Your account is locked, please contact support@mobiledgex.com to have us unlock it'
                 }
             }
             this.props.handleAlertInfo('error', errorMessage)
