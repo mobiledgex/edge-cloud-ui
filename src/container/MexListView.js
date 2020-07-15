@@ -113,7 +113,11 @@ class MexListView extends React.Component {
                     valid = true;
                 }
                 if (action.onFinish) {
-                    action.onFinish(data, valid)
+                    let error = undefined
+                    if (mcRequest.error && mcRequest.error.response && mcRequest.error.response.data) {
+                        error = mcRequest.error.response.data
+                    }
+                    action.onFinish(data, valid, error)
                 }
             }
         }
