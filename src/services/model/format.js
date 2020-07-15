@@ -139,7 +139,8 @@ export const fields = {
     minActiveInstances:'minActiveInstances',
     maxInstances:'maxInstances',
     fields:'fields',
-    envVars:'envVars'
+    envVars:'envVars',
+    apps:'apps'
 }
 
 export const getUserRole = () => {
