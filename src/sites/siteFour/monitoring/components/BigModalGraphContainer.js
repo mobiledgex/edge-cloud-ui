@@ -214,14 +214,18 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
-                            <div>
-                                <Line
-                                    width={window.innerWidth * 0.9}
-                                    ref={(reference) => this.lineChart = reference}
-                                    height={window.innerHeight * 0.8}
-                                    data={this.state.chartDataForRendering}
-                                    options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
-                                />
+                            <div className="chartWrapperForBig">
+                                <div className="chartAreaWrapperForBig">
+                                    <div style={{width: 10000, height: '250px !important'}}>
+                                        <Line
+                                            width={window.innerWidth * 0.9}
+                                            ref={(reference) => this.lineChart = reference}
+                                            height={window.innerHeight * 0.87}
+                                            data={this.state.chartDataForRendering}
+                                            options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             : this.state.graphType === GRID_ITEM_TYPE.BAR || this.state.graphType === GRID_ITEM_TYPE.COLUMN ?
                                 <div style={{height: 'calc(100% - 62px)'}}>

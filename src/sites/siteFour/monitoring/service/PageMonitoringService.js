@@ -818,8 +818,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                 padding: {
                     left: 9,
                     right: 5,
-                    top: 15,
-                    bottom: 0
+                    top: 5,
+                    bottom: 10,
                 }
             },
             legend: {
@@ -881,12 +881,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        //maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
                         //autoSkip: isBig ? false : true,
                         fontSize: 9,
                         fontColor: 'white',
-                        maxRotation: isBig ? 45 : 0,//xAxis text rotation
-                        minRotation: isBig ? 45 : 0,//xAxis text rotation
+                        maxRotation: isBig ? 0 : 0,//xAxis text rotation
+                        minRotation: isBig ? 0 : 0,//xAxis text rotation
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {

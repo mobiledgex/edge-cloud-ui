@@ -1038,3 +1038,42 @@ tr td {
     opacity: 0.9;
     font-size: 15px !important;
 }*/
+
+
+.chartWrapper > canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+/*canvas {
+    height: 190px !important;
+}*/
+.chartWrapper {
+    position: relative;
+    background: transparent;
+}
+
+.chartAreaWrapper {
+    width: 350px;
+    height: 210px;
+    overflow-x: scroll;
+    background: transparent;
+}
+
+.chartWrapperForBig {
+    position: relative;
+    background: transparent;
+}
+
+.chartAreaWrapperForBig {
+    width: 1700px;
+    overflow-x: scroll;
+    background: transparent;
+}
+
+/*.chartjs-render-monitor{
+    height: 190px !important;
+}*/
+
