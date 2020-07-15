@@ -206,7 +206,7 @@ class CloudletReg extends React.Component {
                 if (updateFieldList.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     data[fields.fields] = updateFieldList
-                    updateCloudlet(this, data, this.onCreateResponse, this.props.data)
+                    updateCloudlet(this, data, this.onCreateResponse)
                 }
             }
             else {
