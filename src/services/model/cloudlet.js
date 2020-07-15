@@ -28,7 +28,7 @@ export const getKey = (data, isCreate) => {
             accessvars.CACERT_DATA = data[fields.caCertdata]
         }
         if (data[fields.openRCData] || data[fields.openRCData]) {
-            cloudlet.accessvars = accessvars
+            cloudlet.access_vars = accessvars
         }
         if (data[fields.containerVersion]) {
             cloudlet.container_version = data[fields.containerVersion]
@@ -157,8 +157,8 @@ export const keys = () => ([
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
     { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
-    { field: fields.openRCData, serverField: 'accessvars#OS#OPENRC_DATA', label: 'Open RC Data' },
-    { field: fields.caCertdata, serverField: 'accessvars#OS#CACERT_DATA', label: 'CA Cert Data' },
+    { field: fields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
+    { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },

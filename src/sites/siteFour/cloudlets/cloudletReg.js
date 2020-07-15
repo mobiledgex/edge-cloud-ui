@@ -19,6 +19,7 @@ import { CloudletTutor } from "../../../tutorial";
 import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';
 import { syntaxHighLighter, codeHighLighter } from '../../../hoc/highLighter/highLighter'
 import { downloadData } from '../../../utils/file_util'
+import { Grid } from 'semantic-ui-react';
 
 
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -347,14 +348,16 @@ class CloudletReg extends React.Component {
             <div className="round_panel">
                 {this.state.showCloudletManifest ?
                     this.state.cloudletManifest ? this.cloudletManifestForm() : null :
-                    <div style={{ display: 'flex' }}>
-                        <div style={{ width: '52%', overflow: 'auto', height: '95vh' }}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </div>
-                        <div style={{ width: '45%', margin: 10, borderRadius: 5, backgroundColor: 'transparent', height: 'calc(100% - 90px)', position: 'absolute', right: 0 }}>
-                            <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
-                        </div>
-                    </div>
+                    <Grid style={{ display: 'flex' }}>
+                        <Grid.Row>
+                            <Grid.Column width={8} style={{ overflow: 'auto', height: '90vh' }}>
+                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                            </Grid.Column>
+                            <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent'}}>
+                                <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                 }
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
@@ -482,8 +485,8 @@ class CloudletReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.' },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), tip: 'Organization of the cloudlet site' },
             { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update:true, updateId: ['5', '5.1', '5.2'] },
-            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
-            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of dynamic IPs available for dynamic IP support.' },
+            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, update:true, updateId: ['6'], tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
+            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update:true, updateId: ['8'], tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version' },
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside' },
@@ -502,18 +505,18 @@ class CloudletReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                if (form.forms && form.formType !== 'Header' && form.formType !== 'MultiForm') {
+                if (form.field === fields.envVars && data[fields.envVars] === undefined) {
+                    form.visible = false;
+                }
+                else if (form.forms && form.formType !== 'Header' && form.formType !== 'MultiForm') {
                     this.updateFormData(form.forms, data)
+                }
+                else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
+                    form.visible = false
                 }
                 else {
                     form.value = data[form.field]
                     this.checkForms(form, forms, true, data)
-                }
-            }
-            //Todo if more such functions required must be moved to mexforms
-            if (this.isUpdate) {
-                if (form.field === fields.openRCData || form.field === fields.caCertdata) {
-                    form.visible = false
                 }
             }
         }
