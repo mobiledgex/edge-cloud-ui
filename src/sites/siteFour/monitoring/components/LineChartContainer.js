@@ -63,7 +63,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 this.setChartData(lineChartDataSet, hwType, graphType);
             }
         } catch (e) {
-            showToast(e.toString())
+            //   showToast(e.toString())
         }
     }
 
@@ -150,9 +150,10 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             <div className="chartAreaWrapper">
                                 <div style={{width: 3000}}>
                                     <Line
-                                        height={'200px !important'}
+                                        ref={c => this.lineChart = c}
+                                        height={'190px !important'}
                                         data={this.state.chartDataSet}
-                                        options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
+                                        options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent, undefined, this.lineChart)}
                                     />
                                 </div>
                             </div>

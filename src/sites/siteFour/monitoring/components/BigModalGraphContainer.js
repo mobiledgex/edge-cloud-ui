@@ -38,6 +38,7 @@ type Props = {
     isLoading: boolean,
     toggleLoading: Function,
     intervalLoading: boolean,
+    lineChartDataSet: any,
 
 };
 type State = {
@@ -48,6 +49,7 @@ type State = {
     popupGraphHWType: string,
     appInstanceListGroupByCloudlet: any,
     redraw: boolean,
+    usageListLength: number,
 
 };
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -62,6 +64,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 popupGraphHWType: '',
                 markerList: [],
                 redraw: false,
+                usageListLength: 0,
             }
         }
 
@@ -76,7 +79,13 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                     popupGraphHWType: nextProps.popupGraphHWType,
                     appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
                 });
+            }
 
+            if (this.props.lineChartDataSet !== nextProps.lineChartDataSet) {
+                let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length;
+                this.setState({
+                    usageListLength: usageListLength,
+                })
             }
 
             if (this.props.isShowBigGraph) {
@@ -216,7 +225,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div className="chartWrapperForBig">
                                 <div className="chartAreaWrapperForBig">
-                                    <div style={{width: 10000, height: '250px !important'}}>
+                                    <div style={{width: 240 * this.state.usageListLength, height: '250px !important'}}>
                                         <Line
                                             width={window.innerWidth * 0.9}
                                             ref={(reference) => this.lineChart = reference}

@@ -1056,9 +1056,10 @@ tr td {
 }
 
 .chartAreaWrapper {
-    width: 350px;
+    width: 400px;
     height: 210px;
     overflow-x: scroll;
+    overflow-y: hidden;
     background: transparent;
 }
 
@@ -1077,3 +1078,13 @@ tr td {
     height: 190px !important;
 }*/
 
+#chartjs-tooltip {
+    line-height: normal;
+    opacity: 1;
+    padding: .3em;
+    pointer-events: none;
+    position: fixed;
+    text-align: center;
+    transform: translate(-50%, 0);
+    transition: all .1s ease;
+}

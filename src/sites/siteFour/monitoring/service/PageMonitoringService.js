@@ -800,12 +800,115 @@ export function makeMaxTickLimit(pDataLimitCount) {
     }
 }
 
+/*const customTooltips = tooltip => {
+    // tooltip will be false if tooltip is not visible or should be hidden
+    if (!tooltip) {
+        return
+    }
 
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
+    // Otherwise, tooltip will be an object with all tooltip properties like:
+    tooltip.backgroundColor = 'black'
+    tooltip.mode = 'index'
+    tooltip.intersect = true
+    tooltip.yPadding = 10
+    tooltip.xPadding = 10
+    tooltip.caretSize = 4
+    tooltip.bodyFontColor = 'white'
+    tooltip.borderColor = 'green'
+    tooltip.borderWidth = 1
+    tooltip.cornerRadius = 0
+    tooltip.displayColors = false
+    //tooltip.opacity = 0.5;
+
+    // Tooltip Element
+    let tooltipEl = document.getElementById('chartjs-tooltip')
+
+    if (!tooltipEl) {
+        tooltipEl = document.createElement('div')
+        tooltipEl.id = 'chartjs-tooltip'
+        tooltipEl.innerHTML = '<table style="background: black"></table>'
+        document.body.appendChild(tooltipEl)
+    }
+
+    // Hide if no tooltip
+    if (tooltip.opacity === 0) {
+        tooltipEl.style.opacity = 0
+        return
+    }
+    // Set caret Position
+    tooltipEl.classList.remove('above', 'below', 'no-transform')
+    if (tooltip.yAlign) {
+        tooltipEl.classList.add(tooltip.yAlign)
+    } else {
+        tooltipEl.classList.add('no-transform')
+    }
+    const getBody = bodyItem => (bodyItem.lines)
+
+    // Set custom tooltip
+    if (tooltip.body) {
+        const titleLines = tooltip.title || []
+        const bodyLines = tooltip.body.map(getBody)
+        const tooltipData = bodyLines[0][0]
+
+        // Custom tooltip requires an id for proper positioning
+        if (!tooltipData.id) {
+            return
+        }
+
+        // Create inner html
+        let innerHtml = '<thead>'
+        const picture = tooltipData.pictureUrl
+        const tooltipTitle = `<td class="tooltip-title">${tooltipData.label ? tooltipData.label : titleLines[0]}</td>`
+        const tooltipValue = `<td class="tooltip-value">${tooltipData.value}${tooltipData.percent ? '%' : ''}</td>`
+        if (picture) {
+            innerHtml += `<tr><th colspan="2"><img class='tooltip-img img-responsive' src="${picture}" /></th></tr>`
+            innerHtml += '</thead><tbody><tr>'
+            innerHtml += tooltipValue + tooltipTitle
+        } else {
+            innerHtml += tooltipTitle
+            innerHtml += '</thead><tbody><tr>'
+            innerHtml += tooltipValue
+        }
+        innerHtml += '</tr></tbody>'
+
+        // Set inner html to tooltip
+        const tableRoot = tooltipEl.querySelector('table')
+        tableRoot.innerHTML = innerHtml
+        const chartElement = document.getElementById(tooltipData.id).getBoundingClientRect()
+        // Calculate position
+        const positionY = chartElement.top + tooltip.yPadding
+        const positionX = chartElement.left + tooltip.xPadding
+        // Display, position, and set styles for font
+        tooltipEl.style.opacity = 1
+        tooltipEl.style.left = positionX + tooltip.caretX + 'px'
+        tooltipEl.style.top = positionY + tooltip.caretY + 'px'
+    }
+
+}*/
 
 
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef) => {
     try {
         let options = {
+            /*tooltips: {
+                //custom: customTooltips,
+                mode: 'label',
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                       try{
+                           let labelOne = data.datasets[tooltipItem.index].label
+                           let yLabel = tooltipItem.yLabel
+                           return labelOne + ': ' + yLabel.toFixed(1);
+                       }catch (e) {
+
+                       }
+                    },
+                    labelTextColor: function (tooltipItem, chart) {
+                        return '#fff';
+                    }
+                },
+
+            },*/
             stacked: true,
             animation: {
                 duration: 500
@@ -815,12 +918,17 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             datasetStrokeWidth: 1,
             pointDotStrokeWidth: 2,
             layout: {
-                padding: {
+                padding: isBig ? {
                     left: 9,
                     right: 5,
                     top: 5,
-                    bottom: 10,
-                }
+                    bottom: 30,
+                } : {
+                    left: 9,
+                    right: 5,
+                    top: 5,
+                    bottom: 5,
+                },
             },
             legend: {
                 display: isBig ? true : false,
@@ -857,7 +965,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     type: 'linear',
                     position: 'left',
                     ticks: {
-                        fontColor: "#CCC", // this here
+                        fontSize: isBig ? 15 : 9,
+                        fontColor: 'white',
                         callback(value, index, label) {
                             return covertYAxisUnits(value, hardwareType, _this,)
                         },
@@ -869,7 +978,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     scaleShowLabels: false,
                     ticks: {
                         max: 1,
-                        min: 0
+                        min: 0,
                     }
 
                 }],
@@ -883,7 +992,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     ticks: {
                         //maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
                         //autoSkip: isBig ? false : true,
-                        fontSize: 9,
+                        fontSize: isBig ? 15 : 9,
                         fontColor: 'white',
                         maxRotation: isBig ? 0 : 0,//xAxis text rotation
                         minRotation: isBig ? 0 : 0,//xAxis text rotation
