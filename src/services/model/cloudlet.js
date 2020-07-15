@@ -28,7 +28,7 @@ export const getKey = (data, isCreate) => {
             accessvars.CACERT_DATA = data[fields.caCertdata]
         }
         if (data[fields.openRCData] || data[fields.openRCData]) {
-            cloudlet.accessvars = accessvars
+            cloudlet.access_vars = accessvars
         }
         if (data[fields.containerVersion]) {
             cloudlet.container_version = data[fields.containerVersion]
