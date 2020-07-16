@@ -1,6 +1,6 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
-import { SHOW_PRIVACY_POLICY, UPDATE_PRIVACY_POLICY, CREATE_PRIVACY_POLICY, DELETE_PRIVACY_POLICY } from './endPointTypes'
+import { SHOW_PRIVACY_POLICY, UPDATE_PRIVACY_POLICY, CREATE_PRIVACY_POLICY, DELETE_PRIVACY_POLICY, SHOW_APP } from './endPointTypes'
 export const fields = formatter.fields;
 
 export const outboundSecurityRulesKeys = [
@@ -65,6 +65,37 @@ export const createPrivacyPolicy = (data) => {
 export const deletePrivacyPolicy = (data) => {
   let requestData = getKey(data)
   return { method: DELETE_PRIVACY_POLICY, data: requestData, success: `Privacy Policy ${data[fields.privacyPolicyName]} deleted successfully` }
+}
+
+export const multiDataRequest = (keys, mcRequestList) => {
+  let privacyPolicyList = [];
+  let appList = [];
+  for (let i = 0; i < mcRequestList.length; i++) {
+    let mcRequest = mcRequestList[i];
+    let request = mcRequest.request;
+    if (request.method === SHOW_PRIVACY_POLICY) {
+      privacyPolicyList = mcRequest.response.data
+    }
+    else if (request.method === SHOW_APP) {
+      appList = mcRequest.response.data
+    }
+  }
+  if (privacyPolicyList && privacyPolicyList.length > 0) {
+    for (let i = 0; i < privacyPolicyList.length; i++) {
+      let privacyPolicy = privacyPolicyList[i]
+      let apps = []
+      for (let j = 0; j < appList.length; j++) {
+        let app = appList[j]
+        if (privacyPolicy[fields.privacyPolicyName] === app[fields.privacyPolicyName]) {
+          apps.push(app[fields.appName])
+        }
+      }
+      if (apps.length > 0) {
+        privacyPolicy[fields.apps] = apps
+      }
+    }
+  }
+  return privacyPolicyList;
 }
 
 const customData = (value) => {

@@ -44,7 +44,7 @@ export const style = [
             'target-endpoint': function (ele) { return ele.data('te') ? ele.data('te') : '0% 0%' },
             'source-distance-from-node': function (ele) { return ele.data('sdn') ? ele.data('sdn') : '0px' },
             'target-distance-from-node': function (ele) { return ele.data('tdn') ? ele.data('tdn') : '0px' },
-            'z-index':function (ele) { return ele.data('zi') ? ele.data('zi') : -1 },
+            'z-index':function (ele) { return ele.data('zi') ? ele.data('zi') : 0 },
             'line-color':function (ele) { return ele.data('lc') ? ele.data('lc') : '#BEBEBE' }
         }
     },
