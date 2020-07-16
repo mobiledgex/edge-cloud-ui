@@ -72,29 +72,42 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
-                this.setState({
-                    chartDataForRendering: nextProps.chartDataForBigModal,
-                    graphType: nextProps.graphType.toUpperCase(),
-                    popupGraphHWType: nextProps.popupGraphHWType,
-                    appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
-                });
+                try {
+                    this.setState({
+                        chartDataForRendering: nextProps.chartDataForBigModal,
+                        graphType: nextProps.graphType.toUpperCase(),
+                        popupGraphHWType: nextProps.popupGraphHWType,
+                        appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+                    });
+                } catch (e) {
+
+                }
+
             }
 
             if (this.props.lineChartDataSet !== nextProps.lineChartDataSet) {
-                let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length;
-                this.setState({
-                    usageListLength: usageListLength,
-                })
+                try {
+                    let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length !== undefined ? nextProps.lineChartDataSet.newDateTimeList.length : 0;
+                    this.setState({
+                        usageListLength: usageListLength,
+                    })
+                } catch (e) {
+
+                }
             }
 
             if (this.props.isShowBigGraph) {
-                this.setState({
-                    appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
-                    selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
-                    loading: nextProps.loading,
-                }, () => {
-                    //alert(JSON.stringify(this.state.markerList))
-                })
+                try {
+                    this.setState({
+                        appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+                        selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
+                        loading: nextProps.loading,
+                    }, () => {
+                        //alert(JSON.stringify(this.state.markerList))
+                    })
+                } catch (e) {
+
+                }
 
             }
         }
