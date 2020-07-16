@@ -803,25 +803,6 @@ export function makeMaxTickLimit(pDataLimitCount) {
 export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef) => {
     try {
         let options = {
-            /*tooltips: {
-                //custom: customTooltips,
-                mode: 'label',
-                callbacks: {
-                    label: function (tooltipItem, data) {
-                       try{
-                           let labelOne = data.datasets[tooltipItem.index].label
-                           let yLabel = tooltipItem.yLabel
-                           return labelOne + ': ' + yLabel.toFixed(1);
-                       }catch (e) {
-
-                       }
-                    },
-                    labelTextColor: function (tooltipItem, chart) {
-                        return '#fff';
-                    }
-                },
-
-            },*/
             stacked: true,
             animation: {
                 duration: 500
