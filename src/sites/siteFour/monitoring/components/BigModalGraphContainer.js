@@ -52,7 +52,7 @@ type State = {
     usageListLength: number,
 
 };
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class BigModalGraphContainer extends React.Component<Props, State> {
         constructor(props: Props) {
             super(props)
@@ -275,5 +275,5 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
             );
         };
     }
-)))
+))
 
