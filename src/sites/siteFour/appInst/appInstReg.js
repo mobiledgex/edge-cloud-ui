@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid';
 //Mex
@@ -18,9 +18,10 @@ import { getAppList } from '../../../services/model/app';
 import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import {appInstTutor} from "../../../tutorial";
+import { appInstTutor } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
+import { Grid } from 'semantic-ui-react';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const appInstSteps = appInstTutor();
@@ -126,7 +127,7 @@ class ClusterInstReg extends React.Component {
                 this.ipAccessValueChange(form, forms, true)
             }
             else if (form.field === fields.sharedVolumeSize) {
-                form.visible = currentForm.value? true : false
+                form.visible = currentForm.value ? true : false
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -139,14 +140,13 @@ class ClusterInstReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.privacyPolicyName) {
                 form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
-                if(data)
-                {
-                    form.visible = data[fields.deployment] ===  constant.DEPLOYMENT_TYPE_VM ? false : form.visible
+                if (data) {
+                    form.visible = data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : form.visible
                 }
                 form.value = undefined
             }
         }
-         if (isInit === undefined || isInit === false) {
+        if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
         }
     }
@@ -164,8 +164,7 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    updateIPAccess = (form, data) =>
-    {
+    updateIPAccess = (form, data) => {
         if (data) {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
                 form.visible = true
@@ -212,16 +211,15 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                     else if (form.label === 'Configs') {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ||  app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES? true : false
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
                         return form
                     }
                     else if (form.field === fields.configs) {
-                        if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ||  app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) { 
+                        if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                             return form
                         }
                     }
-                    else
-                    {
+                    else {
                         return form
                     }
                 })
@@ -232,18 +230,15 @@ class ClusterInstReg extends React.Component {
                 }
                 break;
             }
-            else
-            {
+            else {
                 nForms = forms.filter((form) => {
-                    if(form.field === fields.autoClusterInstance)
-                    {
+                    if (form.field === fields.autoClusterInstance) {
                         form.visible = false
                         form.value = false
                         this.autoClusterValueChange(form, forms, true)
                         return form
                     }
-                    else if(form.field === fields.clusterName || form.label === 'Configs')
-                    {
+                    else if (form.field === fields.clusterName || form.label === 'Configs') {
                         form.visible = false
                         form.value = undefined
                         return form
@@ -251,7 +246,7 @@ class ClusterInstReg extends React.Component {
                     else if (form.field === fields.configs) {
                         //remove all configs
                     }
-                    else{
+                    else {
                         return form
                     }
                 })
@@ -261,7 +256,7 @@ class ClusterInstReg extends React.Component {
             this.setState({ forms: nForms })
         }
     }
-    
+
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
@@ -316,8 +311,7 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    cloudletValueChange = (currentForm, forms, isInit)=>
-    {
+    cloudletValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.clusterName) {
@@ -343,8 +337,8 @@ class ClusterInstReg extends React.Component {
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows:2 }, width: 9, visible: true, update: true },
-        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true}, width: 4, visible: true, options: ['envVarsYaml', 'hemlCustomizationYaml'], update: true },
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 2 }, width: 9, visible: true, update: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['envVarsYaml', 'helmCustomizationYaml'], update: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeConfigForm }
     ])
 
@@ -370,8 +364,8 @@ class ClusterInstReg extends React.Component {
             { field: fields.ipAccess, label: 'IP Access', formType: 'Select', placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: 'Select', placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName },  { index: 6, field: fields.cloudletName }] },
-            { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style:{color:'white'} }], visible: false }
+            { field: fields.clusterName, label: 'Cluster', formType: 'Select', placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }] },
+            { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false }
         ]
     }
 
@@ -428,7 +422,7 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 responseData = mcRequest.response.data;
             }
-            let labels = [{label : 'Cloudlet', field : fields.cloudletName}]
+            let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
             this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
@@ -453,8 +447,7 @@ class ClusterInstReg extends React.Component {
             }
 
             let cloudlets = data[fields.cloudletName];
-            if(data[fields.clusterName] || data[fields.autoClusterInstance])
-            {
+            if (data[fields.clusterName] || data[fields.autoClusterInstance]) {
                 data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
             }
             if (this.props.isUpdate) {
@@ -541,10 +534,8 @@ class ClusterInstReg extends React.Component {
                             form.options = undefined;
                     }
                 }
-                else if(form.formType === CHECKBOX)
-                {
-                    switch(form.field)
-                    {
+                else if (form.formType === CHECKBOX) {
+                    switch (form.field) {
                         case fields.autoClusterInstance:
                             form.visible = (this.isUpdate && form.visible) ? false : form.visible
                     }
@@ -561,7 +552,7 @@ class ClusterInstReg extends React.Component {
             if (this.props.isLaunch) {
                 this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.organizationName] })
                 this.clusterInstList = await getClusterInstList(this, { region: data[fields.region] })
-                
+
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
                 for (let i = 0; i < forms.length; i++) {
@@ -571,8 +562,7 @@ class ClusterInstReg extends React.Component {
                     }
                 }
             }
-            else
-            {
+            else {
                 let cloudlet = {}
                 cloudlet[fields.region] = data[fields.region]
                 cloudlet[fields.cloudletName] = data[fields.cloudletName]
@@ -655,7 +645,7 @@ class ClusterInstReg extends React.Component {
             forms: forms
         })
 
-        if (this.isUpdate) {
+        if (this.isUpdate || this.props.isLaunch) {
             this.setState({
                 showGraph: true,
                 flowDataList: this.updateFlowDataList
@@ -673,24 +663,26 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                    <div style={{ display: 'flex' }}>
-                        <div style={{ width: this.state.showGraph ? '52%' : '100vw', overflow: 'auto', height:'95vh' }}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate}/>
-                        </div>
-                        {this.state.showGraph ? <div style={{ width: this.state.showGraph ? '45%' : '0px', border: '1px solid #43464B', margin: 10, borderRadius: 5, backgroundColor: '#1A1C21',height:'calc(100% - 90px)',position: 'absolute', right:0 }}>
+                <Grid style={{ display: 'flex' }}>
+                    <Grid.Row>
+                        <Grid.Column width={this.state.showGraph ? 8 : 16} style={{ overflow: 'auto', height: '90vh' }}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </Grid.Column>
+                        {this.state.showGraph ? <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                             <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow}/>
+                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                             </Suspense>
-                        </div> : null}
-                    </div>
+                        </Grid.Column> : null}
+                    </Grid.Row>
+                </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
-            </div>
+            </div >
         )
     }
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( appInstSteps.stepsCreateAppInst )
+        this.props.handleViewMode(appInstSteps.stepsCreateAppInst)
     }
 
 };

@@ -46,6 +46,7 @@ export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
 export const ADMIN_MANAGER = 'AdminManager'
 export const OPERATOR_MANAGER = 'OperatorManager'
 export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
+export const DEVELOPER_VIEWER = 'DeveloperViewer'
 
 export const CONFIG_ENV_VAR = 'Environment Variables'
 export const CONFIG_HELM_CUST = 'Helm Customization'
@@ -243,14 +244,14 @@ export const imageType = (id) => {
 
 export const configType = (id) => {
     switch (id) {
-        case 'Helm Customization':
-            return 'hemlCustomizationYaml'
-        case 'Environment Variables':
+        case CONFIG_HELM_CUST:
+            return 'helmCustomizationYaml'
+        case CONFIG_ENV_VAR:
             return 'envVarsYaml'
-        case 'hemlCustomizationYaml':
-            return 'Helm Customization'
+        case 'helmCustomizationYaml':
+            return CONFIG_HELM_CUST
         case 'envVarsYaml':
-            return 'Environment Variables'
+            return CONFIG_ENV_VAR
         default:
             return id
     }

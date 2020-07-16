@@ -1,5 +1,4 @@
 import * as formatter from './format'
-import isEqual from 'lodash/isEqual';
 import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
@@ -55,7 +54,7 @@ export const getKey = (data, isCreate) => {
         app.deployment = data[fields.deployment]
         app.image_type = constant.imageType(data[fields.imageType])
         if (data[fields.imagePath]) {
-            app.image_path = data[fields.imagePath].toLowerCase()
+            app.image_path = data[fields.imagePath]
         }
         if (data[fields.accessPorts]) {
             app.access_ports = data[fields.accessPorts].toLowerCase()
@@ -90,8 +89,11 @@ export const getKey = (data, isCreate) => {
         if (data[fields.accessType]) {
             app.access_type = constant.accessType(data[fields.accessType])
         }
-        if (data[fields.configs]) {
-            app.configs = data[fields.configs]
+        if (data[fields.configs] && data[fields.configs].length > 0) {
+            app.configs = data[fields.configs].map(config => {
+                config[fields.kind] = constant.configType(config[fields.kind])
+                return config
+            })
         }
         if (data[fields.templateDelimiter]) {
             app.template_delimiter = data[fields.templateDelimiter]
@@ -126,7 +128,6 @@ export const createApp = (data) => {
 }
 
 export const updateApp = async (self, data, originalData) => {
-    let requestData = getKey(data, true)
     let updateFields = []
     if (!formatter.compareObjects(data[fields.imagePath], originalData[fields.imagePath])) {
         updateFields.push('4')
@@ -150,12 +151,6 @@ export const updateApp = async (self, data, originalData) => {
         updateFields.push('18')
     }
     if (!formatter.compareObjects(data[fields.configs], originalData[fields.configs])) {
-        if (data[fields.configs] && data[fields.configs].length > 0) {
-            data[fields.configs] = data[fields.configs].map(config => {
-                config[fields.kind] = constant.configType(config[fields.kind])
-                return config
-            })
-        }
         updateFields.push('21', '21.1', '21.2')
     }
     if (!formatter.compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster])) {
@@ -176,9 +171,16 @@ export const updateApp = async (self, data, originalData) => {
     if (!formatter.compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts])) {
         updateFields.push('34')
     }
-    requestData.app.fields = updateFields
-    let request = { method: UPDATE_APP, data: requestData }
-    return await serverData.sendRequest(self, request)
+    if (updateFields.length > 0) {
+        let requestData = getKey(data, true)
+        requestData.app.fields = updateFields
+        let request = { method: UPDATE_APP, data: requestData }
+        return await serverData.sendRequest(self, request)
+    }
+    else
+    {
+        return self.props.handleAlertInfo('error', 'Nothing to update')
+    }
 }
 
 export const deleteApp = (data) => {
@@ -191,6 +193,7 @@ const customData = (value) => {
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
+    value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
     value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
     if (value[fields.configs]) {
         let configs = value[fields.configs]
