@@ -102,9 +102,7 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
                         selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
                         loading: nextProps.loading,
-                    }, () => {
-                        //alert(JSON.stringify(this.state.markerList))
-                    })
+                    });
                 } catch (e) {
 
                 }
