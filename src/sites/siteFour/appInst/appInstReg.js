@@ -338,7 +338,7 @@ class ClusterInstReg extends React.Component {
 
     configForm = () => ([
         { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 2 }, width: 9, visible: true, update: true },
-        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['envVarsYaml', 'hemlCustomizationYaml'], update: true },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['envVarsYaml', 'helmCustomizationYaml'], update: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeConfigForm }
     ])
 

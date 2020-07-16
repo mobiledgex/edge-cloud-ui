@@ -244,14 +244,14 @@ export const imageType = (id) => {
 
 export const configType = (id) => {
     switch (id) {
-        case 'Helm Customization':
-            return 'hemlCustomizationYaml'
-        case 'Environment Variables':
+        case CONFIG_HELM_CUST:
+            return 'helmCustomizationYaml'
+        case CONFIG_ENV_VAR:
             return 'envVarsYaml'
-        case 'hemlCustomizationYaml':
-            return 'Helm Customization'
+        case 'helmCustomizationYaml':
+            return CONFIG_HELM_CUST
         case 'envVarsYaml':
-            return 'Environment Variables'
+            return CONFIG_ENV_VAR
         default:
             return id
     }
