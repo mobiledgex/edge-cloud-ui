@@ -170,7 +170,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
             }
         };
 
-
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             try {
 

@@ -800,10 +800,7 @@ export function makeMaxTickLimit(pDataLimitCount) {
     }
 }
 
-
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false) => {
-
-
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef) => {
     try {
         let options = {
             stacked: true,
@@ -815,12 +812,17 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
             datasetStrokeWidth: 1,
             pointDotStrokeWidth: 2,
             layout: {
-                padding: {
+                padding: isBig ? {
                     left: 9,
                     right: 5,
-                    top: 15,
-                    bottom: 0
-                }
+                    top: 5,
+                    bottom: 30,
+                } : {
+                    left: 9,
+                    right: 5,
+                    top: 5,
+                    bottom: 5,
+                },
             },
             legend: {
                 display: isBig ? true : false,
@@ -857,7 +859,8 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     type: 'linear',
                     position: 'left',
                     ticks: {
-                        fontColor: "#CCC", // this here
+                        fontSize: isBig ? 15 : 9,
+                        fontColor: 'white',
                         callback(value, index, label) {
                             return covertYAxisUnits(value, hardwareType, _this,)
                         },
@@ -869,7 +872,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     scaleShowLabels: false,
                     ticks: {
                         max: 1,
-                        min: 0
+                        min: 0,
                     }
 
                 }],
@@ -881,12 +884,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        //maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
                         //autoSkip: isBig ? false : true,
-                        fontSize: 9,
+                        fontSize: isBig ? 15 : 9,
                         fontColor: 'white',
-                        maxRotation: isBig ? 45 : 0,//xAxis text rotation
-                        minRotation: isBig ? 45 : 0,//xAxis text rotation
+                        maxRotation: isBig ? 0 : 0,//xAxis text rotation
+                        minRotation: isBig ? 0 : 0,//xAxis text rotation
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
