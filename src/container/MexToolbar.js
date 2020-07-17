@@ -41,7 +41,6 @@ const getRegion = (props)=>
     return options
 }
 
-
 const MexToolbar = (props) => {
     let requestInfo = props.requestInfo;
 
