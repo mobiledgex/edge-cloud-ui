@@ -388,6 +388,7 @@ type PageDevMonitoringState = {
     isShowCountPopover: boolean,
     dataLimitCount: number,
     dataLimitCountText: string,
+    lineChartDataSet: any,
 
 }
 
@@ -651,6 +652,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isShowCountPopover: false,
                     dataLimitCount: 50,//4mins
                     dataLimitCountText: '4 mins',
+                    lineChartDataSet: [],
                 }
             }
 
@@ -890,7 +892,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         loading: false,
                     });
                 } catch (e) {
-                    //throw new Error("loadInitData error")
+                    throw new Error("loadInitData error")
                 }
 
             }
@@ -1078,6 +1080,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
+
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
                 this.setState({
                     chartDataForBigModal: chartDataForBigModal,
@@ -1267,7 +1270,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         } else if (this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase())) {
                             lineChartDataSet = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
+
                         chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this, this.state.currentColorIndex)
+                        this.setState({
+                            lineChartDataSet: lineChartDataSet,
+                        })
 
                     } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.BAR || graphType.toUpperCase() === GRID_ITEM_TYPE.COLUMN) {
                         let chartDataSet = []
@@ -3187,9 +3194,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.reloadDataFromRemote()
                                     }}
                                 >
-                                    {graphDataCount.reverse().map(item => {
+                                    {graphDataCount.reverse().map((item, index) => {
                                         return (
-                                            <Option value={item.value}>{item.text}</Option>
+                                            <Option key={index} value={item.value}>{item.text}</Option>
                                         )
                                     })}
                                 </Select>
@@ -3750,10 +3757,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                      modalIsOpen={this.state.modalIsOpen}
                                                      cluster={''} contents={''}/>
                             <BigModalGraphContainer
+                                lineChartDataSet={this.state.lineChartDataSet}
                                 intervalLoading={this.state.intervalLoading}
                                 chartDataForBigModal={this.state.chartDataForBigModal}
                                 isShowBigGraph={this.state.isShowBigGraph}
                                 parent={this}
+                                dataLimitCount={this.state.dataLimitCount}
                                 popupGraphHWType={this.state.popupGraphHWType}
                                 graphType={this.state.popupGraphType}
                                 isPopupMap={this.state.isPopupMap}

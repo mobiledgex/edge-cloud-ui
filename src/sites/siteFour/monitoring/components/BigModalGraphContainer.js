@@ -7,7 +7,6 @@ import {Chart as Bar_Column_Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {barChartOption, columnChartOption} from "../common/PageMonitoringUtils";
 import LeafletMapWrapperForDev from "./MapForDev";
-import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import sizeMe from "react-sizeme";
 import * as actions from "../../../../actions";
@@ -38,6 +37,7 @@ type Props = {
     isLoading: boolean,
     toggleLoading: Function,
     intervalLoading: boolean,
+    lineChartDataSet: any,
 
 };
 type State = {
@@ -48,9 +48,10 @@ type State = {
     popupGraphHWType: string,
     appInstanceListGroupByCloudlet: any,
     redraw: boolean,
+    usageListLength: number,
 
 };
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
+export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class BigModalGraphContainer extends React.Component<Props, State> {
         constructor(props: Props) {
             super(props)
@@ -62,6 +63,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                 popupGraphHWType: '',
                 markerList: [],
                 redraw: false,
+                usageListLength: 0,
             }
         }
 
@@ -70,23 +72,40 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
 
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
-                this.setState({
-                    chartDataForRendering: nextProps.chartDataForBigModal,
-                    graphType: nextProps.graphType.toUpperCase(),
-                    popupGraphHWType: nextProps.popupGraphHWType,
-                    appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
-                });
+                try {
+                    this.setState({
+                        chartDataForRendering: nextProps.chartDataForBigModal,
+                        graphType: nextProps.graphType.toUpperCase(),
+                        popupGraphHWType: nextProps.popupGraphHWType,
+                        appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+                    });
+                } catch (e) {
+
+                }
 
             }
 
+            if (this.props.lineChartDataSet !== nextProps.lineChartDataSet) {
+                try {
+                    let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length !== undefined ? nextProps.lineChartDataSet.newDateTimeList.length : 0;
+                    this.setState({
+                        usageListLength: usageListLength,
+                    })
+                } catch (e) {
+
+                }
+            }
+
             if (this.props.isShowBigGraph) {
-                this.setState({
-                    appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
-                    selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
-                    loading: nextProps.loading,
-                }, () => {
-                    //alert(JSON.stringify(this.state.markerList))
-                })
+                try {
+                    this.setState({
+                        appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+                        selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
+                        loading: nextProps.loading,
+                    });
+                } catch (e) {
+
+                }
 
             }
         }
@@ -214,14 +233,18 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
-                            <div>
-                                <Line
-                                    width={window.innerWidth * 0.9}
-                                    ref={(reference) => this.lineChart = reference}
-                                    height={window.innerHeight * 0.8}
-                                    data={this.state.chartDataForRendering}
-                                    options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
-                                />
+                            <div className="chartWrapperForBig">
+                                <div className="chartAreaWrapperForBig">
+                                    <div style={{width: 240 * this.state.usageListLength, height: '250px !important'}}>
+                                        <Line
+                                            width={window.innerWidth * 0.9}
+                                            ref={(reference) => this.lineChart = reference}
+                                            height={window.innerHeight * 0.87}
+                                            data={this.state.chartDataForRendering}
+                                            options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             : this.state.graphType === GRID_ITEM_TYPE.BAR || this.state.graphType === GRID_ITEM_TYPE.COLUMN ?
                                 <div style={{height: 'calc(100% - 62px)'}}>
@@ -262,5 +285,5 @@ export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({mon
             );
         };
     }
-)))
+))
 

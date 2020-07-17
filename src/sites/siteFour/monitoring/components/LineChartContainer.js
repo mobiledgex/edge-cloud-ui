@@ -63,7 +63,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 this.setChartData(lineChartDataSet, hwType, graphType);
             }
         } catch (e) {
-            showToast(e.toString())
+            //   showToast(e.toString())
         }
     }
 
@@ -145,18 +145,17 @@ export default class LineChartContainer extends React.Component<Props, State> {
                     {this.props.chartDataSet === undefined ?
                         renderEmptyMessageBox("No Data Available")
                         :
-                        <div className='page_monitoring_container'>
-                            <div style={{
-                                position: 'relative',
-                                width: '99%',
-                                height: '99%'
-                            }}>
-                                {!this.props.parent.state.loading &&
-                                <Line
-                                    data={this.state.chartDataSet}
-                                    options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent)}
-                                />
-                                }
+                        !this.props.parent.state.loading &&
+                        <div className="chartWrapper">
+                            <div className="chartAreaWrapper">
+                                <div style={{width: 3000}}>
+                                    <Line
+                                        ref={c => this.lineChart = c}
+                                        height={'190px !important'}
+                                        data={this.state.chartDataSet}
+                                        options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent, undefined, this.lineChart)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     }
