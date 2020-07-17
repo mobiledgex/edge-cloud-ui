@@ -55,7 +55,8 @@ class CloudletReg extends React.Component {
         this.operatorList = [];
         this.cloudletData = undefined;
         this.canCloseStepper = true;
-        this.updateFlowDataList = []
+        this.updateFlowDataList = [];
+        this.expandAdvanceMenu = false;
     }
 
     platformTypeValueChange = (currentForm, forms, isInit) => {
@@ -138,6 +139,20 @@ class CloudletReg extends React.Component {
     onValueChange = (form) => {
         let forms = this.state.forms;
         this.checkForms(form, forms)
+    }
+
+    advanceMenu = (e, form) => {
+        this.expandAdvanceMenu = !this.expandAdvanceMenu
+        form.icon = this.expandAdvanceMenu ? 'expand_more' : 'expand_less'
+        let forms = this.state.forms
+
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.advance !== undefined) {
+                form.advance = this.expandAdvanceMenu
+            }
+        }
+        this.reloadForms()
     }
 
     onCreateResponse = async (mcRequest) => {
@@ -431,7 +446,7 @@ class CloudletReg extends React.Component {
                             envForm.value = value
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
+                    forms.splice(15 + multiFormCount, 0, this.getEnvForm(envForms))
                     multiFormCount += 1
                 })
             }
@@ -488,15 +503,18 @@ class CloudletReg extends React.Component {
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, update:true, updateId: ['6'], tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update:true, updateId: ['8'], tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
-            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version' },
-            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
             { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network' },
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
-            { field: fields.envVars, label: 'Environment Variable', formType: 'Header', forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' }   
+            { field: fields.envVars, label: 'Environment Variable', formType: 'Header', forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
+            { label: 'Advanced Settings', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
+            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
+            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
+            
+             
         ]
     }
 
