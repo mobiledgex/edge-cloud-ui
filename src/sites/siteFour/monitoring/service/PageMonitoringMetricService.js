@@ -512,7 +512,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
         return resultWithColorCode;
     } catch (e) {
-      //  showToast(e.toString())
     }
 
 }

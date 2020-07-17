@@ -1047,7 +1047,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterUsageList: filteredClusterUsageList,
                         })
                     } catch (e) {
-                        //showToast(e.toString())
                     } finally {
                         this.setState({
                             intervalLoading: false,
