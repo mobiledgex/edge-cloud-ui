@@ -334,7 +334,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     }
                 })
             } catch (e) {
-                throw new Error("mapForDev setCloudletLocation")
+               // throw new Error("mapForDev setCloudletLocation")
             }
         }
 
