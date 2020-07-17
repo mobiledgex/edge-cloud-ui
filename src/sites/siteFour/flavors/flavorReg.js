@@ -55,12 +55,12 @@ class ClusterInstReg extends React.Component {
 
     onCreate = async (data) => {
         if (data) {
-            let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
-                //update cluster data
+                //update flavor data
             }
             else {
-                if(await createFlavor(this, data))
+                let mcRequest = await createFlavor(this, data)
+                if(mcRequest && mcRequest.response && mcRequest.response.status === 200)
                 {
                     this.props.handleAlertInfo('success', `Flavor ${data[fields.flavorName]} created successfully`)
                     this.props.onClose(true)

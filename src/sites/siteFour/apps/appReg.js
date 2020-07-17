@@ -531,7 +531,8 @@ class AppReg extends React.Component {
                         data[fields.configs] = configs
                     }
                     if (this.isUpdate) {
-                        if (await updateApp(this, data, this.originalData)) {
+                        let mcRequest = await updateApp(this, data, this.originalData)
+                        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                             this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
                             if (data[fields.refreshAppInst]) {
                                 serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
