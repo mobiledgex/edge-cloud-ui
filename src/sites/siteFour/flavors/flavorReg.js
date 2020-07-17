@@ -1,12 +1,10 @@
 import React from 'react';
-import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import { createFlavor} from '../../../services/model/flavor';
