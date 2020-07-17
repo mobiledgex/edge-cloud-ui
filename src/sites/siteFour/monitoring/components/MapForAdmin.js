@@ -247,7 +247,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     }
                 })
             } catch (e) {
-                showToast(e.toString())
+              //  showToast(e.toString())
                 //throw new Error(e)
             }
         }
@@ -385,7 +385,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     }
                 })
             } catch (e) {
-                showToast(e.toString())
+              //  showToast(e.toString())
                 //throw new Error(e)
             }
         }

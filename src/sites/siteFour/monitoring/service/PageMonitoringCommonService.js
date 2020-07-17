@@ -238,7 +238,7 @@ export const renderPlaceHolderHorizontalLoader = (type = 'lottieCircle') => {
             )
         }
     } catch (e) {
-        showToast(e.toString())
+      //  showToast(e.toString())
     }
 
 }

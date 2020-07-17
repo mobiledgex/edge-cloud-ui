@@ -512,7 +512,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
         return resultWithColorCode;
     } catch (e) {
-        showToast(e.toString())
+      //  showToast(e.toString())
     }
 
 }
@@ -943,7 +943,7 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
                 return [];
             }
         }).catch(e => {
-            showToast(e.toString())
+            throw new Error(e.toString())
         })
         return result;
     } catch (e) {
@@ -1009,7 +1009,7 @@ export const getAllClusterEventLogList = async (clusterList, userType = USER_TYP
 
         return completedEventLogList;
     } catch (e) {
-        //showToast(e.toString())
+        throw new error(e.toString())
     }
 }
 
@@ -1052,8 +1052,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
 
             return response.data.data[0];
         }).catch(e => {
-            //throw new Error(e)
-            //showToast(e.toString())
+            throw new error(e.toString())
         })
         return result;
     } catch (e) {
@@ -1107,11 +1106,10 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             }
 
         }).catch(e => {
-            //throw new Error(e)
-            //showToast(e.toString())
+            throw new error(e.toString())
         })
     } catch (e) {
-        // showToast(e.toString())
+        throw new error(e.toString())
     }
 
 }
@@ -1144,7 +1142,7 @@ export const getAllAppInstEventLogs = async () => {
 
         return completedEventLogList;
     } catch (e) {
-        // showToast(e.toString())
+        throw new error(e.toString())
     }
 }
 
