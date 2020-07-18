@@ -1047,7 +1047,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             filteredClusterUsageList: filteredClusterUsageList,
                         })
                     } catch (e) {
-                        showToast(e.toString())
                     } finally {
                         this.setState({
                             intervalLoading: false,
@@ -1295,7 +1294,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isMapUpdate: true,
                     });
                 } catch (e) {
-                    showToast(e.toString())
+                   // showToast(e.toString())
                 }
             }
 
@@ -1715,7 +1714,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     )
                 } catch (e) {
-                    showToast(e.toString())
+                   // showToast(e.toString())
                 }
             }
 
@@ -1785,7 +1784,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                 } catch (e) {
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
             }
 
@@ -2455,7 +2454,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     }
                 } catch (e) {
                     //throw new Error(e)
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
             }
 
@@ -2988,7 +2987,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     })
                     return filteredClusterList;
                 } catch (e) {
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
             }
 
@@ -3006,7 +3005,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     return filteredClusterList;
                 } catch (e) {
-                    showToast(e.toString())
+                   // showToast(e.toString())
                 }
             }
 
@@ -3246,7 +3245,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         )
                     }
                 } catch (e) {
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
             }
 
