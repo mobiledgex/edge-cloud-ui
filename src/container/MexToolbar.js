@@ -43,6 +43,22 @@ const getRegion = (props)=>
 
 const MexToolbar = (props) => {
     let requestInfo = props.requestInfo;
+
+    const [map, setMap] = React.useState(true)
+    const [region, setRegion] = React.useState(REGION_ALL)
+
+    const onMapChange = (e)=>
+    {
+       setMap(e.target.checked) 
+       props.onAction(ACTION_MAP, e.target.checked)
+    }
+
+    const onRegionChange = (value)=>
+    {
+       setRegion(value) 
+       props.onAction(ACTION_REGION, value)
+    }
+    
     const getDetail = (props) => (
         <div style={{ right: 0, position: 'absolute' }}>
 
@@ -71,8 +87,8 @@ const MexToolbar = (props) => {
                         <strong>Region:&nbsp;&nbsp;</strong>
                         <Dropdown
                             options={regions}
-                            defaultValue={regions && regions.length > 0 ? regions[0].value : undefined}
-                            onChange={(e, { value }) => { props.onAction(ACTION_REGION, value) }}
+                            defaultValue={region}
+                            onChange={(e, { value }) => { onRegionChange(value) }}
                         />
                     </div> :
                     null
@@ -80,8 +96,8 @@ const MexToolbar = (props) => {
                 {requestInfo.isMap ?
                     <div style={{ display: 'inline', margin: 20 }}>
                         <strong>Map:&nbsp;&nbsp;</strong>
-                        <CustomSwitch size="small" color="primary" defaultChecked
-                            onChange={(e) => { props.onAction(ACTION_MAP, e.target.checked) }} />
+                        <CustomSwitch size="small" color="primary" checked={map}
+                            onChange={onMapChange} />
                     </div> :
                     null
                 }
