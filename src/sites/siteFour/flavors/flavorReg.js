@@ -1,12 +1,10 @@
 import React from 'react';
-import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 //model
 import { createFlavor} from '../../../services/model/flavor';
@@ -55,12 +53,12 @@ class ClusterInstReg extends React.Component {
 
     onCreate = async (data) => {
         if (data) {
-            let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
-                //update cluster data
+                //update flavor data
             }
             else {
-                if(await createFlavor(this, data))
+                let mcRequest = await createFlavor(this, data)
+                if(mcRequest && mcRequest.response && mcRequest.response.status === 200)
                 {
                     this.props.handleAlertInfo('success', `Flavor ${data[fields.flavorName]} created successfully`)
                     this.props.onClose(true)

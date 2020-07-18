@@ -531,7 +531,8 @@ class AppReg extends React.Component {
                         data[fields.configs] = configs
                     }
                     if (this.isUpdate) {
-                        if (await updateApp(this, data, this.originalData)) {
+                        let mcRequest = await updateApp(this, data, this.originalData)
+                        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                             this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
                             if (data[fields.refreshAppInst]) {
                                 serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
@@ -845,10 +846,10 @@ class AppReg extends React.Component {
             <div className="round_panel">
                 <Grid style={{ display: 'flex' }}>
                     <Grid.Row>
-                        <Grid.Column width={this.state.showGraph ? 8: 16} style={{ overflow: 'auto', height: '90vh' }}>
+                        <Grid.Column width={this.state.showGraph ? 9: 16} style={{ overflow: 'auto', height: '90vh' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </Grid.Column>
-                        {this.state.showGraph ? <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                        {this.state.showGraph ? <Grid.Column width={7} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                             <Suspense fallback={<div></div>}>
                                 <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                             </Suspense>

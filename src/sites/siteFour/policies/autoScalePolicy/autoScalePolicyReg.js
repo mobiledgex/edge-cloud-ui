@@ -111,13 +111,10 @@ class AutoScalePolicyReg extends React.Component {
     onCreate = async (data) => {
         if (data) {
             let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updateAutoScalePolicy(data) : createAutoScalePolicy(data))
-            if (mcRequest && mcRequest.response) {
-                let response = mcRequest.response
-                if (response.status === 200) {
-                    let msg = this.isUpdate ? 'updated' : 'created'
-                    this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
-                    this.props.onClose(true)
-                }
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                let msg = this.isUpdate ? 'updated' : 'created'
+                this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
+                this.props.onClose(true)
             }
         }
     }
