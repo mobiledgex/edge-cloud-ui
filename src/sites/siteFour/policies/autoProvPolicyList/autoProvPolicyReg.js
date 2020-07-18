@@ -189,12 +189,9 @@ class AutoProvPolicyReg extends React.Component {
                 }
             }
             let mcRequest = await serverData.sendRequest(this, requestType(data))
-            if (mcRequest && mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.status === 200) {
-                    this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
-                    this.props.onClose(true)
-                }
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
+                this.props.onClose(true)
             }
         }
         else {

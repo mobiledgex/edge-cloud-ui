@@ -215,14 +215,11 @@ class AutoProvPolicyReg extends React.Component {
                 data[fields.outboundSecurityRules] = outboundSecurityRules;
             }
             let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updatePrivacyPolicy(data) : createPrivacyPolicy(data))
-            if (mcRequest && mcRequest.response) {
-                let response = mcRequest.response
-                if (response.status === 200) {
-                    let msg = this.isUpdate ? 'updated' : 'created'
-                    let policyName = mcRequest.request.data.privacypolicy.key.name;
-                    this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} successfully`)
-                    this.props.onClose(true)
-                }
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                let msg = this.isUpdate ? 'updated' : 'created'
+                let policyName = mcRequest.request.data.privacypolicy.key.name;
+                this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} successfully`)
+                this.props.onClose(true)
             }
         }
     }

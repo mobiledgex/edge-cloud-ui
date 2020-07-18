@@ -235,9 +235,9 @@ class OrganizationReg extends React.Component {
             this.type = data[fields.type]
             data[fields.type] = data[fields.type].toLowerCase()
             let mcRequest = this.isUpdate ? await updateOrganization(this, data) :  await createOrganization(this, data)
-            if (mcRequest && mcRequest.response) {
-                    this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
-                    this.isUpdate ? this.props.onClose() : this.addUserForm(data)
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
+                this.isUpdate ? this.props.onClose() : this.addUserForm(data)
             }
         }
     }
