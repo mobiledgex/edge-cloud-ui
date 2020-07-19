@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, MAIN_HEADER } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -30,7 +30,7 @@ class ClusterInstReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: 'Create Flavor', formType: 'Header', visible: true },
+            { label: 'Create Flavor', formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.flavorName, label: 'Flavor Name', formType: INPUT, placeholder: 'Enter Flavor Name', rules: { required: true }, visible: true },
             { field: fields.ram, label: 'RAM Size', formType: INPUT, placeholder: 'Enter RAM Size (MB)', unit: 'MB', rules: { required: true, type: 'number' }, visible: true },
