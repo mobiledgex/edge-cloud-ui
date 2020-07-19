@@ -20,6 +20,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 
+export const MAIN_HEADER = 'MainHeader'
 export const HEADER = 'Header'
 export const SELECT = 'Select'
 export const MULTI_SELECT = 'MultiSelect'
@@ -216,21 +217,31 @@ const MexForms = (props) => {
                     null)
     }
 
+    const loadMainHeader = (index, form) => {
+        return (
+            <div style={{ width: '100%' }} key={index}>
+                <h2 style={{ color: "white" }}>{form.label}</h2>
+                <Divider />
+            </div>
+        )
+    }
+
+
     const loadHeader = (index, form) => {
         form.id = { id: index }
         let subForms = form.forms
         return (
             <Grid style={{ width: '100%' }} key={index}>
-                <Grid.Row className={'formHeader-' + index} columns={2} key={uuid() + '' + index}>
+                <Grid.Row className={'formHeader-' + index} columns={2} key={uuid() + '' + index} style={{height:50}}>
                     <Grid.Column width={15} className='detail_item'>
-                        <h2 style={{ color: "white", display: 'inline' }}>{form.label}
+                        <h3 style={{ color: "white", display: 'inline' }}>{form.label}
                             {
                                 subForms ? subForms.map((subForm, i) => {
                                     subForm.parent = { id: index, form: form }
                                     return loadButton(subForm, i)
                                 }) : null
                             }
-                        </h2>
+                        </h3>
                     </Grid.Column>
                     {
                         form.tip ?
@@ -357,9 +368,11 @@ const MexForms = (props) => {
                             checkRole(form)
                             return (
                                 (form.advance === undefined || form.advance === true) && form.visible ?
-                                    form.formType === HEADER ?
-                                        loadHeader(i, form) :
-                                        form.formType === MULTI_FORM ?
+                                    form.formType === MAIN_HEADER ?
+                                        loadMainHeader(i, form) :
+                                        form.formType === HEADER ?
+                                            loadHeader(i, form) :
+                                            form.formType === MULTI_FORM ?
                                             form.forms ?
                                                 <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                 : null :
