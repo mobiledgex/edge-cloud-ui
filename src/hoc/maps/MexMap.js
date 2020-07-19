@@ -124,6 +124,13 @@ class ClustersMap extends Component {
             this.setState({ center: this.props.zoomControl.center, zoom: this.props.zoomControl.zoom })
         }
         this.setState({ oldCountry: this.state.selectedCity })
+        let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
+        console.log("20200719 .. ", catchLeafLayer);
+        if(catchLeafLayer) {
+            if(catchLeafLayer.length === 0) {
+                this.handleRefresh();
+            }
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
