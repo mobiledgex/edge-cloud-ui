@@ -49,6 +49,7 @@ type State = {
     appInstanceListGroupByCloudlet: any,
     redraw: boolean,
     usageListLength: number,
+    chartDataForBigModal: any,
 
 };
 export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -74,7 +75,7 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
                 try {
                     this.setState({
-                        chartDataForRendering: nextProps.chartDataForBigModal,
+                        chartDataForBigModal: nextProps.chartDataForBigModal,
                         graphType: nextProps.graphType.toUpperCase(),
                         popupGraphHWType: nextProps.popupGraphHWType,
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
@@ -90,7 +91,7 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                     let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length !== undefined ? nextProps.lineChartDataSet.newDateTimeList.length : 0;
                     this.setState({
                         usageListLength: usageListLength,
-                    })
+                    });
                 } catch (e) {
 
                 }
@@ -128,6 +129,18 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                     <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
 
                 </div>
+            )
+        }
+
+        renderLineChart() {
+            return (
+                <Line
+                    width={window.innerWidth * 0.9}
+                    ref={(reference) => this.lineChart = reference}
+                    height={window.innerHeight * 0.87}
+                    data={this.props.chartDataForBigModal}
+                    options={makeLineChartOptions(this.state.popupGraphHWType, this.props.chartDataForBigModal, this.props.parent, true, this.lineChart, this.props.isScrollEnableForLineChart)}
+                />
             )
         }
 
@@ -196,53 +209,30 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                                             }
                                         </div>
                                     </div>
+                                    : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
 
-                                    : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
                                         <div style={{display: 'flex'}}>
                                             {this.renderPrevBtn()}
-
-                                            <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
-                                                App Instance {this.props.popupGraphHWType} Utilization
-                                                {this.props.intervalLoading &&
-                                                <div
-                                                    style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
-                                                    {renderWifiLoader(35, 35)}
-                                                </div>
-                                                }
+                                            <div className='page_monitoring_popup_title'>
+                                                Bubble Chart
                                             </div>
-
-
                                         </div>
-                                        : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
-
-                                            <div style={{display: 'flex'}}>
-                                                {this.renderPrevBtn()}
-                                                <div className='page_monitoring_popup_title'>
-                                                    Bubble Chart
-                                                </div>
+                                        :
+                                        <div style={{display: 'flex'}}>
+                                            {this.renderPrevBtn()}
+                                            <div className='page_monitoring_popup_title'>
+                                                {convertToClassification(this.props.parent.state.currentClassification)} {this.props.popupGraphHWType} Utilization
                                             </div>
-                                            :
-                                            <div style={{display: 'flex'}}>
-                                                {this.renderPrevBtn()}
-                                                <div className='page_monitoring_popup_title'>
-                                                    {convertToClassification(this.props.parent.state.currentClassification)} {this.props.popupGraphHWType} Utilization
-                                                </div>
-                                            </div>
+                                        </div>
 
                             }
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
-                            <div className="chartWrapperForBig">
-                                <div className="chartAreaWrapperForBig">
-                                    <div style={{width: 240 * this.state.usageListLength, height: '250px !important'}}>
-                                        <Line
-                                            width={window.innerWidth * 0.9}
-                                            ref={(reference) => this.lineChart = reference}
-                                            height={window.innerHeight * 0.87}
-                                            data={this.state.chartDataForRendering}
-                                            options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
-                                        />
+                            <div className={this.props.parent.state.isScrollEnableForLineChart ? 'chartWrapperForBig' : 'page_monitoring_container'}>
+                                <div className={this.props.parent.state.isScrollEnableForLineChart ? "chartAreaWrapperForBig" : 'page_mon_inner'}>
+                                    <div style={{width: 6000, height: '250px !important'}}>
+                                        {this.renderLineChart()}
                                     </div>
                                 </div>
                             </div>
