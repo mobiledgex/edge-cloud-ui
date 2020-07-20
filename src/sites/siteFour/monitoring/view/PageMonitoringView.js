@@ -1961,7 +1961,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             </div>
                         </AMenu.Item>
                         {/*desc: #################################*/}
-                        {/*desc:  LeftRight Scroll Line Chart Item*/}
+                        {/*desc:  toggle Scroll Line Chart Scrolling*/}
                         {/*desc: #################################*/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
@@ -1973,7 +1973,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         >
                             <MaterialIcon icon={'swap_horiz'} color={'white'}/>
                             <div style={PageMonitoringStyles.listItemTitle}>
-                                Enable/Disable Line Chart Scrolling
+                                Enable Line Chart Scrolling
+                            </div>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                <CustomSwitch
+                                    size="small"
+                                    checked={this.state.isScrollEnableForLineChart}
+                                    color="primary"
+                                />
                             </div>
                         </AMenu.Item>
                     </AMenu>

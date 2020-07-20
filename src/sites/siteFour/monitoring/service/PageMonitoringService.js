@@ -776,9 +776,31 @@ export function makeUniqDevOrg(appInstList) {
 }
 
 
-/*    text: '1 min',value: 10,    text: '2 min',value: 20,    text: '4 mins',value: 50,    text: '8 mins',value: 100,    text: '20 mins',value: 250,    text: '40 mins',value: 500,    text: '1 hour',value: 750,    text: '2 hours',value: 1000*/
-export function makeMaxTickLimit(pDataLimitCount) {
-    return 5;
+export function makeMaxTickLimit(pDataLimitCount, isBig, isScrollEnableForLineChart) {
+    if (isBig) {
+        if (pDataLimitCount === 2000) {
+            return 70;
+        } else if (pDataLimitCount === 1000) {
+            return 50
+        } else if (pDataLimitCount === 750) {
+            return 40
+        } else if (pDataLimitCount === 500) {
+            return 30
+        } else if (pDataLimitCount === 250) {
+            return null
+        } else if (pDataLimitCount === 100) {
+            return null
+        } else if (pDataLimitCount === 50) {
+            return null
+        } else if (pDataLimitCount === 20) {
+            return null;
+        }
+    } else if (isScrollEnableForLineChart) {
+        return null;
+    } else {
+        return 5;
+    }
+
 }
 
 
@@ -869,7 +891,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        // maxTicksLimit: isScrollEnableForLineChart ? null : isBig ? 25 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        maxTicksLimit: makeMaxTickLimit(_this.state.dataLimitCount, isBig, isScrollEnableForLineChart),
                         //autoSkip: isBig ? false : true,
                         fontSize: isBig ? 15 : 9,
                         fontColor: 'white',

@@ -79,8 +79,6 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                         graphType: nextProps.graphType.toUpperCase(),
                         popupGraphHWType: nextProps.popupGraphHWType,
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
-                    }, () => {
-                        console.log(`chartDataForBigModal====>`, this.state.chartDataForBigModal);
                     });
                 } catch (e) {
 
