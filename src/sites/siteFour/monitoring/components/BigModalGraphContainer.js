@@ -231,7 +231,7 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
                             <div className={this.props.parent.state.isScrollEnableForLineChart ? 'chartWrapperForBig' : 'page_monitoring_container'}>
                                 <div className={this.props.parent.state.isScrollEnableForLineChart ? "chartAreaWrapperForBig" : 'page_mon_inner'}>
-                                    <div style={{width: 50 * this.state.usageListLength, height: '250px !important'}}>
+                                    <div style={{width: 6000, height: '250px !important'}}>
                                         {this.renderLineChart()}
                                     </div>
                                 </div>
