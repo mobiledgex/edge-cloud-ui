@@ -777,8 +777,13 @@ export function makeUniqDevOrg(appInstList) {
 
 
 export function makeMaxTickLimit(pDataLimitCount, isBig, isScrollEnableForLineChart) {
-    if (isBig) {
-        if (pDataLimitCount === 2000) {
+    if (isBig || isScrollEnableForLineChart) {
+        return null;
+    } else {
+        return 5;
+    }
+
+    /* if (pDataLimitCount === 2000) {
             return 70;
         } else if (pDataLimitCount === 1000) {
             return 50
@@ -787,19 +792,14 @@ export function makeMaxTickLimit(pDataLimitCount, isBig, isScrollEnableForLineCh
         } else if (pDataLimitCount === 500) {
             return 30
         } else if (pDataLimitCount === 250) {
-            return null
+            return 30
         } else if (pDataLimitCount === 100) {
-            return null
+            return 30
         } else if (pDataLimitCount === 50) {
-            return null
+            return 30
         } else if (pDataLimitCount === 20) {
-            return null;
-        }
-    } else if (isScrollEnableForLineChart) {
-        return null;
-    } else {
-        return 5;
-    }
+            return 30;
+        }*/
 
 }
 

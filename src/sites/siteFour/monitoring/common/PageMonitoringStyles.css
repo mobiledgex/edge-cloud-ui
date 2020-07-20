@@ -1056,7 +1056,7 @@ tr td {
 }
 
 .chartAreaWrapper {
-    width: 400px;
+    width: 425px;
     height: 210px;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -1069,14 +1069,10 @@ tr td {
 }
 
 .chartAreaWrapperForBig {
-    width: 1700px;
+    width: 100%;
     overflow-x: scroll;
     background: transparent;
 }
-
-/*.chartjs-render-monitor{
-    height: 190px !important;
-}*/
 
 #chartjs-tooltip {
     line-height: normal;

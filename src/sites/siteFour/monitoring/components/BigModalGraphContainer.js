@@ -229,26 +229,13 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
-                            this.props.parent.state.isScrollEnableForLineChart ?
-                                <div className="chartWrapperForBig">
-                                    <div className="chartAreaWrapperForBig">
-                                        <div style={{width: 240 * this.state.usageListLength, height: '250px !important'}}>
-                                            {this.renderLineChart()}
-                                        </div>
-                                    </div>
-                                </div>
-                                ://todo: non- scroll line chart
-                                <div className='page_monitoring_container'>
-                                    <div
-                                        style={{
-                                            position: 'relative',
-                                            width: '99%',
-                                            height: '99%'
-                                        }}
-                                    >
+                            <div className={this.props.parent.state.isScrollEnableForLineChart ? 'chartWrapperForBig' : 'page_monitoring_container'}>
+                                <div className={this.props.parent.state.isScrollEnableForLineChart ? "chartAreaWrapperForBig" : 'page_mon_inner'}>
+                                    <div style={{width: 50 * this.state.usageListLength, height: '250px !important'}}>
                                         {this.renderLineChart()}
                                     </div>
                                 </div>
+                            </div>
                             : this.state.graphType === GRID_ITEM_TYPE.BAR || this.state.graphType === GRID_ITEM_TYPE.COLUMN ?
                                 <div style={{height: 'calc(100% - 62px)'}}>
                                     <Bar_Column_Chart
