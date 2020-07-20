@@ -49,7 +49,9 @@ import {
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
     MAP_LEVEL,
-    NETWORK_TYPE, NO_APPS, NO_CLUSTER,
+    NETWORK_TYPE,
+    NO_APPS,
+    NO_CLUSTER,
     THEME_OPTIONS_LIST,
     USER_TYPE,
     USER_TYPE_SHORT
@@ -389,6 +391,7 @@ type PageDevMonitoringState = {
     dataLimitCount: number,
     dataLimitCountText: string,
     lineChartDataSet: any,
+    isScrollEnableForLineChart: boolean,
 
 }
 
@@ -653,6 +656,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     dataLimitCount: 50,//4mins
                     dataLimitCountText: '4 mins',
                     lineChartDataSet: [],
+                    isScrollEnableForLineChart: false,
                 }
             }
 
@@ -1079,7 +1083,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
-
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
                 this.setState({
                     chartDataForBigModal: chartDataForBigModal,
@@ -1294,7 +1297,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isMapUpdate: true,
                     });
                 } catch (e) {
-                   // showToast(e.toString())
+                    // showToast(e.toString())
                 }
             }
 
@@ -1405,6 +1408,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             pHardwareType={pHwType}
                             chartDataSet={chartDataSets}
                             currentColorIndex={this.state.currentColorIndex}
+                            isScrollEnableForLineChart={this.state.isScrollEnableForLineChart}
                         />
                     )
 
@@ -1714,7 +1718,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     )
                 } catch (e) {
-                   // showToast(e.toString())
+                    // showToast(e.toString())
                 }
             }
 
@@ -1894,10 +1898,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                             }
                         >
-                            {THEME_OPTIONS_LIST.map(item => {
+                            {THEME_OPTIONS_LIST.map((item, index) => {
                                 return (
                                     <AMenu.Item
-                                        key="1"
+                                        key={index}
                                         onClick={async () => {
                                             await this.setState({
                                                 themeTitle: item.value
@@ -1950,6 +1954,29 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <MaterialIcon icon={'delete'} color={'white'}/>
                             <div style={PageMonitoringStyles.listItemTitle}>
                                 Delete All Grid Items
+                            </div>
+                        </AMenu.Item>
+                        {/*desc: #################################*/}
+                        {/*desc:  toggle Scroll Line Chart Scrolling*/}
+                        {/*desc: #################################*/}
+                        <AMenu.Item style={{display: 'flex'}}
+                                    key="1"
+                                    onClick={async () => {
+                                        this.setState({
+                                            isScrollEnableForLineChart: !this.state.isScrollEnableForLineChart,
+                                        });
+                                    }}
+                        >
+                            <MaterialIcon icon={'swap_horiz'} color={'white'}/>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                Enable Line Chart Scrolling
+                            </div>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                <CustomSwitch
+                                    size="small"
+                                    checked={this.state.isScrollEnableForLineChart}
+                                    color="primary"
+                                />
                             </div>
                         </AMenu.Item>
                     </AMenu>
@@ -3005,7 +3032,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     return filteredClusterList;
                 } catch (e) {
-                   // showToast(e.toString())
+                    // showToast(e.toString())
                 }
             }
 
@@ -3191,6 +3218,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             dataLimitCount: value,
                                         });
                                         await this.reloadDataFromRemote()
+
+                                        this.setChartDataForBigModal(this.state.allClusterUsageList)
                                     }}
                                 >
                                     {graphDataCount.reverse().map((item, index) => {
@@ -3769,6 +3798,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                                 loading={this.state.loading}
                                 currentColorIndex={this.state.currentColorIndex}
+                                isScrollEnableForLineChart={this.state.isScrollEnableForLineChart}
                             />
 
                             <div style={{
