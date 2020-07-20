@@ -783,24 +783,6 @@ export function makeMaxTickLimit(pDataLimitCount, isBig, isScrollEnableForLineCh
         return 5;
     }
 
-    /* if (pDataLimitCount === 2000) {
-            return 70;
-        } else if (pDataLimitCount === 1000) {
-            return 50
-        } else if (pDataLimitCount === 750) {
-            return 40
-        } else if (pDataLimitCount === 500) {
-            return 30
-        } else if (pDataLimitCount === 250) {
-            return 30
-        } else if (pDataLimitCount === 100) {
-            return 30
-        } else if (pDataLimitCount === 50) {
-            return 30
-        } else if (pDataLimitCount === 20) {
-            return 30;
-        }*/
-
 }
 
 
