@@ -138,8 +138,8 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                     width={window.innerWidth * 0.9}
                     ref={(reference) => this.lineChart = reference}
                     height={window.innerHeight * 0.87}
-                    data={this.state.chartDataForBigModal}
-                    options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForBigModal, this.props.parent, true, this.lineChart, this.props.isScrollEnableForLineChart)}
+                    data={this.props.chartDataForBigModal}
+                    options={makeLineChartOptions(this.state.popupGraphHWType, this.props.chartDataForBigModal, this.props.parent, true, this.lineChart, this.props.isScrollEnableForLineChart)}
                 />
             )
         }
@@ -209,38 +209,21 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                                             }
                                         </div>
                                     </div>
+                                    : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
 
-                                    : this.state.graphType === GRID_ITEM_TYPE.LINE && this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ?
                                         <div style={{display: 'flex'}}>
                                             {this.renderPrevBtn()}
-
-                                            <div className='page_monitoring_popup_title' style={{display: 'flex'}}>
-                                                App Instance {this.props.popupGraphHWType} Utilization
-                                                {this.props.intervalLoading &&
-                                                <div
-                                                    style={{backgroundColor: 'transparent', zIndex: 1, marginLeft: 25}}>
-                                                    {renderWifiLoader(35, 35)}
-                                                </div>
-                                                }
+                                            <div className='page_monitoring_popup_title'>
+                                                Bubble Chart
                                             </div>
-
-
                                         </div>
-                                        : this.state.graphType === GRID_ITEM_TYPE.BUBBLE ?
-
-                                            <div style={{display: 'flex'}}>
-                                                {this.renderPrevBtn()}
-                                                <div className='page_monitoring_popup_title'>
-                                                    Bubble Chart
-                                                </div>
+                                        :
+                                        <div style={{display: 'flex'}}>
+                                            {this.renderPrevBtn()}
+                                            <div className='page_monitoring_popup_title'>
+                                                {convertToClassification(this.props.parent.state.currentClassification)} {this.props.popupGraphHWType} Utilization
                                             </div>
-                                            :
-                                            <div style={{display: 'flex'}}>
-                                                {this.renderPrevBtn()}
-                                                <div className='page_monitoring_popup_title'>
-                                                    {convertToClassification(this.props.parent.state.currentClassification)} {this.props.popupGraphHWType} Utilization
-                                                </div>
-                                            </div>
+                                        </div>
 
                             }
                             <div className='page_monitoring_popup_title_divide'/>

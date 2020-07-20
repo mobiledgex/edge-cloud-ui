@@ -99,9 +99,9 @@ export const graphDataCount = [
         text: '1 hour',
         value: 750
     },
-    {
+   /* {
         text: '2 hours',
         value: 1000
-    },
+    },*/
 ]
 

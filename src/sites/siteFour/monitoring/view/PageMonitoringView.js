@@ -656,7 +656,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     dataLimitCount: 50,//4mins
                     dataLimitCountText: '4 mins',
                     lineChartDataSet: [],
-                    isScrollEnableForLineChart: true,
+                    isScrollEnableForLineChart: false,
                 }
             }
 
@@ -894,7 +894,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         legendRowCount: rowCount,
                         filteredCloudletEventLogList: [],
                         loading: false,
-                        isScrollEnableForLineChart: true,
                     });
                 } catch (e) {
                     throw new Error("loadInitData error")

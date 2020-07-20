@@ -813,7 +813,7 @@ export function makeMaxTickLimit(pDataLimitCount, isBig, isScrollEnableForLineCh
  * @param chartRef
  * @returns {{layout: {padding: ({top: number, left: number, bottom: number, right: number})}, onClick: onClick, stacked: boolean, legend: {display: boolean, position: string, labels: {fontSize: number, boxWidth: number, fontColor: string, fontWeight: string}}, responsive: boolean, pointDotStrokeWidth: number, scales: {backgroundColor: {fill: string}, ticks: {min: number, callback(*=, *, *): string|*|undefined, beginAtZero: boolean, fontColor: string}, yAxes: [{ticks: {callback(*=, *, *): string|*|undefined, fontSize: number, fontColor: string}, id: string, position: string, type: string}, {ticks: {min: number, max: number}, display: boolean, scaleShowLabels: boolean, id: string, type: string}], xAxes: [{ticks: {padding: number, labelOffset: number, maxRotation: number, callback(*, *, *): *, fontSize: number, minRotation: number, fontColor: string}, gridLines: {color: string}, beginAtZero: boolean}], gridLines: {color: string}}, datasetStrokeWidth: number, maintainAspectRatio: boolean, animation: {duration: number}}|string|*|undefined}
  */
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef, isScrollEnableForLineChart = true) => {
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef, isScrollEnableForLineChart = false) => {
 
     try {
         let options = {
