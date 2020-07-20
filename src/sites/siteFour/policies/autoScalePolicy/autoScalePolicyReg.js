@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Item } from 'semantic-ui-react';
-import MexForms from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -96,7 +96,7 @@ class AutoScalePolicyReg extends React.Component {
 
     
     getForms = () => ([
-        { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: 'Header', visible: true },
+        { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
         { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy' },
         { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the Organization that this policy belongs to' },
         { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: 'Input', placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name' },
@@ -111,13 +111,10 @@ class AutoScalePolicyReg extends React.Component {
     onCreate = async (data) => {
         if (data) {
             let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updateAutoScalePolicy(data) : createAutoScalePolicy(data))
-            if (mcRequest && mcRequest.response) {
-                let response = mcRequest.response
-                if (response.status === 200) {
-                    let msg = this.isUpdate ? 'updated' : 'created'
-                    this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
-                    this.props.onClose(true)
-                }
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                let msg = this.isUpdate ? 'updated' : 'created'
+                this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
+                this.props.onClose(true)
             }
         }
     }

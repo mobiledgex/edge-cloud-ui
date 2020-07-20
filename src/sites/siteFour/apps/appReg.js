@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -101,7 +101,7 @@ class AppReg extends React.Component {
     ])
 
     getPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.portForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
+        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.portForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
     }
 
     annotationForm = () => ([
@@ -111,7 +111,7 @@ class AppReg extends React.Component {
     ])
 
     getAnnotationForm = (form) => {
-        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.annotationForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.annotations, formType: MULTI_FORM, forms: form ? form : this.annotationForm(), width: 3, visible: true })
     }
 
     multiPortForm = () => ([
@@ -125,7 +125,7 @@ class AppReg extends React.Component {
     ])
 
     getMultiPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: 'MultiForm', forms: form ? form : this.multiPortForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
+        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.multiPortForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
     }
 
     configForm = () => ([
@@ -135,7 +135,7 @@ class AppReg extends React.Component {
     ])
 
     getConfigForm = (form) => {
-        return ({ uuid: uuid(), field: fields.configs, formType: 'MultiForm', forms: form ? form : this.configForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.configs, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -531,7 +531,8 @@ class AppReg extends React.Component {
                         data[fields.configs] = configs
                     }
                     if (this.isUpdate) {
-                        if (await updateApp(this, data, this.originalData)) {
+                        let mcRequest = await updateApp(this, data, this.originalData)
+                        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                             this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
                             if (data[fields.refreshAppInst]) {
                                 serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
@@ -758,7 +759,7 @@ class AppReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: 'Header', visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name' },
@@ -770,10 +771,10 @@ class AppReg extends React.Component {
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, tip: 'Upgrade App Instances running in the cloudlets' },
-            { label: 'Ports', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
-            { label: 'Annotations', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
-            { label: 'Configs', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
-            { label: 'Advanced Settings', formType: 'Header', forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
+            { label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+            { label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
+            { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
+            { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'public key used for authentication', advance: false },
             { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }], advance: false },
             { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region }], advance: false },
@@ -790,7 +791,7 @@ class AppReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                if (form.forms && form.formType !== 'Header' && form.formType !== 'MultiForm') {
+                if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
                 }
                 else {
@@ -845,10 +846,10 @@ class AppReg extends React.Component {
             <div className="round_panel">
                 <Grid style={{ display: 'flex' }}>
                     <Grid.Row>
-                        <Grid.Column width={this.state.showGraph ? 8: 16} style={{ overflow: 'auto', height: '90vh' }}>
+                        <Grid.Column width={this.state.showGraph ? 9: 16} style={{ overflow: 'auto', height: '90vh' }}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </Grid.Column>
-                        {this.state.showGraph ? <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                        {this.state.showGraph ? <Grid.Column width={7} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                             <Suspense fallback={<div></div>}>
                                 <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                             </Suspense>

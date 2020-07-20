@@ -2,7 +2,7 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item } from 'semantic-ui-react';
-import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM } from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -29,6 +29,7 @@ class AutoProvPolicyReg extends React.Component {
         this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
         this.organizationList = []
         this.cloudletList = []
+        this.expandAdvanceMenu = false;
     }
 
     getCloudletData = (dataList) => {
@@ -159,6 +160,20 @@ class AutoProvPolicyReg extends React.Component {
 
     }
 
+    advanceMenu = (e, form) => {
+        this.expandAdvanceMenu = !this.expandAdvanceMenu
+        form.icon = this.expandAdvanceMenu ? 'expand_more' : 'expand_less'
+        let forms = this.state.forms
+
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.advance !== undefined) {
+                form.advance = this.expandAdvanceMenu
+            }
+        }
+        this.reloadForms()
+    }
+
     addCloudletResponse = (mcRequestList) => {
         let valid = false;
         if (mcRequestList && mcRequestList.length > 0) {
@@ -189,12 +204,9 @@ class AutoProvPolicyReg extends React.Component {
                 }
             }
             let mcRequest = await serverData.sendRequest(this, requestType(data))
-            if (mcRequest && mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.status === 200) {
-                    this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
-                    this.props.onClose(true)
-                }
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
+                this.props.onClose(true)
             }
         }
         else {
@@ -339,15 +351,16 @@ class AutoProvPolicyReg extends React.Component {
 
     formKeys = () => {
         return [
-            { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Provisioning Policy`, formType: 'Header', visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Provisioning Policy`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to' },
             { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true, tip: 'Policy name' },
             { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: true, dataValidateFunc: this.validatedeployClientCount, updateId: '3', tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
             { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: true, updateId: '4', tip: 'Number of intervals to check before triggering deployment' },
             { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: false }, visible: true, update: true, updateId: ['5', '5.1', '5.1.1', '5.1.2'], dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { field: fields.minActiveInstances, label: 'Min Active Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: '6', update: true, dataValidateFunc: this.validateMinInst, tip: 'Minimum number of active instances for High-Availability' },
-            { field: fields.maxInstances, label: 'Max Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: '7', update: true, dataValidateFunc: this.validateMaxInst, tip: 'Maximum number of instances (active or not)' },
+            { label: 'High Availability', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
+            { field: fields.minActiveInstances, label: 'Min Active Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: '6', update: true, dataValidateFunc: this.validateMinInst, tip: 'Minimum number of active instances for High-Availability', advance: false },
+            { field: fields.maxInstances, label: 'Max Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: '7', update: true, dataValidateFunc: this.validateMaxInst, tip: 'Maximum number of instances (active or not)', advance: false },
         ]
     }
 

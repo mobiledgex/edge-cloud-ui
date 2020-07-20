@@ -2,7 +2,7 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item, Step } from 'semantic-ui-react';
-import MexForms from '../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -118,7 +118,7 @@ class CloudletPoolReg extends React.Component {
         if (this.organizationList.length > 0) {
             let label = this.action === constant.DELETE_ORGANIZATION ? 'Unlink' : 'Link'
             let step = [
-                { label: `${label} Organizations`, formType: 'Header', visible: true },
+                { label: `${label} Organizations`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.organizationList, fields.organizationName) },
@@ -216,7 +216,7 @@ class CloudletPoolReg extends React.Component {
             let label = this.action === constant.DELETE_CLOUDLET ? 'Delete' : 'Add'
 
             let step2 = [
-                { label: `${label} Cloudlets`, formType: 'Header', visible: true },
+                { label: `${label} Cloudlets`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
@@ -342,7 +342,7 @@ class CloudletPoolReg extends React.Component {
         }
         else {
             let step1 = [
-                { label: 'Create Cloudlet Pool', formType: 'Header', visible: true },
+                { label: 'Create Cloudlet Pool', formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
                 { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true },
                 { label: 'Create Cloudlet Pool', formType: 'Button', onClick: this.onCreateCloudletPool, validate: true },
