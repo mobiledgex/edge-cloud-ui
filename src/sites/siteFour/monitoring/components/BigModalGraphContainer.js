@@ -91,9 +91,7 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                     let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length !== undefined ? nextProps.lineChartDataSet.newDateTimeList.length : 0;
                     this.setState({
                         usageListLength: usageListLength,
-                    }, () => {
-                        console.log(`usageListLength====>`, this.state.usageListLength);
-                    })
+                    });
                 } catch (e) {
 
                 }

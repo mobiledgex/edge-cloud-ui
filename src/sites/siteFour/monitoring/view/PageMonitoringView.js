@@ -1084,9 +1084,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
-
-                console.log(`lineChartDataSet====>`, lineChartDataSet);
-
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
                 this.setState({
                     chartDataForBigModal: chartDataForBigModal,
