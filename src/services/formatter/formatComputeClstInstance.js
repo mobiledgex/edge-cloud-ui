@@ -8,8 +8,8 @@ export const getKey = (data) => {
         clusterinst: {
             key: {
                 cluster_key: { name: ClusterName },
-                cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
-                developer: OrganizationName
+                cloudlet_key: { organization: Operator, name: Cloudlet },
+                organization: OrganizationName
             },
             flavor: { name: Flavor }
         }
@@ -18,7 +18,7 @@ export const getKey = (data) => {
 
 export const formatData = (datas, body) => {
     let values = [];
-    if (datas.data && datas.data.length > 0) {
+    if (datas.data) {
         let toArray = null;
         let toJson = [];
         if (datas.data) {
@@ -49,14 +49,15 @@ export const formatData = (datas, body) => {
                         State: '',
                         Progress: '',
                         Status: '',
+                        Reservable: '',
                         Edit: null
                     })
                 } else {
                     let Index = i;
                     let Region = body.region || body.params.region || '-';
                     let ClusterName = dataResult.data.key.cluster_key.name || '-';
-                    let DeveloperName = dataResult.data.key.developer || '-';
-                    let Operator = dataResult.data.key.cloudlet_key.operator_key.name || '-';
+                    let DeveloperName = dataResult.data.key.organization || '-';
+                    let Operator = dataResult.data.key.cloudlet_key.organization || '-';
                     let Cloudlet = dataResult.data.key.cloudlet_key.name || '-';
                     let Flavor = dataResult.data.flavor.name || '-';
                     let IpAccess = dataResult.data.ip_access || '-';
@@ -66,10 +67,11 @@ export const formatData = (datas, body) => {
                     let State = dataResult.data.state || '';
                     let CloudletLocation = '-';
                     let Status = dataResult.data.status;
+                    let Reservable = dataResult.data.reservable ? 'YES' : 'NO';
                     let Deployment = dataResult.data.deployment;
 
 
-                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Deployment: Deployment, Edit: newRegistKey })
+                    values.push({ uuid: generateUniqueId(), Region: Region, ClusterName: ClusterName, OrganizationName: DeveloperName, Operator: Operator, Cloudlet: Cloudlet, Flavor: Flavor, IpAccess: IpAccess, CloudletLocation: CloudletLocation, State: State, Progress: '', Status: Status, Reservable: Reservable, Deployment: Deployment, Edit: newRegistKey })
 
                 }
             })

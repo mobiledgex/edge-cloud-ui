@@ -6,7 +6,7 @@ export const getKey = (data) => {
         region: Region,
         cloudlet: {
             key: {
-                operator_key: { name: Operator },
+                organization: Operator,
                 name: CloudletName
             }
         }
@@ -16,7 +16,7 @@ export const getKey = (data) => {
 
 export const formatData = (datas, body) => {
     let values = [];
-    if (datas.data && datas.data.length > 0) {
+    if (datas.data) {
         let toArray = null;
         let toJson = [];
         if (datas.data) {
@@ -50,12 +50,13 @@ export const formatData = (datas, body) => {
                         State: '',
                         Progress: '',
                         Status: '',
+                        CloudletInfoState: 4,
                         Edit: null
                     })
                 } else {
                     let Region = body.region || '-';
                     let CloudletName = dataResult.data.key.name || '-';
-                    let Operator = dataResult.data.key.operator_key.name || '-';
+                    let Operator = dataResult.data.key.organization || '-';
                     let CloudletLocation = dataResult.data.location || '-';
                     let Ip_support = dataResult.data.ip_support || '-';
                     let Num_dynamic_ips = dataResult.data.num_dynamic_ips || '-';
@@ -63,11 +64,10 @@ export const formatData = (datas, body) => {
                     let Platform_type = dataResult.data.platform_type || '-';
                     let State = dataResult.data.state || '-';
                     let Status = dataResult.data.status;
-                    values.push({ uuid: generateUniqueId(), Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State, Progress: '', Status: Status, Edit: newRegistKey })
+                    let CloudletInfoState = 4;
+                    values.push({ uuid: generateUniqueId(), CloudletInfoState: CloudletInfoState, Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State, Progress: '', Status: Status, Edit: newRegistKey })
                 }
             })
-        } else {
-            values.push({ Region: '', CloudletLocation: '' })
         }
     }
     return values

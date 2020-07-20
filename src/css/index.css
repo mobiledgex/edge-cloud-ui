@@ -42,6 +42,12 @@ body, button, input, textarea, optgroup, select, textarea,
     background: transparent;
 }
 
+.table-no-resized {
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
 .table-no-resized .react-grid-item > .react-resizable-handle {
     display: none;
     /*background: transparent;*/
@@ -98,6 +104,9 @@ body, button, input, textarea, optgroup, select, textarea,
     white-space: nowrap;
 }
 
+ .ui.selection.dropdown.active, .ui.selection.dropdown.visible {
+     z-index: 100;
+ }
 
 /* button style */
 .button,
@@ -215,7 +224,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 .intro_login {
     position: absolute;
-    top: 45%; /* login-signUp location vertical */
+    top: 40%; /* login-signUp location vertical */
     left: 50%;
     width: 456px; /* vertical */
     height: auto;
@@ -248,9 +257,13 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 0.714em 0;
 }
 .intro_globe {
-    background: url("/assets/images/backgroundGlob.png") no-repeat #000000;
+    background: url("/assets/images/globe_1.png") no-repeat #000000;
     background-position: center;
     background-size: cover;
+}
+.intro_globe .ui.grid .row .signup_btn,
+.intro_globe .ui.grid .row .login_btn {
+    width: unset !important;
 }
 
 
@@ -350,32 +363,15 @@ body, button, input, textarea, optgroup, select, textarea,
     margin: 0;
 }
 
-.intro_login .ui.form.fieldForm {
+.fieldForm {
     padding: 0 1rem;
     width:100%;
 }
-
-.intro_login .ui.form.fieldForm .fields .field{
-    padding-top: 0.714em;
-    padding-bottom: 0.714em;
-}
-
-.intro_login .ui.form.fieldForm .fields .field{
-    padding-top: 0.714em;
-    padding-bottom: 0.714em;
-}
-
-.intro_login .ui.form .inline.fields .field{
-    padding: 0.714em 0em;
-    width:100%;
-}
-
 
 
 /* console main style */
 .ui.grid {
     background-color: transparent;
-    z-index: 100;
     margin: 0;
     height: 100%;
 }
@@ -489,18 +485,27 @@ body, button, input, textarea, optgroup, select, textarea,
     text-align: right;
     padding-right: 2em !important;
 }
-.navbar_right div{
+.navbar_right>div{
     height: 70px;
     line-height: 70px;
-    vertical-align: top;
+    vertical-align: middle;
     display: inline-block;
     padding: 0 1em;
 }
 .navbar_right .material-icons {
     line-height: 70px;
     color: rgba(255, 255, 255, 0.5) !important;
-    font-size: 32px !important;
 }
+
+.navbar_right .navbar_icon {
+    line-height: 70px;
+    cursor: pointer;
+}
+.navbar_right .navbar_icon>svg {
+    vertical-align: middle;
+}
+
+
 .ui.header .material-icons:hover,
 .navbar_left .nav_filter .material-icons:hover,
 .navbar_right .material-icons:hover {
@@ -732,9 +737,10 @@ body, button, input, textarea, optgroup, select, textarea,
     overflow: hidden;
 }
 .site_content_body {
-    height: calc(100% - 49px);
-    padding: 10px 0 0 0;
+    height: 100%;
+    padding: 0;
 }
+
 .site_content_body > .column {
     height: 100%;
 }
@@ -830,9 +836,8 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 0 !important;
     margin: 0 !important;
     position: absolute;
-    display: flex;
-    width: calc(100% - 240px);
-    height: calc(100% - 70px);
+    width: calc(100% - 100px);
+    height: calc(100% - 80px);
 }
 
 .view_contents {
@@ -886,6 +891,9 @@ body, button, input, textarea, optgroup, select, textarea,
     font-size: 14px;
     /* font-weight: bold; */
     color: #e2e4e7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .ui.secondary.menu.view_left_menu.org_menu .left_authority {
     background: #202329;
@@ -932,7 +940,7 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .contents_body {
     height: 100%;
-    padding: 10px;
+    padding: 0px;
 }
 
 
@@ -970,14 +978,16 @@ body, button, input, textarea, optgroup, select, textarea,
     color: rgba(136,221,0,.85);
 }
 
+.mexListView{
+    height: calc(100% - 48px); /* title Area Height */
+}
 
 .round_panel {
     background-color: #292c33;
-    border-radius: 6px;
-    padding: 1.071em;
+    padding: 0.5em;
     overflow: hidden;
-    height: calc(100vh - 149px);
     width: 100%;
+    height: 100%;
 }
 .ui.header.panel_title {
     height: 1.643em;
@@ -1151,7 +1161,6 @@ body, button, input, textarea, optgroup, select, textarea,
 .gnb_header .ui.menu .ui.dropdown .menu>.item,
 .round_panel .ui.dropdown .menu>.item,
 .round_panel .ui.menu .ui.dropdown .menu>.item {
-    background: rgba(29,31,35,.75) !important;
 }
 .round_panel .ui.search.selection.dropdown>input.search {
     padding: .5em 2.1em .5em 0.7em;
@@ -1169,38 +1178,52 @@ body, button, input, textarea, optgroup, select, textarea,
 
 /* 4P contents style */
 .content_title {
-    color: rgba(255,255,255,.5);
-    font-size: 2em;
-    font-weight: 300;
-    padding: 10px 10px 0 10px;
-    height: 46px;
+    /*color: rgba(255,255,255,.5);*/
+    /*font-size: 2em;*/
+    /*font-weight: 300;*/
+    margin: 10px 0px 10px 0px;
+    height: 36px;
+}
+
+.content_title_wrap {
+    display:flex;
+    width: 100%;
+    height:100%;
+    flex-direction: row;
+    align-items: center;
+    padding-left:20px;
+}
+
+.content_title_label{
+    display:flex;
+    align-items: center;
+    font-size:25px;
+    white-space: nowrap;
+}
+
+.content_title_wrap>div, .content_title_wrap>button, .content_title_wrap>button.ui.button {
+    margin-right:20px !important;
 }
 
 
-.content_title2 {
-    color: rgba(255,255,255,.5);
-    font-size: 2em;
-    font-weight: 300;
-    padding: 10px 10px 0 10px;
-}
-.content_title div {
-    display: inline-block !important;
-    vertical-align: middle;
-}
-.content_title .eight.wide.column {
-    width: 50%;
-}
+/*.content_title div {*/
+/*    display: inline-block !important;*/
+/*    vertical-align: middle;*/
+/*}*/
+/*.content_title .eight.wide.column {*/
+/*    width: 50%;*/
+/*}*/
 
-/* */
-.content_title .eight.wide.column.title_align {
-    width: auto;
-}
-.content_title .eight.wide.column.title_align:first-child {
-     margin-right: 10px;
-}
-.content_title .button {
-    float: left;
-}
+/*!* *!*/
+/*.content_title .eight.wide.column.title_align {*/
+/*    width: auto;*/
+/*}*/
+/*.content_title .eight.wide.column.title_align:first-child {*/
+/*     margin-right: 10px;*/
+/*}*/
+/*.content_title .button {*/
+/*    float: left;*/
+/*}*/
 
 
 /* .user_search .input */
@@ -1219,6 +1242,7 @@ body, button, input, textarea, optgroup, select, textarea,
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,.15);
+    overflow: auto;
     /* border-top: solid 2px rgba(51, 46, 46, 0.2); */
     /* border-bottom: solid 2px rgba(255,255,255,0.2); */
 }
@@ -1285,6 +1309,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.table tbody tr {
     display: flex;
     width: 100%;
+    /*align-items: center;*/
 }
 .contents_body .ui.table tbody tr .table_actions {
     display: flex;
@@ -1301,8 +1326,14 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.basic.striped.table tbody tr:nth-child(2n) {
     background: none !important;
 }
-.contents_body .ui.basic.table tbody tr:last-child td {
+.contents_body .ui.basic.table tbody tr:last-child {
     border-bottom: 1px solid rgba(255,255,255,.05) !important;
+}
+
+.contents_body .ui.basic.striped.table tbody tr:hover {
+    background: #444 !important;
+    cursor: pointer;
+
 }
 
 .contents_body .ui.celled.table tr td,
@@ -1315,6 +1346,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.basic.table tbody tr {
     border-top: none;
     border-bottom: none;
+    align-items: center;
 }
 /* .contents_body .ui.table tr:last-child td {
     border-bottom: solid 1px rgba(0,0,0,.25);
@@ -1368,6 +1400,23 @@ body, button, input, textarea, optgroup, select, textarea,
     background-color: rgba(71,82,102,1) !important;
     color: rgba(255,255,255,0.9) !important;
 }
+
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button {
+    text-align: left;
+}
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button .material-icons {
+    vertical-align: middle;
+    margin-right:10px;
+}
+.table_actions_popup.gnb_profile .table_actions_popup_group .table_actions_popup_group_button:first-child {
+    text-transform: uppercase;
+    background: #000000;
+    color: rgba(255,255,255,.7);
+    pointer-events: none;
+    text-align: center;
+    height: 46px;
+}
+
 .table_actions_tooltip {
     background: #000000 !important;
     border: 1px solid rgba(255,255,255,.4) !important;
@@ -1467,7 +1516,11 @@ body, button, input, textarea, optgroup, select, textarea,
     border-top: 1px solid rgba(255,255,255,.1) !important;
     text-align: center !important;
 }
-
+/*Alert word-break*/
+.s-alert-wrapper > .s-alert-box {
+    word-break: break-word;
+    overflow: hidden;
+}
 
 /*Alert progress */
 .s-alert-wrapper>.s-alert-box.s-alert-info{
@@ -1776,3 +1829,79 @@ body ::-webkit-scrollbar-track {
 .round_panel .appinst > table {
     min-width: 2000px;
 } */
+
+.versionView {
+    zIndex: 100;
+    color: rgba(255,255,255,.2);
+    padding: 0 10px;
+    background: none;
+    position: absolute;
+    bottom:70px;
+
+}
+
+/** css for Tablet **/
+.left_menu_hide_button {
+    background: #3b3f47;
+    position:absolute;
+    width:20px;
+    height:30px;
+    top:15px;
+    right:-20px;
+    border-radius: 0 5px 5px 0;
+    display:flex;
+    justify-content:center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+.left_menu_hide_button:hover {
+    background-color: #4c515a
+}
+
+.left_menu_hide_button i.material-icons {
+    color: rgba(255,255,255,.6);
+    font-size:16px;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_org {
+    display: none;
+
+}
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority {
+    padding:20px .92857143em 20px .92857143em;
+
+}
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.org_menu .left_authority .row > .column > div:last-child {
+    display: none;
+}
+
+.view_left_container.left_menu_hide .ui.secondary.menu a.item .left_menu_item .label {
+    display: none;
+}
+
+.view_left_container.left_menu_hide a.item .left_menu_item i.material-icons {
+    padding-right: 0;
+}
+
+
+.view_left_container.left_menu_hide .ui.secondary.menu.view_left_menu.main_menu {
+    height: calc(100% - 234px);
+    overflow-y: auto;
+}
+
+/*코드 오버로딩*/
+.MuiToolbar-regular {
+    min-height: 48px !important;
+}
+
+.MuiToolbar-root>label, .MuiToolbar-root>button, .MuiToolbar-root>button.ui.button {
+    margin-right:20px !important;
+}

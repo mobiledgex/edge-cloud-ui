@@ -1,13 +1,11 @@
-# World map dashboard
+# MobiledgeX UI Console ❤️
 
-### Run 
+### Run
 ```
-$ cd ..
 $ npm install
-$ HTTPS=true npm start
-$ 
+$ npm start
 ```
-### Style Guid
+### Style Guide
 
 | page Name | component  | css           | Description                  |
 |-----------|------------|---------------|------------------------------|
@@ -16,16 +14,4 @@ $
 |           | line Chart | lineChart.css | Style of linechart           |
 
 
-### External Library
 
-    * map
-    : react simpleMap
-    
-    * calendar
-     http://adphorus.github.io/react-date-range/
-
-
-### Using HTTPS
-
-    * link : https://facebook.github.io/create-react-app/docs/using-https-in-development
-    $ HTTPS=true npm start

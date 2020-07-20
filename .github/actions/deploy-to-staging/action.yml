@@ -1,0 +1,24 @@
+name: "Deploy to staging"
+description: "Deploy console to the staging setup"
+
+inputs:
+  jenkins_username:
+    description: Jenkins username
+    required: true
+  jenkins_api_token:
+    description: Jenkins API token
+    required: true
+  jenkins_build_token:
+    description: Jenkins job build token
+    required: true
+  tag:
+    description: Build tag
+    required: true
+    default: latest
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - "--tag"
+    - ${{ inputs.tag }}

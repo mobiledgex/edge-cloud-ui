@@ -39,10 +39,16 @@ import regionInfo from './regionInfo';
 import editInstance from './editInstance';
 import deleteReset from './deleteReset';
 import checkedAudit from './checkedAudit';
+import showAuditLog from './showAuditLog';
 import stateStream from './stateStream';
 import resetMap from './resetMap';
 import submitObj from './submitObj';
 import LoadingReducer from "./LoadingReducer";
+import MapTyleLayerReducer from "./MapTyleLayerReducer";
+import HeaderReducer from "./HeaderReducer";
+import ThemeReducer from "./ThemeReducer";
+import ChartDataReducer from "./ChartDataReducer";
+import ViewMode from "./ViewMode";
 
 const reducers = combineReducers({
     videoControl,
@@ -65,6 +71,7 @@ const reducers = combineReducers({
     editInstance,
     regionInfo,
     checkedAudit,
+    showAuditLog,
     stateStream,
     resetMap,
     submitObj,
@@ -88,6 +95,11 @@ const reducers = combineReducers({
     alertInfo,
     dataExist,
     LoadingReducer,
+    MapTyleLayerReducer,
+    HeaderReducer,
+    ThemeReducer,
+    ChartDataReducer,
+    ViewMode,
     form: formReducer
 });
 

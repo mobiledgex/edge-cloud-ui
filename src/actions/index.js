@@ -1,4 +1,11 @@
 import * as types from './ActionTypes';
+import {SET_MAP_TYLE_LAYER} from "./ActionTypes";
+import {SET_LINE_COLOR} from "./ActionTypes";
+import {SET_CLOUDLET_ICON_COLOR} from "./ActionTypes";
+import {TOGGLE_HEADER} from "./ActionTypes";
+import {TOGGLE_LOADING} from "./ActionTypes";
+import {TOGGLE_THEME} from "./ActionTypes";
+import {SET_CHART_DATAS} from "./ActionTypes";
 
 export function changeSite(state) {
     return {
@@ -6,6 +13,14 @@ export function changeSite(state) {
         site: state
     };
 }
+
+export function viewMode(mode) {
+    return {
+        type: types.VIEW_MODE,
+        mode: mode
+    };
+}
+
 
 export function changeTab(state) {
     return {
@@ -42,28 +57,28 @@ export function clearData(state) {
     };
 }
 
-export function setUser(user: string): Action {
+export function setUser(user) {
     return {
         type: types.SET_USER,
         payload: user,
     };
 }
 
-export function stopVideo(act: string): Action {
+export function stopVideo(act) {
     return {
         type: types.SET_VIDEO,
         status: act,
     };
 }
 
-export function loadedData(act: string): Action {
+export function loadedData(act) {
     return {
         type: types.LOADED_DATA,
         loaded: act,
     };
 }
 
-export function registDeveloper(accountInfo: string): Action {
+export function registDeveloper(accountInfo) {
     return {
         type: types.REGIST_DEVELOPER,
         account: accountInfo,
@@ -190,12 +205,42 @@ export function loadingSpinner(loading) {
     }
 }
 
-export const toggleLoading = (isLoading) => {
-    return {
-        type: "toggleLoading",
-        isLoading
-    }
-}
+export const toggleLoading = (isLoading) => ({
+    type: TOGGLE_LOADING,
+    isLoading
+})
+
+
+export const toggleHeader = (value) => ({
+    type: TOGGLE_HEADER, //type
+    isShowHeader: value //action
+})
+
+export const toggleTheme = (themeType) => ({
+    type: TOGGLE_THEME,
+    themeType
+})
+
+export const setChartDataSets = (value) => ({
+    type: SET_CHART_DATAS,//type
+    chartDataSets: value,//action
+})
+
+
+export const setMapTyleLayer = (value) => ({
+    type: SET_MAP_TYLE_LAYER,
+    currentTyleLayer: value
+})
+
+export const setLineColor = (value) => ({
+    type: SET_LINE_COLOR,
+    lineColor: value
+})
+
+export const setCloudletIconColor = (value) => ({
+    type: SET_CLOUDLET_ICON_COLOR,
+    cloudletIconColor: value
+})
 
 
 export function showFlavor(flavor) {
@@ -334,6 +379,18 @@ export function regionInfo(data) {
 export function setCheckedAudit(data) {
     return {
         type: types.CHECKED_AUDIT,
+        data
+    }
+}
+
+/**
+ * audit
+ * @param data
+ * @returns {{data: *, type: string}}
+ */
+export function showAuditLog(data) {
+    return {
+        type: types.SHOW_AUDIT,
         data
     }
 }

@@ -1,16 +1,37 @@
 import axios from 'axios';
 import uuid from 'uuid';
 import * as EP from './endPointTypes'
-import Alert from 'react-s-alert';
 
-
-
-let sockets = [];
-
-export function getEP()
-{
+export function getEP() {
     return EP;
 }
+
+export const mcURL = (isWebSocket) =>
+{
+    let serverURL = ''
+    if (process.env.NODE_ENV === 'production') {
+        var url = window.location.href
+        var arr = url.split("/");
+        serverURL = arr[0] + "//" + arr[2]
+
+        if (isWebSocket) {
+            serverURL = serverURL.replace('http', 'ws')
+        }
+    }
+    else
+    {
+        if (isWebSocket) {
+            serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
+        }
+    }
+    return serverURL
+}
+
+const getHttpURL = (request)=>
+{
+    return mcURL(false) + EP.getPath(request)
+}
+
 export function generateUniqueId() {
     return uuid();
 }
@@ -32,159 +53,50 @@ const showSpinner = (self, value) => {
     }
 }
 
-const showError = (request, message) =>
-{
+const showError = (self, request, message) => {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
-    if (showMessage) {
-        Alert.error(message, {
-            position: 'top-right',
-            effect: 'slide',
-            beep: true,
-            timeout: 3000,
-            offset: 100,
-            html: true
-        });
+    if (showMessage && self && self.props.handleAlertInfo) {
+        self.props.handleAlertInfo('error', message)
     }
 }
 
 const checkExpiry = (self, message) => {
-    let isExpired  = message.indexOf('expired') > -1
+    let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
     if (isExpired && self.gotoUrl) {
-        localStorage.setItem('userInfo', null)
-        localStorage.setItem('sessionData', null)
         setTimeout(() => self.gotoUrl('/logout'), 2000);
     }
     return !isExpired;
 }
 
 function responseError(self, request, response, callback) {
-    let message = 'UnKnown';
-    let code = response.status;
-    if (response.data && response.data.message) {
-        message = response.data.message
-        if (checkExpiry(self, message)) {
-            showSpinner(self, false)
-            showError(request, message);
-            if (callback) {
-                callback({ request: request, error: { code: code, message: message } })
+    if (response) {
+        let message = 'UnKnown';
+        let code = response.status;
+        if (response.data && response.data.message) {
+            message = response.data.message
+            if (checkExpiry(self, message)) {
+                showSpinner(self, false)
+                showError(self, request, message);
+                if (callback) {
+                    callback({request: request, error: {code: code, message: message}})
+                }
             }
         }
     }
 }
 
-
-
-export function sendWSRequest(request, callback) {
-    let url = process.env.REACT_APP_API_ENDPOINT;
-    url = url.replace('http','ws');
-    const ws = new WebSocket(`${url}/ws${EP.getPath(request)}`)
-    ws.onopen = () => {
-        sockets.push({ uuid: request.uuid, socket: ws, isClosed:false });
-        ws.send(`{"token": "${request.token}"}`);
-        ws.send(JSON.stringify(request.data));
-    }
-    ws.onmessage = evt => {
-        let data = JSON.parse(evt.data);
-        let response = {};
-        response.data = data;
-        switch (request.method) {
-            case getEP().CREATE_CLUSTER_INST:
-            case getEP().DELETE_CLUSTER_INST:
-            case getEP().CREATE_CLOUDLET:
-            case getEP().DELETE_CLOUDLET:
-            case getEP().CREATE_APP_INST:
-            case getEP().UPDATE_APP_INST:
-            case getEP().DELETE_APP_INST:
-                clearSockets(request.uuid);
-        }
-        callback({ request: request, response: response });
-    }
-
-    ws.onclose = evt => {
-        sockets.map((item, i) => {
-            if(item.uuid === request.uuid)
-            {
-                if(item.isClosed === false && evt.code===1000)
-                {
-                    callback({ request: request })
-                }
-                sockets.splice(i,1)
-            }   
-        }) 
-    }
-}
-
-
-export function sendMultiRequest(self, requestDataList, callback) {
-
-    showSpinner(self, true)
-    let promise = [];
-    let resResults = [];
-    requestDataList.map((request) => {
-        promise.push(axios.post(EP.getPath(request), request.data,
-            {
-                headers: getHeader(request)
-            }))
-
-    })
-    axios.all(promise)
-        .then(responseList => {
-            responseList.map((response, i) => {
-                resResults.push(EP.formatData(requestDataList[i], response));
-            })
-            
-            showSpinner(self, false)
-            callback(resResults);
-        
-        }).catch(error => {
-            responseError(self, requestDataList[0], error.response, callback)
-        })
-}
-
 export const sendSyncRequest = async (self, request) => {
     try {
-        let response = await axios.post(EP.getPath(request), request.data,
+        request.showSpinner === undefined && showSpinner(self, true)
+        let response = await axios.post(getHttpURL(request), request.data,
             {
                 headers: getHeader(request)
             });
+        request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
-    }
-    catch (error) {
+    } catch (error) {
         if (error.response) {
             responseError(self, request, error.response)
         }
     }
 }
-
-export function sendRequest(self, request, callback) {
-    showSpinner(self, true)
-    axios.post(EP.getPath(request), request.data,
-        {
-            headers: getHeader(request)
-        })
-        .then(function (response) { 
-            showSpinner(self, false)
-            callback(EP.formatData(request, response));
-        })
-        .catch(function (error) {
-            if(error.response)
-            {
-                responseError(self, request, error.response, callback)
-            }
-        })
-}
-
-export function clearSockets(uuid) {
-        sockets.map(item => {
-            let socket = item.socket;
-            if (uuid === item.uuid && socket.readyState === WebSocket.OPEN) {
-                socket.close();
-                item.isClosed = true;
-            }
-        })
-    
-}
-
-
-
-

@@ -1,181 +1,152 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
-import TextareaAutosize from "react-textarea-autosize";
-import * as moment from 'moment';
+import { Dialog, DialogContent, DialogTitle as MuiDialogTitle, Chip, Card } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from '@material-ui/icons/Close';
+import cloneDeep from 'lodash/cloneDeep'
+import { withStyles } from '@material-ui/styles';
+import {syntaxHighLighter} from '../hoc/highLighter/highLighter';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import TableRow from "@material-ui/core/TableRow";
+
+const jsonParse = (data) => {
+    try {
+        return JSON.parse(data)
+    }
+    catch (err) {
+        return data
+    }
+}
+
+const jsonView = (data, position) => {
+    let jsonObj = cloneDeep(data)
+    if (jsonObj.request) {
+        jsonObj.request = jsonParse(jsonObj.request)
+    }
+
+    if (jsonObj.response) {
+        jsonObj.response = jsonParse(jsonObj.response)
+    }
+
+    if (position === 1) {
+        jsonObj = jsonObj.request
+    }
+    else if (position === 2) {
+        jsonObj = jsonObj.response
+    }
+    return (
+        <div style={{ width: '100%', flexDirection: 'column' }}>
+            {syntaxHighLighter('json', JSON.stringify(jsonObj !== undefined ? jsonObj : {}, null, 1))}
+        </div>
+    )
+}
+
+const styles = (theme) => ({
+    root: {
+        margin: 0,
+        padding: '16px 0',
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
+});
+
+const DialogTitle = withStyles(styles)((props) => {
+    const { children, classes, onClose } = props;
+    return (
+        <MuiDialogTitle className={classes.root}>
+            {children}
+            {onClose ? (
+                <IconButton aria-label="close" onClick={onClose} className={classes.closeButton}>
+                    <CloseIcon />
+                </IconButton>
+            ) : null}
+        </MuiDialogTitle>
+    );
+});
+
+const StyledTabs = withStyles((theme) => ({
+    flexContainer: {
+        borderBottom: '1px solid rgba(255,255,255,.7)'
+    },
+}))(Tabs);
 
 let _self = null;
 export default class PopDetailViewer extends React.Component {
     constructor() {
         super();
         this.state = {
-            dummyData:[],
-            selected:{},
-            open:false,
-            dimmer:'',
-            devOptionsOne:[],
-            devOptionsTwo:[],
-            devOptionsThree:[],
-            devOptionsFour:[],
-            devOptionsFive:[],
-            dropdownValueOne:'',
-            dropdownValueTwo:'',
-            dropdownValueThree:'',
-            dropdownValueFour:'',
-            dropdownValueFive:'',
-            cloudletResult:null,
-            appResult:null,
-            listOfDetail:null,
-            propsData:'',
-            orgType:''
+            open: false,
+            viewIndex: 0
         }
         _self = this;
     }
 
-    makeTextBox = (value) => (
-        <TextareaAutosize
-            minRows={3}
-            maxRows={10}
-            style={{ boxSizing: "border-box", width:'450px', backgroundColor:'#545b6b', color:'#eeeeee' }}
-            defaultValue={value}></TextareaAutosize>
-    )
-
     componentDidMount() {
-
     }
-    componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
-            let regKeys = [];
-            let component = null;
-            if(nextProps.data){
-                this.setState({orgType:nextProps.data.Type})
-                regKeys = Object.keys(nextProps.data)
-                component = regKeys.map((key, i)=>(
-                    (key !== 'Edit')?
-                    <Grid.Row columns={2} key={i}>
-                        <Grid.Column width={5} className='detail_item'>
-                            <div>
-                                {(key === 'FlavorName')?'Flavor Name'
-                                 :(key == 'RAM')?'RAM Size'
-                                 :(key == 'vCPUs')?'Number of vCPUs'
-                                 :(key == 'Disk')?'Disk Space' /* 여기까지 Flavors*/
-                                 :(key == 'OrganizationName')?'Organization Name'
-                                 :(key == 'AppName')?'App Name'
-                                 :(key == 'DeploymentType')?'Deployment Type'
-                                 :(key == 'ImageType')?'Image Type'
-                                 :(key == 'ImagePath')?'Image Path'
-                                 :(key == 'DefaultFlavor')?'Default Flavor'
-                                 :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
-                                 :(key == 'AuthPublicKey')?'Auth Public Key'
-                                 :key}
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column width={11}>
-                            <div style={{wordWrap: 'break-word'}} style={{overflowY:'auto'}}>
-                                {(key == 'DeploymentType' && String(nextProps.data[key]) === 'docker')?"Docker"
-                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'vm')?"VM"
-                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'kubernetes')?"Kubernetes"
-                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'helm')?"Helm"
-                                :(key == 'Ports')?String(nextProps.data[key]).toUpperCase()
-                                :(key == 'DeploymentMF')? this.makeTextBox(nextProps.data[key])
-                                :(key == 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
-                                :(key == 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/
-                                :(key == 'Created')? String("time is ==  "+nextProps.data[key])
-                                :(key == 'RAM')? String(nextProps.data[key]+' MB')
-                                :(key == 'Disk')? String(nextProps.data[key]+' GB')
-                                :(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
-                                :String(nextProps.data[key])}
-                            </div>
-                        </Grid.Column>
 
-                        <Divider vertical></Divider>
-                    </Grid.Row>
-                        :null
-
-                ))
-            }
-            this.setState({listOfDetail:component,propsData:nextProps.data})
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.open) {
+            this.setState({ open: nextProps.open});
         }
-
     }
 
-    setCloudletList = (operNm) => {
-        let cl = [];
-        _self.state.cloudletResult[operNm].map((oper, i) => {
-            if(i === 0) _self.setState({dropdownValueThree: oper.CloudletName})
-            cl.push({ key: i, value: oper.CloudletName, text: oper.CloudletName })
-        })
-
-        _self.setState({devOptionsThree: cl})
-    }
-
-
-
-    close() {
+    close(mode) {
         this.setState({ open: false })
-        this.props.close()
+        this.props.close && this.props.close(mode)
     }
 
+    handleClose = () => {
+        this.setState({ open: false });
+        this.props.close();
+    }
+
+    expansionPanelView = (position, data) => {
+        return (
+            <Card className="audit_popup_panel">
+                {(data) ? jsonView(data, position) : null}
+            </Card>
+        )
+    }
+
+    getChipStyle = (position)=>
+    {
+        let color = this.state.viewIndex === position ? '#77BD06' :'#6F7074';
+        return {backgroundColor: color, marginRight:5, fontSize:15}
+    }
+
+    handleChangeTab = (event, newValue) => {
+        this.setState({viewIndex: newValue});
+    };
 
     render() {
-        let { orgType } = this.state;
         return (
-            <Modal size={'small'} open={this.state.open}>
-                <Modal.Header >View Detail</Modal.Header>
-                <Modal.Content>
-                    <Modal.Description>
-                        <Grid divided style={{overflowY:'auto'}}>
-                            {
-                                this.state.listOfDetail
-                            }
-                        </Grid>
-                        {(this.props.siteId === 'Organization' && orgType === 'developer') ?
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column>
-                                        <div>
-                                            If your image is docker, please upload your image with your MobiledgeX
-                                            Account Credentials to our docker registry using the following docker
-                                            commands.
-                                        </div>
-                                        <br></br>
-                                        <div>
-                                            {`$ docker login -u <username> docker.mobiledgex.net`}
-                                        </div>
-                                        <div>
-                                            {`$ docker tag <your application> docker.mobiledgex.net/` + String(this.state.propsData.Organization).toLowerCase()  + `/images/<application name>:<version>`}
-                                        </div>
-                                        <div>
-                                            {`$ docker push docker.mobiledgex.net/` + String(this.state.propsData.Organization).toLowerCase() + `/images/<application name>:<version>`}
-                                        </div>
-                                        <div>
-                                            $ docker logout docker.mobiledgex.net
-                                        </div>
-                                        <br></br>
-                                        <div>
-                                            If you image is VM, please upload to our VM registry with your MobiledgeX
-                                            Account Credentials.
-                                        </div>
-                                        <div>
-                                            {`curl -u<username> -T <path_to_file> `}<span
-                                            style={{color: 'rgba(136,221,0,.9)'}}>{`"https://artifactory.mobiledgex.net/artifactory/repo-` + this.state.propsData.Organization + `/<target_file_path>"`}</span>
-                                            {` --progress-bar -o`}
-                                        </div>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                            :null
-                        }
-                    </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button onClick={() => this.close()}>
-                        Close
-                    </Button>
-                </Modal.Actions>
-            </Modal>
+            <Dialog
+                className="audit_popup"
+                open={this.state.open}
+                onClose={this.handleClose}
+                aria-labelledby="draggable-dialog-title"
+            >
+                <DialogTitle onClose={this.handleClose}>
+                    <StyledTabs
+                        value={this.state.viewIndex}
+                        onChange={this.handleChangeTab}
+                        indicatorColor="primary"
+                        textColor="primary"
+                    >
+                        <Tab label="Raw Viewer" />
+                        <Tab label="Request" />
+                        <Tab label="Response" />
+                    </StyledTabs>
+                </DialogTitle>
+                <DialogContent>
+                    {this.expansionPanelView(this.state.viewIndex, this.props.rawViewData)}
+                </DialogContent>
+            </Dialog>
         )
     }
 }
-
-

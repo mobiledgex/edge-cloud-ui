@@ -9,8 +9,15 @@ export type TypeUtilization = {
     "vCpuMax": number,
     "vCpuUsed": number,
 }
+export type TypeLegendRowCount = {
+    itemCount: number,
+    rowCount: number,
+}
 
 export type TypeGridInstanceList = {
+    sumAcceptsConnection: number;
+    sumActiveConnection: number;
+    sumHandledConnection: number;
     "instance": any,
     "sumCpuUsage": number,
     "sumMemUsage": number,
@@ -18,8 +25,208 @@ export type TypeGridInstanceList = {
     "sumSendBytes": number,
 }
 
+export type TypeClient = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    altitude: number,
+    timestamp: any,
+    uuid: string,
+    serverLocInfo: {
+        lat: number,
+        long: number,
+    }
+}
 
-export type TypeAppInstance = {
+export type TypeCloudletMarker = {
+    AppNames: string,
+    CloudletLocation: {
+        latitude: number,
+        longitude: number,
+    },
+    timestamp: string,
+    Cloudlet: string,
+}
+
+/*export type TypeMapTyleLayerReducer = {
+    currentTyleLayer: string,
+    lineColor: string,
+    cloudletIconColor: string,
+}*/
+
+export type TypeLineChartData2 = {
+    levelTypeNameList: Array,
+    usageSetList: Array,
+    newDateTimeList: Array,
+    hardwareType: string,
+}
+
+export type TypeClientOnCloudlet = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    vertical_accuracy: number,
+    altitude: number,
+    timestamp: {
+        seconds: number, nanos: number,
+    },
+    uuid: string,
+    unique_id_type: string,
+    serverLocInfo: { lat: number, long: number },
+    clientLocation: string,  //"37.4-122.1"
+}
+
+export type TypeClientLocation = {
+    latitude: number,
+    longitude: number,
+    horizontal_accuracy: number,
+    altitude: number,
+    course: number,
+    speed: number,
+    timestamp: any,
+    uuid: string,
+    unique_id_type: string,
+    serverLocInfo: {
+        lat: number,
+        long: number,
+    }
+}
+
+export type TypeClientStatus = {
+    FindCloudletCount: number,
+    RegisterClientCount: number,
+    VerifyLocationCount: number,
+    app: string,
+    apporg: string,
+    cellID: string,
+    cloudlet: string,
+    cloudletorg: string,
+    ver: string,
+}
+
+
+export type TypeCloudlet = {
+    uuid: string,
+    CloudletInfoState: number,
+    Region: string,
+    CloudletName: string,
+    Operator: string,
+    CloudletLocation: any,
+    Ip_support: number,
+    Num_dynamic_ips: number,
+    Physical_name: string,
+    Platform_type: number,
+    State: number,
+    Progress: string,
+    colorCodeIndex: number,
+}
+
+export type TypeCloudletEventLog = {
+    "time": any,
+    "cloudlet": string,
+    "cloudletorg": string,
+    "event": string,
+    "status": string,
+}
+
+
+export type TypeCluster = {
+    Cloudlet: string,
+    CloudletLocation: string,
+    ClusterName: string,
+    Deployment: string,
+    Edit: any,
+    Flavor: string,
+    IpAccess: number,
+    Operator: string,
+    OrganizationName: string,
+    Progress: string,
+    Region: string,
+    Reservable: string,
+    State: number,
+    Status: any,
+    uuid: string,
+    colorCodeIndex: number,
+}
+
+export type TypeAppInstanceUsage2 = {
+    instance: any,
+    columns: any,
+    appName: string,
+    sumCpuUsage: number,
+    sumMemUsage: number,
+    sumDiskUsage: number,
+    sumRecvBytes: number,
+    sumSendBytes: number,
+    sumActiveConnection: number,
+    sumHandledConnection: number,
+    sumAcceptsConnection: number,
+    cpuSeriesValue: any,
+    memSeriesValue: any,
+    diskSeriesValue: any,
+    networkSeriesValue: any,
+    connectionsSeriesValue: any,
+}
+
+export type TypeCloudletUsage = {
+    Region: string,
+    cloudlet: string,
+    columns: any,
+    diskSeriesList: any,
+    floatingIpsSeriesList: any,
+    ipv4UsedSeriesList: any,
+    memSeriesList: any,
+    netRecvSeriesList: any,
+    netSendSeriesList: any,
+    operator: string,
+    series: any,
+    usedFloatingIpsUsage: number,
+    usedIpv4Usage: number,
+    usedRecvBytes: number,
+    usedSendBytes: number,
+
+    usedVCpuCount: number,
+    usedMemUsage: number,
+    usedDiskUsage: number,
+
+    maxDiskUsage: number,
+    maxMemUsage: number,
+    maxVCpuCount: number,
+}
+
+export type TypeClusterUsageOne = {
+    uuid: string,
+    Region: string,
+    cluster: string,
+    OrganizationName: string,
+    Operator: string,
+    cloudlet: string,
+    Flavor: string,
+    IpAccess: number,
+    CloudletLocation: string,
+    State: number,
+    Progress: string,
+    sumCpuUsage: number,
+    sumMemUsage: number,
+    sumDiskUsage: number,
+    sumRecvBytes: number,
+    sumSendBytes: number,
+    sumUdpSent: number,
+    sumUdpRecv: number,
+    sumUdpRecvErr: number,
+    sumTcpConns: number,
+    sumTcpRetrans: number,
+    colorCodeIndex: number,
+
+}
+
+export type TypeCloudletClusterListMap = {
+    cloudletNameList: any,
+    clusterNameList: any,
+}
+
+export type TypeAppInst = {
+
     "Region": string,
     "OrganizationName": string,
     "AppName": string,
@@ -43,50 +250,40 @@ export type TypeAppInstance = {
     "Edit": any,
     "Status": any,
     "Revision": number,
+    "HealthCheck": number,
+    colorCodeIndex: number,
 }
 
-/*{
-    "Region": "EU",
-    "OrganizationName": "MobiledgeX",
-    "AppName": "MEXPrometheusAppName",
-    "Version": "1.0",
-    "Operator": "TDG",
-    "Cloudlet": "frankfurt-eu",
-    "ClusterInst": "kkkkkkk",
-    "CloudletLocation": {
-    "latitude": 50.110924,
-        "longitude": 8.682127
-},
-    "URI": "kkkkkkk.frankfurt-eu.tdg.mobiledgex.net",
-    "Liveness": 1,
-    "Mapped_port": [
-    {
-        "proto": 1,
-        "internal_port": 9090,
-        "public_port": 9090
-    }
-],
-    "Flavor": "x1.medium",
-    "State": 8,
-    "Error": [
-    "Update App Inst failed: UpdateAppInst not supported for deployment: helm"
-],
-    "Runtime": {},
-    "Created": "seconds : 1570417526",
-    "Progress": "",
-    "Edit": [
-    "Region",
-    "DeveloperName",
-    "AppName",
-    "Version",
-    "Operator",
-    "Cloudlet",
-    "ClusterInst",
-    "CloudletLocation",
-    "State",
-    "Editable"
-],
-    "Status": {},
-    "Revision": 1
+export type TypeBarChartData = {
+    chartDataList: string,
+    hardwareType: string,
 }
-*/
+
+export type TypeLineChartData = {
+    lineChartDataSet: string,
+    levelTypeNameList: string,
+    usageSetList: string,
+    newDateTimeList: string,
+    hardwareType: string,
+}
+
+export type TypeChartDataSet = {
+    labels: any,
+    datasets: any,
+    isNoData: boolean
+}
+
+export type TypeClusterEventLog = {
+    "time": string,
+    "cluster": string,
+    "dev": string,
+    "cloudlet": string,
+    "operator": string,
+    "flavor": string,
+    "vcpu": number,
+    "ram": number,
+    "disk": number,
+    "other": string,
+    "event": string,
+    "status": string,
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Divider, Modal, Grid} from "semantic-ui-react";
-import * as moment from 'moment';
+import {FORMAT_FULL_DATE_TIME, time} from '../utils/date_util'
 
 let _self = null;
 export default class PopProfileViewer extends React.Component {
@@ -8,7 +8,6 @@ export default class PopProfileViewer extends React.Component {
         super();
         this.state = {
             open:false,
-            dimmer:'',
             listOfDetail:null
         }
         _self = this;
@@ -17,12 +16,12 @@ export default class PopProfileViewer extends React.Component {
     componentDidMount() {
 
     }
-    makeUTC = (time) => {
-        return moment( time ).utc().format("YYYY-MM-DD HH:mm:ss") + ' UTC'
+    makeUTC = (date) => {
+        return time(FORMAT_FULL_DATE_TIME, date)
     }
-    componentWillReceiveProps(nextProps, nextContext) {
+    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
+            this.setState({open:nextProps.open});
             let regKeys = [];
             let component = null;
             if(nextProps.data){
@@ -66,7 +65,6 @@ export default class PopProfileViewer extends React.Component {
 
 
     render() {
-
         return (
             <Modal size={'small'} open={this.state.open}>
                 <Modal.Header>Profile</Modal.Header>
