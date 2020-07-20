@@ -49,6 +49,7 @@ type State = {
     appInstanceListGroupByCloudlet: any,
     redraw: boolean,
     usageListLength: number,
+    chartDataForBigModal: any,
 
 };
 export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -74,10 +75,12 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
                 try {
                     this.setState({
-                        chartDataForRendering: nextProps.chartDataForBigModal,
+                        chartDataForBigModal: nextProps.chartDataForBigModal,
                         graphType: nextProps.graphType.toUpperCase(),
                         popupGraphHWType: nextProps.popupGraphHWType,
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
+                    }, () => {
+                        console.log(`chartDataForBigModal====>`, this.state.chartDataForBigModal);
                     });
                 } catch (e) {
 
@@ -90,6 +93,8 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                     let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length !== undefined ? nextProps.lineChartDataSet.newDateTimeList.length : 0;
                     this.setState({
                         usageListLength: usageListLength,
+                    }, () => {
+                        console.log(`usageListLength====>`, this.state.usageListLength);
                     })
                 } catch (e) {
 
@@ -128,6 +133,18 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                     <FA name="arrow-circle-left" style={{fontSize: 40, color: 'white'}}/>
 
                 </div>
+            )
+        }
+
+        renderLineChart() {
+            return (
+                <Line
+                    width={window.innerWidth * 0.9}
+                    ref={(reference) => this.lineChart = reference}
+                    height={window.innerHeight * 0.87}
+                    data={this.state.chartDataForBigModal}
+                    options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForBigModal, this.props.parent, true, this.lineChart, this.props.isScrollEnableForLineChart)}
+                />
             )
         }
 
@@ -233,19 +250,26 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
-                            <div className="chartWrapperForBig">
-                                <div className="chartAreaWrapperForBig">
-                                    <div style={{width: 240 * this.state.usageListLength, height: '250px !important'}}>
-                                        <Line
-                                            width={window.innerWidth * 0.9}
-                                            ref={(reference) => this.lineChart = reference}
-                                            height={window.innerHeight * 0.87}
-                                            data={this.state.chartDataForRendering}
-                                            options={makeLineChartOptions(this.state.popupGraphHWType, this.state.chartDataForRendering, this.props.parent, true)}
-                                        />
+                            this.props.parent.state.isScrollEnableForLineChart ?
+                                <div className="chartWrapperForBig">
+                                    <div className="chartAreaWrapperForBig">
+                                        <div style={{width: 240 * this.state.usageListLength, height: '250px !important'}}>
+                                            {this.renderLineChart()}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                ://todo: non- scroll line chart
+                                <div className='page_monitoring_container'>
+                                    <div
+                                        style={{
+                                            position: 'relative',
+                                            width: '99%',
+                                            height: '99%'
+                                        }}
+                                    >
+                                        {this.renderLineChart()}
+                                    </div>
+                                </div>
                             : this.state.graphType === GRID_ITEM_TYPE.BAR || this.state.graphType === GRID_ITEM_TYPE.COLUMN ?
                                 <div style={{height: 'calc(100% - 62px)'}}>
                                     <Bar_Column_Chart

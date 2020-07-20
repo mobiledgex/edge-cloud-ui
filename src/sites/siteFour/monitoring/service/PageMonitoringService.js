@@ -778,29 +778,21 @@ export function makeUniqDevOrg(appInstList) {
 
 /*    text: '1 min',value: 10,    text: '2 min',value: 20,    text: '4 mins',value: 50,    text: '8 mins',value: 100,    text: '20 mins',value: 250,    text: '40 mins',value: 500,    text: '1 hour',value: 750,    text: '2 hours',value: 1000*/
 export function makeMaxTickLimit(pDataLimitCount) {
-
-    if (pDataLimitCount === 2000) {
-        return 120
-    } else if (pDataLimitCount === 1000) {
-        return 100
-    } else if (pDataLimitCount === 750) {
-        return 70
-    } else if (pDataLimitCount === 500) {
-        return 50
-    } else if (pDataLimitCount === 250) {
-        return 50
-    } else if (pDataLimitCount === 100) {
-        return 50
-    } else if (pDataLimitCount === 50) {
-        return 50
-    } else if (pDataLimitCount === 20) {
-        return 50;
-    } else if (pDataLimitCount === 10) {
-        return 50;
-    }
+    return 5;
 }
 
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef) => {
+
+/**
+ *
+ * @param hardwareType
+ * @param lineChartDataSet
+ * @param _this
+ * @param isBig
+ * @param chartRef
+ * @returns {{layout: {padding: ({top: number, left: number, bottom: number, right: number})}, onClick: onClick, stacked: boolean, legend: {display: boolean, position: string, labels: {fontSize: number, boxWidth: number, fontColor: string, fontWeight: string}}, responsive: boolean, pointDotStrokeWidth: number, scales: {backgroundColor: {fill: string}, ticks: {min: number, callback(*=, *, *): string|*|undefined, beginAtZero: boolean, fontColor: string}, yAxes: [{ticks: {callback(*=, *, *): string|*|undefined, fontSize: number, fontColor: string}, id: string, position: string, type: string}, {ticks: {min: number, max: number}, display: boolean, scaleShowLabels: boolean, id: string, type: string}], xAxes: [{ticks: {padding: number, labelOffset: number, maxRotation: number, callback(*, *, *): *, fontSize: number, minRotation: number, fontColor: string}, gridLines: {color: string}, beginAtZero: boolean}], gridLines: {color: string}}, datasetStrokeWidth: number, maintainAspectRatio: boolean, animation: {duration: number}}|string|*|undefined}
+ */
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef, isScrollEnableForLineChart = true) => {
+
     try {
         let options = {
             stacked: true,
@@ -816,7 +808,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     left: 9,
                     right: 5,
                     top: 5,
-                    bottom: 30,
+                    bottom: 40,
                 } : {
                     left: 9,
                     right: 5,
@@ -833,13 +825,6 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     fontSize: 12,
                     fontWeight: 'bold',
                 },
-                /*onClick: (e, clickedItem) => {
-                    /!*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*!/
-                },
-                onHover: (e, item) => {
-                    //alert(`Item with text ${item.text} and index ${item.index} hovered`)
-                },*/
             },
             scales: {
                 ticks: {
@@ -884,12 +869,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        //maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        // maxTicksLimit: isScrollEnableForLineChart ? null : isBig ? 25 : makeMaxTickLimit(_this.state.dataLimitCount),
                         //autoSkip: isBig ? false : true,
                         fontSize: isBig ? 15 : 9,
                         fontColor: 'white',
-                        maxRotation: isBig ? 0 : 0,//xAxis text rotation
-                        minRotation: isBig ? 0 : 0,//xAxis text rotation
+                        maxRotation: isBig ? 45 : 0,//xAxis text rotation
+                        minRotation: isBig ? 45 : 0,//xAxis text rotation
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {
