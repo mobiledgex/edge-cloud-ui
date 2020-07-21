@@ -484,32 +484,40 @@ class ClustersMap extends Component {
                                     }
 
 
-                                    return (
-                                    <Marker
-                                        ref={initMarker}
-                                        position={city.coordinates}
-                                        icon={this.iconMarker(city)}
-                                    >
-                                        {city.name &&
-                                        <Popup
-                                            ref={popupEl => assignPopupProperties(popupEl)}
-                                            className={'map-popup'}
-                                        >
-                                            {city.name.map(one => {
-
-                                                let key = city.statusList.findIndex(i => i.name === one)
-                                                let oneStatus = city.statusList[key].status
-
-                                                return (
-                                                    <div
-                                                        className='map-marker-list'
-                                                        // onClick={()=> }
+                                                    return (
+                                                    <Marker
+                                                        key={i}
+                                                        ref={initMarker}
+                                                        position={city.coordinates}
+                                                        icon={this.iconMarker(city)}
                                                     >
-                                                        {this.props.id === "Cloudlets" &&
-                                                            <div
-                                                                style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
-                                                                className='map-status-mark'
-                                                            />
+                                                        {city.name &&
+                                                        <Popup
+                                                            ref={popupEl => assignPopupProperties(popupEl)}
+                                                            className={'map-popup'}
+                                                        >
+                                                            {city.name.map((one, j) => {
+
+                                                                let key = city.statusList.findIndex(i => i.name === one)
+                                                                let oneStatus = city.statusList[key].status
+
+                                                                return (
+                                                                    <div key={j}
+                                                                        className='map-marker-list'
+                                                                        // onClick={()=> }
+                                                                    >
+                                                                        {this.props.id === "Cloudlets" &&
+                                                                            <div
+                                                                                style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
+                                                                                className='map-status-mark'
+                                                                            />
+                                                                        }
+                                                                        {one}
+
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                        </Popup>
                                                         }
                                                         {one}
 
