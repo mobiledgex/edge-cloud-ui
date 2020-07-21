@@ -20,6 +20,7 @@ const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF
 const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
 let zoom = 1;
+let selectedIndex = 0;
 
 let mapTileList = [
     {
@@ -295,7 +296,7 @@ class ClustersMap extends Component {
             : (config && config.pageId === 'cloudlet') ? pathCloudlet
             : circle;
 
-        let bgColor = (mapTileList[this.state.selectedIndex].name.indexOf('light') > -1 ) ? "rgba(10,10,10,.7)" : "rgba(10,10,10,.5)"
+        let bgColor = (mapTileList[selectedIndex].name.indexOf('light') > -1 ) ? "rgba(10,10,10,.7)" : "rgba(10,10,10,.5)"
 
         let svgImage = `<svg viewBox="0 0 24 24"><g fill=${bgColor} stroke="#fff" stroke-width="0"> ${gradient} ${path} </g><p style="position:absolute; top: 0; width: 28px; line-height: 28px; text-align: center;">${cost}</p></svg>`
 
@@ -368,7 +369,8 @@ class ClustersMap extends Component {
     };
 
     handleThemeChange = (event, index) => {
-        this.setState({selectedIndex: index});
+        // this.setState({selectedIndex: index});
+        selectedIndex = index;
         this.props.setMapTyleLayer(mapTileList[index].url);
 
         this.setState({anchorEl: null});
@@ -425,7 +427,7 @@ class ClustersMap extends Component {
                     {this.attachControll()}
                     <div style={{position: 'absolute', bottom: 5, right: 5}}>
                         <Button className='map_theme_button leaflet-control' aria-controls="map_theme" aria-haspopup="true" onClick={this.handleThemeClick}>
-                            {mapTileList[this.state.selectedIndex].name}
+                            {mapTileList[selectedIndex].name}
                         </Button>
                         <Menu
                             id="map_theme"
@@ -438,7 +440,7 @@ class ClustersMap extends Component {
                                 return (
                                     <MenuItem
                                         key={index}
-                                        selected={index === this.state.selectedIndex}
+                                        selected={index === selectedIndex}
                                         onClick={(event) => this.handleThemeChange(event, index)}
                                     >
                                         {item.name}
