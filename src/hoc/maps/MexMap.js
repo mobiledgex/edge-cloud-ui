@@ -19,7 +19,6 @@ import * as actions from "../../actions";
 const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03"]
 const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
-let zoom = 1;
 
 let mapTileList = [
     {
@@ -124,12 +123,6 @@ class ClustersMap extends Component {
             this.setState({ center: this.props.zoomControl.center, zoom: this.props.zoomControl.zoom })
         }
         this.setState({ oldCountry: this.state.selectedCity })
-        let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
-        if(catchLeafLayer) {
-            if(catchLeafLayer.length === 0) {
-                this.handleRefresh();
-            }
-        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -373,154 +366,162 @@ class ClustersMap extends Component {
         this.setState({anchorEl: null});
     }
 
-    attachControll = () => {
-
-        return (
-            <div className="leaflet-top leaflet-left" style={{ top: 79, position: 'absolute' }}>
-                <div className="zoom-inout-reset-clusterMap leaflet-control" style={{ left: 0, top: 0, position: 'absolute' }}>
-                    <Button id="mapZoomCtl" size='small' icon onClick={() => this.handleRefresh()}>
-                        <Icon name='redo' />
-                    </Button>
-                </div>
-                {this.state.detailMode &&
-                    <div className="zoom-inout-reset-clusterMap leaflet-control" style={{ left: 0, top: 35, position: 'absolute' }}>
-                        <Button id="mapZoomCtl" size='large' icon onClick={() => this.handleReset()}>
-                            <Icon name='compress' />
-                        </Button>
-                    </div>
-                }
-            </div>
-        )
-    }
-
     render() {
 
         return (
             <div className="commom-listView-map">
 
-                
-                
 
-           
-                
-                <Map
-                    //ref={null}
-                    center={this.state.mapCenter}
-                    zoom={zoom}
-                    duration={1.2}
-                    style={{width: '100%', height: '100%'}}
-                    easeLinearity={2}
-                    dragging={true}
-                    zoomControl={true}
-                    boundsOptions={{padding: [50, 50]}}
-                    scrollWheelZoom={true}
-                    viewport={this.state.mapCenter}
-                    onClick={this.handleMapClick}
-                >
-                    <TileLayer
-                        url={this.props.currentTyleLayer}
-                        minZoom={3}
-                    />
-                    {this.attachControll()}
-                    <div style={{position: 'absolute', bottom: 5, right: 5}}>
-                        <Button className='map_theme_button leaflet-control' aria-controls="map_theme" aria-haspopup="true" onClick={this.handleThemeClick}>
-                            {mapTileList[this.state.selectedIndex].name}
+                <div className="zoom-inout-reset-clusterMap" style={{ left: 10, top: 79, position: 'absolute', zIndex:1000 }}>
+                    <Button id="mapZoomCtl" size='small' icon onClick={() => this.handleRefresh()}>
+                        <Icon name='redo' />
+                    </Button>
+                </div>
+                {this.state.detailMode &&
+                    <div className="zoom-inout-reset-clusterMap" style={{ left: 10, top: 117, position: 'absolute', zIndex:1000 }}>
+                        <Button id="mapZoomCtl" size='large' icon onClick={() => this.handleReset()}>
+                            <Icon name='compress' />
                         </Button>
-                        <Menu
-                            id="map_theme"
-                            anchorEl={this.state.anchorEl}
-                            keepMounted
-                            open={Boolean(this.state.anchorEl)}
-                            onClose={this.handleThemeClose}
-                        >
-                            {mapTileList.map((item, index) => {
-                                return (
-                                    <MenuItem
-                                        key={index}
-                                        selected={index === this.state.selectedIndex}
-                                        onClick={(event) => this.handleThemeChange(event, index)}
-                                    >
-                                        {item.name}
-                                    </MenuItem>
-                                )
-                            })}
-                        </Menu>
-                        
                     </div>
-                    {(this.props.id === "Cloudlets" && !this.state.detailMode) ?
-                        this.state.cities.map((city, i) => (
-                            this.MarkerMap(this, city, i, { pageId: 'cloudlet'})
-                        ))
-                        : (this.props.id === "ClusterInst" && !this.state.detailMode) ?
-                            this.state.cities.map((city, i) => (
-                                (this.props.icon === 'cloudlet') ?
-                                    this.MarkerMap(this, city, i, { pageId: 'cloudlet' })
-                                    : this.MarkerMap(this, city, i, { pageId: 'cluster' })
-                            ))
-                            :
-                            (this.props.id == "AppInsts" && !this.state.detailMode) ?
-                                this.state.cities.map((city, i) => (
-                                    this.MarkerMap(this, city, i, { pageId: 'app' })
-                                ))
-                                :
-                                this.state.cities.map((city, i) => {
+                }
 
-                                    const initMarker = ref => {
-                                        if (ref) {
-                                            ref.leafletElement.openPopup();
-                                            ref.leafletElement.off('click', this.openPopup);
-                                        }
-                                    }
+                <ContainerDimensions>
+                    {({ width, height }) =>
+                        <Motion
+                            defaultStyle={{
+                                zoom: 1,
+                                x: 30,
+                                y: 40,
+                            }}
+                            style={{
+                                zoom: spring(this.state.zoom, { stiffness: 210, damping: 30 }),
+                                x: spring(this.state.center[0], { stiffness: 210, damping: 30 }),
+                                y: spring(this.state.center[1], { stiffness: 210, damping: 30 }),
+                            }}
+                        >
+                            {({ zoom, x, y }) => (
+                                <Map
+                                    //ref={null}
+                                    center={this.state.mapCenter}
+                                    zoom={zoom}
+                                    duration={1.2}
+                                    style={{width: '100%', height: '100%'}}
+                                    easeLinearity={2}
+                                    dragging={true}
+                                    zoomControl={true}
+                                    boundsOptions={{padding: [50, 50]}}
+                                    scrollWheelZoom={true}
+                                    viewport={this.state.mapCenter}
+                                    onClick={this.handleMapClick}
+                                >
+                                    <TileLayer
+                                        url={this.props.currentTyleLayer}
+                                        minZoom={3}
+                                    />
 
-                                    const assignPopupProperties = popup => {
-
-                                        if (popup) {
-                                            popup.leafletElement.options.autoClose = false;
-                                            popup.leafletElement.options.closeOnClick = false;
-                                        }
-                                    }
-
-
-                                    return (
-                                    <Marker
-                                        ref={initMarker}
-                                        position={city.coordinates}
-                                        icon={this.iconMarker(city)}
-                                    >
-                                        {city.name &&
-                                        <Popup
-                                            ref={popupEl => assignPopupProperties(popupEl)}
-                                            className={'map-popup'}
+                                    <div style={{position: 'absolute', bottom: 5, right: 5, zIndex: 1000}}>
+                                        <Button className='map_theme_button' aria-controls="map_theme" aria-haspopup="true" onClick={this.handleThemeClick}>
+                                            {mapTileList[this.state.selectedIndex].name}
+                                        </Button>
+                                        <Menu
+                                            id="map_theme"
+                                            anchorEl={this.state.anchorEl}
+                                            keepMounted
+                                            open={Boolean(this.state.anchorEl)}
+                                            onClose={this.handleThemeClose}
                                         >
-                                            {city.name.map(one => {
-
-                                                let key = city.statusList.findIndex(i => i.name === one)
-                                                let oneStatus = city.statusList[key].status
-
+                                            {mapTileList.map((item, index) => {
                                                 return (
-                                                    <div
-                                                        className='map-marker-list'
-                                                        // onClick={()=> }
+                                                    <MenuItem
+                                                        key={index}
+                                                        selected={index === this.state.selectedIndex}
+                                                        onClick={(event) => this.handleThemeChange(event, index)}
                                                     >
-                                                        {this.props.id === "Cloudlets" &&
-                                                            <div
-                                                                style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
-                                                                className='map-status-mark'
-                                                            />
-                                                        }
-                                                        {one}
-
-                                                    </div>
+                                                        {item.name}
+                                                    </MenuItem>
                                                 )
                                             })}
-                                        </Popup>
-                                        }
-                                    </Marker>
-                                )})
-                    }
-                </Map>
-                        
+                                        </Menu>
+                                    </div>
+                                    {(this.props.id === "Cloudlets" && !this.state.detailMode) ?
+                                        this.state.cities.map((city, i) => (
+                                            this.MarkerMap(this, city, i, { pageId: 'cloudlet'})
+                                        ))
+                                        : (this.props.id === "ClusterInst" && !this.state.detailMode) ?
+                                            this.state.cities.map((city, i) => (
+                                                (this.props.icon === 'cloudlet') ?
+                                                    this.MarkerMap(this, city, i, { pageId: 'cloudlet' })
+                                                    : this.MarkerMap(this, city, i, { pageId: 'cluster' })
+                                            ))
+                                            :
+                                            (this.props.id == "AppInsts" && !this.state.detailMode) ?
+                                                this.state.cities.map((city, i) => (
+                                                    this.MarkerMap(this, city, i, { pageId: 'app' })
+                                                ))
+                                                :
+                                                this.state.cities.map((city, i) => {
 
+                                                    const initMarker = ref => {
+                                                        if (ref) {
+                                                            ref.leafletElement.openPopup();
+                                                            ref.leafletElement.off('click', this.openPopup);
+                                                        }
+                                                    }
+
+                                                    const assignPopupProperties = popup => {
+
+                                                        if (popup) {
+                                                            popup.leafletElement.options.autoClose = false;
+                                                            popup.leafletElement.options.closeOnClick = false;
+                                                        }
+                                                    }
+
+
+                                                    return (
+                                                    <Marker
+                                                        key={i}
+                                                        ref={initMarker}
+                                                        position={city.coordinates}
+                                                        icon={this.iconMarker(city)}
+                                                    >
+                                                        {city.name &&
+                                                        <Popup
+                                                            ref={popupEl => assignPopupProperties(popupEl)}
+                                                            className={'map-popup'}
+                                                        >
+                                                            {city.name.map((one, j) => {
+
+                                                                let key = city.statusList.findIndex(i => i.name === one)
+                                                                let oneStatus = city.statusList[key].status
+
+                                                                return (
+                                                                    <div key={j}
+                                                                        className='map-marker-list'
+                                                                        // onClick={()=> }
+                                                                    >
+                                                                        {this.props.id === "Cloudlets" &&
+                                                                            <div
+                                                                                style={{backgroundColor:oneStatus === 'red'? grdColors[0] : grdColors[5]}}
+                                                                                className='map-status-mark'
+                                                                            />
+                                                                        }
+                                                                        {one}
+
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                        </Popup>
+                                                        }
+                                                    </Marker>
+                                                )})
+                                    }
+                                </Map>
+
+                            )}
+
+                        </Motion>
+                    }
+                </ContainerDimensions>
 
             </div>
         )

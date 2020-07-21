@@ -202,8 +202,10 @@ class CloudletReg extends React.Component {
                     let multiFormData = data[uuid]
                     if (multiFormData) {
                         if (form.field === fields.cloudletLocation) {
-                            multiFormData.latitude = parseInt(multiFormData.latitude)
-                            multiFormData.longitude = parseInt(multiFormData.longitude)
+                            // multiFormData.latitude = parseInt(multiFormData.latitude)
+                            // multiFormData.longitude = parseInt(multiFormData.longitude)
+                            multiFormData.latitude = Number(multiFormData.latitude)
+                            multiFormData.longitude = Number(multiFormData.longitude)
                             data[fields.cloudletLocation] = multiFormData
                         }
                         else if (multiFormData[fields.key] && multiFormData[fields.value]) {
