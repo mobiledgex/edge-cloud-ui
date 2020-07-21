@@ -10,9 +10,9 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as constant from '../constant'
 
-import { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
-import MexTable from '../hoc/mex_table/MexTable';
+import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
@@ -243,7 +243,7 @@ class MexListView extends React.Component {
                     this.onWarning(action, 'reboot', false, data)
                     break;
                 default:
-                    action.onClick ? action.onClick(action, data) : null
+                    action.onClick(action, data)
             }
         }
     }
@@ -281,13 +281,15 @@ class MexListView extends React.Component {
                              mapDetails={this.mapDetails}/>
                     </div> : null
                 }
-                <MexTable 
-                keys={this.keys} 
-                headerLabel={this.props.requestInfo.headerLabel}
-                dataList={this.state.dataList}
-                actionMenu={this.props.actionMenu}
-                actionClose={this.onActionClose}
-                onAction={this.onToolbarAction}/>
+                <MexListViewer keys={this.keys} dataList={this.state.filterList}
+                    selected={this.state.selected}
+                    setSelected={this.setSelected}
+                    actionMenu={this.props.actionMenu}
+                    cellClick={this.getCellClick}
+                    actionClose={this.onActionClose}
+                    isMap={isMap} requestInfo={this.props.requestInfo}
+                    groupActionMenu={this.props.groupActionMenu}
+                    groupActionClose={this.groupActionClose} />
             </div>)
     }
     /*
@@ -462,6 +464,7 @@ class MexListView extends React.Component {
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
+                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue} regions={this.regions} filterText={this.filterText}/>
                 {this.state.currentView ? this.state.currentView : this.listView()}
             </Card>
         );
@@ -607,3 +610,5 @@ const mapDispatchProps = (dispatch) => {
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));
+
+

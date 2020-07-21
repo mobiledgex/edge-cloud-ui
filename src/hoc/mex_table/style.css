@@ -1,0 +1,21 @@
+.MuiTypography-h6{
+    font-size: 1.8rem !important;
+}
+
+.MuiTableCell-root{
+    border-bottom: none !important;
+}
+
+.MuiTableCell-body{
+    border-bottom: none !important;
+}
+
+thead.MuiTableHead-root{
+  border-bottom: 1px solid #515151;
+}
+
+
+tbody.MuiTableBody-root >:nth-of-type(2n)
+{
+    background-color: #1E2123;
+}
