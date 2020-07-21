@@ -479,6 +479,7 @@ class ClustersMap extends Component {
 
                                                     return (
                                                     <Marker
+                                                        key={i}
                                                         ref={initMarker}
                                                         position={city.coordinates}
                                                         icon={this.iconMarker(city)}
@@ -488,13 +489,13 @@ class ClustersMap extends Component {
                                                             ref={popupEl => assignPopupProperties(popupEl)}
                                                             className={'map-popup'}
                                                         >
-                                                            {city.name.map(one => {
+                                                            {city.name.map((one, j) => {
 
                                                                 let key = city.statusList.findIndex(i => i.name === one)
                                                                 let oneStatus = city.statusList[key].status
 
                                                                 return (
-                                                                    <div
+                                                                    <div key={j}
                                                                         className='map-marker-list'
                                                                         // onClick={()=> }
                                                                     >
