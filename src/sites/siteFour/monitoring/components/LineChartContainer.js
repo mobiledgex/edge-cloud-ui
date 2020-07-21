@@ -1,15 +1,11 @@
 // @flow
 import * as React from 'react';
-import {
-    convertToClassification,
-    makeGradientLineChartData,
-    makeLineChartOptions
-} from "../service/PageMonitoringService";
+import {convertToClassification, makeGradientLineChartData, makeLineChartOptions} from "../service/PageMonitoringService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import type {TypeChartDataSet} from "../../../../shared/Types";
-import {renderBarLoader, renderEmptyMessageBox, showToast} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
 
 type Props = {
     parent: PageMonitoringView,
@@ -25,6 +21,7 @@ type State = {
     pHardwareType: string,
     isResizeComplete: boolean,
     isNoData: boolean,
+    isScrollEnableForLineChart: boolean,
 };
 export default class LineChartContainer extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -131,6 +128,17 @@ export default class LineChartContainer extends React.Component<Props, State> {
         }
     }
 
+    renderLineChartCore() {
+        return (
+            <Line
+                ref={c => this.lineChart = c}
+                height={'190px !important'}
+                data={this.state.chartDataSet}
+                options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent, undefined, this.lineChart, this.props.isScrollEnableForLineChart)}
+            />
+        )
+    }
+
     render() {
         return (
             <div className='page_monitoring_dual_column' style={{display: 'flex'}}>
@@ -145,19 +153,28 @@ export default class LineChartContainer extends React.Component<Props, State> {
                     {this.props.chartDataSet === undefined ?
                         renderEmptyMessageBox("No Data Available")
                         :
-                        !this.props.parent.state.loading &&
-                        <div className="chartWrapper">
-                            <div className="chartAreaWrapper">
-                                <div style={{width: 3000}}>
-                                    <Line
-                                        ref={c => this.lineChart = c}
-                                        height={'190px !important'}
-                                        data={this.state.chartDataSet}
-                                        options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent, undefined, this.lineChart)}
-                                    />
+                        !this.props.parent.state.loading ?
+                            this.props.isScrollEnableForLineChart ?
+                                <div className="chartWrapper">
+                                    <div className="chartAreaWrapper">
+                                        <div style={{width: 3000}}>
+                                            {this.renderLineChartCore()}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                                ://todo: non- scroll line chart
+                                <div className='page_monitoring_container'>
+                                    <div
+                                        style={{
+                                            position: 'relative',
+                                            width: '99%',
+                                            height: '99%'
+                                        }}
+                                    >
+                                        {this.renderLineChartCore()}
+                                    </div>
+                                </div>
+                            : null
                     }
 
                 </div>

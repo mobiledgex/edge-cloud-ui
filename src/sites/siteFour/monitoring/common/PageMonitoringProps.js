@@ -95,13 +95,5 @@ export const graphDataCount = [
         text: '40 mins',
         value: 500
     },
-    {
-        text: '1 hour',
-        value: 750
-    },
-    {
-        text: '2 hours',
-        value: 1000
-    },
 ]
 
