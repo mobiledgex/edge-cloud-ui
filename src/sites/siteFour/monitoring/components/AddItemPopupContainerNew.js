@@ -406,7 +406,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
                             HW Type
                         </Center>
                     </div>
-                    <div className='page_monitoring_form_column_right'>
+                    <div className='page_monitoring_form_column_right2'>
                         <Select
                             maxTagCount={4}
                             allowClear={true}
@@ -459,7 +459,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
             <div className='add_item_popup_outer'>
                 <div style={{width: '100%', zIndex: 999999}}>
                     <div className='add_item_popup_outer_header'>
-                        <div style={{fontSize: 14, marginLeft: -5, flex: .95, marginTop: 15, fontWeight: 'bold'}}>
+                        <div style={{fontSize: 14, marginLeft: 0, flex: .95, marginTop: 15, fontWeight: 'bold'}}>
                             Add Item [{convertToClassification(this.props.parent.state.currentClassification)}]
                         </div>
                         <div className='add_item_popup_outer_header_right_icon'>
@@ -491,37 +491,39 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
                         {/*todo:############################*/}
                         {/*@todo:ITEM TYPE                  */}
                         {/*todo:############################*/}
-                        <div style={{flex: .25, display: 'flex'}}>
+                        <div style={{flex: .5, display: 'flex'}}>
                             <div className='page_monitoring_form_column_left'>
-                                <Center>
+                                <Center style={{marginLeft: 25,}}>
                                     Item Type
                                 </Center>
                             </div>
-                            <Radio.Group
-                                onChange={(e) => {
-                                    let selectedItem = e.target.value;
-                                    this.setState({
-                                        currentItemType: selectedItem,
-                                    });
-                                }}
-                                value={this.state.currentItemType}
-                            >
-                                <div className='page_monitoring_form_column_right'>
-                                    {this.renderLineChartRadio()}
-                                    {this.renderBarChartRadio()}
-                                    {this.renderColumnChartRadio()}
-                                    {this.renderTableRadio()}
-                                    {this.renderMapRadio()}
-                                    {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
-                                    || this.props.parent.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN
-                                    || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
-                                </div>
-                            </Radio.Group>
+                            <div style={{marginLeft: 25,}}>
+                                <Radio.Group
+                                    onChange={(e) => {
+                                        let selectedItem = e.target.value;
+                                        this.setState({
+                                            currentItemType: selectedItem,
+                                        });
+                                    }}
+                                    value={this.state.currentItemType}
+                                >
+                                    <div className='page_monitoring_form_column_right'>
+                                        {this.renderLineChartRadio()}
+                                        {this.renderBarChartRadio()}
+                                        {this.renderColumnChartRadio()}
+                                        {this.renderTableRadio()}
+                                        {this.renderMapRadio()}
+                                        {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
+                                        || this.props.parent.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN
+                                        || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
+                                    </div>
+                                </Radio.Group>
+                            </div>
                         </div>
                         {/*todo:############################*/}
                         {/*@todo:HW TYPE                    */}
                         {/*todo:############################*/}
-                        <div className='page_monitoring_hw_type_div'>
+                        <div className='page_monitoring_hw_type_div' style={{flex: .5, marginLeft: -30, marginTop: 10,}}>
                             {/*@todo:MultipleDropdown           */}
                             {this.state.isShowHWDropDown && this.renderHwMultipleDropdown(hwDropdownChildren)}
                             {/*@todo:TABLE TYPE             */}
