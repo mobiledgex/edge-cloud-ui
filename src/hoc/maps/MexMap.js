@@ -1,9 +1,7 @@
 import React, { Component } from "react"
 import {Map, Popup, Tooltip, TileLayer, Marker} from "react-leaflet";
 import { Button, Icon } from 'semantic-ui-react';
-import ContainerDimensions from 'react-container-dimensions';
 import isEqual from 'lodash/isEqual';
-import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
