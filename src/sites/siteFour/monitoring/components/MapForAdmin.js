@@ -467,7 +467,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
             this.state.locationGroupedCloudletList.map((cloudletOne: TypeCloudlet, cloudletIndex) => {
                 let cloudlets = cloudletOne.Cloudlet.toString().split(',');
                 return (
-                    <React.Fragment>
+                    <React.Fragment key={cloudletIndex}>
                         <Marker
                             ref={c => this.marker1 = c}
                             icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}

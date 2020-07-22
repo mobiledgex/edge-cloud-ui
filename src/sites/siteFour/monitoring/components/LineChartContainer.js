@@ -74,10 +74,6 @@ export default class LineChartContainer extends React.Component<Props, State> {
             let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
             let isStackecLineChart = this.props.parent.state.isStackedLineChart;
 
-            if (colorCodeIndexList.length === 1) {
-                isStackecLineChart = true
-            }
-
             const chartDataSet: TypeChartDataSet = makeGradientLineChartData(levelTypeNameList, usageSetList, newDateTimeList, this.props.parent, isStackecLineChart, hardwareType, false, colorCodeIndexList)
 
             this.setState({
