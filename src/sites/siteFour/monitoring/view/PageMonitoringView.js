@@ -151,7 +151,6 @@ import DonutChart from "../components/DonutChart";
 import ClientStatusTable from "../components/ClientStatusTable";
 import MethodUsageCount from "../components/MethodUsageCount";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
-import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
@@ -3811,11 +3810,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             width: this.state.currentWidth,
                             height: '100%',
                         }}>
-                            <AddItemPopupContainer
-                                parent={this}
-                                isOpenEditView={this.state.isOpenEditView}
-                                currentClassification={this.state.currentClassification}
-                            />
                             <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                      selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                      parent={this}
