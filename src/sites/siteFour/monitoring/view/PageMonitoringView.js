@@ -151,7 +151,6 @@ import DonutChart from "../components/DonutChart";
 import ClientStatusTable from "../components/ClientStatusTable";
 import MethodUsageCount from "../components/MethodUsageCount";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
-import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
@@ -159,6 +158,7 @@ import MapForAdmin from "../components/MapForAdmin";
 import * as dateUtil from '../../../../utils/date_util'
 import {getMexTimezone} from '../../../../utils/sharedPreferences_util';
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AddItemPopupContainerNew from "../components/AddItemPopupContainerNew";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -392,6 +392,7 @@ type PageDevMonitoringState = {
     dataLimitCountText: string,
     lineChartDataSet: any,
     isScrollEnableForLineChart: boolean,
+    isShowAddPopup: boolean,
 
 }
 
@@ -657,6 +658,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     dataLimitCountText: '4 mins',
                     lineChartDataSet: [],
                     isScrollEnableForLineChart: false,
+                    isShowAddPopup: false,
                 }
             }
 
@@ -1838,11 +1840,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Fetch Locally Stored Data
                             </div>
                         </AMenu.Item>
+                        {/*desc:#########################################*/}
+                        {/*desc: Add Item                           */}
+                        {/*desc:#########################################*/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
-                                        this.setState({
+                                        /*this.setState({
                                             isOpenEditView: true,
+                                        })*/
+
+                                        this.setState({
+                                            isShowAddPopup: !this.state.isShowAddPopup,
                                         })
                                     }}
                         >
@@ -1884,6 +1893,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <MaterialIcon icon={'grid_on'} color={'white'}/>
                             <div style={PageMonitoringStyles.listItemTitle}>
                                 Revert To The Default Layout
+                            </div>
+                        </AMenu.Item>
+                        {/*desc: ######################*/}
+                        {/*desc:Stacked Line Chart     */}
+                        {/*desc: ######################*/}
+                        <AMenu.Item style={{display: 'flex'}}
+                                    key="1"
+                                    onClick={() => {
+                                        this.setState({
+                                            isStackedLineChart: !this.state.isStackedLineChart,
+                                        });
+                                    }}
+                        >
+                            <MaterialIcon icon={'show_chart'} color={'white'}/>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                Stacked Line Chart
+                            </div>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                <CustomSwitch
+                                    size="small"
+                                    checked={this.state.isStackedLineChart}
+                                    color="primary"
+
+                                />
                             </div>
                         </AMenu.Item>
                         {/*desc:#########################################*/}
@@ -3777,8 +3810,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             width: this.state.currentWidth,
                             height: '100%',
                         }}>
-                            <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}
-                                                   currentClassification={this.state.currentClassification}/>
                             <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                      selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                      parent={this}
@@ -3811,7 +3842,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}>
                                     <SemanticToastContainer position={"bottom-center"} color={'red'}/>
                                     {this.renderHeader()}
+                                    {this.state.isShowAddPopup &&
+                                    <div style={{position: 'absolute', top: 36, zIndex: 99999, left: 10,}} className='add_item_popup_container'>
+                                        <AddItemPopupContainerNew
+                                            parent={this}
+                                            isOpenEditView={this.state.isOpenEditView}
+                                            currentClassification={this.state.currentClassification}
+                                        />
+                                    </div>
+                                    }
                                     {this.makeLegend()}
+
                                     <div className="page_monitoring"
                                          style={{
                                              overflowY: 'auto',
