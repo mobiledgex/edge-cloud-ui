@@ -1886,6 +1886,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Revert To The Default Layout
                             </div>
                         </AMenu.Item>
+                        {/*desc: ######################*/}
+                        {/*desc:Stacked Line Chart     */}
+                        {/*desc: ######################*/}
+                        <AMenu.Item style={{display: 'flex'}}
+                                    key="1"
+                                    onClick={() => {
+                                        this.setState({
+                                            isStackedLineChart: !this.state.isStackedLineChart,
+                                        });
+                                    }}
+                        >
+                            <MaterialIcon icon={'show_chart'} color={'white'}/>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                Stacked Line Chart
+                            </div>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                <CustomSwitch
+                                    size="small"
+                                    checked={this.state.isStackedLineChart}
+                                    color="primary"
+
+                                />
+                            </div>
+                        </AMenu.Item>
                         {/*desc:#########################################*/}
                         {/*desc:____Menu Changing Graph Theme Color_____ */}
                         {/*desc:#########################################*/}
