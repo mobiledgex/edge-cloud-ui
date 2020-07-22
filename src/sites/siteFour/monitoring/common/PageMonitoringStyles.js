@@ -180,8 +180,8 @@ export const PageMonitoringStyles = {
         //height: '50px',
     },
     chartIcon: {
-        width: 65,
-        height: 65,
+        width: 30,
+        height: 30,
     },
     chartIconOuter: {
         width: 130,
@@ -643,8 +643,9 @@ export const ChartIconOuterDiv = styled.div`
   border-style: solid;
   border-color: dimgrey;
   padding: 10px 5px;
-  height: 110px;
-  width: 150px;
+  height: 75px;
+  width: 100px;
+  background-color: black;
 `;
 
 export const AppInstLegend = styled.div`
