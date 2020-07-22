@@ -58,16 +58,6 @@ class MexTable extends Component {
             columns: [],
             selectedRow: {}
         }
-        //Component customization
-        this.components = {
-            Toolbar: props => {
-                return(
-                <div style={{ backgroundColor: '#292C33', paddingTop: 10, marginBottom: 10 }}>
-                    <MTableToolbar {...props} />
-                    {this.props.toolbar()}
-                </div>
-            )}
-        }
     }
 
     /*Action Block*/
@@ -128,6 +118,27 @@ class MexTable extends Component {
         return columns
     }
 
+    //Component customization
+    components = () => {
+        let isMap = this.props.showMap
+        return (
+            {
+                Toolbar: props => (
+                    <div style={{ backgroundColor: '#292C33', paddingTop: 10, marginBottom: 10 }}>
+                        <MTableToolbar {...props} />
+                        {isMap ?
+                            <div className='panel_worldmap' style={{ height: 400 }}>
+                                <Map dataList={this.props.dataList}
+                                    id={this.props.requestInfo.id}
+                                    onClick={this.props.onMapClick}
+                                    region={this.props.selectedRegion}
+                                    mapDetails={this.props.mapDetails} />
+                            </div> : null}
+                    </div>
+                )
+            }
+    )}
+
     //All options of table
     options = {
         search: true,
@@ -169,11 +180,11 @@ class MexTable extends Component {
         return (
             <div style={{ maxWidth: "100%" }}>
                 <MaterialTable
-                    components={this.components}
+                    components={this.components()}
                     icons={tableIcons}
                     columns={this.state.columns}
                     data={this.props.dataList}
-                    title={this.props.requestInfo.headerLabel}
+                    title={this.props.headerLabel}
                     options={this.options}
                     actions={this.actions}
                     onRowClick={(event, rowData, togglePanel) => {

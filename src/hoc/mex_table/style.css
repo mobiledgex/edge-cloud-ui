@@ -14,6 +14,10 @@ thead.MuiTableHead-root{
   border-bottom: 1px solid #515151;
 }
 
+.MTableHeader-header-43{
+    background-color: #292C33 !important;
+}
+
 
 tbody.MuiTableBody-root >:nth-of-type(2n)
 {

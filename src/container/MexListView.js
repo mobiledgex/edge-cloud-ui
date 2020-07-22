@@ -266,28 +266,32 @@ class MexListView extends React.Component {
     groupActionClose = (action, dataList) => {
         this.onWarning(action, action.warning, true, dataList)
     }
+
+    toolbar = () => {
+        let isMap = this.props.requestInfo.isMap && this.state.showMap
+        return isMap ?
+            <div className='panel_worldmap' style={{ height: 400 }}>
+                <Map dataList={this.state.filterList}
+                    id={this.props.requestInfo.id}
+                    onClick={this.onMapClick}
+                    region={this.selectedRegion}
+                    mapDetails={this.mapDetails} />
+            </div> : null
+    }
     /*Action Block*/
     listView = () => {
         let isMap = this.props.requestInfo.isMap && this.state.showMap
-
         return (
             <div className="mexListView">
-                {isMap ?
-                    <div className='panel_worldmap' style={{ height: 400 }}>
-                        <Map dataList={this.state.filterList}
-                             id={this.props.requestInfo.id}
-                             onClick={this.onMapClick}
-                             region={this.selectedRegion}
-                             mapDetails={this.mapDetails}/>
-                    </div> : null
-                }
+                {this.state.dataList.length > 0 ?
                 <MexTable 
+                requestInfo={this.props.requestInfo}
                 keys={this.keys} 
-                headerLabel={this.props.requestInfo.headerLabel}
                 dataList={this.state.dataList}
                 actionMenu={this.props.actionMenu}
                 actionClose={this.onActionClose}
-                onAction={this.onToolbarAction}/>
+                toolbar = {this.toolbar}
+                onAction={this.onToolbarAction}/> : null}
             </div>)
     }
     /*
