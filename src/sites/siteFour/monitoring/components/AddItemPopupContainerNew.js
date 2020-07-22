@@ -294,14 +294,13 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
 
                 <div className='page_monitoring_form_column_right'>
                     <Select
-                        dropdownStyle={{zIndex: 9999999999999999999}}
                         ref={c => this.tableTypeSelect2 = c}
                         showSearch={true}
                         listHeight={512}
                         style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
                         dropdownMatchSelectWidth={false}
                         dropdownStyle={{
-                            maxHeight: 800, overflow: 'auto', width: '333px'
+                            maxHeight: 800, overflow: 'auto', width: '333px', zIndex: 9999999999999999999
                         }}
                         placeholder="Select Item"
                         onChange={async (value) => {
@@ -361,14 +360,13 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
 
                 <div className='page_monitoring_form_column_right'>
                     <Select
-                        dropdownStyle={{zIndex: 9999999999999999999}}
                         ref={c => this.tableTypeSelect = c}
                         showSearch={true}
                         listHeight={512}
                         style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
                         dropdownMatchSelectWidth={false}
                         dropdownStyle={{
-                            maxHeight: 800, overflow: 'auto', width: '333px'
+                            maxHeight: 800, overflow: 'auto', width: '333px', zIndex: 9999999999999999999
                         }}
                         placeholder="Select Item"
                         onChange={async (value) => {
