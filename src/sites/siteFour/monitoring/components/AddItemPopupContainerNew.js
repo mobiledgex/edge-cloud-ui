@@ -1,14 +1,13 @@
 // @flow
 import * as React from 'react';
-import {Modal as AModal, notification, Radio, Select} from 'antd';
+import {notification, Radio, Select} from 'antd';
 import {CLASSIFICATION, EVENT_LOG_ITEM_LIST_FOR_APPINST, EVENT_LOG_ITEM_LIST_FOR_CLOUDLET, EVENT_LOG_ITEM_LIST_FOR_CLUSTER} from "../../../../shared/Constants";
 import {ReactSVG} from 'react-svg'
 import {CircularProgress} from "@material-ui/core";
 import {Center, ChartIconOuterDiv, PageMonitoringStyles} from "../common/PageMonitoringStyles";
-import Button from "@material-ui/core/Button";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
-import {showToast} from "../service/PageMonitoringCommonService";
 import {convertToClassification} from "../service/PageMonitoringService";
+import MaterialIcon from "material-icons-react";
 
 const FA = require('react-fontawesome')
 type Props = {
@@ -29,7 +28,7 @@ type State = {
 
 const Option = Select.Option;
 
-export default class AddItemPopupContainer extends React.Component<Props, State> {
+export default class AddItemPopupContainerNew extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -46,7 +45,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
 
     closePopupWindow() {
         this.props.parent.setState({
-            isOpenEditView: false,
+            isShowAddPopup: false,
         })
     }
 
@@ -140,7 +139,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     </Center>
                 </div>
                 <div className='page_monitoring_form_radio_label'>
-                    <Radio value={GRID_ITEM_TYPE.LINE}>Line Chart</Radio>
+                    <Radio size='small' value={GRID_ITEM_TYPE.LINE} className='page_monitoring_form_radio_text'>Line </Radio>
                 </div>
             </ChartIconOuterDiv>
         )
@@ -170,7 +169,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         </Center>
                     </div>
                     <div className='page_monitoring_form_radio_label'>
-                        <Radio value={GRID_ITEM_TYPE.BAR}>Bar Chart</Radio>
+                        <Radio size='small' value={GRID_ITEM_TYPE.BAR} className='page_monitoring_form_radio_text'>Bar </Radio>
                     </div>
                 </ChartIconOuterDiv>
             )
@@ -199,7 +198,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             </Center>
                         </div>
                         <div className='page_monitoring_form_radio_label'>
-                            <Radio value={GRID_ITEM_TYPE.COLUMN}>Column Chart</Radio>
+                            <Radio size='small' value={GRID_ITEM_TYPE.COLUMN} className='page_monitoring_form_radio_text'>Column </Radio>
                         </div>
                     </ChartIconOuterDiv>
                 ) : null
@@ -226,7 +225,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     </Center>
                 </div>
                 <div className='page_monitoring_form_radio_label'>
-                    <Radio value={GRID_ITEM_TYPE.TABLE}>Table</Radio>
+                    <Radio value={GRID_ITEM_TYPE.TABLE} className='page_monitoring_form_radio_text'>Table</Radio>
                 </div>
             </ChartIconOuterDiv>
         )
@@ -252,7 +251,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     </Center>
                 </div>
                 <div className='page_monitoring_form_radio_label'>
-                    <Radio value={GRID_ITEM_TYPE.MAP}>Map</Radio>
+                    <Radio value={GRID_ITEM_TYPE.MAP} className='page_monitoring_form_radio_text'>Map</Radio>
                 </div>
             </ChartIconOuterDiv>
         )
@@ -278,7 +277,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     </Center>
                 </div>
                 <div className='page_monitoring_form_radio_label'>
-                    <Radio value={GRID_ITEM_TYPE.BUBBLE}>Bubble Chart</Radio>
+                    <Radio value={GRID_ITEM_TYPE.BUBBLE} className='page_monitoring_form_radio_text'>Bubble </Radio>
                 </div>
             </ChartIconOuterDiv>
         )
@@ -301,7 +300,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
                         dropdownMatchSelectWidth={false}
                         dropdownStyle={{
-                            maxHeight: 800, overflow: 'auto', width: '333px'
+                            maxHeight: 800, overflow: 'auto', width: '333px', zIndex: 9999999999999999999
                         }}
                         placeholder="Select Item"
                         onChange={async (value) => {
@@ -367,7 +366,7 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                         style={{width: 200, maxHeight: '512px !important', fontSize: '9px !important'}}
                         dropdownMatchSelectWidth={false}
                         dropdownStyle={{
-                            maxHeight: 800, overflow: 'auto', width: '333px'
+                            maxHeight: 800, overflow: 'auto', width: '333px', zIndex: 9999999999999999999
                         }}
                         placeholder="Select Item"
                         onChange={async (value) => {
@@ -397,29 +396,6 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         )
     }
 
-    renderBottomBtns() {
-        return (
-            <div className='page_monitoring_form_row' style={{marginTop: 15}}>
-                <Button
-                    size={'small'}
-                    style={{width: 100, backgroundColor: '#559901', color: 'white'}}
-                    onClick={this.handleAddClicked}
-                >
-                    <label>Add</label>
-                </Button>
-                <div style={{width: 29}}/>
-                <Button
-                    size={'small'}
-                    style={{width: 100, backgroundColor: 'grey', color: 'white'}}
-                    onClick={async () => {
-                        this.closePopupWindow();
-                    }}
-                >Cancel
-                </Button>
-
-            </div>
-        )
-    }
 
     renderHwMultipleDropdown(hwDropdownChildren) {
         return (
@@ -432,9 +408,11 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                     </div>
                     <div className='page_monitoring_form_column_right'>
                         <Select
+                            maxTagCount={4}
                             allowClear={true}
                             mode="multiple"
                             style={{width: '100%'}}
+                            dropdownStyle={{zIndex: 9999999999999999999}}
                             placeholder="Select Hardware Type"
                             value={this.state.currentHwTypeList}
                             onChange={(values) => {
@@ -478,51 +456,50 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
         let hwDropdownChildren = this.makeHwDropdownChildren(hardwareDropdownList);
 
         return (
-            <div style={{flex: 1, display: 'flex'}}>
-                <AModal
-                    mask={false}
-                    //title={this.props.currentGraphAppInst + " [" + this.props.cluster + "]" + "  " + this.state.hardwareType}
-                    visible={this.props.isOpenEditView}
-                    onOk={() => {
-                        this.closePopupWindow();
-                    }}
-                    //maskClosable={true}
-                    onCancel={() => {
-                        this.closePopupWindow();
-
-                    }}
-                    closable={false}
-                    bodyStyle={{
-                        height: window.innerHeight * 0.6,
-                        marginTop: 0,
-                        marginLeft: 0,
-                        backgroundColor: 'rgb(41, 44, 51)'
-                    }}
-                    width={'100%'}
-                    style={{padding: '10px', top: 0, minWidth: 1200}}
-                    footer={null}
-                >
-                    <div style={{width: '100%'}}>
-                        <div style={{display: 'flex', width: '100%',}}>
-                            {this.renderPrevBtn2()}
-                            {this.state.loading ? <div style={{marginLeft: 20,}}><CircularProgress/></div> : null}
-                            <div className='page_monitoring_popup_title'>
-                                Add Item [{convertToClassification(this.props.parent.state.currentClassification)}]
-                            </div>
+            <div className='add_item_popup_outer'>
+                <div style={{width: '100%', zIndex: 999999}}>
+                    <div className='add_item_popup_outer_header'>
+                        <div style={{fontSize: 14, marginLeft: -5, flex: .95, marginTop: 15, fontWeight: 'bold'}}>
+                            Add Item [{convertToClassification(this.props.parent.state.currentClassification)}]
                         </div>
-                        <div className='page_monitoring_popup_title_divide'/>
-                        {/*@todo:###############################*/}
-                        {/*@todo:Radio.Group start               */}
-                        {/*@todo:###############################*/}
-                        <div className='page_monitoring_form_row'>
+                        <div className='add_item_popup_outer_header_right_icon'>
+                            <div style={{flex: .5, cursor: 'pointer'}} onClick={this.handleAddClicked}>
+                                <MaterialIcon
+                                    size={'tiny'}
+                                    icon='check'
+                                    color={'#77BD25'}
+
+
+                                />
+                            </div>
+                            <div style={{width: 10,}}/>
+                            <div style={{flex: .5, cursor: 'pointer'}} onClick={async () => {
+                                this.closePopupWindow();
+                            }}>
+                                <MaterialIcon
+                                    size={'tiny'}
+                                    icon='close'
+                                    color={'#77BD25'}
+
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div className='page_monitoring_popup_title_divide'/>
+                    <div className='page_monitoring_form_row'>
+                        {/*todo:############################*/}
+                        {/*@todo:ITEM TYPE                  */}
+                        {/*todo:############################*/}
+                        <div style={{flex: .25, display: 'flex'}}>
                             <div className='page_monitoring_form_column_left'>
-                                Item Type
+                                <Center>
+                                    Item Type
+                                </Center>
                             </div>
                             <Radio.Group
                                 onChange={(e) => {
                                     let selectedItem = e.target.value;
-
-                                    alert(selectedItem.toString())
                                     this.setState({
                                         currentItemType: selectedItem,
                                     });
@@ -542,35 +519,29 @@ export default class AddItemPopupContainer extends React.Component<Props, State>
                             </Radio.Group>
                         </div>
                         {/*todo:############################*/}
-                        {/*@todo:MultipleDropdown           */}
+                        {/*@todo:HW TYPE                    */}
                         {/*todo:############################*/}
-                        {this.state.isShowHWDropDown && this.renderHwMultipleDropdown(hwDropdownChildren)}
+                        <div className='page_monitoring_hw_type_div'>
+                            {/*@todo:MultipleDropdown           */}
+                            {this.state.isShowHWDropDown && this.renderHwMultipleDropdown(hwDropdownChildren)}
+                            {/*@todo:TABLE TYPE             */}
+                            {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
+                            {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
+                            {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase()) ? this.renderTableSelectForCloudlet() : null}
 
-                        {/*todo:############################*/}
-                        {/*@todo:TABLE TYPE             */}
-                        {/*todo:############################*/}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase()) ? this.renderTableSelectForAppInst_Cluster() : null}
-                        {this.state.isShowTableType && this.props.parent.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase()) ? this.renderTableSelectForCloudlet() : null}
-
-
-                        {this.state.isShowTableType === false && this.state.isShowHWDropDown === false &&
-                        <div className='page_monitoring_form_row'>
-                            <div className='page_monitoring_form_column_left'
-                                 style={{fontFamily: 'Roboto', height: 30}}>
-                                &nbsp;
+                            {this.state.isShowTableType === false && this.state.isShowHWDropDown === false &&
+                            <div className='page_monitoring_form_row'>
+                                <div className='page_monitoring_form_column_left'
+                                     style={{fontFamily: 'Roboto', height: 30}}>
+                                    &nbsp;
+                                </div>
                             </div>
+                            }
                         </div>
-                        }
-                        {/*todo:############################*/}
-                        {/*todo:Bottom Buttons              */}
-                        {/*todo:############################*/}
-                        {this.renderBottomBtns()}
-
                     </div>
 
 
-                </AModal>
+                </div>
 
             </div>
         );
