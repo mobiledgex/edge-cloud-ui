@@ -1110,12 +1110,13 @@ tr td {
     justify-content: center;
     display: flex;
     align-items: center;
+    height: 30px;
 }
 
 .add_item_popup_outer_header_right_icon {
     fontSize: 9;
     margin-right: -5px;
-    margin-top: 15px;
+    margin-top: 12px;
     flex: .025;
     display: flex;
     backgroundColor: 'orange';
@@ -1137,6 +1138,12 @@ tr td {
 .page_monitoring_hw_type_div {
     justify-content: flex-start;
     align-items: flex-start;
-    /*background-color: coral;*/
-    flex: .75
+    margin-left: -30px;
+    margin-top: 10px;
+}
+
+.headerIconDiv {
+    margin-top: -3px;
+    flex: .5;
+    cursor: pointer;
 }

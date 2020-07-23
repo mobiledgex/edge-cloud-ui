@@ -878,7 +878,7 @@ page_monitoring_dashboard_dev {
     width: 100%;
     border-top: 1px solid rgba(34, 36, 38, .15);
     border-bottom: 1px solid rgba(255, 255, 255, .1);
-    margin: 1rem 0
+    margin-top: 0px;
 }
 
 .page_monitoring_form_row {
@@ -895,13 +895,19 @@ page_monitoring_dashboard_dev {
 .page_monitoring_form_column_left {
     display: flex;
     width: 80px;
-    margin-left: 20px;
 
 }
 
 .page_monitoring_form_column_right {
     display: flex;
     width: 90%;
+
+}
+
+.page_monitoring_form_column_right2 {
+    display: flex;
+    width: 90%;
+    margin-left: -20px;
 
 }
 
@@ -916,16 +922,7 @@ page_monitoring_dashboard_dev {
     margin-top: 7px;
 }
 
-.page_monitoring_form_radio_text {
-    font-size: 9pt;
-}
-
-.add_popup_body {
-    position: absolute;
-    top: 48px;
-    zIndex: 99999;
-}
-
+/* title area */
 
 .monitoring_title.MuiToolbar-regular {
     min-height: 36px !important;
@@ -936,9 +933,3 @@ page_monitoring_dashboard_dev {
 .monitoring_title .page_monitoring_select_area .ui.selection.dropdown {
     margin-bottom: 0;
 }
-
-.ant-radio-input {
-    font-size: 7pt !important;
-}
-
-
