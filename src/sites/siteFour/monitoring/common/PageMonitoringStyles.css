@@ -1138,8 +1138,8 @@ tr td {
 .page_monitoring_hw_type_div {
     justify-content: flex-start;
     align-items: flex-start;
-    /*background-color: coral;*/
-    flex: .75
+    margin-left: -30px;
+    margin-top: 10px;
 }
 
 .headerIconDiv {

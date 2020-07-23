@@ -528,7 +528,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
                         {/*todo:############################*/}
                         {/*@todo:HW TYPE                    */}
                         {/*todo:############################*/}
-                        <div className='page_monitoring_hw_type_div' style={{flex: .5, marginLeft: -30, marginTop: 10,}}>
+                        <div className='page_monitoring_hw_type_div' style={{flex: .5}}>
                             {/*@todo:MultipleDropdown           */}
                             {this.state.isShowHWDropDown && this.renderHwMultipleDropdown(hwDropdownChildren)}
                             {/*@todo:TABLE TYPE             */}
