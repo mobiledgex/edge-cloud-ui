@@ -450,6 +450,37 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
 
     }
 
+    reanderPopupHeader() {
+        return (
+            <div className='add_item_popup_outer_header'>
+                <div style={{fontSize: 14, marginLeft: 0, flex: .95, marginTop: 5, fontWeight: 'bold'}}>
+                    Add Item [{convertToClassification(this.props.parent.state.currentClassification)}]
+                </div>
+                <div className='add_item_popup_outer_header_right_icon'>
+                    <div className='headerIconDiv' style={{flex: .5, cursor: 'pointer'}} onClick={this.handleAddClicked}>
+                        <MaterialIcon
+                            size={'small'}
+                            icon='check'
+                            color={'#77BD25'}
+                        />
+                    </div>
+                    <div style={{width: 10,}}/>
+                    <div className='headerIconDiv' onClick={async () => {
+                        this.closePopupWindow();
+                    }}>
+                        <MaterialIcon
+                            size={'small'}
+                            icon='close'
+                            color={'#77BD25'}
+                        />
+                    </div>
+
+                </div>
+            </div>
+        )
+    }
+
+
     render() {
 
         let hardwareDropdownList = this.makeHwDropdownList();
@@ -458,35 +489,9 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
         return (
             <div className='add_item_popup_outer'>
                 <div style={{width: '100%', zIndex: 999999}}>
-                    <div className='add_item_popup_outer_header'>
-                        <div style={{fontSize: 14, marginLeft: 0, flex: .95, marginTop: 15, fontWeight: 'bold'}}>
-                            Add Item [{convertToClassification(this.props.parent.state.currentClassification)}]
-                        </div>
-                        <div className='add_item_popup_outer_header_right_icon'>
-                            <div style={{flex: .5, cursor: 'pointer'}} onClick={this.handleAddClicked}>
-                                <MaterialIcon
-                                    size={'tiny'}
-                                    icon='check'
-                                    color={'#77BD25'}
 
-
-                                />
-                            </div>
-                            <div style={{width: 10,}}/>
-                            <div style={{flex: .5, cursor: 'pointer'}} onClick={async () => {
-                                this.closePopupWindow();
-                            }}>
-                                <MaterialIcon
-                                    size={'tiny'}
-                                    icon='close'
-                                    color={'#77BD25'}
-
-                                />
-                            </div>
-
-                        </div>
-                    </div>
-                    <div className='page_monitoring_popup_title_divide'/>
+                    {this.reanderPopupHeader()}
+                    <div className='page_monitoring_popup_title_divide' style={{}}/>
                     <div className='page_monitoring_form_row'>
                         {/*todo:############################*/}
                         {/*@todo:ITEM TYPE                  */}
