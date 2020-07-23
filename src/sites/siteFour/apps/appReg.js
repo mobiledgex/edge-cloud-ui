@@ -555,7 +555,7 @@ class AppReg extends React.Component {
                             requestData[fields.flavorName] = undefined
                             for (let i = 0; i < data[fields.flavorName].length; i++) {
                                 let flavor = data[fields.flavorName][i]
-                                if (flavor.parent === region) {
+                                if (flavor && flavor.parent === region) {
                                     requestData[fields.flavorName] = flavor.value
                                     break;
                                 }
@@ -564,7 +564,7 @@ class AppReg extends React.Component {
                                 requestData[fields.privacyPolicyName] = undefined
                                 for (let i = 0; i < data[fields.privacyPolicyName].length; i++) {
                                     let privacyPolicy = data[fields.privacyPolicyName][i]
-                                    if (privacyPolicy.parent === region) {
+                                    if (privacyPolicy && privacyPolicy.parent.includes(region)) {
                                         requestData[fields.privacyPolicyName] = privacyPolicy.value
                                         break;
                                     }
@@ -574,7 +574,7 @@ class AppReg extends React.Component {
                                 requestData[fields.autoPolicyName] = undefined
                                 for (let i = 0; i < data[fields.autoPolicyName].length; i++) {
                                     let autoPolicy = data[fields.autoPolicyName][i]
-                                    if (autoPolicy.parent === region) {
+                                    if (autoPolicy && autoPolicy.parent.includes(region)) {
                                         requestData[fields.autoPolicyName] = autoPolicy.value
                                         break;
                                     }
@@ -776,8 +776,8 @@ class AppReg extends React.Component {
             { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'public key used for authentication', advance: false },
-            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }], advance: false },
-            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region }], advance: false },
+            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }, {index: 2, field : fields.organizationName }], advance: false },
+            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region}, {index: 2, field : fields.organizationName }], advance: false },
             { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
