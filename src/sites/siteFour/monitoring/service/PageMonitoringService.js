@@ -476,6 +476,8 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 colorCodeIndexList,
             }
 
+            console.log('_result===>', _result);
+
             return _result
         }
     } catch (e) {
@@ -717,7 +719,7 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     return value.toFixed(3) + " %";
                 } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    return convertByteToMegaGigaByte(value)
+                    return convertByteToMegaGigaByte(value.toFixed(1));
                 } else {
                     return value;
                 }

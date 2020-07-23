@@ -351,6 +351,9 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
         for (let index = 0; index < appInstanceList.length; index++) {
             //todo: Create a data FORM format for requests
             let instanceInfoOneForm = makeFormForAppLevelUsageList(appInstanceList[index], pHardwareType, store.userToken, dataLimitCount, pStartTime, pEndTime)
+
+            console.log('instanceInfoOneForm===>', instanceInfoOneForm);
+
             instanceBodyList.push(instanceInfoOneForm);
         }
 
@@ -368,6 +371,8 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
             //throw new Error(e)
         }
 
+        console.log('appInstanceHwUsageList===>', appInstanceHwUsageList);
+
         let usageListForAllInstance = []
         appInstanceList.map((item, index) => {
             usageListForAllInstance.push({
@@ -375,6 +380,8 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                 appInstanceHealth: appInstanceHwUsageList[index],
             });
         })
+
+        console.log('usageListForAllInstance===>', usageListForAllInstance);
 
 
         let allUsageList = []
