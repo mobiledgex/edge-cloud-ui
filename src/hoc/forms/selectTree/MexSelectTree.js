@@ -294,10 +294,10 @@ export default function MexSelectRadioTree(props) {
                             {list && list.length > 0 ? list.map((parent, i) => {
                                 return (
                                     <div key={i} style={{margin:10}}>
-                                        <button onClick={(e) => { expandRow(parent.label) }} style={{ backgroundColor: 'transparent', border: 'none', display:'block' }}><Icon name={`${expandGroups.includes(parent.label) ? 'chevron down' : 'chevron right'}`} />{parent.label}</button>
+                                        <button onClick={(e) => { expandRow(parent.label) }} className='mex_select_tree_group'><Icon name={`${expandGroups.includes(parent.label) ? 'chevron down' : 'chevron right'}`} />{parent.label}</button>
                                         <div style={{maxHeight:100, overflow:'auto'}}>
                                             {expandGroups.includes(parent.label) && parent.children.map((child, j) => {
-                                                return <button onClick={(e)=>{handleChange(i, child, parent)}} key={j} style={{ backgroundColor: 'transparent', border: 'none', display: 'block', marginLeft:30, marginTop:10 }}>{child.label}</button>
+                                                return <button className={`${value[i] && value[i].value === child.label ? 'mex_select_tree_detail_select' : 'mex_select_tree_detail'}`} onClick={(e)=>{handleChange(i, child, parent)}} key={j}>{child.label}</button>
                                             })}
                                         </div>
                                     </div>
