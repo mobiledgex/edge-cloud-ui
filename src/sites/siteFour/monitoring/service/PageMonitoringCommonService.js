@@ -1,7 +1,6 @@
 import React from 'react';
 import Skeleton, {SkeletonTheme} from "react-loading-skeleton";
 import '../common/PageMonitoringStyles.css';
-import {toast} from "react-semantic-toasts";
 import Lottie from "react-lottie";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -763,16 +762,6 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
         });
     }
 }
-export const showToast2 = (title: string, time = 2) => {
-    toast({
-        type: 'success',
-        title: title,
-        //animation: 'swing left',
-        time: time * 1000,
-        color: 'black',
-    });
-}
-
 
 export const hardwareTypeToUsageKey = (hwType: string) => {
     if (hwType === HARDWARE_TYPE.CPU.toUpperCase()) {
