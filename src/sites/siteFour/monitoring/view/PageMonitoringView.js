@@ -678,7 +678,9 @@ export default withRouter(
 
                     let fullAppInst = this.props.location.pathname.split('&id=')[1]
 
-                    this.handleOnChangeAppInstDropdown(fullAppInst)
+                    console.log(`sldkflskdflksdlfklsdkfk====>`, fullAppInst);
+
+                    this.handleOnChangeAppInstDropdown_selected(fullAppInst)
 
                     moment.tz.setDefault(getMexTimezone())
                     window.addEventListener('MexTimezoneChangeEvent', () => {
@@ -2453,6 +2455,88 @@ export default withRouter(
                         //showToast(e.toString())
                     }
                 }
+
+                handleOnChangeAppInstDropdown_selected = async (fullCurrentAppInst) => {
+
+                    console.log(`fullCurrentAppInst====>`, fullCurrentAppInst);
+
+                    try {
+                        clearInterval(this.intervalForAppInst)
+                        clearInterval(this.intervalForCluster)
+                        //@desc: ################################
+                        //@desc: requestShowAppInstClientWS
+                        //@desc: ################################
+                        if (this.state.showAppInstClient) {
+                            await this.setState({
+                                selectedClientLocationListOnAppInst: [],
+                            })
+                            this.webSocketInst = requestShowAppInstClientWS(fullCurrentAppInst, this);
+                        }
+
+                        await this.setState({
+                            currentAppInst: fullCurrentAppInst,
+                            loading: true,
+                        })
+
+                        let AppName = fullCurrentAppInst.split('|')[0].trim()
+                        let Cloudlet = fullCurrentAppInst.split('|')[1].trim()
+                        let ClusterInst = fullCurrentAppInst.split('|')[2].trim()
+                        let Version = fullCurrentAppInst.split('|')[3].trim()
+
+                        let allAppInstList =await fetchAppInstList(undefined, this)
+
+                        let filteredAppList = filterByClassification(allAppInstList, Cloudlet, 'Cloudlet');
+                        filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+                        filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
+                        filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
+                        //desc:########################################
+                        //desc:Terminal, currentAppVersion
+                        //desc:########################################
+                        this.setState({
+                            currentAppVersion: Version,
+                            terminalData: null
+                        })
+                        this.validateTerminal(filteredAppList)
+
+                        let appInstDropdown = makeDropdownForAppInst(filteredAppList)
+                        await this.setState({
+                            appInstDropdown,
+                        });
+
+
+                        let arrDateTime = getOneYearStartEndDatetime();
+                        let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", 20, arrDateTime[0], arrDateTime[1]);
+                        fullCurrentAppInst = fullCurrentAppInst.trim();
+                        fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
+
+                        await this.setState({
+                            currentTabIndex: 0,
+                            currentClassification: CLASSIFICATION.APP_INST_FOR_ADMIN,
+                            allAppInstUsageList: appInstUsageList,
+                            filteredAppInstUsageList: appInstUsageList,
+                            loading: false,
+                            currentAppInstNameVersion: AppName + ' [' + Version + ']',
+                            currentAppInst: fullCurrentAppInst,
+                            //currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
+                            clusterSelectBoxPlaceholder: 'Select Cluster',
+                        }, () => {
+                        });
+
+                        //desc: ############################
+                        //desc: setStream
+                        //desc: ############################
+                        if (this.state.isStream) {
+                            this.setAppInstInterval(filteredAppList)
+                        } else {
+                            clearInterval(this.intervalForAppInst)
+                        }
+                    } catch (e) {
+                        //throw new Error(e)
+                        //showToast(e.toString())
+                    }
+                }
+
+
 
                 handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
 
