@@ -1256,13 +1256,13 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
+export const reduceLegendClusterCloudletName = (item:TypeCluster, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
 
     let clusterCloudletName = '';
     if (_this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
-        clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
+        clusterCloudletName = item.ClusterName + " [" + item.Cloudlet + "]"
     } else {
-        clusterCloudletName = item.cluster
+        clusterCloudletName = item.ClusterName
     }
     return (
         <div style={{display: 'flex'}}>
@@ -1664,10 +1664,84 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
             return treeCloudletList
         }
     } catch (e) {
+    }
+}
+
+
+
+export const makeRegionCloudletClusterTreeDropdown2 = (allRegionList, cloudletList, clusterList : TypeCluster, _this, isShowRegion = true) => {
+    try {
+        let treeCloudletList = []
+        cloudletList.map((cloudletOne, cloudletIndex) => {
+            let newCloudletOne = {
+                title: (
+                    <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
+                        <Tag color="grey" style={{color: 'black'}}>Cloudlet</Tag>
+                    </div>
+                ),
+                value: cloudletOne.CloudletName,
+                children: [],
+                region: cloudletOne.Region,
+                oper: cloudletOne.oper,
+                selectable: true,
+
+            };
+
+            clusterList.map((clusterItemOne: TypeCluster, innerIndex) => {
+                if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
+                    newCloudletOne.children.push({
+                        title: (
+                            <div style={{display: 'flex'}}>
+                                <Center style={{width: 15,}}>
+                                    {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
+                                </Center>
+                                <div style={{marginLeft: 5,}}>
+                                    {reduceString(clusterItemOne.ClusterName, 40)}
+                                </div>
+
+                            </div>
+                        ),
+                        value: clusterItemOne.ClusterName + " | " + cloudletOne.CloudletName,
+                        isParent: false,
+
+                    })
+                }
+            })
+
+            treeCloudletList.push(newCloudletOne);
+        })
+
+        if (isShowRegion) {//TODO: ADD REGION PARENT
+            let regionTreeList = []
+            allRegionList.map((regionOne, regionIndex) => {
+                let regionMapOne = {
+                    title: (
+                        <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
+                            {regionOne}
+                        </div>
+                    ),
+                    value: regionOne,
+                    children: []
+                };
+
+                treeCloudletList.map((innerItem, innerIndex) => {
+                    if (regionOne === innerItem.region) {
+                        regionMapOne.children.push(innerItem)
+                    }
+                })
+                regionTreeList.push(regionMapOne)
+            })
+
+            return regionTreeList;
+        } else {
+            return treeCloudletList
+        }
+    } catch (e) {
 
     }
 
 }
+
 
 export const makeDropdownForCloudletForDevView = (pList) => {
     try {
