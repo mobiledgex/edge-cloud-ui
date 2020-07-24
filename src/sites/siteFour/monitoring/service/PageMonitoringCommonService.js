@@ -760,14 +760,6 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
             placement: 'bottomLeft',
             duration: time,
             message: title,
-            /* style: {
-                 background: 'red',
-                 color: 'white !important',
-             },
-             icon: (<div>
-                 <AppsIcon
-                     style={{fill: 'white', fontSize: 18, marginTop: 4,}}/>
-             </div>)*/
         });
     }
 }
