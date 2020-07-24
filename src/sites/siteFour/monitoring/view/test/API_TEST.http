@@ -197,33 +197,32 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg3OTI3M
 
 ###
 
-POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
+POST https://console-qa.mobiledgex.net:443/api/v1/auth/metrics/app
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzg3MDU5MTcsImlhdCI6MTU3ODYxOTUxNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.tzWT3VrZe6Ql_AuKiw93pg618kho7m-x8dyk0Bk7m75-4wD54Vl1BVOykFQ-MsvSSPBLNzEoF7q-66m4Wfn0KA
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTU2Mzk0OTQsImlhdCI6MTU5NTU1MzA5NCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ev5NMxg5KEcJNnn8mGiMqwyPVUh4WB5UpcJOBukcwoHV41o5vyDuccWBVW4jQvOFaeTzje7TVmHEiK2tpgeL3Q
 
 {
   "region": "EU",
   "appinst": {
     "app_key": {
-      "developer_key": {
-        "name": "WonhoOrg1"
-      },
-      "name": "BICAPP",
-      "version": "1.0"
+      "organization": "testmonitor",
+      "name": "dockerRLB",
+      "version": "v1"
     },
     "cluster_inst_key": {
       "cluster_key": {
-        "name": "autoclusterbicapp"
+        "name": "dockercluster"
       },
       "cloudlet_key": {
-        "operator_key": {
-          "name": "frankfurt-eu"
-        }
+        "name": "automationDusseldorfCloudlet",
+        "organization": "TDG"
       }
     }
   },
-  "last": 6,
-  "selector": "*"
+  "selector": "*",
+  "last": 1,
+  "starttime": "2019-07-26T01:12:00Z",
+  "endtime": "2020-07-24T01:12:00Z"
 }
 
 

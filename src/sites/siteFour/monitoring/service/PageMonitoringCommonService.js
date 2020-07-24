@@ -438,7 +438,7 @@ export const convertToMegaGigaForNumber = (bytes) => {
 }
 
 
-export const convertMegaToGiGa = (value, isShowUnit=true) => {
+export const convertMegaToGiGa = (value, isShowUnit = true) => {
     try {
         if (value > 1000) {
             return isShowUnit ? (value / 1000).toFixed(0) + ' GB' : (value / 1000).toFixed(0)
@@ -613,9 +613,9 @@ export const renderUsageByType = (usageOne, hardwareType, _this) => {
         return usageOne.avgNetSend;
     } else if (hardwareType === HARDWARE_TYPE.NET_RECV) {
         return usageOne.avgNetRecv;
-    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
         return usageOne.sumRecvBytes
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
         return usageOne.sumSendBytes
     } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
         return usageOne.sumActiveConnection
@@ -760,14 +760,14 @@ export const showToast = (title: string, time = 3, isSuccessToast = true) => {
             placement: 'bottomLeft',
             duration: time,
             message: title,
-           /* style: {
-                background: 'red',
-                color: 'white !important',
-            },
-            icon: (<div>
-                <AppsIcon
-                    style={{fill: 'white', fontSize: 18, marginTop: 4,}}/>
-            </div>)*/
+            /* style: {
+                 background: 'red',
+                 color: 'white !important',
+             },
+             icon: (<div>
+                 <AppsIcon
+                     style={{fill: 'white', fontSize: 18, marginTop: 4,}}/>
+             </div>)*/
         });
     }
 }
@@ -785,37 +785,21 @@ export const showToast2 = (title: string, time = 2) => {
 export const hardwareTypeToUsageKey = (hwType: string) => {
     if (hwType === HARDWARE_TYPE.CPU.toUpperCase()) {
         return USAGE_TYPE.SUM_CPU_USAGE
-    }
-
-    if (hwType === HARDWARE_TYPE.MEM.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.MEM.toUpperCase()) {
         return USAGE_TYPE.SUM_MEM_USAGE
-    }
-
-    if (hwType === HARDWARE_TYPE.DISK.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.DISK.toUpperCase()) {
         return USAGE_TYPE.SUM_DISK_USAGE
-    }
-
-    if (hwType === HARDWARE_TYPE.TCPCONNS.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.TCPCONNS.toUpperCase()) {
         return USAGE_TYPE.SUM_TCP_CONNS
-    }
-
-    if (hwType === HARDWARE_TYPE.TCPRETRANS.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.TCPRETRANS.toUpperCase()) {
         return USAGE_TYPE.SUM_TCP_RETRANS
-    }
-
-    if (hwType === HARDWARE_TYPE.UDPRECV.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.UDPRECV.toUpperCase()) {
         return USAGE_TYPE.SUM_UDP_RECV
-    }
-
-    if (hwType === HARDWARE_TYPE.UDPSENT.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.UDPSENT.toUpperCase()) {
         return USAGE_TYPE.SUM_UDP_SENT
-    }
-
-    if (hwType === HARDWARE_TYPE.RECVBYTES.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.BYTESRECVD.toUpperCase()) {
         return USAGE_TYPE.SUM_RECV_BYTES
-    }
-
-    if (hwType === HARDWARE_TYPE.SENDBYTES.toUpperCase()) {
+    } else if (hwType === HARDWARE_TYPE.BYTESSENT.toUpperCase()) {
         return USAGE_TYPE.SUM_SEND_BYTES
     }
 
