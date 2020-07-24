@@ -411,7 +411,7 @@ class MexTerminal extends Component {
 
 
 const mapStateToProps = (state) => {
-
+    return {}
 };
 const mapDispatchProps = (dispatch) => {
     return {

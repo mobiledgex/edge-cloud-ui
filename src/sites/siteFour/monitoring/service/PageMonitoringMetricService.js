@@ -3,7 +3,7 @@ import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from ".
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -411,7 +411,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                         })
                     }
 
-
+                    //todo:MEM
                     if (series["1"] !== undefined) {
                         let memSeries = series["1"]
                         columns = memSeries.columns;
@@ -422,7 +422,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                         })
                     }
 
-
+                    //todo:DISK
                     if (series["2"] !== undefined) {
                         let diskSeries = series["2"]
                         diskSeriesList = diskSeries.values;
@@ -432,24 +432,16 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                         })
                     }
 
-                    if (series["0"] !== undefined) {
-                        let networkSeries = series["0"]
+                    //todo: SENDBYTES, RECVBYTES , CONNECTION
+                    if (series["4"] !== undefined) {
+                        let networkSeries = series["4"]
                         columns = networkSeries.columns;
                         networkSeriesList = networkSeries.values;
                         networkSeries.values.map(item => {
-                            let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.SENDBYTES];//sendBytesOne
+                            let sendBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.BYTESSENT];//sentBytesOne
                             sumSendBytes += sendBytesOne;
-                            let recvBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.RECVBYTES];//recvBytesOne
+                            let recvBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.BYTESRECVD];//recvBytesOne
                             sumRecvBytes += recvBytesOne;
-                        })
-                    }
-
-
-                    if (series["4"] !== undefined) {
-                        let connectionsSeries = series["4"]
-                        columns = connectionsSeries.columns;
-                        connectionsSeriesList = connectionsSeries.values;
-                        connectionsSeries.values.map(item => {
                             let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
                             sumActiveConnection += connection1One;
                             let connection2One = item[APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];//2
@@ -474,7 +466,8 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                         memSeriesList,
                         diskSeriesList,
                         networkSeriesList,
-                        connectionsSeriesList,
+                        //connectionsSeriesList: networkSeriesList,
+                        //networkConnectionsSeriesList: networkSeriesList,
                         appName,
                         Cloudlet,
                         ClusterInst,
@@ -841,7 +834,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
 
 export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
-    console.log('token===>', pToken);
     return await axios({
         url: mcURL() + CLOUDLET_METRICS_ENDPOINT,
         method: 'post',
@@ -882,7 +874,6 @@ export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: an
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     try {
-        console.log('token===>', pToken);
         let result = await axios({
             url: mcURL() + CLUSTER_METRICS_ENDPOINT,
             method: 'post',
