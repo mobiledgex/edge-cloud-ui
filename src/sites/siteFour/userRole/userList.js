@@ -27,7 +27,7 @@ class OrganizationList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage }
+            { label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type:'Edit' }
         ]
     }
     /*Action menu block*/

@@ -57,10 +57,10 @@ class AutoProvPolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd },
-            { label: 'Add Cloudlet', onClick: this.onAddCloudlet },
-            { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet },
-            { label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete }]
+            { label: 'Update', onClick: this.onAdd, type:'Edit' },
+            { label: 'Add Cloudlet', onClick: this.onAddCloudlet, type:'Edit' },
+            { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet, type:'Edit' },
+            { label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type:'Edit' }]
     }
 
     requestInfo = () => {

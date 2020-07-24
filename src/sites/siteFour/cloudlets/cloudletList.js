@@ -46,8 +46,8 @@ class CloudletList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteCloudlet, ws: true },
+            { label: 'Update', onClick: this.onAdd, type:'Edit' },
+            { label: 'Delete', onClick: deleteCloudlet, ws: true, type:'Edit' },
             { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest}
         ]
     }
@@ -65,7 +65,7 @@ class CloudletList extends React.Component {
 
 
     requestInfo = () => {
-        let mode = (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer')? null : cloudletSteps.stepsCloudlet
+        let mode = localStorage.selectRole.includes(constant.DEVELOPER)? null : cloudletSteps.stepsCloudlet
         return ({
             id: 'Cloudlets',
             headerLabel: 'Cloudlets',
@@ -82,9 +82,8 @@ class CloudletList extends React.Component {
     }
 
     /**
-   * Customized data block
-   **/
-
+    * Customized data block
+    **/
     getCloudletInfoState = (data, isDetailView) => {
         let id = isDetailView ? data : data[fields.cloudletStatus]
         let state = 'Not Present';
