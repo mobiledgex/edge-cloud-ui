@@ -834,7 +834,6 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
 
 
 export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) => {
-    console.log('token===>', pToken);
     return await axios({
         url: mcURL() + CLOUDLET_METRICS_ENDPOINT,
         method: 'post',
@@ -875,7 +874,6 @@ export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: an
 
 export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
     try {
-        console.log('token===>', pToken);
         let result = await axios({
             url: mcURL() + CLUSTER_METRICS_ENDPOINT,
             method: 'post',
