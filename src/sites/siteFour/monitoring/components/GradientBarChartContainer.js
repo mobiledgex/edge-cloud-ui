@@ -52,7 +52,6 @@ export default class GradientBarChartContainer extends React.Component<Props, St
                 graphType: nextProps.graphType,
                 dataLength: nextProps.dataLength,
             }, () => {
-                // alert(this.state.graphType)
             })
         }
 

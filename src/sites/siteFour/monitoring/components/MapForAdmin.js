@@ -4,7 +4,7 @@ import type {TypeAppInst, TypeClient, TypeCloudlet} from "../../../../shared/Typ
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, showToast} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader} from "../service/PageMonitoringCommonService";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
 import {connect} from "react-redux";
@@ -419,9 +419,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     {cloudlets.map((cloudletOne, index) => {
                         return (
                             <div
-                                onClick={() => {
-                                    alert(cloudletOne)
-                                }}
                                 key={index}
                                 className='mapCloudletTooltipInnerBlack'
                             >

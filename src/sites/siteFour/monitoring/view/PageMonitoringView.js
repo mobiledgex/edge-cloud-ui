@@ -2435,7 +2435,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
-                alert('handleOnChangeAppInstDropdown!!!')
                 try {
                     clearInterval(this.intervalForAppInst)
                     clearInterval(this.intervalForCluster)
