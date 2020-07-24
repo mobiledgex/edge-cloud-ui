@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import {withStyles, makeStyles} from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,13 +16,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListIcon from '@material-ui/icons/List';
-import {fields} from '../../services/model/format';
-import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
-import {getUserRole} from '../../services/model/format';
+import {fields, getUserRole} from '../../services/model/format';
+import {ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper} from '@material-ui/core';
 import MaterialIcon from 'material-icons-react';
-import {withRouter} from "react-router-dom";
-import {connect} from "react-redux";
 import {useHistory} from "react-router-dom";
+import {PAGE_MONITORING} from "../../constant";
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -221,7 +219,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 export default function EnhancedTable(props) {
-    let history = useHistory();
+    const history = useHistory();
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length > 0 ? props.requestInfo.sortBy[0] : 'region');
@@ -307,10 +305,9 @@ export default function EnhancedTable(props) {
                                                     key={i}
                                                     onClick={(e) => {
                                                         actionClose(action)
-                                                        if (action.label === 'Monitoring') {
+                                                        if (action.label === PAGE_MONITORING) {
                                                             history.replace('/PageMonitoringView/' + JSON.stringify(selectRow))
                                                         }
-
                                                     }}>
                                                     {action.label}
 
