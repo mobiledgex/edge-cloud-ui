@@ -35,7 +35,7 @@ class FlavorList extends React.Component {
     /**Action menu block */
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteFlavor }
+            { label: 'Delete', onClick: deleteFlavor, type:'Edit' }
         ]
     }
 

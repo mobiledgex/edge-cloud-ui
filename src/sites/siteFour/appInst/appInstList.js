@@ -86,10 +86,10 @@ class AppInstList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
-            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
+            { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
+            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
             { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, dialogNote:'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance' },
+            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance' },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
             { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
@@ -99,8 +99,8 @@ class AppInstList extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
+            { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader, type:'Edit' },
+            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader, type:'Edit' },
             { label: 'Refresh', onClick: refreshAppInst, icon: 'refresh', warning: 'refresh all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
         ]
     }
