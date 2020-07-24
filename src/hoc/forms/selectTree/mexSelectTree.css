@@ -54,3 +54,33 @@
 .MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label:hover, .MuiTreeItem-root.Mui-selected:focus > .MuiTreeItem-content .MuiTreeItem-label {
     background-color: #16181D !important;
 }
+
+.mex_select_tree_group{
+    background-color: transparent; 
+    border: none; 
+    display:block;
+}
+
+.mex_select_tree_detail{
+    width:calc(100% - 30px);
+    text-align: left;
+    background-color: transparent;
+    border: none;
+    display: block; 
+    margin-left:30px; 
+    margin-top:10px;
+}
+
+.mex_select_tree_detail_select{
+    width:calc(100% - 30px);
+    text-align: left;
+    background-color: #2A3242;
+    border: none;
+    display: block; 
+    margin-left:30px; 
+    margin-top:10px;
+}
+
+.mex_select_tree_detail:hover {
+    background-color: #475266;
+}
