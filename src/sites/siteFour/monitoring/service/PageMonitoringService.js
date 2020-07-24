@@ -159,9 +159,9 @@ export const renderUsageLabelByType = (usageOne, hardwareType, userType = '') =>
         return convertByteToMegaGigaByte(parseInt(usageOne.sumUdpSent))
     } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         return convertByteToMegaGigaByte(usageOne.sumUdpRecv)
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
         return convertByteToMegaGigaByte(usageOne.sumSendBytes)
-    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
         return convertByteToMegaGigaByte(usageOne.sumRecvBytes)
     }
     ////Cloudlet
@@ -289,7 +289,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             typedUsageList = allHWUsageList[0]
         } else if (hardwareType === HARDWARE_TYPE.MEM) {
             typedUsageList = allHWUsageList[1]
-        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.BYTESSENT) {
             typedUsageList = allHWUsageList[2]
         } else if (hardwareType === HARDWARE_TYPE.DISK) {
             typedUsageList = allHWUsageList[3]
@@ -424,12 +424,12 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.udpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                     series = item.udpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
                     series = item.networkSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
                     series = item.networkSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                    series = item.connectionsSeriesList
+                    series = item.networkSeriesList
                 }
                 //////todo:cloudllet/////////
                 else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
@@ -699,7 +699,7 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
                     return value + " %";
                 } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
                     return value.toFixed(2) + " %";
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT || hardwareType === HARDWARE_TYPE.BYTESRECVD) {
                     return convertByteToMegaGigaByte(value, hardwareType)
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
                     return convertToMegaGigaForNumber(value);
@@ -707,7 +707,7 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
                     return value + " %";
                 } else if (hardwareType === `${HARDWARE_TYPE.UDPRECV} / ${HARDWARE_TYPE.UDPSENT}` || hardwareType === `${HARDWARE_TYPE.TCPCONNS} / ${HARDWARE_TYPE.TCPRETRANS}`) {
                     return convertToMegaGigaForNumber(value);
-                } else if (hardwareType === `${HARDWARE_TYPE.SENDBYTES} / ${HARDWARE_TYPE.RECVBYTES}`) {
+                } else if (hardwareType === `${HARDWARE_TYPE.BYTESSENT} / ${HARDWARE_TYPE.BYTESRECVD}`) {
                     return convertByteToMegaGigaByte(value);
                 } else {
                     return convertToMegaGigaForNumber(value);
@@ -716,8 +716,8 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
             } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     return value.toFixed(3) + " %";
-                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    return convertByteToMegaGigaByte(value)
+                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.BYTESSENT) {
+                    return convertByteToMegaGigaByte(value.toFixed(1));
                 } else {
                     return value;
                 }

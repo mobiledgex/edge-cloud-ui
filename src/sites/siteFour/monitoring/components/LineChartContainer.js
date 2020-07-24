@@ -105,9 +105,9 @@ export default class LineChartContainer extends React.Component<Props, State> {
             return 'Recv UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
             return 'Sent UDP Datagram'
-        } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
+        } else if (title.includes(HARDWARE_TYPE.BYTESRECVD)) {
             return 'Network Recv'
-        } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
+        } else if (title.includes(HARDWARE_TYPE.BYTESSENT)) {
             return 'Network Sent'
         } else if (title.includes(HARDWARE_TYPE.VCPU_USED)) {
             return 'vCPU Utilization'

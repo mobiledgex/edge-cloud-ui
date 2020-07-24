@@ -10,18 +10,10 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import {Progress, Tooltip} from 'antd';
 import '../common/PageMonitoringStyles.css'
-import {
-    convertToClassification,
-    handleLegendAndBubbleClickedEvent,
-    makeLineChartData
-} from "../service/PageMonitoringService";
+import {convertToClassification, handleLegendAndBubbleClickedEvent, makeLineChartData} from "../service/PageMonitoringService";
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
 import {numberWithCommas} from "../common/PageMonitoringUtils";
-import {
-    convertByteToMegaGigaByte,
-    convertToMegaGigaForNumber,
-    renderBarLoader
-} from "../service/PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertToMegaGigaForNumber, renderBarLoader} from "../service/PageMonitoringCommonService";
 import type {TypeClusterUsageOne} from "../../../../shared/Types";
 import AppsIcon from '@material-ui/icons/Apps';
 import PageMonitoringView from "../view/PageMonitoringView";
@@ -248,13 +240,13 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                             </div>
                                         </TableCell>
                                         <TableCell
-                                            onClick={() => handleRowClicked(item, HARDWARE_TYPE.RECVBYTES)}
+                                            onClick={() => handleRowClicked(item, HARDWARE_TYPE.BYTESRECVD)}
                                             padding={'none'} align="center" style={{width: 'auto', color: '#C0C6C8'}}>
                                             {numberWithCommas(convertByteToMegaGigaByte(item.sumRecvBytes.toFixed(0)))}
                                         </TableCell>
                                         <TableCell padding={'none'} align="center"
                                                    style={{width: 'auto', color: '#C0C6C8'}}
-                                                   onClick={() => handleRowClicked(item, HARDWARE_TYPE.SENDBYTES)}
+                                                   onClick={() => handleRowClicked(item, HARDWARE_TYPE.BYTESSENT)}
                                         >
                                             {numberWithCommas(convertByteToMegaGigaByte(item.sumSendBytes.toFixed(0)))}
                                         </TableCell>
