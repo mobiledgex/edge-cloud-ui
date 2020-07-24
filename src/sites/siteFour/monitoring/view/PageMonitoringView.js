@@ -159,6 +159,7 @@ import * as dateUtil from '../../../../utils/date_util'
 import {getMexTimezone} from '../../../../utils/sharedPreferences_util';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AddItemPopupContainerNew from "../components/AddItemPopupContainerNew";
+import {withRouter} from "react-router-dom";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -399,7 +400,8 @@ type PageDevMonitoringState = {
 export const CancelToken = axios.CancelToken;
 export const source = CancelToken.source();
 
-export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
+export default withRouter(
+    withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonitoringMapDispatchToProps)((
         class PageDevMonitoring extends Component<PageMonitoringProps, PageDevMonitoringState> {
 
             intervalForAppInst = 0;
@@ -669,18 +671,29 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            componentDidMount = async () => {
-                moment.tz.setDefault(getMexTimezone())
-                window.addEventListener('MexTimezoneChangeEvent', () => {
-                    this.setState({timezoneChange: !this.state.timezoneChange})
-                    setTimeout(() => {
-                        this.setState({timezoneChange: !this.state.timezoneChange})
-                    }, 100)
-                    if (getUserRole().includes('Developer')) {
-                        this.resetLocalData();
+                componentDidMount = async () => {
+
+                    console.log(`componentDidMount====>`, this.props);
+                    console.log(`componentDidMount====>`, this.props.location.pathname);
+                    let fullAppInst = this.props.location.pathname.split('&id=')[1]
+
+                    if (fullAppInst !== undefined) {
+                        showToast(fullAppInst)
+                        await this.handleOnChangeAppInstDropdown______selected(fullAppInst)
                     }
-                }, false);
-                try {
+
+
+                    moment.tz.setDefault(getMexTimezone())
+                    window.addEventListener('MexTimezoneChangeEvent', () => {
+                        this.setState({timezoneChange: !this.state.timezoneChange})
+                        setTimeout(() => {
+                            this.setState({timezoneChange: !this.state.timezoneChange})
+                        }, 100)
+                        if (getUserRole().includes('Developer')) {
+                            this.resetLocalData();
+                        }
+                    }, false);
+                    try {
 
                     this.setState({
                         loading: true,
@@ -2456,6 +2469,100 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
+            handleOnChangeAppInstDropdown______selected = async (fullCurrentAppInst) => {
+
+                console.log(`fullCurrentAppInst====>`, fullCurrentAppInst);
+                let currentCloudletName = fullCurrentAppInst.split(" | ")[1].trim();
+
+                console.log('CloudletName===>', currentCloudletName);
+
+                await this.setState({
+                    showAppInstClient: false,
+                })
+
+                try {
+                    clearInterval(this.intervalForAppInst)
+                    clearInterval(this.intervalForCluster)
+                    //@desc: ################################
+                    //@desc: requestShowAppInstClientWS
+                    //@desc: ################################
+                    if (this.state.showAppInstClient) {
+                        await this.setState({
+                            selectedClientLocationListOnAppInst: [],
+                        })
+                        this.webSocketInst = requestShowAppInstClientWS(fullCurrentAppInst, this);
+                    }
+
+                    await this.setState({
+                        currentAppInst: fullCurrentAppInst,
+                        loading: true,
+                    })
+
+                    let AppName = fullCurrentAppInst.split('|')[0].trim()
+                    let Cloudlet = fullCurrentAppInst.split('|')[1].trim()
+                    let ClusterInst = fullCurrentAppInst.split('|')[2].trim()
+                    let Version = fullCurrentAppInst.split('|')[3].trim()
+
+                    let allAppInstList = await fetchAppInstList(undefined, this)
+                    let allCoudletList = await fetchCloudletList();
+
+                    let filteredCloudletList = allCoudletList.filter((item: TypeCloudlet, index) => {
+                        return item.CloudletName === currentCloudletName
+                    })
+
+
+                    let filteredAppList = filterByClassification(allAppInstList, Cloudlet, 'Cloudlet');
+                    filteredAppList = filterByClassification(filteredAppList, ClusterInst, 'ClusterInst');
+                    filteredAppList = filterByClassification(filteredAppList, AppName, 'AppName');
+                    filteredAppList = filterByClassification(filteredAppList, Version, 'Version');
+
+                    //todo : map marker
+                    //todo : map marker
+                    //todo : map marker
+                    let orgAppInstList = filteredAppList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+                    let markerMapObjectForMap = this.makeMapMarkerObjectForDev(orgAppInstList, filteredCloudletList)
+                    await this.setState({
+                        markerList: markerMapObjectForMap,
+                        mapLoading: false,
+                    })
+
+                    let appInstDropdown = makeDropdownForAppInst(filteredAppList)
+                    let arrDateTime = getOneYearStartEndDatetime();
+                    let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", 20, arrDateTime[0], arrDateTime[1]);
+                    fullCurrentAppInst = fullCurrentAppInst.trim().split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
+                    //todo:Terminal
+                    this.validateTerminal(filteredAppList)
+
+                    await this.setState({
+                        currentAppVersion: Version,
+                        terminalData: null,
+                        appInstDropdown: appInstDropdown,
+                        currentTabIndex: 0,
+                        currentClassification: CLASSIFICATION.APPINST,
+                        allAppInstUsageList: appInstUsageList,
+                        filteredAppInstUsageList: appInstUsageList,
+                        loading: false,
+                        currentAppInstNameVersion: AppName + ' [' + Version + ']',
+                        currentAppInst: fullCurrentAppInst,
+                        //currentClusterList: isEmpty(this.state.currentClusterList) ? '' : this.state.currentClusterList,
+                        clusterSelectBoxPlaceholder: 'Select Cluster',
+                    }, () => {
+                    });
+
+                    //desc: ############################
+                    //desc: setStream
+                    //desc: ############################
+                    if (this.state.isStream) {
+                        this.setAppInstInterval(filteredAppList)
+                    } else {
+                        clearInterval(this.intervalForAppInst)
+                    }
+                } catch (e) {
+                    //throw new Error(e)
+                    //showToast(e.toString())
+                }
+            }
+
             handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
                 try {
                     clearInterval(this.intervalForAppInst)
@@ -3914,4 +4021,4 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
         }
     ))
-)
+))

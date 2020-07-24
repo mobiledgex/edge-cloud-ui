@@ -186,6 +186,53 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
 }
 
 
+export const fetchAppInstList2 = async (pRegionList: string[] = localStorage.getItem('regions').split(","), userType) => {
+    try {
+        let promiseList = []
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        for (let index = 0; index < pRegionList.length; index++) {
+            let requestData = {
+                showSpinner: false,
+                token: store.userToken,
+                method: SHOW_APP_INST,
+                data: {region: pRegionList[index]}
+            }
+            promiseList.push(sendSyncRequest(this, requestData))
+        }
+
+        let promisedShowAppInstList = await Promise.all(promiseList);
+
+        let mergedAppInstanceList = [];
+        promisedShowAppInstList.map((item, index) => {
+            let listOne = item.response.data;
+            let mergedList = mergedAppInstanceList.concat(listOne);
+            mergedAppInstanceList = mergedList;
+        })
+
+
+        let filteredAppInstList = []
+        if (userType.includes(USER_TYPE_SHORT.ADMIN)) {
+            filteredAppInstList = mergedAppInstanceList;
+        } else {//todo: DEV, OPER
+            filteredAppInstList = mergedAppInstanceList.filter((item: TypeAppInst, index) => {
+                return item.AppName !== MEX_PROMETHEUS_APPNAME
+            })
+        }
+
+        let resultWithColorCode = []
+        filteredAppInstList.map((item, index) => {
+            item.colorCodeIndex = index;
+            resultWithColorCode.push(item)
+        })
+
+
+        return resultWithColorCode;
+    } catch (e) {
+        //throw new Error(e)
+    }
+}
+
+
 export const fetchCloudletList = async () => {
     try {
         let store = JSON.parse(localStorage.PROJECT_INIT);

@@ -217,7 +217,7 @@ class MexListView extends React.Component {
     }
 
     /***Action Block */
-    /*Todo this is temporary we can't hardocode Action type in mexlistview 
+    /*Todo this is temporary we can't hardocode Action type in mexlistview
     will be changed to make it more generalize*/
     onActionClose = (action) => {
         let data = this.selectedRow;
@@ -527,6 +527,7 @@ class MexListView extends React.Component {
         if (mcRequestList && mcRequestList.length > 0) {
             if (this.props.multiDataRequest) {
                 newDataList = this.props.multiDataRequest(requestInfo.keys, mcRequestList)
+                console.log('newDataList===>', newDataList);
             }
             else {
                 let mcRequest = mcRequestList[0]
