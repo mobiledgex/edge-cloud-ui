@@ -42,9 +42,9 @@ class AppList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteApp },
-            { label: 'Create Instance', onClick: this.onLaunch }
+            { label: 'Update', onClick: this.onAdd, type:'Edit' },
+            { label: 'Delete', onClick: deleteApp, type:'Edit' },
+            { label: 'Create Instance', onClick: this.onLaunch, type:'Edit' }
         ]
     }
     /***Action Block */

@@ -20,6 +20,7 @@ import { fields } from '../../services/model/format';
 import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
 import { getUserRole } from '../../services/model/format';
 import MaterialIcon from 'material-icons-react';
+import * as constant from '../../constant'
 
 
 const StyledTableRow = withStyles((theme) => ({
@@ -102,6 +103,9 @@ function EnhancedTableHead(props) {
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
                     checkRole(headCell)
+                    if (headCell.label === 'Actions' &&  headCell.visible) {
+                        headCell.visible = props.actionMenuLength > 0
+                    }
                     if (headCell.visible) {
                         return <TableCell
                             style={{ backgroundColor: '#2A2C33' }}
@@ -139,6 +143,7 @@ EnhancedTableHead.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
+    actionMenuLength:PropTypes.number.isRequired
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -217,6 +222,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const canEdit = (action) => {
+    let valid = true
+    if (action.type === 'Edit') {
+        let role = getUserRole()
+        if (role && role.includes(constant.VIEWER)) {
+            valid = false
+        }
+    }
+    return valid
+}
+
 export default function EnhancedTable(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
@@ -225,6 +241,7 @@ export default function EnhancedTable(props) {
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
     const [actionEl, setActionEl] = React.useState(null)
     const [selectedRow, setSelectedRow] = React.useState({})
+    const actionMenu = props.actionMenu.filter(action => { return canEdit(action) })
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -287,7 +304,7 @@ export default function EnhancedTable(props) {
 
     const getActionMenu = () => {
         return (
-            props.actionMenu ?
+            actionMenu.length > 0 ?
                 <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal>
                     {({ TransitionProps, placement }) => (
                         <Grow
@@ -297,8 +314,8 @@ export default function EnhancedTable(props) {
                             <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                 <ClickAwayListener onClickAway={() => setActionEl(null)}>
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
-                                        {props.actionMenu.map((action, i) => {
-                                            let visible = action.visible ? action.visible(selectedRow) : true
+                                        {actionMenu.map((action, i) => {
+                                            let visible = canEdit(action) ? action.visible ? action.visible(selectedRow) : true : false
                                             return visible ? <MenuItem key={i} onClick={(e) => { actionClose(action) }}>{action.label}</MenuItem> : null
                                         })}
                                     </MenuList>
@@ -347,6 +364,7 @@ export default function EnhancedTable(props) {
                             headCells={props.keys}
                             rowCount={props.dataList.length}
                             requestInfo={props.requestInfo}
+                            actionMenuLength = {actionMenu.length}
                         />
                         <TableBody>
                             {
@@ -389,7 +407,6 @@ export default function EnhancedTable(props) {
                                                                     header.customizedData ? header.customizedData(row) : row[field]
                                                             }
                                                         </StyledTableCell>
-
                                                     )
                                                 }
                                             })

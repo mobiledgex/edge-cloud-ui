@@ -36,8 +36,8 @@ class AutoScalePolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onUpdate },
-            { label: 'Delete', onClick: deleteAutoScalePolicy }
+            { label: 'Update', onClick: this.onUpdate, type:'Edit' },
+            { label: 'Delete', onClick: deleteAutoScalePolicy, type:'Edit' }
         ]
     }
 
