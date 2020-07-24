@@ -55,6 +55,7 @@ class CloudletReg extends React.Component {
         this.operatorList = [];
         this.cloudletData = undefined;
         this.canCloseStepper = true;
+        this.restricted = false;
         this.updateFlowDataList = [];
         this.expandAdvanceMenu = false;
     }
@@ -168,6 +169,7 @@ class CloudletReg extends React.Component {
             this.props.handleLoadingSpinner(false)
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
             if (!this.isUpdate && isRestricted) {
+                this.restricted = isRestricted
                 if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
                     responseData.data.message = 'Cloudlet configured successfully, please wait requesting cloudlet manifest to bring up Platform VM(s) for cloudlet service'
                     this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
@@ -186,6 +188,7 @@ class CloudletReg extends React.Component {
                 }
             }
             else {
+                this.canCloseStepper = responseData ? responseData.code === 200 : false
                 this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
             }
         }
@@ -202,8 +205,6 @@ class CloudletReg extends React.Component {
                     let multiFormData = data[uuid]
                     if (multiFormData) {
                         if (form.field === fields.cloudletLocation) {
-                            // multiFormData.latitude = parseInt(multiFormData.latitude)
-                            // multiFormData.longitude = parseInt(multiFormData.longitude)
                             multiFormData.latitude = Number(multiFormData.latitude)
                             multiFormData.longitude = Number(multiFormData.longitude)
                             data[fields.cloudletLocation] = multiFormData
@@ -298,10 +299,20 @@ class CloudletReg extends React.Component {
     }
 
     stepperClose = () => {
-        if (this.canCloseStepper) {
+        if (this.restricted) {
+            if (this.canCloseStepper) {
+                this.setState({
+                    stepsArray: []
+                })
+            }
+        }
+        else {
             this.setState({
                 stepsArray: []
             })
+            if (this.canCloseStepper) {
+                this.props.onClose(true)
+            }
         }
     }
 
