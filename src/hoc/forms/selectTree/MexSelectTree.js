@@ -110,6 +110,10 @@ export default function MexSelectRadioTree(props) {
                         temp.splice(0, 1)
                         dependentKey = { form: dependentForm, value: temp }
                     }
+                    else if(Array.isArray(dependentForm.value))
+                    {
+                        dependentKey = { form: dependentForm, value: dependentForm.value }
+                    }
                     else {
                         dependentKey = { form: dependentForm, value: [dependentForm.value] }
                     }
