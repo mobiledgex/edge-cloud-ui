@@ -679,7 +679,7 @@ export default withRouter(
 
                     if (fullAppInst !== undefined) {
                         showToast(fullAppInst)
-                        await this.handleOnChangeAppInstDropdown______selected(fullAppInst)
+                        //await this.handleOnChangeAppInstDropdown______selected(fullAppInst)
                     }
 
 

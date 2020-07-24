@@ -116,50 +116,7 @@ class AppInstList extends React.Component {
         return filterList;
     }
 
-    goMonitoring = async () => {
-        //let url = '/site4/pg=Monitoring'
-
-        let fullAppInst = "mobiledgexsdkdemo20 | mexplat-stage-hamburg-cloudlet | autoclustermobiledgexsdkdemo20 | latest | EU | 3 | TDG | {\"lat\":53.5511,\"long\":9.9937}"
-
-        let requestInfo = {
-            id: 'AppInsts',
-            headerLabel: 'App Instances',
-            nameField: fields.appName,
-            requestType: [showAppInsts, showApps, showCloudletInfos],
-            streamType: streamAppInst,
-            isRegion: true,
-            isMap: true,
-            selection: true,
-            sortBy: [fields.region, fields.appName],
-            keys: this.keys,
-            onAdd: this.onAdd,
-            viewMode: appInstSteps.stepsAppInst
-        }
-
-        if (requestInfo) {
-            let filterList = this.getFilterInfo2(requestInfo, 'EU')
-            if (filterList && filterList.length > 0) {
-                for (let i = 0; i < filterList.length; i++) {
-                    let filter = filterList[i];
-                    serverData.showMultiDataFromServer(this, requestInfo.requestType, filter, (responseList) => {
-                        console.log('showMultiDataFromServer===>', responseList[0].response.data);
-                    })
-                }
-            } else {
-                serverData.showMultiDataFromServer(this, requestInfo.requestType, (responsList => {
-
-                    console.log('showMultiDataFromServer===>', responsList);
-                }))
-            }
-        }
-
-
-        let allAppInstList = await fetchAppInstList2(undefined, 'dev')
-
-        console.log('allAppInstList===>', allAppInstList);
-
-        //this.props.history.replace('/PageMonitoringView/' + fullAppInst)
-
+    goToMonitoringView = async () => {
     }
 
     actionMenu = () => {
@@ -179,7 +136,7 @@ class AppInstList extends React.Component {
             {label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState},
             {label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState},
             {label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState},
-            {label: 'Monitoring', visible: this.onUpdateVisible, onClick: this.goMonitoring},
+            {label: 'Monitoring', visible: this.onUpdateVisible, onClick: this.goToMonitoringView},
         ]
     }
 
