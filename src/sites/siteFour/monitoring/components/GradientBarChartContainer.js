@@ -50,8 +50,7 @@ export default class GradientBarChartContainer extends React.Component<Props, St
                 chartDataSet: nextProps.chartDataSet,
                 pHardwareType: nextProps.pHardwareType,
                 graphType: nextProps.graphType,
-                dataLength: nextProps.dataLength,
-            }, () => {
+                dataLength: nextProps.dataLength
             })
         }
 
