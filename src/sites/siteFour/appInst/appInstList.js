@@ -1,19 +1,19 @@
 import React from 'react';
 import MexListView from '../../../container/MexListView';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
-import { connect } from 'react-redux';
-import { fields, isAdmin } from '../../../services/model/format';
-import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest, changePowerState } from '../../../services/model/appInstance';
-import { showApps } from '../../../services/model/app';
-import { showCloudletInfos } from '../../../services/model/cloudletInfo';
+import {connect} from 'react-redux';
+import {fields, isAdmin} from '../../../services/model/format';
+import {changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst} from '../../../services/model/appInstance';
+import {showApps} from '../../../services/model/app';
+import {showCloudletInfos} from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import { Dialog } from '@material-ui/core';
-import { Icon, Popup } from 'semantic-ui-react';
+import {Dialog} from '@material-ui/core';
+import {Icon, Popup} from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
 
 
@@ -31,15 +31,18 @@ class AppInstList extends React.Component {
         this.action = '';
         this.data = {};
         this.keys = keys();
-        this.multiStepperHeader = [{ label: 'App', field: fields.appName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }, { label: 'Cluster', field: fields.clusterName }]
+        this.multiStepperHeader = [{label: 'App', field: fields.appName}, {label: 'Cloudlet', field: fields.cloudletName}, {
+            label: 'Operator',
+            field: fields.operatorName
+        }, {label: 'Cluster', field: fields.clusterName}]
     }
 
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        this.setState({currentView: null})
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
+        this.setState({currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/>})
 
     }
 
@@ -48,8 +51,7 @@ class AppInstList extends React.Component {
         if (data) {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
                 visible = true
-            }
-            else {
+            } else {
                 let runtimeInfo = data[fields.runtimeInfo]
                 if (runtimeInfo) {
                     let containers = runtimeInfo[fields.container_ids]
@@ -63,7 +65,7 @@ class AppInstList extends React.Component {
     }
 
     onTerminal = (action, data) => {
-        this.setState({ terminalData: data, openTerminal: true })
+        this.setState({terminalData: data, openTerminal: true})
     }
 
     onPowerStateVisible = (data) => {
@@ -84,24 +86,38 @@ class AppInstList extends React.Component {
         }
     }
 
+    goMonitoring = () => {
+        //let url = '/site4/pg=Monitoring'
+        this.props.history.replace('/PageMonitoringView/'+ 'kyungjoon')
+
+    }
+
     actionMenu = () => {
         return [
-            { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd },
-            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
-            { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, dialogNote:'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance' },
-            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
-            { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
-            { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
-            { label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState }
+            {label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd},
+            {label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader},
+            {label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader},
+            {
+                label: 'Delete',
+                onClick: deleteAppInst,
+                ws: true,
+                dialogMessage: this.getDeleteActionMessage,
+                multiStepperHeader: this.multiStepperHeader,
+                dialogNote: 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance'
+            },
+            {label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal},
+            {label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState},
+            {label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState},
+            {label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState},
+            {label: 'Monitoring', visible: this.onUpdateVisible, onClick: this.goMonitoring},
         ]
     }
 
     groupActionMenu = () => {
         return [
-            { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
-            { label: 'Refresh', onClick: refreshAppInst, icon: 'refresh', warning: 'refresh all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
+            {label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader},
+            {label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader},
+            {label: 'Refresh', onClick: refreshAppInst, icon: 'refresh', warning: 'refresh all the selected App Instances', multiStepperHeader: this.multiStepperHeader},
         ]
     }
 
@@ -118,19 +134,19 @@ class AppInstList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : appInstSteps.stepsAppInst
+            viewMode: appInstSteps.stepsAppInst
         })
     }
 
     /**
-   * Customized data block
-   **/
+     * Customized data block
+     **/
 
     getUpdate = (data, isDetailView) => {
         return (
             isDetailView ? data :
                 data[fields.updateAvailable] ?
-                    <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{data[fields.region]}  </label> :
+                    <label><Icon color={'orange'} name={'arrow alternate circle up outline'}/>&nbsp;{data[fields.region]}  </label> :
                     <label>{data[fields.region]}</label>
         )
     }
@@ -144,15 +160,14 @@ class AppInstList extends React.Component {
     showHealthCheck = (data, isDetailView) => {
         if (isDetailView) {
             return constant.healthCheck(data)
-        }
-        else {
+        } else {
             let icon = null;
             switch (data[fields.healthCheck]) {
                 case 3:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green'/>}/>
                     break;
                 default:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red'/>}/>
             }
             return (
                 icon
@@ -179,22 +194,24 @@ class AppInstList extends React.Component {
     }
 
     /**
-    * Customized data block
-    * ** */
+     * Customized data block
+     * ** */
 
-   componentDidMount() {
+    componentDidMount() {
         this.customizedData()
     }
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%', height: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
-                    <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
+                <div style={{width: '100%', height: '100%'}}>
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
+                    <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => {
+                        this.setState({openTerminal: false})
+                    }}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
-                            this.setState({ openTerminal: false })
-                        }} />
+                            this.setState({openTerminal: false})
+                        }}/>
                     </Dialog>
                 </div>
         )
@@ -206,7 +223,9 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleLoadingSpinner: (data) => {
+            dispatch(actions.loadingSpinner(data))
+        },
     };
 };
 
