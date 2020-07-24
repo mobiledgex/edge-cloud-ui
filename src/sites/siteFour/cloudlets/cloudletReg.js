@@ -169,7 +169,7 @@ class CloudletReg extends React.Component {
             this.props.handleLoadingSpinner(false)
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
             if (!this.isUpdate && isRestricted) {
-                this.restricted = isRestricted
+                this.restricted = true
                 if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
                     responseData.data.message = 'Cloudlet configured successfully, please wait requesting cloudlet manifest to bring up Platform VM(s) for cloudlet service'
                     this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
