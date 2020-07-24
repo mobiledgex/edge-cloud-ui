@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { fields, isAdmin } from '../../../services/model/format';
+import { fields, isAdmin, getUserRole } from '../../../services/model/format';
 import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest, changePowerState } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
@@ -47,7 +47,7 @@ class AppInstList extends React.Component {
         let visible = false;
         if (data) {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                visible = true
+                visible = getUserRole() !== constant.DEVELOPER_VIEWER
             }
             else {
                 let runtimeInfo = data[fields.runtimeInfo]
