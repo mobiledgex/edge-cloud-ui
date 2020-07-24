@@ -1669,7 +1669,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
 
 
-export const makeRegionCloudletClusterTreeDropdown2 = (allRegionList, cloudletList, clusterList : TypeCluster, _this, isShowRegion = true) => {
+export const makeRegionCloudletClusterTreeDropdown__NEW = (allRegionList, cloudletList, clusterList : TypeCluster, _this, isShowRegion = true) => {
     try {
         let treeCloudletList = []
         cloudletList.map((cloudletOne, cloudletIndex) => {

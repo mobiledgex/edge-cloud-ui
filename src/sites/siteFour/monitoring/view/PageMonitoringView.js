@@ -32,7 +32,7 @@ import {
     makeLineChartDataForBigModal,
     makeOrgTreeDropdown,
     makeRegionCloudletClusterTreeDropdown,
-    makeRegionCloudletClusterTreeDropdown2,
+    makeRegionCloudletClusterTreeDropdown__NEW,
     makeStringLimit,
     makeUniqDevOrg,
     makeUniqOperOrg,
@@ -836,7 +836,7 @@ export default withRouter(
                         //todo:############################################################
                         let regionList = localStorage.getItem('regions').split(",")
                         cloudletClusterListMap = getCloudletClusterNameList(clusterList)
-                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown2(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, true)
+                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown__NEW(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, true)
 
 
                     } else {
