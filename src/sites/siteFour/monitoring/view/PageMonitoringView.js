@@ -676,9 +676,9 @@ export default withRouter(
                     console.log(`sldkflskdflksdlfklsdkfk====>`, this.props);
                     console.log(`sldkflskdflksdlfklsdkfk====>`, this.props.location.pathname);
 
-                    let idd = this.props.location.pathname.split('&id=')[1]
+                    let fullAppInst = this.props.location.pathname.split('&id=')[1]
 
-                    //this.handleOnChangeAppInstDropdown('sdlfkdslfk')
+                    this.handleOnChangeAppInstDropdown(fullAppInst)
 
                     moment.tz.setDefault(getMexTimezone())
                     window.addEventListener('MexTimezoneChangeEvent', () => {
@@ -2455,6 +2455,9 @@ export default withRouter(
                 }
 
                 handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
+
+                    console.log(`fullCurrentAppInst====>`, fullCurrentAppInst);
+
                     try {
                         clearInterval(this.intervalForAppInst)
                         clearInterval(this.intervalForCluster)

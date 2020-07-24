@@ -88,7 +88,10 @@ class AppInstList extends React.Component {
 
     goMonitoring = () => {
         //let url = '/site4/pg=Monitoring'
-        this.props.history.replace('/PageMonitoringView/'+ 'kyungjoon')
+
+        let fullAppInst = "mobiledgexsdkdemo20 | mexplat-stage-hamburg-cloudlet | autoclustermobiledgexsdkdemo20 | latest | EU | 3 | TDG | {\"lat\":53.5511,\"long\":9.9937}"
+
+        this.props.history.replace('/PageMonitoringView/' + fullAppInst)
 
     }
 
