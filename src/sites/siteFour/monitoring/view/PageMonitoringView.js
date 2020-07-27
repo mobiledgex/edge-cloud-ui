@@ -2508,7 +2508,7 @@ export default withRouter(
                         let allAppInstList = promiseAppInstList;
                         let allAppInstEventLogs = promiseAppInstEventLogs
                         let filteredAppInstList = allAppInstList.filter((item: TypeAppInst, index) => {
-                            return item.AppName === AppName && item.Version === Version && item.Cloudlet == Cloudlet
+                            return item.AppName === AppName && item.Version === Version && item.Cloudlet == Cloudlet && item.ClusterInst == ClusterInst
                         })
 
                         let filteredCloudletList = allCoudletList.filter((item: TypeCloudlet, index) => {
