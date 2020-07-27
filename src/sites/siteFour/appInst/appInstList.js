@@ -116,6 +116,7 @@ class AppInstList extends React.Component {
             isMap: true,
             selection: true,
             sortBy: [fields.region, fields.appName],
+            sortOrder: fields.createdAt,
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode : appInstSteps.stepsAppInst

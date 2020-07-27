@@ -8,6 +8,7 @@ import { green, red } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CloseIcon from '@material-ui/icons/Close';
 import { fields } from '../../services/model/format';
+
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
@@ -181,6 +182,19 @@ const MultiStream = (props) => {
             </ExpansionPanelDetails>
         )
     }
+    const handleChangeState = (event, expanded) => {
+        let scrollingLast = null;
+        // chatch evnet of expanded
+        setTimeout(() => {
+            scrollingLast = document.getElementsByClassName("MuiStep-root MuiStep-vertical MuiStep-completed");
+            if(scrollingLast) console.log("20200729 timeout get count of scroller .. ", scrollingLast.length);
+            if(scrollingLast && scrollingLast.length > 0) {
+                const last = scrollingLast.length -1;
+                scrollingLast[last] && scrollingLast[last].scrollIntoView();
+            }
+        }, 500);
+        
+    }
     return (
         props.multiStepsArray.length > 0 ?
             <div>
@@ -215,8 +229,7 @@ const MultiStream = (props) => {
                                             </Grid>
                                             <Grid item xs={9}>
                                                 {
-
-                                                    <ExpansionPanel>
+                                                    <ExpansionPanel className="expansion-panel-step" defaultExpanded onChange={handleChangeState()}>
                                                         {getDataSummary(item.steps)}
                                                         {getDetails(item)}
                                                     </ExpansionPanel>

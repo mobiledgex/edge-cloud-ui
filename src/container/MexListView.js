@@ -18,6 +18,7 @@ import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiSt
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
+import * as Util from '../utils';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -553,8 +554,10 @@ class MexListView extends React.Component {
             dataList = [...dataList, ...newDataList]
         }
 
+        const newSort = requestInfo.sortOrder ? Util.ortByKey(dataList, requestInfo.sortOrder).reverse() : dataList;
+
         this.setState({
-            dataList: Object.assign([], dataList)
+            dataList: Object.assign([], newSort)
         })
         this.setState({ filterList: this.onFilterValue() })
         this.props.handleViewMode(this.props.requestInfo.viewMode);
