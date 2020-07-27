@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,13 +16,12 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListIcon from '@material-ui/icons/List';
-import { fields } from '../../services/model/format';
-import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
-import { getUserRole } from '../../services/model/format';
+import {fields, getUserRole} from '../../services/model/format';
+import {ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper} from '@material-ui/core';
 import MaterialIcon from 'material-icons-react';
 import * as constant from '../../constant'
-import {PAGE_MONITORING} from "../../constant";
-
+import {PAGE_MONITORING} from '../../constant'
+import {useHistory} from "react-router-dom";
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -235,6 +234,7 @@ const canEdit = (action) => {
 }
 
 export default function EnhancedTable(props) {
+    const history = useHistory();
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length>0 ? props.requestInfo.sortBy[0] : 'region');
@@ -303,7 +303,7 @@ export default function EnhancedTable(props) {
         props.actionClose(action)
     }
 
-    const getActionMenu = () => {
+    const getActionMenu = (dataList, selectRow) => {
         return (
             actionMenu.length > 0 ?
                 <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal>
@@ -440,7 +440,7 @@ export default function EnhancedTable(props) {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
-            {getActionMenu()}
+            {getActionMenu(props.dataList, selectedRow)}
         </div>
     );
 }
