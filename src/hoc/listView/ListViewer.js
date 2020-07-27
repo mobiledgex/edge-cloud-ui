@@ -1,233 +1,431 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
-import {withRouter} from 'react-router-dom';
-import * as actions from '../../../actions';
-//redux
-import {connect} from 'react-redux';
-import {fields, isAdmin} from '../../../services/model/format';
-import {changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst} from '../../../services/model/appInstance';
-import {showApps} from '../../../services/model/app';
-import {showCloudletInfos} from '../../../services/model/cloudletInfo';
-import AppInstReg from './appInstReg';
-import * as constant from '../../../constant';
-import * as shared from '../../../services/model/shared';
-import TerminalViewer from '../../../container/TerminalViewer';
-import {Dialog} from '@material-ui/core';
-import {Icon, Popup} from 'semantic-ui-react';
-import {appInstTutor} from "../../../tutorial";
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import ListIcon from '@material-ui/icons/List';
+import {fields, getUserRole} from '../../services/model/format';
+import {ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper} from '@material-ui/core';
+import MaterialIcon from 'material-icons-react';
+import * as constant from '../../constant'
 
-
-const appInstSteps = appInstTutor();
-
-class AppInstList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentView: null,
-            terminalData: [],
-            openTerminal: false,
-            stepsArray: []
-        }
-        this.action = '';
-        this.data = {};
-        this.keys = keys();
-        this.multiStepperHeader = [{label: 'App', field: fields.appName}, {label: 'Cloudlet', field: fields.cloudletName}, {
-            label: 'Operator',
-            field: fields.operatorName
-        }, {label: 'Cluster', field: fields.clusterName}]
-    }
-
-    onRegClose = (isEdited) => {
-        this.setState({currentView: null})
-    }
-
-    onAdd = (action, data) => {
-        this.setState({currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/>})
-
-    }
-
-    onTerminalVisible = (data) => {
-        let visible = false;
-        if (data) {
-            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                visible = getUserRole() !== constant.DEVELOPER_VIEWER
-            } else {
-                let runtimeInfo = data[fields.runtimeInfo]
-                if (runtimeInfo) {
-                    let containers = runtimeInfo[fields.container_ids]
-                    if (containers && containers.length > 0) {
-                        visible = true
-                    }
-                }
-            }
-        }
-        return visible
-    }
-
-
-    onTerminal = (action, data) => {
-        this.setState({terminalData: data, openTerminal: true})
-    }
-
-    onPowerStateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM && data[fields.accessType] !== constant.ACCESS_TYPE_LOAD_BALANCER
-    }
-
-    onUpgradeVisible = (data) => {
-        return data[fields.updateAvailable]
-    }
-
-    onUpdateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM
-    }
-
-    getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && isAdmin()) {
-            return `Cloudlet status is not online, do you still want to proceed with ${data[fields.appName]} App Instance deletion?`
-        }
-    }
-
-    onMonitoring = (action, data)=>
-    {
-            console.log('Rahul1234', 'dddd')
-           // this.props.history.push({ pathname: '/page_monitoring_view/' + JSON.stringify(selectedRow) })
-    }
-
-    actionMenu = () => {
-        return [
-            {label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd},
-            {label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader},
-            {label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader},
-            {
-                label: 'Delete',
-                onClick: deleteAppInst,
-                ws: true,
-                dialogMessage: this.getDeleteActionMessage,
-                multiStepperHeader: this.multiStepperHeader,
-                dialogNote: 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance'
-            },
-            {label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal},
-            {label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState},
-            {label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState},
-            {label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState},
-            {label: 'Monitoring', onClick: this.onMonitoring},
-        ]
-    }
-
-    groupActionMenu = () => {
-        return [
-            {label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader},
-            {label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader},
-            {label: 'Refresh', onClick: refreshAppInst, icon: 'refresh', warning: 'refresh all the selected App Instances', multiStepperHeader: this.multiStepperHeader},
-        ]
-    }
-
-    requestInfo = () => {
-        return ({
-            id: 'AppInsts',
-            headerLabel: 'App Instances',
-            nameField: fields.appName,
-            requestType: [showAppInsts, showApps, showCloudletInfos],
-            streamType: streamAppInst,
-            isRegion: true,
-            isMap: true,
-            selection: true,
-            sortBy: [fields.region, fields.appName],
-            keys: this.keys,
-            onAdd: this.onAdd,
-            viewMode: appInstSteps.stepsAppInst
-        })
-    }
-
-    /**
-     * Customized data block
-     **/
-
-    getUpdate = (data, isDetailView) => {
-        return (
-            isDetailView ? data :
-                data[fields.updateAvailable] ?
-                    <label><Icon color={'orange'} name={'arrow alternate circle up outline'}/>&nbsp;{data[fields.region]}  </label> :
-                    <label>{data[fields.region]}</label>
-        )
-    }
-
-    showPowerState = (data, isDetailView) => {
-        if (isDetailView) {
-            return constant.PowerState(data)
-        }
-    }
-
-    showHealthCheck = (data, isDetailView) => {
-        if (isDetailView) {
-            return constant.healthCheck(data)
-        } else {
-            let icon = null;
-            switch (data[fields.healthCheck]) {
-                case 3:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green'/>}/>
-                    break;
-                default:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red'/>}/>
-            }
-            return (
-                icon
-            )
-        }
-    }
-
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.state) {
-                key.customizedData = shared.showProgress
-            }
-            if (key.field === fields.region) {
-                key.customizedData = this.getUpdate
-            }
-            if (key.field === fields.powerState) {
-                key.customizedData = this.showPowerState
-            }
-            if (key.field === fields.healthCheck) {
-                key.customizedData = this.showHealthCheck
-            }
-        }
-    }
-
-    /**
-     * Customized data block
-     * ** */
-
-    componentDidMount() {
-        this.customizedData()
-    }
-
-    render() {
-        return (
-            this.state.currentView ? this.state.currentView :
-                <div style={{width: '100%', height: '100%'}}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
-                    <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => {
-                        this.setState({openTerminal: false})
-                    }}>
-                        <TerminalViewer data={this.state.terminalData} onClose={() => {
-                            this.setState({openTerminal: false})
-                        }}/>
-                    </Dialog>
-                </div>
-        )
-    }
-};
-
-const mapStateToProps = (state) => {
-    return {}
-};
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
+const StyledTableRow = withStyles((theme) => ({
+    root: {
+        '&:nth-of-type(odd)': {
+            backgroundColor: '#1E2123',
         },
+    },
+}))(TableRow);
+
+const StyledTableCell = withStyles((theme) => ({
+    root: {
+        maxWidth:250,
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+        borderBottom: 'none',
+        height:50 
+    },
+}))(TableCell);
+
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
+
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
+
+function checkRole(form) {
+    let roles = form.roles
+    if (roles) {
+        let visible = false
+        form.detailView = false
+        for (let i = 0; i < roles.length; i++) {
+            let role = roles[i]
+            if (role === getUserRole()) {
+                visible = true
+                form.detailView = true
+                break;
+            }
+        }
+        form.visible = form.visible ? visible : form.visible
+    }
+}
+
+function EnhancedTableHead(props) {
+    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
     };
+
+    return (
+        <TableHead >
+            <TableRow >
+                {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#2A2C33' }}>
+                    <Checkbox
+                        indeterminate={numSelected > 0 && numSelected < rowCount}
+                        checked={rowCount > 0 && numSelected === rowCount}
+                        onChange={onSelectAllClick}
+                        inputProps={{ 'aria-label': 'select all desserts' }}
+                    />
+                </TableCell> : null}
+                {props.headCells.map((headCell) => {
+                    checkRole(headCell)
+                    if (headCell.label === 'Actions' &&  headCell.visible) {
+                        headCell.visible = props.actionMenuLength > 0
+                    }
+                    if (headCell.visible) {
+                        return <TableCell
+                            style={{ backgroundColor: '#2A2C33' }}
+                            key={headCell.field}
+                            align={headCell.numeric ? 'right' : 'left'}
+                            padding={headCell.disablePadding ? 'none' : 'default'}
+                            sortDirection={orderBy === headCell.field ? order : false}
+                        >
+                            {headCell.sortable ?
+                                <TableSortLabel
+                                    active={orderBy === headCell.field}
+                                    direction={orderBy === headCell.field ? order : 'asc'}
+                                    onClick={createSortHandler(headCell.field)}
+                                >
+                                    {headCell.label}
+                                    {orderBy === headCell.field ? (
+                                        <span className={classes.visuallyHidden}>
+                                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                        </span>
+                                    ) : null}
+                                </TableSortLabel> : headCell.label}
+                        </TableCell>
+                    }
+                })}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+EnhancedTableHead.propTypes = {
+    classes: PropTypes.object.isRequired,
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+    actionMenuLength:PropTypes.number.isRequired
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppInstList));
+const useToolbarStyles = makeStyles((theme) => ({
+    root: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(1),
+    },
+    highlight:
+        {
+          color: theme.palette.text.primary,
+          backgroundColor: '#6E6E6D',
+        },
+    title: {
+        flex: '1 1 100%',
+    },
+}));
+
+const EnhancedTableToolbar = (props) => {
+    const classes = useToolbarStyles();
+    const { numSelected } = props;
+    return (
+        <Toolbar className={clsx(classes.root, {
+            [classes.highlight]: numSelected > 0,
+          })}>
+            {numSelected > 0 ? (
+                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+                    {numSelected} selected
+                </Typography>
+            ) : null}
+            {numSelected > 0 ? (
+                props.groupActionMenu ?
+                    props.groupActionMenu().map((actionMenu, i) => {
+                        return (
+                            <Tooltip key={i} title={actionMenu.label}>
+                                <IconButton aria-label={actionMenu.label} onClick={() => { props.groupActionClose(actionMenu) }}>
+                                    <MaterialIcon icon={actionMenu.icon} color={'white'}/>
+                                </IconButton>
+                            </Tooltip>)
+                    }) : null
+            ) : null}
+        </Toolbar>
+    );
+};
+
+EnhancedTableToolbar.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+};
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+    },
+    paper: {
+        width: '100%',
+        marginBottom: theme.spacing(2),
+    },
+    table: {
+        minWidth: 750,
+    },
+    visuallyHidden: {
+        border: 0,
+        clip: 'rect(0 0 0 0)',
+        height: 1,
+        margin: -1,
+        overflow: 'hidden',
+        padding: 0,
+        position: 'absolute',
+        top: 20,
+        width: 1,
+    },
+    tip: {
+        width:'fit-content',
+        maxWidth:'100%',
+        overflow:'hidden',
+        textOverflow:'ellipsis',
+    }
+}));
+
+const canEdit = (action) => {
+    let valid = true
+    if (action.type === 'Edit') {
+        let role = getUserRole()
+        if (role && role.includes(constant.VIEWER)) {
+            valid = false
+        }
+    }
+    return valid
+}
+
+export default function EnhancedTable(props) {
+    const classes = useStyles();
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length>0 ? props.requestInfo.sortBy[0] : 'region');
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    const [actionEl, setActionEl] = React.useState(null)
+    const [selectedRow, setSelectedRow] = React.useState({})
+    const actionMenu = props.actionMenu.filter(action => { return canEdit(action) })
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelecteds = props.dataList.map((n) => n);
+            props.setSelected(newSelecteds);
+            return;
+        }
+        props.setSelected([]);
+    };
+
+    const handleClick = (event, row) => {
+        const selectedIndex = props.selected.indexOf(row);
+        let newSelected = [];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(props.selected, row);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(props.selected.slice(1));
+        } else if (selectedIndex === props.selected.length - 1) {
+            newSelected = newSelected.concat(props.selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                props.selected.slice(0, selectedIndex),
+                props.selected.slice(selectedIndex + 1),
+            );
+        }
+
+        props.setSelected(newSelected);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const isSelected = (name) => props.selected.indexOf(name) !== -1;
+
+    const cellClick = (header, row)=>
+    {
+        setSelectedRow(row)
+        props.cellClick(header, row)
+    }
+
+    /*Action Block*/
+
+    const actionClose = (action) => {
+        setActionEl(null);
+        props.actionClose(action)
+    }
+
+    const getActionMenu = () => {
+        return (
+            actionMenu.length > 0 ?
+                <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal>
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
+                        >
+                            <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
+                                <ClickAwayListener onClickAway={() => setActionEl(null)}>
+                                    <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow">
+                                        {actionMenu.map((action, i) => {
+                                            let visible = canEdit(action) ? action.visible ? action.visible(selectedRow) : true : false
+                                            return visible ? <MenuItem key={i} onClick={(e) => { actionClose(action) }}>{action.label}</MenuItem> : null
+                                        })}
+                                    </MenuList>
+                                </ClickAwayListener>
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper> : null
+        )
+    }
+
+    const getAction = (item) => {
+        return (
+            <IconButton aria-label="Action" className='buttonActions' onClick={(e) => { setActionEl(e.currentTarget) }}>
+                <ListIcon style={{ color: '#76ff03' }} />
+            </IconButton>
+        )
+    }
+
+    const groupActionClose = (action)=>
+    {
+        props.groupActionClose(action, props.selected)
+        props.setSelected([])
+    }
+
+    /*Action Block*/
+
+    return (
+        <div className={classes.root}>
+            <Paper style={{ backgroundColor: '#2A2C33' }}>
+                <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
+                <TableContainer style={{ height: window.innerHeight - (props.isMap ? 600 : 200) }}>
+                    <Table
+                        stickyHeader
+                        aria-labelledby="tableTitle"
+                        size={'small'}
+                        aria-label="enhanced table"
+                    >
+                        <EnhancedTableHead
+                            classes={classes}
+                            numSelected={props.selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            headCells={props.keys}
+                            rowCount={props.dataList.length}
+                            requestInfo={props.requestInfo}
+                            actionMenuLength = {actionMenu.length}
+                        />
+                        <TableBody>
+                            {
+                                stableSort(props.dataList, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+                                    const isItemSelected = isSelected(row);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                                    return (
+                                        <StyledTableRow
+                                            key={index}
+                                            hover
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                        >
+                                            {props.requestInfo.selection ?
+                                                <TableCell style={{ borderBottom: "none" }} padding="checkbox"
+                                                    onClick={(event) => handleClick(event, row)}>
+                                                    <Checkbox
+                                                        checked={isItemSelected}
+                                                        inputProps={{ 'aria-labelledby': labelId }}
+                                                    />
+                                                </TableCell> : null}
+                                            {props.keys.map((header, j) => {
+                                                checkRole(header)
+                                                if (header.visible) {
+                                                    let field = header.field;
+                                                    return (
+                                                        <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
+                                                            {field.indexOf('Name') !== -1 ?
+                                                                <Tooltip title={header.customizedData ? header.customizedData(row) : row[field] ? row[field] : ''} arrow>
+                                                                    <div className={classes.tip}>
+                                                                        {header.customizedData ? header.customizedData(row) : row[field]}
+                                                                    </div>
+                                                                </Tooltip>
+                                                            :
+                                                                field === fields.actions ? getAction(row) :
+                                                                    header.customizedData ? header.customizedData(row) : row[field]
+                                                            }
+                                                        </StyledTableCell>
+                                                    )
+                                                }
+                                            })
+                                            }
+                                        </StyledTableRow>
+                                    );
+                                })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[25, 50, 75]}
+                    component="div"
+                    count={props.dataList.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+            </Paper>
+            {getActionMenu()}
+        </div>
+    );
+}
