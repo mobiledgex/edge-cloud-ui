@@ -1,11 +1,6 @@
 // @flow
 import * as React from 'react';
-import {
-    convertToClassification,
-    makeGradientLineChartData,
-    makeLineChartOptions,
-    makeMultiLineChartDatas
-} from "../service/PageMonitoringService";
+import {convertToClassification, makeGradientLineChartData, makeLineChartOptions, makeMultiLineChartDatas} from "../service/PageMonitoringService";
 import PageMonitoringView from "../view/PageMonitoringView";
 import {Line} from 'react-chartjs-2';
 import {HARDWARE_TYPE} from "../../../../shared/Constants";
@@ -102,9 +97,9 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
             return 'Recv UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
             return 'Sent UDP Datagram'
-        } else if (title.includes(HARDWARE_TYPE.RECVBYTES)) {
+        } else if (title.includes(HARDWARE_TYPE.BYTESRECVD)) {
             return 'Network Recv'
-        } else if (title.includes(HARDWARE_TYPE.SENDBYTES)) {
+        } else if (title.includes(HARDWARE_TYPE.BYTESSENT)) {
             return 'Network Sent'
         } else if (title.includes(HARDWARE_TYPE.VCPU_USED)) {
             return 'vCPU Utilization'

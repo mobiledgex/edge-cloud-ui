@@ -46,11 +46,11 @@ class ClouldetPoolList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: constant.ADD_CLOUDLET, label: 'Add Cloudlet', onClick: this.onActionClick },
-            { id: constant.DELETE_CLOUDLET, label: 'Delete Cloudlet', onClick: this.onActionClick },
-            { id: constant.ADD_ORGANIZATION, label: 'Link Organization', onClick: this.onActionClick },
-            { id: constant.DELETE_ORGANIZATION, label: 'Unlink Organization', onClick: this.onActionClick },
-            { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool }
+            { id: constant.ADD_CLOUDLET, label: 'Add Cloudlet', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.DELETE_CLOUDLET, label: 'Delete Cloudlet', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.ADD_ORGANIZATION, label: 'Link Organization', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.DELETE_ORGANIZATION, label: 'Unlink Organization', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool, type:'Edit' }
         ]
     }
 

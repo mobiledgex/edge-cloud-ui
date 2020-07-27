@@ -55,9 +55,9 @@ class OrganizationList extends React.Component {
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
-            { label: 'Add User', onClick: this.onAddUser },
-            { label: 'Update', onClick: this.onAdd },
-            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete }
+            { label: 'Add User', onClick: this.onAddUser, type:'Edit' },
+            { label: 'Update', onClick: this.onAdd, type:'Edit' },
+            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type:'Edit' }
         ]
     }
 
