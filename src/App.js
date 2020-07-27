@@ -78,7 +78,7 @@ class App extends Component {
                             <Route exact path='/logout' component={EntranceGlob}/>
                             <Route exact path='/passwordreset' component={EntranceGlob}/>
                             <Route exact path='/verify' component={VerifyContent}/>
-                            <Route exact path="/PageMonitoringView/:id" component={RedirectPage}/>
+                            <Route exact path="/page_monitoring_view/:appInstanceOne" component={RedirectPage}/>
 
                         </Switch>
                     </Suspense>

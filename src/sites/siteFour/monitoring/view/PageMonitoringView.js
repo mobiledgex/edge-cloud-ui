@@ -691,7 +691,7 @@ export default withRouter(
 
                     console.log(`componentDidMount====>`, this.props);
                     console.log(`componentDidMount====>`, this.props.location.pathname);
-                    let fullAppInst = this.props.location.pathname.split('&id=')[1]
+                    let fullAppInst = this.props.location.pathname.split('&appInstanceOne=')[1]
 
                     //todo: appInst페이지로 부터 오는경우..
                     if (fullAppInst !== undefined) {
@@ -700,7 +700,6 @@ export default withRouter(
                         let fullAppInst2 = 'app1595399456-6182914 | automationDusseldorfCloudlet | autoclusterhealthcheck | 2.0 | EU | 2 | TDG | {"lat":1,"long":1}'
                         showToast(fullAppInst2)
                         await this.handleOnChangeAppInstDropdown______selected(fullAppInst2)
-
 
                     } else {
 

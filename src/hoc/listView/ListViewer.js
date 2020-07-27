@@ -306,7 +306,7 @@ export default function EnhancedTable(props) {
                                                     onClick={(e) => {
                                                         actionClose(action)
                                                         if (action.label === PAGE_MONITORING) {
-                                                            history.replace('/PageMonitoringView/' + JSON.stringify(selectRow))
+                                                            history.replace('/page_monitoring_view/' + JSON.stringify(selectRow))
                                                         }
                                                     }}>
                                                     {action.label}
