@@ -88,7 +88,7 @@ class AppInstList extends React.Component {
     onMonitoring = (action, data)=>
     {   
         this.props.history.push({ pathname: '/site4/pg=Monitoring' })
-        this.setState({ currentView: <Card style={{width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white'}}><PageMonitoringView appInstanceOne={JSON.stringify(data)}/></Card> });
+        this.setState({ currentView: <Card style={{width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white'}}><PageMonitoringView appInstanceOne={data}/></Card> });
     }
 
     actionMenu = () => {
