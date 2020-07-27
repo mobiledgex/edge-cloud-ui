@@ -34,7 +34,7 @@ class OrganizationList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Delete', visible:this.deleteVisible, onClick: deleteAccount }
+            { label: 'Delete', visible:this.deleteVisible, onClick: deleteAccount, type:'Edit' }
         ]
     }
     /*Action menu block*/

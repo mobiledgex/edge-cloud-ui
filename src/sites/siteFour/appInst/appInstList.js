@@ -51,8 +51,9 @@ class AppInstList extends React.Component {
         let visible = false;
         if (data) {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                visible = true
-            } else {
+                visible = getUserRole() !== constant.DEVELOPER_VIEWER
+            }
+            else {
                 let runtimeInfo = data[fields.runtimeInfo]
                 if (runtimeInfo) {
                     let containers = runtimeInfo[fields.container_ids]
@@ -64,6 +65,7 @@ class AppInstList extends React.Component {
         }
         return visible
     }
+
 
     onTerminal = (action, data) => {
         this.setState({terminalData: data, openTerminal: true})
@@ -159,19 +161,19 @@ class AppInstList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode: appInstSteps.stepsAppInst
+            viewMode : appInstSteps.stepsAppInst
         })
     }
 
     /**
-     * Customized data block
-     **/
+   * Customized data block
+   **/
 
     getUpdate = (data, isDetailView) => {
         return (
             isDetailView ? data :
                 data[fields.updateAvailable] ?
-                    <label><Icon color={'orange'} name={'arrow alternate circle up outline'}/>&nbsp;{data[fields.region]}  </label> :
+                    <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{data[fields.region]}  </label> :
                     <label>{data[fields.region]}</label>
         )
     }
@@ -185,14 +187,15 @@ class AppInstList extends React.Component {
     showHealthCheck = (data, isDetailView) => {
         if (isDetailView) {
             return constant.healthCheck(data)
-        } else {
+        }
+        else {
             let icon = null;
             switch (data[fields.healthCheck]) {
                 case 3:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green'/>}/>
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
                     break;
                 default:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red'/>}/>
+                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
             }
             return (
                 icon
