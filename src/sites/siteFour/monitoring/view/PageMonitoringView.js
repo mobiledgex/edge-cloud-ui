@@ -2502,7 +2502,7 @@ export default withRouter(
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList(undefined, this))
                         promiseList.push(getAllAppInstEventLogs());
-                        const [promiseCloudletList, promiseClusterList, promiseAppInstList,] = await Promise.all(promiseList);
+                        const [promiseCloudletList, promiseClusterList, promiseAppInstList, promiseAppInstEventLogs] = await Promise.all(promiseList);
                         let allCoudletList = promiseCloudletList;
                         let allClusterList = promiseClusterList;
                         let allAppInstList = promiseAppInstList;
