@@ -1595,81 +1595,9 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 }
 
 
-export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
-
-    try {
-        let treeCloudletList = []
-        cloudletList.map((cloudletOne, cloudletIndex) => {
-            let newCloudletOne = {
-                title: (
-                    <div>{cloudletOne.CloudletName}&nbsp;&nbsp;
-                        <Tag color="grey" style={{color: 'black'}}>Cloudlet</Tag>
-                    </div>
-                ),
-                value: cloudletOne.CloudletName,
-                children: [],
-                region: cloudletOne.Region,
-                oper: cloudletOne.oper,
-                selectable: true,
-
-            };
-
-            clusterList.map((clusterItemOne: any, innerIndex) => {
-                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
-                    newCloudletOne.children.push({
-                        title: (
-                            <div style={{display: 'flex'}}>
-                                <Center style={{width: 15,}}>
-                                    {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
-                                </Center>
-                                <div style={{marginLeft: 5,}}>
-                                    {reduceString(clusterItemOne.cluster, 40)}
-                                </div>
-
-                            </div>
-                        ),
-                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
-                        isParent: false,
-
-                    })
-                }
-            })
-
-            treeCloudletList.push(newCloudletOne);
-        })
-
-        if (isShowRegion) {//TODO: ADD REGION PARENT
-            let regionTreeList = []
-            allRegionList.map((regionOne, regionIndex) => {
-                let regionMapOne = {
-                    title: (
-                        <div style={{fontWeight: 'bold', fontStyle: 'italic'}}>
-                            {regionOne}
-                        </div>
-                    ),
-                    value: regionOne,
-                    children: []
-                };
-
-                treeCloudletList.map((innerItem, innerIndex) => {
-                    if (regionOne === innerItem.region) {
-                        regionMapOne.children.push(innerItem)
-                    }
-                })
-                regionTreeList.push(regionMapOne)
-            })
-
-            return regionTreeList;
-        } else {
-            return treeCloudletList
-        }
-    } catch (e) {
-    }
-}
 
 
-
-export const makeRegionCloudletClusterTreeDropdown__NEW = (allRegionList, cloudletList, clusterList : TypeCluster, _this, isShowRegion = true) => {
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList : TypeCluster, _this, isShowRegion = true) => {
     try {
         let treeCloudletList = []
         cloudletList.map((cloudletOne, cloudletIndex) => {
