@@ -2503,12 +2503,11 @@ export default withRouter(
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList(undefined, this))
                         promiseList.push(getAllAppInstEventLogs());
-                        const [promiseCloudletList, promiseClusterList, promiseAppInstList, promiseAppInstEventLogs] = await Promise.all(promiseList);
+                        const [promiseCloudletList, promiseClusterList, promiseAppInstList, ] = await Promise.all(promiseList);
                         let allCoudletList = promiseCloudletList;
                         let allClusterList = promiseClusterList;
                         let allAppInstList = promiseAppInstList;
-                        let allAppInstEventLogs = promiseAppInstEventLogs
-
+                        //let allAppInstEventLogs = promiseAppInstEventLogs
                         let filteredAppInstList = allAppInstList.filter((item: TypeAppInst, index) => {
                             return item.AppName === AppName && item.Version === Version
                         })
@@ -2520,11 +2519,11 @@ export default withRouter(
                         //desc: ############################
                         //desc: filtered AppInstEventLogList
                         //desc: ############################
-                        let filteredAppInstEventLogList = allAppInstEventLogs.filter(item => {
+                        /*let filteredAppInstEventLogList = allAppInstEventLogs.filter(item => {
                             if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
                                 return true;
                             }
-                        })
+                        })*/
 
 
                         //todo : ###############
@@ -2556,7 +2555,7 @@ export default withRouter(
                         this.validateTerminal(filteredAppInstList)
 
                         await this.setState({
-                            filteredAppInstEventLogList: filteredAppInstEventLogList,
+                            filteredAppInstEventLogList: [],
                             clusterTreeDropdownList: clusterTreeDropdownList,
                             currentAppVersion: Version,
                             terminalData: null,
