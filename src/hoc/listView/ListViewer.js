@@ -311,7 +311,7 @@ export default function EnhancedTable(props) {
                         >
                             <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                 <ClickAwayListener onClickAway={() => setActionEl(null)}>
-                                    <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow">
+                                    <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
                                         {actionMenu.map((action, i) => {
                                             let visible = canEdit(action) ? action.visible ? action.visible(selectedRow) : true : false
                                             return visible ? <MenuItem key={i} onClick={(e) => { actionClose(action) }}>{action.label}</MenuItem> : null
