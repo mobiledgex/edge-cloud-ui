@@ -2575,7 +2575,7 @@ export default withRouter(
                         //desc: setStream
                         //desc: ############################
                         if (this.state.isStream) {
-                            this.setAppInstInterval(filteredAppList)
+                            this.setAppInstInterval(filteredAppInstList)
                         } else {
                             clearInterval(this.intervalForAppInst)
                         }
