@@ -186,7 +186,7 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
 }
 
 
-export const fetchAppInstList2 = async (pRegionList: string[] = localStorage.getItem('regions').split(","), userType) => {
+export const fetchAppInstListWhenAppInstSelected = async (pRegionList: string[] = localStorage.getItem('regions').split(","), userType) => {
     try {
         let promiseList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null

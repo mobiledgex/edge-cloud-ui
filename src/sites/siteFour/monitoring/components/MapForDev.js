@@ -6,7 +6,7 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
@@ -111,7 +111,7 @@ type State = {
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(
-    class MapForDevContainer extends React.Component<Props, State> {
+    class MapForDev extends React.Component<Props, State> {
         tooltip = createRef();
 
         constructor(props: Props) {

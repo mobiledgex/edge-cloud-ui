@@ -15,8 +15,6 @@ import TerminalViewer from '../../../container/TerminalViewer';
 import {Dialog} from '@material-ui/core';
 import {Icon, Popup} from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
-import {fetchAppInstList, fetchAppInstList2} from "../monitoring/service/PageMonitoringMetricService";
-import * as serverData from "../../../services/model/serverData";
 import {REGION_ALL} from "../../../container/MexToolbar";
 
 
@@ -136,7 +134,7 @@ class AppInstList extends React.Component {
             {label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState},
             {label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState},
             {label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState},
-            {label: 'Monitoring', visible: this.onUpdateVisible, onClick: this.goToMonitoringView},
+            {label: 'Monitoring', visible: () => true, onClick: this.goToMonitoringView},
         ]
     }
 
