@@ -3,21 +3,21 @@ import {Card} from '@material-ui/core';
 
 import './styles.css';
 import orderBy from "lodash/orderBy";
-import {fields} from '../services/model/format';
+import { fields } from '../services/model/format';
 import * as serverData from '../services/model/serverData';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as constant from '../constant'
 
-import MexToolbar, {ACTION_CLOSE, ACTION_MAP, ACTION_NEW, ACTION_REFRESH, ACTION_REGION, REGION_ALL} from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, {CODE_FINISH} from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, {updateStepper} from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
-import {roundOff} from '../utils/math_util';
+import { roundOff } from '../utils/math_util';
 
 class MexListView extends React.Component {
     constructor(props) {
