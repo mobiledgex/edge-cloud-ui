@@ -1,1 +1,0 @@
-console.log(`sldkflskdflksdlfklsdkfk====>`,Math.random());
