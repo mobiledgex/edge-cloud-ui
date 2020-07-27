@@ -1816,7 +1816,7 @@ export default withRouter(
                     if (this.state.currentClassification.toLocaleLowerCase().includes('admin')) {
                         clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterNameMap.cloudletNameList, this.state.filteredClusterList, this,)
                     } else {
-                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(allRegionList, cloudletClusterNameMap.cloudletNameList, this.state.allClusterUsageList, this)
+                        clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(allRegionList, cloudletClusterNameMap.cloudletNameList, this.state.allClusterList, this, true)
                     }
                     await this.setState({
                         clusterTreeDropdownList: clusterTreeDropdownList,
