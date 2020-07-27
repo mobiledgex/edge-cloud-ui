@@ -12,7 +12,7 @@ import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import { Dialog } from '@material-ui/core';
+import { Dialog, Card } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
 import PageMonitoringView from '../monitoring/view/PageMonitoringView';
