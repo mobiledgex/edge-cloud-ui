@@ -16,7 +16,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListIcon from '@material-ui/icons/List';
-import { fields } from '../../services/model/format';	
+import { fields } from '../../services/model/format';
 import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
 import { getUserRole } from '../../services/model/format';
 import MaterialIcon from 'material-icons-react';
