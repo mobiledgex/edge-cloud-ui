@@ -12,10 +12,10 @@ import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import {Dialog} from '@material-ui/core';
+import {Dialog, Card} from '@material-ui/core';
 import {Icon, Popup} from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
-
+import PageMonitoringView from '../monitoring/view/PageMonitoringView'
 
 const appInstSteps = appInstTutor();
 
@@ -87,6 +87,12 @@ class AppInstList extends React.Component {
         }
     }
 
+    onMonitoring = (action, data)=>
+    {   
+        this.props.history.push({ pathname: '/site4/pg=Monitoring' })
+        this.setState({ currentView: <Card style={{width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white'}}><PageMonitoringView appInstanceOne={JSON.stringify(data)}/></Card> });
+    }
+
     actionMenu = () => {
         return [
             {label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd},
@@ -104,7 +110,7 @@ class AppInstList extends React.Component {
             {label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState},
             {label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState},
             {label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState},
-            {label: 'Monitoring', visible: () => true, onClick: () => (console.log(`null`))},
+            {label: 'Monitoring', onClick: this.onMonitoring},
         ]
     }
 

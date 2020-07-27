@@ -684,7 +684,7 @@ export default withRouter(
 
 
                     try {
-                        let fullAppInst = this.props.location.pathname.split('&appInstanceOne=')[1]
+                        let fullAppInst = this.props.appInstanceOne
                         //todo: when appInst clicked from AppInst menu.
                         if (fullAppInst !== undefined) {
                             let fullAppInstStr = convertFullAppInstJsonToStr(JSON.parse(fullAppInst))

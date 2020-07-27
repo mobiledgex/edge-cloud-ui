@@ -16,7 +16,6 @@ import './css/components/timelineH.css';
 import {ThemeProvider} from "@material-ui/styles";
 import {getDarkTheme, getLightTheme, THEME_TYPE} from "./themeStyle";
 import {GridLoader} from 'react-spinners';
-import RedirectPage from "./RedirectPage";
 
 const EntranceGlob = lazy(() => import('./sites/login/entranceGlob'));
 const VerifyContent = lazy(() => import('./sites/login/verifyContent'));
@@ -78,7 +77,6 @@ class App extends Component {
                             <Route exact path='/logout' component={EntranceGlob}/>
                             <Route exact path='/passwordreset' component={EntranceGlob}/>
                             <Route exact path='/verify' component={VerifyContent}/>
-                            <Route exact path="/page_monitoring_view/:appInstanceOne" component={RedirectPage}/>
 
                         </Switch>
                     </Suspense>
