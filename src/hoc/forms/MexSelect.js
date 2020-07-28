@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Form, Popup, Icon, Button, Dropdown } from 'semantic-ui-react';
+import { Popup, Icon, Dropdown } from 'semantic-ui-react';
 
 
 const MexSelect = (props) => {
