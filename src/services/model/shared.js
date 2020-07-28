@@ -5,7 +5,7 @@ import {fields} from './format';
 
 export const additionalDetail = (data) => {
     return (
-        data[fields.type] && data[fields.type].toLowerCase() === 'developer' ?
+        data[fields.type].toLowerCase() === 'developer' ?
             <div style={{ margin: 20, color: 'white' }}>
                 <div className="newOrg3-2">
                     <div>

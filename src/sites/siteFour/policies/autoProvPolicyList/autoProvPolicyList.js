@@ -11,7 +11,7 @@ import * as constant from '../../../../constant';
 import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/model/autoProvisioningPolicy';
 import { showApps } from '../../../../services/model/app';
 //list
-import MexListView from '../../../../container/mex_table/MexListView';
+import MexListView from '../../../../container/MexListView';
 import { PolicyTutor } from "../../../../tutorial";
 
 
