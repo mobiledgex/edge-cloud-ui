@@ -11,7 +11,7 @@ import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiData
 import { showCloudlets } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 //list
-import MexListView from '../../../container/mex_table/MexListView';
+import MexListView from '../../../container/MexListView';
 //reg
 import ClusterInstReg from './clusterInstReg';
 import {clusterInstTutor} from "../../../tutorial";
