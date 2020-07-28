@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -49,6 +49,7 @@ import PageMonitoringMain from '../monitoring/common/PageMonitoringMain'
 import {Collapse, Tooltip} from '@material-ui/core';
 import {Image} from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
+
 
 const drawerWidth = 250;
 
@@ -151,16 +152,15 @@ export default function MiniDrawer(props) {
         { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
     ]
 
+
+    
+
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(navstate() === 1 ? true : false);
     const [expand, setExpand] = React.useState(false);
     const [openLegend, setOpenLegend] = React.useState(false);
-
     const [page, setPage] = React.useState(defaultPage(options));
-
-    
- 
 
     const handleDrawerOpen = () => {
         setNavState(1)
@@ -177,11 +177,14 @@ export default function MiniDrawer(props) {
     }
 
     const onOptionClick = (option, i) => {
-        localStorage.setItem('currentPage', option.page)
+        if(props.history.location.pathname !== `/site4/pg=${option.pageId}`)
+        {
+          setPage(null)
+        }
         props.history.push({
             pathname: `/site4/pg=${option.pageId}`
         });
-        setPage(option.page)
+        setTimeout(()=>{setPage(option.page)}, 1)
     }
 
     const showOptionForm = (i, option) => {
@@ -286,7 +289,6 @@ export default function MiniDrawer(props) {
                                         {option.subOptions.map((subOption, j) => (
                                             showOptionForm(j, subOption)
                                         ))}
-
                                     </List>
                                 </Collapse> : null}
                         </div> : null
@@ -336,7 +338,7 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                <div className='contents_body'>
+                <div className='contents_body' style={{marginTop:6, height:'calc(100% - 6px)'}}>
                     {page}
                 </div>
             </main>
