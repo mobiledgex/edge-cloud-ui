@@ -686,7 +686,8 @@ export default withRouter(
 
                     try {
                         let fullAppInst = this.props.appInstanceOne
-                        //todo: when appInst clicked from AppInst menu.
+
+                        //todo: when clicked appInst from AppInst menu.
                         if (fullAppInst !== undefined) {
                             let fullAppInstStr = convertFullAppInstJsonToStr(fullAppInst)
                             if (getUserRole().toLowerCase().includes(USER_TYPE_SHORT.DEV)) {
@@ -2084,6 +2085,7 @@ export default withRouter(
                         </div>
                     )
                 }
+
                 _________HANDLEONCHANGE____________________________________________________________________________________() {
                 }
 
@@ -2225,7 +2227,6 @@ export default withRouter(
 
 
                 handleOnChangeCloudletDropdownForAdmin = async (selectCloudlet) => {
-
 
                     let currentCloudletName = undefined
                     try {
@@ -2697,9 +2698,6 @@ export default withRouter(
                         //showToast(e.toString())
                     }
                 }
-
-
-
 
 
                 handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
