@@ -21,6 +21,8 @@ import {
     DARK_LINE_COLOR,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
+    NO_APPS,
+    NO_CLUSTER,
     THEME_OPTIONS,
     USER_TYPE_SHORT,
     WHITE_CLOUTLET_ICON_COLOR,
@@ -38,6 +40,7 @@ import uniqBy from 'lodash/uniqBy';
 import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
+import * as reducer from "../../../../utils";
 
 const {Option} = Select;
 
@@ -324,7 +327,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             return chartDataSet
         }
     } catch (e) {
-        throw new error(e.toString())
+        throw new Error(e.toString())
     }
 };
 
@@ -1256,13 +1259,13 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
+export const reduceLegendClusterCloudletName = (item: TypeCluster, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
 
     let clusterCloudletName = '';
     if (_this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
-        clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
+        clusterCloudletName = item.ClusterName + " [" + item.Cloudlet + "]"
     } else {
-        clusterCloudletName = item.cluster
+        clusterCloudletName = item.ClusterName
     }
     return (
         <div style={{display: 'flex'}}>
@@ -1594,9 +1597,25 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
 }
 
+export function makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
+    let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+    cloudletList.map(item => {
+        let listOne = markerMapObjectForMap[item.CloudletName];
+        if (listOne === undefined) {
+            markerMapObjectForMap[item.CloudletName] = [{
+                AppName: NO_APPS,
+                ClusterInst: NO_CLUSTER,
+                Cloudlet: item.CloudletName,
+                CloudletLocation: item.CloudletLocation,
+            }];
+        }
+    })
 
-export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
+    return markerMapObjectForMap;
+}
 
+
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList: TypeCluster, _this, isShowRegion = true) => {
     try {
         let treeCloudletList = []
         cloudletList.map((cloudletOne, cloudletIndex) => {
@@ -1614,8 +1633,8 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
             };
 
-            clusterList.map((clusterItemOne: any, innerIndex) => {
-                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+            clusterList.map((clusterItemOne: TypeCluster, innerIndex) => {
+                if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
                     newCloudletOne.children.push({
                         title: (
                             <div style={{display: 'flex'}}>
@@ -1623,12 +1642,12 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                                     {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                                 </Center>
                                 <div style={{marginLeft: 5,}}>
-                                    {reduceString(clusterItemOne.cluster, 40)}
+                                    {reduceString(clusterItemOne.ClusterName, 40)}
                                 </div>
 
                             </div>
                         ),
-                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                        value: clusterItemOne.ClusterName + " | " + cloudletOne.CloudletName,
                         isParent: false,
 
                     })
@@ -1668,6 +1687,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
     }
 
 }
+
 
 export const makeDropdownForCloudletForDevView = (pList) => {
     try {

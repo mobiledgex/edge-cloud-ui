@@ -1,5 +1,5 @@
-import { generateUniqueId } from '../serviceMC';
-import { toJson } from '../../utils/json_util'
+import {generateUniqueId} from '../serviceMC';
+import {toJson} from '../../utils/json_util'
 import isEqual from 'lodash/isEqual';
 
 export const fields = {
@@ -82,7 +82,6 @@ export const fields = {
     confirmPassword:'confirmPassword',
     email:'email',
     role: 'role',
-    email: 'email',
     emailVerified: 'emailVerified',
     passHash: 'passHash',
     iter: 'iter',
