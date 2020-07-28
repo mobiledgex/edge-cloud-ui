@@ -21,6 +21,8 @@ import {
     DARK_LINE_COLOR,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
+    NO_APPS,
+    NO_CLUSTER,
     THEME_OPTIONS,
     USER_TYPE_SHORT,
     WHITE_CLOUTLET_ICON_COLOR,
@@ -38,6 +40,7 @@ import uniqBy from 'lodash/uniqBy';
 import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
+import * as reducer from "../../../../utils";
 
 const {Option} = Select;
 
@@ -1256,7 +1259,7 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item:TypeCluster, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
+export const reduceLegendClusterCloudletName = (item: TypeCluster, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
 
     let clusterCloudletName = '';
     if (_this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
@@ -1594,10 +1597,25 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
 }
 
+export function makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
+    let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+    cloudletList.map(item => {
+        let listOne = markerMapObjectForMap[item.CloudletName];
+        if (listOne === undefined) {
+            markerMapObjectForMap[item.CloudletName] = [{
+                AppName: NO_APPS,
+                ClusterInst: NO_CLUSTER,
+                Cloudlet: item.CloudletName,
+                CloudletLocation: item.CloudletLocation,
+            }];
+        }
+    })
+
+    return markerMapObjectForMap;
+}
 
 
-
-export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList : TypeCluster, _this, isShowRegion = true) => {
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList: TypeCluster, _this, isShowRegion = true) => {
     try {
         let treeCloudletList = []
         cloudletList.map((cloudletOne, cloudletIndex) => {
