@@ -598,7 +598,7 @@ export default withRouter(
                         isShowAppInstPopup: false,
                         isShowPopOverMenu: false,
                         isOpenEditView2: false,
-                        showAppInstClient: true,
+                        showAppInstClient: false,
                         filteredClusterList: [],
                         currentWidth: '100%',
                         emptyPosXYInGrid: {},
