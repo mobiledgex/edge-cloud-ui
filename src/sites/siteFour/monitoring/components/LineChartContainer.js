@@ -60,7 +60,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 this.setChartData(lineChartDataSet, hwType, graphType);
             }
         } catch (e) {
-            throw new error(e.toString())
+            throw new Error(e.toString())
         }
     }
 
