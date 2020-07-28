@@ -13,7 +13,6 @@ import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import * as dateUtil from "../../../../utils/date_util";
-import type {TypeAppInstLowerCase} from "../../../../shared/Types";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -727,13 +726,6 @@ export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, date
         }
     }
     return formBody;
-}
-
-export function  convertFullAppInstJsonToStr(fullAppInstJson: TypeAppInstLowerCase) {
-    let fullAppInstStr = fullAppInstJson.appName + " | " + fullAppInstJson.cloudletName + " | " + fullAppInstJson.clusterName
-        + " | " + fullAppInstJson.version + " | " + fullAppInstJson.region + " | " + fullAppInstJson.healthCheck
-        + " | " + fullAppInstJson.operatorName + " | " + JSON.stringify(fullAppInstJson.cloudletLocation)
-    return fullAppInstStr
 }
 
 

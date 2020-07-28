@@ -113,7 +113,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
 
 
         } catch (e) {
-            throw new Error(e.toString())
+            throw new error(e.toString())
         }
 
 
