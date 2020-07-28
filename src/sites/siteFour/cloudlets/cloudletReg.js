@@ -188,7 +188,7 @@ class CloudletReg extends React.Component {
                 }
             }
             else {
-                if (responseData) { this.canCloseStepper = responseData.code === 200 }
+                this.canCloseStepper = responseData ? responseData.code === 200 : false
                 this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
             }
         }
