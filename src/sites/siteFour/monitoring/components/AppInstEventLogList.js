@@ -248,7 +248,7 @@ export default function AppInstEventLogList(props) {
                     null
                 }
                 </tbody>
-                {props.eventLogList.length === 0 && <div style={{
+                {props.loading || props.eventLogList.length === 0 ? <div style={{
                     justifyContent: 'center',
                     alignSelf: 'center',
                     alignItems: 'center',
@@ -258,7 +258,7 @@ export default function AppInstEventLogList(props) {
                     <div style={{marginTop: 80}}>
                         {renderEmptyMessageBox("No Data Available")}
                     </div>
-                </div>
+                </div> : null
                 }
             </table>
             }
