@@ -5,7 +5,8 @@ import PageMonitoringView from "../view/PageMonitoringView";
 import {FixedSizeList} from "react-window";
 import '../common/PageMonitoringStyles.css'
 import {reduceString} from "../service/PageMonitoringService";
-import {renderBarLoader, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
+import {renderBarLoader} from "../service/PageMonitoringCommonService";
+import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {FORMAT_FULL_DATE, FORMAT_FULL_TIME, time} from '../../../../utils/date_util'
 
 const FontAwesomeIcon = require('react-fontawesome')
@@ -137,7 +138,7 @@ export default function AppInstEventLogList(props) {
                    style={{width: '100%', overflowX: 'scroll', marginTop: -10}}
                    stickyheader={true.toString()}>
 
-                {props.eventLogList.length > 0 && renderHeader()}
+                {renderHeader()}
                 {/*todo:tableBody*/}
                 {/*todo:tableBody*/}
                 <tbody style={{width: 'auto', overflowX: 'scroll', marginTop: 50}}>
@@ -248,17 +249,17 @@ export default function AppInstEventLogList(props) {
                     null
                 }
                 </tbody>
-                {props.loading || props.eventLogList.length === 0 ? <div style={{
+                {!props.loading && props.eventLogList.length === 0 && <div style={{
                     justifyContent: 'center',
                     alignSelf: 'center',
                     alignItems: 'center',
                     fontSize: 15,
                     display: 'flex'
                 }}>
-                    <div style={{marginTop: 80}}>
-                        {renderEmptyMessageBox("No Data Available")}
+                    <div style={PageMonitoringStyles.miniTableNoData}>
+                        No Data
                     </div>
-                </div> : null
+                </div>
                 }
             </table>
             }

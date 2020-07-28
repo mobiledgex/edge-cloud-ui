@@ -11,6 +11,7 @@ import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
 import {renderBarLoader, renderPlaceHolderHorizontalLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 type Props = {
     clientStatusList: any,
