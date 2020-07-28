@@ -687,11 +687,10 @@ export default withRouter(
                         //todo: when appInst clicked from AppInst menu.
                         if (fullAppInst !== undefined) {
                             let fullAppInstStr = convertFullAppInstJsonToStr(fullAppInst)
-
                             if (getUserRole().includes('Developer')) {
-                                await this.handleClickInAppInstMenuForDev(fullAppInstStr)
+                                await this.handleClickInAppInstMenu(fullAppInstStr, "dev")
                             } else {//todo:admin
-                                await this.handleClickInAppInstMenuForAdmin(fullAppInstStr)
+                                await this.handleClickInAppInstMenu(fullAppInstStr, "admin")
                             }
 
                         } else {
@@ -2560,129 +2559,12 @@ export default withRouter(
                 }
 
 
-                handleClickInAppInstMenuForDev = async (fullAppInstJson) => {
+                handleClickInAppInstMenu = async (fullAppInstJson, userType) => {
                     try {
                         await this.setState({showAppInstClient: false,})
                         let currentCloudletName = fullAppInstJson.split(" | ")[1].trim();
                         clearInterval(this.intervalForAppInst)
                         clearInterval(this.intervalForCluster)
-                        //@desc: ################################
-                        //@desc: requestShowAppInstClientWS
-                        //@desc: ################################
-                        if (this.state.showAppInstClient) {
-                            await this.setState({
-                                selectedClientLocationListOnAppInst: [],
-                            })
-                            this.webSocketInst = requestShowAppInstClientWS(fullAppInstJson, this);
-                        }
-
-                        await this.setState({
-                            currentAppInst: fullAppInstJson,
-                            loading: true,
-                            currentClassification: CLASSIFICATION.APPINST,
-                        })
-
-                        let AppName = fullAppInstJson.split('|')[0].trim()
-                        let Cloudlet = fullAppInstJson.split('|')[1].trim()
-                        let ClusterInst = fullAppInstJson.split('|')[2].trim()
-                        let Version = fullAppInstJson.split('|')[3].trim()
-                        let promiseList = []
-                        promiseList.push(fetchCloudletList())
-                        promiseList.push(fetchClusterList())
-                        promiseList.push(fetchAppInstList(undefined, this))
-                        promiseList.push(getAllAppInstEventLogs());
-                        const [promiseCloudletList, promiseClusterList, promiseAppInstList, promiseAppInstEventLogs] = await Promise.all(promiseList);
-                        let allCoudletList = promiseCloudletList;
-                        let allClusterList = promiseClusterList;
-                        let allAppInstList = promiseAppInstList;
-                        let allAppInstEventLogs = promiseAppInstEventLogs
-                        let filteredAppInstList = allAppInstList.filter((item: TypeAppInst, index) => {
-                            return item.AppName === AppName && item.Version === Version && item.Cloudlet == Cloudlet && item.ClusterInst == ClusterInst
-                        })
-
-                        let filteredCloudletList = allCoudletList.filter((item: TypeCloudlet, index) => {
-                            return item.CloudletName === currentCloudletName
-                        })
-
-                        //desc: ############################
-                        //desc: filtered AppInstEventLogList
-                        //desc: ############################
-                        let filteredAppInstEventLogList = allAppInstEventLogs.filter(item => {
-                            if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
-                                return true;
-                            }
-                        })
-
-
-                        //todo : ###############
-                        //todo : map marker
-                        //todo : ###############
-                        let orgAppInstList = filteredAppInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
-                        let markerMapObjectForMap = makeMapMarkerObjectForDev(orgAppInstList, filteredCloudletList)
-                        await this.setState({
-                            markerList: markerMapObjectForMap,
-                            mapLoading: false,
-                        })
-
-
-                        let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
-                        let arrDateTime = getOneYearStartEndDatetime();
-                        let appInstUsageList = await getAppInstLevelUsageList(filteredAppInstList, "*", this.state.dataLimitCount, arrDateTime[0], arrDateTime[1]);
-                        fullAppInstJson = fullAppInstJson.trim().split("|")[0].trim() + " | " + fullAppInstJson.split('|')[1].trim() + " | " + fullAppInstJson.split('|')[2].trim() + ' | ' + Version
-
-                        //todo : ###############
-                        //todo : clusterDropdown
-                        //todo : ###############
-                        let regionList = localStorage.getItem('regions').split(",")
-                        let cloudletClusterListMap = getCloudletClusterNameList(allClusterList)
-                        let clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, allClusterList, this, true)
-
-                        //todo : ###############
-                        //todo : Terminal
-                        //todo : ###############
-                        this.validateTerminal(filteredAppInstList)
-
-                        await this.setState({
-                            filteredAppInstEventLogList: filteredAppInstEventLogList,
-                            clusterTreeDropdownList: clusterTreeDropdownList,
-                            currentAppVersion: Version,
-                            terminalData: null,
-                            appInstDropdown: appInstDropdown,
-                            currentTabIndex: 0,
-                            allAppInstUsageList: appInstUsageList,
-                            appInstList: allAppInstList,////todo
-                            filteredAppInstUsageList: appInstUsageList,
-                            loading: false,
-                            currentAppInstNameVersion: AppName + ' [' + Version + ']',
-                            currentAppInst: fullAppInstJson,
-                            allClusterList: allClusterList,
-                            filteredClusterList: allClusterList,
-                            clusterSelectBoxPlaceholder: 'Select Cluster',
-                        });
-
-                        //desc: ############################
-                        //desc: setStream
-                        //desc: ############################
-                        if (this.state.isStream) {
-                            this.setAppInstInterval(filteredAppInstList)
-                        } else {
-                            clearInterval(this.intervalForAppInst)
-                        }
-
-                    } catch (e) {
-                        //throw new Error(e)
-                    }
-                }
-
-
-                handleClickInAppInstMenuForAdmin = async (fullAppInstJson) => {
-
-                    try {
-                        await this.setState({showAppInstClient: false,})
-                        let currentCloudletName = fullAppInstJson.split(" | ")[1].trim();
-                        clearInterval(this.intervalForAppInst)
-                        clearInterval(this.intervalForCluster)
-
 
                         //@desc: ################################
                         //@desc: requestShowAppInstClientWS
@@ -2709,24 +2591,20 @@ export default withRouter(
                         promiseList.push(fetchCloudletList())
                         promiseList.push(fetchClusterList())
                         promiseList.push(fetchAppInstList(undefined, this))
-                        const [promiseCloudletList, promiseClusterList, promiseAppInstList,] = await Promise.all(promiseList);
+                        promiseList.push(getAllAppInstEventLogs());
+                        const [promiseCloudletList, promiseClusterList, promiseAppInstList, promiseAppInstEventLogs] = await Promise.all(promiseList);
                         let allCoudletList = promiseCloudletList;
                         let allClusterList = promiseClusterList;
                         let allAppInstList = promiseAppInstList;
-
-
-                        ////////////todo : org dropdown
-                        let operOrgList = makeUniqOperOrg(allCoudletList)
-                        let devOrgList = makeUniqDevOrg(allAppInstList)
-                        let orgTreeData = makeOrgTreeDropdown(operOrgList, devOrgList)
-                        await this.setState({
-                            loadingForClientStatus: false,
-                            operList: operOrgList,
-                            organizationList: devOrgList,
-                            orgTreeData: orgTreeData,
-                            cloudletCount: allCoudletList.length,
+                        let allAppInstEventLogs = promiseAppInstEventLogs
+                        //desc: ############################
+                        //desc: filtered AppInstEventLogList
+                        //desc: ############################
+                        let filteredAppInstEventLogLogs = allAppInstEventLogs.filter(item => {
+                            if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
+                                return true;
+                            }
                         })
-
 
                         let filteredAppInstList = allAppInstList.filter((item: TypeAppInst, index) => {
                             return item.AppName === AppName && item.Version === Version && item.Cloudlet == Cloudlet && item.ClusterInst == ClusterInst
@@ -2737,15 +2615,34 @@ export default withRouter(
                         })
 
 
+                        let orgAppInstList = undefined;
+                        if (userType === USER_TYPE_SHORT.DEV) {
+                            orgAppInstList = filteredAppInstList.filter((item: TypeAppInst, index) => item.OrganizationName === localStorage.getItem('selectOrg'))
+                        } else {
+                            orgAppInstList = filteredAppInstList;
+                            //todo : ###############
+                            //todo : org dropdown
+                            //todo : ###############
+                            let operOrgList = makeUniqOperOrg(allCoudletList)
+                            let devOrgList = makeUniqDevOrg(allAppInstList)
+                            let orgTreeData = makeOrgTreeDropdown(operOrgList, devOrgList)
+                            await this.setState({
+                                loadingForClientStatus: false,
+                                operList: operOrgList,
+                                organizationList: devOrgList,
+                                orgTreeData: orgTreeData,
+                                cloudletCount: allCoudletList.length,
+                            })
+                        }
                         //todo : ###############
                         //todo : map marker
                         //todo : ###############
-                        let orgAppInstList = filteredAppInstList;
                         let markerMapObjectForMap = makeMapMarkerObjectForDev(orgAppInstList, filteredCloudletList)
                         await this.setState({
                             markerList: markerMapObjectForMap,
                             mapLoading: false,
                         })
+
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let arrDateTime = getOneYearStartEndDatetime();
@@ -2765,6 +2662,7 @@ export default withRouter(
                         this.validateTerminal(filteredAppInstList)
 
                         await this.setState({
+                            filteredAppInstEventLogs: filteredAppInstEventLogLogs,
                             clusterTreeDropdownList: clusterTreeDropdownList,
                             currentAppVersion: Version,
                             terminalData: null,
@@ -2793,9 +2691,10 @@ export default withRouter(
                         }
 
                     } catch (e) {
-                        //throw new Error(e)
+                        showToast(e.toString())
                     }
                 }
+
 
                 handleOnChangeAppInstDropdown = async (fullCurrentAppInst) => {
 
@@ -3299,7 +3198,7 @@ export default withRouter(
                                     listHeight={800}
                                     searchValue={this.state.searchClusterValue}
                                     searchPlaceholder={'Enter the cluster name.'}
-                                    placeholder={'Select Cluster222'}
+                                    placeholder={'Select Cluster'}
                                     treeData={this.state.clusterTreeDropdownList}
                                     treeDefaultExpandAll={true}
                                     value={this.state.currentClusterList}

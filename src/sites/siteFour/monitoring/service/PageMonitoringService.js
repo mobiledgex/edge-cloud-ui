@@ -327,7 +327,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             return chartDataSet
         }
     } catch (e) {
-        throw new error(e.toString())
+        throw new Error(e.toString())
     }
 };
 

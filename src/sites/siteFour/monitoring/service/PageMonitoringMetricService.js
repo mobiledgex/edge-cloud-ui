@@ -999,7 +999,7 @@ export const getAllClusterEventLogList = async (clusterList, userType = USER_TYP
 
         return completedEventLogList;
     } catch (e) {
-        throw new error(e.toString())
+        throw new Error(e.toString())
     }
 }
 
@@ -1042,7 +1042,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
 
             return response.data.data[0];
         }).catch(e => {
-            throw new error(e.toString())
+            throw new Error(e.toString())
         })
         return result;
     } catch (e) {
@@ -1096,10 +1096,12 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             }
 
         }).catch(e => {
-            throw new error(e.toString())
+            //throw new Error(e.toString())
+            throw new Error(e.toString())
+
         })
     } catch (e) {
-        throw new error(e.toString())
+        throw new Error(e.toString())
     }
 
 }
@@ -1132,7 +1134,7 @@ export const getAllAppInstEventLogs = async () => {
 
         return completedEventLogList;
     } catch (e) {
-        throw new error(e.toString())
+        return [];
     }
 }
 
