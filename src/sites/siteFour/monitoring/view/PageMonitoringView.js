@@ -2709,6 +2709,8 @@ export default withRouter(
                         let allCoudletList = promiseCloudletList;
                         let allClusterList = promiseClusterList;
                         let allAppInstList = promiseAppInstList;
+
+
                         ////////////todo : org dropdown
                         let operOrgList = makeUniqOperOrg(allCoudletList)
                         let devOrgList = makeUniqDevOrg(allAppInstList)
@@ -2773,9 +2775,11 @@ export default withRouter(
                             loading: false,
                             currentAppInstNameVersion: AppName + ' [' + Version + ']',
                             currentAppInst: fullAppInstJson,
-                            allClusterList: allClusterList,
                             filteredClusterList: allClusterList,
                             clusterSelectBoxPlaceholder: 'Select Cluster',
+                            cloudletList: allClusterList,
+                            allClusterList: allClusterList,
+                            allAppInstanceList: allAppInstList,
                         });
 
                         //desc: ############################
@@ -2989,7 +2993,7 @@ export default withRouter(
                 }
 
 
-                renderOrgDropdownForAdmin() {
+                renderOrganizationDropdownForAdmin() {
                     return (
                         <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
                             <div className="page_monitoring_dropdown_label">
@@ -3034,15 +3038,15 @@ export default withRouter(
                                         let uniqFilteredAppInstList = uniqBy(filteredAppInstList, CLASSIFICATION.Cloudlet)
                                         cloudletDropdownList = makeDropdownForCloudletForDevView(uniqFilteredAppInstList)
 
-
                                     } else {
                                         //TODO : #############################
                                         //TODO ; when selected operator option
                                         //TODO : #############################
                                         await this.setState({currentOrgView: USER_TYPE_SHORT.OPER})
+                                        //TODO: #####################
                                         //TODO: WHEN ALL(reset)
+                                        //TODO: #####################
                                         if (value === "Reset") {
-                                            ///////////////////////
                                             await this.setState({
                                                 markerList: [],
                                                 currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
@@ -3052,10 +3056,15 @@ export default withRouter(
                                             let allCloudletList = await fetchCloudletList();
                                             await this.handleResetForAdmin()
                                             markerListForMap = reducer.groupBy(allCloudletList, CLASSIFICATION.CloudletName);
-                                            cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
-
+                                            cloudletDropdownList = makeDropdownForCloudlet(allCloudletList)
+                                            filteredCloudletList = allCloudletList
                                         } else {//todo:Wnen specific oper
-                                            filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
+                                            await this.setState({
+                                                loading: true,
+                                                mapLoading: true,
+                                            })
+                                            let allCloudletList = await fetchCloudletList();
+                                            filteredCloudletList = allCloudletList.filter((item: TypeCloudlet, index) => {
                                                 return item.Operator === value
                                             })
                                             markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
@@ -4059,7 +4068,7 @@ export default withRouter(
                                 {this.state.userType.toLowerCase().includes(USER_TYPE_SHORT.ADMIN) ? //todo: admin
                                     <React.Fragment>
                                         <div style={{marginLeft: 15}}>
-                                            {this.renderOrgDropdownForAdmin()}
+                                            {this.renderOrganizationDropdownForAdmin()}
                                         </div>
                                         <div style={{marginLeft: 15}}>
                                             {this.renderCloudletDropdownForAdmin()}
