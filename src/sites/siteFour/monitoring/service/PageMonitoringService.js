@@ -1599,18 +1599,6 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
 export function makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
     let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-    cloudletList.map(item => {
-        let listOne = markerMapObjectForMap[item.CloudletName];
-        if (listOne === undefined) {
-            markerMapObjectForMap[item.CloudletName] = [{
-                AppName: NO_APPS,
-                ClusterInst: NO_CLUSTER,
-                Cloudlet: item.CloudletName,
-                CloudletLocation: item.CloudletLocation,
-            }];
-        }
-    })
-
     return markerMapObjectForMap;
 }
 
@@ -1678,7 +1666,12 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                 regionTreeList.push(regionMapOne)
             })
 
-            return regionTreeList;
+            //todo: Filter only if there is sub data value in the region
+            let newRegionList = regionTreeList.filter(item => {
+                return item.children.length > 0
+            })
+
+            return newRegionList;
         } else {
             return treeCloudletList
         }

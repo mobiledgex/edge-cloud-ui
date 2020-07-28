@@ -3,7 +3,7 @@ import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from ".
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -1160,6 +1160,8 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         //'last': 100
     }
 
+    console.log('getClientStateOne===>', data);
+
     return await axios({
         url: mcURL() + SHOW_METRICS_CLIENT_STATUS,
         method: 'post',
@@ -1252,18 +1254,25 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 
 export const getClientStatusList = async (appInstList, startTime, endTime) => {
-    let promiseList = []
-    appInstList.map((appInstOne: TypeCloudlet, index) => {
-        promiseList.push(getClientStateOne(appInstOne, startTime, endTime))
-    })
-    let newPromiseList = await Promise.all(promiseList);
+    try {
 
-    let mergedClientStatusList = []
-    newPromiseList.map((item, index) => {
-        if (item !== undefined) {
-            mergedClientStatusList.push(item)
-        }
-    })
-    return mergedClientStatusList;
+        console.log('appInstList===>', appInstList);
+
+        let promiseList = []
+        appInstList.map((appInstOne: TypeCloudlet, index) => {
+            promiseList.push(getClientStateOne(appInstOne, startTime, endTime))
+        })
+        let newPromiseList = await Promise.all(promiseList);
+
+        let mergedClientStatusList = []
+        newPromiseList.map((item, index) => {
+            if (item !== undefined) {
+                mergedClientStatusList.push(item)
+            }
+        })
+        return mergedClientStatusList;
+    } catch (e) {
+        showToast(e.toString())
+    }
 
 }

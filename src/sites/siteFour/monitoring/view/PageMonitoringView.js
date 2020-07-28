@@ -655,8 +655,8 @@ export default withRouter(
                         timezoneChange: true,
                         cloudletCount: 0,
                         isShowCountPopover: false,
-                        dataLimitCount: 50,//todo:4mins
-                        dataLimitCountText: '4 mins',
+                        dataLimitCount: 20,//todo:2mins
+                        dataLimitCountText: '2 mins',
                         lineChartDataSet: [],
                         isScrollEnableForLineChart: false,
                         isShowAddPopup: false,
@@ -769,6 +769,8 @@ export default withRouter(
                             clusterList = promiseClusterList;
                             appInstList = promiseAppInstList;
 
+
+
                         } else {
                             //TODO:###############################################
                             //TODO:OPERATOR
@@ -819,13 +821,11 @@ export default withRouter(
                         if (this.state.userType.includes(USER_TYPE.ADMIN)) {
                             //=================ADMIN INITAIL DATA ===============================
                         } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                            //todo:##########################################################
-                            //todo: DEVELOPER INITAIL DATA
-                            //todo:############################################################
+                            //=================DEV INITAIL DATA ===============================
+                            ///todo : dropdown data
                             let regionList = localStorage.getItem('regions').split(",")
                             cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                             clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, true)
-
 
                         } else {
                             //todo:###################################
@@ -2502,6 +2502,28 @@ export default withRouter(
                             })
                             let allClusterList = this.state.allClusterList
                             let filteredClusterList = this.filterClusterListForTreeSelect(allClusterList, selectClusterCloudletList)
+
+                            //todo: ###############################
+                            //todo:  appInstList, clusterList filtering.
+                            //todo: ###############################
+                            this.state.appInstList.map((appInstOne, index) => {
+                                selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
+                                    if (appInstOne.ClusterInst === clusterCloudletOne.split("|")[0].trim() && appInstOne.Cloudlet === clusterCloudletOne.split("|")[1].trim()) {
+                                        //todo:filteredAppInstList
+                                        filteredAppInstList.push(appInstOne)
+                                    }
+                                })
+                            })
+
+                            this.state.cloudletList.map((cloudletOne: TypeCloudlet, index) => {
+                                selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
+                                    if (cloudletOne.CloudletName === clusterCloudletOne.split("|")[1].trim()) {
+                                        //todo:filteredCloudletList
+                                        filteredCloudletList.push(cloudletOne)
+                                    }
+                                })
+                            })
+
                             //todo: ###############################
                             //todo: usageEventPromiseList
                             //todo: ###############################
@@ -2526,24 +2548,6 @@ export default withRouter(
                                 selectedClientLocationListOnAppInst: [],
                                 dropdownRequestLoading: true,
                                 selectedAppInstIndex: -1,
-                            })
-
-                            this.state.appInstList.map((appInstOne, index) => {
-                                selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
-                                    if (appInstOne.ClusterInst === clusterCloudletOne.split("|")[0].trim() && appInstOne.Cloudlet === clusterCloudletOne.split("|")[1].trim()) {
-                                        //todo:filteredAppInstList
-                                        filteredAppInstList.push(appInstOne)
-                                    }
-                                })
-                            })
-
-                            this.state.cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-                                selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
-                                    if (cloudletOne.CloudletName === clusterCloudletOne.split("|")[1].trim()) {
-                                        //todo:filteredCloudletList
-                                        filteredCloudletList.push(cloudletOne)
-                                    }
-                                })
                             })
 
                             let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
