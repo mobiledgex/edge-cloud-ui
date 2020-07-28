@@ -437,7 +437,8 @@ export default withRouter(
                     let themeTitle = getUserId() + "_mon_theme_title";
                     //@fixme: DELETE GRID LAYOUT
                     /*reactLocalStorage.remove(adminCloudletLayout)
-                reactLocalStorage.remove(adminCloudletLayoutMapper)*/
+                    reactLocalStorage.remove(adminCloudletLayoutMapper)
+                    */
 
                     this.state = {
                         //todo: admin layout(Cloudlet)
@@ -659,6 +660,7 @@ export default withRouter(
                         lineChartDataSet: [],
                         isScrollEnableForLineChart: false,
                         isShowAddPopup: false,
+                        isGradientColor: false,
                     }
                 }
 
@@ -687,10 +689,10 @@ export default withRouter(
                         //todo: when appInst clicked from AppInst menu.
                         if (fullAppInst !== undefined) {
                             let fullAppInstStr = convertFullAppInstJsonToStr(fullAppInst)
-                            if (getUserRole().includes('Developer')) {
-                                await this.handleClickInAppInstMenu(fullAppInstStr, "dev")
+                            if (getUserRole().toLowerCase().includes(USER_TYPE_SHORT.DEV)) {
+                                await this.handleClickInAppInstMenu(fullAppInstStr, USER_TYPE_SHORT.DEV)
                             } else {//todo:admin
-                                await this.handleClickInAppInstMenu(fullAppInstStr, "admin")
+                                await this.handleClickInAppInstMenu(fullAppInstStr, USER_TYPE_SHORT.ADMIN)
                             }
 
                         } else {
@@ -2430,10 +2432,12 @@ export default withRouter(
                                 filteredClusterEventLogList: filteredClusterEventLogList,
                                 filteredAppInstEventLogList: filteredAppInstEventLogList,
 
+
                             });
                             await this.setState({
                                 loading: false,
                                 mapLoading: false,
+                                isScrollEnableForLineChart: false,
                             })
 
                         } else {
@@ -3224,8 +3228,6 @@ export default withRouter(
                                         this.applyButton.blur();
                                         if (this.state.currentClusterList !== undefined) {
                                             let selectClusterCloudletList = this.state.currentClusterList
-
-
                                             await this.handleOnChangeClusterDropdownForDev(selectClusterCloudletList)
 
                                         } else {
@@ -3921,7 +3923,7 @@ export default withRouter(
                     return (
                         <div style={{backgroundColor: 'transparent', marginTop: 0,}}>
                             <AppsIcon
-                                style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 4,}}/>
+                                style={{fill: this.state.chartColorList[index], fontSize: legendIconSize, marginTop: 1,}}/>
                         </div>
                     )
                 }
