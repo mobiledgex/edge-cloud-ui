@@ -53,7 +53,7 @@ class MexListView extends React.Component {
         let additionalDetail = this.requestInfo.additionalDetail
         this.props.handleViewMode(null)
         return (
-            <Card style={{ height: 'calc(100% - 49px)', backgroundColor: '#2A2C33', borderRadius:5, overflowY: 'auto' }}>
+            <Card style={{ height: 'calc(100% - 49px)', backgroundColor: '#292c33', borderRadius:5, overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
@@ -355,7 +355,7 @@ class MexListView extends React.Component {
 
     render() {
         return (
-            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white' }}>
+            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop:10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.dataFromServer} streamType={this.requestInfo.streamType} region={this.selectedRegion} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />

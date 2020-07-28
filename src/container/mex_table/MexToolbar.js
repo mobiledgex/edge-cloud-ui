@@ -45,6 +45,7 @@ const MexToolbar = (props) => {
 
     const searchForm = () => (
         <Input
+            style={{marginRight:20}}
             size="small"
             onChange={handleSearch}
             startAdornment={
@@ -65,7 +66,7 @@ const MexToolbar = (props) => {
     /*Add Block*/
     const addForm = () => (
         requestInfo.onAdd && !isViewer() ?
-            <IconButton aria-label="new" className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
+            <IconButton aria-label="new" style={{marginTop:-3}} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
                 <AddIcon style={{ color: '#76ff03' }} />
             </IconButton> : null
     )
@@ -91,7 +92,7 @@ const MexToolbar = (props) => {
 
     const regionForm = () => (
         requestInfo.isRegion ?
-            <div style={{ display: 'inline', margin: 20 }}>
+            <div style={{ display: 'inline', marginLeft: 10, marginRight:10 }}>
                 <strong>Region:&nbsp;&nbsp;</strong>
                 <Dropdown
                     options={getRegions()}
@@ -110,8 +111,8 @@ const MexToolbar = (props) => {
 
     const mapForm = () => (
         requestInfo.isMap ?
-            <div style={{ display: 'inline', margin: 20 }}>
-                <strong>Map:&nbsp;&nbsp;</strong>
+            <div style={{ display: 'inline', marginLeft: 15 }}>
+                <strong>Map:</strong>
                 <CustomSwitch size="small" color="primary" checked={map}
                     onChange={onMapChange} />
             </div> :
@@ -121,7 +122,7 @@ const MexToolbar = (props) => {
 
     /*Refresh Block*/
     const refreshForm = () => (
-        <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
+        <IconButton aria-label="refresh" style={{marginTop:-3}} onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
             <RefreshIcon style={{ color: '#76ff03' }} />
         </IconButton>
     )
@@ -140,10 +141,10 @@ const MexToolbar = (props) => {
             <label className='content_title_label'>{requestInfo.headerLabel}</label>
             {
                 props.isDetail ?
-                    <div style={{ right: 50, position: 'absolute' }}>
+                    <div style={{ right: 0, position: 'absolute' }}>
                         {getDetailView(props)}
                     </div> :
-                    <div style={{ right: 50, position: 'absolute' }}>
+                    <div style={{ right: 0, position: 'absolute' }}>
                         {searchForm()}
                         {regionForm()}
                         {mapForm()}
