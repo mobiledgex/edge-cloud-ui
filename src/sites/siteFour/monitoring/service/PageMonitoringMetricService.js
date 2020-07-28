@@ -1087,8 +1087,6 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             },
             timeout: 30 * 1000
         }).then(async response => {
-
-
             if (isEmpty(response.data.data[0].Series)) {
                 return [];
             } else {
@@ -1096,7 +1094,6 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             }
 
         }).catch(e => {
-            //throw new Error(e.toString())
             throw new Error(e.toString())
 
         })
