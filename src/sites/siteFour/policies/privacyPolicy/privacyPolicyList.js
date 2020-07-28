@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../../container/MexListView';
+import MexListView from '../../../../container/mex_table/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';

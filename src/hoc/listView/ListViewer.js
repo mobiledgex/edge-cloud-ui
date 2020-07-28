@@ -347,7 +347,7 @@ export default function EnhancedTable(props) {
         <div className={classes.root}>
             <Paper style={{ backgroundColor: '#2A2C33' }}>
                 <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
-                <TableContainer style={{ height: window.innerHeight - (props.isMap ? 600 : 200) }}>
+                <TableContainer style={{height:window.innerHeight - (props.isMap ? 608 : 208)}}>
                     <Table
                         stickyHeader
                         aria-labelledby="tableTitle"

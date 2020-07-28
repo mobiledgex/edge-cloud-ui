@@ -336,7 +336,7 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                <div className='contents_body'>
+                <div className='contents_body' style={{marginTop:6, height:'calc(100% - 6px)'}}>
                     {page}
                 </div>
             </main>

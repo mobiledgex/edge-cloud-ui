@@ -151,6 +151,11 @@ export const isAdmin = () => {
     return localStorage.selectRole && localStorage.selectRole === 'AdminManager'
 }
 
+export const isViewer = () => {
+    let role = getUserRole()
+    return role && role.includes('Viewer')
+}
+
 export const getOrganization = () => {
     if (localStorage.selectOrg) {
         return localStorage.selectOrg
