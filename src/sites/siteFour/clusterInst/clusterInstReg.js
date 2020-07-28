@@ -165,13 +165,10 @@ class ClusterInstReg extends React.Component {
             let form = forms[i];
             if (form.field === fields.numberOfMasters) {
                 form.value = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? 1 : undefined
-                form.visible = currentForm.value !== constant.DEPLOYMENT_TYPE_DOCKER
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
             else if (form.field === fields.numberOfNodes || form.field === fields.sharedVolumeSize) {
-                form.visible = currentForm.value !== constant.DEPLOYMENT_TYPE_DOCKER
-            }
-            else if (form.field === fields.autoScalePolicyName) {
-                form.visible = currentForm.value !== constant.DEPLOYMENT_TYPE_DOCKER
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
         }
         if (isInit === undefined || isInit === false) {
