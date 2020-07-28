@@ -2088,6 +2088,8 @@ export default withRouter(
                 }
 
                 handleOnChangeCloudletDropdownForAdmin = async (selectCloudlet) => {
+
+
                     let currentCloudletName = undefined
                     try {
                         currentCloudletName = selectCloudlet.split("|")[0].trim()
@@ -2261,6 +2263,7 @@ export default withRouter(
                 }
 
                 handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
+
                     try {
                         if (pCloudletFullOne !== undefined && pCloudletFullOne.toString() !== '0') {
                             await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletFullOne)})
@@ -2673,6 +2676,7 @@ export default withRouter(
 
 
                 handleClickInAppInstMenuForAdmin = async (fullAppInstJson) => {
+
                     try {
                         await this.setState({showAppInstClient: false,})
                         let currentCloudletName = fullAppInstJson.split(" | ")[1].trim();
@@ -2743,9 +2747,6 @@ export default withRouter(
                             mapLoading: false,
                         })
 
-                        console.log(`markerMapObjectForMap====>`, markerMapObjectForMap);
-
-
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         let arrDateTime = getOneYearStartEndDatetime();
                         let appInstUsageList = await getAppInstLevelUsageList(filteredAppInstList, "*", this.state.dataLimitCount, arrDateTime[0], arrDateTime[1]);
@@ -2777,7 +2778,7 @@ export default withRouter(
                             currentAppInst: fullAppInstJson,
                             filteredClusterList: allClusterList,
                             clusterSelectBoxPlaceholder: 'Select Cluster',
-                            cloudletList: allClusterList,
+                            cloudletList: allCoudletList,
                             allClusterList: allClusterList,
                             allAppInstanceList: allAppInstList,
                         });
