@@ -386,7 +386,6 @@ type PageDevMonitoringState = {
     currentCloudletMap: any,
     timezoneChange: boolean,
     cloudletCount: number,
-    dataLimitCount: number,
     isShowCountPopover: boolean,
     dataLimitCount: number,
     dataLimitCountText: string,
@@ -654,8 +653,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     timezoneChange: true,
                     cloudletCount: 0,
                     isShowCountPopover: false,
-                    dataLimitCount: 50,//4mins
-                    dataLimitCountText: '4 mins',
+                    dataLimitCount: 20,//4mins
+                    dataLimitCountText: '2 mins',
                     lineChartDataSet: [],
                     isScrollEnableForLineChart: false,
                     isShowAddPopup: false,
@@ -769,7 +768,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         appInstList = promiseAppInstList;
 
                         try {
-                            clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                            clientStatusList = await getClientStatusList(appInstList, startTime, endTime, this.state.dataLimitCount);
                         } catch (e) {
                             clientStatusList = []
                         }
@@ -779,9 +778,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         //TODO:OPERATOR
                         //TODO:###############################################
                         cloudletList = await fetchCloudletList();
-                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
+                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime, this.state.dataLimitCount)
                         appInstList = await fetchAppInstList(undefined, this)
-                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime, this.state.dataLimitCount);
                         await this.setState({
                             loadingForClientStatus: false,
                             allCloudletEventLogList: allCloudletEventLogList,
@@ -2222,9 +2221,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 let startTime = makeCompleteDateTime(date[0]);
                                 let endTime = makeCompleteDateTime(date[1]);
                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
-                                usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
+                                usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount));
                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
-                                usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
+                                usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime, this.state.dataLimitCount));
                                 let completedPromiseList = await Promise.allSettled(usageEventPromiseList);
                                 allClusterEventLogList = completedPromiseList["0"].value;
                                 clientStatusList = completedPromiseList["1"].value
@@ -2539,7 +2538,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let startTime = makeCompleteDateTime(this.state.startTime);
                         let endTime = makeCompleteDateTime(this.state.endTime);
                         let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
-                        let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
+                        let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime, this.state.dataLimitCount);
                         this.setState({
                             filteredCloudletUsageList: usageList,
                             allCloudletUsageList: usageList,
@@ -3168,8 +3167,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             let startTime = makeCompleteDateTime(this.state.startTime);
                                             let endTime = makeCompleteDateTime(this.state.endTime);
                                             let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
-                                            let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
-                                            let filteredCloudletEventLog = await getAllCloudletEventLogs(this.state.filteredCloudletList, startTime, endTime);
+                                            let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime, this.state.dataLimitCount);
+                                            let filteredCloudletEventLog = await getAllCloudletEventLogs(this.state.filteredCloudletList, startTime, endTime, this.state.dataLimitCount);
                                             this.setState({
                                                 filteredCloudletUsageList: usageList,
                                                 allCloudletUsageList: usageList,
