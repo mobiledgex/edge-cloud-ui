@@ -732,7 +732,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     {this.props.mapLoading && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
-                        <div style={{height: '100%', width: '100%', zIndex: 1}}>
+                        <div style={{height: '90%', width: '100%', }}>
                             <Map
                                 center={this.state.mapCenter}
                                 zoom={this.state.zoom}
