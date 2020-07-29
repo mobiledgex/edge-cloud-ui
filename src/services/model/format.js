@@ -1,5 +1,5 @@
-import {generateUniqueId} from '../serviceMC';
-import {toJson} from '../../utils/json_util'
+import { generateUniqueId } from '../serviceMC';
+import { toJson } from '../../utils/json_util'
 import isEqual from 'lodash/isEqual';
 
 export const fields = {
