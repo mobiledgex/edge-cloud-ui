@@ -821,8 +821,9 @@ export default withRouter(
                         if (this.state.userType.includes(USER_TYPE.ADMIN)) {
                             //=================ADMIN INITAIL DATA ===============================
                         } else if (this.state.userType.includes(USER_TYPE.DEVELOPER)) {
-                            //=================DEV INITAIL DATA ===============================
-                            ///todo : dropdown data
+                            //todo:###################################
+                            //TODO:DEV DROPDOWN DATA
+                            //todo:###################################
                             let regionList = localStorage.getItem('regions').split(",")
                             cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                             clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, true)

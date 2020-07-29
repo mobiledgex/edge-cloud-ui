@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, METRIC_DATA_FETCH_TIMEOUT, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
@@ -525,8 +525,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
         let token = store ? store.userToken : 'null';
 
         for (let index = 0; index < clusterList.length; index++) {
-            //let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
-
             let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, dataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
@@ -842,7 +840,7 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + pToken
         },
-        timeout: 30 * 1000
+        timeout: METRIC_DATA_FETCH_TIMEOUT
     }).then(async response => {
         return response.data;
     }).catch(e => {
@@ -862,7 +860,7 @@ export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: an
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + store.userToken
         },
-        timeout: 30 * 1000
+        timeout: METRIC_DATA_FETCH_TIMEOUT
     }).then(async response => {
         return response.data;
     }).catch(e => {
@@ -883,7 +881,7 @@ export const getClusterLevelMatric = async (serviceBody: any, pToken: string) =>
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + pToken
             },
-            timeout: 30 * 1000
+            timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
             return response.data;
         }).catch(e => {
@@ -922,7 +920,7 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token
             },
-            timeout: 30 * 1000
+            timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
             if (response.data.data["0"].Series !== null) {
                 let values = response.data.data["0"].Series["0"].values
@@ -1037,7 +1035,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + store.userToken
             },
-            timeout: 30 * 1000
+            timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
 
             return response.data.data[0];
@@ -1085,7 +1083,7 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + store.userToken
             },
-            timeout: 30 * 1000
+            timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
             if (isEmpty(response.data.data[0].Series)) {
                 return [];
@@ -1160,8 +1158,6 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         //'last': 100
     }
 
-    console.log('getClientStateOne===>', data);
-
     return await axios({
         url: mcURL() + SHOW_METRICS_CLIENT_STATUS,
         method: 'post',
@@ -1170,7 +1166,7 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + token
         },
-        timeout: 15 * 1000
+        timeout: METRIC_DATA_FETCH_TIMEOUT
     }).then(async response => {
 
         let seriesValues = []

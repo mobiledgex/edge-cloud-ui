@@ -691,6 +691,8 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
         }
     }
 
+    console.log('makeFormForClusterLevelMatric===>', dataForm);
+
     return dataForm;
 }
 
