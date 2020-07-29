@@ -1252,8 +1252,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 export const getClientStatusList = async (appInstList, startTime, endTime) => {
     try {
 
-        console.log('appInstList===>', appInstList);
-
         let promiseList = []
         appInstList.map((appInstOne: TypeCloudlet, index) => {
             promiseList.push(getClientStateOne(appInstOne, startTime, endTime))
