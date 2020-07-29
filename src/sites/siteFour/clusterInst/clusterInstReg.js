@@ -170,6 +170,9 @@ class ClusterInstReg extends React.Component {
             else if (form.field === fields.numberOfNodes || form.field === fields.sharedVolumeSize) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
+            else if (form.field === fields.autoScalePolicyName) {
+                form.visible = currentForm.value !== constant.DEPLOYMENT_TYPE_DOCKER
+            }
         }
         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
