@@ -973,6 +973,7 @@ export default withRouter(
                     }
                     await this.setState({
                         markerList: markerListForMap,
+                        isLegendExpanded: this.state.allClusterList.length <= 6,
                     })
                 }
 
