@@ -68,6 +68,10 @@ export const subtractDays = (value) => {
     return value ? moment().subtract(value, 'days') : moment().subtract('days')
 }
 
+export const subtractMins = (mins) => {
+    return mins ? moment().subtract(mins, 'minutes') : moment().subtract('minutes')
+}
+
 export const startOfMonth = (value) => {
     return value ? moment().startOf(value, 'month') : moment().startOf('month')
 }

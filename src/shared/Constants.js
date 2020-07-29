@@ -374,6 +374,8 @@ export const USER_TYPE = {
 
 }
 
+export const METRIC_DATA_FETCH_TIMEOUT = 120 * 1000
+
 export const USER_TYPE_SHORT = {
     DEV: 'dev',
     OPER: 'oper',
