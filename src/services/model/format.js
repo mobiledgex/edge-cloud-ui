@@ -81,7 +81,7 @@ export const fields = {
     password:'password',
     confirmPassword:'confirmPassword',
     role: 'role',
-    email:'email',
+    email: 'email',
     emailVerified: 'emailVerified',
     passHash: 'passHash',
     iter: 'iter',
