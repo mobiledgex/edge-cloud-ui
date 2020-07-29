@@ -610,7 +610,6 @@ export default withRouter(
                         selectedAppInstIndex: -1,
                         openTerminal: false,
                         isOpenGlobe: false,
-                        isLegendExpanded: true,
                         legendColSize: 4,
                         currentAppVersion: undefined,
                         isEnableZoomIn: false,
@@ -661,6 +660,7 @@ export default withRouter(
                         isScrollEnableForLineChart: false,
                         isShowAddPopup: false,
                         isGradientColor: false,
+                        isLegendExpanded: false,
                     }
                 }
 
@@ -770,7 +770,6 @@ export default withRouter(
                             appInstList = promiseAppInstList;
 
 
-
                         } else {
                             //TODO:###############################################
                             //TODO:OPERATOR
@@ -827,6 +826,9 @@ export default withRouter(
                             let regionList = localStorage.getItem('regions').split(",")
                             cloudletClusterListMap = getCloudletClusterNameList(clusterList)
                             clusterTreeDropdownList = makeRegionCloudletClusterTreeDropdown(regionList, cloudletClusterListMap.cloudletNameList, clusterList, this, true)
+                            await this.setState({
+                                isLegendExpanded: clusterList.length <= 6,
+                            })
 
                         } else {
                             //todo:###################################
@@ -2573,8 +2575,7 @@ export default withRouter(
                                 bubbleChartData: bubbleChartData,
                                 filteredClusterEventLogList: filteredClusterEventLogList,
                                 filteredAppInstEventLogList: filteredAppInstEventLogList,
-
-
+                                isLegendExpanded: filteredClusterList.length <= 6,
                             });
                             await this.setState({
                                 loading: false,
