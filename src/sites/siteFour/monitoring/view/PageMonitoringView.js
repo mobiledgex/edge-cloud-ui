@@ -3211,7 +3211,7 @@ export default withRouter(
                                     searchPlaceholder={'Enter the cluster name.'}
                                     placeholder={'Select Cluster'}
                                     treeData={this.state.clusterTreeDropdownList}
-                                    treeDefaultExpandAll={true}
+                                    treeDefaultExpandAll={false}
                                     value={this.state.currentClusterList}
                                     onChange={async (value, label, extra) => {
                                         if (!isEmpty(value)) {
