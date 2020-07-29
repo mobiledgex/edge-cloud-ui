@@ -15,7 +15,9 @@ import {
     SHOW_APP_INST_CLIENT_ENDPOINT,
     SHOW_METRICS_CLIENT_STATUS
 } from "./PageMonitoringMetricEndPoint";
-import {makeFormForAppLevelUsageList} from "./PageMonitoringService";
+import {makeCompleteDateTime, makeFormForAppLevelUsageList} from "./PageMonitoringService";
+import {graphDataCount} from "../common/PageMonitoringProps";
+import * as dateUtil from "../../../../utils/date_util";
 
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitoringView) => {
@@ -509,6 +511,14 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
 }
 
+export function convertDataCountToMins(dateLimitCount) {
+    let dateOne = graphDataCount.filter(item => {
+        return item.value === dateLimitCount
+    })
+    return dateOne[0].text.split(" ")[0]
+
+}
+
 
 /**
  *
@@ -520,6 +530,8 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
  */
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', _this: PageMonitoringView) => {
     try {
+
+
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
@@ -1139,9 +1151,14 @@ export const getAllAppInstEventLogs = async () => {
  * @param appInst
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '') => {
+export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount) => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
+
+    let periodMins = convertDataCountToMins(dataLimitCount) //todo:default 2mins
+    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
+    let periodStartTime = makeCompleteDateTime(date[0]);
+    let periodEndTime = makeCompleteDateTime(date[1]);
 
     let data = {
         "region": appInst.Region,
@@ -1153,9 +1170,9 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
-        "starttime": startTime,
-        "endtime": endTime
-        //'last': 100
+        "starttime": startTime !== '' ? startTime : periodStartTime,
+        "endtime": endTime !== '' ? endTime : periodEndTime,
+        'last': dataLimitCount
     }
 
     return await axios({
@@ -1249,12 +1266,12 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 }
 
 
-export const getClientStatusList = async (appInstList, startTime, endTime) => {
+export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
     try {
 
         let promiseList = []
         appInstList.map((appInstOne: TypeCloudlet, index) => {
-            promiseList.push(getClientStateOne(appInstOne, startTime, endTime))
+            promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount))
         })
         let newPromiseList = await Promise.all(promiseList);
 

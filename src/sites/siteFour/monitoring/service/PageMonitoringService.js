@@ -41,6 +41,7 @@ import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
 import * as reducer from "../../../../utils";
+import {convertDataCountToMins} from "./PageMonitoringMetricService";
 
 const {Option} = Select;
 
@@ -1358,7 +1359,13 @@ export const makeCompleteDateTime = (date: string) => {
 }
 
 
-export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
+
+    let periodMins= convertDataCountToMins(dataLimitCount) //todo:default 2mins
+    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
+    let periodStartTime = makeCompleteDateTime(date[0]);
+    let periodEndTime = makeCompleteDateTime(date[1]);
+
 
     let appName = dataOne.AppName;
     if (dataOne.AppName.includes('[')) {
@@ -1386,9 +1393,9 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                     }
                 },
                 "selector": valid,
-                "last": fetchingDataNo,
-                "starttime": pStartTime,
-                "endtime": pEndTime,
+                "last": dataLimitCount,
+                "starttime": pStartTime !== '' ? pStartTime : periodStartTime,
+                "endtime": pEndTime !== '' ? pEndTime : periodEndTime,
             }
         }
         return form;
@@ -1415,8 +1422,7 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                     }
                 },
                 "selector": valid,
-                //"last": 25
-                "last": fetchingDataNo,
+                "last": dataLimitCount,
             }
         }
 

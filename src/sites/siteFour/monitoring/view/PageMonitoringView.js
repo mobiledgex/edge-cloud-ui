@@ -777,7 +777,7 @@ export default withRouter(
                             cloudletList = await fetchCloudletList();
                             let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
                             appInstList = await fetchAppInstList(undefined, this)
-                            clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                            clientStatusList = await getClientStatusList(appInstList, startTime, endTime, this.state.dataLimitCount);
                             await this.setState({
                                 loadingForClientStatus: false,
                                 allCloudletEventLogList: allCloudletEventLogList,
@@ -2352,8 +2352,8 @@ export default withRouter(
                                     let startTime = makeCompleteDateTime(date[0]);
                                     let endTime = makeCompleteDateTime(date[1]);
                                     usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
-                                    usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
-                                    usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
+                                    usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount));
+                                    usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount, startTime, endTime))
                                     usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
                                     let completedPromiseList = await Promise.allSettled(usageEventPromiseList);
                                     allClusterEventLogList = completedPromiseList["0"].value;
@@ -2475,6 +2475,7 @@ export default withRouter(
                     }
                 }
 
+
                 async handleOnChangeClusterDropdownForDev(selectClusterCloudletList) {
                     await this.setState({
                         currentCloudletMap: MAP_LEVEL.CLUSTER,
@@ -2535,10 +2536,12 @@ export default withRouter(
                             let startTime = makeCompleteDateTime(date[0]);
                             let endTime = makeCompleteDateTime(date[1]);
 
+
+
                             usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV))
                             usageEventPromiseList.push(getAllAppInstEventLogs());
                             usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
-                            usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime))
+                            usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount))
 
                             const [promise0, promise1, promise2, promiseFilteredClientStatusList] = await Promise.all(usageEventPromiseList);
                             filteredClusterEventLogList = promise0;
@@ -2803,7 +2806,7 @@ export default withRouter(
                             let startTime = makeCompleteDateTime(this.state.startTime);
                             let endTime = makeCompleteDateTime(this.state.endTime);
                             let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
-                            let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
+                            let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime, this.state.dataLimitCount);
                             this.setState({
                                 filteredCloudletUsageList: usageList,
                                 allCloudletUsageList: usageList,
@@ -3448,7 +3451,7 @@ export default withRouter(
                                                 let startTime = makeCompleteDateTime(this.state.startTime);
                                                 let endTime = makeCompleteDateTime(this.state.endTime);
                                                 let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
-                                                let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
+                                                let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime, this.state.dataLimitCount);
                                                 let filteredCloudletEventLog = await getAllCloudletEventLogs(this.state.filteredCloudletList, startTime, endTime);
                                                 this.setState({
                                                     filteredCloudletUsageList: usageList,
