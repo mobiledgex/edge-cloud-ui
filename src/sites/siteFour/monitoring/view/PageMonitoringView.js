@@ -2079,6 +2079,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             _________HANDLEONCHANGE____________________________________________________________________________________() {
             }
 
+
+            //todo: #############################################################################
+            //todo: It is used for handling when moving from the appInst menu to monitoring later.
+            //todo: #############################################################################
             handleClickInAppInstMenu = async (fullAppInstJson, userType) => {
                 try {
                     await this.setState({showAppInstClient: false,})
