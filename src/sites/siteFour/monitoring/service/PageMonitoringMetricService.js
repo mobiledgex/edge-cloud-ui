@@ -3,7 +3,7 @@ import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from ".
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, METRIC_DATA_FETCH_TIMEOUT, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -18,7 +18,6 @@ import {
 import {makeCompleteDateTime, makeFormForAppLevelUsageList} from "./PageMonitoringService";
 import {graphDataCount} from "../common/PageMonitoringProps";
 import * as dateUtil from "../../../../utils/date_util";
-
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitoringView) => {
     try {
@@ -959,11 +958,16 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
  * @param endTime
  * @returns {Promise<[]>}
  */
-export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '') => {
+export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '', dataLimitCount) => {
     try {
         let promiseList = []
+
+        let range = getTimeRange(dataLimitCount)
+        let periodStartTime = range[0]
+        let periodEndTime = range[1]
+
         cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-            promiseList.push(getCloudletEventLog(cloudletOne, startTime, endTime))
+            promiseList.push(getCloudletEventLog(cloudletOne, periodStartTime, periodEndTime))
         })
 
         let allCloudletEventLogList = await Promise.all(promiseList);
@@ -1265,6 +1269,24 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 }
 
+export function convertDataCountToMins(dateLimitCount) {
+    let dateOne = graphDataCount.filter(item => {
+        return item.value === dateLimitCount
+    })
+    return dateOne[0].text.split(" ")[0]
+
+}
+
+const getTimeRange = (dataLimitCount)=>
+{
+    dataLimitCount = dataLimitCount ? dataLimitCount : 20
+    let periodMins = convertDataCountToMins(dataLimitCount)
+    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
+    let periodStartTime = makeCompleteDateTime(date[0]);
+    let periodEndTime = makeCompleteDateTime(date[1]);
+    return [periodStartTime, periodEndTime]
+}
+
 
 export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
     try {
@@ -1287,3 +1309,4 @@ export const getClientStatusList = async (appInstList, startTime, endTime, dataL
     }
 
 }
+

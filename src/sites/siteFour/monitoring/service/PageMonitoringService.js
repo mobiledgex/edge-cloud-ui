@@ -1671,12 +1671,10 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                 })
                 regionTreeList.push(regionMapOne)
             })
-
             //todo: Filter only if there is sub data value in the region
             let newRegionList = regionTreeList.filter(item => {
                 return item.children.length > 0
             })
-
             return newRegionList;
         } else {
             return treeCloudletList
@@ -1716,12 +1714,12 @@ export const makeDropdownForCloudletForDevView = (pList) => {
 
 export function renderCloudletInfoForAdmin(pCurrentCloudletMap) {
     return (
-        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
+        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 5, padding: 20, borderRadius: 10, marginLeft: 5, height: '240px !important', marginTop: 25,}}
         >
             <div style={{
                 fontSize: 12,
                 fontWeight: 'bold',
-                marginTop: 0,
+                marginTop: -10,
                 fontFamily: 'Roboto',
                 display: 'flex',
             }}>
@@ -1788,7 +1786,8 @@ export function renderCloudletHwUsageDashBoardForAdmin(pCloudletUsageOne, bottom
             flex: .49,
             marginLeft: 30,
             borderRadius: 10,
-            marginTop: -30,
+            marginTop: 5,
+            marginBottom: 5,
         }}>
             <Center style={{height: bottomDivHeight,}}>
                 <div>

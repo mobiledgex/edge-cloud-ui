@@ -680,43 +680,32 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         this.resetLocalData();
                     }
                 }, false);
-
-
                 try {
-                    let fullAppInst = this.props.appInstanceOne
 
-                    //todo: when clicked appInst from AppInst menu.
-                    if (fullAppInst !== undefined) {
-                        let fullAppInstStr = convertFullAppInstJsonToStr(fullAppInst)
-                        if (getUserRole().toLowerCase().includes(USER_TYPE_SHORT.DEV)) {
-                            await this.handleClickInAppInstMenu(fullAppInstStr, USER_TYPE_SHORT.DEV)
-                        } else {//todo:admin
-                            await this.handleClickInAppInstMenu(fullAppInstStr, USER_TYPE_SHORT.ADMIN)
-                        }
+                    this.setState({
+                        loading: true,
+                        bubbleChartLoader: true,
+                        selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
+                        mapLoading: true,
+                        dropdownRequestLoading: true,
+                        loadingForClientStatus: true,
 
-                    } else {
-                        this.setState({
-                            loading: true,
-                            bubbleChartLoader: true,
-                            selectOrg: localStorage.selectOrg === undefined ? '' : localStorage.selectOrg.toString(),
-                            mapLoading: true,
-                            dropdownRequestLoading: true,
-                            loadingForClientStatus: true,
-
-                        })
-                        await this.loadInitData();
-                        this.setState({
-                            loading: false,
-                            bubbleChartLoader: false,
-                        }, () => {
-                        })
-                    }
+                    })
+                    await this.loadInitData();
+                    this.setState({
+                        loading: false,
+                        bubbleChartLoader: false,
+                    }, () => {
+                    })
                 } catch (e) {
 
                 }
-
-
             };
+
+            makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
+                let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+                return markerMapObjectForMap;
+            }
 
 
             async loadInitData(isInterval: boolean = false) {
@@ -3189,7 +3178,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <TreeSelect
                                 dropdownMatchSelectWidth={false}
                                 dropdownStyle={{
-                                    overflow: 'auto', width: '420px'
+                                    maxHeight: 800, overflow: 'auto', width: '420px'
                                 }}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
@@ -3366,11 +3355,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <div>
                             <Select
                                 ref={c => this.appInstSelect = c}
-                                dropdownMatchSelectWidth={false}
-                                dropdownStyle={{
-                                    overflow: 'auto', width: '420px'
-                                }}
-
+                                dropdownStyle={{}}
                                 style={{width: 170, maxHeight: '512px !important', fontSize: '6px !important'}}
                                 disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
