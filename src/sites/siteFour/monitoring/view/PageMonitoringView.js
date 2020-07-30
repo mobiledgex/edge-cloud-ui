@@ -2528,7 +2528,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
                         usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount))
                         usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV, this.state.dataLimitCount))
-                        const [ _filteredAppInstEventLogList, _filteredClusterUsageList, _filteredClientStatusList, _filteredClusterEventLogList] = await Promise.all(usageEventPromiseList);
+                        const [_filteredAppInstEventLogList, _filteredClusterUsageList, _filteredClientStatusList, _filteredClusterEventLogList] = await Promise.all(usageEventPromiseList);
                         filteredAppInstEventLogList = _filteredAppInstEventLogList;
                         filteredClusterUsageList = _filteredClusterUsageList;
                         filteredClientStatusList = _filteredClientStatusList;
@@ -3352,8 +3352,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         </div>
                         <div>
                             <Select
+                                dropdownMatchSelectWidth={false}
+                                dropdownStyle={{
+                                    maxHeight: 800, overflow: 'auto', width: '300px !important'
+                                }}
                                 ref={c => this.appInstSelect = c}
-                                dropdownStyle={{}}
                                 style={{width: 170, maxHeight: '512px !important', fontSize: '6px !important'}}
                                 disabled={this.state.currentClusterList === '' || this.state.loading || this.state.appInstDropdown.length === 0 || this.state.currentClusterList === undefined}
                                 value={this.state.currentAppInstNameVersion}
