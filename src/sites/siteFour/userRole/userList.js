@@ -7,7 +7,7 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 
-class OrganizationList extends React.Component {
+class UserList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -102,19 +102,4 @@ class OrganizationList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {
-        roleInfo: state.roleInfo ? state.roleInfo.role : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null
-    }
-};
-
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
-        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
-    };
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(OrganizationList));
+export default withRouter(connect(null, null)(UserList));

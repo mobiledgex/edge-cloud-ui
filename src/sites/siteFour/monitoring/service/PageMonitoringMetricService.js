@@ -1282,7 +1282,6 @@ export const getClientStatusList = async (appInstList, startTime, endTime, dataL
     let range = getTimeRange(dataLimitCount)
     let periodStartTime = range[0]
     let periodEndTime = range[1]
-    console.log('Rahul1234', periodStartTime)
     appInstList.map((appInstOne: TypeCloudlet, index) => {
         promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
     })

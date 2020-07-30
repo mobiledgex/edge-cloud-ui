@@ -84,9 +84,6 @@ class AutoProvPolicy extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -94,4 +91,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AutoProvPolicy));
+export default withRouter(connect(null, mapDispatchProps)(AutoProvPolicy));
