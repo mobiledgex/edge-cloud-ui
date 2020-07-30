@@ -36,7 +36,7 @@ export const convertToUnix = (date) =>
 
 export const convertToTimezone = (date)=>
 {
-    return date ? moment.tz(date, getMexTimezone()) : moment.tz(getMexTimezone()) 
+    return date ? moment.tz(date, getMexTimezone()) : moment.tz(getMexTimezone())
 }
 
 export const time = (format, date) => {

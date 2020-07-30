@@ -1,7 +1,7 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT, METRIC_DATA_FETCH_TIMEOUT} from "../../../../shared/Constants";
+import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, METRIC_DATA_FETCH_TIMEOUT, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
 import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
