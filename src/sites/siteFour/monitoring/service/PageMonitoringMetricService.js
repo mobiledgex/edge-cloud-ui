@@ -471,8 +471,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                         memSeriesList,
                         diskSeriesList,
                         networkSeriesList,
-                        //connectionsSeriesList: networkSeriesList,
-                        //networkConnectionsSeriesList: networkSeriesList,
                         appName,
                         Cloudlet,
                         ClusterInst,
