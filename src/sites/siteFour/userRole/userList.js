@@ -102,19 +102,4 @@ class OrganizationList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {
-        roleInfo: state.roleInfo ? state.roleInfo.role : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null
-    }
-};
-
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
-        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) }
-    };
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(OrganizationList));
+export default withRouter(connect(null, null)(OrganizationList));

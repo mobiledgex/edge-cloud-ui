@@ -152,12 +152,4 @@ class CloudletList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
-const mapDispatchProps = (dispatch) => {
-    return {
-    };
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletList));
+export default withRouter(connect(null, null)(CloudletList));

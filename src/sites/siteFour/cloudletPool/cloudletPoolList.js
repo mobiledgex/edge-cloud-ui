@@ -78,16 +78,10 @@ class ClouldetPoolList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {
-
-    }
-};
-
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClouldetPoolList));
+export default withRouter(connect(null, mapDispatchProps)(ClouldetPoolList));
