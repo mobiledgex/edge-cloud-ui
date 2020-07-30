@@ -177,11 +177,14 @@ export default function MiniDrawer(props) {
     }
 
     const onOptionClick = (option, i) => {
-        localStorage.setItem('currentPage', option.page)
+        if(props.history.location.pathname !== `/site4/pg=${option.pageId}`)
+        {
+          setPage(null)
+        }
         props.history.push({
             pathname: `/site4/pg=${option.pageId}`
         });
-        setPage(option.page)
+        setTimeout(()=>{setPage(option.page)}, 1)
     }
 
     const showOptionForm = (i, option) => {
@@ -336,7 +339,7 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                <div className='contents_body'>
+                <div className='contents_body' style={{marginTop:6, height:'calc(100% - 6px)'}}>
                     {page}
                 </div>
             </main>
