@@ -1279,17 +1279,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 }
 
-
-export const getTimeRange = (dataLimitCount) => {
-    dataLimitCount = dataLimitCount ? dataLimitCount : 20
-    let periodMins = convertDataCountToMins(dataLimitCount)
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
-    return [periodStartTime, periodEndTime]
-}
-
-
 export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount, pageMonitoringView: PageMonitoringView) => {
     try {
 
@@ -1318,4 +1307,13 @@ export function convertDataCountToMins(dateLimitCount) {
         return item.value === dateLimitCount
     })
     return dateOne[0].text.split(" ")[0]
+}
+
+export const getTimeRange = (dataLimitCount) => {
+    dataLimitCount = dataLimitCount ? dataLimitCount : 20
+    let periodMins = convertDataCountToMins(dataLimitCount)
+    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
+    let periodStartTime = makeCompleteDateTime(date[0]);
+    let periodEndTime = makeCompleteDateTime(date[1]);
+    return [periodStartTime, periodEndTime]
 }
