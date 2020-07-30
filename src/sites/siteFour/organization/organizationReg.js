@@ -386,7 +386,7 @@ class OrganizationReg extends React.Component {
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: true },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: true, dataValidateFunc: this.validatePhone },
-            { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value: false, update: true }
+            { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value: false, update: true, roles: [constant.ADMIN_MANAGER] }
         ]
     }
 
