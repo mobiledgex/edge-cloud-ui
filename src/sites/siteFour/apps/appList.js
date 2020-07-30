@@ -90,15 +90,9 @@ class AppList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
-        handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppList));
+export default withRouter(connect(null, mapDispatchProps)(AppList));

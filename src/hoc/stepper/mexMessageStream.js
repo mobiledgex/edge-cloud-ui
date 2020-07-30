@@ -1,16 +1,18 @@
-import React, {useRef} from 'react'
+import React from 'react'
 import { Stepper, Popover, Step, StepLabel, CircularProgress } from '@material-ui/core';
-import { makeStyles } from "@material-ui/core/styles";
 import Check from "@material-ui/icons/Check";
 import ErrorIcon from '@material-ui/icons/Error';
 import { green, red } from '@material-ui/core/colors';
+import * as serverData from '../../services/model/serverData';
+import { fields } from '../../services/model/format';
+import { cloneDeep } from 'lodash';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
 
 
-const useStyles = makeStyles(theme => ({
+const useStyles = {
 
     root: {
         backgroundColor: 'transparent',
@@ -24,7 +26,6 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
     },
     wrapper: {
-        margin: theme.spacing(1),
         position: "relative"
     },
     stepper: {
@@ -60,78 +61,194 @@ const useStyles = makeStyles(theme => ({
         height: 23,
         fontSize: 10
     }
-}));
+};
 
 
+const classes = useStyles;
+class VerticalStepper extends React.Component {
 
-const VerticalStepper = (props) => {
-    const classes = useStyles();
-    const body = useRef();
-
-    if(body.current && props.uuid!==0)
-    {
-        body.current.scrollTop =  body.current.scrollHeight;
+    constructor(props) {
+        super(props)
+        this.state = {
+            stepsArray: []
+        }
+        this.body = React.createRef()
     }
-    return (
-        (props.uuid && props.uuid !== 0 && props.stepsArray && props.stepsArray.length > 0) ?
-            <div>
-                {props.stepsArray.map((item, i) => {
-                    return (
-                        props.uuid === item.uuid ?
-                            <Popover
-                                key={i}
-                                style={{width:400}}
-                                anchorReference="anchorPosition"
-                                onEnter={()=>{body.current.scrollTop=body.current.scrollHeight}}
-                                anchorPosition={{ top: 0, left: window.innerWidth }}
-                                onClose={() => { props.onClose() }}
-                                open={props.uuid !== 0}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
-                                }}>
-                                <div ref={body} style={{backgroundColor:'#616161', overflowY:'auto', maxHeight: 400 }}>
-                                    <Stepper className={classes.stepper} activeStep={item.steps[item.steps.length - 1].code === CODE_FINISH ? item.steps.length : item.steps.length - 1} orientation="vertical">
-                                        {item.steps.map((step, index) => {
-                                            return (
-                                                step.message ?
-                                                    <Step key={index}>
-                                                        <StepLabel StepIconComponent={(stepperProps) => {
-                                                            return (<div className={classes.root}>
-                                                                {
-                                                                    stepperProps.completed ?
-                                                                        item.steps[stepperProps.icon - 1].code === CODE_FAILED ?
-                                                                            <ErrorIcon className={classes.error} /> :
-                                                                            <Check className={classes.success} /> :
-                                                                        <div className={classes.wrapper}>
-                                                                            <p className={classes.iconLabel}>{stepperProps.icon}</p>
-                                                                            <CircularProgress className={classes.progress} size={25} thickness={3} />
-                                                                        </div>
-                                                                }
-                                                            </div>)
 
-                                                        }}><p className={classes.label}>{step.message}</p></StepLabel>
-                                                    </Step>
-                                                    :
-                                                    null
-                                            )
-                                        })}
-                                    </Stepper>
-                                </div>
-                            </Popover>
-                            :
-                            null
-                    )
-                })}
-            </div>
-            :
-            null
-    )
+    requestLastResponse = (data) => {
+        if (this.props.uuid === 0) {
+            let type = 'error'
+            if (data.code === 200) {
+                type = 'success'
+            }
+            if (data.message !== `Key doesn't exist`) {
+                //this.props.handleAlertInfo(type, data.message)
+            }
+        }
+    }
+
+    requestResponse = (mcRequest) => {
+        let request = mcRequest.request;
+        let responseData = null;
+        let stepsList = cloneDeep(this.state.stepsArray);
+        if (stepsList && stepsList.length > 0) {
+            stepsList = stepsList.filter((item) => {
+                if (request.uuid === item.uuid) {
+                    if (mcRequest.response) {
+                        responseData = item;
+                        return item
+                    }
+                    else {
+                        if (item.steps && item.steps.length > 1) {
+                            this.requestLastResponse(item.steps[item.steps.length - 1]);
+                        }
+                        if (item.steps.length >= 1 && item.steps[0].code === 200) {
+                            item.steps.push({ code: CODE_FINISH })
+                            this.props.dataFromServer(this.props.region)
+                        }
+
+                        if (this.props.uuid !== 0) {
+                            return item
+                        }
+                    }
+                }
+                return item
+            })
+
+        }
+
+        if (mcRequest.response) {
+            let response = mcRequest.response.data
+            let step = { code: response.code, message: response.data.message }
+            if (responseData === null) {
+                stepsList.push({ uuid: request.uuid, steps: [step] })
+            }
+            else {
+                stepsList.map((item, i) => {
+                    if (request.uuid === item.uuid) {
+                        item.steps.push(step)
+                    }
+                })
+            }
+        }
+        this.setState({ stepsArray: stepsList })
+    }
+
+    sendWSRequest = (data) => {
+        let stream = this.props.streamType;
+        if (stream) {
+            let valid = false
+            let state = data[fields.state];
+            if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
+                valid = true
+            }
+            else if (data[fields.powerState]) {
+                let powerState = data[fields.powerState];
+                if (powerState !== 0 && powerState !== 3 && powerState !== 6 && powerState !== 9 && powerState !== 10) {
+                    valid = true
+                }
+            }
+            if (valid) {
+                serverData.sendWSRequest(this, stream(data), this.requestResponse)
+            }
+        }
+    }
+
+    streamProgress = () => {
+        let stream = this.props.streamType;
+        if (stream) {
+            for (let i = 0; i < this.props.dataList.length; i++) {
+                let data = this.props.dataList[i];
+                if (data[fields.state] !== 5) {
+                    this.sendWSRequest(data)
+                }
+            }
+        }
+    }
+
+    onClose = () => {
+        this.state.stepsArray.map((item, i) => {
+            item.steps.map(step => {
+                if (step.code === CODE_FINISH) {
+                    this.state.stepsArray.splice(i, 1)
+                }
+            })
+        })
+        this.props.onClose()
+    }
+
+
+    render() {
+        const { stepsArray } = this.state
+        return (
+            (this.props.uuid && this.props.uuid !== 0 && stepsArray && stepsArray.length > 0) ?
+                <div>
+                    {stepsArray.map((item, i) => {
+                        return (
+                            this.props.uuid === item.uuid ?
+                                <Popover
+                                    key={i}
+                                    style={{ width: 400 }}
+                                    anchorReference="anchorPosition"
+                                    onEnter={() => { this.body.current.scrollTop = this.body.current.scrollHeight }}
+                                    anchorPosition={{ top: 0, left: window.innerWidth }}
+                                    onClose={() => { this.onClose() }}
+                                    open={this.props.uuid !== 0}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}>
+                                    <div ref={this.body} style={{ backgroundColor: '#616161', overflowY: 'auto', maxHeight: 400 }}>
+                                        <Stepper style={classes.stepper} activeStep={item.steps[item.steps.length - 1].code === CODE_FINISH ? item.steps.length : item.steps.length - 1} orientation="vertical">
+                                            {item.steps.map((step, index) => {
+                                                return (
+                                                    step.message ?
+                                                        <Step key={index}>
+                                                            <StepLabel StepIconComponent={(stepperProps) => {
+                                                                return (<div style={classes.root}>
+                                                                    {
+                                                                        stepperProps.completed ?
+                                                                            item.steps[stepperProps.icon - 1].code === CODE_FAILED ?
+                                                                                <ErrorIcon style={classes.error} /> :
+                                                                                <Check style={classes.success} /> :
+                                                                            <div style={classes.wrapper}>
+                                                                                <p style={classes.iconLabel}>{stepperProps.icon}</p>
+                                                                                <CircularProgress style={classes.progress} size={25} thickness={3} />
+                                                                            </div>
+                                                                    }
+                                                                </div>)
+
+                                                            }}><p style={classes.label}>{step.message}</p></StepLabel>
+                                                        </Step>
+                                                        :
+                                                        null
+                                                )
+                                            })}
+                                        </Stepper>
+                                    </div>
+                                </Popover>
+                                :
+                                null
+                        )
+                    })}
+                </div>
+                :
+                null
+        )
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.body.current && this.props.uuid !== 0) {
+            this.body.current.scrollTop = this.body.current.scrollHeight;
+        }
+        if (prevProps.dataList !== this.props.dataList) {
+            this.streamProgress()
+        }
+    }
 }
 
 export default VerticalStepper;
-
