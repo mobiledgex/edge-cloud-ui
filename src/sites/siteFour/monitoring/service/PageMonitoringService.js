@@ -21,8 +21,6 @@ import {
     DARK_LINE_COLOR,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
-    NO_APPS,
-    NO_CLUSTER,
     THEME_OPTIONS,
     USER_TYPE_SHORT,
     WHITE_CLOUTLET_ICON_COLOR,
@@ -41,7 +39,7 @@ import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
 import * as reducer from "../../../../utils";
-import {convertDataCountToMins} from "./PageMonitoringMetricService";
+import {getTimeRange} from "./PageMonitoringMetricService";
 
 const {Option} = Select;
 
@@ -1361,10 +1359,9 @@ export const makeCompleteDateTime = (date: string) => {
 
 export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
-    let periodMins= convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
 
 
     let appName = dataOne.AppName;

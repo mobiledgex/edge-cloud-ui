@@ -961,7 +961,6 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
 export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '', dataLimitCount) => {
     try {
         let promiseList = []
-
         let range = getTimeRange(dataLimitCount)
         let periodStartTime = range[0]
         let periodEndTime = range[1]
@@ -992,11 +991,12 @@ export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endT
  * @param clusterList
  * @returns {Promise<[]>}
  */
-export const getAllClusterEventLogList = async (clusterList, userType = USER_TYPE_SHORT.DEV) => {
+export const getAllClusterEventLogList = async (clusterList, userType = USER_TYPE_SHORT.DEV, dataLimitCount) => {
+
     try {
         let clusterPromiseList = []
         clusterList.map((clusterOne: TypeCluster, index) => {
-            clusterPromiseList.push(getClusterEventLogListOne(clusterOne, userType))
+            clusterPromiseList.push(getClusterEventLogListOne(clusterOne, userType, dataLimitCount))
         })
 
         let allClusterEventLogs = await Promise.all(clusterPromiseList);
@@ -1017,7 +1017,12 @@ export const getAllClusterEventLogList = async (clusterList, userType = USER_TYP
     }
 }
 
-export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType) => {
+export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType, dataLimitCount) => {
+
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
+
     let selectOrg = undefined
     let form = {};
     try {
@@ -1040,6 +1045,8 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
                 },
                 "organization": userType.toString().includes(USER_TYPE_SHORT.DEV) ? selectOrg : clusterItemOne.OrganizationName
             },
+            "starttime": periodStartTime,
+            "endtime": periodEndTime,
             //"last": 10
         }
 
@@ -1159,10 +1166,9 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
-    let periodMins = convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
 
     let data = {
         "region": appInst.Region,
@@ -1269,16 +1275,8 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 }
 
-export function convertDataCountToMins(dateLimitCount) {
-    let dateOne = graphDataCount.filter(item => {
-        return item.value === dateLimitCount
-    })
-    return dateOne[0].text.split(" ")[0]
 
-}
-
-const getTimeRange = (dataLimitCount)=>
-{
+export const getTimeRange = (dataLimitCount) => {
     dataLimitCount = dataLimitCount ? dataLimitCount : 20
     let periodMins = convertDataCountToMins(dataLimitCount)
     let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]

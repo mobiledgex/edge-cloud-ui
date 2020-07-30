@@ -69,7 +69,6 @@ import type {
 import {TypeAppInst} from "../../../../shared/Types";
 import moment from "moment-timezone";
 import {
-    convertFullAppInstJsonToStr,
     getOneYearStartEndDatetime,
     isEmpty,
     makeClusterBubbleChartData,
@@ -2524,15 +2523,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let endTime = makeCompleteDateTime(date[1]);
 
 
-                        usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV))
+                        //
                         usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
                         usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount))
-
-                        const [promise0, promise1, promise2, promiseFilteredClientStatusList] = await Promise.all(usageEventPromiseList);
-                        filteredClusterEventLogList = promise0;
-                        filteredAppInstEventLogList = promise1;
-                        filteredClusterUsageList = promise2;
+                        usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV, this.state.dataLimitCount))
+                        const [ promiseFilteredAppInstEventLogList, promiseFilteredClusterUsageList, promiseFilteredClientStatusList] = await Promise.all(usageEventPromiseList);
+                        filteredAppInstEventLogList = promiseFilteredAppInstEventLogList;
+                        filteredClusterUsageList = promiseFilteredClusterUsageList;
                         filteredClientStatusList = promiseFilteredClientStatusList;
 
                         await this.setState({
@@ -2892,7 +2890,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             __________DROPDOWN____________________________________________________________________________________________________() {
             }
 
-
             renderOrganizationDropdownForAdmin() {
                 return (
                     <div className="page_monitoring_dropdown_box" style={{alignSelf: 'center', justifyContent: 'center'}}>
@@ -3182,7 +3179,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
-                                disabled={this.state.loading}
+                                //disabled={this.state.loading}
                                 size={'middle'}
                                 allowClear={true}
                                 showSearch={true}

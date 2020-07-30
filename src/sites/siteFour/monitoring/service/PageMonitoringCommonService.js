@@ -14,7 +14,7 @@ import {barChartOption, columnChartOption, numberWithCommas} from "../common/Pag
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import * as dateUtil from "../../../../utils/date_util";
 import type {TypeAppInstLowerCase} from "../../../../shared/Types";
-import {convertDataCountToMins} from "./PageMonitoringMetricService";
+import {getTimeRange} from "./PageMonitoringMetricService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -673,10 +673,9 @@ export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
-    let periodMins = convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
 
 
     let dataForm = {
@@ -705,10 +704,11 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, dataL
 
 export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
-    let periodMins = convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
+
+
     let formBody = {};
     formBody = {
         "token": token,
