@@ -19,6 +19,7 @@ const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
 let zoom = 1;
 let selectedIndex = 0;
+let doing = false;
 
 let mapTileList = [
     {
@@ -243,8 +244,8 @@ class ClustersMap extends Component {
 
             let clickMarker = [];
             let zoom = nextProps.locData ? prevState.zoom : zoomControls.zoom
-            let center = nextProps.locData ? prevState.center : zoomControls.center
-            console.log("20200729 -- zoom = ", zoom);
+            // let center = nextProps.locData ? prevState.center : zoomControls.center
+            let center = nextProps.locData ? [nextProps.locData[0].cloudletLocation.latitude, nextProps.locData[0].cloudletLocation.longitude] : zoomControls.center
 
             if (nextProps.mapDetails) {
                 if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
@@ -258,12 +259,15 @@ class ClustersMap extends Component {
                     clickMarker.push({ "name": item, "coordinates": nextProps.mapDetails.coordinates, "cost": 1 })
                 })
 
-                zoom = 4
+                zoom = 6
                 center = nextProps.mapDetails.coordinates
                 mapCenter = nextProps.mapDetails.coordinates
             }
             if(createMode || updateMode) {
-                center = mapCenter
+                // center = mapCenter
+                if(updateMode) { 
+                    mapCenter = center;
+                }
             } else {
                 
                 
@@ -377,6 +381,17 @@ class ClustersMap extends Component {
         this.setState({ anchorEl: null });
     }
 
+    handleMove = (event) => {
+        if(this.state.detailMode && !doing) {
+            event.target.flyTo(this.state.center)
+            setTimeout(() => {
+                doing = false;
+            }, 1800);
+            doing = true;
+        }
+        
+    }
+
     attachControll = () => {
         return (
             <div className="leaflet-top leaflet-left" style={{ top: 79, position: 'absolute' }}>
@@ -404,17 +419,20 @@ class ClustersMap extends Component {
         return (
             <div className="commom-listView-map">
                 <Map
+                    ref={this.map}
+                    useFlyTo={false}
                     center={this.state.mapCenter}
                     zoom={zoom}
                     duration={1.2}
-                    style={{ width: '100%', height: '100%' }}
+                    // style={{ width: '100%', height: '100%' }}
                     easeLinearity={2}
                     dragging={true}
                     zoomControl={true}
                     boundsOptions={{ padding: [50, 50] }}
                     scrollWheelZoom={true}
-                    viewport={this.state.mapCenter}
+                    // viewport={{center: this.state.mapCenter, zoom:zoom}}
                     onClick={this.handleMapClick}
+                    onZoomend={this.handleMove.bind(this)}
                 >
                     <TileLayer
                         url={this.props.currentTyleLayer}
