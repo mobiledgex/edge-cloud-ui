@@ -141,7 +141,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
             try {
                 await this.setState({
                     cloudletUsageOne: this.props.cloudletUsageList[0],
-                },()=>{
+                }, () => {
                 });
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
@@ -383,7 +383,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     }
                 })
             } catch (e) {
-              //  showToast(e.toString())
+                //  showToast(e.toString())
                 //throw new Error(e)
             }
         }
@@ -626,7 +626,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     {this.props.parent.state.mapLoading && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
-                        <div style={{height: '100%', width: '100%', zIndex: 1}}>
+                        <div style={{height: '90%', width: '100%'}}>
                             <Map
                                 center={this.state.mapCenter}
                                 zoom={this.state.zoom}
