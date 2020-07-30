@@ -69,8 +69,9 @@ function stableSort(array, comparator) {
 
 function checkRole(form) {
     let roles = form.roles
+    let visible = true
     if (roles) {
-        let visible = false
+        visible = false
         form.detailView = false
         for (let i = 0; i < roles.length; i++) {
             let role = roles[i]
@@ -80,8 +81,8 @@ function checkRole(form) {
                 break;
             }
         }
-        form.visible = form.visible ? visible : form.visible
     }
+    return visible
 }
 
 function EnhancedTableHead(props) {
@@ -102,11 +103,11 @@ function EnhancedTableHead(props) {
                     />
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
-                    checkRole(headCell)
-                    if (headCell.label === 'Actions' &&  headCell.visible) {
+                    let roleVisible = checkRole(headCell)
+                    if (headCell.label === 'Actions' &&  headCell.visible && roleVisible) {
                         headCell.visible = props.actionMenuLength > 0
                     }
-                    if (headCell.visible) {
+                    if (headCell.visible && roleVisible) {
                         return <TableCell
                             style={{ backgroundColor: '#292C33' }}
                             key={headCell.field}
@@ -391,8 +392,8 @@ export default function EnhancedTable(props) {
                                                     />
                                                 </TableCell> : null}
                                             {props.keys.map((header, j) => {
-                                                checkRole(header)
-                                                if (header.visible) {
+                                                let roleVisible = checkRole(header)
+                                                if (header.visible && roleVisible) {
                                                     let field = header.field;
                                                     return (
                                                         <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
