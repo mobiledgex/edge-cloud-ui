@@ -1,9 +1,17 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, METRIC_DATA_FETCH_TIMEOUT, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CLOUDLET_METRIC_COLUMN,
+    FULFILLED,
+    METRIC_DATA_FETCH_TIMEOUT,
+    MEX_PROMETHEUS_APPNAME,
+    USER_TYPE,
+    USER_TYPE_SHORT
+} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -347,6 +355,8 @@ export const getCloudletListAll = async () => {
 export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
 
+        showToast('sdlkdlkfl!!!!appInst!!!!')
+
         let instanceBodyList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         for (let index = 0; index < appInstanceList.length; index++) {
@@ -363,17 +373,14 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
         //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
         let appInstanceHwUsageList = []
-        try {
-            appInstanceHwUsageList = await Promise.all(promiseList);
-        } catch (e) {
-            //throw new Error(e)
-        }
+        appInstanceHwUsageList = await Promise.allSettled(promiseList);
+
 
         let usageListForAllInstance = []
         appInstanceList.map((item, index) => {
             usageListForAllInstance.push({
                 instanceData: appInstanceList[index],
-                appInstanceHealth: appInstanceHwUsageList[index],
+                appInstanceHealth: appInstanceHwUsageList[index].value,
             });
         })
 
@@ -544,10 +551,12 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
         for (let index = 0; index < instanceBodyList.length; index++) {
             promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
         }
-        let promiseClusterLevelUsageList = await Promise.all(promiseList);
 
+        let promiseClusterLevelUsageList = await Promise.allSettled(promiseList);
         let newClusterLevelUsageList = []
-        promiseClusterLevelUsageList.map((item, index) => {
+        promiseClusterLevelUsageList.map((itemOne, index) => {
+            let item = itemOne.value
+            let status = itemOne.status
 
             let sumSendBytes = 0;
             let sumRecvBytes = 0;
@@ -565,7 +574,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
             let cloudlet = '';
             let operator = '';
 
-            if (item.data["0"].Series !== null) {
+            if (item.data["0"].Series !== null && status === FULFILLED) {
 
                 columns = item.data["0"].Series["0"].columns
                 let udpSeriesList = item.data["0"].Series["0"].values
@@ -693,8 +702,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
             promiseList.push(getCloudletLevelMetric(instanceBodyList[index], token))
         }
 
-        let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-
+        let cloudletLevelMatricUsageList = await Promise.allSettled(promiseList);
         let netSendSeriesList = [];
         let netRecvSeriesList = [];
         let vCpuSeriesList = [];
@@ -708,8 +716,11 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let columns = [];
 
         let usageList = []
-        cloudletLevelMatricUsageList.map((item, index) => {
-            if (!isEmpty(item) && !isEmpty(item.data["0"].Series)) {
+        cloudletLevelMatricUsageList.map((itemOne, index) => {
+            let item = itemOne.value
+            let status = itemOne.status
+
+            if (!isEmpty(item) && !isEmpty(item.data["0"].Series) && status === FULFILLED) {
                 Region = cloudletList[index].Region
                 let series = item.data["0"].Series["0"].values
                 let ipSeries = item.data["0"].Series["1"].values
@@ -1013,15 +1024,17 @@ export const getAllClusterEventLogList = async (clusterList, userType = USER_TYP
 
         return completedEventLogList;
     } catch (e) {
-        throw new Error(e.toString())
+        return null;
     }
 }
 
 export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType, dataLimitCount) => {
 
-    let range = getTimeRange(dataLimitCount)
-    let periodStartTime = range[0]
-    let periodEndTime = range[1]
+    //todo: 60min
+    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(60))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
+    let periodStartTime = makeCompleteDateTime(date[0]);
+    let periodEndTime = makeCompleteDateTime(date[1]);
+
 
     let selectOrg = undefined
     let form = {};
@@ -1061,13 +1074,15 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
             timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
 
+            console.log(`getClusterEventLogListOne====>`, response.data.data[0]);
+
             return response.data.data[0];
         }).catch(e => {
-            throw new Error(e.toString())
+            return null;
         })
         return result;
     } catch (e) {
-        //throw new Error(e)
+        return null;
     }
 }
 

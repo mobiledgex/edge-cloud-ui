@@ -2528,10 +2528,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
                         usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount))
                         usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV, this.state.dataLimitCount))
-                        const [ promiseFilteredAppInstEventLogList, promiseFilteredClusterUsageList, promiseFilteredClientStatusList] = await Promise.all(usageEventPromiseList);
-                        filteredAppInstEventLogList = promiseFilteredAppInstEventLogList;
-                        filteredClusterUsageList = promiseFilteredClusterUsageList;
-                        filteredClientStatusList = promiseFilteredClientStatusList;
+                        const [ _filteredAppInstEventLogList, _filteredClusterUsageList, _filteredClientStatusList, _filteredClusterEventLogList] = await Promise.all(usageEventPromiseList);
+                        filteredAppInstEventLogList = _filteredAppInstEventLogList;
+                        filteredClusterUsageList = _filteredClusterUsageList;
+                        filteredClientStatusList = _filteredClientStatusList;
+                        filteredClusterEventLogList = _filteredClusterEventLogList
 
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
