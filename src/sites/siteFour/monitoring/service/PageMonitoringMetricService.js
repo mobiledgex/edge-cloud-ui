@@ -1161,13 +1161,13 @@ export const getAllAppInstEventLogs = async () => {
  * @param appInst
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount) => {
+export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount, pageMonitoringViewInstance: PageMonitoringView) => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
-    
-    
-    
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
 
     let data = {
         "region": appInst.Region,
@@ -1179,10 +1179,11 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
-        "starttime": startTime ,
-        "endtime": endTime ,
+        "starttime": periodStartTime,
+        "endtime": periodEndTime,
         'last': dataLimitCount
     }
+
 
     return await axios({
         url: mcURL() + SHOW_METRICS_CLIENT_STATUS,
@@ -1285,12 +1286,13 @@ export const getTimeRange = (dataLimitCount) => {
 }
 
 
-export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
+export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount, _this: PageMonitoringView) => {
     try {
+
 
         let promiseList = []
         appInstList.map((appInstOne: TypeCloudlet, index) => {
-            promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount))
+            promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount, _this))
         })
         let newPromiseList = await Promise.all(promiseList);
 
