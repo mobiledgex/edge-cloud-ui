@@ -7,7 +7,7 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 
-class OrganizationList extends React.Component {
+class UserList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -102,4 +102,4 @@ class OrganizationList extends React.Component {
     }
 };
 
-export default withRouter(connect(null, null)(OrganizationList));
+export default withRouter(connect(null, null)(UserList));
