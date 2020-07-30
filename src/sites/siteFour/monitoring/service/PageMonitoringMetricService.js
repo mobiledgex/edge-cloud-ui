@@ -1162,10 +1162,10 @@ export const getAllAppInstEventLogs = async () => {
  * @param startTime
  * @param endTime
  * @param dataLimitCount
- * @param pageMonitoringViewInstance
+ * @param pageMonitoringView
  * @returns {Promise<{VerifyLocationCount: number, app: string, ver, FoundOperatorCount: number, apporg: string, cloudlet: string, RegisterClientCount: number, cloudletorg, FindCloudletCount: number}>}
  */
-export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount, pageMonitoringViewInstance: PageMonitoringView) => {
+export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount, pageMonitoringView: PageMonitoringView) => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
@@ -1290,13 +1290,13 @@ export const getTimeRange = (dataLimitCount) => {
 }
 
 
-export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount, _this: PageMonitoringView) => {
+export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount, pageMonitoringView: PageMonitoringView) => {
     try {
 
 
         let promiseList = []
         appInstList.map((appInstOne: TypeCloudlet, index) => {
-            promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount, _this))
+            promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount, pageMonitoringView))
         })
         let newPromiseList = await Promise.all(promiseList);
 
