@@ -21,8 +21,6 @@ import {
     DARK_LINE_COLOR,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
-    NO_APPS,
-    NO_CLUSTER,
     THEME_OPTIONS,
     USER_TYPE_SHORT,
     WHITE_CLOUTLET_ICON_COLOR,
@@ -40,8 +38,6 @@ import uniqBy from 'lodash/uniqBy';
 import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
-import * as reducer from "../../../../utils";
-import {convertDataCountToMins} from "./PageMonitoringMetricService";
 
 const {Option} = Select;
 
@@ -328,7 +324,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             return chartDataSet
         }
     } catch (e) {
-        throw new Error(e.toString())
+        throw new error(e.toString())
     }
 };
 
@@ -1260,13 +1256,13 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item: TypeCluster, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
+export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
 
     let clusterCloudletName = '';
     if (_this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
-        clusterCloudletName = item.ClusterName + " [" + item.Cloudlet + "]"
+        clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
     } else {
-        clusterCloudletName = item.ClusterName
+        clusterCloudletName = item.cluster
     }
     return (
         <div style={{display: 'flex'}}>
@@ -1359,13 +1355,7 @@ export const makeCompleteDateTime = (date: string) => {
 }
 
 
-export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
-
-    let periodMins= convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
-
+export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
     let appName = dataOne.AppName;
     if (dataOne.AppName.includes('[')) {
@@ -1393,9 +1383,9 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLi
                     }
                 },
                 "selector": valid,
-                "last": dataLimitCount,
-                "starttime": pStartTime !== '' ? pStartTime : periodStartTime,
-                "endtime": pEndTime !== '' ? pEndTime : periodEndTime,
+                "last": fetchingDataNo,
+                "starttime": pStartTime,
+                "endtime": pEndTime,
             }
         }
         return form;
@@ -1422,7 +1412,8 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLi
                     }
                 },
                 "selector": valid,
-                "last": dataLimitCount,
+                //"last": 25
+                "last": fetchingDataNo,
             }
         }
 
@@ -1603,13 +1594,9 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
 }
 
-export function makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
-    let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-    return markerMapObjectForMap;
-}
 
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
 
-export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList: TypeCluster, _this, isShowRegion = true) => {
     try {
         let treeCloudletList = []
         cloudletList.map((cloudletOne, cloudletIndex) => {
@@ -1627,8 +1614,8 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
             };
 
-            clusterList.map((clusterItemOne: TypeCluster, innerIndex) => {
-                if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
+            clusterList.map((clusterItemOne: any, innerIndex) => {
+                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
                     newCloudletOne.children.push({
                         title: (
                             <div style={{display: 'flex'}}>
@@ -1636,12 +1623,12 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                                     {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                                 </Center>
                                 <div style={{marginLeft: 5,}}>
-                                    {reduceString(clusterItemOne.ClusterName, 40)}
+                                    {reduceString(clusterItemOne.cluster, 40)}
                                 </div>
 
                             </div>
                         ),
-                        value: clusterItemOne.ClusterName + " | " + cloudletOne.CloudletName,
+                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
                         isParent: false,
 
                     })
@@ -1671,12 +1658,10 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                 })
                 regionTreeList.push(regionMapOne)
             })
-
             //todo: Filter only if there is sub data value in the region
             let newRegionList = regionTreeList.filter(item => {
                 return item.children.length > 0
             })
-
             return newRegionList;
         } else {
             return treeCloudletList
@@ -1686,7 +1671,6 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
     }
 
 }
-
 
 export const makeDropdownForCloudletForDevView = (pList) => {
     try {
@@ -1716,12 +1700,12 @@ export const makeDropdownForCloudletForDevView = (pList) => {
 
 export function renderCloudletInfoForAdmin(pCurrentCloudletMap) {
     return (
-        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
+        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 5, padding: 20, borderRadius: 10, marginLeft: 5, height: '240px !important', marginTop: 25,}}
         >
             <div style={{
                 fontSize: 12,
                 fontWeight: 'bold',
-                marginTop: 0,
+                marginTop: -10,
                 fontFamily: 'Roboto',
                 display: 'flex',
             }}>
@@ -1788,7 +1772,8 @@ export function renderCloudletHwUsageDashBoardForAdmin(pCloudletUsageOne, bottom
             flex: .49,
             marginLeft: 30,
             borderRadius: 10,
-            marginTop: -30,
+            marginTop: 5,
+            marginBottom: 5,
         }}>
             <Center style={{height: bottomDivHeight,}}>
                 <div>

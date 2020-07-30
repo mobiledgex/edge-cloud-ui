@@ -3,7 +3,7 @@ import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from ".
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, METRIC_DATA_FETCH_TIMEOUT, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -18,7 +18,6 @@ import {
 import {makeCompleteDateTime, makeFormForAppLevelUsageList} from "./PageMonitoringService";
 import {graphDataCount} from "../common/PageMonitoringProps";
 import * as dateUtil from "../../../../utils/date_util";
-
 
 export const requestShowAppInstClientWS = (pCurrentAppInst, _this: PageMonitoringView) => {
     try {
@@ -511,14 +510,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
 }
 
-export function convertDataCountToMins(dateLimitCount) {
-    let dateOne = graphDataCount.filter(item => {
-        return item.value === dateLimitCount
-    })
-    return dateOne[0].text.split(" ")[0]
-
-}
-
 
 /**
  *
@@ -530,13 +521,13 @@ export function convertDataCountToMins(dateLimitCount) {
  */
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', _this: PageMonitoringView) => {
     try {
-
-
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
 
         for (let index = 0; index < clusterList.length; index++) {
+            //let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+
             let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, dataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
@@ -959,11 +950,16 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
  * @param endTime
  * @returns {Promise<[]>}
  */
-export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '') => {
+export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '', dataLimitCount) => {
     try {
         let promiseList = []
+        
+        let range = getTimeRange(dataLimitCount)
+        let periodStartTime = range[0]
+        let periodEndTime = range[1]
+
         cloudletList.map((cloudletOne: TypeCloudlet, index) => {
-            promiseList.push(getCloudletEventLog(cloudletOne, startTime, endTime))
+            promiseList.push(getCloudletEventLog(cloudletOne, periodStartTime, periodEndTime))
         })
 
         let allCloudletEventLogList = await Promise.all(promiseList);
@@ -1009,7 +1005,7 @@ export const getAllClusterEventLogList = async (clusterList, userType = USER_TYP
 
         return completedEventLogList;
     } catch (e) {
-        throw new Error(e.toString())
+        throw new error(e.toString())
     }
 }
 
@@ -1052,7 +1048,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
 
             return response.data.data[0];
         }).catch(e => {
-            throw new Error(e.toString())
+            throw new error(e.toString())
         })
         return result;
     } catch (e) {
@@ -1097,6 +1093,8 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             },
             timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
+
+
             if (isEmpty(response.data.data[0].Series)) {
                 return [];
             } else {
@@ -1104,11 +1102,10 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             }
 
         }).catch(e => {
-            throw new Error(e.toString())
-
+            throw new error(e.toString())
         })
     } catch (e) {
-        throw new Error(e.toString())
+        throw new error(e.toString())
     }
 
 }
@@ -1141,7 +1138,7 @@ export const getAllAppInstEventLogs = async () => {
 
         return completedEventLogList;
     } catch (e) {
-        return [];
+        throw new error(e.toString())
     }
 }
 
@@ -1151,14 +1148,9 @@ export const getAllAppInstEventLogs = async () => {
  * @param appInst
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount) => {
+export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '') => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
-
-    let periodMins = convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
 
     let data = {
         "region": appInst.Region,
@@ -1170,9 +1162,9 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
-        "starttime": startTime !== '' ? startTime : periodStartTime,
-        "endtime": endTime !== '' ? endTime : periodEndTime,
-        'last': dataLimitCount
+        "starttime": startTime,
+        "endtime": endTime
+        //'last': 100
     }
 
     return await axios({
@@ -1265,25 +1257,43 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 }
 
+export function convertDataCountToMins(dateLimitCount) {
+    let dateOne = graphDataCount.filter(item => {
+        return item.value === dateLimitCount
+    })
+    return dateOne[0].text.split(" ")[0]
+
+}
+
+const getTimeRange = (dataLimitCount)=>
+{
+    dataLimitCount = dataLimitCount ? dataLimitCount : 20    
+    let periodMins = convertDataCountToMins(dataLimitCount)
+    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
+    let periodStartTime = makeCompleteDateTime(date[0]);
+    let periodEndTime = makeCompleteDateTime(date[1]);
+    return [periodStartTime, periodEndTime]
+}
+
 
 export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
-    try {
+    let promiseList = []
 
-        let promiseList = []
-        appInstList.map((appInstOne: TypeCloudlet, index) => {
-            promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount))
-        })
-        let newPromiseList = await Promise.all(promiseList);
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
+    console.log('Rahul1234', periodStartTime)
+    appInstList.map((appInstOne: TypeCloudlet, index) => {
+        promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
+    })
+    let newPromiseList = await Promise.all(promiseList);
 
-        let mergedClientStatusList = []
-        newPromiseList.map((item, index) => {
-            if (item !== undefined) {
-                mergedClientStatusList.push(item)
-            }
-        })
-        return mergedClientStatusList;
-    } catch (e) {
-        showToast(e.toString())
-    }
+    let mergedClientStatusList = []
+    newPromiseList.map((item, index) => {
+        if (item !== undefined) {
+            mergedClientStatusList.push(item)
+        }
+    })
+    return mergedClientStatusList;
 
 }

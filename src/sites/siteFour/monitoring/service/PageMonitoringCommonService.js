@@ -13,8 +13,6 @@ import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import * as dateUtil from "../../../../utils/date_util";
-import type {TypeAppInstLowerCase} from "../../../../shared/Types";
-import {convertDataCountToMins} from "./PageMonitoringMetricService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -671,13 +669,7 @@ export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType
 }
 
 
-export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
-
-    let periodMins = convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
-
+export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
     let dataForm = {
         "token": token,
@@ -693,45 +685,47 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, dataL
                 },
                 "organization": dataOne.OrganizationName,
             },
-            "last": dataLimitCount,
-            "selector": "*",
-            "starttime": pStartTime !== '' ? pStartTime : periodStartTime,
-            "endtime": periodEndTime !== '' ? periodEndTime : periodEndTime,
+            "last": fetchingDataNo,
+            "selector": "*"
         }
     }
 
     return dataForm;
 }
 
-export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
-
-    let periodMins = convertDataCountToMins(dataLimitCount) //todo:default 2mins
-    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
-    let periodStartTime = makeCompleteDateTime(date[0]);
-    let periodEndTime = makeCompleteDateTime(date[1]);
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, dateLimitCount = 20, pStartTime = '', pEndTime = '') => {
     let formBody = {};
-    formBody = {
-        "token": token,
-        "params": {
-            "region": dataOne.Region,
-            "cloudlet": {
-                "organization": dataOne.Operator,
-                "name": dataOne.CloudletName,
-            },
-            "last": dataLimitCount,
-            "selector": "*",
-            "starttime": pStartTime !== '' ? pStartTime : periodStartTime,
-            "endtime": pEndTime !== '' ? pEndTime : periodEndTime,
+    if (pStartTime === '' && pEndTime === '') {
+
+        formBody = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.CloudletName,
+                },
+                "last": dateLimitCount,
+                "selector": "*"
+            }
+        }
+    } else {
+        formBody = {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "organization": dataOne.Operator,
+                    "name": dataOne.CloudletName,
+                },
+                "last": dateLimitCount,
+                "selector": "*",
+                "starttime": pStartTime,
+                "endtime": pEndTime,
+            }
         }
     }
     return formBody;
-}
-
-export function convertFullAppInstJsonToStr(fullAppInstJson: TypeAppInstLowerCase) {
-    let fullAppInstStr = fullAppInstJson.appName + " | " + fullAppInstJson.cloudletName + " | " + fullAppInstJson.clusterName
-        + " | " + fullAppInstJson.version + " | " + fullAppInstJson.region + " | " + fullAppInstJson.healthCheck
-        + " | " + fullAppInstJson.operatorName + " | " + JSON.stringify(fullAppInstJson.cloudletLocation)
-    return fullAppInstStr
 }
 
 

@@ -38,7 +38,6 @@ type Props = {
     toggleLoading: Function,
     intervalLoading: boolean,
     lineChartDataSet: any,
-    isScrollEnableForLineChart: boolean,
 
 };
 type State = {
@@ -51,7 +50,6 @@ type State = {
     redraw: boolean,
     usageListLength: number,
     chartDataForBigModal: any,
-    isScrollEnableForLineChart: boolean,
 
 };
 export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
@@ -67,7 +65,6 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                 markerList: [],
                 redraw: false,
                 usageListLength: 0,
-                isScrollEnableForLineChart: false,
             }
         }
 
@@ -100,14 +97,12 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                 }
             }
 
-            if (this.props.isShowBigGraph !== nextProps.isShowBigGraph) {
+            if (this.props.isShowBigGraph) {
                 try {
                     this.setState({
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
                         selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
                         loading: nextProps.loading,
-                        isShowBigGraph: nextProps.isShowBigGraph,
-                        isScrollEnableForLineChart: nextProps.isScrollEnableForLineChart,
                     });
                 } catch (e) {
 
@@ -233,16 +228,10 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                             }
                             <div className='page_monitoring_popup_title_divide'/>
                         </div>
-
-                        {/*
-                        todo:LINE
-                        todo:LINE
-                        todo:LINE
-                        */}
                         {this.state.graphType === GRID_ITEM_TYPE.LINE ?
-                            <div className={this.state.isScrollEnableForLineChart ? 'chartWrapperForBig' : 'page_monitoring_container'}>
-                                <div className={this.state.isScrollEnableForLineChart ? "chartAreaWrapperForBig" : 'page_mon_inner'}>
-                                    <div style={{width: this.state.isScrollEnableForLineChart ? 6000 : '100%', height: '250px !important'}}>
+                            <div className={this.props.parent.state.isScrollEnableForLineChart ? 'chartWrapperForBig' : 'page_monitoring_container'}>
+                                <div className={this.props.parent.state.isScrollEnableForLineChart ? "chartAreaWrapperForBig" : 'page_mon_inner'}>
+                                    <div style={{width: 6000, height: '250px !important'}}>
                                         {this.renderLineChart()}
                                     </div>
                                 </div>
