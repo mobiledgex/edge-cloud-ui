@@ -45,8 +45,7 @@ class CloudletPoolReg extends React.Component {
         }
         this.poolData = {}
         this.action = props.action
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
         this.cloudletList = []
     }
@@ -360,27 +359,7 @@ class CloudletPoolReg extends React.Component {
         this.getFormData(this.props.data)
         this.props.handleViewMode( cloudletPoolSteps.stepsNewPool );
     }
-
 };
-
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
-    }
-};
-
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -390,4 +369,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(CloudletPoolReg)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(CloudletPoolReg)));
