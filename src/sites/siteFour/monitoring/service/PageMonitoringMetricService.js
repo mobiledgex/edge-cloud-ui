@@ -354,9 +354,6 @@ export const getCloudletListAll = async () => {
 
 export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
-
-        showToast('sdlkdlkfl!!!!appInst!!!!')
-
         let instanceBodyList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         for (let index = 0; index < appInstanceList.length; index++) {
