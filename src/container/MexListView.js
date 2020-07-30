@@ -35,6 +35,7 @@ class MexListView extends React.Component {
             dialogMessageInfo: {},
             uuid: 0,
         };
+        this.filterText = ''
         this.requestCount = 0;
         this.keys = props.requestInfo.keys;
         this.selectedRow = {};
@@ -431,7 +432,7 @@ class MexListView extends React.Component {
 
     onFilterValue = (value) => {
         this.mapDetails = null
-        let filterText = value ? value.toLowerCase() : ''
+        this.filterText = value ? value.toLowerCase() : this.filterText
         let dataList = this.state.dataList
         let filterCount = 0
         let filterList = dataList.filter(data => {
@@ -439,7 +440,7 @@ class MexListView extends React.Component {
                 if (key.filter) {
                     filterCount = + 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    return tempData.toLowerCase().includes(filterText)
+                    return tempData.toLowerCase().includes(this.filterText)
                 }
             })
             return filterCount === 0 || valid.includes(true)
