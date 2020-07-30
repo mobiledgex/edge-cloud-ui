@@ -514,14 +514,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
 }
 
-export function convertDataCountToMins(dateLimitCount) {
-    let dateOne = graphDataCount.filter(item => {
-        return item.value === dateLimitCount
-    })
-    return dateOne[0].text.split(" ")[0]
-
-}
-
 
 /**
  *
@@ -533,8 +525,6 @@ export function convertDataCountToMins(dateLimitCount) {
  */
 export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', _this: PageMonitoringView) => {
     try {
-
-
         let instanceBodyList = []
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
@@ -1320,3 +1310,9 @@ export const getClientStatusList = async (appInstList, startTime, endTime, dataL
 
 }
 
+export function convertDataCountToMins(dateLimitCount) {
+    let dateOne = graphDataCount.filter(item => {
+        return item.value === dateLimitCount
+    })
+    return dateOne[0].text.split(" ")[0]
+}

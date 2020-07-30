@@ -2977,6 +2977,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     cloudletDropdownList: cloudletDropdownList,
                                     markerList: markerListForMap,
                                     filteredClusterUsageList: [],
+                                    filteredClusterList: [],
                                     currentCloudLet: undefined,
                                     filteredCloudletUsageList: [],
                                     currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
@@ -3354,7 +3355,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <Select
                                 dropdownMatchSelectWidth={false}
                                 dropdownStyle={{
-                                    maxHeight: 800, overflow: 'auto', width: '300px !important'
+                                    maxHeight: 500, overflow: 'auto', width: '300px !important'
                                 }}
                                 ref={c => this.appInstSelect = c}
                                 style={{width: 170, maxHeight: '512px !important', fontSize: '6px !important'}}
@@ -3590,7 +3591,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             makeClusterLegendForAdmin() {
                 let stringLimit = makeStringLimit(CLASSIFICATION.CLUSTER_FOR_ADMIN, this)
                 let itemCount = this.state.legendItemCount;
-                let {filteredClusterUsageList} = this.state;
+                let {filteredClusterList} = this.state;
 
                 return (
                     <React.Fragment>
@@ -3604,7 +3605,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
-                            {filteredClusterUsageList.length === 0 && this.state.isShowClusterInLegend &&
+                            {filteredClusterList.length === 0 && this.state.isShowClusterInLegend &&
                             <Col
                                 span={24}
                                 className="noClusterMsg"
@@ -3612,7 +3613,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 No Cluster
                             </Col>
                             }
-                            {filteredClusterUsageList.map((item: TypeClusterUsageOne, clusterIndex) => {
+                            {filteredClusterList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col
                                         key={clusterIndex}
@@ -3620,7 +3621,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         onClick={async () => {
                                             if (this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
                                                 let clusterCloudletList = []
-                                                if (filteredClusterUsageList.length > 1) {
+                                                if (filteredClusterList.length > 1) {
                                                     let clusterOne = item.cluster + " | " + item.cloudlet;
                                                     clusterCloudletList.push(clusterOne)
                                                     clearInterval(this.intervalForCluster)
@@ -3628,7 +3629,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                                 } else {// TODO: WHEN all cluster
                                                     clearInterval(this.intervalForCluster)
-                                                    await this.setState({legendItemCount: filteredClusterUsageList.length})
+                                                    await this.setState({legendItemCount: filteredClusterList.length})
                                                     await this.handleOnChangeClusterDropdownForDev(undefined)
                                                 }
                                             }
@@ -3667,13 +3668,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                     {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded, this.state.filteredClusterList.length)}
                                                 </Center>
                                             </div>
-
                                         }
                                     </Col>
                                 )
                             })}
                         </Row>
-                        {this.renderFoldUnFoldIcons(filteredClusterUsageList)}
+                        {this.renderFoldUnFoldIcons(filteredClusterList)}
                     </React.Fragment>
                 )
             }
