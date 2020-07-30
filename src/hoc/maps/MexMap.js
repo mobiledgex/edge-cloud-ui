@@ -77,7 +77,8 @@ class ClustersMap extends Component {
             mapCenter: zoomControls.center,
             currentPos: null,
             anchorEl: null,
-            selectedIndex: 0
+            selectedIndex: 0,
+            capture: true
         }
         this.handleMapClick = this.handleMapClick.bind(this);
         this.dir = 1;
@@ -125,11 +126,20 @@ class ClustersMap extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
 
-        let createMode = nextProps.onMapClick ? true : false
+        let createMode = nextProps.onMapClick ? true : false;
+        let updateMode = (nextProps.locData && nextProps.locData.length > 0) ? true : false;
+        let hasLocation = [];
+        if( updateMode ) {
+            createMode = false;
+            let long = nextProps.locData[0].longitude;
+            let lat = nextProps.locData[0].latitude;
+            hasLocation = [lat ? lat : nextProps.locData[0].cloudletLocation.latitude, long ? long : nextProps.locData[0].cloudletLocation.longitude];
+        }
 
         let initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         let data = nextProps.locData ? initialData : initialData.filter((item) => item[fields.state] == 5);
-        let mapCenter = (createMode) ? prevState.currentPos : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : [53, 13];
+        // let mapCenter = (createMode) ? prevState.currentPos : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : [53, 13];
+        let mapCenter = (!createMode) ? nextProps.mapCenter : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : (updateMode) ? hasLocation :[53, 13];
 
         function reduceUp(value) {
             return Math.round(value)
@@ -234,6 +244,7 @@ class ClustersMap extends Component {
             let clickMarker = [];
             let zoom = nextProps.locData ? prevState.zoom : zoomControls.zoom
             let center = nextProps.locData ? prevState.center : zoomControls.center
+            console.log("20200729 -- zoom = ", zoom);
 
             if (nextProps.mapDetails) {
                 if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
@@ -249,6 +260,13 @@ class ClustersMap extends Component {
 
                 zoom = 4
                 center = nextProps.mapDetails.coordinates
+                mapCenter = nextProps.mapDetails.coordinates
+            }
+            if(createMode || updateMode) {
+                center = mapCenter
+            } else {
+                
+                
             }
             return { mapCenter: mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
         }
@@ -325,11 +343,11 @@ class ClustersMap extends Component {
     }
 
     handleMapClick(e) {
-        if (this.props.onMapClick) {
+        if (this.props.onMapClick && this.state.capture) {
             let _lat = Math.round(e.latlng['lat'])
             let _lng = Math.round(e.latlng['lng'])
 
-            this.setState({ currentPos: [_lat, _lng] });
+            this.setState({ currentPos: [_lat, _lng], mapCenter: [_lat, _lng] });
 
             let location = { lat: _lat, long: _lng }
             let locationData = [
@@ -363,7 +381,10 @@ class ClustersMap extends Component {
         return (
             <div className="leaflet-top leaflet-left" style={{ top: 79, position: 'absolute' }}>
                 <div className="zoom-inout-reset-clusterMap leaflet-control" style={{ left: 0, top: 0, position: 'absolute' }}>
-                    <Button id="mapZoomCtl" size='small' icon onClick={() => this.handleRefresh()}>
+                    <Button id="mapZoomCtl" size='small' icon 
+                    onMouseOver={() => this.setState({capture: false})}
+                    onMouseLeave={() => this.setState({capture: true})}
+                    onClick={() => this.handleRefresh()}>
                         <Icon name='redo' />
                     </Button>
                 </div>
@@ -379,6 +400,7 @@ class ClustersMap extends Component {
     }
 
     render() {
+        const { zoom } = this.state;
         return (
             <div className="commom-listView-map">
                 <Map
