@@ -1185,7 +1185,6 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         "selector": "api",
         "starttime": periodStartTime,
         "endtime": periodEndTime,
-        'last': dataLimitCount
     }
 
 
@@ -1281,8 +1280,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount, pageMonitoringView: PageMonitoringView) => {
     try {
-
-
         let promiseList = []
         appInstList.map((appInstOne: TypeCloudlet, index) => {
             promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount, pageMonitoringView))
