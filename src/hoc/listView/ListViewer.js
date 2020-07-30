@@ -69,8 +69,9 @@ function stableSort(array, comparator) {
 
 function checkRole(form) {
     let roles = form.roles
+    let visible = true
     if (roles) {
-        let visible = false
+        visible = false
         form.detailView = false
         for (let i = 0; i < roles.length; i++) {
             let role = roles[i]
@@ -80,8 +81,8 @@ function checkRole(form) {
                 break;
             }
         }
-        form.visible = form.visible ? visible : form.visible
     }
+    return visible
 }
 
 function EnhancedTableHead(props) {
@@ -93,7 +94,7 @@ function EnhancedTableHead(props) {
     return (
         <TableHead >
             <TableRow >
-                {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#2A2C33' }}>
+                {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#292C33' }}>
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
@@ -102,13 +103,13 @@ function EnhancedTableHead(props) {
                     />
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
-                    checkRole(headCell)
-                    if (headCell.label === 'Actions' &&  headCell.visible) {
+                    let roleVisible = checkRole(headCell)
+                    if (headCell.label === 'Actions' &&  headCell.visible && roleVisible) {
                         headCell.visible = props.actionMenuLength > 0
                     }
-                    if (headCell.visible) {
+                    if (headCell.visible && roleVisible) {
                         return <TableCell
-                            style={{ backgroundColor: '#2A2C33' }}
+                            style={{ backgroundColor: '#292C33' }}
                             key={headCell.field}
                             align={headCell.numeric ? 'right' : 'left'}
                             padding={headCell.disablePadding ? 'none' : 'default'}
@@ -344,10 +345,10 @@ export default function EnhancedTable(props) {
     /*Action Block*/
 
     return (
-        <div className={classes.root}>
-            <Paper style={{ backgroundColor: '#2A2C33' }}>
+        <div className={classes.root} style={{ marginTop: -20 }}>
+            <Paper style={{ backgroundColor: '#292C33' }}>
                 <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
-                <TableContainer style={{ height: window.innerHeight - (props.isMap ? 600 : 200) }}>
+                <TableContainer style={{height:`calc(100vh - ${props.isMap ? '589px' : '189px'})`, overflow:'auto'}}>
                     <Table
                         stickyHeader
                         aria-labelledby="tableTitle"
@@ -391,8 +392,8 @@ export default function EnhancedTable(props) {
                                                     />
                                                 </TableCell> : null}
                                             {props.keys.map((header, j) => {
-                                                checkRole(header)
-                                                if (header.visible) {
+                                                let roleVisible = checkRole(header)
+                                                if (header.visible && roleVisible) {
                                                     let field = header.field;
                                                     return (
                                                         <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>

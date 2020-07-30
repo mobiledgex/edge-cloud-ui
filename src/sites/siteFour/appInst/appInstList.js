@@ -201,13 +201,10 @@ class AppInstList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppInstList));
+export default withRouter(connect(null, mapDispatchProps)(AppInstList));

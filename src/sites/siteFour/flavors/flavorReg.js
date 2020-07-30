@@ -13,7 +13,7 @@ import {flavorTutor} from "../../../tutorial";
 
 const flavorSteps = flavorTutor();
 
-class ClusterInstReg extends React.Component {
+class FlavorReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,9 +21,7 @@ class ClusterInstReg extends React.Component {
             forms: [],
         }
         this.isUpdate = this.props.isUpdate
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
-        //To avoid refecthing data from server
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
 
@@ -162,27 +160,7 @@ class ClusterInstReg extends React.Component {
         this.getFormData(this.props.data);
         this.props.handleViewMode( flavorSteps.stepsCreateFlavor )
     }
-
 };
-
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
-    }
-};
-
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -192,4 +170,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(null, mapDispatchProps)(FlavorReg));

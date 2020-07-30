@@ -36,7 +36,7 @@ export const convertToUnix = (date) =>
 
 export const convertToTimezone = (date)=>
 {
-    return date ? moment.tz(date, getMexTimezone()) : moment.tz(getMexTimezone()) 
+    return date ? moment.tz(date, getMexTimezone()) : moment.tz(getMexTimezone())
 }
 
 export const time = (format, date) => {
@@ -66,6 +66,10 @@ export const compareUTCTimeInMilli = (from, to) =>
 
 export const subtractDays = (value) => {
     return value ? moment().subtract(value, 'days') : moment().subtract('days')
+}
+
+export const subtractMins = (mins) => {
+    return mins ? moment().subtract(mins, 'minutes') : moment().subtract('minutes')
 }
 
 export const startOfMonth = (value) => {

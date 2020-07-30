@@ -40,8 +40,7 @@ class ClusterInstReg extends React.Component {
             region: '',
         }
         this.isUpdate = this.props.isUpdate
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         //To avoid refecthing data from server
         this.requestedRegionList = [];
         this.organizationList = []
@@ -169,6 +168,9 @@ class ClusterInstReg extends React.Component {
             }
             else if (form.field === fields.numberOfNodes || form.field === fields.sharedVolumeSize) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
+            }
+            else if (form.field === fields.autoScalePolicyName) {
+                form.visible = currentForm.value !== constant.DEPLOYMENT_TYPE_DOCKER
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -506,22 +508,6 @@ class ClusterInstReg extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region
-    }
-};
-
-
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -530,4 +516,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(null, mapDispatchProps)(ClusterInstReg));

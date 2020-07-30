@@ -38,8 +38,7 @@ class AppReg extends React.Component {
             flowDataList: []
         }
         this.isUpdate = this.props.isUpdate
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = cloneDeep(props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion)
+        this.regions = cloneDeep(localStorage.regions ? localStorage.regions.split(",") : [])
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.flavorList = []
         this.privacyPolicyList = []
@@ -868,25 +867,6 @@ class AppReg extends React.Component {
 
 };
 
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
-    }
-};
-
-
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -895,4 +875,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppReg));
+export default withRouter(connect(null, mapDispatchProps)(AppReg));
