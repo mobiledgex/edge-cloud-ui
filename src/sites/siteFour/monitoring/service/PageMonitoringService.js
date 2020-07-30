@@ -1363,7 +1363,6 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLi
     let periodStartTime = range[0]
     let periodEndTime = range[1]
 
-
     let appName = dataOne.AppName;
     if (dataOne.AppName.includes('[')) {
         appName = dataOne.AppName.toString().split('[')[0]
