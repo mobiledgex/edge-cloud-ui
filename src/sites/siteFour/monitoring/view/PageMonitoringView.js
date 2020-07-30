@@ -701,17 +701,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
                 let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-               /* cloudletList.map(item => {
-                    let listOne = markerMapObjectForMap[item.CloudletName];
-                    if (listOne === undefined) {
-                        markerMapObjectForMap[item.CloudletName] = [{
-                            AppName: NO_APPS,
-                            ClusterInst: NO_CLUSTER,
-                            Cloudlet: item.CloudletName,
-                            CloudletLocation: item.CloudletLocation,
-                        }];
-                    }
-                })*/
                 return markerMapObjectForMap;
             }
 
