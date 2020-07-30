@@ -116,17 +116,19 @@ class ClustersMap extends Component {
         if (this.props.zoomControl) {
             this.setState({ center: this.props.zoomControl.center, zoom: this.props.zoomControl.zoom })
         }
-        this.setState({ oldCountry: this.state.selectedCity })
-        let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
-        if (catchLeafLayer) {
-            if (catchLeafLayer.length === 0) {
-                this.handleRefresh();
-            }
+        if (this.props.locData && this.props.locData.length > 0 ) {
+            this.setState({ mapCenter: [this.props.locData[0].cloudletLocation.latitude, this.props.locData[0].cloudletLocation.longitude] })
         }
+        this.setState({ oldCountry: this.state.selectedCity })
+        // let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
+        // if (catchLeafLayer) {
+        //     if (catchLeafLayer.length === 0) {
+        //         // this.handleRefresh();
+        //     }
+        // }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-
         let createMode = nextProps.onMapClick ? true : false;
         let updateMode = (nextProps.locData && nextProps.locData.length > 0) ? true : false;
         let hasLocation = [];
@@ -259,7 +261,7 @@ class ClustersMap extends Component {
                     clickMarker.push({ "name": item, "coordinates": nextProps.mapDetails.coordinates, "cost": 1 })
                 })
 
-                zoom = 6
+                zoom = 5
                 center = nextProps.mapDetails.coordinates
                 mapCenter = nextProps.mapDetails.coordinates
             }
