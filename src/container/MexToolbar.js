@@ -5,6 +5,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
+import { getUserRole } from '../services/model/format';
+import * as constant from '../constant';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -39,6 +41,15 @@ const getRegion = (props)=>
         options.splice(0, 0, { key: 'ALL', value: REGION_ALL, text: 'ALL' })
     }
     return options
+}
+
+const canAdd = () => {
+    let valid = true
+    let role = getUserRole();
+    if (role && role.includes(constant.VIEWER)) {
+        valid = false
+    }
+    return valid
 }
 
 const MexToolbar = (props) => {
@@ -102,7 +113,7 @@ const MexToolbar = (props) => {
                     null
                 }
                 {
-                    requestInfo.onAdd ?
+                    requestInfo.onAdd && canAdd() ?
                         <IconButton aria-label="new" className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
                             <AddIcon style={{ color: '#76ff03' }} />
                         </IconButton> : null

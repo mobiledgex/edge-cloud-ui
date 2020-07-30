@@ -32,7 +32,9 @@ export const PLATFORM_TYPE_AZURE = 'Azure'
 export const PLATFORM_TYPE_OPEN_GCP = 'GCP'
 export const PLATFORM_TYPE_EDGEBOX = 'Edgebox'
 export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
-export const PLATFORM_TYPE_VSPHERE = 'vSphere'
+export const PLATFORM_TYPE_VSPHERE = 'vSphere (alpha feature)'
+export const PLATFORM_TYPE_AWS = 'AWS'
+export const PLATFORM_TYPE_VMPOOL = 'VM Pool'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
 export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
@@ -43,9 +45,18 @@ export const NO = 'No'
 export const INFRA_API_ACCESS_DIRECT = 'Direct'
 export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
 
+export const ADMIN = 'Admin'
+export const OPERATOR = 'Operator'
+export const DEVELOPER = 'Developer'
+export const VIEWER = 'Viewer'
 export const ADMIN_MANAGER = 'AdminManager'
+export const ADMIN_CONTRIBUTOR = 'AdminContributor'
+export const ADMIN_VIEWER = 'AdminViewer'
 export const OPERATOR_MANAGER = 'OperatorManager'
 export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
+export const OPERATOR_VIEWER = 'OperatorViewer'
+export const DEVELOPER_MANAGER = 'DeveloperManager'
+export const DEVELOPER_CONTRIBUTOR = 'DeveloperContributor'
 export const DEVELOPER_VIEWER = 'DeveloperViewer'
 
 export const CONFIG_ENV_VAR = 'Environment Variables'
@@ -288,6 +299,10 @@ export const PlatformType = (id) => {
             return PLATFORM_TYPE_FAKEINFRA
         case 7:
             return PLATFORM_TYPE_VSPHERE
+        case 8:
+            return PLATFORM_TYPE_AWS
+        case 9:
+            return PLATFORM_TYPE_VMPOOL
         case PLATFORM_TYPE_FAKE:
             return 0
         case PLATFORM_TYPE_DIND:
@@ -304,6 +319,10 @@ export const PlatformType = (id) => {
             return 6
         case PLATFORM_TYPE_VSPHERE:
             return 7
+        case PLATFORM_TYPE_AWS:
+            return 8
+        case PLATFORM_TYPE_VMPOOL:
+            return 9
         default:
             return id
     }

@@ -49,7 +49,9 @@ import {
     HARDWARE_OPTIONS_FOR_CLUSTER,
     HARDWARE_TYPE,
     MAP_LEVEL,
-    NETWORK_TYPE, NO_APPS, NO_CLUSTER,
+    NETWORK_TYPE,
+    NO_APPS,
+    NO_CLUSTER,
     THEME_OPTIONS_LIST,
     USER_TYPE,
     USER_TYPE_SHORT
@@ -149,7 +151,6 @@ import DonutChart from "../components/DonutChart";
 import ClientStatusTable from "../components/ClientStatusTable";
 import MethodUsageCount from "../components/MethodUsageCount";
 import MultiHwLineChartContainer from "../components/MultiHwLineChartContainer";
-import AddItemPopupContainer from "../components/AddItemPopupContainer";
 import CloudletEventLogList from "../components/CloudletEventLogList";
 import axios from "axios";
 import {UnfoldLess, UnfoldMore} from "@material-ui/icons";
@@ -157,6 +158,7 @@ import MapForAdmin from "../components/MapForAdmin";
 import * as dateUtil from '../../../../utils/date_util'
 import {getMexTimezone} from '../../../../utils/sharedPreferences_util';
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AddItemPopupContainerNew from "../components/AddItemPopupContainerNew";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -384,11 +386,12 @@ type PageDevMonitoringState = {
     currentCloudletMap: any,
     timezoneChange: boolean,
     cloudletCount: number,
-    dataLimitCount: number,
     isShowCountPopover: boolean,
     dataLimitCount: number,
     dataLimitCountText: string,
     lineChartDataSet: any,
+    isScrollEnableForLineChart: boolean,
+    isShowAddPopup: boolean,
 
 }
 
@@ -650,9 +653,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     timezoneChange: true,
                     cloudletCount: 0,
                     isShowCountPopover: false,
-                    dataLimitCount: 50,//4mins
-                    dataLimitCountText: '4 mins',
+                    dataLimitCount: 20,//4mins
+                    dataLimitCountText: '2 mins',
                     lineChartDataSet: [],
+                    isScrollEnableForLineChart: false,
+                    isShowAddPopup: false,
                 }
             }
 
@@ -762,15 +767,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         clusterList = promiseClusterList;
                         appInstList = promiseAppInstList;
 
-                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                        try {
+                            clientStatusList = await getClientStatusList(appInstList, startTime, endTime, this.state.dataLimitCount);
+                        } catch (e) {
+                            clientStatusList = []
+                        }
+
                     } else {
                         //TODO:###############################################
                         //TODO:OPERATOR
                         //TODO:###############################################
                         cloudletList = await fetchCloudletList();
-                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime)
+                        let allCloudletEventLogList = await getAllCloudletEventLogs(cloudletList, startTime, endTime, this.state.dataLimitCount)
                         appInstList = await fetchAppInstList(undefined, this)
-                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime);
+                        clientStatusList = await getClientStatusList(appInstList, startTime, endTime, this.state.dataLimitCount);
                         await this.setState({
                             loadingForClientStatus: false,
                             allCloudletEventLogList: allCloudletEventLogList,
@@ -1079,7 +1089,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             setChartDataForBigModal(usageList) {
                 let lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
-
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
                 this.setState({
                     chartDataForBigModal: chartDataForBigModal,
@@ -1294,7 +1303,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         isMapUpdate: true,
                     });
                 } catch (e) {
-                   // showToast(e.toString())
+                    // showToast(e.toString())
                 }
             }
 
@@ -1348,13 +1357,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         {/*@desc:__makeGridItem BodyByType  */}
                         {/*desc:############################*/}
                         <div className='page_monitoring_column_resizable'>
-                            {this._________________makeGridItemOneBody(hwType, graphType.toUpperCase())}
+                            {this.____makeGridItemOneBody(hwType, graphType.toUpperCase())}
                         </div>
                     </div>
                 )
             }
 
-            _________________makeGridItemOneBody(pHwType, graphType) {
+            ____makeGridItemOneBody(pHwType, graphType) {
                 if (graphType.toUpperCase() === GRID_ITEM_TYPE.MULTI_LINE_CHART && pHwType.length >= 2) {
                     let multiLineChartDataSets = []
                     if (this.state.currentClassification === CLASSIFICATION.CLUSTER_FOR_OPER) {
@@ -1392,6 +1401,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         if (isEmpty(this.state.filteredAppInstUsageList)) {
                             chartDataSets = undefined;
                         } else {
+                            if (pHwType.toLowerCase() === HARDWARE_TYPE.SENDBYTES.toLowerCase()) {
+                                pHwType = HARDWARE_TYPE.BYTESSENT
+                            } else if (pHwType.toLowerCase() === HARDWARE_TYPE.RECVBYTES.toLowerCase()) {
+                                pHwType = HARDWARE_TYPE.BYTESRECVD
+                            }
                             chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
                     }
@@ -1405,6 +1419,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             pHardwareType={pHwType}
                             chartDataSet={chartDataSets}
                             currentColorIndex={this.state.currentColorIndex}
+                            isScrollEnableForLineChart={this.state.isScrollEnableForLineChart}
                         />
                     )
 
@@ -1714,7 +1729,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     )
                 } catch (e) {
-                   // showToast(e.toString())
+                    // showToast(e.toString())
                 }
             }
 
@@ -1834,11 +1849,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Fetch Locally Stored Data
                             </div>
                         </AMenu.Item>
+                        {/*desc:#########################################*/}
+                        {/*desc: Add Item                           */}
+                        {/*desc:#########################################*/}
                         <AMenu.Item style={{display: 'flex'}}
                                     key="1"
                                     onClick={() => {
-                                        this.setState({
+                                        /*this.setState({
                                             isOpenEditView: true,
+                                        })*/
+
+                                        this.setState({
+                                            isShowAddPopup: !this.state.isShowAddPopup,
                                         })
                                     }}
                         >
@@ -1882,6 +1904,30 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 Revert To The Default Layout
                             </div>
                         </AMenu.Item>
+                        {/*desc: ######################*/}
+                        {/*desc:Stacked Line Chart     */}
+                        {/*desc: ######################*/}
+                        <AMenu.Item style={{display: 'flex'}}
+                                    key="1"
+                                    onClick={() => {
+                                        this.setState({
+                                            isStackedLineChart: !this.state.isStackedLineChart,
+                                        });
+                                    }}
+                        >
+                            <MaterialIcon icon={'show_chart'} color={'white'}/>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                Stacked Line Chart
+                            </div>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                <CustomSwitch
+                                    size="small"
+                                    checked={this.state.isStackedLineChart}
+                                    color="primary"
+
+                                />
+                            </div>
+                        </AMenu.Item>
                         {/*desc:#########################################*/}
                         {/*desc:____Menu Changing Graph Theme Color_____ */}
                         {/*desc:#########################################*/}
@@ -1894,10 +1940,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 </div>
                             }
                         >
-                            {THEME_OPTIONS_LIST.map(item => {
+                            {THEME_OPTIONS_LIST.map((item, index) => {
                                 return (
                                     <AMenu.Item
-                                        key="1"
+                                        key={index}
                                         onClick={async () => {
                                             await this.setState({
                                                 themeTitle: item.value
@@ -1950,6 +1996,29 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <MaterialIcon icon={'delete'} color={'white'}/>
                             <div style={PageMonitoringStyles.listItemTitle}>
                                 Delete All Grid Items
+                            </div>
+                        </AMenu.Item>
+                        {/*desc: #################################*/}
+                        {/*desc:  toggle Scroll Line Chart Scrolling*/}
+                        {/*desc: #################################*/}
+                        <AMenu.Item style={{display: 'flex'}}
+                                    key="1"
+                                    onClick={async () => {
+                                        this.setState({
+                                            isScrollEnableForLineChart: !this.state.isScrollEnableForLineChart,
+                                        });
+                                    }}
+                        >
+                            <MaterialIcon icon={'swap_horiz'} color={'white'}/>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                Enable Line Chart Scrolling
+                            </div>
+                            <div style={PageMonitoringStyles.listItemTitle}>
+                                <CustomSwitch
+                                    size="small"
+                                    checked={this.state.isScrollEnableForLineChart}
+                                    color="primary"
+                                />
                             </div>
                         </AMenu.Item>
                     </AMenu>
@@ -2152,9 +2221,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 let startTime = makeCompleteDateTime(date[0]);
                                 let endTime = makeCompleteDateTime(date[1]);
                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
-                                usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime));
+                                usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount));
                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
-                                usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
+                                usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime, this.state.dataLimitCount));
                                 let completedPromiseList = await Promise.allSettled(usageEventPromiseList);
                                 allClusterEventLogList = completedPromiseList["0"].value;
                                 clientStatusList = completedPromiseList["1"].value
@@ -2469,7 +2538,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let startTime = makeCompleteDateTime(this.state.startTime);
                         let endTime = makeCompleteDateTime(this.state.endTime);
                         let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
-                        let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
+                        let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime, this.state.dataLimitCount);
                         this.setState({
                             filteredCloudletUsageList: usageList,
                             allCloudletUsageList: usageList,
@@ -3005,7 +3074,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                     return filteredClusterList;
                 } catch (e) {
-                   // showToast(e.toString())
+                    // showToast(e.toString())
                 }
             }
 
@@ -3098,8 +3167,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             let startTime = makeCompleteDateTime(this.state.startTime);
                                             let endTime = makeCompleteDateTime(this.state.endTime);
                                             let usageList = await getCloudletUsageList(this.state.filteredCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
-                                            let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime);
-                                            let filteredCloudletEventLog = await getAllCloudletEventLogs(this.state.filteredCloudletList, startTime, endTime);
+                                            let clientStatusList = await getClientStatusList(await fetchAppInstList(undefined, this), startTime, endTime, this.state.dataLimitCount);
+                                            let filteredCloudletEventLog = await getAllCloudletEventLogs(this.state.filteredCloudletList, startTime, endTime, this.state.dataLimitCount);
                                             this.setState({
                                                 filteredCloudletUsageList: usageList,
                                                 allCloudletUsageList: usageList,
@@ -3191,6 +3260,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             dataLimitCount: value,
                                         });
                                         await this.reloadDataFromRemote()
+
+                                        this.setChartDataForBigModal(this.state.allClusterUsageList)
                                     }}
                                 >
                                     {graphDataCount.reverse().map((item, index) => {
@@ -3748,8 +3819,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             width: this.state.currentWidth,
                             height: '100%',
                         }}>
-                            <AddItemPopupContainer parent={this} isOpenEditView={this.state.isOpenEditView}
-                                                   currentClassification={this.state.currentClassification}/>
                             <MiniModalGraphContainer selectedClusterUsageOne={this.state.selectedClusterUsageOne}
                                                      selectedClusterUsageOneIndex={this.state.selectedClusterUsageOneIndex}
                                                      parent={this}
@@ -3769,6 +3838,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 selectedClientLocationListOnAppInst={this.state.selectedClientLocationListOnAppInst}
                                 loading={this.state.loading}
                                 currentColorIndex={this.state.currentColorIndex}
+                                isScrollEnableForLineChart={this.state.isScrollEnableForLineChart}
                             />
 
                             <div style={{
@@ -3781,7 +3851,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }}>
                                     <SemanticToastContainer position={"bottom-center"} color={'red'}/>
                                     {this.renderHeader()}
+                                    {this.state.isShowAddPopup &&
+                                    <div style={{position: 'absolute', top: 36, zIndex: 99999, left: 10,}} className='add_item_popup_container'>
+                                        <AddItemPopupContainerNew
+                                            parent={this}
+                                            isOpenEditView={this.state.isOpenEditView}
+                                            currentClassification={this.state.currentClassification}
+                                        />
+                                    </div>
+                                    }
                                     {this.makeLegend()}
+
                                     <div className="page_monitoring"
                                          style={{
                                              overflowY: 'auto',

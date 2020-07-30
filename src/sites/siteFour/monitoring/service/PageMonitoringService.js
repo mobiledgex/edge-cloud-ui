@@ -159,9 +159,9 @@ export const renderUsageLabelByType = (usageOne, hardwareType, userType = '') =>
         return convertByteToMegaGigaByte(parseInt(usageOne.sumUdpSent))
     } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         return convertByteToMegaGigaByte(usageOne.sumUdpRecv)
-    } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
         return convertByteToMegaGigaByte(usageOne.sumSendBytes)
-    } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
         return convertByteToMegaGigaByte(usageOne.sumRecvBytes)
     }
     ////Cloudlet
@@ -289,7 +289,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             typedUsageList = allHWUsageList[0]
         } else if (hardwareType === HARDWARE_TYPE.MEM) {
             typedUsageList = allHWUsageList[1]
-        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
+        } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.BYTESSENT) {
             typedUsageList = allHWUsageList[2]
         } else if (hardwareType === HARDWARE_TYPE.DISK) {
             typedUsageList = allHWUsageList[3]
@@ -424,12 +424,12 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.udpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                     series = item.udpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
                     series = item.networkSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
                     series = item.networkSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                    series = item.connectionsSeriesList
+                    series = item.networkSeriesList
                 }
                 //////todo:cloudllet/////////
                 else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
@@ -699,7 +699,7 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
                     return value + " %";
                 } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM) {
                     return value.toFixed(2) + " %";
-                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT || hardwareType === HARDWARE_TYPE.BYTESRECVD) {
                     return convertByteToMegaGigaByte(value, hardwareType)
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV || hardwareType === HARDWARE_TYPE.UDPSENT) {
                     return convertToMegaGigaForNumber(value);
@@ -707,7 +707,7 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
                     return value + " %";
                 } else if (hardwareType === `${HARDWARE_TYPE.UDPRECV} / ${HARDWARE_TYPE.UDPSENT}` || hardwareType === `${HARDWARE_TYPE.TCPCONNS} / ${HARDWARE_TYPE.TCPRETRANS}`) {
                     return convertToMegaGigaForNumber(value);
-                } else if (hardwareType === `${HARDWARE_TYPE.SENDBYTES} / ${HARDWARE_TYPE.RECVBYTES}`) {
+                } else if (hardwareType === `${HARDWARE_TYPE.BYTESSENT} / ${HARDWARE_TYPE.BYTESRECVD}`) {
                     return convertByteToMegaGigaByte(value);
                 } else {
                     return convertToMegaGigaForNumber(value);
@@ -716,8 +716,8 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
             } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     return value.toFixed(3) + " %";
-                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
-                    return convertByteToMegaGigaByte(value)
+                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.BYTESSENT) {
+                    return convertByteToMegaGigaByte(value.toFixed(1));
                 } else {
                     return value;
                 }
@@ -776,31 +776,27 @@ export function makeUniqDevOrg(appInstList) {
 }
 
 
-/*    text: '1 min',value: 10,    text: '2 min',value: 20,    text: '4 mins',value: 50,    text: '8 mins',value: 100,    text: '20 mins',value: 250,    text: '40 mins',value: 500,    text: '1 hour',value: 750,    text: '2 hours',value: 1000*/
-export function makeMaxTickLimit(pDataLimitCount) {
-
-    if (pDataLimitCount === 2000) {
-        return 120
-    } else if (pDataLimitCount === 1000) {
-        return 100
-    } else if (pDataLimitCount === 750) {
-        return 70
-    } else if (pDataLimitCount === 500) {
-        return 50
-    } else if (pDataLimitCount === 250) {
-        return 50
-    } else if (pDataLimitCount === 100) {
-        return 50
-    } else if (pDataLimitCount === 50) {
-        return 50
-    } else if (pDataLimitCount === 20) {
-        return 50;
-    } else if (pDataLimitCount === 10) {
-        return 50;
+export function makeMaxTickLimit(pDataLimitCount, isBig, isScrollEnableForLineChart) {
+    if (isBig || isScrollEnableForLineChart) {
+        return null;
+    } else {
+        return 5;
     }
+
 }
 
-export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef) => {
+
+/**
+ *
+ * @param hardwareType
+ * @param lineChartDataSet
+ * @param _this
+ * @param isBig
+ * @param chartRef
+ * @returns {{layout: {padding: ({top: number, left: number, bottom: number, right: number})}, onClick: onClick, stacked: boolean, legend: {display: boolean, position: string, labels: {fontSize: number, boxWidth: number, fontColor: string, fontWeight: string}}, responsive: boolean, pointDotStrokeWidth: number, scales: {backgroundColor: {fill: string}, ticks: {min: number, callback(*=, *, *): string|*|undefined, beginAtZero: boolean, fontColor: string}, yAxes: [{ticks: {callback(*=, *, *): string|*|undefined, fontSize: number, fontColor: string}, id: string, position: string, type: string}, {ticks: {min: number, max: number}, display: boolean, scaleShowLabels: boolean, id: string, type: string}], xAxes: [{ticks: {padding: number, labelOffset: number, maxRotation: number, callback(*, *, *): *, fontSize: number, minRotation: number, fontColor: string}, gridLines: {color: string}, beginAtZero: boolean}], gridLines: {color: string}}, datasetStrokeWidth: number, maintainAspectRatio: boolean, animation: {duration: number}}|string|*|undefined}
+ */
+export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBig = false, chartRef, isScrollEnableForLineChart = false) => {
+
     try {
         let options = {
             stacked: true,
@@ -816,7 +812,7 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     left: 9,
                     right: 5,
                     top: 5,
-                    bottom: 30,
+                    bottom: 40,
                 } : {
                     left: 9,
                     right: 5,
@@ -833,13 +829,6 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                     fontSize: 12,
                     fontWeight: 'bold',
                 },
-                /*onClick: (e, clickedItem) => {
-                    /!*let selectedClusterOne = clickedItem.text.toString().replace('\n', "|");
-                    handleLegendAndBubbleClickedEvent(_this, selectedClusterOne, lineChartDataSet)*!/
-                },
-                onHover: (e, item) => {
-                    //alert(`Item with text ${item.text} and index ${item.index} hovered`)
-                },*/
             },
             scales: {
                 ticks: {
@@ -884,12 +873,12 @@ export const makeLineChartOptions = (hardwareType, lineChartDataSet, _this, isBi
                         color: "#505050",
                     },
                     ticks: {
-                        //maxTicksLimit: !isBig ? 5 : makeMaxTickLimit(_this.state.dataLimitCount),
+                        maxTicksLimit: makeMaxTickLimit(_this.state.dataLimitCount, isBig, isScrollEnableForLineChart),
                         //autoSkip: isBig ? false : true,
                         fontSize: isBig ? 15 : 9,
                         fontColor: 'white',
-                        maxRotation: isBig ? 0 : 0,//xAxis text rotation
-                        minRotation: isBig ? 0 : 0,//xAxis text rotation
+                        maxRotation: isBig ? 45 : 0,//xAxis text rotation
+                        minRotation: isBig ? 45 : 0,//xAxis text rotation
                         padding: 10,
                         labelOffset: 0,
                         callback(value, index, label) {

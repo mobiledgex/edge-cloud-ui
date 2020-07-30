@@ -47,8 +47,8 @@ class PrivacyPolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onUpdate },
-            { label: 'Delete', onClick: deletePrivacyPolicy, onFinish: this.onDelete }
+            { label: 'Update', onClick: this.onUpdate, type:'Edit' },
+            { label: 'Delete', onClick: deletePrivacyPolicy, onFinish: this.onDelete, type:'Edit' }
         ]
     }
 

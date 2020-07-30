@@ -6,12 +6,8 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Input, RadioGroup, FormControlLabel, Radio, InputAdornment, Box, Tooltip } from '@material-ui/core';
-import TreeView from '@material-ui/lab/TreeView';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { Input, InputAdornment, Box, Tooltip } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import TreeItem from '@material-ui/lab/TreeItem';
 import './mexSelectTree.css'
 import { Icon } from 'semantic-ui-react';
 
@@ -47,47 +43,87 @@ const StyledPaper = withStyles({
     }
 })(Paper);
 
+const processData = (form, dataList, formArray) => {
+    let finalList = []
+    if ((dataList && dataList.length > 0) && (formArray && formArray.length > 0)) {
+        for (let i = 0; i < formArray.length; i++) {
+            let keyData = formArray[i].value
+            let dependentForm = formArray[i].form
+            if (finalList.length === 0) {
+                for (let j = 0; j < keyData.length; j++) {
+                    let key = keyData[j]
+                    let childrenList = []
+                    dataList.map(data => {
+                        if (data[dependentForm.field] === key) {
+                            childrenList.push(i === formArray.length - 1 ? { label: data[form.field] } : data)
+                        }
+                    })
+                    finalList.push({ label: key, children: childrenList })
+                }
+            }
+            else
+            {
+                let newList = []
+                for (let k = 0; k < finalList.length; k++) {
+                    dataList = finalList[k].children
+                    let label = finalList[k].label
+                    for (let j = 0; j < keyData.length; j++) {
+                        let key = keyData[j]
+                        let childrenList = []
+                        dataList.map(data => {
+                            if (data[dependentForm.field] === key) {
+                                childrenList.push(i === formArray.length - 1 ? { label: data[form.field] } : data)
+                            }
+                        })
+                        newList.push({ label: label + '>' + key, children: childrenList })
+                    }
+                }
+                finalList = newList
+            }
+        }
+    } 
+    return finalList
+}
+
 
 export default function MexSelectRadioTree(props) {
     let form = props.form;
     let rawDataList = [];
-
     const filterOptions = () => {
-        let optionList = []
         let dataList = form.options
         let forms = props.forms
-        let dependentKey = []
         let dependentData = form.dependentData
         let dependentForm = undefined
+        let dependentArray = []
         if (dataList && dataList.length > 0) {
             if (dependentData && dependentData.length > 0) {
-                dependentForm = forms[dependentData[0].index]
-                if (dependentForm.value === undefined) {
-                    dataList = []
-                }
-                else if (dependentForm.value.includes('All')) {
-                    dependentKey = cloneDeep(dependentForm.options)
-                    dependentKey.splice(0, 1)
-                }
-                else {
-                    dependentKey = dependentForm.value
+                for (let j = 0; j < dependentData.length; j++) {
+                    let dependentKey = []
+                    dependentForm = forms[dependentData[j].index]
+                    if (dependentForm.value === undefined) {
+                        dataList = []
+                        dependentArray = []
+                        break;
+                    }
+                    else if (dependentForm.value.includes('All')) {
+                        let temp = cloneDeep(dependentForm.options)
+                        temp.splice(0, 1)
+                        dependentKey = { form: dependentForm, value: temp }
+                    }
+                    else if(Array.isArray(dependentForm.value))
+                    {
+                        dependentKey = { form: dependentForm, value: dependentForm.value }
+                    }
+                    else {
+                        dependentKey = { form: dependentForm, value: [dependentForm.value] }
+                    }
+                    dependentArray.push(dependentKey)
                 }
             }
-            if (dataList && dataList.length > 0) {
-                for (let i = 0; i < dependentKey.length; i++) {
-                    let key = dependentKey[i]
-                    let childrenList = []
-                    dataList.map(data => {
-                        if (data[dependentForm.field] === key) {
-                            childrenList.push({ label: data[form.field] })
-                        }
-                    })
-                    optionList.push({ label: key, children: childrenList })
-                }
-            }
+            let optionList = processData(form, dataList, dependentArray)
+            rawDataList = cloneDeep(optionList)
+            return optionList
         }
-        rawDataList = cloneDeep(optionList)
-        return optionList
     }
 
     const classes = useStyles();
@@ -95,6 +131,7 @@ export default function MexSelectRadioTree(props) {
     const [value, setValue] = React.useState(form.value ? form.value : []);
     const [output, setOutput] = React.useState(form.value ? form.value.map(item => { return item.parent + '>' + item.value + '  ' }) : form.placeholder);
     const [list, setList] = React.useState(filterOptions());
+    const [expandGroups, setExpandGroups] = React.useState([])
     const anchorRef = React.useRef(null);
 
     let filterText = '';
@@ -125,10 +162,10 @@ export default function MexSelectRadioTree(props) {
         prevOpen.current = open;
     }, [open]);
 
-    const handleChange = (event, index, item) => {
-        form.currentSelection = event.target.value
+    const handleChange = (index, child, parent) => {
+        form.currentSelection = child.label
         let valuearray = form.value ? form.value : []
-        valuearray[index] = { parent: item.label, value: event.target.value }
+        valuearray[index] = { parent: parent.label, value: child.label }
         setValue(valuearray);
         setOutput(valuearray.map(item => {
             return item.parent + '>' + item.value + '  '
@@ -185,6 +222,19 @@ export default function MexSelectRadioTree(props) {
         }
     }
 
+    const expandRow = (key)=>
+    {
+        let groups = cloneDeep(expandGroups)
+        if(groups.includes(key))
+        {
+            groups = groups.filter(item => item !== key);
+        }
+        else
+        {
+            groups.push(key)
+        }
+        setExpandGroups(groups)
+    }
 
     return (
         <div className={classes.root}>
@@ -245,24 +295,16 @@ export default function MexSelectRadioTree(props) {
                                     }
                                     onChange={(e) => { onFilterValue(e) }} />
                             </StyledMenuItem>
-                            {list && list.length > 0 ? list.map((item, i) => {
+                            {list && list.length > 0 ? list.map((parent, i) => {
                                 return (
-                                    <StyledMenuItem key={i}>
-                                        <TreeView
-                                            className='select_tree_view'
-                                            key={i}
-                                            defaultCollapseIcon={<ExpandMoreIcon />}
-                                            defaultExpandIcon={<ChevronRightIcon />}
-                                        >
-                                            <TreeItem nodeId={i + ""} label={item.label}>
-                                                <RadioGroup aria-label={item.label} name={item.label} value={value[i] ? value[i].value : null} onChange={(e) => { handleChange(e, i, item) }}>
-                                                    {item.children.map((child, j) => {
-                                                        return <FormControlLabel style={{ color: 'inherit' }} key={j} value={child.label} control={<Radio style={{ color: 'inherit' }} />} label={child.label} />
-                                                    })}
-                                                </RadioGroup>
-                                            </TreeItem>
-                                        </TreeView>
-                                    </StyledMenuItem>
+                                    <div key={i} style={{margin:10}}>
+                                        <button onClick={(e) => { expandRow(parent.label) }} className='mex_select_tree_group'><Icon name={`${expandGroups.includes(parent.label) ? 'chevron down' : 'chevron right'}`} />{parent.label}</button>
+                                        <div style={{maxHeight:100, overflow:'auto'}}>
+                                            {expandGroups.includes(parent.label) && parent.children.map((child, j) => {
+                                                return <button className={`${value[i] && value[i].value === child.label ? 'mex_select_tree_detail_select' : 'mex_select_tree_detail'}`} onClick={(e)=>{handleChange(i, child, parent)}} key={j}>{child.label}</button>
+                                            })}
+                                        </div>
+                                    </div>
                                 )
                             }) : null}
                         </MenuList>
