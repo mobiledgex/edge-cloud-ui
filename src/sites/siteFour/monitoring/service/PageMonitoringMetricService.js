@@ -315,43 +315,6 @@ export const fetchClusterList = async () => {
 }
 
 
-export const getCloudletListAll = async () => {
-    try {
-
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        let regionList = localStorage.getItem('regions').split(",");
-
-        let promiseList = []
-        for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
-            promiseList.push(sendSyncRequest(this, requestData))
-        }
-        let cloudletList = await Promise.all(promiseList);
-        let mergedCloudletList = [];
-        cloudletList.map(item => {
-            //@todo : null check
-            if (item.response.data["0"].Region !== '') {
-                let cloudletList = item.response.data;
-                cloudletList.map(item => {
-                    mergedCloudletList.push(item);
-                })
-            }
-        })
-
-        let listWithColorCode = []
-        mergedCloudletList.map((item, index) => {
-            item.colorCodeIndex = index;
-            listWithColorCode.push(item)
-        })
-
-        return listWithColorCode;
-    } catch (e) {
-
-    }
-}
-
-
 export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
         let instanceBodyList = []
