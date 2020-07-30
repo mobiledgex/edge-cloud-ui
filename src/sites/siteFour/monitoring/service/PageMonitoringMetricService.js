@@ -1157,9 +1157,13 @@ export const getAllAppInstEventLogs = async () => {
 
 
 /**
- * @desc : Inquire the status of the client attached to AppInstOne
+ *
  * @param appInst
- * @returns {Promise<AxiosResponse<any>>}
+ * @param startTime
+ * @param endTime
+ * @param dataLimitCount
+ * @param pageMonitoringViewInstance
+ * @returns {Promise<{VerifyLocationCount: number, app: string, ver, FoundOperatorCount: number, apporg: string, cloudlet: string, RegisterClientCount: number, cloudletorg, FindCloudletCount: number}>}
  */
 export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount, pageMonitoringViewInstance: PageMonitoringView) => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
