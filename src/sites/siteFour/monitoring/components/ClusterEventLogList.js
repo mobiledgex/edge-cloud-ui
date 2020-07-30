@@ -174,7 +174,7 @@ export default function ClusterEventLogList(props) {
                    className='thinScrBar'
                    style={PageMonitoringStyles.miniTableGrid}
                    stickyheader={true.toString()}>
-                {props.eventLogList.length !== 0 && renderHeader()}
+                {props.eventLogList.length !== 0 && !props.loading && renderHeader()}
                 {!props.loading ?
                     <FixedSizeList
                         height={179}
@@ -188,7 +188,6 @@ export default function ClusterEventLogList(props) {
                     </FixedSizeList>
                     : null
                 }
-
             </table>
         </React.Fragment>
     )
