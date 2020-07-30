@@ -39,7 +39,6 @@ import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
 import * as reducer from "../../../../utils";
-import {getTimeRange} from "./PageMonitoringMetricService";
 
 const {Option} = Select;
 
@@ -1359,10 +1358,6 @@ export const makeCompleteDateTime = (date: string) => {
 
 export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
-    let range = getTimeRange(dataLimitCount)
-    let periodStartTime = range[0]
-    let periodEndTime = range[1]
-
     let appName = dataOne.AppName;
     if (dataOne.AppName.includes('[')) {
         appName = dataOne.AppName.toString().split('[')[0]
@@ -1390,8 +1385,6 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLi
                 },
                 "selector": valid,
                 "last": dataLimitCount,
-                "starttime": pStartTime !== '' ? pStartTime : periodStartTime,
-                "endtime": pEndTime !== '' ? pEndTime : periodEndTime,
             }
         }
         return form;

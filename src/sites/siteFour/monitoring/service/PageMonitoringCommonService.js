@@ -673,11 +673,6 @@ export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType
 
 export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
-    let range = getTimeRange(dataLimitCount)
-    let periodStartTime = range[0]
-    let periodEndTime = range[1]
-
-
     let dataForm = {
         "token": token,
         "params": {
@@ -694,8 +689,6 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, dataL
             },
             "last": dataLimitCount,
             "selector": "*",
-            "starttime": pStartTime !== '' ? pStartTime : periodStartTime,
-            "endtime": periodEndTime !== '' ? periodEndTime : periodEndTime,
         }
     }
 
