@@ -80,7 +80,6 @@ export const fields = {
     username: 'username',
     password:'password',
     confirmPassword:'confirmPassword',
-    email:'email',
     role: 'role',
     email: 'email',
     emailVerified: 'emailVerified',

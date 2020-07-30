@@ -254,6 +254,35 @@ export type TypeAppInst = {
     colorCodeIndex: number,
 }
 
+export type TypeAppInstLowerCase={
+    accessType: string,
+    appName:string,
+    autoPolicyName: string,
+    cloudletLocation: any,
+    cloudletName: string,
+    cloudletStatus: number,
+    clusterName: string,
+    clusterdeveloper: string,
+    createdAt: number,
+    deployment: string,
+    flavorName: string,
+    healthCheck: number,
+    liveness: string,
+    mappedPorts: any,
+    operatorName: string,
+    organizationName: string,
+    powerState: number,
+    region: string,
+    revision: string,
+    runtimeInfo: any,
+    state: number,
+    status: any,
+    updateAvailable: boolean,
+    uri: string,
+    uuid: string,
+    version: string,
+}
+
 export type TypeBarChartData = {
     chartDataList: string,
     hardwareType: string,
