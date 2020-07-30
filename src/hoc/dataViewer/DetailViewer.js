@@ -100,7 +100,7 @@ const getRow = (id, item, data) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
-        <Table style={{width: '100%', backgroundColor: '#2A2C33', border: 'none'}}>
+        <Table style={{width: '100%', backgroundColor: '#292c33', border: 'none'}}>
             <TableBody>
                 {props.keys.map((item, i) => {
                     let data = detailData[item.field]

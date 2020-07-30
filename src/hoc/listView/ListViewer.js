@@ -93,7 +93,7 @@ function EnhancedTableHead(props) {
     return (
         <TableHead >
             <TableRow >
-                {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#2A2C33' }}>
+                {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#292C33' }}>
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
@@ -108,7 +108,7 @@ function EnhancedTableHead(props) {
                     }
                     if (headCell.visible) {
                         return <TableCell
-                            style={{ backgroundColor: '#2A2C33' }}
+                            style={{ backgroundColor: '#292C33' }}
                             key={headCell.field}
                             align={headCell.numeric ? 'right' : 'left'}
                             padding={headCell.disablePadding ? 'none' : 'default'}
@@ -344,10 +344,10 @@ export default function EnhancedTable(props) {
     /*Action Block*/
 
     return (
-        <div className={classes.root}>
-            <Paper style={{ backgroundColor: '#2A2C33' }}>
+        <div className={classes.root} style={{ marginTop: -20 }}>
+            <Paper style={{ backgroundColor: '#292C33' }}>
                 <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
-                <TableContainer style={{ height: window.innerHeight - (props.isMap ? 600 : 200) }}>
+                <TableContainer style={{height:`calc(100vh - ${props.isMap ? '589px' : '189px'})`, overflow:'auto'}}>
                     <Table
                         stickyHeader
                         aria-labelledby="tableTitle"

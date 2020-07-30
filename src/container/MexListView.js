@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as constant from '../constant'
 
-import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
@@ -54,7 +54,7 @@ class MexListView extends React.Component {
         let additionalDetail = this.props.requestInfo.additionalDetail
         this.props.handleViewMode(null)
         return (
-            <Card style={{ height: '95%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
+            <Card style={{ height: 'calc(100% - 49px)', backgroundColor: '#292c33', borderRadius:5, overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
@@ -430,9 +430,9 @@ class MexListView extends React.Component {
       Todo: Move to separate file
       */
 
-    onFilterValue = (e) => {
+    onFilterValue = (value) => {
         this.mapDetails = null
-        this.filterText = e ? e.target.value.toLowerCase() : this.filterText
+        this.filterText = value ? value.toLowerCase() : this.filterText
         let dataList = this.state.dataList
         let filterCount = 0
         let filterList = dataList.filter(data => {
@@ -445,7 +445,7 @@ class MexListView extends React.Component {
             })
             return filterCount === 0 || valid.includes(true)
         })
-        if (e) {
+        if (value !== undefined) {
             this.setState({ filterList: filterList })
         }
         return filterList
@@ -460,21 +460,21 @@ class MexListView extends React.Component {
 
     render() {
         return (
-            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
+            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white' }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue} regions={this.regions} filterText={this.filterText}/>
+                <MexToolbar requestInfo={this.props.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail}/>
                 {this.state.currentView ? this.state.currentView : this.listView()}
             </Card>
         );
 
     }
 
-    onToolbarAction = (type, data) => {
+    onToolbarAction = (type, value) => {
         switch (type) {
             case ACTION_REGION:
-                this.selectedRegion = data;
+                this.selectedRegion = value;
                 this.dataFromServer(this.selectedRegion)
                 break;
             case ACTION_REFRESH:
@@ -484,12 +484,14 @@ class MexListView extends React.Component {
                 this.props.requestInfo.onAdd()
                 break;
             case ACTION_MAP:
-                this.setState({ showMap: data })
+                this.setState({ showMap: value })
                 break;
             case ACTION_CLOSE:
                 this.setState({ isDetail: false, currentView: null })
                 this.props.handleViewMode(this.props.requestInfo.viewMode)
                 break;
+            case ACTION_SEARCH:
+                this.onFilterValue(value)
             default:
 
         }
