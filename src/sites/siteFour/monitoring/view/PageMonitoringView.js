@@ -3086,7 +3086,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <TreeSelect
                                 dropdownMatchSelectWidth={false}
                                 dropdownStyle={{
-                                    maxHeight: 800, overflow: 'auto', width: '420px'
+                                    overflow: 'auto', width: '425px'
                                 }}
                                 listHeight={800}
                                 showArrow={true}
