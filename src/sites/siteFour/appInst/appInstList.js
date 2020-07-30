@@ -1,21 +1,20 @@
 import React from 'react';
 import MexListView from '../../../container/MexListView';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
-import { connect } from 'react-redux';
-import { fields, isAdmin, getUserRole } from '../../../services/model/format';
-import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest, changePowerState } from '../../../services/model/appInstance';
-import { showApps } from '../../../services/model/app';
-import { showCloudletInfos } from '../../../services/model/cloudletInfo';
+import {connect} from 'react-redux';
+import {fields, getUserRole, isAdmin} from '../../../services/model/format';
+import {changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst} from '../../../services/model/appInstance';
+import {showApps} from '../../../services/model/app';
+import {showCloudletInfos} from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import { Dialog, Card } from '@material-ui/core';
-import { Icon, Popup } from 'semantic-ui-react';
+import {Dialog} from '@material-ui/core';
+import {Icon, Popup} from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
-import PageMonitoringView from '../monitoring/view/PageMonitoringView';
 
 
 const appInstSteps = appInstTutor();
@@ -85,12 +84,6 @@ class AppInstList extends React.Component {
         }
     }
 
-    onMonitoring = (action, data)=>
-    {   
-        this.props.history.push({ pathname: '/site4/pg=Monitoring' })
-        this.setState({ currentView: <Card style={{width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white'}}><PageMonitoringView appInstanceOne={data}/></Card> });
-    }
-
     actionMenu = () => {
         return [
             { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
@@ -100,8 +93,7 @@ class AppInstList extends React.Component {
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
             { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
-            { label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState },
-            {label: 'Monitoring', onClick: this.onMonitoring},
+            { label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState }
         ]
     }
 
@@ -131,8 +123,8 @@ class AppInstList extends React.Component {
     }
 
     /**
-   * Customized data block
-   **/
+     * Customized data block
+     **/
 
     getUpdate = (data, isDetailView) => {
         return (
@@ -187,10 +179,10 @@ class AppInstList extends React.Component {
     }
 
     /**
-    * Customized data block
-    * ** */
+     * Customized data block
+     * ** */
 
-   componentDidMount() {
+    componentDidMount() {
         this.customizedData()
     }
 
