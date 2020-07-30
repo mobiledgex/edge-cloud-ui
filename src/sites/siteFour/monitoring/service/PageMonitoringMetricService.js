@@ -1017,7 +1017,7 @@ export const getAllClusterEventLogList = async (clusterList, userType = USER_TYP
 
 export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType, dataLimitCount) => {
 
-    //todo: 60min
+    //todo: only 60min of eventlogs
     let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(60))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
     let periodStartTime = makeCompleteDateTime(date[0]);
     let periodEndTime = makeCompleteDateTime(date[1]);
@@ -1060,9 +1060,6 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
             },
             timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
-
-            console.log(`getClusterEventLogListOne====>`, response.data.data[0]);
-
             return response.data.data[0];
         }).catch(e => {
             return null;
