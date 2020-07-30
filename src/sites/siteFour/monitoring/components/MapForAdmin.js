@@ -141,7 +141,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
             try {
                 await this.setState({
                     cloudletUsageOne: this.props.cloudletUsageList[0],
-                }, () => {
                 });
                 let markerList = this.props.markerList
                 this.setCloudletLocation(markerList, true)
@@ -383,8 +382,6 @@ export default connect(mapStateToProps, mapDispatchProps)((
                     }
                 })
             } catch (e) {
-                //  showToast(e.toString())
-                //throw new Error(e)
             }
         }
 
