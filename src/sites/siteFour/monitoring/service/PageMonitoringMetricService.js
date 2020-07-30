@@ -1165,9 +1165,9 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
-    let range = getTimeRange(dataLimitCount)
-    let periodStartTime = range[0]
-    let periodEndTime = range[1]
+    
+    
+    
 
     let data = {
         "region": appInst.Region,
@@ -1179,8 +1179,8 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
-        "starttime": startTime !== '' ? startTime : periodStartTime,
-        "endtime": endTime !== '' ? endTime : periodEndTime,
+        "starttime": startTime ,
+        "endtime": endTime ,
         'last': dataLimitCount
     }
 
