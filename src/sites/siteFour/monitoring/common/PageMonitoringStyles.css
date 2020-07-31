@@ -775,10 +775,11 @@ tr td {
 
 .mapCloudletTooltipDev {
     color: black !important;
-    padding: 2px;
-    font-family: "Roboto Light" !important;
-    font-weight: normal !important;
-
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: bolder !important;
+    font-size: 9pt;
+    background-color: white !important;
 }
 
 .mapCloudletPopupInner2 {

@@ -6,7 +6,7 @@ import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
@@ -443,6 +443,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         renderAppInstPopup(listAppName, cloudletOne, cloudletIndex) {
+
+
             return (
                 <Popup index={cloudletIndex} permanent className='cloudlet_popup' ref={this.appInstPopup}>
                     {listAppName.map((AppFullName, appIndex) => {
@@ -459,10 +461,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         }
 
                         let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
-                        if (AppName !== NO_APPS) {
-                            return (
-                                <div style={PageMonitoringStyles.appPopupDiv}
-                                     key={appIndex * cloudletIndex}
+                        return (
+                            <div
+                                key={appIndex * cloudletIndex}
+                            >
+                                {appIndex === 0 &&
+                                <div
+                                    style={PageMonitoringStyles.mapCloudletLabelOne}
+                                >
+                                    {selectCloudlet}
+                                </div>
+                                }
+                                <div
+                                    style={PageMonitoringStyles.mapAppInstLabelOne}
                                 >
                                     <Ripples
                                         style={{marginLeft: 5,}}
@@ -488,21 +499,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         {this.renderAppHealthCheckState(HealthCheckStatus)}
                                     </Ripples>
                                 </div>
-                            )
-                        } else {//todo: when no apps.
-                            return (
-                                <div style={PageMonitoringStyles.appPopupDiv}
-                                     key={appIndex * cloudletIndex}
-                                >
-                                    <div style={{
-                                        color: '#77BD25',
-                                        fontSize: 12
-                                    }}>
-                                        No App
-                                    </div>
-                                </div>
-                            )
-                        }
+                            </div>
+                        )
                     })}
                 </Popup>
             )
@@ -522,7 +520,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
                         >
-                            <Tooltip
+                            {/*<Tooltip
                                 className='mapCloudletTooltipDev'
                                 direction='right'
                                 offset={[14, -10]}//x,y
@@ -545,7 +543,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                     )
                                 })}
 
-                            </Tooltip>
+                            </Tooltip>*/}
                             {/*desc:################################*/}
                             {/*desc:appInstPopup                    */}
                             {/*desc:################################*/}
@@ -732,7 +730,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     {this.props.mapLoading && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
-                        <div style={{height: '90%', width: '100%', }}>
+                        <div style={{height: '90%', width: '100%',}}>
                             <Map
                                 center={this.state.mapCenter}
                                 zoom={this.state.zoom}

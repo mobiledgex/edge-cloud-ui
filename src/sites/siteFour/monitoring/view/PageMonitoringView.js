@@ -1,4 +1,5 @@
 import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
 import {CustomSwitch, graphDataCount, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from '../common/PageMonitoringProps'
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
@@ -164,7 +165,8 @@ const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const FontAwesomeIcon = require('react-fontawesome')
 const legendIconSize = 18
-
+const OPTIONS = {delay: 1000}
+const ms = require('pretty-ms')
 const emptyMessage = () => (
     <div style={{textAlign: 'center', color: 'white !important', display: 'flex'}}>
         <div style={{marginLeft: 10, color: 'orange'}}>No data available</div>
@@ -390,6 +392,8 @@ type PageDevMonitoringState = {
     lineChartDataSet: any,
     isScrollEnableForLineChart: boolean,
     isShowAddPopup: boolean,
+    isOn: false,
+    start: 0,
 
 }
 
@@ -454,7 +458,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     layoutCloudlet: isEmpty(reactLocalStorage.get(cloudletLayout)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayout),
                     layoutMapperCloudlet: isEmpty(reactLocalStorage.get(cloudletlayoutMapper)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletlayoutMapper),
                     date: '',
-                    time: '',
                     dateTime: '',
                     datesRange: '',
                     markerList: [],
@@ -655,7 +658,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isShowAddPopup: false,
                     isGradientColor: false,
                     isLegendExpanded: false,
+                    time: 0,
+                    isOn: false,
+                    start: 0
                 }
+
+                this.startTimer = this.startTimer.bind(this)
+                this.stopTimer = this.stopTimer.bind(this)
+                this.resetTimer = this.resetTimer.bind(this)
             }
 
             async componentWillReceiveProps(nextProps: PageMonitoringProps, nextContext: any): void {
@@ -664,7 +674,23 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
+            startTimer() {
+                this.setState({
+                    isOn: true,
+                    time: this.state.time,
+                    start: Date.now() - this.state.time
+                })
+                this.timer = setInterval(() => this.setState({
+                    time: Date.now() - this.state.start
+                }), 1);
+            }
+            stopTimer() {
+                this.setState({isOn: false})
+                clearInterval(this.timer)
+            }
+            resetTimer() {
+                this.setState({time: 0, isOn: false})
+            }
 
 
             componentDidMount = async () => {
@@ -2458,6 +2484,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async handleOnChangeClusterDropdownForDev(selectClusterCloudletList) {
+                await this.resetTimer();
+
+
+                await this.startTimer();
                 await this.setState({
                     currentCloudletMap: MAP_LEVEL.CLUSTER,
                 })
@@ -2586,6 +2616,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         clearInterval(this.intervalForCluster)
                         await this.setState({isStream: false})
                     }
+                    await this.stopTimer();
                 } catch (e) {
                 }
             }
@@ -3216,6 +3247,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 size={'small'}
                                 onClick={async () => {
                                     this.applyButton.blur();
+
+
                                     if (this.state.currentClusterList !== undefined) {
                                         let selectClusterCloudletList = this.state.currentClusterList
                                         await this.handleOnChangeClusterDropdownForDev(selectClusterCloudletList)
@@ -3982,6 +4015,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         </div>
                                         <div style={{marginLeft: 30}}>
                                             {this.renderGraphDataCountDropdown()}
+                                        </div>
+                                        <div style={{marginLeft: 50}}>
+                                            &nbsp;&nbsp; timer: {ms(this.state.time)}
                                         </div>
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
