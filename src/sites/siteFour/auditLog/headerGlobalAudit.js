@@ -1,12 +1,12 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 //redux
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import * as serverData from '../../../services/model/serverData';
 import PopDetailViewer from '../../../container/popDetailViewer';
-import {IconButton, Drawer} from '@material-ui/core';
+import { IconButton, Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 
 
@@ -26,24 +26,20 @@ class headerGlobalAudit extends React.Component {
             openDetail: false,
             isOpen: false,
             canRefresh: true,
-            loading:false
+            loading: false
         }
         _self = this
         this.fullLogData = []
     }
 
-    componentDidMount() {
-        this.readyToData()
-    }
-
     getDataAuditOrg = async (orgName) => {
-        this.setState({canRefresh:false})
+        this.setState({ canRefresh: false })
         let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
-                this.setState({ isOpen:true, devData: mcRequest.response.data })
+                this.setState({ isOpen: true, devData: mcRequest.response.data })
             }
-            else{
+            else {
                 this.props.handleAlertInfo('error', 'No logs found')
             }
         }
@@ -51,18 +47,13 @@ class headerGlobalAudit extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         let serverRequestCount = parseInt(localStorage.getItem('ServerRequestCount'))
-        if(serverRequestCount > 0)
-        {
-            this.readyToData()
-        }
-        if(this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg)
-        {
+        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
         }
     }
 
     readyToData() {
-        this.setState({devData: [], loading:true})
+        this.setState({ devData: [], loading: true })
         this.getDataAudit();
         localStorage.setItem('ServerRequestCount', 0)
     }
@@ -96,7 +87,7 @@ class headerGlobalAudit extends React.Component {
                         }
                     }
                 })
-                this.setState({ devData:this.fullLogData, errorCount: errorCount, unCheckedErrorCount: unCheckedErrorCount, loading:false })
+                this.setState({ devData: this.fullLogData, errorCount: errorCount, unCheckedErrorCount: unCheckedErrorCount, loading: false })
             }
         }
     }
@@ -106,13 +97,13 @@ class headerGlobalAudit extends React.Component {
         let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
 
         devData.map((data, index) => {
-            if(data.traceid === item) {
+            if (data.traceid === item) {
                 this.setStorageData(data.traceid)
-                if(data.status !== 200) {
-                    if(storageSelectedTraceidList){
+                if (data.status !== 200) {
+                    if (storageSelectedTraceidList) {
                         let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === data.traceid) : (-1)
-                        if(storageSelectedTraceidIndex === (-1)){
-                            this.setState(prevState=>({unCheckedErrorCount : prevState.unCheckedErrorCount - 1}))
+                        if (storageSelectedTraceidIndex === (-1)) {
+                            this.setState(prevState => ({ unCheckedErrorCount: prevState.unCheckedErrorCount - 1 }))
                         }
                     }
                 }
@@ -127,7 +118,7 @@ class headerGlobalAudit extends React.Component {
         if (storageTraceidList) {
             traceidList = storageTraceidList
             let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
-            if(storageTraceidIndex === (-1)){
+            if (storageTraceidIndex === (-1)) {
                 traceidList.push(data)
                 localStorage.setItem("selectedTraceid", JSON.stringify(traceidList))
             }
@@ -142,15 +133,15 @@ class headerGlobalAudit extends React.Component {
         let devData = this.state.devData
         let unSelectedStorageTraceid = 0
 
-        if(storageTraceidList){
+        if (storageTraceidList) {
             devData.map((data, index) => {
                 let storageTraceidIndex = storageTraceidList.findIndex(s => s === data.traceid)
-                if(storageTraceidIndex !== (-1)){
+                if (storageTraceidIndex !== (-1)) {
                     unSelectedStorageTraceid++
                 }
             })
 
-            if(unSelectedStorageTraceid === 0){
+            if (unSelectedStorageTraceid === 0) {
                 localStorage.removeItem('selectedTraceid')
             }
         }
@@ -165,11 +156,11 @@ class headerGlobalAudit extends React.Component {
     }
 
     closeDetail = () => {
-        this.setState({openDetail:false})
+        this.setState({ openDetail: false })
     }
 
     handleOpen = () => {
-        this.setState({ isOpen: true, devData:this.fullLogData, canRefresh:true });
+        this.setState({ isOpen: true, devData: this.fullLogData, canRefresh: true });
     }
 
     handleClose = () => {
@@ -177,25 +168,22 @@ class headerGlobalAudit extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if(nextProps.showAuditLogWithOrg)
-        {
+        if (nextProps.showAuditLogWithOrg) {
             nextProps.handleShowAuditLog(undefined)
-            return {devData: []}
+            return { devData: [] }
         }
         return null
     }
 
     render() {
-        const {devData, canRefresh, errorCount, isOpen, rawViewData, openDetail, loading} = this.state
+        const { devData, canRefresh, isOpen, rawViewData, openDetail, loading } = this.state
         return (
             <React.Fragment>
-                {devData && devData.length > 0 ?
-                    <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
-                        <TimelineOutlinedIcon fontSize='default' />
-                        {errorCount > 0 ? <div className='audit_bedge' >{errorCount}</div> : null}
-                    </IconButton> : null}
+                <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
+                    <TimelineOutlinedIcon fontSize='default' />
+                </IconButton>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog devData={devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} showRefresh={canRefresh} onRefresh={()=>this.readyToData()} loading={loading} />
+                    <HeaderAuditLog devData={devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} showRefresh={canRefresh} onRefresh={() => this.readyToData()} loading={loading} />
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
@@ -210,14 +198,14 @@ class headerGlobalAudit extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        showAuditLogWithOrg : state.showAuditLog.audit
+        showAuditLogWithOrg: state.showAuditLog.audit
     }
 }
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => {dispatch(actions.loadingSpinner(data))},
-        handleShowAuditLog: (data) => {dispatch(actions.showAuditLog(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },
     };
 };
 

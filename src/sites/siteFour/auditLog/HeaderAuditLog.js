@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown } from 'semantic-ui-react';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Box } from '@material-ui/core';
+import { Accordion, AccordionSummary, AccordionDetails, Box } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -13,18 +13,14 @@ import CheckIcon from '@material-ui/icons/Check';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import * as serverData from '../../../services/model/serverData';
 
 const options = [
     { key: 'Individual', value: 'Individual', text: 'Individual' },
     { key: 'Group', value: 'Group', text: 'Group' }
 ]
 
-const filterDataByDate = (dataList, filterDate) =>
-{
-    return dataList.filter(data => {
-        return filterDate === dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE, data.starttime)
-    })
-}
+
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
@@ -32,22 +28,11 @@ class HeaderAuditLog extends React.Component {
             expanded: (-1),
             groupExpanded: (-1),
             groupParentExpanded:(-1),
-            devData: [],
             dayData: [],
             groups: [],
             groupsErrorCount: 0,
-            dropDownValue: "Individual",
-            selectedDate : dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)
+            dropDownValue: "Individual"
         }
-    }
-
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.devData !== prevState.devData) {
-            let dayData = filterDataByDate(nextProps.devData, prevState.selectedDate)
-            return { dayData: dayData, devData: nextProps.devData, unCheckedErrorCount: nextProps.unCheckedErrorCount, errorCount: nextProps.errorCount }
-        }
-        return null
     }
 
     setAllView = (dummyConts, sId) => {
@@ -75,6 +60,27 @@ class HeaderAuditLog extends React.Component {
             item = nameArray[2]
         }
         return item.charAt(0).toUpperCase() + item.slice(1)
+    }
+
+    updateStatus = (data) => {
+        if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
+            data.status = data.response.includes('"code":400') ? 400 : data.status
+        }
+    }
+
+    getDataAudit = async (starttime, endtime) => {
+        this.setState({loading : true, dayData:[]})
+        let mcRequest = await serverData.showSelf(this, {starttime:starttime,endtime:endtime}, false)
+        if (mcRequest && mcRequest.response) {
+            if (mcRequest.response.data.length > 0) {
+                let response = mcRequest.response;
+                this.fullLogData = response.data
+                this.fullLogData.map((data, index) => {
+                    this.updateStatus(data)
+                })
+                this.setState({ dayData:this.fullLogData, errorCount: 0, loading:false, expanded: (-1) })
+            }
+        }
     }
 
     getStepLabel = (item, stepperProps) => {
@@ -105,18 +111,9 @@ class HeaderAuditLog extends React.Component {
     }
 
     handleDateChange = (selectDate, index) => {
-        this.setState({ dayData: [] })
-        setTimeout(() => {
-            this.setState({ selectedDate: dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf())})
-            let dayData = filterDataByDate(this.props.devData, this.state.selectedDate)
-            if (this.state.dropDownValue === 'Group') {
-                this.dropDownOnChange(null, { value: "Group" }, dayData)
-            }
-            this.setState({
-                dayData: dayData,
-                expanded: (-1)
-            });
-        }, 1)
+        let starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME, selectDate.startOf('day').valueOf())
+        let endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME, selectDate.endOf('day').valueOf())
+        this.getDataAudit(starttime+'Z', endtime+'Z')
     };
 
     onSelectDate = (date, index) => {
@@ -185,9 +182,7 @@ class HeaderAuditLog extends React.Component {
     }
 
     expandablePanelSummary = (index, data) => (
-        <ExpansionPanelSummary
-            id="panel1a-header"
-        >
+        <AccordionSummary id="panel1a-header">
             <Step key={index}>
                 <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
                     {dateUtil.unixTime(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
@@ -200,11 +195,11 @@ class HeaderAuditLog extends React.Component {
                     <div className='audit_timeline_traceID'>Trace ID : <span>{data.traceid}</span></div>
                 </StepLabel>
             </Step>
-        </ExpansionPanelSummary>
+        </AccordionSummary>
     )
 
     expandablePanelDetails = (data) => (
-        <ExpansionPanelDetails>
+        <AccordionDetails>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Start Time</div>
                 <div className='audit_timeline_detail_right'>{dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE_TIME, data.starttime)}</div>
@@ -234,16 +229,16 @@ class HeaderAuditLog extends React.Component {
                     VIEW DETAIL
                 </Button>
             </div>
-        </ExpansionPanelDetails>
+        </AccordionDetails>
     )
 
     renderStepper = (data, index) => {
         return (
             data.operationname ?
-                <ExpansionPanel key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)} last='' completed='' active={undefined}>
+                <Accordion key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)} last='' completed='' active={undefined}>
                     {this.expandablePanelSummary(index, data)}
                     {this.expandablePanelDetails(data)}
-                </ExpansionPanel>
+                </Accordion>
                 :
                 null
         )
@@ -255,8 +250,8 @@ class HeaderAuditLog extends React.Component {
         return (
             (group) ?
                 <div key={index} className='audit_timeline_group'>
-                    <ExpansionPanel expanded={this.state.groupParentExpanded === index} onChange={(e)=>{this.handleGroupParentExpandedChange(index)}}>
-                        <ExpansionPanelSummary
+                    <Accordion expanded={this.state.groupParentExpanded === index} onChange={(e)=>{this.handleGroupParentExpandedChange(index)}}>
+                        <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             id="panel1a-header"
                         >
@@ -265,22 +260,22 @@ class HeaderAuditLog extends React.Component {
                                     {errorCount > 0 ?<span className='audit_timeline_group_bedge'>{(errorCount > (-1) ? errorCount : 0)}</span> : null}
                                 </h4>
                             </div>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
+                        </AccordionSummary>
+                        <AccordionDetails>
                             <Stepper className='audit_timeline_container' activeStep={data.length} orientation="vertical">
                                 {
                                     data.map((item, itemIndex) => {
                                         return (
-                                            <ExpansionPanel last='' active={undefined} completed='' key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
+                                            <Accordion last='' active={undefined} completed='' key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
                                                 {this.expandablePanelSummary(itemIndex, item)}
                                                 {this.expandablePanelDetails(item)}
-                                            </ExpansionPanel>
+                                            </Accordion>
                                         )
                                     })
                                 }
                             </Stepper>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                        </AccordionDetails>
+                    </Accordion>
                 </div>
                 : null
         )
@@ -317,7 +312,7 @@ class HeaderAuditLog extends React.Component {
                 <div className='audit_calendar'>
                     <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
                 </div>
-                {this.props.loading ? <LinearProgress /> : null}
+                {this.state.loading ? <LinearProgress /> : null}
                 <div className='audit_timeline_vertical'>
                     {
                         (groups.length > 0) ?
@@ -339,24 +334,21 @@ class HeaderAuditLog extends React.Component {
             </div>
         )
     }
-}
 
-
-
-function mapStateToProps(state) {
-    return {
-        user: state.user,
-        userInfo: state.userInfo ? state.userInfo : null,
+    componentDidMount()
+    {
+        let starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME+'Z', dateUtil.startOfDay())
+        let endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME+'Z', dateUtil.endOfDay())
+        this.getDataAudit(starttime, endtime)
     }
 }
+
+
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(HeaderAuditLog));
+export default withRouter(connect(null, mapDispatchProps)(HeaderAuditLog));

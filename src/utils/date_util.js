@@ -76,6 +76,14 @@ export const startOfMonth = (value) => {
     return value ? moment().startOf(value, 'month') : moment().startOf('month')
 }
 
+export const startOfDay = (value) => {
+    return value ? moment().startOf(value, 'day') : moment().startOf('day')
+}
+
+export const endOfDay = (value) => {
+    return value ? moment().endOf(value, 'day') : moment().endOf('day')
+}
+
 export const endOfMonth = (value) => {
     return value ? moment().endOf(value, 'month') : moment().endOf('month')
 }
