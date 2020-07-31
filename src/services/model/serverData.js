@@ -74,6 +74,21 @@ export const showMultiDataFromServer = (self, requestType, filter, callback) => 
     }
 }
 
+export const showSyncMultiData = async (self, requestType, filter) => {
+    let token = getToken(self)
+    if (token) {
+        let requestDataList = [];
+        for (let i = 0; i < requestType.length; i++) {
+            let request = filter ? requestType[i](Object.assign({}, filter)) : requestType[i]
+            if (request) {
+                request.token = token;
+                requestDataList.push(request);
+            }
+        }
+        return await serviceMC.sendSyncMultiRequest(self, requestDataList)
+    }
+}
+
 /* User Role */
 export const showUserRoles = async (self) => {
     let mcRequest = await sendRequest(self, { method: SHOW_ROLE })

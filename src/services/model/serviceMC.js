@@ -180,6 +180,35 @@ export function sendMultiRequest(self, requestDataList, callback) {
     }
 }
 
+export const sendSyncMultiRequest = async (self, requestDataList) => {
+    if (requestDataList && requestDataList.length > 0) {
+        let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
+        showSpinner(self, isSpinner)
+        let promise = [];
+        let resResults = [];
+        requestDataList.map((request) => {
+            promise.push(axios.post(getHttpURL(request), request.data,
+                {
+                    headers: getHeader(request)
+                }))
+        })
+        try {
+            let responseList = await axios.all(promise)
+            responseList.map((response, i) => {
+                resResults.push(EP.formatData(requestDataList[i], response));
+            })
+            showSpinner(self, false)
+            return resResults
+        }
+        catch (error) {
+            if (error.response && responseStatus(self, error.response.status)) {
+                responseError(self, requestDataList[0], error)
+            }
+            showSpinner(self, false)
+        }
+    }
+}
+
 export const sendSyncRequest = async (self, request) => {
     try {
         request.showSpinner === undefined && showSpinner(self, true)
