@@ -920,6 +920,7 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
 export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '', dataLimitCount) => {
     try {
         let promiseList = []
+        
         let range = getTimeRange(dataLimitCount)
         let periodStartTime = range[0]
         let periodEndTime = range[1]
@@ -1122,17 +1123,11 @@ export const getAllAppInstEventLogs = async () => {
  * @param appInst
  * @param startTime
  * @param endTime
- * @param dataLimitCount
- * @param pageMonitoringView
  * @returns {Promise<{VerifyLocationCount: number, app: string, ver, FoundOperatorCount: number, apporg: string, cloudlet: string, RegisterClientCount: number, cloudletorg, FindCloudletCount: number}>}
  */
-export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '', dataLimitCount, pageMonitoringView: PageMonitoringView) => {
+export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '') => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
-
-    let range = getTimeRange(dataLimitCount)
-    let periodStartTime = range[0]
-    let periodEndTime = range[1]
 
     let data = {
         "region": appInst.Region,
@@ -1144,8 +1139,8 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
-        "starttime": periodStartTime,
-        "endtime": periodEndTime,
+        "starttime": startTime,
+        "endtime": endTime,
     }
 
 
@@ -1239,11 +1234,16 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 }
 
-export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount, pageMonitoringView: PageMonitoringView) => {
+export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
     try {
         let promiseList = []
+
+        let range = getTimeRange(dataLimitCount)
+        let periodStartTime = range[0]
+        let periodEndTime = range[1]
+
         appInstList.map((appInstOne: TypeCloudlet, index) => {
-            promiseList.push(getClientStateOne(appInstOne, startTime, endTime, dataLimitCount, pageMonitoringView))
+            promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
         })
         let newPromiseList = await Promise.all(promiseList);
 
