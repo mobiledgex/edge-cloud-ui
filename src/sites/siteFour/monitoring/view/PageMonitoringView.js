@@ -413,7 +413,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             constructor(props) {
                 super(props);
-
                 let clusterLayout = getUserId() + CLUSTER_LAYOUT_KEY
                 let clusterLayoutMapper = getUserId() + CLUSTER_HW_MAPPER_KEY
                 let appInstLayout = getUserId() + APPINST_LAYOUT_KEY
@@ -434,8 +433,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 let themeTitle = getUserId() + "_mon_theme_title";
                 //@fixme: DELETE GRID LAYOUT
                 /*reactLocalStorage.remove(adminCloudletLayout)
-                    reactLocalStorage.remove(adminCloudletLayoutMapper)
-                    */
+                reactLocalStorage.remove(adminCloudletLayoutMapper)*/
 
                 this.state = {
                     //todo: admin layout(Cloudlet)
@@ -447,7 +445,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //todo: admin layout(appInst)
                     layoutAdmin: isEmpty(reactLocalStorage.get(adminLayout)) ? defaultLayoutForAdmin : reactLocalStorage.getObject(adminLayout),
                     layoutMapperAdmin: isEmpty(reactLocalStorage.get(adminLayoutMapper)) ? defaultHwMapperListForAdmin : reactLocalStorage.getObject(adminLayoutMapper),
-
                     //todo:dev layout
                     layoutCluster: isEmpty(reactLocalStorage.get(clusterLayout)) ? defaultLayoutForCluster : reactLocalStorage.getObject(clusterLayout),
                     layoutMapperCluster: isEmpty(reactLocalStorage.get(clusterLayoutMapper)) ? defaultHwMapperListForCluster : reactLocalStorage.getObject(clusterLayoutMapper),
@@ -667,7 +664,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
-
             componentDidMount = async () => {
                 moment.tz.setDefault(getMexTimezone())
                 window.addEventListener('MexTimezoneChangeEvent', () => {
@@ -700,12 +696,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                 }
             };
-
-            makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
-                let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
-                return markerMapObjectForMap;
-            }
-
 
             async loadInitData(isInterval: boolean = false) {
                 let promiseList = []
@@ -882,9 +872,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 } catch (e) {
                     throw new Error("loadInitData error")
                 }
-
             }
-
 
             componentWillUnmount(): void {
                 this.props.toggleHeader(true)
@@ -3116,7 +3104,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.setState({
                                             currentMapLevel: MAP_LEVEL.CLUSTER,
                                         })
-                                        this.resetLocalData()
+                                        await this.resetLocalData()
                                     }
                                 }}
 
@@ -3334,19 +3322,16 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let filteredClusterList = []
                     allClusterList.map((item, index) => {
                         selectClusterList.map((innerItem, innerIndex) => {
-
                             if (item.ClusterName === innerItem.split("|")[0].trim() && item.Cloudlet === innerItem.split("|")[1].trim()) {
                                 filteredClusterList.push(item)
                             }
                         })
                     })
-
                     return filteredClusterList;
                 } catch (e) {
                     // showToast(e.toString())
                 }
             }
-
 
             renderAppInstDropdown() {
 
@@ -3411,7 +3396,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             style={{fontSize: '5px !important'}}
                             disabled={this.state.filteredCloudletUsageList.length !== 1 || this.state.loading}
                             ref={c => this.dateRangePicker2 = c}
-                            /////////////////////
                             showTime={{format: dateUtil.FORMAT_TIME_HH_mm}}
                             format={dateUtil.FORMAT_DATE_24_HH_mm}
                             placeholder={[dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]}
@@ -3475,7 +3459,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             separator={"~"}
                             disabled={this.state.filteredCloudletUsageList.length === 1 || this.state.loading}
                             ref={c => this.dateRangePicker = c}
-                            /////
                             showTime={{format: dateUtil.FORMAT_TIME_HH_mm}}
                             format={dateUtil.FORMAT_DATE_24_HH_mm}
                             placeholder={[dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]}
