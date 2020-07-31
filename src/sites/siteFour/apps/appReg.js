@@ -12,9 +12,9 @@ import { fields, getOrganization } from '../../../services/model/format';
 //model
 import * as serverData from '../../../services/model/serverData'
 import { getOrganizationList } from '../../../services/model/organization';
-import { getFlavorList } from '../../../services/model/flavor';
-import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
-import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningPolicy';
+import { getFlavorList, showFlavors } from '../../../services/model/flavor';
+import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
+import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
 import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -23,6 +23,7 @@ import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
+import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 
@@ -656,12 +657,32 @@ class AppReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
+            let requestTypeList = []
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            this.flavorList = await getFlavorList(this, { region: data[fields.region] })
-            this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
-            this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
+            
+            requestTypeList.push(showFlavors({ region: data[fields.region] }))
+            requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
+            requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
+
+            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            if (mcRequestList && mcRequestList.length > 0) {
+                for (let i = 0; i < mcRequestList.length; i++) {
+                    let mcRequest = mcRequestList[i];
+                    let request = mcRequest.request;
+                    if (request.method === SHOW_FLAVOR) {
+                        this.flavorList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_AUTO_PROV_POLICY) {
+                        this.autoProvPolicyList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_PRIVACY_POLICY) {
+                        this.privacyPolicyList = mcRequest.response.data
+                    }
+                }
+            }
+
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                 this.configOptions = [constant.CONFIG_ENV_VAR]
             }

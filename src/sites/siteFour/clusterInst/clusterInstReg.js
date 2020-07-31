@@ -9,12 +9,13 @@ import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields, getOrganization, updateFields } from '../../../services/model/format';
 //model
+import * as serverData from '../../../services/model/serverData'
 import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { getFlavorList } from '../../../services/model/flavor';
-import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
-import { getAutoScalePolicyList } from '../../../services/model/autoScalePolicy';
+import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
+import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/model/autoScalePolicy';
 //Map
 import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -22,6 +23,7 @@ import { clusterInstTutor } from "../../../tutorial";
 
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
+import { SHOW_PRIVACY_POLICY, SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const clusterInstSteps = clusterInstTutor();
@@ -441,8 +443,28 @@ class ClusterInstReg extends React.Component {
             flavor[fields.region] = data[fields.region]
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
-            this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
-            this.autoScalePolicyList = await getAutoScalePolicyList(this, { region: data[fields.region] })
+            
+            let requestTypeList = []
+            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
+                requestTypeList.push(showAutoScalePolicies({ region: data[fields.region] }))
+            }
+            if (data[fields.ipAccess] === constant.IP_ACCESS_DEDICATED) {
+                requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
+            }
+
+            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            if (mcRequestList && mcRequestList.length > 0) {
+                for (let i = 0; i < mcRequestList.length; i++) {
+                    let mcRequest = mcRequestList[i];
+                    let request = mcRequest.request;
+                    if (request.method === SHOW_AUTO_SCALE_POLICY) {
+                        this.autoScalePolicyList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_PRIVACY_POLICY) {
+                        this.privacyPolicyList = mcRequest.response.data
+                    }
+                }
+            }
         }
     }
 
