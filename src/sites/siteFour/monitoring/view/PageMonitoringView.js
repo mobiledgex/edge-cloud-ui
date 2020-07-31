@@ -664,6 +664,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                 }
             }
 
+
+
+
             componentDidMount = async () => {
                 moment.tz.setDefault(getMexTimezone())
                 window.addEventListener('MexTimezoneChangeEvent', () => {
