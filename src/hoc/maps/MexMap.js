@@ -120,12 +120,12 @@ class ClustersMap extends Component {
             this.setState({ mapCenter: [this.props.locData[0].cloudletLocation.latitude, this.props.locData[0].cloudletLocation.longitude] })
         }
         this.setState({ oldCountry: this.state.selectedCity })
-        // let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
-        // if (catchLeafLayer) {
-        //     if (catchLeafLayer.length === 0) {
-        //         // this.handleRefresh();
-        //     }
-        // }
+        let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
+        if (catchLeafLayer) {
+            if (catchLeafLayer.length === 0) {
+                this.handleRefresh();
+            }
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
