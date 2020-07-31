@@ -387,6 +387,8 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
+export const FULFILLED= 'fulfilled'
+
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
     //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},
