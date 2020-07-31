@@ -677,13 +677,10 @@ export const ADMIN_LAYOUT_KEY = "_layout_admin";
 export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
 
 
-
 //todo : for test
 /*export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet2";
 export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet2";
-
 export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster2";
 export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster2";
-
 export const ADMIN_LAYOUT_KEY = "_layout_admin2";
 export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin2";*/

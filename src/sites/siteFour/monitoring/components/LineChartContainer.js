@@ -60,7 +60,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                 this.setChartData(lineChartDataSet, hwType, graphType);
             }
         } catch (e) {
-            throw new error(e.toString())
+            throw new Error(e.toString())
         }
     }
 
@@ -146,7 +146,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
                             {convertToClassification(this.props.currentClassification)} {this.props.pHardwareType !== undefined && this.makeToShortTitle(this.props.pHardwareType)}
                         </div>
                     </div>
-                    {this.props.chartDataSet === undefined ?
+                    {this.props.chartDataSet === undefined && !this.props.loading ?
                         renderEmptyMessageBox("No Data Available")
                         :
                         !this.props.parent.state.loading ?

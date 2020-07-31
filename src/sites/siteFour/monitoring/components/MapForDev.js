@@ -111,7 +111,7 @@ type State = {
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(
-    class MapForDevContainer extends React.Component<Props, State> {
+    class MapForDev extends React.Component<Props, State> {
         tooltip = createRef();
 
         constructor(props: Props) {
@@ -650,7 +650,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
         renderHeader() {
             return (
                 <div>
-                    {!this.props.isFullScreenMap &&
                     <div className='page_monitoring_title_area draggable'>
                         <div style={{
                             display: 'flex',
@@ -677,8 +676,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                         </div>
                     </div>
-                    }
-
                     {this.props.parent.state.mapPopUploading &&
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title' style={{
