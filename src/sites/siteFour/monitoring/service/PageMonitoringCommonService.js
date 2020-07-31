@@ -13,6 +13,8 @@ import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {barChartOption, columnChartOption, numberWithCommas} from "../common/PageMonitoringUtils";
 import {GRID_ITEM_TYPE} from "../view/PageMonitoringLayoutProps";
 import * as dateUtil from "../../../../utils/date_util";
+import type {TypeAppInstLowerCase} from "../../../../shared/Types";
+import {getTimeRange} from "./PageMonitoringMetricService";
 
 const FontAwesomeIcon = require('react-fontawesome')
 
@@ -669,7 +671,7 @@ export const renderBarChartCore = (chartDataList, hardwareType, _this, graphType
 }
 
 
-export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
     let dataForm = {
         "token": token,
@@ -685,47 +687,44 @@ export const makeFormForClusterLevelMatric = (dataOne, valid = "*", token, fetch
                 },
                 "organization": dataOne.OrganizationName,
             },
-            "last": fetchingDataNo,
-            "selector": "*"
+            "last": dataLimitCount,
+            "selector": "*",
         }
     }
 
     return dataForm;
 }
 
-export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, dateLimitCount = 20, pStartTime = '', pEndTime = '') => {
-    let formBody = {};
-    if (pStartTime === '' && pEndTime === '') {
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
-        formBody = {
-            "token": token,
-            "params": {
-                "region": dataOne.Region,
-                "cloudlet": {
-                    "organization": dataOne.Operator,
-                    "name": dataOne.CloudletName,
-                },
-                "last": dateLimitCount,
-                "selector": "*"
-            }
-        }
-    } else {
-        formBody = {
-            "token": token,
-            "params": {
-                "region": dataOne.Region,
-                "cloudlet": {
-                    "organization": dataOne.Operator,
-                    "name": dataOne.CloudletName,
-                },
-                "last": dateLimitCount,
-                "selector": "*",
-                "starttime": pStartTime,
-                "endtime": pEndTime,
-            }
+    let range = getTimeRange(dataLimitCount)
+    let periodStartTime = range[0]
+    let periodEndTime = range[1]
+
+
+    let formBody = {};
+    formBody = {
+        "token": token,
+        "params": {
+            "region": dataOne.Region,
+            "cloudlet": {
+                "organization": dataOne.Operator,
+                "name": dataOne.CloudletName,
+            },
+            "last": dataLimitCount,
+            "selector": "*",
+            "starttime": pStartTime !== '' ? pStartTime : periodStartTime,
+            "endtime": pEndTime !== '' ? pEndTime : periodEndTime,
         }
     }
     return formBody;
+}
+
+export function convertFullAppInstJsonToStr(fullAppInstJson: TypeAppInstLowerCase) {
+    let fullAppInstStr = fullAppInstJson.appName + " | " + fullAppInstJson.cloudletName + " | " + fullAppInstJson.clusterName
+        + " | " + fullAppInstJson.version + " | " + fullAppInstJson.region + " | " + fullAppInstJson.healthCheck
+        + " | " + fullAppInstJson.operatorName + " | " + JSON.stringify(fullAppInstJson.cloudletLocation)
+    return fullAppInstStr
 }
 
 

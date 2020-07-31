@@ -1,19 +1,19 @@
 import React from 'react';
 import MexListView from '../../../container/MexListView';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
-import { connect } from 'react-redux';
-import { fields, isAdmin, getUserRole } from '../../../services/model/format';
-import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest, changePowerState } from '../../../services/model/appInstance';
-import { showApps } from '../../../services/model/app';
-import { showCloudletInfos } from '../../../services/model/cloudletInfo';
+import {connect} from 'react-redux';
+import {fields, getUserRole, isAdmin} from '../../../services/model/format';
+import {changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst} from '../../../services/model/appInstance';
+import {showApps} from '../../../services/model/app';
+import {showCloudletInfos} from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import { Dialog } from '@material-ui/core';
-import { Icon, Popup } from 'semantic-ui-react';
+import {Dialog} from '@material-ui/core';
+import {Icon, Popup} from 'semantic-ui-react';
 import {appInstTutor} from "../../../tutorial";
 
 
@@ -123,8 +123,8 @@ class AppInstList extends React.Component {
     }
 
     /**
-   * Customized data block
-   **/
+     * Customized data block
+     **/
 
     getUpdate = (data, isDetailView) => {
         return (
@@ -179,10 +179,10 @@ class AppInstList extends React.Component {
     }
 
     /**
-    * Customized data block
-    * ** */
+     * Customized data block
+     * ** */
 
-   componentDidMount() {
+    componentDidMount() {
         this.customizedData()
     }
 
