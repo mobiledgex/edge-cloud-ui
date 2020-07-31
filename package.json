@@ -68,7 +68,6 @@
     "react-svg": "^11.0.19",
     "react-syntax-highlighter": "^12.2.1",
     "react-tag-cloud": "^1.3.2",
-    "react-timer": "^1.1.1",
     "react-window": "^1.8.5",
     "reactjs-localstorage": "0.0.8",
     "redux": "^4.0.1",
