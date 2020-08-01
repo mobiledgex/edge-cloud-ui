@@ -2487,8 +2487,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
             async handleOnChangeClusterDropdownForDev(selectClusterCloudletList) {
                 await this.resetTimer();
-
-
                 await this.startTimer();
                 await this.setState({
                     currentCloudletMap: MAP_LEVEL.CLUSTER,
@@ -2521,9 +2519,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let allClusterList = this.state.allClusterList
                         let filteredClusterList = this.filterClusterListForTreeSelect(allClusterList, selectClusterCloudletList)
 
-                        //todo: ###############################
+                        //todo: ######################################
                         //todo:  appInstList, clusterList filtering.
-                        //todo: ###############################
+                        //todo: ######################################
                         this.state.appInstList.map((appInstOne, index) => {
                             selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
                                 if (appInstOne.ClusterInst === clusterCloudletOne.split("|")[0].trim() && appInstOne.Cloudlet === clusterCloudletOne.split("|")[1].trim()) {
@@ -2541,6 +2539,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 }
                             })
                         })
+
+                        //todo: mapMarker
+                        let mapMarkerObjectForMap = makeMapMarkerObjectForDev(filteredAppInstList, filteredCloudletList)
+                        setTimeout(async () => {
+                            await this.setState({
+                                markerList: mapMarkerObjectForMap,//todo mapdata
+                                mapLoading: false,
+                            })
+                        }, 250)
 
                         //todo: ###############################
                         //todo: usageEventPromiseList
@@ -2570,8 +2577,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
-                        let mapMarkerObjectForMap = makeMapMarkerObjectForDev(filteredAppInstList, filteredCloudletList)
-
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
                             currentClusterList: selectClusterCloudletList,
@@ -2581,7 +2586,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             allAppInstDropdown: appInstDropdown,
                             appInstSelectBoxPlaceholder: 'Select App Inst',
                             filteredAppInstList: filteredAppInstList,
-                            markerList: mapMarkerObjectForMap,//todo mapdata
                             currentAppInst: undefined,
                             currentAppInstNameVersion: undefined,
                             filteredClusterList: filteredClusterList,
@@ -2594,7 +2598,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         });
                         await this.setState({
                             loading: false,
-                            mapLoading: false,
                             isScrollEnableForLineChart: false,
                         })
 
