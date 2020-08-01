@@ -2547,7 +2547,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 markerList: mapMarkerObjectForMap,//todo mapdata
                                 mapLoading: false,
                             })
-                        }, 250)
+                        }, 111)
 
                         //todo: ###############################
                         //todo: usageEventPromiseList
