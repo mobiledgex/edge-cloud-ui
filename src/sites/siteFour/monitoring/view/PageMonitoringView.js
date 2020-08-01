@@ -684,10 +684,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     time: Date.now() - this.state.start
                 }), 1);
             }
+
             stopTimer() {
                 this.setState({isOn: false})
                 clearInterval(this.timer)
             }
+
             resetTimer() {
                 this.setState({time: 0, isOn: false})
             }
@@ -2549,16 +2551,15 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
                         //
-                        usageEventPromiseList.push(getAllAppInstEventLogs());
+                        //usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
-                        usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount, this))
+                        //usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount, this))
                         usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV, this.state.dataLimitCount))
-                        const [_filteredAppInstEventLogList, _filteredClusterUsageList, _filteredClientStatusList, _filteredClusterEventLogList] = await Promise.all(usageEventPromiseList);
-                        filteredAppInstEventLogList = _filteredAppInstEventLogList;
-                        filteredClusterUsageList = _filteredClusterUsageList;
-                        filteredClientStatusList = _filteredClientStatusList;
-                        filteredClusterEventLogList = _filteredClusterEventLogList
-
+                        const [_filteredClusterUsageList, _filteredClusterEventLogList] = await Promise.allSettled(usageEventPromiseList);
+                        //filteredAppInstEventLogList = _filteredAppInstEventLogList;
+                        filteredClusterUsageList = _filteredClusterUsageList.value;
+                        //filteredClientStatusList = _filteredClientStatusList;
+                        filteredClusterEventLogList = _filteredClusterEventLogList.value
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
                             filteredClusterList: filteredClusterList,
