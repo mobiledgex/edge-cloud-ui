@@ -8,6 +8,7 @@ export const FORMAT_AM_PM = 'A'
 export const FORMAT_DAY = 'D'
 export const FORMAT_FULL_DATE_TIME = `${FORMAT_FULL_DATE} ${FORMAT_FULL_TIME}`
 export const FORMAT_DATE_24_HH_mm = `${FORMAT_FULL_DATE} ${FORMAT_TIME_HH_mm}`
+export const FORMAT_FULL_T_Z = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}Z`
 
 export const timezoneName = ()=>
 {

@@ -6,10 +6,9 @@ import * as actions from '../../../actions';
 import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import * as serverData from '../../../services/model/serverData';
 import PopDetailViewer from '../../../container/popDetailViewer';
-import { IconButton, Drawer } from '@material-ui/core';
+import { IconButton, Drawer, Button, TextField } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
-
-
+import * as dateUtil from '../../../utils/date_util'
 let _self = null;
 
 
@@ -18,26 +17,29 @@ class headerGlobalAudit extends React.Component {
         super(props);
         _self = this;
         this.state = {
-            devData: [],
+            logData: {},
             rawViewData: [],
-            unCheckedErrorCount: 0,
-            errorCount: 0,
             tabValue: 0,
             openDetail: false,
             isOpen: false,
-            canRefresh: true,
-            loading: false
+            loading: false,
+            limit:25
         }
         _self = this
-        this.fullLogData = []
+        this.currenttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
+        this.starttime = this.currenttime
+        this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.endOfDay())
+    }
+
+    componentDidMount() {
+        this.readyToData()
     }
 
     getDataAuditOrg = async (orgName) => {
-        this.setState({ canRefresh: false })
         let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
-                this.setState({ isOpen: true, devData: mcRequest.response.data })
+                this.setState({ isOpen: true, logData: mcRequest.response.data })
             }
             else {
                 this.props.handleAlertInfo('error', 'No logs found')
@@ -45,18 +47,23 @@ class headerGlobalAudit extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        let serverRequestCount = parseInt(localStorage.getItem('ServerRequestCount'))
-        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
-            this.getDataAuditOrg(this.props.showAuditLogWithOrg)
-        }
-    }
+    // componentDidUpdate(prevProps, prevState) {
+    //     let serverRequestCount = parseInt(localStorage.getItem('ServerRequestCount'))
+    //     if(serverRequestCount > 0)
+    //     {
+    //         this.readyToData()
+    //     }
+    //     if(this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg)
+    //     {
+    //         this.getDataAuditOrg(this.props.showAuditLogWithOrg)
+    //     }
+    // }
 
-    readyToData() {
-        this.setState({ devData: [], loading: true })
-        this.getDataAudit();
-        localStorage.setItem('ServerRequestCount', 0)
-    }
+    // readyToData() {
+    //     this.setState({logData: [], loading:true})
+    //     this.getDataAudit();
+    //     localStorage.setItem('ServerRequestCount', 0)
+    // }
 
     updateStatus = (data) => {
         if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
@@ -64,88 +71,35 @@ class headerGlobalAudit extends React.Component {
         }
     }
 
-    getDataAudit = async () => {
-        let mcRequest = await serverData.showSelf(_self, {}, false)
+    getDataAudit = async (starttime, endtime, isStart) => {
+        this.setState({ loading: true })
+        let limit = this.state.limit
+        let mcRequest = await serverData.showSelf(_self, { starttime: starttime, endtime: endtime, limit: limit ? limit : 25 }, false)
+        this.setState({ loading: false, limit:25 })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 let response = mcRequest.response;
-                this.fullLogData = response.data
-
-                let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
-                let errorCount = 0;
-                let unCheckedErrorCount = 0;
-
-                this.fullLogData.map((data, index) => {
+                let dataList = response.data
+                dataList.map((data, index) => {
                     this.updateStatus(data)
-                    let status = data.status;
-                    let traceid = data.traceid;
-                    if (status !== 200) {
-                        errorCount++
-                        let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === traceid) : (-1)
-                        if (storageSelectedTraceidIndex === (-1)) {
-                            unCheckedErrorCount++
-                        }
-                    }
                 })
-                this.setState({ devData: this.fullLogData, errorCount: errorCount, unCheckedErrorCount: unCheckedErrorCount, loading: false })
-            }
-        }
-    }
-
-    onItemSelected = (item, i) => {
-        let devData = this.state.devData
-        let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
-
-        devData.map((data, index) => {
-            if (data.traceid === item) {
-                this.setStorageData(data.traceid)
-                if (data.status !== 200) {
-                    if (storageSelectedTraceidList) {
-                        let storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === data.traceid) : (-1)
-                        if (storageSelectedTraceidIndex === (-1)) {
-                            this.setState(prevState => ({ unCheckedErrorCount: prevState.unCheckedErrorCount - 1 }))
-                        }
+                let oldLogData = this.state.logData
+                let oldDataList = []
+                if (oldLogData[starttime] && (this.currenttime !== starttime || !isStart)) {
+                    oldDataList = [...oldLogData[starttime], ...dataList]
+                }
+                else {
+                    
+                    oldDataList = dataList
+                }
+                this.setState(prevState => ({
+                    logData: {
+                        ...prevState.logData,
+                        [starttime]: oldDataList
                     }
-                }
-            }
-        })
-    }
-
-    setStorageData = (data) => {
-        let traceidList = [];
-        let storageTraceidList = this.resetStorageData()
-
-        if (storageTraceidList) {
-            traceidList = storageTraceidList
-            let storageTraceidIndex = storageTraceidList.findIndex(s => s === data)
-            if (storageTraceidIndex === (-1)) {
-                traceidList.push(data)
-                localStorage.setItem("selectedTraceid", JSON.stringify(traceidList))
-            }
-        } else {
-            traceidList[0] = data
-            localStorage.setItem("selectedTraceid", JSON.stringify(traceidList))
-        }
-    }
-
-    resetStorageData() {
-        let storageTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"))
-        let devData = this.state.devData
-        let unSelectedStorageTraceid = 0
-
-        if (storageTraceidList) {
-            devData.map((data, index) => {
-                let storageTraceidIndex = storageTraceidList.findIndex(s => s === data.traceid)
-                if (storageTraceidIndex !== (-1)) {
-                    unSelectedStorageTraceid++
-                }
-            })
-
-            if (unSelectedStorageTraceid === 0) {
-                localStorage.removeItem('selectedTraceid')
+                }));
             }
         }
-        return JSON.parse(localStorage.getItem("selectedTraceid"))
     }
 
     onPopupDetail = (rawViewData) => {
@@ -160,7 +114,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     handleOpen = () => {
-        this.setState({ isOpen: true, devData: this.fullLogData, canRefresh: true });
+        this.setState({ isOpen: true});
     }
 
     handleClose = () => {
@@ -168,22 +122,51 @@ class headerGlobalAudit extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.showAuditLogWithOrg) {
-            nextProps.handleShowAuditLog(undefined)
-            return { devData: [] }
-        }
+        // if (nextProps.showAuditLogWithOrg) {
+        //     nextProps.handleShowAuditLog(undefined)
+        //     return { logData: [] }
+        // }
         return null
     }
 
+    loadMore = () => {
+        let logData = this.state.logData
+        if (logData[this.starttime]) {
+            let dataList = logData[this.starttime]
+            let time = dateUtil.convertToUnix(dataList[dataList.length-1].starttime)
+            this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, time)
+        }
+        this.getDataAudit(this.starttime, this.endtime)
+    }
+
+    loadData = (starttime, endtime) => {
+        this.starttime = starttime
+        this.endtime = endtime
+        let logData = this.state.logData
+        if(logData[starttime] === undefined || this.currenttime === this.starttime)
+        {
+            this.getDataAudit(starttime, endtime, true)
+        }
+    }
+
+    changeLimit = (e)=>
+    {
+        let value = e.target.value.trim()
+        this.setState({limit: value.length > 0 ? parseInt(value) : value})
+    }
+
     render() {
-        const { devData, canRefresh, isOpen, rawViewData, openDetail, loading } = this.state
+        const { logData, isOpen, rawViewData, openDetail, loading } = this.state
         return (
             <React.Fragment>
                 <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
                     <TimelineOutlinedIcon fontSize='default' />
                 </IconButton>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog devData={devData} onItemSelected={this.onItemSelected} detailView={this.onPopupDetail} close={this.handleClose} showRefresh={canRefresh} onRefresh={() => this.readyToData()} loading={loading} />
+                    <HeaderAuditLog dataList={logData} detailView={this.onPopupDetail} close={this.handleClose}  onLoadData={this.loadData} loading={loading} />
+                    <Button style={{width:'100%', height:30, marginTop:10}} onClick={() => { this.loadMore() }}>Fetch&nbsp;&nbsp;
+                        <TextField type={'number'} onClick={(e)=>{e.stopPropagation();}} style={{color:'black', width:50}} value={this.state.limit} onChange={this.changeLimit}/> More Logs
+                    </Button>
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
@@ -193,6 +176,10 @@ class headerGlobalAudit extends React.Component {
                 />
             </React.Fragment>
         )
+    }
+
+    componentDidMount() {
+        this.getDataAudit(this.starttime, this.endtime);
     }
 }
 

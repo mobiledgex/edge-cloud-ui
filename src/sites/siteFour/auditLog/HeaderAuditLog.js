@@ -31,8 +31,10 @@ class HeaderAuditLog extends React.Component {
             dayData: [],
             groups: [],
             groupsErrorCount: 0,
-            dropDownValue: "Individual"
+            dropDownValue: "Individual",
+            starttime : dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
         }
+        this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.endOfDay())
     }
 
     setAllView = (dummyConts, sId) => {
@@ -62,27 +64,6 @@ class HeaderAuditLog extends React.Component {
         return item.charAt(0).toUpperCase() + item.slice(1)
     }
 
-    updateStatus = (data) => {
-        if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
-            data.status = data.response.includes('"code":400') ? 400 : data.status
-        }
-    }
-
-    getDataAudit = async (starttime, endtime) => {
-        this.setState({loading : true, dayData:[]})
-        let mcRequest = await serverData.showSelf(this, {starttime:starttime,endtime:endtime}, false)
-        if (mcRequest && mcRequest.response) {
-            if (mcRequest.response.data.length > 0) {
-                let response = mcRequest.response;
-                this.fullLogData = response.data
-                this.fullLogData.map((data, index) => {
-                    this.updateStatus(data)
-                })
-                this.setState({ dayData:this.fullLogData, errorCount: 0, loading:false, expanded: (-1) })
-            }
-        }
-    }
-
     getStepLabel = (item, stepperProps) => {
         let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"));
         let data = item;
@@ -110,10 +91,11 @@ class HeaderAuditLog extends React.Component {
         this.props.detailView(rawViewData)
     }
 
-    handleDateChange = (selectDate, index) => {
-        let starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME, selectDate.startOf('day').valueOf())
-        let endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME, selectDate.endOf('day').valueOf())
-        this.getDataAudit(starttime+'Z', endtime+'Z')
+    handleDateChange = (selectedDate, index) => {
+        let starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, selectedDate.startOf('day').valueOf())
+        this.setState({starttime: starttime})
+        this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, selectedDate.endOf('day').valueOf())
+        this.props.onLoadData(starttime, this.endtime)
     };
 
     onSelectDate = (date, index) => {
@@ -127,7 +109,7 @@ class HeaderAuditLog extends React.Component {
     };
 
     handleExpandedChange = (index, traceid) => (event, newExpanded) => {
-        this.props.onItemSelected(traceid)
+        //this.props.onItemSelected(traceid)
         this.setState({ expanded: newExpanded ? index : false });
     };
 
@@ -136,7 +118,7 @@ class HeaderAuditLog extends React.Component {
     };
 
     handleGroupExpandedChange = (group, index, traceid) => (event, newExpanded) => {
-        this.props.onItemSelected(traceid)
+        //this.props.onItemSelected(traceid)
         this.setState({ groupExpanded: { expanded: newExpanded ? index : false, group: group } });
     };
 
@@ -282,7 +264,8 @@ class HeaderAuditLog extends React.Component {
     }
 
     render() {
-        const { dayData, groups } = this.state
+        const { starttime, groups } = this.state
+        let dataList = this.props.dataList[starttime]
         return (
             <div className='audit_container' style={{ height: window.innerHeight - 48 }}>
                 <div className='audit_title'>
@@ -300,10 +283,6 @@ class HeaderAuditLog extends React.Component {
                                 style={{ width: 150, height: 30 }}
                             />
                         </Box>
-                        {this.props.showRefresh ?
-                            <IconButton onClick={this.props.onRefresh}>
-                                <RefreshIcon />
-                            </IconButton> : null}
                     </div>
                     <IconButton onClick={this.onClickClose}>
                         <CloseIcon />
@@ -312,7 +291,7 @@ class HeaderAuditLog extends React.Component {
                 <div className='audit_calendar'>
                     <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
                 </div>
-                {this.state.loading ? <LinearProgress /> : null}
+                {this.props.loading ? <LinearProgress /> : null}
                 <div className='audit_timeline_vertical'>
                     {
                         (groups.length > 0) ?
@@ -322,24 +301,17 @@ class HeaderAuditLog extends React.Component {
                                 )
                             })
                             :
-                            <Stepper className='audit_timeline_container' activeStep={dayData.length} orientation="vertical">
-                                {dayData.map((data, index) => {
+                            dataList && dataList.length > 0 ? <Stepper className='audit_timeline_container' activeStep={dataList.length} orientation="vertical">
+                                {dataList.map((data, index) => {
                                     return (
                                         this.renderStepper(data, index)
                                     )
                                 })}
-                            </Stepper>
+                            </Stepper> : null
                     }
                 </div>
             </div>
         )
-    }
-
-    componentDidMount()
-    {
-        let starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME+'Z', dateUtil.startOfDay())
-        let endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE + 'T' + dateUtil.FORMAT_FULL_TIME+'Z', dateUtil.endOfDay())
-        this.getDataAudit(starttime, endtime)
     }
 }
 
