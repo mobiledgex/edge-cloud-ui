@@ -2555,17 +2555,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]
                         let startTime = makeCompleteDateTime(date[0]);
                         let endTime = makeCompleteDateTime(date[1]);
-
-
-                        //
-                        //usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
-                        //usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount, this))
                         usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV, this.state.dataLimitCount))
                         const [_filteredClusterUsageList, _filteredClusterEventLogList] = await Promise.allSettled(usageEventPromiseList);
-                        //filteredAppInstEventLogList = _filteredAppInstEventLogList;
+
                         filteredClusterUsageList = _filteredClusterUsageList.value;
-                        //filteredClientStatusList = _filteredClientStatusList;
                         filteredClusterEventLogList = _filteredClusterEventLogList.value
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
@@ -2776,12 +2770,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //desc: ############################
                     //desc: filtered AppInstEventLogList
                     //desc: ############################
-                    let _allAppInstEventLog = this.state.allAppInstEventLogs;
+                    let _allAppInstEventLog = await getAllAppInstEventLogs(this.state.currentAppInst, this.state.dataLimitCount);
                     let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
                         if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
                             return true;
                         }
                     })
+
                     await this.setState({
                         filteredAppInstEventLogs: filteredAppInstEventLogList,
                         currentTabIndex: 0,

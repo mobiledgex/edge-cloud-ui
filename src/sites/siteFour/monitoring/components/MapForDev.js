@@ -1,12 +1,12 @@
 import React, {createRef} from "react";
-import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
+import {Map, Marker, Polyline, Popup, TileLayer} from "react-leaflet";
 import type {TypeAppInst, TypeClient, TypeCloudlet, TypeCloudletUsage} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
@@ -18,7 +18,7 @@ import {listGroupByKey, makeMapThemeDropDown, reduceString, renderCloudletHwUsag
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
-import {CLASSIFICATION, NO_APPS} from "../../../../shared/Constants";
+import {CLASSIFICATION} from "../../../../shared/Constants";
 import {getMexTimezone} from "../../../../utils/sharedPreferences_util";
 
 const {Option} = Select;
@@ -446,7 +446,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
 
             return (
-                <Popup index={cloudletIndex} permanent className='cloudlet_popup' ref={this.appInstPopup}>
+                <Popup index={parseInt(cloudletIndex + Math.floor(Math.random() * Math.floor(999999999)))} permanent className='cloudlet_popup' ref={this.appInstPopup}>
                     {listAppName.map((AppFullName, appIndex) => {
                         let AppName = AppFullName.trim().split(" | ")[0].trim()
                         let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
@@ -511,7 +511,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 let listAppName = cloudletOne.AppNames.split(",")
                 let cloudlets = cloudletOne.Cloudlet.toString().split(',');
                 return (
-                    <React.Fragment>
+                    <React.Fragment key={cloudletIndex}>
                         <Marker
                             ref={c => this.marker1 = c}
                             icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
@@ -520,30 +520,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
                         >
-                            {/*<Tooltip
-                                className='mapCloudletTooltipDev'
-                                direction='right'
-                                offset={[14, -10]}//x,y
-                                opacity={0.8}
-                                permanent
-                                ref={c => {
-                                    this.toolTip = c;
-                                }}
-                                style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
-                            >
-                                {cloudlets.map((item, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className='mapCloudletTooltipInnerBlack'
-                                        >
-                                            {item}
-                                        </div>
-                                    )
-                                })}
-
-                            </Tooltip>*/}
                             {/*desc:################################*/}
                             {/*desc:appInstPopup                    */}
                             {/*desc:################################*/}
