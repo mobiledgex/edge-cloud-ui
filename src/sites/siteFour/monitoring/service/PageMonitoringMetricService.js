@@ -1094,12 +1094,12 @@ export const getAppInstEventLogsForOneAppInst = async (fullAppInst = undefined, 
 export const getAllAppInstEventLogs = async (fullCurrentAppInst = undefined, dataLimitCount) => {
     try {
 
-        let allAppInstEventLogList = await getAppInstEventLogsForOneAppInst(fullCurrentAppInst, dataLimitCount)
+        let appInstEventLogList = await getAppInstEventLogsForOneAppInst(fullCurrentAppInst, dataLimitCount)
 
         let completedEventLogList = []
-        if (!isEmpty(allAppInstEventLogList)) {
-            if (allAppInstEventLogList.Series !== null) {
-                let eventLogList = allAppInstEventLogList.Series["0"].values;
+        if (!isEmpty(appInstEventLogList)) {
+            if (appInstEventLogList.Series !== null) {
+                let eventLogList = appInstEventLogList.Series["0"].values;
                 eventLogList.map(item => {
                     completedEventLogList.push(item)
                 })
