@@ -1091,8 +1091,6 @@ export const getAppInstEventLogsForOneAppInst = async (fullAppInst = undefined, 
 }
 
 
-
-
 export const getAllAppInstEventLogs = async (fullCurrentAppInst = undefined, dataLimitCount) => {
     try {
 
