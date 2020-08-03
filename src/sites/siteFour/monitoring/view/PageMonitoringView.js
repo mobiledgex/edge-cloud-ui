@@ -4022,9 +4022,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {/*todo: ######################*/}
                                         {/*todo: timer for demo or test*/}
                                         {/*todo: ######################*/}
-                                         <div style={{marginLeft: 50}}>
+                                        {/*<div style={{marginLeft: 50}}>
                                             &nbsp;&nbsp; timer: {ms(this.state.time)}
-                                        </div>
+                                        </div>*/}
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
                                     <React.Fragment>
