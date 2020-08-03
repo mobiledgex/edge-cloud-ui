@@ -4015,9 +4015,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div style={{marginLeft: 30}}>
                                             {this.renderGraphDataCountDropdown()}
                                         </div>
-                                        <div style={{marginLeft: 50}}>
+
+                                        {/*todo: ######################*/}
+                                        {/*todo: timer for demo or test*/}
+                                        {/*todo: ######################*/}
+
+                                        {/* <div style={{marginLeft: 50}}>
                                             &nbsp;&nbsp; timer: {ms(this.state.time)}
-                                        </div>
+                                        </div>*/}
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
                                     <React.Fragment>
