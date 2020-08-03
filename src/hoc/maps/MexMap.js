@@ -19,6 +19,7 @@ const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
 let zoom = 1;
 let selectedIndex = 0;
+let doing = false;
 
 let mapTileList = [
     {
@@ -77,7 +78,8 @@ class ClustersMap extends Component {
             mapCenter: zoomControls.center,
             currentPos: null,
             anchorEl: null,
-            selectedIndex: 0
+            selectedIndex: 0,
+            capture: true
         }
         this.handleMapClick = this.handleMapClick.bind(this);
         this.dir = 1;
@@ -114,6 +116,9 @@ class ClustersMap extends Component {
         if (this.props.zoomControl) {
             this.setState({ center: this.props.zoomControl.center, zoom: this.props.zoomControl.zoom })
         }
+        if (this.props.locData && this.props.locData.length > 0 ) {
+            this.setState({ mapCenter: [this.props.locData[0].cloudletLocation.latitude, this.props.locData[0].cloudletLocation.longitude] })
+        }
         this.setState({ oldCountry: this.state.selectedCity })
         let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
         if (catchLeafLayer) {
@@ -124,12 +129,20 @@ class ClustersMap extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-
-        let createMode = nextProps.onMapClick ? true : false
+        let createMode = nextProps.onMapClick ? true : false;
+        let updateMode = (nextProps.locData && nextProps.locData.length > 0) ? true : false;
+        let hasLocation = [];
+        if( updateMode ) {
+            createMode = false;
+            let long = nextProps.locData[0].longitude;
+            let lat = nextProps.locData[0].latitude;
+            hasLocation = [lat ? lat : nextProps.locData[0].cloudletLocation.latitude, long ? long : nextProps.locData[0].cloudletLocation.longitude];
+        }
 
         let initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         let data = nextProps.locData ? initialData : initialData.filter((item) => item[fields.state] == 5);
-        let mapCenter = (createMode) ? prevState.currentPos : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : [53, 13];
+        // let mapCenter = (createMode) ? prevState.currentPos : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : [53, 13];
+        let mapCenter = (!createMode) ? nextProps.mapCenter : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : (updateMode) ? hasLocation :[53, 13];
 
         function reduceUp(value) {
             return Math.round(value)
@@ -233,7 +246,8 @@ class ClustersMap extends Component {
 
             let clickMarker = [];
             let zoom = nextProps.locData ? prevState.zoom : zoomControls.zoom
-            let center = nextProps.locData ? prevState.center : zoomControls.center
+            // let center = nextProps.locData ? prevState.center : zoomControls.center
+            let center = nextProps.locData ? [nextProps.locData[0].cloudletLocation.latitude, nextProps.locData[0].cloudletLocation.longitude] : zoomControls.center
 
             if (nextProps.mapDetails) {
                 if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
@@ -247,8 +261,18 @@ class ClustersMap extends Component {
                     clickMarker.push({ "name": item, "coordinates": nextProps.mapDetails.coordinates, "cost": 1 })
                 })
 
-                zoom = 4
+                zoom = 5
                 center = nextProps.mapDetails.coordinates
+                mapCenter = nextProps.mapDetails.coordinates
+            }
+            if(createMode || updateMode) {
+                // center = mapCenter
+                if(updateMode) { 
+                    mapCenter = center;
+                }
+            } else {
+                
+                
             }
             return { mapCenter: mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
         }
@@ -325,11 +349,11 @@ class ClustersMap extends Component {
     }
 
     handleMapClick(e) {
-        if (this.props.onMapClick) {
+        if (this.props.onMapClick && this.state.capture) {
             let _lat = Math.round(e.latlng['lat'])
             let _lng = Math.round(e.latlng['lng'])
 
-            this.setState({ currentPos: [_lat, _lng] });
+            this.setState({ currentPos: [_lat, _lng], mapCenter: [_lat, _lng] });
 
             let location = { lat: _lat, long: _lng }
             let locationData = [
@@ -359,11 +383,25 @@ class ClustersMap extends Component {
         this.setState({ anchorEl: null });
     }
 
+    handleMove = (event) => {
+        if(this.state.detailMode && !doing) {
+            event.target.flyTo(this.state.center)
+            setTimeout(() => {
+                doing = false;
+            }, 1800);
+            doing = true;
+        }
+        
+    }
+
     attachControll = () => {
         return (
             <div className="leaflet-top leaflet-left" style={{ top: 79, position: 'absolute' }}>
                 <div className="zoom-inout-reset-clusterMap leaflet-control" style={{ left: 0, top: 0, position: 'absolute' }}>
-                    <Button id="mapZoomCtl" size='small' icon onClick={() => this.handleRefresh()}>
+                    <Button id="mapZoomCtl" size='small' icon 
+                    onMouseOver={() => this.setState({capture: false})}
+                    onMouseLeave={() => this.setState({capture: true})}
+                    onClick={() => this.handleRefresh()}>
                         <Icon name='redo' />
                     </Button>
                 </div>
@@ -379,20 +417,24 @@ class ClustersMap extends Component {
     }
 
     render() {
+        const { zoom } = this.state;
         return (
             <div className="commom-listView-map">
                 <Map
+                    ref={this.map}
+                    useFlyTo={false}
                     center={this.state.mapCenter}
                     zoom={zoom}
                     duration={1.2}
-                    style={{ width: '100%', height: '100%' }}
+                    // style={{ width: '100%', height: '100%' }}
                     easeLinearity={2}
                     dragging={true}
                     zoomControl={true}
                     boundsOptions={{ padding: [50, 50] }}
                     scrollWheelZoom={true}
-                    viewport={this.state.mapCenter}
+                    // viewport={{center: this.state.mapCenter, zoom:zoom}}
                     onClick={this.handleMapClick}
+                    onZoomend={this.handleMove.bind(this)}
                 >
                     <TileLayer
                         url={this.props.currentTyleLayer}
