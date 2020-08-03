@@ -1007,11 +1007,12 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
                 },
                 "organization": userType.toString().includes(USER_TYPE_SHORT.DEV) ? selectOrg : clusterItemOne.OrganizationName
             },
-            "starttime": periodStartTime,
-            "endtime": periodEndTime,
-            //"last": 10
+            //"starttime": periodStartTime,
+            //"endtime": periodEndTime,
+            "last": 40
         }
 
+        console.log(`getClusterEventLogListOne..form====>` , form);
         let result = await axios({
             url: mcURL() + CLUSTER_EVENT_LOG_ENDPOINT,
             method: 'post',
@@ -1022,6 +1023,9 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
             },
             timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
+
+            console.log(`getClusterEventLogListOne...response====>` , response.data.data[0]);
+
             return response.data.data[0];
         }).catch(e => {
             return null;

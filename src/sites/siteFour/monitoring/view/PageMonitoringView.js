@@ -2079,9 +2079,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 let clusterCloudletOne = item.cluster + ' | ' + item.cloudlet
                                                 filteredClusterCloudletlist.push(clusterCloudletOne)
                                             })
-                                            await this.handleOnChangeClusterDropdownForDev(filteredClusterCloudletlist)
+                                            this.setClusterInterval();
                                         } else {
-                                            await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
+                                            this.setAppInstInterval();
                                         }
                                         this.setState({
                                             isStream: true,
@@ -2561,6 +2561,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         filteredClusterUsageList = _filteredClusterUsageList.value;
                         filteredClusterEventLogList = _filteredClusterEventLogList.value
+
+                        console.log(`filteredClusterEventLogList====>`,filteredClusterEventLogList);
+
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
                             filteredClusterList: filteredClusterList,
@@ -4019,10 +4022,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         {/*todo: ######################*/}
                                         {/*todo: timer for demo or test*/}
                                         {/*todo: ######################*/}
-
-                                        {/* <div style={{marginLeft: 50}}>
+                                         <div style={{marginLeft: 50}}>
                                             &nbsp;&nbsp; timer: {ms(this.state.time)}
-                                        </div>*/}
+                                        </div>
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
                                     <React.Fragment>
