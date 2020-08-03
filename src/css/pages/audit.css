@@ -684,7 +684,13 @@
 .audit_container {
     background-color: #292C33;
     width: 450px;
-    box-shadow: -3px 0 4px 0 rgba(0, 0, 0, 0.3)
+    box-shadow: -3px 0 4px 0 rgba(0, 0, 0, 0.3);
+    height: calc(100vh - 0px);
+}
+
+.audit_container_history {
+    background-color: #292C33;
+    width: 450px;
 }
 
 .audit_title {
@@ -769,7 +775,7 @@
 
 .audit_timeline_vertical {
     overflow-y: auto;
-    height: calc(100% - 158px);
+    height: calc(100% - 66px);
 }
 
 /* timeline */

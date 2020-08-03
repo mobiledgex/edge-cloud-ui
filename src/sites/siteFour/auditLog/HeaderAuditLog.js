@@ -1,39 +1,28 @@
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react';
-import { Accordion, AccordionSummary, AccordionDetails, Box } from '@material-ui/core';
+import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { IconButton, Step, StepLabel, Stepper, Button } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import Calendar from '../../../components/horizontal_calendar/Calendar';
 import * as dateUtil from '../../../utils/date_util'
-import CheckIcon from '@material-ui/icons/Check';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import * as serverData from '../../../services/model/serverData';
 
-const options = [
-    { key: 'Individual', value: 'Individual', text: 'Individual' },
-    { key: 'Group', value: 'Group', text: 'Group' }
-]
-
-
+import CloseIcon from '@material-ui/icons/CloseRounded';
+import CheckIcon from '@material-ui/icons/CheckRounded';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
+import HistoryIcon from '@material-ui/icons/HistoryRounded';
+import HistoryLog from './HistoryLog';
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             expanded: (-1),
-            groupExpanded: (-1),
-            groupParentExpanded:(-1),
             dayData: [],
-            groups: [],
-            groupsErrorCount: 0,
-            dropDownValue: "Individual",
-            starttime : dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
+            history:false,
+            dataList:[]
         }
+        this.starttime=dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
         this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.endOfDay())
     }
 
@@ -92,10 +81,9 @@ class HeaderAuditLog extends React.Component {
     }
 
     handleDateChange = (selectedDate, index) => {
-        let starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, selectedDate.startOf('day').valueOf())
-        this.setState({starttime: starttime})
+        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, selectedDate.startOf('day').valueOf())
         this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, selectedDate.endOf('day').valueOf())
-        this.props.onLoadData(starttime, this.endtime)
+        this.props.onLoadData(this.starttime, this.endtime)
     };
 
     onSelectDate = (date, index) => {
@@ -113,62 +101,12 @@ class HeaderAuditLog extends React.Component {
         this.setState({ expanded: newExpanded ? index : false });
     };
 
-    handleGroupParentExpandedChange = (index) =>  {
-        this.setState(prevState=>({ groupParentExpanded: prevState.groupParentExpanded === index ? (-1) : index }));
-    };
-
-    handleGroupExpandedChange = (group, index, traceid) => (event, newExpanded) => {
-        //this.props.onItemSelected(traceid)
-        this.setState({ groupExpanded: { expanded: newExpanded ? index : false, group: group } });
-    };
-
-    dropDownOnChange = (e, v, data) => {
-        let dayData = (data) ? data : this.state.dayData;
-        let groups = [];
-
-        if (v.value === 'Group') {
-            dayData.map((data, index) => {
-                let renderValue = this.makeOper(data.operationname);
-                let groupsIndex = groups.findIndex(g => g.title === renderValue)
-                let groupsErrorCount = 0;
-
-                if (groupsIndex === (-1)) {
-
-                    for (let i = 0; i < dayData.length; i++) {
-                        if (data.status !== 200) {
-                            groupsErrorCount++
-                        }
-                    }
-                    groups.push({ "title": renderValue, "errorCount": groupsErrorCount })
-                }
-            })
-
-            groups.map((group, gIndex) => {
-                groups[gIndex].data = []
-                dayData.map((data, index) => {
-                    let renderValue = this.makeOper(data.operationname);
-                    if (group.title === renderValue) {
-                        groups[gIndex].data.push(data)
-                    }
-                })
-            })
-        } else {
-            groups = []
-        }
-
-        this.setState({
-            dropDownValue: v.value,
-            groups: groups,
-            expanded: (-1)
-        });
-    }
-
     expandablePanelSummary = (index, data) => (
         <AccordionSummary id="panel1a-header">
             <Step key={index}>
                 <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
                     {dateUtil.unixTime(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
-                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM,data.starttime)}
+                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM, data.starttime)}
                 </div>
                 <StepLabel StepIconComponent={(stepperProps) => {
                     return this.getStepLabel(data, stepperProps)
@@ -225,93 +163,69 @@ class HeaderAuditLog extends React.Component {
                 null
         )
     }
+    
+    onFilter = (filter)=>
+    {
+        this.setState(prevState=>({history : !prevState.history}))
+        this.props.onLoadData(filter.starttime, filter.endtime, filter.limit)
+    }
 
-    renderGroupStepper = (data, index, group) => {
-        let errorCount = 0;
-        data.map((d) => { (d.status !== 200) ? errorCount++ : errorCount })
-        return (
-            (group) ?
-                <div key={index} className='audit_timeline_group'>
-                    <Accordion expanded={this.state.groupParentExpanded === index} onChange={(e)=>{this.handleGroupParentExpandedChange(index)}}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            id="panel1a-header"
-                        >
-                            <div className='audit_timeline_group_header'>
-                                <h4>{group.title}
-                                    {errorCount > 0 ?<span className='audit_timeline_group_bedge'>{(errorCount > (-1) ? errorCount : 0)}</span> : null}
-                                </h4>
-                            </div>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Stepper className='audit_timeline_container' activeStep={data.length} orientation="vertical">
-                                {
-                                    data.map((item, itemIndex) => {
-                                        return (
-                                            <Accordion last='' active={undefined} completed='' key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
-                                                {this.expandablePanelSummary(itemIndex, item)}
-                                                {this.expandablePanelDetails(item)}
-                                            </Accordion>
-                                        )
-                                    })
-                                }
-                            </Stepper>
-                        </AccordionDetails>
-                    </Accordion>
-                </div>
-                : null
-        )
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.historyList.length > 0) {
+            return { dataList: nextProps.historyList }
+        }
+        else if(nextProps.dataList.length > 0)
+        {
+            return { dataList: nextProps.dataList }  
+        }
+        return null
     }
 
     render() {
-        const { starttime, groups } = this.state
-        let dataList = this.props.dataList[starttime]
+        const { history, dataList } = this.state
         return (
-            <div className='audit_container' style={{ height: window.innerHeight - 48 }}>
-                <div className='audit_title'>
+            history ? 
+            <div className='audit_container'><HistoryLog onFilter={this.onFilter}/></div> : 
+            <div className='audit_container'>
+                 <div className='audit_title'>
                     <div className="audit_title_label">Audit Logs</div>
-                    <div className='audit_filter'>
-                        <Box p={1}>
-                            <Dropdown
-                                button
-                                placeholder='Individual'
-                                fluid
-                                search
-                                selection
-                                options={options}
-                                onChange={this.dropDownOnChange}
-                                style={{ width: 150, height: 30 }}
-                            />
-                        </Box>
-                    </div>
-                    <IconButton onClick={this.onClickClose}>
-                        <CloseIcon />
+                    <Input
+                            size="small"
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <CloseIcon style={{ fontSize: 17 }} onClick={() => { }} />
+                                </InputAdornment>
+                            }
+                            placeholder={'Search'} />
+                    <IconButton onClick={()=>{this.setState(prevState=>({history : !prevState.history}))}}>
+                        <HistoryIcon/>
                     </IconButton>
-                </div>
-                <div className='audit_calendar'>
-                    <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
+                    <div style={{position:'absolute', right:0}}>
+                        <IconButton onClick={this.onClickClose}>
+                            <ArrowForwardIosIcon fontSize={'small'} />
+                        </IconButton>
+                    </div>
                 </div>
                 {this.props.loading ? <LinearProgress /> : null}
+                <Divider/>
                 <div className='audit_timeline_vertical'>
                     {
-                        (groups.length > 0) ?
-                            groups.map((group, gIndex) => {
+                        dataList && dataList.length > 0 ? 
+                        <Stepper className='audit_timeline_container' activeStep={dataList.length} orientation="vertical">
+                            {dataList.map((data, index) => {
                                 return (
-                                    this.renderGroupStepper(group.data, gIndex, group)
+                                    this.renderStepper(data, index)
                                 )
-                            })
-                            :
-                            dataList && dataList.length > 0 ? <Stepper className='audit_timeline_container' activeStep={dataList.length} orientation="vertical">
-                                {dataList.map((data, index) => {
-                                    return (
-                                        this.renderStepper(data, index)
-                                    )
-                                })}
-                            </Stepper> : null
+                            })}
+                        </Stepper> : null
                     }
                 </div>
             </div>
         )
+    }
+
+    componentDidMount() {
+        this.props.onLoadData(this.starttime, this.endtime)
     }
 }
 

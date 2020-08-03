@@ -9,6 +9,7 @@ import PopDetailViewer from '../../../container/popDetailViewer';
 import { IconButton, Drawer, Button, TextField } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../utils/date_util'
+import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 let _self = null;
 
 
@@ -17,7 +18,8 @@ class headerGlobalAudit extends React.Component {
         super(props);
         _self = this;
         this.state = {
-            logData: {},
+            historyList: [],
+            liveData:[],
             rawViewData: [],
             tabValue: 0,
             openDetail: false,
@@ -26,8 +28,7 @@ class headerGlobalAudit extends React.Component {
             limit:25
         }
         _self = this
-        this.currenttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
-        this.starttime = this.currenttime
+        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
         this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.endOfDay())
     }
 
@@ -71,10 +72,10 @@ class headerGlobalAudit extends React.Component {
         }
     }
 
-    getDataAudit = async (starttime, endtime, isStart) => {
+    getDataAudit = async (starttime, endtime, limit, isStart) => {
         this.setState({ loading: true })
-        let limit = this.state.limit
-        let mcRequest = await serverData.showSelf(_self, { starttime: starttime, endtime: endtime, limit: limit ? limit : 25 }, false)
+        limit = limit ? limit : this.state.limit
+        let mcRequest = await serverData.showSelf(_self, { starttime: starttime, endtime: endtime, limit: limit ? parseInt(limit) : 25 }, false)
         this.setState({ loading: false, limit:25 })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
@@ -83,21 +84,29 @@ class headerGlobalAudit extends React.Component {
                 dataList.map((data, index) => {
                     this.updateStatus(data)
                 })
-                let oldLogData = this.state.logData
-                let oldDataList = []
-                if (oldLogData[starttime] && (this.currenttime !== starttime || !isStart)) {
-                    oldDataList = [...oldLogData[starttime], ...dataList]
+                if (starttime === this.starttime) {
+                    if(isStart)
+                    {
+                        this.setState({ liveData: dataList })
+                    }
+                    else
+                    {
+                        this.setState(prevState=>({liveData:[...prevState.liveData, ...dataList]}))
+                    }
                 }
                 else {
-                    
-                    oldDataList = dataList
+                    this.setState({ historyList: dataList })
                 }
-                this.setState(prevState => ({
-                    logData: {
-                        ...prevState.logData,
-                        [starttime]: oldDataList
-                    }
-                }));
+                
+                // if (oldLogData[starttime] && (this.currenttime !== starttime || !isStart)) {
+                //     oldDataList = [...oldLogData[starttime], ...dataList]
+                // }
+                // this.setState(prevState => ({
+                //     logData: {
+                //         ...prevState.logData,
+                //         [starttime]: oldDataList
+                //     }
+                // }), ()=>{console.log('Rahul1234', this.state.logData)});
             }
         }
     }
@@ -139,14 +148,9 @@ class headerGlobalAudit extends React.Component {
         this.getDataAudit(this.starttime, this.endtime)
     }
 
-    loadData = (starttime, endtime) => {
-        this.starttime = starttime
-        this.endtime = endtime
+    loadData = (starttime, endtime, limit) => {
         let logData = this.state.logData
-        if(logData[starttime] === undefined || this.currenttime === this.starttime)
-        {
-            this.getDataAudit(starttime, endtime, true)
-        }
+        this.getDataAudit(starttime, endtime, limit, true)
     }
 
     changeLimit = (e)=>
@@ -156,17 +160,14 @@ class headerGlobalAudit extends React.Component {
     }
 
     render() {
-        const { logData, isOpen, rawViewData, openDetail, loading } = this.state
+        const { historyList, liveData, isOpen, rawViewData, openDetail, loading } = this.state
         return (
             <React.Fragment>
                 <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
                     <TimelineOutlinedIcon fontSize='default' />
                 </IconButton>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog dataList={logData} detailView={this.onPopupDetail} close={this.handleClose}  onLoadData={this.loadData} loading={loading} />
-                    <Button style={{width:'100%', height:30, marginTop:10}} onClick={() => { this.loadMore() }}>Fetch&nbsp;&nbsp;
-                        <TextField type={'number'} onClick={(e)=>{e.stopPropagation();}} style={{color:'black', width:50}} value={this.state.limit} onChange={this.changeLimit}/> More Logs
-                    </Button>
+                    <HeaderAuditLog dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose}  onLoadData={this.loadData} loading={loading} />
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
