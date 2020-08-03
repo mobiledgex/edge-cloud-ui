@@ -2562,8 +2562,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         filteredClusterUsageList = _filteredClusterUsageList.value;
                         filteredClusterEventLogList = _filteredClusterEventLogList.value
 
-                        console.log(`filteredClusterEventLogList====>`,filteredClusterEventLogList);
-
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
                             filteredClusterList: filteredClusterList,
