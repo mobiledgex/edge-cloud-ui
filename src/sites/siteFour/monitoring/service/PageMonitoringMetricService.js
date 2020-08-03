@@ -984,7 +984,6 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
     let periodStartTime = makeCompleteDateTime(date[0]);
     let periodEndTime = makeCompleteDateTime(date[1]);
 
-
     let selectOrg = undefined
     let form = {};
     try {
@@ -1007,9 +1006,9 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
                 },
                 "organization": userType.toString().includes(USER_TYPE_SHORT.DEV) ? selectOrg : clusterItemOne.OrganizationName
             },
-            //"starttime": periodStartTime,
-            //"endtime": periodEndTime,
-            "last": 40
+            "starttime": periodStartTime,
+            "endtime": periodEndTime,
+            //"last": 40
         }
 
         console.log(`getClusterEventLogListOne..form====>` , form);
