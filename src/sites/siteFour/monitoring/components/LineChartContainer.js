@@ -128,7 +128,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
         return (
             <Line
                 ref={c => this.lineChart = c}
-                height={'190px !important'}
+                height={190}
                 data={this.state.chartDataSet}
                 options={makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent, undefined, this.lineChart, this.props.isScrollEnableForLineChart)}
             />
