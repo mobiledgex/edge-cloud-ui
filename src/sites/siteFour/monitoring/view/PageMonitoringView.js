@@ -166,7 +166,6 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const FontAwesomeIcon = require('react-fontawesome')
 const legendIconSize = 18
 const OPTIONS = {delay: 1000}
-const ms = require('pretty-ms')
 const emptyMessage = () => (
     <div style={{textAlign: 'center', color: 'white !important', display: 'flex'}}>
         <div style={{marginLeft: 10, color: 'orange'}}>No data available</div>
