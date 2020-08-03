@@ -1,4 +1,5 @@
 import {Center, ClusterCluoudletAppInstLabel, LegendOuterDiv, PageMonitoringStyles} from '../common/PageMonitoringStyles'
+
 import type {PageMonitoringProps} from "../common/PageMonitoringProps";
 import {CustomSwitch, graphDataCount, PageDevMonitoringMapDispatchToProps, PageDevMonitoringMapStateToProps} from '../common/PageMonitoringProps'
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
@@ -164,7 +165,7 @@ const ASubMenu = AMenu.SubMenu;
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const FontAwesomeIcon = require('react-fontawesome')
 const legendIconSize = 18
-
+const OPTIONS = {delay: 1000}
 const emptyMessage = () => (
     <div style={{textAlign: 'center', color: 'white !important', display: 'flex'}}>
         <div style={{marginLeft: 10, color: 'orange'}}>No data available</div>
@@ -390,6 +391,8 @@ type PageDevMonitoringState = {
     lineChartDataSet: any,
     isScrollEnableForLineChart: boolean,
     isShowAddPopup: boolean,
+    isOn: false,
+    start: 0,
 
 }
 
@@ -454,7 +457,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     layoutCloudlet: isEmpty(reactLocalStorage.get(cloudletLayout)) ? defaultLayoutForCloudlet : reactLocalStorage.getObject(cloudletLayout),
                     layoutMapperCloudlet: isEmpty(reactLocalStorage.get(cloudletlayoutMapper)) ? defaultLayoutMapperForCloudlet : reactLocalStorage.getObject(cloudletlayoutMapper),
                     date: '',
-                    time: '',
                     dateTime: '',
                     datesRange: '',
                     markerList: [],
@@ -655,7 +657,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isShowAddPopup: false,
                     isGradientColor: false,
                     isLegendExpanded: false,
+                    time: 0,
+                    isOn: false,
+                    start: 0
                 }
+
+                this.startTimer = this.startTimer.bind(this)
+                this.stopTimer = this.stopTimer.bind(this)
+                this.resetTimer = this.resetTimer.bind(this)
             }
 
             async componentWillReceiveProps(nextProps: PageMonitoringProps, nextContext: any): void {
@@ -663,6 +672,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     window.dispatchEvent(new Event('resize'))
                 }
             }
+
+            startTimer() {
+                this.setState({
+                    isOn: true,
+                    time: this.state.time,
+                    start: Date.now() - this.state.time
+                })
+                this.timer = setInterval(() => this.setState({
+                    time: Date.now() - this.state.start
+                }), 1);
+            }
+
+            stopTimer() {
+                this.setState({isOn: false})
+                clearInterval(this.timer)
+            }
+
+            resetTimer() {
+                this.setState({time: 0, isOn: false})
+            }
+
 
             componentDidMount = async () => {
                 moment.tz.setDefault(getMexTimezone())
@@ -2048,9 +2078,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                                 let clusterCloudletOne = item.cluster + ' | ' + item.cloudlet
                                                 filteredClusterCloudletlist.push(clusterCloudletOne)
                                             })
-                                            await this.handleOnChangeClusterDropdownForDev(filteredClusterCloudletlist)
+                                            this.setClusterInterval();
                                         } else {
-                                            await this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
+                                            this.setAppInstInterval();
                                         }
                                         this.setState({
                                             isStream: true,
@@ -2455,6 +2485,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             async handleOnChangeClusterDropdownForDev(selectClusterCloudletList) {
+                await this.resetTimer();
+                await this.startTimer();
                 await this.setState({
                     currentCloudletMap: MAP_LEVEL.CLUSTER,
                 })
@@ -2486,9 +2518,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let allClusterList = this.state.allClusterList
                         let filteredClusterList = this.filterClusterListForTreeSelect(allClusterList, selectClusterCloudletList)
 
-                        //todo: ###############################
+                        //todo: ######################################
                         //todo:  appInstList, clusterList filtering.
-                        //todo: ###############################
+                        //todo: ######################################
                         this.state.appInstList.map((appInstOne, index) => {
                             selectClusterCloudletList.map((clusterCloudletOne, innerIndex) => {
                                 if (appInstOne.ClusterInst === clusterCloudletOne.split("|")[0].trim() && appInstOne.Cloudlet === clusterCloudletOne.split("|")[1].trim()) {
@@ -2507,24 +2539,27 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             })
                         })
 
+                        //todo: mapMarker
+                        let mapMarkerObjectForMap = makeMapMarkerObjectForDev(filteredAppInstList, filteredCloudletList)
+                        setTimeout(async () => {
+                            await this.setState({
+                                markerList: mapMarkerObjectForMap,//todo mapdata
+                                mapLoading: false,
+                            })
+                        }, 111)
+
                         //todo: ###############################
                         //todo: usageEventPromiseList
                         //todo: ###############################
                         let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]
                         let startTime = makeCompleteDateTime(date[0]);
                         let endTime = makeCompleteDateTime(date[1]);
-
-
-                        //
-                        usageEventPromiseList.push(getAllAppInstEventLogs());
                         usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount))
-                        usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount, this))
                         usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.DEV, this.state.dataLimitCount))
-                        const [_filteredAppInstEventLogList, _filteredClusterUsageList, _filteredClientStatusList, _filteredClusterEventLogList] = await Promise.all(usageEventPromiseList);
-                        filteredAppInstEventLogList = _filteredAppInstEventLogList;
-                        filteredClusterUsageList = _filteredClusterUsageList;
-                        filteredClientStatusList = _filteredClientStatusList;
-                        filteredClusterEventLogList = _filteredClusterEventLogList
+                        const [_filteredClusterUsageList, _filteredClusterEventLogList] = await Promise.allSettled(usageEventPromiseList);
+
+                        filteredClusterUsageList = _filteredClusterUsageList.value;
+                        filteredClusterEventLogList = _filteredClusterEventLogList.value
 
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
@@ -2536,8 +2571,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let appInstDropdown = makeDropdownForAppInst(filteredAppInstList)
                         bubbleChartData = makeClusterBubbleChartData(filteredClusterUsageList, this.state.currentHardwareType, this.state.chartColorList);
-                        let mapMarkerObjectForMap = makeMapMarkerObjectForDev(filteredAppInstList, filteredCloudletList)
-
                         await this.setState({
                             filteredClientStatusList: filteredClientStatusList,
                             currentClusterList: selectClusterCloudletList,
@@ -2547,7 +2580,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             allAppInstDropdown: appInstDropdown,
                             appInstSelectBoxPlaceholder: 'Select App Inst',
                             filteredAppInstList: filteredAppInstList,
-                            markerList: mapMarkerObjectForMap,//todo mapdata
                             currentAppInst: undefined,
                             currentAppInstNameVersion: undefined,
                             filteredClusterList: filteredClusterList,
@@ -2560,7 +2592,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         });
                         await this.setState({
                             loading: false,
-                            mapLoading: false,
                             isScrollEnableForLineChart: false,
                         })
 
@@ -2583,6 +2614,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         clearInterval(this.intervalForCluster)
                         await this.setState({isStream: false})
                     }
+                    await this.stopTimer();
                 } catch (e) {
                 }
             }
@@ -2738,12 +2770,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     //desc: ############################
                     //desc: filtered AppInstEventLogList
                     //desc: ############################
-                    let _allAppInstEventLog = this.state.allAppInstEventLogs;
+                    let _allAppInstEventLog = await getAllAppInstEventLogs(this.state.currentAppInst, this.state.dataLimitCount);
                     let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
                         if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
                             return true;
                         }
                     })
+
                     await this.setState({
                         filteredAppInstEventLogs: filteredAppInstEventLogList,
                         currentTabIndex: 0,
@@ -3213,6 +3246,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 size={'small'}
                                 onClick={async () => {
                                     this.applyButton.blur();
+
+
                                     if (this.state.currentClusterList !== undefined) {
                                         let selectClusterCloudletList = this.state.currentClusterList
                                         await this.handleOnChangeClusterDropdownForDev(selectClusterCloudletList)
@@ -3980,6 +4015,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         <div style={{marginLeft: 30}}>
                                             {this.renderGraphDataCountDropdown()}
                                         </div>
+
+                                        {/*todo: ######################*/}
+                                        {/*todo: timer for demo or test*/}
+                                        {/*todo: ######################*/}
+                                        {/*<div style={{marginLeft: 50}}>
+                                            &nbsp;&nbsp; timer: {ms(this.state.time)}
+                                        </div>*/}
                                     </React.Fragment>
                                     ://TODO:오퍼레이터
                                     <React.Fragment>
