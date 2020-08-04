@@ -234,6 +234,10 @@ class HeaderAuditLog extends React.Component {
             this.onFilterValue()
         }
     }
+
+    componentDidMount() {
+        this.setState({ filterList: this.props.dataList })
+    }
 }
 
 
