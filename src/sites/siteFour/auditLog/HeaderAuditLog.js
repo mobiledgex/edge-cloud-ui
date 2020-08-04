@@ -4,14 +4,12 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { IconButton, Step, StepLabel, Stepper, Button } from '@material-ui/core';
+import { Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import * as dateUtil from '../../../utils/date_util'
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import CloseIcon from '@material-ui/icons/CloseRounded';
 import CheckIcon from '@material-ui/icons/CheckRounded';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
-import HistoryIcon from '@material-ui/icons/HistoryRounded';
 import SearchIcon from '@material-ui/icons/SearchRounded';
 import HistoryLog from './HistoryLog';
 class HeaderAuditLog extends React.Component {
@@ -20,7 +18,6 @@ class HeaderAuditLog extends React.Component {
         this.state = {
             expanded: (-1),
             dayData: [],
-            history: false,
             dataList: [],
             filterExpand: false
         }
@@ -163,26 +160,25 @@ class HeaderAuditLog extends React.Component {
     }
 
     onFilter = (filter) => {
-        this.setState(prevState => ({ history: !prevState.history }))
         this.props.onLoadData(filter.starttime, filter.endtime, filter.limit)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.historyList.length > 0) {
+        if (prevState.filterExpand && nextProps.historyList !== prevState.dataList) {
             return { dataList: nextProps.historyList }
         }
-        else if (nextProps.dataList.length > 0) {
+        else if (nextProps.dataList !== prevState.dataList && !prevState.filterExpand) {
             return { dataList: nextProps.dataList }
         }
         return null
     }
 
     onFilterExpand = (flag) => {
-        this.setState({ filterExpand: flag })
+        this.setState({ filterExpand: flag, dataList: flag ? [] : this.props.liveData })
     }
 
     render() {
-        const { history, dataList, filterExpand } = this.state
+        const { dataList, filterExpand } = this.state
         return (
             <div className='audit_container'>
                 <div>
