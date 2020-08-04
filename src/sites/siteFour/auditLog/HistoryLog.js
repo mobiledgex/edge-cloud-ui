@@ -13,7 +13,7 @@ import * as dateUtil from '../../../utils/date_util'
 import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
-const endDate = new Date().getTime()
+const endDate = dateUtil.currentTimeInMilli()
 const startDate = dateUtil.subtractMonth(1).valueOf()
 const MaterialUIPickers = (props) => {
     // The first commit of Material-UI
@@ -97,8 +97,9 @@ const MaterialUIPickers = (props) => {
                                 margin="normal"
                                 id="date-picker-inline"
                                 label="Date"
+                                autoOk={true}
                                 value={selectedDate}
-                                //shouldDisableDate={disableDates}
+                                shouldDisableDate={disableDates}
                                 onChange={handleDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
@@ -130,6 +131,7 @@ const MaterialUIPickers = (props) => {
                                 id="time-picker"
                                 variant="inline"
                                 label="Start Time"
+                                autoOk={true}
                                 value={selectedStarttime}
                                 onChange={handleStartime}
                                 KeyboardButtonProps={{
@@ -145,6 +147,7 @@ const MaterialUIPickers = (props) => {
                                 id="time-picker"
                                 variant="inline"
                                 label="End Time"
+                                autoOk={true}
                                 value={selectedEndtime}
                                 onChange={handleEndtime}
                                 KeyboardButtonProps={{

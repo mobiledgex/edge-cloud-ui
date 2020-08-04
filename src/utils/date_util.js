@@ -61,11 +61,6 @@ export const utcTime = (format, date) => {
     return moment(date).utc().format(format)
 }
 
-export const compareUTCTimeInMilli = (from, to) =>
-{
-    return convertToUnix(from) === currentTimeInMilli()
-}
-
 export const subtractDays = (value) => {
     return value ? moment().subtract(value, 'days') : moment().subtract('days')
 }
