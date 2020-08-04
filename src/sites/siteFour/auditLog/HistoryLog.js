@@ -13,11 +13,13 @@ import * as dateUtil from '../../../utils/date_util'
 import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
+const endDate = new Date().getTime()
+const startDate = dateUtil.subtractMonth(1).valueOf()
 const MaterialUIPickers = (props) => {
     // The first commit of Material-UI
-    const [selectedDate, setSelectedDate] = React.useState(dateUtil.utcTime(dateUtil.currentTime()));
-    const [selectedStarttime, setStarttime] = React.useState(dateUtil.utcTime(dateUtil.currentTime()));
-    const [selectedEndtime, setEndtime] = React.useState(dateUtil.utcTime(dateUtil.currentTime()));
+    const [selectedDate, setSelectedDate] = React.useState(new Date(dateUtil.currentTime(dateUtil.FORMAT_FULL_T)));
+    const [selectedStarttime, setStarttime] = React.useState(new Date(dateUtil.currentTime(dateUtil.FORMAT_FULL_T)));
+    const [selectedEndtime, setEndtime] = React.useState(new Date(dateUtil.currentTime(dateUtil.FORMAT_FULL_T)));
     const [expanded, setExpanded] = React.useState(false);
     const [limit, setLimit] = React.useState(25);
 
@@ -27,7 +29,6 @@ const MaterialUIPickers = (props) => {
         props.onExpand(flag)
     };
     
-
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
@@ -56,6 +57,12 @@ const MaterialUIPickers = (props) => {
     const onClose = (e) => {
         props.onClose()
         e.stopPropagation();
+    }
+
+    const disableDates = (date)=>
+    {
+        let time = date.getTime()
+        return time < startDate || time > endDate
     }
 
     return (
@@ -91,6 +98,7 @@ const MaterialUIPickers = (props) => {
                                 id="date-picker-inline"
                                 label="Date"
                                 value={selectedDate}
+                                //shouldDisableDate={disableDates}
                                 onChange={handleDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',

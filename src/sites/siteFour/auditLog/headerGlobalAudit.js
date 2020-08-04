@@ -128,7 +128,8 @@ class headerGlobalAudit extends React.Component {
         this.intervalId = setInterval(() => {
             let dataList = this.state.liveData
             let time = dataList.length > 0 ? dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.convertToUnix(dataList[0].starttime)) : this.starttime
-            this.getDataAudit(time, this.endtime, CON_LIMIT, true, dataList[0].starttime)
+            let orgTime = dataList.length > 0 ? dataList[0].starttime : undefined
+            this.getDataAudit(time, this.endtime, CON_LIMIT, true, orgTime)
         }, 10 * 1000);
     }
 
