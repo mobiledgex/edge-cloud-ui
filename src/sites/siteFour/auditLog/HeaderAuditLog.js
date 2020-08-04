@@ -19,10 +19,10 @@ class HeaderAuditLog extends React.Component {
             expanded: (-1),
             dayData: [],
             dataList: [],
-            filterExpand: false
+            filterList:[],
+            filterExpand: false,
+            filterText:''
         }
-        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
-        this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.endOfDay())
     }
 
     setAllView = (dummyConts, sId) => {
@@ -78,18 +78,6 @@ class HeaderAuditLog extends React.Component {
         let rawViewData = (data) ? this.setAllView(data) : {};
         this.props.detailView(rawViewData)
     }
-
-    handleDateChange = (selectedDate, index) => {
-        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, selectedDate.startOf('day').valueOf())
-        this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, selectedDate.endOf('day').valueOf())
-        this.props.onLoadData(this.starttime, this.endtime)
-    };
-
-    onSelectDate = (date, index) => {
-        if (index !== (-1) && index < 61) {
-            this.handleDateChange(date, index)
-        }
-    };
 
     handleExpandedChange = (index, traceid) => (event, newExpanded) => {
         //this.props.onItemSelected(traceid)
@@ -177,16 +165,32 @@ class HeaderAuditLog extends React.Component {
         this.setState({ filterExpand: flag, dataList: flag ? [] : this.props.liveData })
     }
 
+    onFilterValue = (e) => {
+        let value = e ? e.target.value : this.state.filterText
+        this.mapDetails = null
+        let filterText = value.toLowerCase()
+        let dataList = this.state.dataList
+        let filterList = dataList.filter(data => {
+            return data['operationname'].toLowerCase().includes(filterText)
+        })
+        if (value !== undefined) {
+            this.setState({ filterText:value, filterList: filterList })
+        }
+        return filterList
+    }
+
     render() {
-        const { dataList, filterExpand } = this.state
+        const { filterList, filterExpand, filterText } = this.state
         return (
             <div className='audit_container'>
                 <div>
-                    <HistoryLog onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} /></div>
+                    <HistoryLog onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} />
+                </div>
                 <Input
                     size="small"
                     fullWidth
                     style={{ padding: '0 14px 0 14px' }}
+                    value={filterText}
                     startAdornment={
                         <InputAdornment style={{ fontSize: 17 }} position="start">
                             <SearchIcon />
@@ -197,14 +201,16 @@ class HeaderAuditLog extends React.Component {
                             <CloseIcon style={{ fontSize: 17 }} onClick={() => { }} />
                         </InputAdornment>
                     }
+                    onChange = {this.onFilterValue}
                     placeholder={'Search'} />
-                {this.props.loading ? <LinearProgress /> : null}
+                {this.props.loading && !filterExpand ? <LinearProgress /> : null}
+                {this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
                 <Divider />
                 <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
                     {
-                        dataList && dataList.length > 0 ?
-                            <Stepper className='audit_timeline_container' activeStep={dataList.length} orientation="vertical">
-                                {dataList.map((data, index) => {
+                        filterList && filterList.length > 0 ?
+                            <Stepper className='audit_timeline_container' activeStep={filterList.length} orientation="vertical">
+                                {filterList.map((data, index) => {
                                     return (
                                         this.renderStepper(data, index)
                                     )
@@ -216,8 +222,12 @@ class HeaderAuditLog extends React.Component {
         )
     }
 
-    componentDidMount() {
-        this.props.onLoadData(this.starttime, this.endtime)
+    componentDidUpdate(prevProps, prevState)
+    {
+        if(prevState.dataList !== this.state.dataList)
+        {
+            this.onFilterValue()
+        }
     }
 }
 
