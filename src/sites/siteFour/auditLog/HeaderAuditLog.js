@@ -179,6 +179,11 @@ class HeaderAuditLog extends React.Component {
         return filterList
     }
 
+    onFilterClear = ()=>
+    {
+        this.setState({filterText:''}, ()=>{this.onFilterValue()})
+    }
+
     render() {
         const { filterList, filterExpand, filterText } = this.state
         return (
@@ -198,7 +203,7 @@ class HeaderAuditLog extends React.Component {
                     }
                     endAdornment={
                         <InputAdornment position="end">
-                            <CloseIcon style={{ fontSize: 17 }} onClick={() => { }} />
+                            <CloseIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
                         </InputAdornment>
                     }
                     onChange = {this.onFilterValue}
