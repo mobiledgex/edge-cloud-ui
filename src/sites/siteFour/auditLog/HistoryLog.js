@@ -99,7 +99,7 @@ const MaterialUIPickers = (props) => {
                                 label="Date"
                                 autoOk={true}
                                 value={selectedDate}
-                                shouldDisableDate={disableDates}
+                                //shouldDisableDate={disableDates}
                                 onChange={handleDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
