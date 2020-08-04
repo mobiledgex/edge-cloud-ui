@@ -6,10 +6,9 @@ import * as actions from '../../../actions';
 import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import * as serverData from '../../../services/model/serverData';
 import PopDetailViewer from '../../../container/popDetailViewer';
-import { IconButton, Drawer, Button, TextField } from '@material-ui/core';
+import { IconButton, Drawer} from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../utils/date_util'
-import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded';
 let _self = null;
 
 
@@ -97,16 +96,6 @@ class headerGlobalAudit extends React.Component {
                 else {
                     this.setState({ historyList: dataList })
                 }
-                
-                // if (oldLogData[starttime] && (this.currenttime !== starttime || !isStart)) {
-                //     oldDataList = [...oldLogData[starttime], ...dataList]
-                // }
-                // this.setState(prevState => ({
-                //     logData: {
-                //         ...prevState.logData,
-                //         [starttime]: oldDataList
-                //     }
-                // }), ()=>{console.log('Rahul1234', this.state.logData)});
             }
         }
     }

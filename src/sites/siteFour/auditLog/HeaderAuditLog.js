@@ -12,6 +12,7 @@ import CloseIcon from '@material-ui/icons/CloseRounded';
 import CheckIcon from '@material-ui/icons/CheckRounded';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
 import HistoryIcon from '@material-ui/icons/HistoryRounded';
+import SearchIcon from '@material-ui/icons/SearchRounded';
 import HistoryLog from './HistoryLog';
 class HeaderAuditLog extends React.Component {
     constructor(props) {
@@ -19,10 +20,11 @@ class HeaderAuditLog extends React.Component {
         this.state = {
             expanded: (-1),
             dayData: [],
-            history:false,
-            dataList:[]
+            history: false,
+            dataList: [],
+            filterExpand: false
         }
-        this.starttime=dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
+        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
         this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.endOfDay())
     }
 
@@ -92,10 +94,6 @@ class HeaderAuditLog extends React.Component {
         }
     };
 
-    onClickClose = () => {
-        this.props.close()
-    };
-
     handleExpandedChange = (index, traceid) => (event, newExpanded) => {
         //this.props.onItemSelected(traceid)
         this.setState({ expanded: newExpanded ? index : false });
@@ -163,10 +161,9 @@ class HeaderAuditLog extends React.Component {
                 null
         )
     }
-    
-    onFilter = (filter)=>
-    {
-        this.setState(prevState=>({history : !prevState.history}))
+
+    onFilter = (filter) => {
+        this.setState(prevState => ({ history: !prevState.history }))
         this.props.onLoadData(filter.starttime, filter.endtime, filter.limit)
     }
 
@@ -174,50 +171,49 @@ class HeaderAuditLog extends React.Component {
         if (nextProps.historyList.length > 0) {
             return { dataList: nextProps.historyList }
         }
-        else if(nextProps.dataList.length > 0)
-        {
-            return { dataList: nextProps.dataList }  
+        else if (nextProps.dataList.length > 0) {
+            return { dataList: nextProps.dataList }
         }
         return null
     }
 
+    onFilterExpand = (flag) => {
+        this.setState({ filterExpand: flag })
+    }
+
     render() {
-        const { history, dataList } = this.state
+        const { history, dataList, filterExpand } = this.state
         return (
-            history ? 
-            <div className='audit_container'><HistoryLog onFilter={this.onFilter}/></div> : 
             <div className='audit_container'>
-                 <div className='audit_title'>
-                    <div className="audit_title_label">Audit Logs</div>
-                    <Input
-                            size="small"
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <CloseIcon style={{ fontSize: 17 }} onClick={() => { }} />
-                                </InputAdornment>
-                            }
-                            placeholder={'Search'} />
-                    <IconButton onClick={()=>{this.setState(prevState=>({history : !prevState.history}))}}>
-                        <HistoryIcon/>
-                    </IconButton>
-                    <div style={{position:'absolute', right:0}}>
-                        <IconButton onClick={this.onClickClose}>
-                            <ArrowForwardIosIcon fontSize={'small'} />
-                        </IconButton>
-                    </div>
-                </div>
+                <div>
+                    <HistoryLog onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} /></div>
+                <Input
+                    size="small"
+                    fullWidth
+                    style={{ padding: '0 14px 0 14px' }}
+                    startAdornment={
+                        <InputAdornment style={{ fontSize: 17 }} position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    }
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <CloseIcon style={{ fontSize: 17 }} onClick={() => { }} />
+                        </InputAdornment>
+                    }
+                    placeholder={'Search'} />
                 {this.props.loading ? <LinearProgress /> : null}
-                <Divider/>
-                <div className='audit_timeline_vertical'>
+                <Divider />
+                <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
                     {
-                        dataList && dataList.length > 0 ? 
-                        <Stepper className='audit_timeline_container' activeStep={dataList.length} orientation="vertical">
-                            {dataList.map((data, index) => {
-                                return (
-                                    this.renderStepper(data, index)
-                                )
-                            })}
-                        </Stepper> : null
+                        dataList && dataList.length > 0 ?
+                            <Stepper className='audit_timeline_container' activeStep={dataList.length} orientation="vertical">
+                                {dataList.map((data, index) => {
+                                    return (
+                                        this.renderStepper(data, index)
+                                    )
+                                })}
+                            </Stepper> : null
                     }
                 </div>
             </div>

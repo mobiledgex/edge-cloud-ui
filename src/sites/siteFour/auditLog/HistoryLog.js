@@ -1,22 +1,32 @@
 import 'date-fns';
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
     KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import { Input, InputAdornment, TextField, Button } from '@material-ui/core';
+import { InputAdornment, TextField, Button, Grid, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@material-ui/core';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 import * as dateUtil from '../../../utils/date_util'
+
+import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
 const MaterialUIPickers = (props) => {
     // The first commit of Material-UI
     const [selectedDate, setSelectedDate] = React.useState(dateUtil.utcTime(dateUtil.currentTime()));
     const [selectedStarttime, setStarttime] = React.useState(dateUtil.utcTime(dateUtil.currentTime()));
     const [selectedEndtime, setEndtime] = React.useState(dateUtil.utcTime(dateUtil.currentTime()));
+    const [expanded, setExpanded] = React.useState(false);
     const [limit, setLimit] = React.useState(25);
+
+    const handleExpandChange = () => {
+        let flag = !expanded
+        setExpanded(flag);
+        props.onExpand(flag)
+    };
+    
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -43,77 +53,106 @@ const MaterialUIPickers = (props) => {
         props.onFilter(filter)
     }
 
+    const onClose = (e) => {
+        props.onClose()
+        e.stopPropagation();
+    }
+
     return (
-        <div style={{ marginTop: '50%' }} align="center">
-            <div style={{ width: 200 }}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                        disableToolbar
-                        variant="inline"
-                        format={"MM/dd/yyyy"}
-                        margin="normal"
-                        id="date-picker-inline"
-                        label="Date"
-                        value={selectedDate}
-                        onChange={handleDateChange}
-                        KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                        }}
-                    />
-                </MuiPickersUtilsProvider>
-            </div>
-            <div style={{ width: 200 }}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardTimePicker
-                        margin="normal"
-                        id="time-picker"
-                        variant="inline"
-                        label="Start Time"
-                        value={selectedStarttime}
-                        onChange={handleStartime}
-                        KeyboardButtonProps={{
-                            'aria-label': 'change time',
-                        }}
-                    />
-                </MuiPickersUtilsProvider>
-            </div>
-            <div style={{ width: 200 }}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardTimePicker
-                        margin="normal"
-                        id="time-picker"
-                        variant="inline"
-                        label="End Time"
-                        value={selectedEndtime}
-                        onChange={handleEndtime}
-                        KeyboardButtonProps={{
-                            'aria-label': 'change time',
-                        }}
-                    />
-                </MuiPickersUtilsProvider>
-            </div>
-            <br />
-            <div style={{ width: 200 }}>
-                <TextField
-                    label="Limit"
-                    fullWidth
-                    defaultValue={limit}
-                    onChange={handleLimit}
-                    InputProps={{
-                        endAdornment: (
-                            < InputAdornment position="end" >
-                                <DataUsageIcon onClick={() => { }} />
-                            </InputAdornment>
-                        )
-                    }}
-                    placeholder={'Search'} />
-            </div>
-            <br />
-            <div align={'right'} style={{ marginRight: 20 }}>
-                <Button onClick={onSubmit}>Fetch Data</Button>
-            </div>
-        </div>
+        <Accordion expanded={expanded}>
+            <AccordionSummary
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+            >
+                <div style={{ position: 'absolute', left: 0, width: 100}}>
+                    <IconButton onClick={handleExpandChange}>
+                        <FilterListRoundedIcon />
+                    </IconButton>
+                    <button size='small' style={{ backgroundColor: `${expanded ? '#BFC0C2' : '#388E3C'}`, borderRadius: 5, border: 'none', fontSize: 10, padding: '5px 10px 5px 10px'}}>LIVE</button>
+                </div>
+                <div onClick={(e) => { e.stopPropagation() }} align={'center'} style={{ width: '100%', height: 50 }}>
+                    <div style={{ position: 'absolute', right: 0, top: 2 }} onClick={onClose}>
+                        <IconButton>
+                            <ArrowForwardIosIcon fontSize={'small'} />
+                        </IconButton>
+                    </div>
+                </div>
+
+            </AccordionSummary>
+            <AccordionDetails style={{ backgroundColor: '#292C33' }}>
+                <Grid container justify="space-around">
+                    <div style={{ width: 150 }}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline"
+                                format={"MM/dd/yyyy"}
+                                margin="normal"
+                                id="date-picker-inline"
+                                label="Date"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            />
+                        </MuiPickersUtilsProvider>
+                    </div>
+                    <div style={{ width: 150, marginTop: 15 }}>
+                        <TextField
+                            label="Limit"
+                            fullWidth
+                            defaultValue={limit}
+                            onChange={handleLimit}
+                            InputProps={{
+                                endAdornment: (
+                                    < InputAdornment position="end" >
+                                        <DataUsageIcon onClick={() => { }} />
+                                    </InputAdornment>
+                                )
+                            }}
+                            placeholder={'Search'} />
+                    </div>
+                </Grid>
+                <Grid container justify="space-around">
+                    <div style={{ width: 150 }}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardTimePicker
+                                margin="normal"
+                                id="time-picker"
+                                variant="inline"
+                                label="Start Time"
+                                value={selectedStarttime}
+                                onChange={handleStartime}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change time',
+                                }}
+                            />
+                        </MuiPickersUtilsProvider>
+                    </div>
+                    <div style={{ width: 150 }}>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardTimePicker
+                                margin="normal"
+                                id="time-picker"
+                                variant="inline"
+                                label="End Time"
+                                value={selectedEndtime}
+                                onChange={handleEndtime}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change time',
+                                }}
+                            />
+                        </MuiPickersUtilsProvider>
+                    </div>
+                </Grid>
+                <br />
+                <div align={'right'} style={{ marginRight: 20 }}>
+                    <Button onClick={onSubmit}>Fetch Data</Button>
+                </div>
+            </AccordionDetails>
+        </Accordion>
     );
 }
 
-export default  MaterialUIPickers
+export default MaterialUIPickers

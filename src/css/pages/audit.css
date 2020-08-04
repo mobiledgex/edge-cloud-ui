@@ -694,7 +694,6 @@
 }
 
 .audit_title {
-    padding: 10px 20px;
     display: flex;
     flex-direction: row;
     min-height:45px;
@@ -775,7 +774,12 @@
 
 .audit_timeline_vertical {
     overflow-y: auto;
-    height: calc(100% - 66px);
+    height: calc(100% - 82px);
+}
+
+.audit_timeline_vertical_expand {
+    overflow-y: auto;
+    height: calc(100% - 311px);
 }
 
 /* timeline */
