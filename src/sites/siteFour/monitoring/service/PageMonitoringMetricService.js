@@ -336,6 +336,9 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
         appInstanceHwUsageList = await Promise.allSettled(promiseList);
 
 
+        console.log(`appInstanceHwUsageList====>`, appInstanceHwUsageList);
+
+
         let usageListForAllInstance = []
         appInstanceList.map((item, index) => {
             usageListForAllInstance.push({
@@ -620,6 +623,8 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
             newClusterUsageListWithColorCode.push(item)
         })
 
+        console.log(`newClusterUsageListWithColorCode====>`, newClusterUsageListWithColorCode);
+
         return newClusterUsageListWithColorCode;
     } catch (e) {
         return [];
@@ -821,6 +826,10 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
 }
 
 export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
+
+    console.log(`getAppInstLevelMetric====>`, serviceBodyForAppInstanceOneInfo);
+
+
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: mcURL() + APP_INST_METRICS_ENDPOINT,
@@ -1134,9 +1143,12 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
+        //"last": 20,
         "starttime": startTime,
         "endtime": endTime,
     }
+
+    console.log(`getClientStateOne====>`, data);
 
 
     return await axios({
@@ -1156,12 +1168,18 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             seriesValues = response.data.data[0].Series[0].values
             column = response.data.data[0].Series[0].columns
 
+            console.log(`Series====>` + response.data.data[0].Series);
+
+        } else {
+            showToast('null')
         }
 
         let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column, appInst)
 
         return clientMatricSumDataOne;
 
+    }).catch(e => {
+        showToast(e.toString())
     })
 }
 
@@ -1198,7 +1216,34 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 
     seriesValues.map(item => {
-        let methodType = item[17];
+
+        /*  [
+              "2020-08-04T22:17:21.795885957Z",
+              0,
+              0,2
+              0,3
+              0,4
+              61,5
+              "app1595019031-405644",6
+              "MobiledgeX",7
+              "0",8
+              "mexplat-qa-cloudlet",9
+              "TDG",10
+              null,11
+              0,12
+              null,13
+              null,14
+              0,15
+              "RegisterClient",16
+              null,
+              61,
+              "1.0"
+          ],*/
+
+        let methodType = item[16];
+
+        console.log(`methodType====>`, methodType);
+
         if (methodType === "RegisterClient") {
             RegisterClientCount++;
         }
@@ -1231,6 +1276,7 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
     try {
+        showToast('sdflkdslfkl!!!!!!!!')
         let promiseList = []
 
         let range = getTimeRange(dataLimitCount)
@@ -1240,12 +1286,14 @@ export const getClientStatusList = async (appInstList, startTime, endTime, dataL
         appInstList.map((appInstOne: TypeCloudlet, index) => {
             promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
         })
-        let newPromiseList = await Promise.all(promiseList);
+        let newPromiseList = await Promise.allSettled(promiseList);
+
+        console.log(`getClientStatusList====>`, newPromiseList);
 
         let mergedClientStatusList = []
         newPromiseList.map((item, index) => {
-            if (item !== undefined) {
-                mergedClientStatusList.push(item)
+            if (item.value !== undefined) {
+                mergedClientStatusList.push(item.value)
             }
         })
         return mergedClientStatusList;
