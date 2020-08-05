@@ -335,10 +335,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
         let appInstanceHwUsageList = []
         appInstanceHwUsageList = await Promise.allSettled(promiseList);
 
-
-        console.log(`appInstanceHwUsageList====>`, appInstanceHwUsageList);
-
-
         let usageListForAllInstance = []
         appInstanceList.map((item, index) => {
             usageListForAllInstance.push({
@@ -623,8 +619,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
             newClusterUsageListWithColorCode.push(item)
         })
 
-        console.log(`newClusterUsageListWithColorCode====>`, newClusterUsageListWithColorCode);
-
         return newClusterUsageListWithColorCode;
     } catch (e) {
         return [];
@@ -826,8 +820,6 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
 }
 
 export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
-
-    console.log(`getAppInstLevelMetric====>`, serviceBodyForAppInstanceOneInfo);
 
 
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -1148,8 +1140,6 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         "endtime": endTime,
     }
 
-    console.log(`getClientStateOne====>`, data);
-
 
     return await axios({
         url: mcURL() + SHOW_METRICS_CLIENT_STATUS,
@@ -1167,8 +1157,6 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         if (response.data.data[0].Series !== null) {
             seriesValues = response.data.data[0].Series[0].values
             column = response.data.data[0].Series[0].columns
-
-            console.log(`Series====>` + response.data.data[0].Series);
 
         } else {
             showToast('null')
@@ -1242,8 +1230,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
         let methodType = item[16];
 
-        console.log(`methodType====>`, methodType);
-
         if (methodType === "RegisterClient") {
             RegisterClientCount++;
         }
@@ -1287,8 +1273,6 @@ export const getClientStatusList = async (appInstList, startTime, endTime, dataL
             promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
         })
         let newPromiseList = await Promise.allSettled(promiseList);
-
-        console.log(`getClientStatusList====>`, newPromiseList);
 
         let mergedClientStatusList = []
         newPromiseList.map((item, index) => {
