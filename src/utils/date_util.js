@@ -8,6 +8,8 @@ export const FORMAT_AM_PM = 'A'
 export const FORMAT_DAY = 'D'
 export const FORMAT_FULL_DATE_TIME = `${FORMAT_FULL_DATE} ${FORMAT_FULL_TIME}`
 export const FORMAT_DATE_24_HH_mm = `${FORMAT_FULL_DATE} ${FORMAT_TIME_HH_mm}`
+export const FORMAT_FULL_T_Z = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}Z`
+export const FORMAT_FULL_T = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}`
 
 export const timezoneName = ()=>
 {
@@ -59,11 +61,6 @@ export const utcTime = (format, date) => {
     return moment(date).utc().format(format)
 }
 
-export const compareUTCTimeInMilli = (from, to) =>
-{
-    return convertToUnix(from) === currentTimeInMilli()
-}
-
 export const subtractDays = (value) => {
     return value ? moment().subtract(value, 'days') : moment().subtract('days')
 }
@@ -72,8 +69,20 @@ export const subtractMins = (mins) => {
     return mins ? moment().subtract(mins, 'minutes') : moment().subtract('minutes')
 }
 
+export const subtractMonth = (value) => {
+    return value ? moment().subtract(value, 'month') : moment().subtract('month')
+}
+
 export const startOfMonth = (value) => {
     return value ? moment().startOf(value, 'month') : moment().startOf('month')
+}
+
+export const startOfDay = (value) => {
+    return value ? moment().startOf(value, 'day') : moment().startOf('day')
+}
+
+export const endOfDay = (value) => {
+    return value ? moment().endOf(value, 'day') : moment().endOf('day')
 }
 
 export const endOfMonth = (value) => {
