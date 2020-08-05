@@ -1159,11 +1159,10 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             column = response.data.data[0].Series[0].columns
 
         } else {
-            showToast('null')
+            //showToast('null')
         }
 
         let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column, appInst)
-
         return clientMatricSumDataOne;
 
     }).catch(e => {
@@ -1262,7 +1261,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
     try {
-        showToast('sdflkdslfkl!!!!!!!!')
         let promiseList = []
 
         let range = getTimeRange(dataLimitCount)
