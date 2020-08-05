@@ -41,6 +41,16 @@ export const APP = 'App'
 export const YES = 'Yes'
 export const NO = 'No'
 
+export const MAINTENANCE_STATE_NORMAL_OPERATION  = 'Normal Operation'
+export const MAINTENANCE_STATE_MAINTENANCE_START  = 'Maintenance Start'
+export const MAINTENANCE_STATE_FAILOVER_REQUESTED  = 'Failover Requested'
+export const MAINTENANCE_STATE_FAILOVER_DONE  = 'Failover Done'
+export const MAINTENANCE_STATE_FAILOVER_ERROR  = 'Failover Error'
+export const MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER  = 'Maintenance Start No Failover'
+export const MAINTENANCE_STATE_CRM_REQUESTED  = 'CRM Requested'
+export const MAINTENANCE_STATE_CRM_UNDER_MAINTENANCE  = 'CRM Under Maintenance'
+export const MAINTENANCE_STATE_CRM_ERROR  = 'CRM Error'
+export const MAINTENANCE_STATE_UNDER_MAINTENANCE  = 'Under Maintenance'
 
 export const INFRA_API_ACCESS_DIRECT = 'Direct'
 export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
@@ -80,7 +90,6 @@ export const POWER_STATE_REBOOTING = 'Rebooting'
 export const POWER_STATE_REBOOT = 'Reboot'
 export const POWER_STATE_ERROR = 'Error'
 
-
 export const HEALTH_CHECK_UNKNOWN = 'Unknown'
 export const HEALTH_CHECK_FAIL_ROOTLB_OFFLINE = 'Rootlb Offline'
 export const HEALTH_CHECK_FAIL_SERVER_FAIL = 'Server Fail'
@@ -99,6 +108,39 @@ export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
 export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
 export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
+
+export const MaintainanceState = (id) => {
+    switch (id) {
+        case 0:
+            return MAINTENANCE_STATE_NORMAL_OPERATION
+        case 1:
+            return MAINTENANCE_STATE_MAINTENANCE_START
+        case 2:
+            return MAINTENANCE_STATE_FAILOVER_REQUESTED
+        case 3:
+            return MAINTENANCE_STATE_FAILOVER_DONE
+        case 4:
+            return MAINTENANCE_STATE_FAILOVER_ERROR
+        case 5:
+            return MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER
+        case 6:
+            return MAINTENANCE_STATE_CRM_REQUESTED
+        case 7:
+            return MAINTENANCE_STATE_CRM_UNDER_MAINTENANCE
+        case 8:
+            return MAINTENANCE_STATE_CRM_ERROR
+        case 31:
+            return MAINTENANCE_STATE_UNDER_MAINTENANCE
+        case MAINTENANCE_STATE_NORMAL_OPERATION:
+            return 0
+        case MAINTENANCE_STATE_MAINTENANCE_START:
+            return 1
+        case MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER:
+            return 5
+        default:
+            return MAINTENANCE_STATE_NORMAL_OPERATION
+    }
+}
 
 export const PowerState = (id) => {
     switch (id) {

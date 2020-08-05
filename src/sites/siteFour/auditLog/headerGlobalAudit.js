@@ -70,8 +70,12 @@ class headerGlobalAudit extends React.Component {
                     return orgTime ? data.starttime > orgTime : true
                 })
                 if (isLive) {
-                    this.setState(prevState => ({ liveData: [...dataList, ...prevState.liveData] }), () => {
-                    })
+                    let newDataList = [...dataList, ...this.state.liveData]
+                    if(newDataList && newDataList.length > 250)
+                    {
+                        newDataList.splice(251, newDataList.length - 251);
+                    }
+                    this.setState({ liveData: newDataList })
                 }
                 else {
                     this.setState({ historyList: dataList })

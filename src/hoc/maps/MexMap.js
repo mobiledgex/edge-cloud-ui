@@ -14,7 +14,7 @@ import './styles.css';
 import { fields } from '../../services/model/format'
 import * as actions from "../../actions";
 
-const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03"]
+const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03", '#EAAE00']
 const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
 let zoom = 1;
@@ -168,7 +168,7 @@ class ClustersMap extends Component {
             if (item[fields.cloudletLocation]) {
 
                 if (item[fields.cloudletStatus]) {
-                    return ({ LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status: (item[fields.cloudletStatus] === 2) ? 'green' : 'red' })
+                    return ({ LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status: (item[fields.cloudletStatus] === 2) ? 'green' : item[fields.cloudletStatus] === 999 ? 'yellow' : 'red' })
                 }
                 return ({ LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status: 'green' })
             }
@@ -203,17 +203,24 @@ class ClustersMap extends Component {
             let status = '';
             let online = false;
             let offline = false;
-
+            let maintainance = false;
 
             groupbyData[key].map((item, i) => {
-                if (item.status === 'green') {
+                if (item.status === 'yellow') {
+                    maintainance = true;
+                }
+                else if (item.status === 'green') {
                     online = true;
                 } else if (item.status === 'red') {
                     offline = true;
                 }
             })
 
-            if (online && offline) {
+            if(maintainance)
+            {
+                status = 'yellow'; 
+            }
+            else if (online && offline) {
                 status = 'orange';
             } else if (!online && offline) {
                 status = 'red';
@@ -289,10 +296,11 @@ class ClustersMap extends Component {
         let cost = city.cost ? city.cost : '';
         let colorKey = city.status === 'red' ? 0
             : city.status === 'orange' ? 1
-                : (config && config.pageId === 'cloudlet') ? 5
-                    : (config && config.pageId === 'cluster') ? 3
-                        : (config && config.pageId === 'app') ? 4
-                            : 5;
+                : city.status === 'yellow' ? 6
+                    : (config && config.pageId === 'cloudlet') ? 5
+                        : (config && config.pageId === 'cluster') ? 3
+                            : (config && config.pageId === 'app') ? 4
+                                : 5;
 
         let gradient = this.gradientFilter(colorKey);
 
