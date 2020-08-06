@@ -1204,29 +1204,6 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
     seriesValues.map(item => {
 
-        /*  [
-              "2020-08-04T22:17:21.795885957Z",
-              0,
-              0,2
-              0,3
-              0,4
-              61,5
-              "app1595019031-405644",6
-              "MobiledgeX",7
-              "0",8
-              "mexplat-qa-cloudlet",9
-              "TDG",10
-              null,11
-              0,12
-              null,13
-              null,14
-              0,15
-              "RegisterClient",16
-              null,
-              61,
-              "1.0"
-          ],*/
-
         let methodType = item[16];
 
         if (methodType === "RegisterClient") {
