@@ -1135,9 +1135,9 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
-        //"last": 20,
         "starttime": startTime,
         "endtime": endTime,
+        //"last": 20,
     }
 
 
@@ -1165,7 +1165,7 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         return clientMatricSumDataOne;
 
     }).catch(e => {
-        showToast(e.toString())
+        //showToast(e.toString())
     })
 }
 
