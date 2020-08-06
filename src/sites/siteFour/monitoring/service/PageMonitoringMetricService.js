@@ -1157,7 +1157,6 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         if (response.data.data[0].Series !== null) {
             seriesValues = response.data.data[0].Series[0].values
             column = response.data.data[0].Series[0].columns
-
         } else {
             //showToast('null')
         }
