@@ -1221,7 +1221,7 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
               null,13
               null,14
               0,15
-              "RegisterClient",16
+              "RegisterClient",16 //todo type of method
               null,
               61,
               "1.0"
