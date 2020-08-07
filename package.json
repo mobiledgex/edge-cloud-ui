@@ -41,7 +41,6 @@
     "material-icons-react": "1.0.4",
     "moment": "2.24.0",
     "moment-timezone": "^0.5.28",
-    "pretty-ms": "^7.0.0",
     "prop-types": "^15.7.2",
     "public-ip": "^4.0.0",
     "randomcolor": "^0.5.4",
