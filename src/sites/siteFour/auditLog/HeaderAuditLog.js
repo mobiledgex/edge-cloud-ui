@@ -1,53 +1,28 @@
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Box } from '@material-ui/core';
+import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { IconButton, Step, StepLabel, Stepper, Button } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import Calendar from '../../../components/horizontal_calendar/Calendar';
+import { Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import * as dateUtil from '../../../utils/date_util'
-import CheckIcon from '@material-ui/icons/Check';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-const options = [
-    { key: 'Individual', value: 'Individual', text: 'Individual' },
-    { key: 'Group', value: 'Group', text: 'Group' }
-]
-
-const filterDataByDate = (dataList, filterDate) =>
-{
-    return dataList.filter(data => {
-        return filterDate === dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE, data.starttime)
-    })
-}
+import CloseIcon from '@material-ui/icons/CloseRounded';
+import CheckIcon from '@material-ui/icons/CheckRounded';
+import SearchIcon from '@material-ui/icons/SearchRounded';
+import HistoryLog from './HistoryLog';
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             expanded: (-1),
-            groupExpanded: (-1),
-            groupParentExpanded:(-1),
-            devData: [],
             dayData: [],
-            groups: [],
-            groupsErrorCount: 0,
-            dropDownValue: "Individual",
-            selectedDate : dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)
+            dataList: [],
+            filterList:[],
+            filterExpand: false,
+            filterText:''
         }
-    }
-
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.devData !== prevState.devData) {
-            let dayData = filterDataByDate(nextProps.devData, prevState.selectedDate)
-            return { dayData: dayData, devData: nextProps.devData, unCheckedErrorCount: nextProps.unCheckedErrorCount, errorCount: nextProps.errorCount }
-        }
-        return null
     }
 
     setAllView = (dummyConts, sId) => {
@@ -104,94 +79,17 @@ class HeaderAuditLog extends React.Component {
         this.props.detailView(rawViewData)
     }
 
-    handleDateChange = (selectDate, index) => {
-        this.setState({ dayData: [] })
-        setTimeout(() => {
-            this.setState({ selectedDate: dateUtil.time(dateUtil.FORMAT_FULL_DATE, selectDate.valueOf())})
-            let dayData = filterDataByDate(this.props.devData, this.state.selectedDate)
-            if (this.state.dropDownValue === 'Group') {
-                this.dropDownOnChange(null, { value: "Group" }, dayData)
-            }
-            this.setState({
-                dayData: dayData,
-                expanded: (-1)
-            });
-        }, 1)
-    };
-
-    onSelectDate = (date, index) => {
-        if (index !== (-1) && index < 61) {
-            this.handleDateChange(date, index)
-        }
-    };
-
-    onClickClose = () => {
-        this.props.close()
-    };
-
     handleExpandedChange = (index, traceid) => (event, newExpanded) => {
-        this.props.onItemSelected(traceid)
+        //this.props.onItemSelected(traceid)
         this.setState({ expanded: newExpanded ? index : false });
     };
 
-    handleGroupParentExpandedChange = (index) =>  {
-        this.setState(prevState=>({ groupParentExpanded: prevState.groupParentExpanded === index ? (-1) : index }));
-    };
-
-    handleGroupExpandedChange = (group, index, traceid) => (event, newExpanded) => {
-        this.props.onItemSelected(traceid)
-        this.setState({ groupExpanded: { expanded: newExpanded ? index : false, group: group } });
-    };
-
-    dropDownOnChange = (e, v, data) => {
-        let dayData = (data) ? data : this.state.dayData;
-        let groups = [];
-
-        if (v.value === 'Group') {
-            dayData.map((data, index) => {
-                let renderValue = this.makeOper(data.operationname);
-                let groupsIndex = groups.findIndex(g => g.title === renderValue)
-                let groupsErrorCount = 0;
-
-                if (groupsIndex === (-1)) {
-
-                    for (let i = 0; i < dayData.length; i++) {
-                        if (data.status !== 200) {
-                            groupsErrorCount++
-                        }
-                    }
-                    groups.push({ "title": renderValue, "errorCount": groupsErrorCount })
-                }
-            })
-
-            groups.map((group, gIndex) => {
-                groups[gIndex].data = []
-                dayData.map((data, index) => {
-                    let renderValue = this.makeOper(data.operationname);
-                    if (group.title === renderValue) {
-                        groups[gIndex].data.push(data)
-                    }
-                })
-            })
-        } else {
-            groups = []
-        }
-
-        this.setState({
-            dropDownValue: v.value,
-            groups: groups,
-            expanded: (-1)
-        });
-    }
-
     expandablePanelSummary = (index, data) => (
-        <ExpansionPanelSummary
-            id="panel1a-header"
-        >
+        <AccordionSummary id="panel1a-header">
             <Step key={index}>
                 <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
                     {dateUtil.unixTime(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
-                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM,data.starttime)}
+                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM, data.starttime)}
                 </div>
                 <StepLabel StepIconComponent={(stepperProps) => {
                     return this.getStepLabel(data, stepperProps)
@@ -200,11 +98,11 @@ class HeaderAuditLog extends React.Component {
                     <div className='audit_timeline_traceID'>Trace ID : <span>{data.traceid}</span></div>
                 </StepLabel>
             </Step>
-        </ExpansionPanelSummary>
+        </AccordionSummary>
     )
 
     expandablePanelDetails = (data) => (
-        <ExpansionPanelDetails>
+        <AccordionDetails>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Start Time</div>
                 <div className='audit_timeline_detail_right'>{dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE_TIME, data.starttime)}</div>
@@ -234,129 +132,120 @@ class HeaderAuditLog extends React.Component {
                     VIEW DETAIL
                 </Button>
             </div>
-        </ExpansionPanelDetails>
+        </AccordionDetails>
     )
 
     renderStepper = (data, index) => {
         return (
             data.operationname ?
-                <ExpansionPanel key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)} last='' completed='' active={undefined}>
+                <Accordion key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)} last='' completed='' active={undefined}>
                     {this.expandablePanelSummary(index, data)}
                     {this.expandablePanelDetails(data)}
-                </ExpansionPanel>
+                </Accordion>
                 :
                 null
         )
     }
 
-    renderGroupStepper = (data, index, group) => {
-        let errorCount = 0;
-        data.map((d) => { (d.status !== 200) ? errorCount++ : errorCount })
-        return (
-            (group) ?
-                <div key={index} className='audit_timeline_group'>
-                    <ExpansionPanel expanded={this.state.groupParentExpanded === index} onChange={(e)=>{this.handleGroupParentExpandedChange(index)}}>
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            id="panel1a-header"
-                        >
-                            <div className='audit_timeline_group_header'>
-                                <h4>{group.title}
-                                    {errorCount > 0 ?<span className='audit_timeline_group_bedge'>{(errorCount > (-1) ? errorCount : 0)}</span> : null}
-                                </h4>
-                            </div>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            <Stepper className='audit_timeline_container' activeStep={data.length} orientation="vertical">
-                                {
-                                    data.map((item, itemIndex) => {
-                                        return (
-                                            <ExpansionPanel last='' active={undefined} completed='' key={itemIndex} square expanded={this.state.groupExpanded.expanded === itemIndex && this.state.groupExpanded.group === group.title} onChange={this.handleGroupExpandedChange(group.title, itemIndex, item.traceid)}>
-                                                {this.expandablePanelSummary(itemIndex, item)}
-                                                {this.expandablePanelDetails(item)}
-                                            </ExpansionPanel>
-                                        )
-                                    })
-                                }
-                            </Stepper>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                </div>
-                : null
-        )
+    onFilter = (filter) => {
+        this.props.onLoadData(filter.starttime, filter.endtime, filter.limit)
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.filterExpand && nextProps.historyList !== prevState.dataList) {
+            return { dataList: nextProps.historyList }
+        }
+        else if (nextProps.dataList !== prevState.dataList && !prevState.filterExpand) {
+            return { dataList: nextProps.dataList }
+        }
+        return null
+    }
+
+    onFilterExpand = (flag) => {
+        this.setState({ filterExpand: flag, dataList: flag ? [] : this.props.liveData })
+    }
+
+    onFilterValue = (e) => {
+        let value = e ? e.target.value : this.state.filterText
+        this.mapDetails = null
+        let filterText = value.toLowerCase()
+        let dataList = this.state.dataList
+        let filterList = dataList.filter(data => {
+            return data['operationname'].toLowerCase().includes(filterText)
+        })
+        if (value !== undefined) {
+            this.setState({ filterText:value, filterList: filterList })
+        }
+        return filterList
+    }
+
+    onFilterClear = ()=>
+    {
+        this.setState({filterText:''}, ()=>{this.onFilterValue()})
     }
 
     render() {
-        const { dayData, groups } = this.state
+        const { filterList, filterExpand, filterText } = this.state
         return (
-            <div className='audit_container' style={{ height: window.innerHeight - 48 }}>
-                <div className='audit_title'>
-                    <div className="audit_title_label">Audit Logs</div>
-                    <div className='audit_filter'>
-                        <Box p={1}>
-                            <Dropdown
-                                button
-                                placeholder='Individual'
-                                fluid
-                                search
-                                selection
-                                options={options}
-                                onChange={this.dropDownOnChange}
-                                style={{ width: 150, height: 30 }}
-                            />
-                        </Box>
-                        {this.props.showRefresh ?
-                            <IconButton onClick={this.props.onRefresh}>
-                                <RefreshIcon />
-                            </IconButton> : null}
-                    </div>
-                    <IconButton onClick={this.onClickClose}>
-                        <CloseIcon />
-                    </IconButton>
+            <div className='audit_container'>
+                <div>
+                    <HistoryLog onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} />
                 </div>
-                <div className='audit_calendar'>
-                    <Calendar showDaysBeforeCurrent={30} showDaysAfterCurrent={30} onSelectDate={this.onSelectDate} />
-                </div>
-                {this.props.loading ? <LinearProgress /> : null}
-                <div className='audit_timeline_vertical'>
+                <Input
+                    size="small"
+                    fullWidth
+                    style={{ padding: '0 14px 0 14px' }}
+                    value={filterText}
+                    startAdornment={
+                        <InputAdornment style={{ fontSize: 17 }} position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                    }
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <CloseIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
+                        </InputAdornment>
+                    }
+                    onChange = {this.onFilterValue}
+                    placeholder={'Search'} />
+                {this.props.loading && !filterExpand ? <LinearProgress /> : null}
+                {this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
+                <Divider />
+                <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
                     {
-                        (groups.length > 0) ?
-                            groups.map((group, gIndex) => {
-                                return (
-                                    this.renderGroupStepper(group.data, gIndex, group)
-                                )
-                            })
-                            :
-                            <Stepper className='audit_timeline_container' activeStep={dayData.length} orientation="vertical">
-                                {dayData.map((data, index) => {
+                        filterList && filterList.length > 0 ?
+                            <Stepper className='audit_timeline_container' activeStep={filterList.length} orientation="vertical">
+                                {filterList.map((data, index) => {
                                     return (
                                         this.renderStepper(data, index)
                                     )
                                 })}
-                            </Stepper>
+                            </Stepper> : null
                     }
                 </div>
             </div>
         )
     }
-}
 
+    componentDidUpdate(prevProps, prevState)
+    {
+        if(prevState.dataList !== this.state.dataList)
+        {
+            this.onFilterValue()
+        }
+    }
 
-
-function mapStateToProps(state) {
-    return {
-        user: state.user,
-        userInfo: state.userInfo ? state.userInfo : null,
+    componentDidMount() {
+        this.setState({ filterList: this.props.dataList })
     }
 }
+
+
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(HeaderAuditLog));
+export default withRouter(connect(null, mapDispatchProps)(HeaderAuditLog));
