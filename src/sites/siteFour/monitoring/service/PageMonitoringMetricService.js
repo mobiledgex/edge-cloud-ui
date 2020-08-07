@@ -335,7 +335,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
         let appInstanceHwUsageList = []
         appInstanceHwUsageList = await Promise.allSettled(promiseList);
 
-
         let usageListForAllInstance = []
         appInstanceList.map((item, index) => {
             usageListForAllInstance.push({
@@ -821,6 +820,8 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
 }
 
 export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
+
+
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: mcURL() + APP_INST_METRICS_ENDPOINT,
@@ -1134,6 +1135,7 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
+        //"last": 20,
         "starttime": startTime,
         "endtime": endTime,
     }
@@ -1155,13 +1157,13 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         if (response.data.data[0].Series !== null) {
             seriesValues = response.data.data[0].Series[0].values
             column = response.data.data[0].Series[0].columns
-
         }
 
         let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column, appInst)
-
         return clientMatricSumDataOne;
 
+    }).catch(e => {
+        //showToast(e.toString())
     })
 }
 
@@ -1198,7 +1200,9 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 
     seriesValues.map(item => {
-        let methodType = item[17];
+
+        let methodType = item[16];
+
         if (methodType === "RegisterClient") {
             RegisterClientCount++;
         }
@@ -1240,12 +1244,12 @@ export const getClientStatusList = async (appInstList, startTime, endTime, dataL
         appInstList.map((appInstOne: TypeCloudlet, index) => {
             promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
         })
-        let newPromiseList = await Promise.all(promiseList);
+        let newPromiseList = await Promise.allSettled(promiseList);
 
         let mergedClientStatusList = []
         newPromiseList.map((item, index) => {
-            if (item !== undefined) {
-                mergedClientStatusList.push(item)
+            if (item.value !== undefined) {
+                mergedClientStatusList.push(item.value)
             }
         })
         return mergedClientStatusList;
