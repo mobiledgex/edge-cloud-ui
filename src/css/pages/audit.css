@@ -779,7 +779,7 @@
 
 .audit_timeline_vertical_expand {
     overflow-y: auto;
-    height: calc(100% - 340px);
+    height: calc(100% - 345px);
 }
 
 /* timeline */
