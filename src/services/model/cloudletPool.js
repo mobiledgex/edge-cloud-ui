@@ -1,17 +1,16 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_POOL, SHOW_CLOUDLET_MEMBER, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, SHOW_CLOUDLET_LINKORG } from './endPointTypes'
+import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, SHOW_CLOUDLET_LINKORG, UPDATE_CLOUDLET_POOL } from './endPointTypes'
 
 const fields = formatter.fields;
 
 export const keys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
     { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter:true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true },
     { field: fields.cloudletCount, label: 'Number of  Clouldlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
-        field: fields.cloudlets, label: 'Cloudlets',
-        keys: [{ field: fields.cloudletName, label: 'Cloudlet Name' },
-        { field: fields.operatorName, label: 'Operator' }]
+        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets'
     },
     {
         field: fields.organizations, label: 'Organizations',
@@ -21,28 +20,18 @@ export const keys = [
 ]
 
 export const getKey = (data) => {
-        return ({
-            region: data[fields.region],
-            cloudletpool: { key: { name: data[fields.poolName] } }
-        })
-}
+    let cloudletpool = {}
 
-const addCloudlets = (poolList, memberList) => {
-    for (let i = 0; i < poolList.length; i++) {
-        let pool = poolList[i]
-        let cloudlets = []
-        for (let j = 0; j < memberList.length; j++) {
-            let member = memberList[j]
-            if (pool[fields.poolName] === member[fields.poolName]) {
-                pool[fields.cloudletCount] += 1
-                let cloudlet = {}
-                cloudlet[fields.cloudletName] = member[fields.cloudletName]
-                cloudlet[fields.operatorName] = member[fields.operatorName]
-                cloudlets.push(cloudlet)
-            }
-        }
-        pool[fields.cloudlets] = cloudlets
+    cloudletpool.key = { name: data[fields.poolName], organization: data[fields.operatorName] }
+    cloudletpool.cloudlets = data[fields.cloudlets]
+
+    if (data[fields.fields]) {
+        cloudletpool.fields = data[fields.fields]
     }
+    return ({
+        region: data[fields.region],
+        cloudletpool: cloudletpool
+    })
 }
 
 const addLinkOrg = (poolList, linkOrgList) => {
@@ -64,7 +53,6 @@ const addLinkOrg = (poolList, linkOrgList) => {
 
 export const multiDataRequest = (keys, mcRequestList) => {
     let poolList = [];
-    let memberList = [];
     let linkOrgList = [];
     for (let i = 0; i < mcRequestList.length; i++) {
         let mcRequest = mcRequestList[i];
@@ -72,16 +60,12 @@ export const multiDataRequest = (keys, mcRequestList) => {
         if (request.method === SHOW_CLOUDLET_POOL) {
             poolList = mcRequest.response.data
         }
-        else if (request.method === SHOW_CLOUDLET_MEMBER) {
-            memberList = mcRequest.response.data
-        }
         else if (request.method === SHOW_CLOUDLET_LINKORG) {
             linkOrgList = mcRequest.response.data
         }
     }
 
     if (poolList && poolList.length > 0) {
-        addCloudlets(poolList, memberList)
         addLinkOrg(poolList, linkOrgList)
     }
     return poolList;
@@ -96,13 +80,18 @@ export const createCloudletPool = (data) => {
     return { method: CREATE_CLOUDLET_POOL, data: requestData }
 }
 
+export const updateCloudletPool = (data) => {
+    let requestData = getKey(data)
+    return { method: UPDATE_CLOUDLET_POOL, data: requestData }
+}
+
 export const deleteCloudletPool = (data) => {
     let requestData = getKey(data)
     return { method: DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]} deleted successfully` }
 }
 
 const customData = (value) => {
-    value[fields.cloudletCount] = 0
+    value[fields.cloudletCount] = value[fields.cloudlets] ? value[fields.cloudlets].length : 0
     value[fields.organizationCount] = 0
 }
 
