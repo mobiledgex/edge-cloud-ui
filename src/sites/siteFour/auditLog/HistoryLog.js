@@ -9,7 +9,6 @@ import {
 import { InputAdornment, TextField, Button, Grid, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@material-ui/core';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 import * as dateUtil from '../../../utils/date_util'
-import moment from 'moment'
 import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
@@ -52,10 +51,9 @@ const MaterialUIPickers = (props) => {
         let starttime = `${date}T${dateUtil.utcTime(dateUtil.FORMAT_TIME_HH_mm, selectedStarttime)}:00Z`
         let endtime = `${date}T${dateUtil.utcTime(dateUtil.FORMAT_TIME_HH_mm, selectedEndtime)}:59Z`
 
-        if(moment(starttime).isAfter(endtime))
+        if(dateUtil.isAfter(starttime, endtime))
         {
-            var temp =  moment(selectedDate)
-            date = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE, temp.subtract(1, 'days').valueOf())
+            date = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE, dateUtil.subtractDays(1, selectedDate))
             starttime = `${date}T${dateUtil.utcTime(dateUtil.FORMAT_TIME_HH_mm, selectedStarttime)}:00Z`
         }
         let filter = { starttime: starttime, endtime: endtime, limit: limit.length > 0 ? limit : 25 }
