@@ -13,6 +13,7 @@ const getKey = (data) => {
         return ({
             region: data[fields.region],
             cloudletpool: data[fields.poolName],
+            cloudletpoolorg : data[fields.operatorName],
             org: data[fields.organizationName]
         })
 }

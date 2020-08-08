@@ -415,7 +415,7 @@ export const filterData = (selectedDatas, dataList, field) => {
             let selectedData = selectedDatas[i];
             for (let j = 0; j < dataList.length; j++) {
                 let filterData = dataList[j]
-                if (selectedData[field] === filterData[field]) {
+                if (selectedData === filterData[field]) {
                     dataList.splice(j, 1)
                     break;
                 }

@@ -12,7 +12,6 @@ import * as AutoProvPolicy from './autoProvisioningPolicy';
 import * as PrivacyPolicy from './privacyPolicy';
 import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
-import * as CloudletPoolMember from './cloudletPoolMember';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
 
 
@@ -65,14 +64,12 @@ export const CLOUDLET_METRICS_APP = "CloudletMetricsApp";
 export const CLUSTER_INST_METRICS_APP = "ClusterInstMetricsApp";
 export const APP_INST_METRICS_APP = "AppInstMetricsApp";
 export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
-export const SHOW_CLOUDLET_MEMBER = "ShowCloudletPoolMember";
 export const SHOW_CLOUDLET_LINKORG = "orgcloudletpool";
 export const SHOW_LINK_POOL_ORG = "orgcloudletpool";
 export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
-export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
+export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
 export const SHOW_ORG_CLOUDLET_INFO = "ShowOrgCloudletInfo";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
@@ -152,11 +149,9 @@ export function getPath(request) {
         case REFRESH_APP_INST:
         case STREAM_APP_INST:
         case SHOW_CLOUDLET_POOL:
-        case SHOW_CLOUDLET_MEMBER:
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
-        case CREATE_CLOUDLET_POOL_MEMBER:
-        case DELETE_CLOUDLET_POOL_MEMBER:
+        case UPDATE_CLOUDLET_POOL:  
         case SHOW_AUTO_PROV_POLICY:
         case CREATE_AUTO_PROV_POLICY:
         case UPDATE_AUTO_PROV_POLICY:
@@ -245,9 +240,6 @@ export function formatData(request, response) {
             break;
         case SHOW_CLOUDLET_POOL:
             data = CloudletPool.getData(response, request.data)
-            break;
-        case SHOW_CLOUDLET_MEMBER:
-            data = CloudletPoolMember.getData(response, request.data)
             break;
         case SHOW_CLOUDLET_LINKORG:
             data = CloudletLinkOrg.getData(response, request.data)
