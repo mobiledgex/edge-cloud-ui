@@ -316,9 +316,11 @@ class CloudletPoolReg extends React.Component {
 
         if (this.action === constant.ADD_CLOUDLET) {
             this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.operatorName] })
-            this.cloudletList = this.cloudletList.filter((cloudlet) => {
-                return cloudlet[fields.operatorName] === data[fields.operatorName]
-            })
+            if (this.cloudletList && this.cloudletList.length > 0) {
+                this.cloudletList = this.cloudletList.filter((cloudlet) => {
+                    return cloudlet[fields.operatorName] === data[fields.operatorName]
+                })
+            }
         }
     }
 
