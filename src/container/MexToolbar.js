@@ -15,6 +15,7 @@ export const ACTION_NEW = 3
 export const ACTION_CLOSE = 4
 export const ACTION_MAP = 5
 export const ACTION_SEARCH = 6;
+export const ACTION_CLEAR = 7;
 
 const CustomSwitch = withStyles({
     switchBase: {
@@ -43,6 +44,11 @@ const MexToolbar = (props) => {
         props.onAction(ACTION_SEARCH, e ? e.target.value : '')
     }
 
+    const handleClear = () => {
+        setSearch('')
+        props.onAction(ACTION_CLEAR)
+    }
+
     const searchForm = () => (
         <Input
             style={{marginRight:20}}
@@ -55,7 +61,7 @@ const MexToolbar = (props) => {
             }
             endAdornment={
                 <InputAdornment position="end">
-                    <CloseIcon style={{ fontSize: 17 }} onClick={() => { handleSearch() }} />
+                    <CloseIcon style={{ fontSize: 17 }} onClick={handleClear} />
                 </InputAdornment>
             }
             value={search}
