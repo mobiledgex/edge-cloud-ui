@@ -165,6 +165,7 @@ class HeaderAuditLog extends React.Component {
         this.setState({ filterExpand: flag, dataList: flag ? [] : this.props.liveData })
         if(!flag)
         {
+            this.props.clearHistory()
             this.props.onSelectedDate()
         }
     }

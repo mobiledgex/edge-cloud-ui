@@ -54,6 +54,11 @@ class headerGlobalAudit extends React.Component {
         this.setState({ selectedDate: date ? date :  dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)})
     }
 
+    clearHistory = () =>
+    {
+        this.setState({historyList:[]})
+    }
+
     loadMore = () => {
         let dataList = this.state.liveData
         let time = dateUtil.convertToUnix(dataList[dataList.length - 1].starttime)
@@ -127,7 +132,7 @@ class headerGlobalAudit extends React.Component {
                     <TimelineOutlinedIcon fontSize='default' />
                 </IconButton>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate}/>
+                    <HeaderAuditLog dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory}/>
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
