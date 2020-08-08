@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as constant from '../constant'
 
-import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH } from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_CLEAR } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
@@ -35,6 +35,7 @@ class MexListView extends React.Component {
             dialogMessageInfo: {},
             uuid: 0,
         };
+        this.filterText = ''
         this.requestCount = 0;
         this.requestInfo = this.props.requestInfo
         this.keys = this.requestInfo.keys;
@@ -327,19 +328,19 @@ class MexListView extends React.Component {
 
     onFilterValue = (value) => {
         this.mapDetails = null
-        let filterText = value ? value.toLowerCase() : ''
+        this.filterText = value ? value.toLowerCase() : this.filterText
         let dataList = this.state.dataList
         let filterCount = 0
-        let filterList = dataList.filter(data => {
+        let filterList = this.filterText.length > 0 ? dataList.filter(data => {
             let valid = this.keys.map(key => {
                 if (key.filter) {
                     filterCount = + 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    return tempData.toLowerCase().includes(filterText)
+                    return tempData.toLowerCase().includes(this.filterText)
                 }
             })
             return filterCount === 0 || valid.includes(true)
-        })
+        }) : dataList
         if (value !== undefined) {
             this.setState({ filterList: filterList })
         }
@@ -387,6 +388,10 @@ class MexListView extends React.Component {
                 break;
             case ACTION_SEARCH:
                 this.onFilterValue(value)
+                break;
+            case ACTION_CLEAR:
+                this.filterText = ''
+                this.onFilterValue(this.filterText)
                 break;
             default:
 
