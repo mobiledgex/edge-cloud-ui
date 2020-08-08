@@ -61,8 +61,14 @@ export const utcTime = (format, date) => {
     return moment(date).utc().format(format)
 }
 
-export const subtractDays = (value) => {
-    return value ? moment().subtract(value, 'days') : moment().subtract('days')
+export const subtractDays = (value, date) => {
+    let obj = date ? moment(date) : moment()
+    return value ? obj.subtract(value, 'days') : obj.subtract('days')
+}
+
+export const isAfter = (start, end) =>
+{
+    return moment(start).isAfter(end)
 }
 
 export const subtractMins = (mins) => {
