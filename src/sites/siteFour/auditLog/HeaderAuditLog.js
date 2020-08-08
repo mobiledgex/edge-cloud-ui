@@ -163,6 +163,11 @@ class HeaderAuditLog extends React.Component {
 
     onFilterExpand = (flag) => {
         this.setState({ filterExpand: flag, dataList: flag ? [] : this.props.liveData })
+        if(!flag)
+        {
+            this.props.clearHistory()
+            this.props.onSelectedDate()
+        }
     }
 
     onFilterValue = (e) => {
@@ -189,7 +194,7 @@ class HeaderAuditLog extends React.Component {
         return (
             <div className='audit_container'>
                 <div>
-                    <HistoryLog onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} />
+                    <HistoryLog onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} onSelectedDate={this.props.onSelectedDate}/>
                 </div>
                 <Input
                     size="small"
@@ -211,6 +216,7 @@ class HeaderAuditLog extends React.Component {
                 {this.props.loading && !filterExpand ? <LinearProgress /> : null}
                 {this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
                 <Divider />
+                <div align={'right'}><h4 style={{padding:'10px 10px 0px 0px'}}><b>{this.props.selectedDate}</b></h4></div>
                 <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
                     {
                         filterList && filterList.length > 0 ?
@@ -237,6 +243,7 @@ class HeaderAuditLog extends React.Component {
 
     componentDidMount() {
         this.setState({ filterList: this.props.dataList })
+        this.props.onSelectedDate(dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE))
     }
 }
 
