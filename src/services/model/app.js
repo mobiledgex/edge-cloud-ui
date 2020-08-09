@@ -168,7 +168,7 @@ export const updateApp = async (self, data, originalData) => {
     if (!formatter.compareObjects(data[fields.templateDelimiter], originalData[fields.templateDelimiter])) {
         updateFields.push('33')
     }
-    if (!formatter.compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts])) {
+    if (!formatter.compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts], true)) {
         updateFields.push('34')
     }
     if (updateFields.length > 0) {
