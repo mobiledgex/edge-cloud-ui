@@ -10,7 +10,7 @@ export const keys = [
     { field: fields.cloudletCount, label: 'Number of  Clouldlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
-        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets'
+        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType:'String'
     },
     {
         field: fields.organizations, label: 'Organizations',
