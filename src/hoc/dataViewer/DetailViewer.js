@@ -99,7 +99,7 @@ const getRow = (id, item, data) => {
 
 const isArrayString = (item, data)=>
 {
-    return Array.isArray(data) && item.dataType === 'String'
+    return Array.isArray(data) && item.dataType === constant.TYPE_STRING
 }
 
 const getArrayRow = (id, item, dataList) => {
