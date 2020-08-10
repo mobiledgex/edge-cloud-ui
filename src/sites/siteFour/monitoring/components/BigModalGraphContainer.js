@@ -77,10 +77,11 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
         async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
             if (this.props.chartDataForBigModal !== nextProps.chartDataForBigModal) {
                 try {
+
                     this.setState({
                         chartDataForBigModal: nextProps.chartDataForBigModal,
                         graphType: nextProps.graphType.toUpperCase(),
-                        popupGraphHWType: nextProps.popupGraphHWType,
+                        popupGraphHWType: nextProps.parent.state.currentBigModalHwType,
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
                     });
                 } catch (e) {
@@ -102,12 +103,16 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
 
             if (this.props.isShowBigGraph !== nextProps.isShowBigGraph) {
                 try {
+
                     this.setState({
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
                         selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
                         loading: nextProps.loading,
                         isShowBigGraph: nextProps.isShowBigGraph,
                         isScrollEnableForLineChart: nextProps.isScrollEnableForLineChart,
+                        chartDataForBigModal: nextProps.chartDataForBigModal,
+                        graphType: nextProps.graphType.toUpperCase(),
+                        popupGraphHWType: nextProps.parent.state.currentBigModalHwType,
                     });
                 } catch (e) {
 

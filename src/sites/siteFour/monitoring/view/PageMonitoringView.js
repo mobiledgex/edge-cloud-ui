@@ -393,6 +393,7 @@ type PageDevMonitoringState = {
     isShowAddPopup: boolean,
     isOn: false,
     start: 0,
+    currentBigModalHwType: string,
 
 }
 
@@ -659,7 +660,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isLegendExpanded: false,
                     time: 0,
                     isOn: false,
-                    start: 0
+                    start: 0,
+                    currentBigModalHwType: 'CPU',
                 }
 
                 this.startTimer = this.startTimer.bind(this)
@@ -1048,6 +1050,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     try {
                         this.setState({intervalLoading: true})
                         let filteredClusterUsageList = await getClusterLevelUsageList(this.state.filteredClusterList, "*", this.state.dataLimitCount, '', '', this);
+                        //todo : Set big modal chart data
                         this.setChartDataForBigModal(filteredClusterUsageList)
                         this.setState({
                             intervalLoading: false,
@@ -1068,6 +1071,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     this.intervalForAppInst = setInterval(async () => {
                         this.setState({intervalLoading: true,})
                         let allAppInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", this.state.dataLimitCount);
+                        //todo : Set big modal chart data
                         this.setChartDataForBigModal(allAppInstUsageList)
                         this.setState({
                             intervalLoading: false,
@@ -1084,12 +1088,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            setChartDataForBigModal(usageList) {
-                let lineChartDataSet = makeLineChartData(usageList, this.state.currentHardwareType, this)
+            async setChartDataForBigModal(usageList) {
+                let lineChartDataSet = makeLineChartData(usageList, this.state.currentBigModalHwType, this)
                 let chartDataForBigModal = makeLineChartDataForBigModal(lineChartDataSet, this)
-                this.setState({
+                await this.setState({
                     chartDataForBigModal: chartDataForBigModal,
-                })
+                });
             }
 
             makeGridItemWidth(graphType) {
@@ -1263,8 +1267,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-            showBigModal = (pHwType, graphType) => {
+             showBigModal = async (pHwType, graphType) => {
                 try {
+                    await this.setState({
+                        currentBigModalHwType: pHwType,
+                    })
                     let chartDataForBigModal = []
                     if (graphType.toUpperCase() === GRID_ITEM_TYPE.LINE) {
                         let lineChartDataSet = []
@@ -2560,6 +2567,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         filteredClusterUsageList = _filteredClusterUsageList.value;
                         filteredClusterEventLogList = _filteredClusterEventLogList.value
+                        //todo://///setChartDataForBigModal
+                        await this.setChartDataForBigModal(filteredClusterUsageList)
 
                         await this.setState({
                             filteredClusterUsageList: filteredClusterUsageList,
