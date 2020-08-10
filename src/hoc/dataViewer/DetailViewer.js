@@ -97,6 +97,11 @@ const getRow = (id, item, data) => {
     )
 }
 
+const isArrayString = (item, data)=>
+{
+    return Array.isArray(data) && item.dataType === constant.TYPE_STRING
+}
+
 const getArrayRow = (id, item, dataList) => {
     return (
         <TableRow key={id}>
@@ -136,7 +141,7 @@ const MexDetailViewer = (props) => {
                                     data.length > 0 ?
                                         getRow(i, item, subView(item.keys, data)) : null
                                     :
-                                    Array.isArray(data) ? getArrayRow(i, item, data) :
+                                    isArrayString(item, data) ? getArrayRow(i, item, data) :
                                         getRow(i, item, data) :
                                 null
                             : null

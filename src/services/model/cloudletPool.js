@@ -1,5 +1,6 @@
 import * as formatter from './format'
 import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, SHOW_CLOUDLET_LINKORG, UPDATE_CLOUDLET_POOL } from './endPointTypes'
+import * as constant from '../../constant'
 
 const fields = formatter.fields;
 
@@ -10,7 +11,7 @@ export const keys = [
     { field: fields.cloudletCount, label: 'Number of  Clouldlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
-        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets'
+        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType:constant.TYPE_STRING
     },
     {
         field: fields.organizations, label: 'Organizations',
