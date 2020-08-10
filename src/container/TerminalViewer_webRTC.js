@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import Terminal from '../hoc/terminal/mexTerminal'
+import Terminal from '../hoc/terminal/MexTerminal'
 import * as serviceMC from '../services/model/serviceMC'
 import stripAnsi from 'strip-ansi'
 import * as actions from "../actions";

@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import Terminal from '../hoc/terminal/xterminal'
+import Terminal from '../hoc/terminal/MexTerminal'
 import * as serviceMC from '../services/model/serviceMC'
 import * as serverData from '../services/model/serverData'
 import * as actions from "../actions";
@@ -263,13 +263,15 @@ class MexTerminal extends Component {
             <iframe title='VM' ref={this.vmPage} src={this.state.vmURL} style={{ width: '100%', height:window.innerHeight - 65}}></iframe> : null
     }
 
-    socketStatus = (flag, ws) => {
+    socketStatus = (flag, diff, ws) => {
         this.ws = ws
         this.setState({
             statusColor: flag ? 'green' : 'red',
-            status: flag ? 'Connected' : 'Not Connected',
-            optionView: !flag
+            status: flag ? 'Connected' : 'Not Connected'
         })
+        if (diff > 1000) {
+            this.setState({ optionView: !flag })
+        }
     }
 
     loadCommandSelector = (containerIds) => {
@@ -284,14 +286,14 @@ class MexTerminal extends Component {
                         </div>
                     </div>
                     :
-                    this.state.tempURL ? <div style={{ paddingLeft: 20, paddingTop: 30, height: constant.getHeight() }}>
+                    this.state.tempURL ? <div style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
                         <Terminal status={this.socketStatus} url={this.state.tempURL}/>
                     </div> : null : null)
     }
 
     render() {
         return (
-            <div style={{ backgroundColor: 'black', height: '100%' }}>
+            <div style={{ backgroundColor: 'black', height: 'inherit' }}>
                 {this.loadHeader()}
                 {
                     this.state.isVM ? this.loadVMPage() : 
