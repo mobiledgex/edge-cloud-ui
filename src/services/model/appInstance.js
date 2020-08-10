@@ -65,6 +65,10 @@ export const getKey = (data, isCreate) => {
         appinst.shared_volume_size = parseInt(data[fields.sharedVolumeSize])
     }
 
+    if (data[fields.flavorName]) {
+      appinst.flavor = {name : data[fields.flavorName]}
+    }
+
   }
 
   return ({
