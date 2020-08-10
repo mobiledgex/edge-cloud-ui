@@ -7,6 +7,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import './style.css'
 import * as date_util from '../../utils/date_util';
+import { RUN_COMMAND, SHOW_LOGS } from '../../constant';
+import { FitAddon } from 'xterm-addon-fit';
 
 class MexTerminal extends React.Component {
 
@@ -17,16 +19,20 @@ class MexTerminal extends React.Component {
     }
 
     initTerminal = () => {
+        let fitAddon = new FitAddon();
+        this.terminal.loadAddon(fitAddon);
         this.terminal.open(document.getElementById('terminal'));
         this.terminal.onData(e => {
-            if (this.ws && this.ws.readyState === WebSocket.OPEN)
-            {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.ws.send(e)
             }
         });
+        if (this.props.request === SHOW_LOGS) {
+            fitAddon.fit()
+        }
     }
 
-    sendWSRequest = (url, data) =>{
+    sendWSRequest = (url, data) => {
         this.props.handleLoadingSpinner(true)
         this.ws = new WebSocket(url)
         this.ws.onopen = () => {
@@ -34,12 +40,12 @@ class MexTerminal extends React.Component {
             this.props.handleLoadingSpinner(false)
             this.initTerminal()
             this.props.status(true, 0, this.ws)
-            
+
         }
         this.ws.onmessage = evt => {
             this.terminal.write(evt.data)
         }
-    
+
         this.ws.onclose = evt => {
             let diff = date_util.currentTimeInMilli() - this.startTime
             this.props.handleLoadingSpinner(false)
@@ -50,7 +56,7 @@ class MexTerminal extends React.Component {
 
     render() {
         return (
-            <div class="term_head">
+            <div className={`${this.props.request === RUN_COMMAND ? 'term_run' : 'term_log'}`}>
                 <div id="terminal"></div>
             </div>
         )

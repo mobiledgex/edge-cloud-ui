@@ -10,13 +10,11 @@ import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms from '../hoc/forms/MexForms';
 import {fields} from '../services/model/format'
-import * as constant from '../constant';
 import { getUserRole } from '../services/model/format';
-
+import {RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM} from '../constant'
 const Terminal = lazy(() => import('../hoc/terminal/MexTerminal'))
+import '../hoc/terminal/style.css'
 
-const RUN_COMMAND = 'Run Command';
-const SHOW_LOGS = 'Show Logs';
 
 class MexTerminal extends Component {
 
@@ -35,7 +33,7 @@ class MexTerminal extends Component {
             tempURL : undefined
         })
         this.ws = undefined
-        this.request = getUserRole() === constant.DEVELOPER_VIEWER ? SHOW_LOGS : RUN_COMMAND
+        this.request = getUserRole() === DEVELOPER_VIEWER ? SHOW_LOGS : RUN_COMMAND
         this.localConnection = null;
         this.sendChannel = null;
         this.vmPage = React.createRef()
@@ -210,7 +208,7 @@ class MexTerminal extends Component {
 
     getForms = (containerIds) => (
         [
-            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(getUserRole() === constant.DEVELOPER_VIEWER ? [SHOW_LOGS] : [RUN_COMMAND, SHOW_LOGS]), value: this.request },
+            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(getUserRole() === DEVELOPER_VIEWER ? [SHOW_LOGS] : [RUN_COMMAND, SHOW_LOGS]), value: this.request },
             { field: 'Container', label: 'Container', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(containerIds), value: containerIds[0] },
             { field: 'Command', label: 'Command', formType: 'Input', rules: { required: true }, visible: this.request === RUN_COMMAND ? true : false, labelStyle: style.label, style: style.cmdLine },
             { uuid: 'ShowLogs', field: 'LogOptions', formType: 'MultiForm', visible: this.request === SHOW_LOGS ? true : false, forms: this.getLogOptions(), width: 4 },
@@ -289,8 +287,8 @@ class MexTerminal extends Component {
                     :
                     this.state.tempURL ?
                         <Suspense fallback={<div></div>}>
-                        <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <Terminal status={this.socketStatus} url={this.state.tempURL} />
+                        <div className={`${this.request === RUN_COMMAND ? 'terminal_run_head' : 'terminal_log_head'}`}>
+                            <Terminal status={this.socketStatus} url={this.state.tempURL} request={this.request}/>
                         </div></Suspense> : null
                 : null)
     }
@@ -308,7 +306,7 @@ class MexTerminal extends Component {
 
     componentDidMount() {
         let data = this.props.data
-        if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
+        if (data[fields.deployment] === DEPLOYMENT_TYPE_VM) {
             this.setState({isVM : true})
             setTimeout(()=>{this.sendRequest()}, 1000)
         }

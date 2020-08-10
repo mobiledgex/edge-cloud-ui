@@ -41,6 +41,8 @@ export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
 export const YES = 'Yes'
 export const NO = 'No'
+export const RUN_COMMAND = 'Run Command';
+export const SHOW_LOGS = 'Show Logs';
 
 export const MAINTENANCE_STATE_NORMAL_OPERATION  = 'Normal Operation'
 export const MAINTENANCE_STATE_MAINTENANCE_START  = 'Maintenance Start'
