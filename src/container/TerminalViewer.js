@@ -12,8 +12,8 @@ import MexForms from '../hoc/forms/MexForms';
 import {fields} from '../services/model/format'
 import { getUserRole } from '../services/model/format';
 import {RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM} from '../constant'
-const Terminal = lazy(() => import('../hoc/terminal/MexTerminal'))
 import '../hoc/terminal/style.css'
+const Terminal = lazy(() => import('../hoc/terminal/MexTerminal'))
 
 
 class MexTerminal extends Component {
