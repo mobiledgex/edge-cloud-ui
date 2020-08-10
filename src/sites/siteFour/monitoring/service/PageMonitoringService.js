@@ -1109,52 +1109,52 @@ export const simpleGraphOptions = {
 
 export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonitoringView, currentColorIndex = -1) => {
     try {
-        const lineChartData = (canvas) => {
-            let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
-            let levelTypeNameList = lineChartDataSet.levelTypeNameList
-            let usageSetList = lineChartDataSet.usageSetList
-            let newDateTimeList = lineChartDataSet.newDateTimeList
-            let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
-            let isStackedLineChart = _this.state.isStackedLineChart;
-            if (colorCodeIndexList !== undefined && colorCodeIndexList.length === 1) {
-                isStackedLineChart = true;
-            }
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList
+        let usageSetList = lineChartDataSet.usageSetList
+        let newDateTimeList = lineChartDataSet.newDateTimeList
+        let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
-            let finalSeriesDataSets = [];
-            for (let index in usageSetList) {
-                let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
-                let dataSetsOne = {
-                    label: levelTypeNameList[index],
-                    radius: 0,
-                    borderWidth: 3.5,//todo:line border width
-                    fill: isStackedLineChart,
-                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
-                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
-                    lineTension: 0.5,
-                    data: usageSetList[index],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                };
+        let isStackedLineChart = _this.state.isStackedLineChart;
+        if (colorCodeIndexList !== undefined && colorCodeIndexList.length === 1) {
+            isStackedLineChart = true;
+        }
 
-                finalSeriesDataSets.push(dataSetsOne)
-            }
-            return {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
-        };
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
+            let dataSetsOne = {
+                label: levelTypeNameList[index],
+                radius: 0,
+                borderWidth: 3.5,//todo:line border width
+                fill: isStackedLineChart,
+                backgroundColor:  _this.state.chartColorList[colorCodeIndexList[index]],
+                borderColor:  _this.state.chartColorList[colorCodeIndexList[index]],
+                lineTension: 0.5,
+                data: usageSetList[index],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+            };
+
+            finalSeriesDataSets.push(dataSetsOne)
+        }
+
+        let lineChartData = {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+
         return lineChartData;
     } catch (e) {
 
