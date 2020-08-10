@@ -1,6 +1,5 @@
 
-import React, { Component } from 'react';
-import Terminal from '../hoc/terminal/MexTerminal'
+import React, { Component, Suspense, lazy } from 'react';
 import * as serviceMC from '../services/model/serviceMC'
 import * as serverData from '../services/model/serverData'
 import * as actions from "../actions";
@@ -13,6 +12,8 @@ import MexForms from '../hoc/forms/MexForms';
 import {fields} from '../services/model/format'
 import * as constant from '../constant';
 import { getUserRole } from '../services/model/format';
+
+const Terminal = lazy(() => import('../hoc/terminal/MexTerminal'))
 
 const RUN_COMMAND = 'Run Command';
 const SHOW_LOGS = 'Show Logs';
@@ -286,9 +287,12 @@ class MexTerminal extends Component {
                         </div>
                     </div>
                     :
-                    this.state.tempURL ? <div style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
-                        <Terminal status={this.socketStatus} url={this.state.tempURL}/>
-                    </div> : null : null)
+                    this.state.tempURL ?
+                        <Suspense fallback={<div></div>}>
+                        <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                            <Terminal status={this.socketStatus} url={this.state.tempURL} />
+                        </div></Suspense> : null
+                : null)
     }
 
     render() {
