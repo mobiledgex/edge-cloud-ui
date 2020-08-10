@@ -32,7 +32,7 @@ class MexTerminal extends Component {
             containerIds : [],
             vmURL : null,
             isVM : false,
-            tempURL : ''
+            tempURL : undefined
         })
         this.ws = undefined
         this.request = getUserRole() === constant.DEVELOPER_VIEWER ? SHOW_LOGS : RUN_COMMAND
