@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import Terminal from '../hoc/terminal/mexTerminal'
+import Terminal from '../hoc/terminal/xterminal'
 import * as serviceMC from '../services/model/serviceMC'
 import * as serverData from '../services/model/serverData'
 import * as actions from "../actions";
@@ -14,9 +14,6 @@ import {fields} from '../services/model/format'
 import * as constant from '../constant';
 import { getUserRole } from '../services/model/format';
 
-
-const CMD_CLEAR = 'clear';
-const CMD_CLOSE = 'close';
 const RUN_COMMAND = 'Run Command';
 const SHOW_LOGS = 'Show Logs';
 
@@ -25,56 +22,22 @@ class MexTerminal extends Component {
     constructor(props) {
         super(props)
         this.state = ({
-            success: false,
-            history: [],
             status: this.props.data.vm ? 'Connected' : 'Not Connected',
             statusColor: this.props.data.vm ? 'green' : 'red',
-            path: '#',
             open: false,
             forms: [],
             cmd: '',
             optionView: true,
-            editable: false,
             containerIds : [],
             vmURL : null,
-            isVM : false
+            isVM : false,
+            tempURL : ''
         })
         this.ws = undefined
         this.request = getUserRole() === constant.DEVELOPER_VIEWER ? SHOW_LOGS : RUN_COMMAND
-        this.success = false;
         this.localConnection = null;
         this.sendChannel = null;
         this.vmPage = React.createRef()
-    }
-
-
-
-    sendWSRequest = (url, data) =>{
-        this.ws = new WebSocket(url)
-        this.ws.onopen = () => {
-            this.success = true;
-            this.setState({
-                statusColor: 'green',
-                status: 'Connected'
-            })
-        }
-        this.ws.onmessage = evt => {
-            this.setState({
-                editable: data.Request === RUN_COMMAND ? true : false
-            })
-            this.setState(prevState => ({
-                history: [...prevState.history, evt.data]
-            }))
-        }
-    
-        this.ws.onclose = evt => {
-            this.ws = undefined
-            this.setState({
-                statusColor: 'red',
-                status: 'Not Connected',
-                editable: false
-            })
-        }
     }
 
     sendRequest = async (terminaData) => { 
@@ -140,7 +103,7 @@ class MexTerminal extends Component {
                         }
                     }
                     else {
-                        this.sendWSRequest(url, terminaData)
+                        this.setState({ tempURL: url, forceClose: false })
                     }
                 }
                 else
@@ -183,55 +146,14 @@ class MexTerminal extends Component {
     }
 
     close = () => {
-        this.success = false;
-        if(this.ws)
-        {
+        if (this.ws) {
             this.ws.close()
         }
         this.setState({
             optionView: true,
-            history: [],
-            path: '#',
             statusColor: 'red',
-            status: 'Not Connected'
-        })
-    }
-
-    onEnter = (cmd) => {
-        if (cmd === CMD_CLEAR) {
-            let history = this.state.history
-            history = history[history.length-1].split('\r')
-            history = history[history.length-1]
-            this.setState({
-                container: [],
-                history: [history]
-            })
-        }
-        else if (this.ws) {
-            if (cmd === CMD_CLOSE) {
-                this.close()
-            }
-            else {
-                if (this.ws.readyState === WebSocket.OPEN) {
-                    this.ws.send(cmd + '\n')
-                }
-                else {
-                    this.props.handleAlertInfo('error', 'Terminal not connected, please try again')
-                    this.close();
-                }
-            }
-        }
-    }
-
-    onContainerSelect = (event) => {
-        this.setState({
-            containerId: event.target.value
-        })
-    }
-
-    onCmd = (event) => {
-        this.setState({
-            cmd: event.target.value
+            status: 'Not Connected',
+            tempURL: undefined,
         })
     }
 
@@ -341,6 +263,15 @@ class MexTerminal extends Component {
             <iframe title='VM' ref={this.vmPage} src={this.state.vmURL} style={{ width: '100%', height:window.innerHeight - 65}}></iframe> : null
     }
 
+    socketStatus = (flag, ws) => {
+        this.ws = ws
+        this.setState({
+            statusColor: flag ? 'green' : 'red',
+            status: flag ? 'Connected' : 'Not Connected',
+            optionView: !flag
+        })
+    }
+
     loadCommandSelector = (containerIds) => {
         return (
             containerIds.length > 0 ?
@@ -353,9 +284,9 @@ class MexTerminal extends Component {
                         </div>
                     </div>
                     :
-                    <div style={{ paddingLeft: 20, paddingTop: 30, height: constant.getHeight() }}>
-                        <Terminal editable={this.state.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
-                    </div> : null)
+                    this.state.tempURL ? <div style={{ paddingLeft: 20, paddingTop: 30, height: constant.getHeight() }}>
+                        <Terminal status={this.socketStatus} url={this.state.tempURL}/>
+                    </div> : null : null)
     }
 
     render() {
