@@ -78,8 +78,7 @@
     "typescript": "^3.9.3",
     "ua-parser-js": "^0.7.20",
     "uuid": "^3.4.0",
-    "xterm": "^4.8.1",
-    "xterm-addon-fit": "^0.4.0"
+    "xterm": "^4.8.1"
   },
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",

@@ -1,8 +1,7 @@
 
-import React, { useState, createRef } from 'react';
+import React from 'react';
 import { Terminal } from 'xterm'
 import '../../../node_modules/xterm/css/xterm.css'
-import { FitAddon } from 'xterm-addon-fit';
 import * as actions from "../../actions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -15,8 +14,6 @@ class MexTerminal extends React.Component {
     }
 
     initTerminal = () => {
-        //let fitAddon = new FitAddon();
-        //this.terminal.loadAddon(fitAddon);
         this.terminal.open(document.getElementById('terminal'));
         this.terminal.onData(e => {
             if (this.ws && this.ws.readyState === WebSocket.OPEN)
@@ -24,7 +21,6 @@ class MexTerminal extends React.Component {
                 this.ws.send(e)
             }
         });
-        //fitAddon.fit()
     }
 
     sendWSRequest = (url, data) =>{
