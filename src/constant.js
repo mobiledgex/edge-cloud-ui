@@ -1,6 +1,7 @@
 import {fields} from "./services/model/format"
 export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
 export const TYPE_JSON = 'JSON'
+export const TYPE_STRING = 'String'
 export const TYPE_YAML = 'YAML'
 export const TYPE_DATE = 'DATE'
 export const TYPE_URL = 'URL'
