@@ -23,7 +23,8 @@ class headerGlobalAudit extends React.Component {
             openDetail: false,
             isOpen: false,
             loading: false,
-            historyLoading:false
+            historyLoading: false,
+            selectedDate: dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)
         }
         _self = this
         this.intervalId = undefined
@@ -47,6 +48,15 @@ class headerGlobalAudit extends React.Component {
         if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
             data.status = data.response.includes('"code":400') ? 400 : data.status
         }
+    }
+
+    updateSelectedDate = (date) => {
+        this.setState({ selectedDate: date ? date :  dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)})
+    }
+
+    clearHistory = () =>
+    {
+        this.setState({historyList:[]})
     }
 
     loadMore = () => {
@@ -81,6 +91,13 @@ class headerGlobalAudit extends React.Component {
                     this.setState({ historyList: dataList })
                 }
             }
+            else
+            {
+                if(!isLive)
+                {
+                    this.setState({historyList:[]})
+                }
+            }
         }
     }
 
@@ -108,14 +125,14 @@ class headerGlobalAudit extends React.Component {
     }
 
     render() {
-        const { historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading} = this.state
+        const { selectedDate, historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading} = this.state
         return (
             <React.Fragment>
                 <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
                     <TimelineOutlinedIcon fontSize='default' />
                 </IconButton>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading}/>
+                    <HeaderAuditLog dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory}/>
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}

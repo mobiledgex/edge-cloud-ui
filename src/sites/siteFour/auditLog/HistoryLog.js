@@ -9,7 +9,6 @@ import {
 import { InputAdornment, TextField, Button, Grid, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@material-ui/core';
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 import * as dateUtil from '../../../utils/date_util'
-
 import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
 
@@ -48,8 +47,15 @@ const MaterialUIPickers = (props) => {
 
     const onSubmit = () => {
         let date = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE, selectedDate)
+        props.onSelectedDate(date)
         let starttime = `${date}T${dateUtil.utcTime(dateUtil.FORMAT_TIME_HH_mm, selectedStarttime)}:00Z`
         let endtime = `${date}T${dateUtil.utcTime(dateUtil.FORMAT_TIME_HH_mm, selectedEndtime)}:59Z`
+
+        if(dateUtil.isAfter(starttime, endtime))
+        {
+            date = dateUtil.utcTime(dateUtil.FORMAT_FULL_DATE, dateUtil.subtractDays(1, selectedDate))
+            starttime = `${date}T${dateUtil.utcTime(dateUtil.FORMAT_TIME_HH_mm, selectedStarttime)}:00Z`
+        }
         let filter = { starttime: starttime, endtime: endtime, limit: limit.length > 0 ? limit : 25 }
         props.onFilter(filter)
     }

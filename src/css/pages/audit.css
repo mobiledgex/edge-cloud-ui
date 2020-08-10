@@ -774,12 +774,12 @@
 
 .audit_timeline_vertical {
     overflow-y: auto;
-    height: calc(100% - 85px);
+    height: calc(100% - 115px);
 }
 
 .audit_timeline_vertical_expand {
     overflow-y: auto;
-    height: calc(100% - 314px);
+    height: calc(100% - 345px);
 }
 
 /* timeline */
