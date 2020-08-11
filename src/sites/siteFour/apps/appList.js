@@ -3,7 +3,6 @@ import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
 import * as constant from '../../../constant'
 import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
