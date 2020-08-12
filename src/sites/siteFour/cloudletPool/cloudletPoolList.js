@@ -19,7 +19,7 @@ class ClouldetPoolList extends React.Component {
         this.state = {
             currentView: null
         }
-        this.keys = Object.assign([], keys);
+        this.keys = keys();
     }
 
     onAdd = () => {
