@@ -164,8 +164,8 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '5',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '6',
@@ -277,8 +277,8 @@ export const defaultHwMapperListForAdminCluster = [
     },
     {
         id: '7',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
 ];
 

@@ -28,7 +28,7 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
-import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType, showToast} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
@@ -425,16 +425,12 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.udpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                     series = item.udpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
-                    series = item.networkSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT || hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     series = item.networkSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.networkSeriesList
-                }
-                //////todo:cloudllet/////////
-                else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
-                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
+                    series = item.series //todo:for cloudllet
                 } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED || hardwareType === HARDWARE_TYPE.IPV4_USED) {
                     series = item.ipSeries
                 }
@@ -1116,10 +1112,6 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonito
         let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
         let isStackedLineChart = _this.state.isStackedLineChart;
-        if (colorCodeIndexList !== undefined && colorCodeIndexList.length === 1) {
-            isStackedLineChart = true;
-        }
-
         let finalSeriesDataSets = [];
         for (let index in usageSetList) {
             let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
@@ -1128,8 +1120,8 @@ export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonito
                 radius: 0,
                 borderWidth: 3.5,//todo:line border width
                 fill: isStackedLineChart,
-                backgroundColor:  _this.state.chartColorList[colorCodeIndexList[index]],
-                borderColor:  _this.state.chartColorList[colorCodeIndexList[index]],
+                backgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                borderColor: _this.state.chartColorList[colorCodeIndexList[index]],
                 lineTension: 0.5,
                 data: usageSetList[index],
                 borderCapStyle: 'butt',

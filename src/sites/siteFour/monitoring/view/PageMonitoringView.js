@@ -1690,7 +1690,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             draggableHandle=".draggable"
                             verticalCompact={true}
                             compactType={'vertical'}
-                            preventCollision={true}
+                            preventCollision={false}
                             isDraggable={true}
                             autoSize={true}
                             style={{
