@@ -6,7 +6,7 @@ import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, UPDATE_AUTO_PROV_POLICY
 
 let fields = formatter.fields
 
-export const keys = [
+export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
   { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true },
   { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter: true },
@@ -24,7 +24,7 @@ export const keys = [
     { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: TYPE_JSON }]
   },
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
-]
+])
 
 const getKey = (data) => {
   return { organization: data[fields.organizationName], name: data[fields.autoPolicyName] }
@@ -157,5 +157,5 @@ const customData = (value) => {
  * Format server data to required local data format based on keys object
  * **/
 export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys, customData)
+  return formatter.formatData(response, body, keys(), customData)
 }
