@@ -181,14 +181,14 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
             })
         }
 
-        let resultWithColorCode = []
+        let appInstListWithColorCode = []
         filteredAppInstList.map((item, index) => {
             item.colorCodeIndex = index;
-            resultWithColorCode.push(item)
+            appInstListWithColorCode.push(item)
         })
 
 
-        return resultWithColorCode;
+        return appInstListWithColorCode;
     } catch (e) {
         //throw new Error(e)
     }
@@ -307,7 +307,6 @@ export const fetchClusterList = async () => {
             item.colorCodeIndex = index;
             resultWithColorCode.push(item)
         })
-
         return resultWithColorCode;
     } catch (e) {
 
