@@ -12,6 +12,8 @@ export const keys = [
   { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter: true },
   { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Request Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
+  { field: fields.undeployClientCount, serverField: 'undeploy_client_count', label: 'UnDeploy Request Count', sortable: true, visible: false, dataType: 'Integer', defaultValue: 0 },
+  { field: fields.undeployIntervalCount, serverField: 'undeploy_interval_count', label: 'UnDeploy Interval Count', sortable: true, visible: false, dataType: 'Integer', defaultValue: 0 },
   { field: fields.minActiveInstances, serverField: 'min_active_instances', label: 'Min Active Instances', sortable: true, visible: false, dataType: 'Integer' },
   { field: fields.maxInstances, serverField: 'max_instances', label: 'Max Instances', sortable: true, visible: false, dataType: 'Integer' },
   { field: fields.cloudletCount, label: 'Cloudlet Count', sortable: false, visible: true },
@@ -57,7 +59,9 @@ const getAutoProvKey = (data, isCreate) => {
   autoProvPolicy.key = getKey(data)
   if (isCreate) {
     autoProvPolicy.deploy_client_count = data[fields.deployClientCount] ? parseInt(data[fields.deployClientCount]) : undefined
+    autoProvPolicy.undeploy_client_count = data[fields.undeployClientCount] ? parseInt(data[fields.undeployClientCount]) : undefined
     autoProvPolicy.deploy_interval_count = data[fields.deployIntervalCount] ? parseInt(data[fields.deployIntervalCount]) : undefined
+    autoProvPolicy.undeploy_interval_count = data[fields.undeployIntervalCount] ? parseInt(data[fields.undeployIntervalCount]) : undefined
     autoProvPolicy.min_active_instances = data[fields.minActiveInstances] ? parseInt(data[fields.minActiveInstances]) : undefined
     autoProvPolicy.max_instances = data[fields.maxInstances] ? parseInt(data[fields.maxInstances]) : undefined
     autoProvPolicy.fields = data[fields.fields] ? data[fields.fields] : undefined
