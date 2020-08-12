@@ -1617,7 +1617,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                                     {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                                 </Center>
                                 <div style={{marginLeft: 5,}}>
-                                    {reduceString(clusterItemOne.ClusterName, 40)}
+                                    {reduceString(clusterItemOne.ClusterName, 40)} {clusterItemOne.Reservable === 'YES' ? <Tag color="#2db7f5">Reservable</Tag> : null}
                                 </div>
 
                             </div>

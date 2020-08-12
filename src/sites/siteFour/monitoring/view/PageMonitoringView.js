@@ -3211,7 +3211,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             <TreeSelect
                                 dropdownMatchSelectWidth={false}
                                 dropdownStyle={{
-                                    maxHeight: 800, overflow: 'auto', width: '420px'
+                                    overflow: 'auto', width: '420px'
                                 }}
                                 showArrow={true}
                                 maxTagCount={maxTagCount}
@@ -3228,7 +3228,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     });
                                 }}
                                 ref={c => this.treeSelect = c}
-                                listHeight={800}
+                                listHeight={950}
                                 searchValue={this.state.searchClusterValue}
                                 searchPlaceholder={'Enter the cluster name.'}
                                 placeholder={'Select Cluster'}
