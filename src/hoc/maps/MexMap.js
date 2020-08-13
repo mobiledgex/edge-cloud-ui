@@ -260,7 +260,7 @@ class ClustersMap extends Component {
             let findIndex =  (nextProps.locData && newLocData.length > 0) ? nextProps.locData.findIndex( item => item === newLocData[0]) : 0;
             if (findIndex < 0) findIndex = 0;
             let centerLength = nextProps.locData ? nextProps.locData.length : 0;
-            let center = nextProps.locData ? [nextProps.locData[findIndex].cloudletLocation.latitude, nextProps.locData[findIndex].cloudletLocation.longitude] : zoomControls.center
+            let center = (nextProps.locData && nextProps.locData[findIndex]) ? [nextProps.locData[findIndex].cloudletLocation.latitude, nextProps.locData[findIndex].cloudletLocation.longitude] : zoomControls.center
 
             if (nextProps.mapDetails) {
                 if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
