@@ -77,12 +77,12 @@ const MaterialUIPickers = (props) => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
-                <div style={{ position: 'absolute', left: 0, width: 100}}>
+                {props.isOrg ? null : <div style={{ position: 'absolute', left: 0, width: 100 }}>
                     <IconButton onClick={handleExpandChange}>
                         <FilterListRoundedIcon />
                     </IconButton>
-                    <button size='small' style={{ backgroundColor: `${expanded ? '#BFC0C2' : '#388E3C'}`, borderRadius: 5, border: 'none', fontSize: 10, padding: '5px 10px 5px 10px'}}>LIVE</button>
-                </div>
+                    <button size='small' style={{ backgroundColor: `${expanded ? '#BFC0C2' : '#388E3C'}`, borderRadius: 5, border: 'none', fontSize: 10, padding: '5px 10px 5px 10px' }}>LIVE</button>
+                </div>}
                 <div onClick={(e) => { e.stopPropagation() }} align={'center'} style={{ width: '100%', height: 50 }}>
                     <div style={{ position: 'absolute', right: 0, top: 2 }} onClick={onClose}>
                         <IconButton>

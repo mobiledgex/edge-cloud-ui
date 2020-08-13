@@ -21,7 +21,8 @@ class HeaderAuditLog extends React.Component {
             dataList: [],
             filterList:[],
             filterExpand: false,
-            filterText:''
+            filterText:'',
+            isOrg : false
         }
     }
 
@@ -152,7 +153,11 @@ class HeaderAuditLog extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.filterExpand && nextProps.historyList !== prevState.dataList) {
+        if(nextProps.isOrg)
+        {
+            return {isOrg : nextProps.isOrg}
+        }
+        else if (prevState.filterExpand && nextProps.historyList !== prevState.dataList) {
             return { dataList: nextProps.historyList }
         }
         else if (nextProps.dataList !== prevState.dataList && !prevState.filterExpand) {
@@ -190,11 +195,11 @@ class HeaderAuditLog extends React.Component {
     }
 
     render() {
-        const { filterList, filterExpand, filterText } = this.state
+        const { filterList, filterExpand, filterText, isOrg } = this.state
         return (
             <div className='audit_container'>
                 <div>
-                    <HistoryLog onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} onSelectedDate={this.props.onSelectedDate}/>
+                    <HistoryLog isOrg={isOrg} onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} onSelectedDate={this.props.onSelectedDate} />
                 </div>
                 <Input
                     size="small"
@@ -213,10 +218,10 @@ class HeaderAuditLog extends React.Component {
                     }
                     onChange = {this.onFilterValue}
                     placeholder={'Search'} />
-                {this.props.loading && !filterExpand ? <LinearProgress /> : null}
-                {this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
+                {!this.isOrg && this.props.loading && !filterExpand ? <LinearProgress /> : null}
+                {!this.isOrg && this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
                 <Divider />
-                <div align={'right'}><h4 style={{padding:'10px 10px 0px 0px'}}><b>{this.props.selectedDate}</b></h4></div>
+                {this.state.isOrg ? null : <div align={'right'}><h4 style={{padding:'10px 10px 0px 0px'}}><b>{this.props.selectedDate}</b></h4></div>}
                 <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
                     {
                         filterList && filterList.length > 0 ?
@@ -242,7 +247,13 @@ class HeaderAuditLog extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ filterList: this.props.dataList })
+        this.props.clearHistory()
+        if (this.props.isOrg) {
+            this.setState({ dataList: this.props.historyList, filterList: this.props.historyList })
+        }
+        else {
+            this.setState({ filterList: this.props.dataList })
+        }
         this.props.onSelectedDate(dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE))
     }
 }

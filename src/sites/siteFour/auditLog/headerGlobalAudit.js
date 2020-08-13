@@ -20,6 +20,7 @@ class headerGlobalAudit extends React.Component {
             historyList: [],
             liveData: [],
             rawViewData: [],
+            isOrg:false,
             openDetail: false,
             isOpen: false,
             loading: false,
@@ -33,10 +34,11 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
+        console.log('Rahul1234','deee')
         let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
-                this.setState({ isOpen: true, logData: mcRequest.response.data })
+                this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
             }
             else {
                 this.props.handleAlertInfo('error', 'No logs found')
@@ -113,7 +115,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     handleOpen = () => {
-        this.setState({ isOpen: true });
+        this.setState({ isOpen: true, isOrg : false });
     }
 
     handleClose = () => {
@@ -125,14 +127,14 @@ class headerGlobalAudit extends React.Component {
     }
 
     render() {
-        const { selectedDate, historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading} = this.state
+        const { selectedDate, historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading, isOrg} = this.state
         return (
             <React.Fragment>
                 <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
                     <TimelineOutlinedIcon fontSize='default' />
                 </IconButton>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory}/>
+                    <HeaderAuditLog isOrg={isOrg} dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory}/>
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
@@ -142,6 +144,14 @@ class headerGlobalAudit extends React.Component {
                 />
             </React.Fragment>
         )
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg)
+        {
+            this.getDataAuditOrg(this.props.showAuditLogWithOrg)
+            this.props.handleShowAuditLog(null)
+        }
     }
 
     componentDidMount() {
