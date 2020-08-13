@@ -272,15 +272,7 @@ class ClustersMap extends Component {
                 center = nextProps.mapDetails.coordinates
                 mapCenter = nextProps.mapDetails.coordinates
             }
-            if(createMode || updateMode) {
-                // center = mapCenter
-                if(updateMode) { 
-                    mapCenter = center;
-                }
-            } else {
-                
-                
-            }
+            
             return { mapCenter: mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
         }
         return null;
@@ -361,7 +353,8 @@ class ClustersMap extends Component {
             let _lat = Math.round(e.latlng['lat'])
             let _lng = Math.round(e.latlng['lng'])
 
-            this.setState({ currentPos: [_lat, _lng], mapCenter: [_lat, _lng] });
+            // this.setState({ currentPos: [_lat, _lng], mapCenter: [_lat, _lng] });
+            this.setState({ currentPos: [_lat, _lng] });
 
             let location = { lat: _lat, long: _lng }
             let locationData = [
