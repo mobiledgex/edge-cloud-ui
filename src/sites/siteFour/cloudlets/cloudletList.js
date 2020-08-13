@@ -112,7 +112,7 @@ class CloudletList extends React.Component {
                 state = 'Upgrade'
                 break;
             case 999:
-                state = 'Under Maintainance'
+                state = 'Under Maintenance'
                 color = 'yellow'
                 break;
             default:

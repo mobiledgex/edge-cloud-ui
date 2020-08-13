@@ -110,6 +110,7 @@ class MexTerminal extends Component {
                     this.props.handleAlertInfo('error', 'Access denied')
                     this.close()
                     this.setState({
+                        tempURL:undefined,
                         optionView: true,
                     }) 
                 }
@@ -117,6 +118,7 @@ class MexTerminal extends Component {
             else if (mcRequest.error) {
                 this.close()
                 this.setState({
+                    tempURL:undefined,
                     optionView: true,
                 })
             }
@@ -268,8 +270,8 @@ class MexTerminal extends Component {
             statusColor: flag ? 'green' : 'red',
             status: flag ? 'Connected' : 'Not Connected'
         })
-        if (diff > 1000) {
-            this.setState({ optionView: !flag })
+        if (diff > 5000) {
+            this.setState({ optionView: !flag, tempURL : undefined })
         }
     }
 
