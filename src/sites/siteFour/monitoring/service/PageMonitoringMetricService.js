@@ -181,14 +181,14 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
             })
         }
 
-        let resultWithColorCode = []
+        let appInstListWithColorCode = []
         filteredAppInstList.map((item, index) => {
             item.colorCodeIndex = index;
-            resultWithColorCode.push(item)
+            appInstListWithColorCode.push(item)
         })
 
 
-        return resultWithColorCode;
+        return appInstListWithColorCode;
     } catch (e) {
         //throw new Error(e)
     }
@@ -307,7 +307,6 @@ export const fetchClusterList = async () => {
             item.colorCodeIndex = index;
             resultWithColorCode.push(item)
         })
-
         return resultWithColorCode;
     } catch (e) {
 
@@ -334,7 +333,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
         //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
         let appInstanceHwUsageList = []
         appInstanceHwUsageList = await Promise.allSettled(promiseList);
-
 
         let usageListForAllInstance = []
         appInstanceList.map((item, index) => {
@@ -821,6 +819,8 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
 }
 
 export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
+
+
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: mcURL() + APP_INST_METRICS_ENDPOINT,
@@ -920,7 +920,7 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
 export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '', dataLimitCount) => {
     try {
         let promiseList = []
-        
+
         let range = getTimeRange(dataLimitCount)
         let periodStartTime = range[0]
         let periodEndTime = range[1]
@@ -984,7 +984,6 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
     let periodStartTime = makeCompleteDateTime(date[0]);
     let periodEndTime = makeCompleteDateTime(date[1]);
 
-
     let selectOrg = undefined
     let form = {};
     try {
@@ -1009,7 +1008,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
             },
             "starttime": periodStartTime,
             "endtime": periodEndTime,
-            //"last": 10
+            //"last": 40
         }
 
         let result = await axios({
@@ -1022,6 +1021,7 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
             },
             timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
+
             return response.data.data[0];
         }).catch(e => {
             return null;
@@ -1032,33 +1032,38 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
     }
 }
 
-export const getAppInstEventLogByRegion = async (region = 'EU') => {
+
+export const getAppInstEventLogsForOneAppInst = async (fullAppInst = undefined, dataLimitCount = 20) => {
     try {
 
         let selectOrg = localStorage.getItem('selectOrg')
+        let AppName = fullAppInst.split('|')[0].trim()
+        let Cloudlet = fullAppInst.split('|')[1].trim()
+        let ClusterInst = fullAppInst.split('|')[2].trim()
+        let Version = fullAppInst.split('|')[3].trim()
+        let Region = fullAppInst.split('|')[4].trim()
+        let Organization = fullAppInst.split('|')[6].trim()
 
         let form = {
-            "region": region,
+            "region": Region,
             "appinst": {
                 "app_key": {
                     "organization": selectOrg
                 },
                 "cluster_inst_key": {
                     "cluster_key": {
-                        "name": ""
+                        "name": ClusterInst
                     },
                     "cloudlet_key": {
-                        "name": "",
-                        "organization": ""
+                        "name": Cloudlet,
+                        "organization": Organization
                     }
                 }
-            }
-
-
+            },
+            "last": dataLimitCount,
         }
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
         return await axios({
             url: mcURL() + APP_INST_EVENT_LOG_ENDPOINT,
             method: 'post',
@@ -1085,31 +1090,21 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
 
 }
 
-export const getAllAppInstEventLogs = async () => {
+
+export const getAllAppInstEventLogs = async (fullCurrentAppInst = undefined, dataLimitCount) => {
     try {
 
-        let regionList = localStorage.getItem('regions').split(",");
-        let promiseList = []
-        for (let i in regionList) {
-            promiseList.push(getAppInstEventLogByRegion(regionList[i]))
-        }
-
-        let allAppInstEventLogList = await Promise.all(promiseList);
+        let appInstEventLogList = await getAppInstEventLogsForOneAppInst(fullCurrentAppInst, dataLimitCount)
 
         let completedEventLogList = []
-        allAppInstEventLogList.map((item, index) => {
-
-            if (!isEmpty(item)) {
-                if (item.Series !== null) {
-                    let eventLogList = item.Series["0"].values;
-                    eventLogList.map(item => {
-                        completedEventLogList.push(item)
-                    })
-                }
+        if (!isEmpty(appInstEventLogList)) {
+            if (appInstEventLogList.Series !== null) {
+                let eventLogList = appInstEventLogList.Series["0"].values;
+                eventLogList.map(item => {
+                    completedEventLogList.push(item)
+                })
             }
-
-
-        })
+        }
 
         return completedEventLogList;
     } catch (e) {
@@ -1139,6 +1134,7 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
+        //"last": 20,
         "starttime": startTime,
         "endtime": endTime,
     }
@@ -1160,13 +1156,13 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         if (response.data.data[0].Series !== null) {
             seriesValues = response.data.data[0].Series[0].values
             column = response.data.data[0].Series[0].columns
-
         }
 
         let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column, appInst)
-
         return clientMatricSumDataOne;
 
+    }).catch(e => {
+        //showToast(e.toString())
     })
 }
 
@@ -1203,7 +1199,9 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 
     seriesValues.map(item => {
-        let methodType = item[17];
+
+        let methodType = item[16];
+
         if (methodType === "RegisterClient") {
             RegisterClientCount++;
         }
@@ -1245,12 +1243,12 @@ export const getClientStatusList = async (appInstList, startTime, endTime, dataL
         appInstList.map((appInstOne: TypeCloudlet, index) => {
             promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
         })
-        let newPromiseList = await Promise.all(promiseList);
+        let newPromiseList = await Promise.allSettled(promiseList);
 
         let mergedClientStatusList = []
         newPromiseList.map((item, index) => {
-            if (item !== undefined) {
-                mergedClientStatusList.push(item)
+            if (item.value !== undefined) {
+                mergedClientStatusList.push(item.value)
             }
         })
         return mergedClientStatusList;

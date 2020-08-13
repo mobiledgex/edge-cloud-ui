@@ -54,24 +54,24 @@ const getData = (data, item) => (
                 getHighLighter('json', JSON.stringify(data, null, 1)) :
                 item.dataType === constant.TYPE_YAML ?
                     getHighLighter('yaml', data.toString()) :
-                    <p style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</p>
+                    <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</div>
 )
 
 
 const subView = (keys, dataList) => {
     return (
         <Table size='small'>
-            <TableHead>
+            {keys.length > 1 ? <TableHead>
                 <TableRow>
                     {keys.map((item, i) => {
                         return <TableCell key={i}>{item.label}</TableCell>
                     })}
                 </TableRow>
-            </TableHead>
+            </TableHead> : null}
             <TableBody>
                 {dataList.map((data, i) => {
                     return (
-                        <TableRow key={i} style={{backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent'}}>{(
+                        <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
                             keys.map((item, j) => {
                                 return (
                                     <TableCell key={j} style={{borderBottom: "none"}}>
@@ -97,6 +97,36 @@ const getRow = (id, item, data) => {
     )
 }
 
+const isArrayString = (item, data)=>
+{
+    return Array.isArray(data) && item.dataType === constant.TYPE_STRING
+}
+
+const getArrayRow = (id, item, dataList) => {
+    return (
+        <TableRow key={id}>
+            <TableCell style={{ borderBottom: "none", verticalAlign: 'text-top', width: '20%' }}>{item.label}</TableCell>
+            <TableCell style={{ borderBottom: "none" }}>
+                <Table size='small'>
+                    <TableBody>
+                        {dataList.map((data, i) => {
+                            return (
+                                <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
+                                    <TableCell style={{ borderBottom: "none" }}>
+                                        <p style={{ wordBreak: 'break-all' }}>{data}</p>
+                                    </TableCell>)
+                                }
+                                </TableRow>)
+                        })}
+                    </TableBody>
+                </Table>
+            </TableCell>
+        </TableRow>
+    )
+}
+
+
+
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
     return (
@@ -111,7 +141,8 @@ const MexDetailViewer = (props) => {
                                     data.length > 0 ?
                                         getRow(i, item, subView(item.keys, data)) : null
                                     :
-                                    getRow(i, item, data) :
+                                    isArrayString(item, data) ? getArrayRow(i, item, data) :
+                                        getRow(i, item, data) :
                                 null
                             : null
                     )

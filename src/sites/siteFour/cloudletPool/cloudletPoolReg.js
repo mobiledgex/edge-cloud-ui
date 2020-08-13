@@ -2,21 +2,21 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import { Item, Step } from 'semantic-ui-react';
-import MexForms, { MAIN_HEADER } from '../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
-import { fields } from '../../../services/model/format';
+import { fields, getOrganization, updateFields } from '../../../services/model/format';
 
+import { getOrganizationList } from '../../../services/model/organization';
 import { showOrganizations } from '../../../services/model/organization';
-import { getCloudletList } from '../../../services/model/cloudlet';
-import { createCloudletPool } from '../../../services/model/cloudletPool';
-import { createCloudletPoolMember, deleteCloudletPoolMember } from '../../../services/model/cloudletPoolMember';
+import { getOrgCloudletList } from '../../../services/model/cloudlet';
+import { createCloudletPool, updateCloudletPool } from '../../../services/model/cloudletPool';
 import { createLinkPoolOrg, deleteLinkPoolOrg } from '../../../services/model/cloudletLinkOrg';
 
 import * as constant from '../../../constant';
-import {CloudletPoolTutor} from "../../../tutorial";
+import { CloudletPoolTutor } from "../../../tutorial";
 
 
 const cloudletPoolSteps = CloudletPoolTutor();
@@ -28,10 +28,6 @@ const stepData = [
     },
     {
         step: "Step 2",
-        description: "Add Cloudlets"
-    },
-    {
-        step: "Step 3",
         description: "Add Organizations"
     }
 ]
@@ -43,14 +39,67 @@ class CloudletPoolReg extends React.Component {
             step: 0,
             forms: []
         }
-        this.poolData = {}
+        this.isUpdate = this.props.isUpdate
         this.action = props.action
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.operatorList = []
         this.organizationList = []
         this.cloudletList = []
     }
 
+    getCloudletList = async (forms, form, region, operator) => {
+        if (region && operator) {
+            this.cloudletList = await getOrgCloudletList(this, { region: region, org: operator })
+            this.cloudletList = this.cloudletList.filter((cloudlet) => {
+                return cloudlet[fields.operatorName] === operator
+            })
+            this.updateUI(form)
+            this.setState({ forms: forms })
+        }
+    }
+
+    regionValueChange = (currentForm, forms, isInit) => {
+        let operator = undefined
+        let cloudletForm = undefined
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.operatorName) {
+                operator = form.value
+            }
+            else if (form.field === fields.cloudlets) {
+                cloudletForm = form
+            }
+        }
+        this.getCloudletList(forms, cloudletForm, currentForm.value, operator)
+    }
+
+    operatorValueChange = (currentForm, forms, isInit) => {
+        let region = undefined
+        let cloudletForm = undefined
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.region) {
+                region = form.value
+            }
+            else if (form.field === fields.cloudlets) {
+                cloudletForm = form
+            }
+        }
+        this.getCloudletList(forms, cloudletForm, region, currentForm.value)
+    }
+
+    checkForms = (form, forms, isInit, data) => {
+        if (form.field === fields.region) {
+            this.regionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.operatorName) {
+            this.operatorValueChange(form, forms, isInit)
+        }
+    }
+
     onValueChange = (currentForm, data) => {
+        let forms = this.state.forms
+        this.checkForms(currentForm, forms)
     }
 
     /**
@@ -90,16 +139,23 @@ class CloudletPoolReg extends React.Component {
         serverData.sendMultiRequest(this, requestDataList, this.organizationAddResponse)
     }
 
-    getData = (dataList, field) => {
+    getOrganizationData = (dataList, field) => {
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
                 return { value: JSON.stringify(data), label: data[field] }
             })
     }
 
-    selectOrganization = async (isNew) => {
-        let data = this.poolData;
+    getCloudletData = (dataList, field) => {
+        if (dataList && dataList.length > 0)
+            return dataList.map(data => {
+                return { value: data[field], label: data[field] }
+            })
+    }
+
+    selectOrganization = async (data, isNew) => {
         let region = data[fields.region];
+        let operator = data[fields.operatorName];
         let selectedDatas = data[fields.organizations]
         if (!this.props.action || this.action === constant.ADD_ORGANIZATION) {
             let mcRequest = await serverData.sendRequest(this, showOrganizations())
@@ -113,23 +169,25 @@ class CloudletPoolReg extends React.Component {
         else {
             this.organizationList = selectedDatas;
         }
-
         if (this.organizationList.length > 0) {
             let label = this.action === constant.DELETE_ORGANIZATION ? 'Unlink' : 'Link'
             let step = [
                 { label: `${label} Organizations`, formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
-                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
-                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.organizationList, fields.organizationName) },
+                { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
+                { field: fields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.poolName] },
+                { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
+                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true},
                 { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
-            this.loadData(step)
+            for (let i = 0; i < step.length; i++) {
+                this.updateUI(step[i])
+            }
             this.setState({
-                step: 2,
+                step: 1,
                 forms: step
             })
-            this.props.handleViewMode( cloudletPoolSteps.stepsNewPool3 )
+            this.props.handleViewMode(cloudletPoolSteps.stepsNewPool3)
         }
         else {
             this.props.handleAlertInfo('error', 'No organizations to unlink')
@@ -140,109 +198,6 @@ class CloudletPoolReg extends React.Component {
     /**
      * Organization Block
      * * */
-
-    /**
-    * Cloudlet Block
-    * * */
-
-    onCloudletCancel = () => {
-        if (this.props.action) {
-            this.props.onClose(false)
-        }
-        else {
-            this.selectOrganization(true)
-        }
-    }
-
-    addCloudletResponse = (mcRequestList) => {
-        let valid = true;
-        if (mcRequestList && mcRequestList.length > 0) {
-
-            for (let i = 0; i < mcRequestList.length; i++) {
-                let mcRequest = mcRequestList[i];
-                if (mcRequest.response.status !== 200) {
-                    valid = false;
-                }
-            }
-        }
-
-        if (valid) {
-            let msg = this.action === constant.DELETE_CLOUDLET ? 'removed' : 'added'
-            this.props.handleAlertInfo('success', `Cloudlets ${msg} successfully`)
-            if (this.props.action) {
-                this.props.onClose(true)
-            }
-            else {
-                let data = mcRequestList[0].request.data;
-                this.selectOrganization(data, true)
-            }
-        }
-    }
-
-    onAddCloudlets = () => {
-        let data = this.formattedData()
-        let requestDataList = []
-        let cloudletList = data[fields.cloudlets]
-        if (cloudletList && cloudletList.length > 0) {
-            for (let i = 0; i < cloudletList.length; i++) {
-                let newData = data
-                let cloudlet = JSON.parse(cloudletList[i])
-                newData[fields.cloudletName] = cloudlet[fields.cloudletName]
-                newData[fields.operatorName] = cloudlet[fields.operatorName]
-                requestDataList.push(this.action === constant.DELETE_CLOUDLET ? deleteCloudletPoolMember(newData) : createCloudletPoolMember(newData))
-            }
-        }
-        serverData.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
-    }
-
-
-
-    selectCloudlet = async (isNew) => {
-        let data = this.poolData;
-        let region = data[fields.region];
-        let selectedDatas = data[fields.cloudlets]
-        if (!this.props.action || this.action === constant.ADD_CLOUDLET) {
-            this.cloudletList = await getCloudletList(this, { region: region })
-            if (!isNew) {
-                this.cloudletList = constant.filterData(selectedDatas, this.cloudletList, fields.cloudletName);
-            }
-        }
-        else {
-            this.cloudletList = selectedDatas;
-        }
-
-        if (this.cloudletList && this.cloudletList.length > 0) {
-            let label = this.action === constant.DELETE_CLOUDLET ? 'Delete' : 'Add'
-
-            let step2 = [
-                { label: `${label} Cloudlets`, formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { disabled: true }, visible: true, options: [region], value: region },
-                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { disabled: true }, visible: true, value: data[fields.poolName] },
-                { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: true }, visible: true, options: this.getData(this.cloudletList, fields.cloudletName) },
-                { label: `${label} Cloudlets`, formType: 'Button', onClick: this.onAddCloudlets },
-                { label: this.props.action ? 'Cancel' : 'Skip', formType: 'Button', onClick: this.onCloudletCancel }
-            ]
-            this.loadData(step2)
-            this.setState({
-                step: 1,
-                forms: step2
-            })
-            this.props.handleViewMode( cloudletPoolSteps.stepsNewPool2 )
-        } else {
-            this.props.handleAlertInfo('error', 'No Cloudlets present')
-            if (this.props.action) {
-                this.props.onClose(true)
-            } else {
-                this.selectOrganization(data, true)
-            }
-        }
-    }
-
-    /**
-    * Cloudlet Block
-    * * */
-
-
 
     formattedData = () => {
         let data = {};
@@ -256,13 +211,29 @@ class CloudletPoolReg extends React.Component {
         return data
     }
 
-    onCreateCloudletPool = async () => {
+    onCreate = async () => {
+        let forms = this.state.forms
         let data = this.formattedData()
-        let mcRequest = await serverData.sendRequest(this, createCloudletPool(data))
+        let mcRequest = undefined
+        if (this.isUpdate) {
+            let updateFieldList = updateFields(this, forms, data, this.props.data)
+            if (updateFieldList.length > 0) {
+                data[fields.fields] = updateFieldList
+                mcRequest = await serverData.sendRequest(this, updateCloudletPool(data))
+            }
+        }
+        else {
+            mcRequest = await serverData.sendRequest(this, createCloudletPool(data))
+        }
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.poolData = data;
-            this.props.handleAlertInfo('success', `Cloudlet Pool ${data[fields.poolName]} created successfully`)
-            this.selectCloudlet(true)
+            this.props.handleAlertInfo('success', `Cloudlet Pool ${data[fields.poolName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
+
+            if (this.isUpdate) {
+                this.props.onClose(true)
+            }
+            else {
+                this.selectOrganization(data, true)
+            }
         }
     }
 
@@ -291,31 +262,44 @@ class CloudletPoolReg extends React.Component {
                                     ))
                                 }
                             </Step.Group>}
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms}  isUpdate={this.isUpdate}/>
                     </Item>
                 </div>
             </div>
         )
     }
 
-
-
     onAddCancel = () => {
         this.props.onClose(false)
     }
 
+    resetFormValue = (form) => {
+        let rules = form.rules
+        if (rules) {
+            let disabled = rules.disabled ? rules.disabled : false
+            if (!disabled) {
+                form.value = undefined;
+            }
+        }
+    }
 
-    loadData(forms, data) {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+    updateUI = (form, data) => {
+        if (form) {
+            this.resetFormValue(form)
             if (form.field) {
-                if (form.formType === 'Select') {
+                if (form.formType === SELECT || form.formType === DUALLIST) {
                     switch (form.field) {
-                        case fields.organizationName:
-                            form.options = this.organizationList
-                            break;
                         case fields.region:
                             form.options = this.regions;
+                            break;
+                        case fields.operatorName:
+                            form.options = this.operatorList
+                            break;
+                        case fields.cloudlets:
+                            form.options = this.getCloudletData(this.cloudletList, fields.cloudletName)
+                            break;
+                        case fields.organizations:
+                            form.options = this.getOrganizationData(this.organizationList, fields.organizationName) 
                             break;
                         default:
                             form.options = undefined;
@@ -323,41 +307,72 @@ class CloudletPoolReg extends React.Component {
                 }
             }
         }
-
     }
-    getFormData = async (data) => {
-        if (data) {
-            this.poolData = data;
-            switch (this.action) {
-                case constant.ADD_CLOUDLET:
-                case constant.DELETE_CLOUDLET:
-                    this.selectCloudlet(false)
-                    break;
-                case constant.ADD_ORGANIZATION:
-                case constant.DELETE_ORGANIZATION:
-                    this.selectOrganization(false)
-                    break;
+
+    loadDefaultData = async (data) => {
+        let operator = {}
+        operator[fields.operatorName] = data[fields.operatorName];
+        this.operatorList = [operator]
+
+        if (this.action === constant.ADD_CLOUDLET) {
+            this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.operatorName] })
+            if (this.cloudletList && this.cloudletList.length > 0) {
+                this.cloudletList = this.cloudletList.filter((cloudlet) => {
+                    return cloudlet[fields.operatorName] === data[fields.operatorName]
+                })
             }
         }
+    }
+
+    getFormData = async (data) => {
+        if (data) {
+            await this.loadDefaultData(data)
+        }
         else {
-            let step1 = [
-                { label: 'Create Cloudlet Pool', formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-                { field: fields.poolName, label: 'Pool Name', formType: 'Input', placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true },
-                { label: 'Create Cloudlet Pool', formType: 'Button', onClick: this.onCreateCloudletPool, validate: true },
-                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
-            ]
-            this.loadData(step1)
-            this.setState({
-                forms: step1
-            })
+            this.organizationList = await getOrganizationList(this)
+
+            this.operatorList = []
+            for (let i = 0; i < this.organizationList.length; i++) {
+                let organization = this.organizationList[i]
+                if (organization[fields.type] === 'operator' || getOrganization()) {
+                    this.operatorList.push(organization[fields.organizationName])
+                }
+            }
         }
 
+        if(this.action === constant.ADD_ORGANIZATION || this.action === constant.DELETE_ORGANIZATION)
+        {
+            this.selectOrganization(data, false)
+        }
+        else
+        {
+            let forms = [
+                { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet Pool`, formType: MAIN_HEADER, visible: true },
+                { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true },
+                { field: fields.poolName, label: 'Pool Name', formType: INPUT, placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true },
+                { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },
+                { field: fields.cloudlets, label: 'Cloudlets', formType: DUALLIST, update: true, updateId: ['3'], rules: { required: false }, visible: true },
+                { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreate, validate: true },
+                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
+            ]
+
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                this.updateUI(form)
+                if (data) {
+                    form.value = data[form.field]
+                }
+            }
+    
+            this.setState({
+                forms: forms
+            })
+        }   
     }
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( cloudletPoolSteps.stepsNewPool );
+        this.props.handleViewMode(cloudletPoolSteps.stepsNewPool);
     }
 };
 

@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
-import { showCloudletPoolMembers } from '../../../services/model/cloudletPoolMember';
 import { showCloudletLinkOrg } from '../../../services/model/cloudletLinkOrg';
 import CloudletPoolReg from './cloudletPoolReg';
 import {CloudletPoolTutor} from "../../../tutorial";
@@ -20,7 +19,7 @@ class ClouldetPoolList extends React.Component {
         this.state = {
             currentView: null
         }
-        this.keys = Object.assign([], keys);
+        this.keys = keys();
     }
 
     onAdd = () => {
@@ -30,8 +29,7 @@ class ClouldetPoolList extends React.Component {
 
     /**Action menu block */
     onActionClick = (action, data) => {
-        this.setState({ currentView: <CloudletPoolReg data={data} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
-
+        this.setState({ currentView: <CloudletPoolReg data={data} isUpdate={action ? true : false} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
     }
 
     showDeleteCloudletPool = (action, data) => {
@@ -46,8 +44,7 @@ class ClouldetPoolList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: constant.ADD_CLOUDLET, label: 'Add Cloudlet', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.DELETE_CLOUDLET, label: 'Delete Cloudlet', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.ADD_CLOUDLET, label: 'Update', onClick: this.onActionClick, type:'Edit' },
             { id: constant.ADD_ORGANIZATION, label: 'Link Organization', onClick: this.onActionClick, type:'Edit' },
             { id: constant.DELETE_ORGANIZATION, label: 'Unlink Organization', onClick: this.onActionClick, type:'Edit' },
             { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool, type:'Edit' }
@@ -61,7 +58,7 @@ class ClouldetPoolList extends React.Component {
             id: 'CloudletPools',
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [showCloudletPools, showCloudletPoolMembers, showCloudletLinkOrg],
+            requestType: [showCloudletPools, showCloudletLinkOrg],
             isRegion: true,
             sortBy: [fields.poolName],
             keys: this.keys,

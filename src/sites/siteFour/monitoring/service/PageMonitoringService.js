@@ -28,7 +28,7 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
-import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType, showToast} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
@@ -425,16 +425,12 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.udpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                     series = item.udpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
-                    series = item.networkSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT || hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     series = item.networkSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.networkSeriesList
-                }
-                //////todo:cloudllet/////////
-                else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
-                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
+                    series = item.series //todo:for cloudllet
                 } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED || hardwareType === HARDWARE_TYPE.IPV4_USED) {
                     series = item.ipSeries
                 }
@@ -1109,52 +1105,48 @@ export const simpleGraphOptions = {
 
 export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonitoringView, currentColorIndex = -1) => {
     try {
-        const lineChartData = (canvas) => {
-            let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
-            let levelTypeNameList = lineChartDataSet.levelTypeNameList
-            let usageSetList = lineChartDataSet.usageSetList
-            let newDateTimeList = lineChartDataSet.newDateTimeList
-            let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
-            let isStackedLineChart = _this.state.isStackedLineChart;
-            if (colorCodeIndexList !== undefined && colorCodeIndexList.length === 1) {
-                isStackedLineChart = true;
-            }
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList
+        let usageSetList = lineChartDataSet.usageSetList
+        let newDateTimeList = lineChartDataSet.newDateTimeList
+        let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
-            let finalSeriesDataSets = [];
-            for (let index in usageSetList) {
-                let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
-                let dataSetsOne = {
-                    label: levelTypeNameList[index],
-                    radius: 0,
-                    borderWidth: 3.5,//todo:line border width
-                    fill: isStackedLineChart,
-                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
-                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
-                    lineTension: 0.5,
-                    data: usageSetList[index],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                };
+        let isStackedLineChart = _this.state.isStackedLineChart;
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
+            let dataSetsOne = {
+                label: levelTypeNameList[index],
+                radius: 0,
+                borderWidth: 3.5,//todo:line border width
+                fill: isStackedLineChart,
+                backgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                borderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                lineTension: 0.5,
+                data: usageSetList[index],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+            };
 
-                finalSeriesDataSets.push(dataSetsOne)
-            }
-            return {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
-        };
+            finalSeriesDataSets.push(dataSetsOne)
+        }
+
+        let lineChartData = {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+
         return lineChartData;
     } catch (e) {
 
@@ -1625,7 +1617,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                                     {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                                 </Center>
                                 <div style={{marginLeft: 5,}}>
-                                    {reduceString(clusterItemOne.ClusterName, 40)}
+                                    {reduceString(clusterItemOne.ClusterName, 40)} {clusterItemOne.Reservable === 'YES' ? <Tag color="#3b5999">Reservable</Tag> : null}
                                 </div>
 
                             </div>

@@ -23,6 +23,7 @@ class AutoProvPolicy extends React.Component {
         this.state = {
             currentView: null
         }
+        this.keys = keys()
     }
 
     onRegClose = (isEdited) => {
@@ -70,7 +71,7 @@ class AutoProvPolicy extends React.Component {
             requestType: [showAutoProvPolicies, showApps],
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
-            keys: keys,
+            keys: this.keys,
             onAdd: this.onAdd,
             viewMode: policySteps.stepsPolicy
         })

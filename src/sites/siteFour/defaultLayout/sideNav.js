@@ -136,7 +136,7 @@ export default function MiniDrawer(props) {
         { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
         { divider: true },
         { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, pageId: constant.PAGE_CLOUDLETS, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-        { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, pageId: constant.PAGE_CLOUDLET_POOLS, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN_MANAGER] },
+        { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, pageId: constant.PAGE_CLOUDLET_POOLS, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN_MANAGER, constant.OPERATOR_MANAGER, constant.OPERATOR_CONTRIBUTOR] },
         { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, pageId: constant.PAGE_FLAVORS, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
         { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, pageId: constant.PAGE_CLUSTER_INSTANCES, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
         { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, pageId: constant.PAGE_APPS, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },

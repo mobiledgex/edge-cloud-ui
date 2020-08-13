@@ -409,6 +409,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
                     <div className='page_monitoring_form_column_right2'>
                         <Select
                             maxTagCount={4}
+                            listHeight={512}
                             allowClear={true}
                             mode="multiple"
                             style={{width: '100%'}}
