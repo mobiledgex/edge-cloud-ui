@@ -112,7 +112,7 @@ class ClockCore extends Component {
     render() {
         return (
             <div style={clockTile}>
-                <div className='clock001'>{this.state.time}</div>
+                <div className='clockDiv'>{this.state.time}</div>
                 <div style={{marginTop: 5, fontSize: 15, color: '#77BD25'}}>{this.state.todayDate}</div>
             </div>
         );
