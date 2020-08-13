@@ -20,6 +20,7 @@ const markerSize = [20, 24]
 let zoom = 1;
 let selectedIndex = 0;
 let doing = false;
+let locDataOld = [];
 
 let mapTileList = [
     {
@@ -132,6 +133,7 @@ class ClustersMap extends Component {
         let createMode = nextProps.onMapClick ? true : false;
         let updateMode = (nextProps.locData && nextProps.locData.length > 0) ? true : false;
         let hasLocation = [];
+        let newLocData = null;
         if( updateMode ) {
             createMode = false;
             let long = nextProps.locData[0].longitude;
@@ -253,8 +255,12 @@ class ClustersMap extends Component {
 
             let clickMarker = [];
             let zoom = nextProps.locData ? prevState.zoom : zoomControls.zoom
-            // let center = nextProps.locData ? prevState.center : zoomControls.center
-            let center = nextProps.locData ? [nextProps.locData[0].cloudletLocation.latitude, nextProps.locData[0].cloudletLocation.longitude] : zoomControls.center
+           
+            let newLocData = (nextProps.locData && locDataOld) ? findNewData(nextProps.locData, locDataOld) : [];
+            let findIndex =  (nextProps.locData && newLocData.length > 0) ? nextProps.locData.findIndex( item => item === newLocData[0]) : 0;
+            if (findIndex < 0) findIndex = 0;
+            let centerLength = nextProps.locData ? nextProps.locData.length : 0;
+            let center = nextProps.locData ? [nextProps.locData[findIndex].cloudletLocation.latitude, nextProps.locData[findIndex].cloudletLocation.longitude] : zoomControls.center
 
             if (nextProps.mapDetails) {
                 if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
@@ -272,8 +278,8 @@ class ClustersMap extends Component {
                 center = nextProps.mapDetails.coordinates
                 mapCenter = nextProps.mapDetails.coordinates
             }
-            
-            return { mapCenter: mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
+            locDataOld = nextProps.locData;
+            return { mapCenter: mapCenter ? mapCenter : center, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
         }
         return null;
     }
@@ -534,6 +540,13 @@ class ClustersMap extends Component {
     }
 }
 
+const findNewData = (newData, oldData) => {
+    let filtered = [];
+    
+    filtered = aggregation.filterDefine(newData, oldData);
+  
+    return filtered;
+}
 
 const mapStateToProps = (state, ownProps) => {
     let deleteReset = state.deleteReset.reset;
