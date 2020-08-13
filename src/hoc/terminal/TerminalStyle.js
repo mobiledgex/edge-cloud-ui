@@ -27,7 +27,7 @@ export const cmdLine = {
   borderColor: 'white',
   width:200,
   backgroundColor: 'black',
-  height:'35px',
+  height:'40px',
 }
 
 export const logs = {
