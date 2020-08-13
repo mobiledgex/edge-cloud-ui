@@ -158,6 +158,7 @@ import * as dateUtil from '../../../../utils/date_util'
 import {getMexTimezone} from '../../../../utils/sharedPreferences_util';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AddItemPopupContainerNew from "../components/AddItemPopupContainerNew";
+import ClockComponent from "../components/ClockComponent";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -1337,6 +1338,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOCK
                             && <div className="page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
@@ -1620,6 +1622,13 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <MethodUsageCount
                             loading={this.state.loading}
                             clientStatusList={this.state.filteredClientStatusList}
+                        />
+                    )
+
+                }else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOCK) {
+                    return (
+                        <ClockComponent
+                            loading={this.state.loading}
                         />
                     )
 
