@@ -16,7 +16,6 @@ export const cloudGreenIcon = L.icon({
     shadowSize: [41, 41]
 });
 
-
 export const cloudBlueIcon = L.icon({
     iconUrl: require('../images/cloud_blue2.png'),
     iconSize: [45, 39],//todo: width, height
