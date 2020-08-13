@@ -41,7 +41,7 @@ export const getKey = (data, isCreate) => {
         }
 
         if (data[fields.maintenanceState]) {
-            cloudlet.maintenance_state = constant.MaintainanceState(data[fields.maintenanceState])
+            cloudlet.maintenance_state = constant.MaintenanceState(data[fields.maintenanceState])
         }
 
         if (data[fields.fields]) {
