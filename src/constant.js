@@ -112,7 +112,7 @@ export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
 export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
 
-export const MaintainanceState = (id) => {
+export const MaintenanceState = (id) => {
     switch (id) {
         case 0:
             return MAINTENANCE_STATE_NORMAL_OPERATION

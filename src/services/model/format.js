@@ -40,6 +40,8 @@ export const fields = {
     autoPolicyName: 'autoPolicyName',
     deployClientCount: 'deployClientCount',
     deployIntervalCount: 'deployIntervalCount',
+    undeployClientCount:'undeployClientCount',
+    undeployIntervalCount:'undeployIntervalCount',
     cloudlets: 'cloudlets',
     organizations:'organizations',
     appName: 'appName',
