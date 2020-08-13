@@ -205,11 +205,11 @@ class ClustersMap extends Component {
             let status = '';
             let online = false;
             let offline = false;
-            let maintainance = false;
+            let maintenance = false;
 
             groupbyData[key].map((item, i) => {
                 if (item.status === 'yellow') {
-                    maintainance = true;
+                    maintenance = true;
                 }
                 else if (item.status === 'green') {
                     online = true;
@@ -218,7 +218,7 @@ class ClustersMap extends Component {
                 }
             })
 
-            if(maintainance)
+            if(maintenance)
             {
                 status = 'yellow'; 
             }
