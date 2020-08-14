@@ -3038,8 +3038,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     currentMapLevel: MAP_LEVEL.CLOUDLET_FOR_ADMIN,
                                     loading: false,
                                     mapLoading: false,
-                                }, () => {
-
                                 });
 
                             }}
