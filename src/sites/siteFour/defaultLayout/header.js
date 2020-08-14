@@ -155,12 +155,10 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
-
                     <IconButton style={{backgroundColor: 'transparent',}} aria-label="timezone" color="inherit">
                         <AccessTimeIcon fontSize='default'/>
                         <MiniClockComponent/>
                     </IconButton>
-
                     <IconButton style={{ backgroundColor: 'transparent'}} onClick={()=>{onPref()}} aria-label="timezone" color="inherit">
                         <LanguageIcon fontSize='default' /> &nbsp;<h5>{getMexTimezone()}</h5>
                     </IconButton>
