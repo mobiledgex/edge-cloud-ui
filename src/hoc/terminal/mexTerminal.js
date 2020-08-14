@@ -14,7 +14,7 @@ class MexTerminal extends React.Component {
 
     constructor(props) {
         super(props)
-        this.terminal = new Terminal();
+        this.terminal = new Terminal({ fontFamily: 'Inconsolata, monospace' });
         this.startTime = date_util.currentTimeInMilli()
     }
 
