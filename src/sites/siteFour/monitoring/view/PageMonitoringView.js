@@ -2804,8 +2804,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", this.state.dataLimitCount, arrDateTime[0], arrDateTime[1]);
                     fullCurrentAppInst = fullCurrentAppInst.trim();
                     fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
+                    //desc: ############################
+                    //desc: filtered AppInstEventLogList
+                    //desc: ############################
+                    let _allAppInstEventLog = await getAllAppInstEventLogs(this.state.currentAppInst, this.state.dataLimitCount);
+                    let filteredAppInstEventLogList = _allAppInstEventLog.filter(item => {
+                        if (item[APP_INST_MATRIX_HW_USAGE_INDEX.APP].trim() === AppName && item[APP_INST_MATRIX_HW_USAGE_INDEX.CLUSTER].trim() === ClusterInst) {
+                            return true;
+                        }
+                    })
 
                     await this.setState({
+                        filteredAppInstEventLogs: filteredAppInstEventLogList,
                         currentTabIndex: 0,
                         currentClassification: this.state.userType.includes('dev') ? CLASSIFICATION.APPINST : CLASSIFICATION.APP_INST_FOR_ADMIN,
                         allAppInstUsageList: appInstUsageList,
