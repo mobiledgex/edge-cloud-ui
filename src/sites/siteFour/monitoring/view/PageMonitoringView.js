@@ -395,6 +395,7 @@ type PageDevMonitoringState = {
     isOn: false,
     start: 0,
     currentBigModalHwType: string,
+    orgType: string,
 
 }
 
@@ -663,6 +664,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isOn: false,
                     start: 0,
                     currentBigModalHwType: 'CPU',
+                    orgType: undefined,
                 }
 
                 this.startTimer = this.startTimer.bind(this)
@@ -1268,7 +1270,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-             showBigModal = async (pHwType, graphType) => {
+            showBigModal = async (pHwType, graphType) => {
                 try {
                     await this.setState({
                         currentBigModalHwType: pHwType,
@@ -1625,7 +1627,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         />
                     )
 
-                }else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOCK) {
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOCK) {
                     return (
                         <ClockComponent
                             loading={this.state.loading}
@@ -2324,8 +2326,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let filteredClusterList = []
                         clusterList.map((item: TypeCluster, index) => {
-                            if (item.Cloudlet === currentCloudletMapOne.CloudletName) {
-                                filteredClusterList.push(item)
+                            if (this.state.orgType === USER_TYPE_SHORT.OPER) {
+                                if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.Operator === this.state.currentOrg) {
+                                    filteredClusterList.push(item)
+                                }
+                            } else {//todo:When orgType is dev.
+                                if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.OrganizationName === this.state.currentOrg) {
+                                    filteredClusterList.push(item)
+                                }
                             }
                         })
 
@@ -2638,7 +2646,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async handleOnChangeClusterDropdownForAdmin(selectClusterCloudletList) {
-
                 try {
                     if (this.state.isStream === false) {
                         clearInterval(this.intervalForAppInst)
@@ -2959,6 +2966,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 })
                             }}
                             onSelect={async (value, node, extra) => {
+
                                 this.orgSelect.blur();
                                 await this.setState({
                                     currentOrg: value,
@@ -2978,6 +2986,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.Cloudlet);
                                     let uniqFilteredAppInstList = uniqBy(filteredAppInstList, CLASSIFICATION.Cloudlet)
                                     cloudletDropdownList = makeDropdownForCloudletForDevView(uniqFilteredAppInstList)
+                                    await this.setState({orgType: USER_TYPE_SHORT.DEV})
 
                                 } else {
                                     //TODO : #############################
@@ -3010,6 +3019,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         })
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
                                         cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+                                        await this.setState({orgType: USER_TYPE_SHORT.OPER})
                                     }
 
                                 }
