@@ -2330,7 +2330,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.Operator === this.state.currentOrg) {
                                     filteredClusterList.push(item)
                                 }
-                            } else {//todo:dev
+                            } else {//todo:When orgType is dev.
                                 if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.OrganizationName === this.state.currentOrg) {
                                     filteredClusterList.push(item)
                                 }
@@ -2646,8 +2646,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async handleOnChangeClusterDropdownForAdmin(selectClusterCloudletList) {
-
-                showToast('sdlfksdlkfdlk!!!!!')
 
                 try {
                     if (this.state.isStream === false) {
