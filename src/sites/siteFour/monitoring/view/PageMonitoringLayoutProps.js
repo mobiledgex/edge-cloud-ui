@@ -375,8 +375,8 @@ export const defaultLayoutMapperForAppInst = [
     },
     {
         id: '5',
-        hwType: GRID_ITEM_TYPE.CLOCK,
-        graphType: GRID_ITEM_TYPE.CLOCK,
+        hwType: GRID_ITEM_TYPE.ACTIVE_CONNECTION,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '6',
