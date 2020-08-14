@@ -12,7 +12,7 @@ export default class MiniClockComponent extends Component {
         super(props);
         this.state = {
             'time': this.getCurrentTime(),
-            todayDate: undefined
+            dayOfWeek: undefined
         }
     }
 
