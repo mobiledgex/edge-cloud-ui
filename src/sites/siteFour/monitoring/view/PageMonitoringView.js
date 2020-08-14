@@ -3019,9 +3019,8 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         })
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
                                         cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+                                        await this.setState({orgType: USER_TYPE_SHORT.OPER})
                                     }
-
-                                    await this.setState({orgType: USER_TYPE_SHORT.OPER})
 
                                 }
                                 this.setState({
