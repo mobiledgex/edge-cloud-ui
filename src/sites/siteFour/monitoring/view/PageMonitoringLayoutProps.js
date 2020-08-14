@@ -337,9 +337,9 @@ export const defaultHwMapperListForAdminCloudlet = [
 ];
 
 /*
-desc:#####################################
-desc:defaultLayoutForAppInst
-desc:#######################################
+todo:#####################################
+todo: default Layout For AppInst
+todo:#######################################
  */
 export const defaultLayoutForAppInst = [
 
@@ -375,8 +375,8 @@ export const defaultLayoutMapperForAppInst = [
     },
     {
         id: '5',
-        hwType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
-        graphType: GRID_ITEM_TYPE.APP_INST_EVENT_LOG,
+        hwType: GRID_ITEM_TYPE.CLOCK,
+        graphType: GRID_ITEM_TYPE.CLOCK,
     },
     {
         id: '6',
