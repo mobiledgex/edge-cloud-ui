@@ -2646,7 +2646,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async handleOnChangeClusterDropdownForAdmin(selectClusterCloudletList) {
-
                 try {
                     if (this.state.isStream === false) {
                         clearInterval(this.intervalForAppInst)
