@@ -18,9 +18,7 @@ export default class MiniClockComponent extends Component {
 
     getDayofWeek() {
         let objToday = moment().tz(getMexTimezone()).toDate();
-        let weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            dayOfWeek = weekday[objToday.getDay()];
-
+        let weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], dayOfWeek = weekday[objToday.getDay()];
         return dayOfWeek;
     }
 
