@@ -31,14 +31,16 @@ export default function ClockComponent(props) {
                 width: '100%',
                 height: 45
             }}>
-                <div className='page_monitoring_title draggable'
-                     style={{
-                         flex: 1,
-                         marginTop: 10,
-                         color: 'white'
-                     }}
-                >
-                    {timezoneName} Standard Time
+                <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent', width:'100%'}}>
+                    <div className='page_monitoring_title draggable'
+                         style={{
+                             flex: 1,
+                             marginTop: 10,
+                             color: 'white',
+                         }}
+                    >
+                        {timezoneName} Standard Time
+                    </div>
                 </div>
 
             </div>
