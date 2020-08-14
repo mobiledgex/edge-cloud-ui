@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Grid, Input } from 'semantic-ui-react'
+import { Container, Button, Grid, Input, Icon } from 'semantic-ui-react'
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
@@ -11,51 +11,56 @@ import RegistryUserForm from './signup';
 import RegistryResetForm from '../../components/reduxForm/resetPassword';
 import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
+import { Box } from '@material-ui/core';
 
 
 const host = window.location.host;
 let self = null;
 
 const FormContainer = (props) => (
-    <Grid className="signUpBD">
+    <Grid className="signUpBD" style={{ padding: '0 20px 0 20px' }}>
         <Grid.Row>
-            <span className='title'>User Login</span>
+            <span className='title'>Sign into your account</span>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{ width: '100%' }} placeholder='Username or Email' name='username' ref={ipt => { props.self.uid = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
+                <Icon name='user outline' /><sup>{' *'}</sup>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Input style={{ width: '80%', color: 'white' }} placeholder='Username or Email' name='username' ref={ipt => { props.self.uid = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column >
-                <Input style={{ width: '100%' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
+                <Icon name='keyboard outline' /><sup>{' *'}</sup>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Input style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
             {props.login_danger}
         </div>
-        <Grid.Row>
+        <Grid.Row style={{ marginBottom: 20 }}>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
+                <div style={{ position: 'absolute', display: 'inline', right: 15, color: 'white', cursor: 'pointer' }} onClick={() => props.self.handleClickLogin('forgot')}>Forgot Password</div>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
-            <div style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', display: 'inline-block' }} onClick={() => props.self.handleClickLogin('forgot')}>Forgot Password?</div>
+            <Grid.Column >
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
+            </Grid.Column>
         </Grid.Row>
     </Grid>
 
 )
+
 const FormForgotPass = (props) => (
     <Grid className="signUpBD">
         <Grid.Row>
-            <span className='title'>Reset your password</span>
-        </Grid.Row>
-        <Grid.Row>
-            <span className="login-text">Enter your email address and we will send you a link to reset your password.</span>
+            <span className='title'>Recover your password</span>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{ width: '100%' }} placeholder='Enter your email address' name='email' ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail() } }}></Input>
+                <Input icon='envelope outline' style={{ width: '100%', color: 'white' }} placeholder='Email Address' name='email' ref={ipt => { props.self.email = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSendEmail() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -63,12 +68,7 @@ const FormForgotPass = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password Reset Email</Button>
-            </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid.Column>
-                <Button onClick={() => props.self.onSendEmail('back')}>Return to Log In</Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Me Email</Button>
             </Grid.Column>
         </Grid.Row>
     </Grid>
@@ -83,7 +83,7 @@ const ForgotMessage = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onBlur={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to Sign In</Button>
+                <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onBlur={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Log In</Button>
             </Grid.Column>
         </Grid.Row>
 
@@ -200,10 +200,10 @@ class Login extends Component {
     }
 
     componentDidMount() {
-         /**********************
-         * Get info of client system : OS, browser
-         * @type {UAParser}
-         */
+        /**********************
+        * Get info of client system : OS, browser
+        * @type {UAParser}
+        */
         var parser = new UAParser();
 
         // by default it takes ua string from current browser's window.navigator.userAgent
@@ -224,7 +224,7 @@ class Login extends Component {
             this.props.handleAlertInfo('success', mcRequest.response.data.message)
             setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
         }
-        else if(mcRequest && mcRequest.error) {
+        else if (mcRequest && mcRequest.error) {
             this.props.history.push({ pathname: '/logout' })
             this.props.handleAlertInfo('error', mcRequest.error.response.data.message)
             self.props.handleChangeLoginMode('login');
@@ -242,7 +242,7 @@ class Login extends Component {
 
         }
 
-        if (nextProps.loginMode === 'login') {
+        if (nextProps.loginMode === 'login' || nextProps.loginFlag === 'login') {
             if (this.state.errorCreate) {
                 setTimeout(() => self.setState({ successCreate: false, errorCreate: false, forgotMessage: false, forgotPass: false }), 3000);
             } else {
@@ -302,6 +302,7 @@ class Login extends Component {
                 self.onProgress(false)
 
                 if (message.indexOf('created') > -1) {
+                    this.props.onSignUp()
                     let msg = `User ${request.data.name} created successfully`
                     self.setState({ successCreate: true, loginMode: 'signuped', signup: false })
                     self.props.handleAlertInfo('success', msg)
@@ -354,11 +355,9 @@ class Login extends Component {
         }
     }
 
-    validateUserName = (username)=>
-    {
-        if(username !== localStorage.getItem('userInfo'))
-        {
-            localStorage.setItem('userInfo', self.state.username) 
+    validateUserName = (username) => {
+        if (username !== localStorage.getItem('userInfo')) {
+            localStorage.setItem('userInfo', self.state.username)
             localStorage.removeItem('selectOrg')
             localStorage.removeItem('selectRole')
         }
@@ -381,8 +380,7 @@ class Login extends Component {
             let errorMessage = 'Invalid username/password'
             if (mcRequest.error.response && mcRequest.error.response.data && mcRequest.error.response.data.message) {
                 errorMessage = mcRequest.error.response.data.message
-                if(errorMessage === 'Account is locked, please contact MobiledgeX support')
-                {
+                if (errorMessage === 'Account is locked, please contact MobiledgeX support') {
                     errorMessage = 'Your account is locked, please contact support@mobiledgex.com to unlock it'
                 }
             }
@@ -442,45 +440,48 @@ class Login extends Component {
     }
 
     signUpForm = () => (
-        <Grid className="signUpBD">
+        <Grid>
             <Grid.Row>
                 <span className='title'>Create New Account</span>
             </Grid.Row>
-            <RegistryUserForm createUser={this.createUser}/>
+            <RegistryUserForm createUser={this.createUser} />
             <Grid.Row>
-                <span style={{marginTop:30}}>
+                <span style={{ marginTop: 30 }}>
                     By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
                 </span>
             </Grid.Row>
         </Grid>
     )
 
+
+
     render() {
         return (
-            <Container>
+            <Container style={{ width: this.props.signup ? 500 : 400 }}>
                 {
-                    (this.state.loginMode === 'forgot') ?
-                        <FormForgotPass self={this} message={this.state.forgotMessage} />
-                        : (this.state.loginMode === 'resetPass') ?
-                            <ResetPassword self={this} />
-                            : (this.state.loginMode === 'forgotMessage') ?
-                                <ForgotMessage self={this} />
-                                : (this.state.loginMode === 'verify') ?
-                                    <FormResendVerify self={this} />
-                                    : (this.state.loginMode === 'signup') ?
-                                        (this.state.successCreate || this.state.errorCreate) ?
-                                            <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
-                                            :
-                                            this.signUpForm()
-                                        : (this.state.loginMode === 'signuped') ?
+                    this.props.signup ? this.signUpForm() :
+                        (this.state.loginMode === 'forgot') ?
+                            <FormForgotPass self={this} message={this.state.forgotMessage} />
+                            : (this.state.loginMode === 'resetPass') ?
+                                <ResetPassword self={this} />
+                                : (this.state.loginMode === 'forgotMessage') ?
+                                    <ForgotMessage self={this} />
+                                    : (this.state.loginMode === 'verify') ?
+                                        <FormResendVerify self={this} />
+                                        : (this.state.loginMode === 'signup') ?
                                             (this.state.successCreate || this.state.errorCreate) ?
                                                 <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
-                                                : <div></div>
-                                            : (this.state.loginMode === 'login') ?
-                                                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
                                                 :
-                                                <div></div>
+                                                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
 
+                                            : (this.state.loginMode === 'signuped') ?
+                                                (this.state.successCreate || this.state.errorCreate) ?
+                                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                                    : <div></div>
+                                                : (this.state.loginMode === 'login') ?
+                                                    <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
+                                                    :
+                                                    null
                 }
             </Container>
 
