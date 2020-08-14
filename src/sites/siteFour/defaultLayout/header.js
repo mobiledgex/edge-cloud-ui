@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -12,13 +12,15 @@ import HeaderGlobalAudit from '../auditLog/headerGlobalAudit';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import BusinessIcon from '@material-ui/icons/Business';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
 
-import { Image, Button } from 'semantic-ui-react';
-import { Menu, MenuItem, Dialog, DialogActions, List, ListItem, ListItemText } from '@material-ui/core';
+import {Button, Image} from 'semantic-ui-react';
+import {Dialog, DialogActions, List, ListItem, ListItemText, Menu, MenuItem} from '@material-ui/core';
 
 import MexVirtualSelect from './mexVirtualSelect'
-import { getMexTimezone } from '../../../utils/sharedPreferences_util';
-import { timezones } from '../../../utils/date_util'
+import {getMexTimezone} from '../../../utils/sharedPreferences_util';
+import {timezones} from '../../../utils/date_util'
+import ClockComponentMini from "./ClockComponentMini";
 
 const drawerWidth = 250;
 
@@ -90,13 +92,13 @@ export default function Header(props) {
             className={clsx(classes.appBar, {
                 [classes.appBarShift]: props.open,
             })}
-            style={{ zIndex: 10 }}
+            style={{zIndex: 10}}
         >
-            <Toolbar style={{ backgroundColor: '#3B3F47' }}>
+            <Toolbar style={{backgroundColor: '#3B3F47'}}>
 
                 {props.open ? null :
-                    <Typography variant="h6" noWrap style={{ marginLeft: -14, marginRight: 20 }}>
-                        <Image size='mini' src='/assets/brand/X_Logo_green.svg' onClick={handleClickListItem} />
+                    <Typography variant="h6" noWrap style={{marginLeft: -14, marginRight: 20}}>
+                        <Image size='mini' src='/assets/brand/X_Logo_green.svg' onClick={handleClickListItem}/>
                         <Menu
                             id="lock-menu"
                             anchorEl={anchorEl}
@@ -120,7 +122,7 @@ export default function Header(props) {
                                 <ListItem>
                                     <ListItemText align="center">
                                         <p>
-                                            <Image size='medium' src='/assets/brand/MobiledgeX_Logo_tm_white.svg' />
+                                            <Image size='medium' src='/assets/brand/MobiledgeX_Logo_tm_white.svg'/>
                                         </p>
                                         <p>
                                             <strong>{process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'version 0.0.0'}</strong>
@@ -149,26 +151,34 @@ export default function Header(props) {
                         [classes.hide]: props.open,
                     })}
                 >
-                    <MenuIcon />
+                    <MenuIcon/>
                 </IconButton>
-                <div className={classes.grow} />
+                <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
-                    <IconButton style={{ backgroundColor: 'transparent'}} onClick={()=>{onPref()}} aria-label="timezone" color="inherit">
-                        <LanguageIcon fontSize='default' /> &nbsp;<h5>{getMexTimezone()}</h5>
+                    <IconButton style={{backgroundColor: 'transparent',}} aria-label="timezone" color="inherit">
+                        <AccessTimeIcon fontSize='default'/>
+                        <ClockComponentMini/>
+                    </IconButton>
+                    <IconButton style={{backgroundColor: 'transparent'}} onClick={() => {
+                        onPref()
+                    }} aria-label="timezone" color="inherit">
+                        <LanguageIcon fontSize='default'/> &nbsp;<h5>{getMexTimezone()}</h5>
                     </IconButton>
                     {localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
                         <IconButton disabled={true} className="orgName">
-                            <BusinessIcon fontSize='default' />&nbsp;
+                            <BusinessIcon fontSize='default'/>&nbsp;
                             <h5>
                                 {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg}
                             </h5>
                         </IconButton> : null}
-                    <HeaderGlobalAudit />
-                    <IconButton style={{ backgroundColor: 'transparent'}} aria-label="help" color="inherit"
-                        onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
-                        <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'} />
+                    <HeaderGlobalAudit/>
+                    <IconButton style={{backgroundColor: 'transparent'}} aria-label="help" color="inherit"
+                                onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
+                        <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'}/>
                     </IconButton>
-                    <MexVirtualSelect open={openPreferences} close={()=>{setOpenPreferences(false)}} data={timezones()} header={'Select Timezone'}/>
+                    <MexVirtualSelect open={openPreferences} close={() => {
+                        setOpenPreferences(false)
+                    }} data={timezones()} header={'Select Timezone'}/>
                     <HeaderGlobalMini email={props.email} data={props.data}/>
                 </div>
             </Toolbar>

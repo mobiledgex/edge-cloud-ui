@@ -1152,3 +1152,8 @@ tr td {
 .clockDiv {
     font-size: 25pt;
 }
+
+.clockDivMini {
+    font-size: 11pt;
+    color: rgba(255, 255, 255, 0.85);
+}
