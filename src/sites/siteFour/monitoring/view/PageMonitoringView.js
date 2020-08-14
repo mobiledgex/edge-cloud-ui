@@ -1190,8 +1190,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     [currentLayoutMapperName]: currentLayoutMapper.concat(itemOne),
                 })
 
-                reactLocalStorage.setObject(getUserId() + currentLayoutKey, currentLayout)
-                reactLocalStorage.setObject(getUserId() + currentLayoutHwMapperKey, currentLayoutMapper)
+
+                let addedLayout = currentLayout.concat({
+                    i: uniqueId,
+                    x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                    y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
+                    w: this.makeGridItemWidth(graphType),
+                    h: this.makeGridIItemHeight(graphType),
+                });
+
+                let addedLayoutMapper = currentLayoutMapper.concat(itemOne);
+
+                reactLocalStorage.setObject(getUserId() + currentLayoutKey, addedLayout)
+                reactLocalStorage.setObject(getUserId() + currentLayoutHwMapperKey, addedLayoutMapper)
+
             }
 
             deleteGridItem(index) {
@@ -1631,6 +1643,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     return (
                         <ClockComponent
                             loading={this.state.loading}
+                            timezoneName={getMexTimezone()}
                         />
                     )
 
@@ -2791,7 +2804,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", this.state.dataLimitCount, arrDateTime[0], arrDateTime[1]);
                     fullCurrentAppInst = fullCurrentAppInst.trim();
                     fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
-
                     //desc: ############################
                     //desc: filtered AppInstEventLogList
                     //desc: ############################
