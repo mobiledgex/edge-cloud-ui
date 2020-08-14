@@ -1643,6 +1643,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     return (
                         <ClockComponent
                             loading={this.state.loading}
+                            timezoneName={getMexTimezone()}
                         />
                     )
 
