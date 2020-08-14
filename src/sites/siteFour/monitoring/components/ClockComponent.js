@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {Component, useEffect, useState} from 'react';
+import {Component, useEffect} from 'react';
 import '../common/PageMonitoringStyles.css'
 import {Center} from "../common/PageMonitoringStyles";
 import {getMexTimezone} from "../../../../utils/sharedPreferences_util";
@@ -18,10 +18,7 @@ let runner;
 
 
 export default function ClockComponent(props) {
-    const [timezoneName, setTimezoneName] = useState('')
     useEffect(() => {
-        let timezoneName = getMexTimezone()
-        setTimezoneName(timezoneName)
     }, []);
 
     function renderTitle() {
@@ -39,7 +36,7 @@ export default function ClockComponent(props) {
                              color: 'white',
                          }}
                     >
-                        {timezoneName} Standard Time
+                        {props.timezoneName} Standard Time
                     </div>
                 </div>
 
