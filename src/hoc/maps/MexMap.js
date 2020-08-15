@@ -101,7 +101,6 @@ class ClustersMap extends Component {
     }
 
     handleRefresh = (event) => {
-        console.log("20200813 handle refresh <<<<<< >>>>>>>>>", event);
         if(event) event.stopPropagation();
         this.setState({ mapCenter: this.state.detailMode ? this.state.mapCenter : (this.props.region && this.props.region === 'US') ? [41, -74] : (this.state.mapCenter && this.state.mapCenter.length > 0) ? this.state.mapCenter:[53, 13] })
         this.setState({ cities: this.state.mapCenter });
@@ -109,7 +108,6 @@ class ClustersMap extends Component {
 
 
     handleCityClick = (city) => {
-        console.log("20200814 handle city click.. ", city);
         if (!this.props.onMapClick) {
             this.setState({
                 mapCenter: city.coordinates,
@@ -146,6 +144,9 @@ class ClustersMap extends Component {
             createMode = false;
             let long = nextProps.locData[0].longitude;
             let lat = nextProps.locData[0].latitude;
+            // hasLocation = [lat ? lat : nextProps.locData[0].cloudletLocation.latitude, long ? long : nextProps.locData[0].cloudletLocation.longitude];
+            
+            // have to find last pointer of marker
             hasLocation = [lat ? lat : nextProps.locData[0].cloudletLocation.latitude, long ? long : nextProps.locData[0].cloudletLocation.longitude];
         }
 
@@ -270,7 +271,7 @@ class ClustersMap extends Component {
             let centerLength = nextProps.locData ? nextProps.locData.length : 0;
             let center = (nextProps.locData && nextProps.locData[findIndex]) ? [nextProps.locData[findIndex].cloudletLocation.latitude, nextProps.locData[findIndex].cloudletLocation.longitude] : zoomControls.center
 
-            if (nextProps.mapDetails && updateMode) {
+            if (nextProps.mapDetails) {
                 if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
                     d3.selectAll('.rsm-markers').selectAll(".levelFive")
                         .transition()
@@ -284,13 +285,12 @@ class ClustersMap extends Component {
 
                 zoom = 5
                 center = nextProps.mapDetails.coordinates
-                mapCenter = nextProps.mapDetails.coordinates
+                mapCenter = (updateMode) ? center : nextProps.mapDetails.coordinates
             }
+            if (updateMode) mapCenter = center; 
             locDataOld = nextProps.locData;
-            console.log("20200813 update .. .", mapCenter);
             return { mapCenter: mapCenter ? mapCenter : center, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
         }
-        console.log("20200813 did not update ..");
         return null;
     }
 
@@ -368,7 +368,6 @@ class ClustersMap extends Component {
         if (this.props.onMapClick && capture) {
             let _lat = Math.round(e.latlng['lat'])
             let _lng = Math.round(e.latlng['lng'])
-            console.log('20200814 map click -- ', _lat, _lng);
             this.setState({ currentPos: [_lat, _lng], mapCenter: [_lat, _lng] });
 
             let location = { lat: _lat, long: _lng }
@@ -409,11 +408,9 @@ class ClustersMap extends Component {
         }
         
         const {lat, lng} = event.target.getCenter();
-        console.log("20200813 move .. ", lat, lng);
         this.setState({ mapCenter: [lat, lng]});
     }
     handleZoom = (event) => {
-        console.log("20200813 get zoom .. ", event.target.getZoom());
         this.setState({zoom: event.target.getZoom()});
     }
 
