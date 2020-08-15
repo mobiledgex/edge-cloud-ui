@@ -215,6 +215,7 @@ export const sendSyncRequestWithError = async (self, request) => {
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
+        request.showSpinner === undefined && showSpinner(self, false)
         if (error.response && responseStatus(self, error.response.status)) {
             return { request: request, error: error }
         }
