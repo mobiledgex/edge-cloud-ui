@@ -15,6 +15,7 @@ export const GRID_ITEM_TYPE = {
     CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
     MULTI_LINE_CHART: 'MULTI_CONNECTIONS',
     METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
+    CLOCK: 'CLOCK',
 }
 export const HARDWARE_TYPE_FOR_GRID = {
     ETC: 'ETC',
@@ -336,9 +337,9 @@ export const defaultHwMapperListForAdminCloudlet = [
 ];
 
 /*
-desc:#####################################
-desc:defaultLayoutForAppInst
-desc:#######################################
+todo:#####################################
+todo: default Layout For AppInst
+todo:#######################################
  */
 export const defaultLayoutForAppInst = [
 

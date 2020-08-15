@@ -158,6 +158,7 @@ import * as dateUtil from '../../../../utils/date_util'
 import {getMexTimezone} from '../../../../utils/sharedPreferences_util';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AddItemPopupContainerNew from "../components/AddItemPopupContainerNew";
+import ClockComponent from "../components/ClockComponent";
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -394,6 +395,7 @@ type PageDevMonitoringState = {
     isOn: false,
     start: 0,
     currentBigModalHwType: string,
+    orgType: string,
 
 }
 
@@ -662,6 +664,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     isOn: false,
                     start: 0,
                     currentBigModalHwType: 'CPU',
+                    orgType: undefined,
                 }
 
                 this.startTimer = this.startTimer.bind(this)
@@ -1187,8 +1190,20 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     [currentLayoutMapperName]: currentLayoutMapper.concat(itemOne),
                 })
 
-                reactLocalStorage.setObject(getUserId() + currentLayoutKey, currentLayout)
-                reactLocalStorage.setObject(getUserId() + currentLayoutHwMapperKey, currentLayoutMapper)
+
+                let addedLayout = currentLayout.concat({
+                    i: uniqueId,
+                    x: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.x : 0,
+                    y: !isEmpty(this.state.emptyPosXYInGrid) ? this.state.emptyPosXYInGrid.y : maxY + 1,
+                    w: this.makeGridItemWidth(graphType),
+                    h: this.makeGridIItemHeight(graphType),
+                });
+
+                let addedLayoutMapper = currentLayoutMapper.concat(itemOne);
+
+                reactLocalStorage.setObject(getUserId() + currentLayoutKey, addedLayout)
+                reactLocalStorage.setObject(getUserId() + currentLayoutHwMapperKey, addedLayoutMapper)
+
             }
 
             deleteGridItem(index) {
@@ -1267,7 +1282,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
 
-             showBigModal = async (pHwType, graphType) => {
+            showBigModal = async (pHwType, graphType) => {
                 try {
                     await this.setState({
                         currentBigModalHwType: pHwType,
@@ -1337,6 +1352,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLUSTER_EVENT_LOG
                             && graphType.toUpperCase() !== GRID_ITEM_TYPE.MAP
+                            && graphType.toUpperCase() !== GRID_ITEM_TYPE.CLOCK
                             && <div className="page_monitoring_widget_icon"
                                     onClick={this.showBigModal.bind(this, hwType, graphType)}
                             >
@@ -1620,6 +1636,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         <MethodUsageCount
                             loading={this.state.loading}
                             clientStatusList={this.state.filteredClientStatusList}
+                        />
+                    )
+
+                } else if (graphType.toUpperCase() === GRID_ITEM_TYPE.CLOCK) {
+                    return (
+                        <ClockComponent
+                            loading={this.state.loading}
+                            timezoneName={getMexTimezone()}
                         />
                     )
 
@@ -2315,8 +2339,14 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                         let filteredClusterList = []
                         clusterList.map((item: TypeCluster, index) => {
-                            if (item.Cloudlet === currentCloudletMapOne.CloudletName) {
-                                filteredClusterList.push(item)
+                            if (this.state.orgType === USER_TYPE_SHORT.OPER) {
+                                if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.Operator === this.state.currentOrg) {
+                                    filteredClusterList.push(item)
+                                }
+                            } else {//todo:When orgType is dev.
+                                if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.OrganizationName === this.state.currentOrg) {
+                                    filteredClusterList.push(item)
+                                }
                             }
                         })
 
@@ -2629,7 +2659,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             async handleOnChangeClusterDropdownForAdmin(selectClusterCloudletList) {
-
                 try {
                     if (this.state.isStream === false) {
                         clearInterval(this.intervalForAppInst)
@@ -2775,7 +2804,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     let appInstUsageList = await getAppInstLevelUsageList(filteredAppList, "*", this.state.dataLimitCount, arrDateTime[0], arrDateTime[1]);
                     fullCurrentAppInst = fullCurrentAppInst.trim();
                     fullCurrentAppInst = fullCurrentAppInst.split("|")[0].trim() + " | " + fullCurrentAppInst.split('|')[1].trim() + " | " + fullCurrentAppInst.split('|')[2].trim() + ' | ' + Version
-
                     //desc: ############################
                     //desc: filtered AppInstEventLogList
                     //desc: ############################
@@ -2950,6 +2978,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 })
                             }}
                             onSelect={async (value, node, extra) => {
+
                                 this.orgSelect.blur();
                                 await this.setState({
                                     currentOrg: value,
@@ -2969,6 +2998,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     markerListForMap = reducer.groupBy(filteredAppInstList, CLASSIFICATION.Cloudlet);
                                     let uniqFilteredAppInstList = uniqBy(filteredAppInstList, CLASSIFICATION.Cloudlet)
                                     cloudletDropdownList = makeDropdownForCloudletForDevView(uniqFilteredAppInstList)
+                                    await this.setState({orgType: USER_TYPE_SHORT.DEV})
 
                                 } else {
                                     //TODO : #############################
@@ -3001,6 +3031,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         })
                                         markerListForMap = reducer.groupBy(filteredCloudletList, CLASSIFICATION.CloudletName);
                                         cloudletDropdownList = makeDropdownForCloudlet(filteredCloudletList)
+                                        await this.setState({orgType: USER_TYPE_SHORT.OPER})
                                     }
 
                                 }

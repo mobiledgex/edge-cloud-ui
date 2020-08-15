@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -12,13 +12,15 @@ import HeaderGlobalAudit from '../auditLog/headerGlobalAudit';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import BusinessIcon from '@material-ui/icons/Business';
+import AccessTimeIcon from '@material-ui/icons/AccessTime'
 
-import { Image, Button } from 'semantic-ui-react';
-import { Menu, MenuItem, Dialog, DialogActions, List, ListItem, ListItemText } from '@material-ui/core';
+import {Button, Image} from 'semantic-ui-react';
+import {Dialog, DialogActions, List, ListItem, ListItemText, Menu, MenuItem} from '@material-ui/core';
 
 import MexVirtualSelect from './mexVirtualSelect'
-import { getMexTimezone } from '../../../utils/sharedPreferences_util';
-import { timezones } from '../../../utils/date_util'
+import {getMexTimezone} from '../../../utils/sharedPreferences_util';
+import {timezones} from '../../../utils/date_util'
+import MiniClockComponent from "./MiniClockComponent";
 
 const drawerWidth = 250;
 
@@ -153,6 +155,10 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
+                    <IconButton style={{backgroundColor: 'transparent',}} aria-label="timezone" color="inherit">
+                        <AccessTimeIcon fontSize='default'/>
+                        <MiniClockComponent/>
+                    </IconButton>
                     <IconButton style={{ backgroundColor: 'transparent'}} onClick={()=>{onPref()}} aria-label="timezone" color="inherit">
                         <LanguageIcon fontSize='default' /> &nbsp;<h5>{getMexTimezone()}</h5>
                     </IconButton>
