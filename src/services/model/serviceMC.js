@@ -95,13 +95,20 @@ function responseError(self, request, error, callback) {
 
 function responseStatus(self, status) {
     let valid = true
+    let msg = ''
     switch (status) {
         case 504:
+            msg = '504 Gateway Timeout'
             valid = false
-            if (self.props.handleAlertInfo) {
-                self.props.handleAlertInfo('error', '504 Gateway Timeout')
-            }
             break;
+        case 502:
+            msg = '502 Bad Gateway'
+            valid = false
+            break;
+    }
+
+    if (!valid && self.props.handleAlertInfo) {
+        self.props.handleAlertInfo('error', msg)
     }
     return valid
 }

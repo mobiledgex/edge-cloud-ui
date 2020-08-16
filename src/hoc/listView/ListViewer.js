@@ -17,11 +17,14 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ListIcon from '@material-ui/icons/List';
 import { fields } from '../../services/model/format';
-import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
+import { Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem } from '@material-ui/core';
 import { getUserRole } from '../../services/model/format';
 import MaterialIcon from 'material-icons-react';
 import * as constant from '../../constant'
-
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { Box } from './mexdnd/Box'
+import { Dustbin } from './mexdnd/Dustbin';
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -33,11 +36,11 @@ const StyledTableRow = withStyles((theme) => ({
 
 const StyledTableCell = withStyles((theme) => ({
     root: {
-        maxWidth:250,
-        overflow:'hidden',
-        textOverflow:'ellipsis',
+        maxWidth: 250,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
         borderBottom: 'none',
-        height:50 
+        height: 50
     },
 }))(TableCell);
 
@@ -104,7 +107,7 @@ function EnhancedTableHead(props) {
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
                     let roleVisible = checkRole(headCell)
-                    if (headCell.label === 'Actions' &&  headCell.visible && roleVisible) {
+                    if (headCell.label === 'Actions' && headCell.visible && roleVisible) {
                         headCell.visible = props.actionMenuLength > 0
                     }
                     if (headCell.visible && roleVisible) {
@@ -121,7 +124,7 @@ function EnhancedTableHead(props) {
                                     direction={orderBy === headCell.field ? order : 'asc'}
                                     onClick={createSortHandler(headCell.field)}
                                 >
-                                    {headCell.label}
+                                    {<Box isDropped={props.isDropped} name={headCell.label}></Box>}
                                     {orderBy === headCell.field ? (
                                         <span className={classes.visuallyHidden}>
                                             {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -144,7 +147,7 @@ EnhancedTableHead.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']).isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
-    actionMenuLength:PropTypes.number.isRequired
+    actionMenuLength: PropTypes.number.isRequired
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -153,10 +156,10 @@ const useToolbarStyles = makeStyles((theme) => ({
         paddingRight: theme.spacing(1),
     },
     highlight:
-        {
-          color: theme.palette.text.primary,
-          backgroundColor: '#6E6E6D',
-        },
+    {
+        color: theme.palette.text.primary,
+        backgroundColor: '#6E6E6D',
+    },
     title: {
         flex: '1 1 100%',
     },
@@ -168,7 +171,7 @@ const EnhancedTableToolbar = (props) => {
     return (
         <Toolbar className={clsx(classes.root, {
             [classes.highlight]: numSelected > 0,
-          })}>
+        })}>
             {numSelected > 0 ? (
                 <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
                     {numSelected} selected
@@ -180,7 +183,7 @@ const EnhancedTableToolbar = (props) => {
                         return (
                             <Tooltip key={i} title={actionMenu.label}>
                                 <IconButton aria-label={actionMenu.label} onClick={() => { props.groupActionClose(actionMenu) }}>
-                                    <MaterialIcon icon={actionMenu.icon} color={'white'}/>
+                                    <MaterialIcon icon={actionMenu.icon} color={'white'} />
                                 </IconButton>
                             </Tooltip>)
                     }) : null
@@ -216,10 +219,10 @@ const useStyles = makeStyles((theme) => ({
         width: 1,
     },
     tip: {
-        width:'fit-content',
-        maxWidth:'100%',
-        overflow:'hidden',
-        textOverflow:'ellipsis',
+        width: 'fit-content',
+        maxWidth: '100%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     }
 }));
 
@@ -237,12 +240,13 @@ const canEdit = (action) => {
 export default function EnhancedTable(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length>0 ? props.requestInfo.sortBy[0] : 'region');
+    const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length > 0 ? props.requestInfo.sortBy[0] : 'region');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
     const [actionEl, setActionEl] = React.useState(null)
     const [selectedRow, setSelectedRow] = React.useState({})
     const actionMenu = props.actionMenu.filter(action => { return canEdit(action) })
+    const [dropList, setDropList] = React.useState([])
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -258,6 +262,11 @@ export default function EnhancedTable(props) {
         }
         props.setSelected([]);
     };
+
+    const isDropped = (name)=>
+    {
+        setDropList(dropList => [...dropList, name]);
+    }
 
     const handleClick = (event, row) => {
         const selectedIndex = props.selected.indexOf(row);
@@ -290,8 +299,7 @@ export default function EnhancedTable(props) {
 
     const isSelected = (name) => props.selected.indexOf(name) !== -1;
 
-    const cellClick = (header, row)=>
-    {
+    const cellClick = (header, row) => {
         setSelectedRow(row)
         props.cellClick(header, row)
     }
@@ -336,10 +344,14 @@ export default function EnhancedTable(props) {
         )
     }
 
-    const groupActionClose = (action)=>
-    {
+    const groupActionClose = (action) => {
         props.groupActionClose(action, props.selected)
         props.setSelected([])
+    }
+
+    const onRemoveDropItem = (item)=>
+    {
+        setDropList(dropList.filter((e)=>(e !== item)))
     }
 
     /*Action Block*/
@@ -347,77 +359,82 @@ export default function EnhancedTable(props) {
     return (
         <div className={classes.root}>
             <Paper style={{ backgroundColor: '#292C33' }}>
-                <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
-                <TableContainer style={{height:`calc(100vh - ${props.isMap ? '617px' : '217px'})`, overflow:'auto'}}>
-                    <Table
-                        stickyHeader
-                        aria-labelledby="tableTitle"
-                        size={'small'}
-                        aria-label="enhanced table"
-                    >
-                        <EnhancedTableHead
-                            classes={classes}
-                            numSelected={props.selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            headCells={props.keys}
-                            rowCount={props.dataList.length}
-                            requestInfo={props.requestInfo}
-                            actionMenuLength = {actionMenu.length}
-                        />
-                        <TableBody>
-                            {
-                                stableSort(props.dataList, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
-                                    const isItemSelected = isSelected(row);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
+                <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose} />
+                <DndProvider backend={HTML5Backend}>
+                    <Dustbin dropList={dropList} onRemove={onRemoveDropItem}/>
+                    <TableContainer style={{ height: `calc(100vh - ${props.isMap ? '617px' : '217px'})`, overflow: 'auto' }}>
+                        <Table
+                            stickyHeader
+                            aria-labelledby="tableTitle"
+                            size={'small'}
+                            aria-label="enhanced table"
+                        >
+                            <EnhancedTableHead
+                                classes={classes}
+                                numSelected={props.selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                headCells={props.keys}
+                                rowCount={props.dataList.length}
+                                requestInfo={props.requestInfo}
+                                actionMenuLength={actionMenu.length}
+                                isDropped = {isDropped}
+                            />
+                            <TableBody>
+                                {
+                                    stableSort(props.dataList, getComparator(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((row, index) => {
+                                            const isItemSelected = isSelected(row);
+                                            const labelId = `enhanced-table-checkbox-${index}`;
 
-                                    return (
-                                        <StyledTableRow
-                                            key={index}
-                                            hover
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                        >
-                                            {props.requestInfo.selection ?
-                                                <TableCell style={{ borderBottom: "none" }} padding="checkbox"
-                                                    onClick={(event) => handleClick(event, row)}>
-                                                    <Checkbox
-                                                        checked={isItemSelected}
-                                                        inputProps={{ 'aria-labelledby': labelId }}
-                                                    />
-                                                </TableCell> : null}
-                                            {props.keys.map((header, j) => {
-                                                let roleVisible = checkRole(header)
-                                                if (header.visible && roleVisible) {
-                                                    let field = header.field;
-                                                    return (
-                                                        <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
-                                                            {field.indexOf('Name') !== -1 ?
-                                                                <Tooltip title={header.customizedData ? header.customizedData(row) : row[field] ? row[field] : ''} arrow>
-                                                                    <div className={classes.tip}>
-                                                                        {header.customizedData ? header.customizedData(row) : row[field]}
-                                                                    </div>
-                                                                </Tooltip>
-                                                            :
-                                                                field === fields.actions ? getAction(row) :
-                                                                    header.customizedData ? header.customizedData(row) : row[field]
-                                                            }
-                                                        </StyledTableCell>
-                                                    )
-                                                }
-                                            })
-                                            }
-                                        </StyledTableRow>
-                                    );
-                                })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                            return (
+                                                <StyledTableRow
+                                                    key={index}
+                                                    hover
+                                                    role="checkbox"
+                                                    aria-checked={isItemSelected}
+                                                    tabIndex={-1}
+                                                >
+                                                    {props.requestInfo.selection ?
+                                                        <TableCell style={{ borderBottom: "none" }} padding="checkbox"
+                                                            onClick={(event) => handleClick(event, row)}>
+                                                            <Checkbox
+                                                                checked={isItemSelected}
+                                                                inputProps={{ 'aria-labelledby': labelId }}
+                                                            />
+                                                        </TableCell> : null}
+                                                    {props.keys.map((header, j) => {
+                                                        let roleVisible = checkRole(header)
+                                                        if (header.visible && roleVisible) {
+                                                            let field = header.field;
+                                                            return (
+                                                                <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
+                                                                    {field.indexOf('Name') !== -1 ?
+                                                                        <Tooltip title={header.customizedData ? header.customizedData(row) : row[field] ? row[field] : ''} arrow>
+                                                                            <div className={classes.tip}>
+                                                                                {header.customizedData ? header.customizedData(row) : row[field]}
+                                                                            </div>
+                                                                        </Tooltip>
+                                                                        :
+                                                                        field === fields.actions ? getAction(row) :
+                                                                            header.customizedData ? header.customizedData(row) : row[field]
+                                                                    }
+                                                                </StyledTableCell>
+                                                            )
+                                                        }
+                                                    })
+                                                    }
+                                                </StyledTableRow>
+                                            );
+                                        })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                </DndProvider>
                 <TablePagination
                     rowsPerPageOptions={[25, 50, 75]}
                     component="div"
