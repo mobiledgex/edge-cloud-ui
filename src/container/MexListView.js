@@ -365,7 +365,7 @@ class MexListView extends React.Component {
 
     isDropped = (item)=>
     {
-        this.setState({ dropList: [item.name] })
+        this.setState({ dropList: [item] })
     }
 
     render() {

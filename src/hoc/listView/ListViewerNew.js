@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, TableBody, TableRow, IconButton, TableCell, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem } from '@material-ui/core'
+import { Table, TableBody, TableRow, IconButton, TableCell, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar } from '@material-ui/core'
 import ListHeader from './ListHeader'
 import ListBody from './ListBody'
 import * as constant from '../../constant'
@@ -40,8 +40,6 @@ class ListViewer extends React.Component {
         this.columnLength = 0
     }
 
-
-
     handleChangePage = (e, newPage) => {
         this.setState({ page: newPage });
     };
@@ -51,18 +49,20 @@ class ListViewer extends React.Component {
     };
 
     getGroupedData = rows => {
-        const groupedData = rows.reduce((acc, item) => {
-            let key = item[this.props.dropList[0]];
-            let groupData = acc[key] || [];
-            acc[key] = groupData.concat([item]);
-            return acc;
-        }, {});
+        if (this.props.dropList.length > 0) {
+            const groupedData = rows.reduce((acc, item) => {
+                let key = item[this.props.dropList[0].field];
+                let groupData = acc[key] || [];
+                acc[key] = groupData.concat([item]);
+                return acc;
+            }, {});
 
-        const expandedGroups = {};
-        Object.keys(groupedData).forEach(item => {
-            expandedGroups[item] = this.state.expandedGroups.indexOf(item) !== -1;
-        });
-        return groupedData;
+            const expandedGroups = {};
+            Object.keys(groupedData).forEach(item => {
+                expandedGroups[item] = this.state.expandedGroups.indexOf(item) !== -1;
+            });
+            return groupedData;
+        }
     };
 
     expandRow = key => {
@@ -142,7 +142,7 @@ class ListViewer extends React.Component {
         return (
             <div style={{ width: '100%' }}>
                 <Paper style={{ backgroundColor: '#292C33' }}>
-                    <TableContainer style={{ height: `calc(100vh - ${this.props.isMap ? '588px' : '188px'})`, overflow: 'auto' }}>
+                    <TableContainer style={{ height: `calc(100vh - ${this.props.isMap ? '571px' : '171px'})`, overflow: 'auto' }}>
                         <Table
                             stickyHeader
                             aria-labelledby="tableTitle"
@@ -176,7 +176,8 @@ class ListViewer extends React.Component {
                                                                 <IconButton>
                                                                     {expandedGroups.includes(key) ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                                                                 </IconButton>
-                                                                <span>{key}</span>
+                                                                <span style={{display:'inline', marginRight:20}}>{key}</span>
+                                                                <div style={{display:'inline', width:50, height:50, borderRadius:150, padding:5, backgroundColor:'#4CAF50'}}>{groupedData[key].length}</div>
                                                             </StyledTableCell>
                                                         </StyledTableRow>
                                                         {expandedGroups.includes(key) ?

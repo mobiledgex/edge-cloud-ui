@@ -45,7 +45,7 @@ export const Dustbin = ({ dropList, onRemove }) => {
                         <div>
                             <h4 style={{ display: 'inline-block', marginRight: 10 }}><strong style={{fontSize:13}}>Grouped by:</strong></h4>
                             <div style={{ display: 'inline-block', marginRight: 10 }}>{dropList.map((item, i) => {
-                                return <Chip size={'small'} label={item} key={i} onDelete={()=>{onRemove(item)}}/>
+                                return <Chip size={'small'} label={item.label} key={i} onDelete={()=>{onRemove(item.label)}}/>
                             })}</div>
                         </div>
             }

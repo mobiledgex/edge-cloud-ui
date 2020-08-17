@@ -73,7 +73,7 @@ const ListHead = (props) => {
                                     direction={orderBy === headCell.field ? order : 'asc'}
                                     onClick={createSortHandler(headCell.field)}
                                 >
-                                    {props.requestInfo.grouping ? <Box isDropped={props.isDropped} name={headCell.field}></Box> : headCell.field}
+                                    {props.requestInfo.grouping ? <Box isDropped={props.isDropped} headCell={headCell}></Box> : headCell.field}
                                     {orderBy === headCell.field ? (
                                         <span className={classes.visuallyHidden}>
                                             {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
