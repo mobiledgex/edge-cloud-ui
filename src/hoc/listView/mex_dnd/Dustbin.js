@@ -2,21 +2,23 @@ import React from 'react'
 import { useDrop } from 'react-dnd'
 import { Chip } from '@material-ui/core'
 const style = {
-    height: '4rem',
-    width: '100%',
+    height: 35,
+    marginRight:30,
+    marginLeft:10,
+    padding: '0.3rem',
+    border:'1px solid grey',
+    width: 250,
+    borderRadius:5,
     color: 'white',
-    padding: '0.9rem',
     textAlign: 'center',
     fontSize: '1rem',
     float: 'left',
 }
 function selectBackgroundColor(isActive, canDrop) {
-    if (isActive) {
-        return 'darkgreen'
-    } else if (canDrop) {
-        return 'darkkhaki'
+    if (isActive || canDrop) {
+        return '#4CAF50'
     } else {
-        return '#222'
+        return 'transparent'
     }
 }
 
@@ -39,11 +41,11 @@ export const Dustbin = ({ dropList, onRemove }) => {
         <div ref={drop} style={{ ...style, backgroundColor }}>
             {
                 isActive ? 'Release to drop' :
-                    dropList.length <= 0 ? 'Drag headers here to group by' :
+                    dropList.length <= 0 ? 'Drag header here to group by' :
                         <div>
-                            <h4 style={{ display: 'inline-block', marginRight: 10 }}>Grouped By:</h4>
+                            <h4 style={{ display: 'inline-block', marginRight: 10 }}><strong style={{fontSize:13}}>Grouped by:</strong></h4>
                             <div style={{ display: 'inline-block', marginRight: 10 }}>{dropList.map((item, i) => {
-                                return <Chip label={item} key={i} onDelete={()=>{onRemove(item)}}/>
+                                return <Chip size={'small'} label={item} key={i} onDelete={()=>{onRemove(item)}}/>
                             })}</div>
                         </div>
             }

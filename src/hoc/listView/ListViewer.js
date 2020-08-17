@@ -23,8 +23,8 @@ import MaterialIcon from 'material-icons-react';
 import * as constant from '../../constant'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { Box } from './mexdnd/Box'
-import { Dustbin } from './mexdnd/Dustbin';
+import { Box } from './mex_dnd/Box'
+import { Dustbin } from './mex_dnd/Dustbin';
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -361,7 +361,7 @@ export default function EnhancedTable(props) {
             <Paper style={{ backgroundColor: '#292C33' }}>
                 <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose} />
                 <DndProvider backend={HTML5Backend}>
-                    <Dustbin dropList={dropList} onRemove={onRemoveDropItem}/>
+                    {/* <Dustbin dropList={dropList} onRemove={onRemoveDropItem}/> */}
                     <TableContainer style={{ height: `calc(100vh - ${props.isMap ? '617px' : '217px'})`, overflow: 'auto' }}>
                         <Table
                             stickyHeader

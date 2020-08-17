@@ -18,7 +18,7 @@ export const Box = ({ name, isDropped }) => {
                 if (isDropAllowed) {
                     const isCopyAction = dropResult.dropEffect === 'copy'
                     const actionName = isCopyAction ? 'copied' : 'moved'
-                    isDropped(item.name)
+                    isDropped(item)
                     alertMessage = `You ${actionName} ${item.name} into ${dropResult.name}!`
                 } else {
                     alertMessage = `You cannot ${dropResult.dropEffect} an item into the ${dropResult.name}`
