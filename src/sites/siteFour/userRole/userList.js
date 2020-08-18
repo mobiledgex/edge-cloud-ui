@@ -40,7 +40,8 @@ class UserList extends React.Component {
             requestType: [showUsers],
             sortBy: [fields.username],
             keys: this.keys,
-            viewMode : null
+            viewMode : null,
+            grouping : true
         })
     }
 

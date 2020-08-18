@@ -72,7 +72,8 @@ class ClusterInstView extends React.Component {
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : clusterInstSteps.stepsClusterInst
+            viewMode : clusterInstSteps.stepsClusterInst,
+            grouping : true
         })
     }
 

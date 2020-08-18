@@ -7,6 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { Dustbin } from '../hoc/listView/mex_dnd/Dustbin';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -37,6 +38,7 @@ const MexToolbar = (props) => {
     const [search, setSearch] = React.useState('')
     const [region, setRegion] = React.useState(REGION_ALL)
     const [map, setMap] = React.useState(true)
+    const [dropList, setDropList] = React.useState([])
 
     /*Search Block*/
     const handleSearch = (e) => {
@@ -142,6 +144,10 @@ const MexToolbar = (props) => {
         </div>
     )
 
+    const dustBin = ()=>(
+        props.requestInfo.grouping ? <Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /> : null
+    )
+    
     return (
         <Toolbar>
             <label className='content_title_label'>{requestInfo.headerLabel}</label>
@@ -151,6 +157,8 @@ const MexToolbar = (props) => {
                         {getDetailView(props)}
                     </div> :
                     <div style={{ right: 0, position: 'absolute' }}>
+
+                        {dustBin()}
                         {searchForm()}
                         {regionForm()}
                         {mapForm()}
