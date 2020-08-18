@@ -2,6 +2,24 @@ import React from 'react'
 import { TableRow, TableCell} from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 
+export const checkRole = (form) => {
+    let roles = form.roles
+    let visible = true
+    if (roles) {
+        visible = false
+        form.detailView = false
+        for (let i = 0; i < roles.length; i++) {
+            let role = roles[i]
+            if (role === getUserRole()) {
+                visible = true
+                form.detailView = true
+                break;
+            }
+        }
+    }
+    return visible
+}
+
 export const getComparator = (order, orderBy) => {
     return order === "desc"
         ? (a, b) => (a[orderBy] > b[orderBy] ? -1 : 1)

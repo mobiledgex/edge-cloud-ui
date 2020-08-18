@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { TableHead, TableRow, Checkbox, TableSortLabel, TableCell, makeStyles } from '@material-ui/core';
 import { Box } from './mex_dnd/Box'
 import { getUserRole } from '../../services/model/format';
+import { checkRole } from './ListConstant';
 
 const useStyles = makeStyles((theme) => ({
     visuallyHidden: {
@@ -18,23 +19,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const checkRole = (form) => {
-    let roles = form.roles
-    let visible = true
-    if (roles) {
-        visible = false
-        form.detailView = false
-        for (let i = 0; i < roles.length; i++) {
-            let role = roles[i]
-            if (role === getUserRole()) {
-                visible = true
-                form.detailView = true
-                break;
-            }
-        }
-    }
-    return visible
-}
+
 const ListHead = (props) => {
     const classes = useStyles()
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;

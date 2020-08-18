@@ -1,9 +1,8 @@
 import React from 'react'
-import { TableCell, Checkbox, Tooltip, IconButton, makeStyles, Paper, TablePagination, TableContainer, Divider } from '@material-ui/core';
-import { withStyles } from '@material-ui/styles';
-import { getUserRole, fields } from '../../services/model/format';
+import { TableCell, Checkbox, Tooltip, IconButton, makeStyles, TablePagination } from '@material-ui/core';
+import { fields } from '../../services/model/format';
 import ListIcon from '@material-ui/icons/List';
-import { StyledTableCell, StyledTableRow, stableSort, getComparator } from './ListConstant';
+import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
 
 const useStyles = makeStyles((theme) => ({
     tip: {
@@ -13,25 +12,6 @@ const useStyles = makeStyles((theme) => ({
         textOverflow: 'ellipsis',
     }
 }));
-
-
-const checkRole = (form) => {
-    let roles = form.roles
-    let visible = true
-    if (roles) {
-        visible = false
-        form.detailView = false
-        for (let i = 0; i < roles.length; i++) {
-            let role = roles[i]
-            if (role === getUserRole()) {
-                visible = true
-                form.detailView = true
-                break;
-            }
-        }
-    }
-    return visible
-}
 
 const ListBody = (props) => {
     const classes = useStyles()
