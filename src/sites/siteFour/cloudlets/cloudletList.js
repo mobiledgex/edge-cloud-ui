@@ -77,7 +77,8 @@ class CloudletList extends React.Component {
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd() ? this.onAdd : undefined,
-            viewMode : mode
+            viewMode : mode,
+            grouping : true
         })
     }
 
