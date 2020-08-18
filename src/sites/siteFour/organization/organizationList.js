@@ -115,7 +115,8 @@ class OrganizationList extends React.Component {
             keys: this.keys,
             onAdd: this.onAdd,
             additionalDetail: shared.additionalDetail,
-            viewMode: mode
+            viewMode: mode,
+            grouping : true
         })
     }
 

@@ -42,6 +42,13 @@ const ListHead = (props) => {
         onRequestSort(event, property);
     };
 
+    const headerLabel = (headCell)=>
+    {
+        return (
+            (props.requestInfo.grouping && headCell.group) ? <Box isDropped={props.isDropped} headCell={headCell}></Box> : headCell.label 
+        )
+    }
+
     return (
         <TableHead>
             <TableRow style={{height:50}}>
@@ -73,13 +80,13 @@ const ListHead = (props) => {
                                     direction={orderBy === headCell.field ? order : 'asc'}
                                     onClick={createSortHandler(headCell.field)}
                                 >
-                                    {props.requestInfo.grouping ? <Box isDropped={props.isDropped} headCell={headCell}></Box> : headCell.field}
+                                    {headerLabel(headCell)}
                                     {orderBy === headCell.field ? (
                                         <span className={classes.visuallyHidden}>
                                             {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                         </span>
                                     ) : null}
-                                </TableSortLabel> : headCell.label}
+                                </TableSortLabel> : headerLabel(headCell)}
                         </TableCell>
                     }
                 })}

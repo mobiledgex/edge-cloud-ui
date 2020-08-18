@@ -12,7 +12,7 @@ import * as constant from '../constant'
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_CLEAR } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
-import MexListViewer from '../hoc/listView/ListViewerNew';
+import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
