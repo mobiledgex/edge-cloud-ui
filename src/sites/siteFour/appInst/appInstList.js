@@ -125,7 +125,8 @@ class AppInstList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode: appInstSteps.stepsAppInst
+            viewMode : appInstSteps.stepsAppInst,
+            grouping : true
         })
     }
 

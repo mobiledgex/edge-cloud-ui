@@ -34,7 +34,6 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        console.log('Rahul1234','deee')
         let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
