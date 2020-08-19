@@ -331,8 +331,8 @@ export const defaultHwMapperListForAdminCloudlet = [
     },
     {
         id: '7',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG,
+        hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
 ];
 
