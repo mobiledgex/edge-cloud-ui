@@ -68,7 +68,7 @@ class EntranceGlobe extends Component {
 
     render() {
         return (
-            <div class="login_main">
+            <div className="login_main">
                 <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 1 }}>
                     <div style={{ cursor: 'pointer', color: 'white', display: 'inline', marginRight: 20 }} onClick={() => this.handleClickLogin('login')}>Login</div>
                     <div style={{ cursor: 'pointer', color: 'white', display: 'inline' }} onClick={() => this.handleClickLogin('signup')}>Register</div>
