@@ -12,11 +12,11 @@ export const configs = [
 ]
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
-    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true },
+    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true },
     { field: fields.appName, serverField: 'key#OS#name', label: 'App', sortable: true, visible: true, filter: true },
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true, filter: true },
-    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter: true },
+    { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
     { field: fields.command, serverField: 'command', label: 'Command' },
     { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
