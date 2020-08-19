@@ -2399,19 +2399,17 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 usageEventPromiseList.push(getAllClusterEventLogList(filteredClusterList, USER_TYPE_SHORT.ADMIN))
                                 usageEventPromiseList.push(getClientStatusList(filteredAppInstList, startTime, endTime, this.state.dataLimitCount, this));
                                 usageEventPromiseList.push(getClusterLevelUsageList(filteredClusterList, "*", this.state.dataLimitCount, startTime, endTime))
-                                usageEventPromiseList.push(getAllCloudletEventLogs(filteredCloudletList, startTime, endTime));
                                 let completedPromiseList = await Promise.allSettled(usageEventPromiseList);
                                 allClusterEventLogList = completedPromiseList["0"].value;
                                 clientStatusList = completedPromiseList["1"].value
                                 allClusterUsageList = completedPromiseList["2"].value
-                                cloudletEventLogList = completedPromiseList["3"].value
 
                                 cloudletClusterListMap = getCloudletClusterNameList(filteredClusterList)
                                 clusterTreeDropdownList = makeClusterMultiDropdownForAdmin(cloudletClusterListMap.cloudletNameList, filteredClusterList, this,)
                                 //todo:bubble Charts
                                 bubbleChartData = await makeClusterBubbleChartData(filteredClusterList, HARDWARE_TYPE.CPU, this.state.chartColorList, this.state.currentColorIndex);
-
                             }
+
                             await this.setState({
                                 bubbleChartData: bubbleChartData,
                                 allClusterEventLogList: allClusterEventLogList,
@@ -2431,7 +2429,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                 mapLoading: false,
                                 loading: false,
                                 filteredClientStatusList: clientStatusList,
-                                filteredCloudletEventLogList: cloudletEventLogList,
                                 currentCloudLet: currentCloudletName,
                                 currentClassification: CLASSIFICATION.CLOUDLET_FOR_ADMIN,
                                 isLegendExpanded: filteredClusterList.length <= 6,
