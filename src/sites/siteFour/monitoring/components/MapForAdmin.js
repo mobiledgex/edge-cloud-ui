@@ -471,7 +471,7 @@ export default connect(mapStateToProps, mapDispatchProps)((
                             }
                         >
                             {/*{this.renderCloudletMarkerTooltip(cloudlets)}*/}
-                            {/*{this.renderCloudletMarkerPopup(cloudlets)}*/}
+                            {this.renderCloudletMarkerPopup(cloudlets)}
                         </Marker>
                     </React.Fragment>
                 )
