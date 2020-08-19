@@ -90,7 +90,7 @@ export default function ClientStatusTable(props) {
                          display: 'flex',
                      }}
                 >
-                    Client Status For App Inst {props.loading ?
+                    Client Status For App Instances {props.loading ?
                     <div style={{marginLeft: 5,}}>
                         <div style={{}}>
                             {renderSmallProgressLoader(0)}
