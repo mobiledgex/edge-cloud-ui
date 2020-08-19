@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
@@ -10,7 +10,9 @@ import TableContainer from "@material-ui/core/TableContainer";
 import '../common/PageMonitoringStyles.css'
 import {Paper} from "@material-ui/core";
 import type {TypeClientStatus} from "../../../../shared/Types";
-import {renderBarLoader, renderPlaceHolderHorizontalLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
+import {Checkbox} from 'antd';
+import {MEX_PROMETHEUS_APPNAME} from "../../../../shared/Constants";
 
 type Props = {
     clientStatusList: any,
@@ -19,9 +21,32 @@ type Props = {
 export default function ClientStatusTable(props) {
     const bodyRef = useRef();
     const tableRef = useRef();
+    const [hideMexPrometeusAppName, setHideMexPrometeusAppName] = useState(false);
+    const [clientStatusList, setClientStatusList] = useState(undefined)
+    const [currentClientStatusList, setCurrentClientStatusList] = useState(undefined)
+    const [clientStatusListWithoutMexPrometeusAppName, setClientStatusListWithoutMexPrometeusAppName] = useState(undefined)
 
     useEffect(() => {
+        setClientStatusList(props.clientStatusList)
+        let clientStatusListWithoutMEXPrometheusAppName = props.clientStatusList.filter((item, index) => {
+            if (item.app !== MEX_PROMETHEUS_APPNAME) {
+                return item;
+            }
+        })
+
+        setClientStatusListWithoutMexPrometeusAppName(clientStatusListWithoutMEXPrometheusAppName)
+        setCurrentClientStatusList(props.clientStatusList)
+
     }, [props.clientStatusList]);
+
+    useEffect(() => {
+
+        if (!hideMexPrometeusAppName) {
+            setCurrentClientStatusList(clientStatusList)
+        } else {
+            setCurrentClientStatusList(clientStatusListWithoutMexPrometeusAppName)
+        }
+    }, [hideMexPrometeusAppName]);
 
     function renderEmptyTable() {
         return (
@@ -40,24 +65,7 @@ export default function ClientStatusTable(props) {
         )
     }
 
-    function renderTableLoader() {
-        return (
-            <TableRow
-                style={{
-                    backgroundColor: '#1e2025',
-                    color: 'grey',
-                    height: 30,
-                }}
-            >
-                <TableCell padding={'none'} align="center" style={{fontSize: 15, color: 'orange', fontStyle: 'italic'}}
-                           colSpan={7}>
-                    {renderPlaceHolderHorizontalLoader('sk')}
-                </TableCell>
-            </TableRow>
-        )
-    }
-
-    function renderHeader() {
+    function renderHeaderForClientStatusForAppInst() {
         return (
             <div
                 className='.draggable'
@@ -68,7 +76,7 @@ export default function ClientStatusTable(props) {
 
                 }}
             >
-                <div className='page_monitoring_title'
+                <div className='page_monitoring_title2'
                      style={{
                          flex: 1,
                          marginTop: 5,
@@ -81,7 +89,18 @@ export default function ClientStatusTable(props) {
                         <div style={{}}>
                             {renderSmallProgressLoader(0)}
                         </div>
-                    </div> : `[${props.clientStatusList.length}]`}
+                    </div> : `[${currentClientStatusList !== undefined ? currentClientStatusList.length : null}]`}
+
+                    <div style={{marginLeft: 50}}>
+                        <Checkbox
+                            onChange={() => {
+
+                                setHideMexPrometeusAppName(!hideMexPrometeusAppName)
+
+                            }}
+                            checked={hideMexPrometeusAppName}
+                        >Hide MexPrometheusAppName</Checkbox>
+                    </div>
                 </div>
             </div>
         )
@@ -90,7 +109,7 @@ export default function ClientStatusTable(props) {
     return (
         <div ref={bodyRef}>
             {props.loading && (<div>{renderBarLoader(false)}</div>)}
-            {renderHeader()}
+            {renderHeaderForClientStatusForAppInst()}
             <TableContainer
                 component={Paper}
                 style={{
@@ -131,7 +150,7 @@ export default function ClientStatusTable(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody padding={'none'} style={{width: 'auto', overflow: 'auto !important'}}>
-                        {props.clientStatusList !== undefined && props.clientStatusList.map((item: TypeClientStatus, index) => {
+                        {currentClientStatusList !== undefined && currentClientStatusList.map((item: TypeClientStatus, index) => {
                             return (
                                 <TableRow
                                     key={index}
@@ -201,7 +220,7 @@ export default function ClientStatusTable(props) {
                                 </TableRow>
                             )
                         })}
-                        {props.clientStatusList.length === 0 ? renderEmptyTable() : null}
+                        {currentClientStatusList !== undefined && currentClientStatusList.length === 0 ? renderEmptyTable() : null}
                     </TableBody>
 
                 </Table>
