@@ -82,7 +82,7 @@ export default function ClientStatusTable(props) {
 
                 }}
             >
-                <div className='page_monitoring_title2'
+                <div className='page_monitoring_title'
                      style={{
                          flex: 1,
                          marginTop: 5,
