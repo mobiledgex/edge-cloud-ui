@@ -37,6 +37,12 @@ export default function ClientStatusTable(props) {
         setClientStatusListWithoutMexPrometeusAppName(clientStatusListWithoutMEXPrometheusAppName)
         setCurrentClientStatusList(props.clientStatusList)
 
+        if (!hideMexPrometeusAppName) {
+            setCurrentClientStatusList(props.clientStatusList)
+        } else {
+            setCurrentClientStatusList(clientStatusListWithoutMEXPrometheusAppName)
+        }
+
     }, [props.clientStatusList]);
 
     useEffect(() => {
