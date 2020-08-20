@@ -53,7 +53,6 @@ export default function MethodUsageCount(props) {
                          flex: 1,
                          marginTop: 10,
                          color: 'white',
-                         backgroundColor:'red'
                      }}
                 >
                     Method Usage Count
