@@ -5,8 +5,8 @@ import { Chip } from '@material-ui/core'
 const style = {
     height: 30,
     padding: '0.15rem',
-    border: '1px solid grey',
-    marginRight: 12,
+    border: '1px solid #4CAF50',
+    marginRight: 25,
     width: 200,
     borderRadius: 5,
     color: 'white',
