@@ -3,7 +3,7 @@ import '../common/PageMonitoringStyles.css'
 import {Center, CenterMethodCount} from "../common/PageMonitoringStyles";
 import type {TypeClientStatus} from "../../../../shared/Types";
 import {CircularProgress} from "@material-ui/core";
-import {renderBarLoader, renderCircularProgress} from "../service/PageMonitoringCommonService";
+import {renderBarLoader} from "../service/PageMonitoringCommonService";
 import {Sparklines, SparklinesLine} from 'react-sparklines';
 
 const height = 200;
@@ -45,14 +45,15 @@ export default function MethodUsageCount(props) {
         return (
             <div style={{
                 display: 'flex',
-                width: '100%',
+                width: '90%',
                 height: 45
             }}>
                 <div className='page_monitoring_title draggable'
                      style={{
                          flex: 1,
                          marginTop: 10,
-                         color: 'white'
+                         color: 'white',
+                         backgroundColor:'red'
                      }}
                 >
                     Method Usage Count
