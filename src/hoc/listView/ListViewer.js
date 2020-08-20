@@ -21,6 +21,17 @@ const canEdit = (action) => {
     return valid
 }
 
+const getHeight = (props)=>
+{
+    let height = props.isMap ? 617 : 217
+    var customToolbarEle = document.getElementById('mex_list_view_custom_toolbar')
+    if(customToolbarEle)
+    {
+        height = height + customToolbarEle.clientHeight
+    }
+    return `calc(100vh - ${height}px)`
+}
+
 class ListViewer extends React.Component {
     constructor(props) {
         super(props)
@@ -156,7 +167,7 @@ class ListViewer extends React.Component {
                         numSelected={this.props.selected.length} 
                         groupActionMenu={this.props.groupActionMenu} 
                         groupActionClose={this.groupActionClose} />
-                    <TableContainer style={{ height: `calc(100vh - ${this.props.isMap ? '617px' : '217px'})`, overflow: 'auto' }}>
+                    <TableContainer style={{ height: `${getHeight(this.props)}`, overflow: 'auto' }}>
                         <Table
                             stickyHeader
                             aria-labelledby="tableTitle"
