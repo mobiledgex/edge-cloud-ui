@@ -55,7 +55,7 @@ class OrganizationList extends React.Component {
                         }
                         title={
                             <Typography style={{ color: '#76ff03' }}>
-                                Host Apps on Telco Edge
+                                Create Organization to Host Apps on Telco Edge
                             </Typography>
                         }
                         subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc"
@@ -75,7 +75,7 @@ class OrganizationList extends React.Component {
                         }
                         title={
                             <Typography style={{ color: '#76ff03' }}>
-                                Host Telco Edge
+                                Create Organization to Host Telco Edge
                             </Typography>
                         }
                         subheader='A Network Operator is a provider of wired and wireless communications services that owns or controls the infrastructure necessary to sell and deliver services to Mobile Network Operators (MO), Virtual Network Operators, and end users.'
