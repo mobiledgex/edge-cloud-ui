@@ -1363,11 +1363,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
                             <div className="remove page_monitoring_widget_icon"
+                                 style={{zIndex:99999999999999999}}
                                  onClick={() => {
                                      this.deleteGridItem(uniqueIndex)
                                  }}
                             >
-                                <MaterialIcon size={'tiny'} icon='delete' color={'white'}
+                                <MaterialIcon  size={'tiny'} icon='delete' color={'white'}
 
                                 />
                             </div>
