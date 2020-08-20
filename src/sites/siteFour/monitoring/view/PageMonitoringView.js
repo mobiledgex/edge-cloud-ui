@@ -2338,13 +2338,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let appInstList = newPromiseList[1];
 
                         let filteredClusterList = []
+
                         clusterList.map((item: TypeCluster, index) => {
-                            if (this.state.orgType === USER_TYPE_SHORT.OPER) {
+                            if (this.state.orgType === USER_TYPE_SHORT.OPER) {///todo:When orgType is OPER
                                 if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.Operator === this.state.currentOrg) {
                                     filteredClusterList.push(item)
                                 }
-                            } else {//todo:When orgType is dev.
+                            } else if (this.state.orgType === USER_TYPE_SHORT.DEV) { ///todo:When orgType is DEV
                                 if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.OrganizationName === this.state.currentOrg) {
+                                    filteredClusterList.push(item)
+                                }
+                            } else {
+                                if (item.Cloudlet === currentCloudletMapOne.CloudletName) {
                                     filteredClusterList.push(item)
                                 }
                             }
@@ -3083,27 +3088,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {this.state.cloudletDropdownList.map((cloudletOne: any, index) => {
 
                                 try {
-                                    if (index === 0) {
-                                        return (
-                                            <Option key={index} value={undefined} style={{}}>
-                                                <div style={{fontWeight: 'bold', color: 'orange'}}>{cloudletOne.text}</div>
-                                            </Option>
-                                        )
-                                    } else {
-                                        let itemValues = cloudletOne.value + " | " + (index - 1).toString()
-                                        return (
-                                            <Option key={index} value={itemValues}>
-                                                <div style={{display: 'flex'}}>
-                                                    <div
-                                                        style={{
-                                                            marginLeft: 7,
-                                                        }}
-                                                    >{cloudletOne.text}
-                                                    </div>
+                                    let itemValues = cloudletOne.value + " | " + (index - 1).toString()
+                                    return (
+                                        <Option key={index} value={itemValues}>
+                                            <div style={{display: 'flex'}}>
+                                                <div
+                                                    style={{
+                                                        marginLeft: 7,
+                                                    }}
+                                                >{cloudletOne.text}
                                                 </div>
-                                            </Option>
-                                        )
-                                    }
+                                            </div>
+                                        </Option>
+                                    )
                                 } catch (e) {
 
                                 }
@@ -3659,14 +3656,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
-                            {filteredClusterList.length === 0 && this.state.isShowClusterInLegend &&
-                            <Col
-                                span={24}
-                                className="noClusterMsg"
-                            >
-                                No Cluster
-                            </Col>
-                            }
                             {filteredClusterList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col
