@@ -9,6 +9,7 @@ import { fields } from '../../../services/model/format';
 //model
 import { createFlavor} from '../../../services/model/flavor';
 import {flavorTutor} from "../../../tutorial";
+import { Grid } from 'semantic-ui-react';
 
 
 const flavorSteps = flavorTutor();
@@ -149,9 +150,13 @@ class FlavorReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                </div>
+                <Grid style={{ display: 'flex' }}>
+                    <Grid.Row>
+                        <Grid.Column width={16} style={{ overflow: 'auto', height: '90vh' }}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </div>
         )
     }
