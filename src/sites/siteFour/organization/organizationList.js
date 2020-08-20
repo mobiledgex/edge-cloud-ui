@@ -54,11 +54,11 @@ class OrganizationList extends React.Component {
                             </IconButton>
                         }
                         title={
-                            <Typography style={{ color: '#76ff03' }}>
-                                Create Organization to Host Apps on Telco Edge
+                            <Typography>
+                                Create Organization to Run Apps on Telco Edge
                             </Typography>
                         }
-                        subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
+                        // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                         action={
                             <IconButton aria-label="developer" onClick={()=>{this.onAdd(constant.DEVELOPER)}}>
                                 <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
@@ -74,11 +74,11 @@ class OrganizationList extends React.Component {
                             </IconButton>
                         }
                         title={
-                            <Typography style={{ color: '#76ff03' }}>
+                            <Typography>
                                 Create Organization to Host Telco Edge
                             </Typography>
                         }
-                        subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
+                        // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                         action={
                             <IconButton aria-label="operator" onClick={()=>{this.onAdd(constant.OPERATOR)}}>
                                 <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
