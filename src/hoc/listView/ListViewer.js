@@ -23,7 +23,7 @@ const canEdit = (action) => {
 
 const getHeight = (props)=>
 {
-    let height = props.isMap ? 617 : 217
+    let height = props.isMap ? 579 : 179
     var customToolbarEle = document.getElementById('mex_list_view_custom_toolbar')
     if(customToolbarEle)
     {
@@ -161,7 +161,7 @@ class ListViewer extends React.Component {
         let groupedData = grouping ? this.getGroupedData(this.props.dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         return (
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%', marginTop:`${this.props.selected.length > 0 ? '0px' : '-40px'}` }}>
                 <Paper style={{ backgroundColor: '#292C33' }}>
                     <ListToolbar 
                         numSelected={this.props.selected.length} 
@@ -201,8 +201,8 @@ class ListViewer extends React.Component {
                                                                 <IconButton>
                                                                     {expandedGroups.includes(key) ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                                                                 </IconButton>
-                                                                <span style={{display:'inline', marginRight:20}}>{key}</span>
-                                                                <div style={{display:'inline', width:50, height:50, borderRadius:150, padding:5, backgroundColor:'#4CAF50'}}>{groupedData[key].length}</div>
+                                                                <span style={{display:'inline', marginRight:5}}>{key}</span>
+                                                                <div style={{display:'inline'}}>{`(${groupedData[key].length})`}</div>
                                                             </StyledTableCell>
                                                         </StyledTableRow>
                                                         {expandedGroups.includes(key) ?
