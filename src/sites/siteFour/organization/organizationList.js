@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields } from '../../../services/model/format';
+import { fields, isViewer } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
@@ -45,7 +45,7 @@ class OrganizationList extends React.Component {
 
     customToolbar = () =>
         (
-            <Box display='flex' id="mex_list_view_custom_toolbar">
+            isViewer() ? null : <Box display='flex' id="mex_list_view_custom_toolbar">
                 <Card style={{ margin: 10, width: '50%', maxHeight:200, overflow:'auto' }}>
                     <CardHeader
                         avatar={
