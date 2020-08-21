@@ -376,6 +376,7 @@ class MexListView extends React.Component {
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
                 <DndProvider backend={HTML5Backend}>
                 <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem}/>
+                {this.props.customToolbar ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 </DndProvider>
             </Card>

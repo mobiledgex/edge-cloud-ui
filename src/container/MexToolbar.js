@@ -1,6 +1,6 @@
 import React from 'react'
 import { isViewer } from '../services/model/format';
-import { Toolbar, Input, InputAdornment, IconButton, Switch } from '@material-ui/core'
+import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box } from '@material-ui/core'
 import { Dropdown } from 'semantic-ui-react';
 import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -18,6 +18,22 @@ export const ACTION_MAP = 5
 export const ACTION_SEARCH = 6;
 export const ACTION_CLEAR = 7;
 
+const useStyles = makeStyles((theme) => ({
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        transition: theme.transitions.create('width'),
+        width: '0ch',
+        height: 20,
+        [theme.breakpoints.up('sm')]: {
+            '&:focus': {
+                width: '20ch',
+            },
+        },
+    },
+}));
+
 const CustomSwitch = withStyles({
     switchBase: {
         color: '#D32F2F',
@@ -33,12 +49,13 @@ const CustomSwitch = withStyles({
 })(Switch);
 
 const MexToolbar = (props) => {
+    const classes = useStyles();
     let requestInfo = props.requestInfo
 
     const [search, setSearch] = React.useState('')
     const [region, setRegion] = React.useState(REGION_ALL)
     const [map, setMap] = React.useState(true)
-    const [dropList, setDropList] = React.useState([])
+    const [focused, setFocused] = React.useState(false)
 
     /*Search Block*/
     const handleSearch = (e) => {
@@ -46,37 +63,41 @@ const MexToolbar = (props) => {
         props.onAction(ACTION_SEARCH, e ? e.target.value : '')
     }
 
-    const handleClear = () => {
-        setSearch('')
-        props.onAction(ACTION_CLEAR)
-    }
-
     const searchForm = () => (
-        <Input
-            style={{marginRight:20}}
-            size="small"
-            onChange={handleSearch}
-            startAdornment={
-                <InputAdornment style={{ fontSize: 17 }} position="start">
-                    <SearchIcon />
-                </InputAdornment>
-            }
-            endAdornment={
-                <InputAdornment position="end">
-                    <CloseIcon style={{ fontSize: 17 }} onClick={handleClear} />
-                </InputAdornment>
-            }
-            value={search}
-            placeholder={'Search'} />
+        <Box order={3} style={{marginTop:`${focused ? '0px' : '4px'}`}}>
+            <Input
+                onFocus={() => {
+                    setFocused(true)
+                }}
+                onBlur={() => {
+                    setFocused(false)
+                }}
+                size="small"
+                disableUnderline={!focused}
+                classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                }}
+                onChange={handleSearch}
+                startAdornment={
+                    <InputAdornment style={{ fontSize: 17, pointerEvents: "none", cursor: 'pointer' }} position="start" >
+                        <SearchIcon style={{ color: '#76FF03' }} />
+                    </InputAdornment>
+                }
+                value={search}
+                placeholder={'Search'} />
+        </Box>
     )
     /*Search Block*/
 
     /*Add Block*/
     const addForm = () => (
         requestInfo.onAdd && !isViewer() ?
-            <IconButton aria-label="new" style={{marginTop:-3}} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
-                <AddIcon style={{ color: '#76ff03' }} />
-            </IconButton> : null
+            <Box order={5} >
+                <IconButton aria-label="new" style={{ marginTop: -3 }} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
+                    <AddIcon style={{ color: '#76ff03' }} />
+                </IconButton>
+            </Box> : null
     )
     /*Add Block*/
 
@@ -100,14 +121,14 @@ const MexToolbar = (props) => {
 
     const regionForm = () => (
         requestInfo.isRegion ?
-            <div style={{ display: 'inline', marginLeft: 10, marginRight:10 }}>
+            <Box order={2} p ={1} style={{marginTop:4, marginRight:12}}>
                 <strong>Region:&nbsp;&nbsp;</strong>
                 <Dropdown
                     options={getRegions()}
                     defaultValue={region}
                     onChange={(e, { value }) => { onRegionChange(value) }}
                 />
-            </div> : null
+            </Box> : null
     )
     /*Region Block*/
 
@@ -119,20 +140,22 @@ const MexToolbar = (props) => {
 
     const mapForm = () => (
         requestInfo.isMap ?
-            <div style={{ display: 'inline', marginLeft: 15 }}>
+            <Box order={4} p={1}>
                 <strong>Map:</strong>
                 <CustomSwitch size="small" color="primary" checked={map}
                     onChange={onMapChange} />
-            </div> :
+            </Box> :
             null
     )
     /*Map Block*/
 
     /*Refresh Block*/
     const refreshForm = () => (
-        <IconButton aria-label="refresh" style={{marginTop:-3}} onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
-            <RefreshIcon style={{ color: '#76ff03' }} />
-        </IconButton>
+        <Box order={6} >
+            <IconButton aria-label="refresh" style={{ marginTop: -3 }} onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
+                <RefreshIcon style={{ color: '#76ff03' }} />
+            </IconButton>
+        </Box>
     )
     /*Refresh Block*/
 
@@ -144,10 +167,10 @@ const MexToolbar = (props) => {
         </div>
     )
 
-    const dustBin = ()=>(
-        props.requestInfo.grouping ? <Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /> : null
+    const dustBin = () => (
+        props.requestInfo.grouping ? <Box order={1} style={{marginTop:5}}><Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /></Box> : null
     )
-    
+
     return (
         <Toolbar>
             <label className='content_title_label'>{requestInfo.headerLabel}</label>
@@ -156,14 +179,15 @@ const MexToolbar = (props) => {
                     <div style={{ right: 0, position: 'absolute' }}>
                         {getDetailView(props)}
                     </div> :
-                    <div style={{ right: 0, position: 'absolute' }}>
-
-                        {dustBin()}
-                        {searchForm()}
-                        {regionForm()}
-                        {mapForm()}
-                        {addForm()}
-                        {refreshForm()}
+                    <div style={{ width: '100%' }}>
+                        <Box display="flex" justifyContent="flex-end">
+                            {dustBin()}
+                            {searchForm()}
+                            {regionForm()}
+                            {mapForm()}
+                            {addForm()}
+                            {refreshForm()}
+                        </Box>
                     </div>
             }
         </Toolbar>

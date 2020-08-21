@@ -21,6 +21,15 @@ const canEdit = (action) => {
     return valid
 }
 
+const getHeight = (props) => {
+    let height = props.isMap ? 579 : 179
+    var customToolbarEle = document.getElementById('mex_list_view_custom_toolbar')
+    if (customToolbarEle) {
+        height = height + customToolbarEle.clientHeight
+    }
+    return `calc(100vh - ${height}px)`
+}
+
 class ListViewer extends React.Component {
     constructor(props) {
         super(props)
@@ -136,8 +145,7 @@ class ListViewer extends React.Component {
         this.props.setSelected([])
     }
 
-    isDropped = (item)=>
-    {
+    isDropped = (item) => {
         this.setState({ page: 0 });
         this.props.isDropped(item)
     }
@@ -152,11 +160,11 @@ class ListViewer extends React.Component {
         return (
             <div style={{ width: '100%' }}>
                 <Paper style={{ backgroundColor: '#292C33' }}>
-                    <ListToolbar 
-                        numSelected={this.props.selected.length} 
-                        groupActionMenu={this.props.groupActionMenu} 
+                    <ListToolbar
+                        numSelected={this.props.selected.length}
+                        groupActionMenu={this.props.groupActionMenu}
                         groupActionClose={this.groupActionClose} />
-                    <TableContainer style={{ height: `calc(100vh - ${this.props.isMap ? '617px' : '217px'})`, overflow: 'auto' }}>
+                    <TableContainer style={{ height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${this.props.selected.length > 0 ? '0px' : '-40px'}` }}>
                         <Table
                             stickyHeader
                             aria-labelledby="tableTitle"
@@ -190,8 +198,8 @@ class ListViewer extends React.Component {
                                                                 <IconButton>
                                                                     {expandedGroups.includes(key) ? <ExpandMoreIcon /> : <ChevronRightIcon />}
                                                                 </IconButton>
-                                                                <span style={{display:'inline', marginRight:20}}>{key}</span>
-                                                                <div style={{display:'inline', width:50, height:50, borderRadius:150, padding:5, backgroundColor:'#4CAF50'}}>{groupedData[key].length}</div>
+                                                                <span style={{ display: 'inline', marginRight: 5 }}>{key}</span>
+                                                                <div style={{ display: 'inline' }}>{`(${groupedData[key].length})`}</div>
                                                             </StyledTableCell>
                                                         </StyledTableRow>
                                                         {expandedGroups.includes(key) ?
@@ -201,7 +209,7 @@ class ListViewer extends React.Component {
                                                                 keys={this.props.keys}
                                                                 requestInfo={this.requestInfo}
                                                                 selected={this.props.selected}
-                                                                setSelected = {this.props.setSelected}
+                                                                setSelected={this.props.setSelected}
                                                                 selectedRow={this.setSelectedRow}
                                                                 handleActionView={this.handleActionView} /> : null}
                                                     </React.Fragment>
@@ -216,7 +224,7 @@ class ListViewer extends React.Component {
                                                                 keys={this.props.keys}
                                                                 requestInfo={this.requestInfo}
                                                                 selected={this.props.selected}
-                                                                setSelected = {this.props.setSelected}
+                                                                setSelected={this.props.setSelected}
                                                                 selectedRow={this.setSelectedRow}
                                                                 handleActionView={this.handleActionView} />
                                                         </React.Fragment>
