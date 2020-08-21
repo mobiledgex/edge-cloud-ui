@@ -1363,11 +1363,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
                             <div className="remove page_monitoring_widget_icon"
+                                 style={{zIndex:99999999999999999}}
                                  onClick={() => {
                                      this.deleteGridItem(uniqueIndex)
                                  }}
                             >
-                                <MaterialIcon size={'tiny'} icon='delete' color={'white'}
+                                <MaterialIcon  size={'tiny'} icon='delete' color={'white'}
 
                                 />
                             </div>
@@ -2338,13 +2339,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let appInstList = newPromiseList[1];
 
                         let filteredClusterList = []
+
                         clusterList.map((item: TypeCluster, index) => {
-                            if (this.state.orgType === USER_TYPE_SHORT.OPER) {
+                            if (this.state.orgType === USER_TYPE_SHORT.OPER) {///todo:When orgType is OPER
                                 if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.Operator === this.state.currentOrg) {
                                     filteredClusterList.push(item)
                                 }
-                            } else {//todo:When orgType is dev.
+                            } else if (this.state.orgType === USER_TYPE_SHORT.DEV) { ///todo:When orgType is DEV
                                 if (item.Cloudlet === currentCloudletMapOne.CloudletName && item.OrganizationName === this.state.currentOrg) {
+                                    filteredClusterList.push(item)
+                                }
+                            } else {
+                                if (item.Cloudlet === currentCloudletMapOne.CloudletName) {
                                     filteredClusterList.push(item)
                                 }
                             }
@@ -3083,27 +3089,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {this.state.cloudletDropdownList.map((cloudletOne: any, index) => {
 
                                 try {
-                                    if (index === 0) {
-                                        return (
-                                            <Option key={index} value={undefined} style={{}}>
-                                                <div style={{fontWeight: 'bold', color: 'orange'}}>{cloudletOne.text}</div>
-                                            </Option>
-                                        )
-                                    } else {
-                                        let itemValues = cloudletOne.value + " | " + (index - 1).toString()
-                                        return (
-                                            <Option key={index} value={itemValues}>
-                                                <div style={{display: 'flex'}}>
-                                                    <div
-                                                        style={{
-                                                            marginLeft: 7,
-                                                        }}
-                                                    >{cloudletOne.text}
-                                                    </div>
+                                    let itemValues = cloudletOne.value + " | " + (index - 1).toString()
+                                    return (
+                                        <Option key={index} value={itemValues}>
+                                            <div style={{display: 'flex'}}>
+                                                <div
+                                                    style={{
+                                                        marginLeft: 7,
+                                                    }}
+                                                >{cloudletOne.text}
                                                 </div>
-                                            </Option>
-                                        )
-                                    }
+                                            </div>
+                                        </Option>
+                                    )
                                 } catch (e) {
 
                                 }
@@ -3121,10 +3119,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                     maxTagCount = 1
                 } else if (this.props.size.width <= 1600 && this.props.size.width > 1300) {
                     treeSelectWidth = 150;
-                    maxTagCount = 1
+                    maxTagCount = 0
                 } else if (this.props.size.width <= 1300 && this.props.size.width > 1100) {
                     treeSelectWidth = 50;
-                    maxTagCount = 1
+                    maxTagCount = 0
                 } else if (this.props.size.width <= 1100) {
                     treeSelectWidth = 50;
                     maxTagCount = 0
@@ -3166,16 +3164,11 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
                                 value={this.state.currentClusterList}
                                 onChange={async (value, label, extra) => {
+                                    await this.setState({
+                                        currentMapLevel: MAP_LEVEL.CLUSTER,
+                                    })
                                     if (!isEmpty(value)) {
-                                        await this.setState({
-                                            currentMapLevel: MAP_LEVEL.CLUSTER,
-                                        })
                                         this.setState({currentClusterList: value});
-                                    } else {
-                                        await this.setState({
-                                            currentMapLevel: MAP_LEVEL.CLUSTER,
-                                        })
-                                        await this.resetLocalData()
                                     }
                                 }}
 
@@ -3192,8 +3185,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         currentClassification: CLASSIFICATION.CLUSTER_FOR_ADMIN,
                                     })
                                     if (this.state.currentClusterList !== undefined) {
-                                        const {filteredCloudletList, filteredAppInstList, currentClusterList} = this.state
-                                        await this.handleOnChangeClusterDropdownForAdmin(currentClusterList)
+                                        await this.handleOnChangeClusterDropdownForAdmin(this.state.currentClusterList)
                                     } else {
                                         await this.resetLocalData()
                                     }
@@ -3665,14 +3657,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                  display: 'flex',
                              }}
                         >
-                            {filteredClusterList.length === 0 && this.state.isShowClusterInLegend &&
-                            <Col
-                                span={24}
-                                className="noClusterMsg"
-                            >
-                                No Cluster
-                            </Col>
-                            }
                             {filteredClusterList.map((item: TypeClusterUsageOne, clusterIndex) => {
                                 return (
                                     <Col
@@ -3701,34 +3685,19 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                             width: itemCount === 1 ? '100%' : this.props.size.width / 6,
                                         }}
                                     >
-                                        {this.state.filteredClusterList.length === 1 ?
-                                            <Center style={{
-                                                marginLeft: 100,
-                                                display: 'flex',
-                                                width: '100%',
-                                            }}>
+                                        <div style={{
+                                            backgroundColor: 'transparent',
+                                            display: 'flex',
+                                            marginTop: 2.5,
+                                            marginBottom: 2.5
+                                        }}>
+                                            <Center>
                                                 {this.renderClusterDot(item.colorCodeIndex)}
-                                                <div style={{display: 'flex', marginLeft: 3,}}>
-                                                    <div>
-                                                        {reduceString(item.cluster, 35)}
-                                                    </div>
-                                                </div>
                                             </Center>
-                                            :
-                                            <div style={{
-                                                backgroundColor: 'transparent',
-                                                display: 'flex',
-                                                marginTop: 2.5,
-                                                marginBottom: 2.5
-                                            }}>
-                                                <Center>
-                                                    {this.renderClusterDot(item.colorCodeIndex)}
-                                                </Center>
-                                                <Center className="clusterCloudletBox">
-                                                    {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded, this.state.filteredClusterList.length)}
-                                                </Center>
-                                            </div>
-                                        }
+                                            <Center className="clusterCloudletBox">
+                                                {reduceLegendClusterCloudletName(item, this, stringLimit, this.state.isLegendExpanded, this.state.filteredClusterList.length)}
+                                            </Center>
+                                        </div>
                                     </Col>
                                 )
                             })}
