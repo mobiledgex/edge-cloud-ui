@@ -470,8 +470,8 @@ export default connect(mapStateToProps, mapDispatchProps)((
                                 [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
                         >
-                            {this.renderCloudletMarkerTooltip(cloudlets)}
-                            {/*{this.renderCloudletMarkerPopup(cloudlets)}*/}
+                            {/*{this.renderCloudletMarkerTooltip(cloudlets)}*/}
+                            {this.renderCloudletMarkerPopup(cloudlets)}
                         </Marker>
                     </React.Fragment>
                 )
