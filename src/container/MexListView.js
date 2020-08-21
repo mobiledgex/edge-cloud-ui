@@ -18,6 +18,8 @@ import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiSt
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -34,6 +36,7 @@ class MexListView extends React.Component {
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
+            dropList:[]
         };
         this.filterText = ''
         this.requestCount = 0;
@@ -289,7 +292,9 @@ class MexListView extends React.Component {
                     actionClose={this.onActionClose}
                     isMap={isMap} requestInfo={this.requestInfo}
                     groupActionMenu={this.props.groupActionMenu}
-                    groupActionClose={this.groupActionClose} />
+                    groupActionClose={this.groupActionClose}
+                    dropList={this.state.dropList}
+                    isDropped={this.isDropped} />
             </div>)
     }
 
@@ -354,14 +359,26 @@ class MexListView extends React.Component {
         return null
     }
 
+    onRemoveDropItem = (item) => {
+        this.setState({ dropList: [] })
+    }
+
+    isDropped = (item)=>
+    {
+        this.setState({ dropList: [item] })
+    }
+
     render() {
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop:10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.dataFromServer} streamType={this.requestInfo.streamType} region={this.selectedRegion} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail}/>
+                <DndProvider backend={HTML5Backend}>
+                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem}/>
+                {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
+                </DndProvider>
             </Card>
         );
 

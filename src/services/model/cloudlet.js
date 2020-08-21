@@ -151,9 +151,9 @@ export const streamCloudlet = (data) => {
 
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group:true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group:true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
     { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
     { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },

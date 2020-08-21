@@ -28,7 +28,7 @@ import {
 } from "../../../../shared/Constants";
 import {reactLocalStorage} from "reactjs-localstorage";
 import PageMonitoringView from "../view/PageMonitoringView";
-import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType, showToast} from "./PageMonitoringCommonService";
+import {convertByteToMegaGigaByte, convertMegaToGiGa, convertToMegaGigaForNumber, makeClusterBubbleChartData, renderUsageByType} from "./PageMonitoringCommonService";
 import {Center, PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {findUsageIndexByKey, numberWithCommas} from "../common/PageMonitoringUtils";
 import type {TypeAppInst, TypeClientStatus, TypeCloudlet, TypeCluster, TypeLineChartData} from "../../../../shared/Types";
@@ -1562,11 +1562,6 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
     const treeData = [
         {
-            title: (<div style={{}}>All</div>),
-            value: 'Reset',
-            selectable: true,
-        },
-        {
             title: 'Operator',
             value: '1',
             selectable: false,
@@ -1854,14 +1849,7 @@ export const makeDropdownForCloudlet = (pList) => {
         })
 
         newArrayList = sortBy(newArrayList, [object => object.text.toLowerCase()], ['asc']);
-        let nameSortedArrayList = insert(newArrayList, 0, {
-            region: undefined,
-            key: 'Reset',
-            value: undefined,
-            text: 'Reset Filter',
-        })
-
-        return nameSortedArrayList;
+        return newArrayList;
     } catch (e) {
 
     }
