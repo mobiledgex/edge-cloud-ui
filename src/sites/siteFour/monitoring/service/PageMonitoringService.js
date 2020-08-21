@@ -1849,14 +1849,7 @@ export const makeDropdownForCloudlet = (pList) => {
         })
 
         newArrayList = sortBy(newArrayList, [object => object.text.toLowerCase()], ['asc']);
-        let nameSortedArrayList = insert(newArrayList, 0, {
-            region: undefined,
-            key: 'Reset',
-            value: undefined,
-            text: 'Reset Filter',
-        })
-
-        return nameSortedArrayList;
+        return newArrayList;
     } catch (e) {
 
     }

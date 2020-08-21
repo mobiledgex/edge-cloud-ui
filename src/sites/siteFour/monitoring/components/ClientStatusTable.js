@@ -73,23 +73,9 @@ export default function ClientStatusTable(props) {
 
     function renderHeaderForClientStatusForAppInst() {
         return (
-            <div
-                className='.draggable'
-                style={{
-                    display: 'flex',
-                    width: '100%',
-                    height: 45,
-
-                }}
-            >
-                <div className='page_monitoring_title'
-                     style={{
-                         flex: 1,
-                         marginTop: 5,
-                         color: 'white',
-                         display: 'flex',
-                     }}
-                >
+            <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
+                <div className='page_monitoring_title_for_table' onClick={() => {
+                }}>
                     Client Status For App Instances {props.loading ?
                     <div style={{marginLeft: 5,}}>
                         <div style={{}}>
@@ -97,8 +83,9 @@ export default function ClientStatusTable(props) {
                         </div>
                     </div> : `[${currentClientStatusList !== undefined ? currentClientStatusList.length : null}]`}
 
-                    <div style={{marginLeft: 50}}>
+                    <div style={{marginLeft: 50, zIndex: 999999}}>
                         <Checkbox
+                            style={{zIndex: 999999}}
                             onChange={() => {
 
                                 setHideMexPrometeusAppName(!hideMexPrometeusAppName)

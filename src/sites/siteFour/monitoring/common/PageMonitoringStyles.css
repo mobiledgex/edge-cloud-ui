@@ -726,11 +726,11 @@ tr td {
 
 .tooltipForAdmin {
     font-weight: normal !important;
-    opacity: 0.8 !important;
+    opacity: 1.0 !important;
     border-width: thin !important;
     border-radius: 0px !important;
     border-style: solid !important;
-    border-color: green !important;
+    border-color: #77BD25 !important;
 }
 
 .mapCloudletPopup {
@@ -749,12 +749,13 @@ tr td {
 }
 
 .mapCloudletTooltipInnerForAdmin {
-    color: white;
+    color: white !important;
     padding: 2px;
     font-weight: normal !important;
-    border-color: green !important;
+    border-color: #77BD25 !important;
     border-width: thin !important;
     cursor: crosshair;
+
 }
 
 .mapCloudletTooltipInnerBlack {
