@@ -142,13 +142,14 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                     >
 
                                         <TableCell padding={'default'} align="center"
-                                                   style={{width: 30, color: '#C0C6C8',}}>
+                                                   style={{width: 'auto', color: '#C0C6C8',}}>
                                             <div style={{
                                                 marginBottom: 0,
                                                 marginTop: 0,
                                                 display: 'flex',
                                                 alignItems: 'flex-start',
-                                                justifyContent: 'center'
+                                                justifyContent: 'center',
+                                                backgroundColor: 'transparent'
                                             }}>
                                                 <AppsIcon
                                                     style={{
@@ -159,7 +160,7 @@ export default function PerformanceSummaryForCluster(props: Props) {
                                             </div>
                                         </TableCell>
                                         <TableCell padding={'default'} align="center"
-                                                   style={{width: 320, color: '#C0C6C8',}}>
+                                                   style={{width: 130, color: '#C0C6C8',}}>
                                             <div style={{
                                                 display: "flex",
                                                 justifyContent: 'center',
