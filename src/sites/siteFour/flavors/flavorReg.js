@@ -7,8 +7,9 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 //model
-import { createFlavor} from '../../../services/model/flavor';
-import {flavorTutor} from "../../../tutorial";
+import { createFlavor } from '../../../services/model/flavor';
+import { flavorTutor } from "../../../tutorial";
+import { Grid } from 'semantic-ui-react';
 
 
 const flavorSteps = flavorTutor();
@@ -30,11 +31,11 @@ class FlavorReg extends React.Component {
         return [
             { label: 'Create Flavor', formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
-            { field: fields.flavorName, label: 'Flavor Name', formType: INPUT, placeholder: 'Enter Flavor Name', rules: { required: true }, visible: true },
-            { field: fields.ram, label: 'RAM Size', formType: INPUT, placeholder: 'Enter RAM Size (MB)', unit: 'MB', rules: { required: true, type: 'number' }, visible: true },
-            { field: fields.vCPUs, label: 'Number of vCPUs', formType: INPUT, placeholder: 'Enter Number of vCPUs', rules: { required: true, type: 'number' }, visible: true },
-            { field: fields.disk, label: 'Disk Space', formType: INPUT, placeholder: 'Enter Disk Space (GB)', unit: 'GB', rules: { required: true, type: 'number' }, visible: true },
-            { field: fields.gpu, label: 'GPU', formType: CHECKBOX, visible: true, value: false },
+            { field: fields.flavorName, label: 'Flavor Name', formType: INPUT, placeholder: 'Enter Flavor Name', rules: { required: true }, visible: true, tip: 'Flavor name' },
+            { field: fields.ram, label: 'RAM Size', formType: INPUT, placeholder: 'Enter RAM Size (MB)', unit: 'MB', rules: { required: true, type: 'number' }, visible: true, tip: 'RAM in megabytes' },
+            { field: fields.vCPUs, label: 'Number of vCPUs', formType: INPUT, placeholder: 'Enter Number of vCPUs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of virtual CPUs' },
+            { field: fields.disk, label: 'Disk Space', formType: INPUT, placeholder: 'Enter Disk Space (GB)', unit: 'GB', rules: { required: true, type: 'number' }, visible: true, tip: 'Amount of disk space in gigabytes' },
+            { field: fields.gpu, label: 'GPU', formType: CHECKBOX, visible: true, value: false, tip: 'Optional Resources request, key = [gpu, nas, nic] gpu kinds: [gpu, vgpu, pci] form: $resource=$kind:[$alias]$count ex: optresmap=gpu=vgpus:nvidia-63:1' },
         ]
     }
 
@@ -56,8 +57,7 @@ class FlavorReg extends React.Component {
             }
             else {
                 let mcRequest = await createFlavor(this, data)
-                if(mcRequest && mcRequest.response && mcRequest.response.status === 200)
-                {
+                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                     this.props.handleAlertInfo('success', `Flavor ${data[fields.flavorName]} created successfully`)
                     this.props.onClose(true)
                 }
@@ -149,16 +149,20 @@ class FlavorReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                </div>
+                <Grid style={{ display: 'flex' }}>
+                    <Grid.Row>
+                        <Grid.Column width={16} style={{ overflow: 'auto', height: '90vh' }}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </div>
         )
     }
 
     componentDidMount() {
         this.getFormData(this.props.data);
-        this.props.handleViewMode( flavorSteps.stepsCreateFlavor )
+        this.props.handleViewMode(flavorSteps.stepsCreateFlavor)
     }
 };
 

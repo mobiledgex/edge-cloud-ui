@@ -347,6 +347,7 @@ class OrganizationReg extends React.Component {
                     switch (form.field) {
                         case fields.type:
                             form.options = ['Developer', 'Operator']
+                            form.value = this.props.type
                             break;
                         case fields.role:
                             form.options = ['Manager', 'Contributor', 'Viewer']
@@ -382,7 +383,7 @@ class OrganizationReg extends React.Component {
     step1 = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Organization`, formType: MAIN_HEADER, visible: true },
-            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true }, visible: true },
+            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined }, visible: true },
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: true },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: true, dataValidateFunc: this.validatePhone },

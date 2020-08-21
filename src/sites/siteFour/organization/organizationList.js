@@ -4,15 +4,16 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
+import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
 
-import { Button } from '@material-ui/core';
+import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import {organizationTutor} from "../../../tutorial";
-
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 const orgaSteps = organizationTutor();
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -34,9 +35,59 @@ class OrganizationList extends React.Component {
         this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
     }
 
-    onAdd = (action, data) => {
-        this.setState({ currentView: <OrganizationReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+    onAdd = (type) => {
+        this.setState({ currentView: <OrganizationReg onClose={this.onRegClose} type={type}/> });
     }
+
+    onUpdate = (action, data) => {
+        this.setState({ currentView: <OrganizationReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
+    }
+
+    customToolbar = () =>
+        (
+            <Box display='flex' id="mex_list_view_custom_toolbar">
+                <Card style={{ margin: 10, width: '50%', maxHeight:200, overflow:'auto' }}>
+                    <CardHeader
+                        avatar={
+                            <IconButton aria-label="developer" disabled={true}>  
+                                <img src='/assets/images/handset-sdk-green.svg'/>
+                            </IconButton>
+                        }
+                        title={
+                            <Typography>
+                                Create Organization to Run Apps on Telco Edge
+                            </Typography>
+                        }
+                        // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
+                        action={
+                            <IconButton aria-label="developer" onClick={()=>{this.onAdd(constant.DEVELOPER)}}>
+                                <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
+                            </IconButton>
+                        }
+                    />
+                </Card>
+                <Card style={{ margin: 10, width: '50%',maxHeight:200, overflow:'auto'  }}>
+                    <CardHeader
+                        avatar={
+                            <IconButton aria-label="operator"  disabled={true}>
+                                <img src='/assets/images/cloudlet-green.svg'/>
+                            </IconButton>
+                        }
+                        title={
+                            <Typography>
+                                Create Organization to Host Telco Edge
+                            </Typography>
+                        }
+                        // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
+                        action={
+                            <IconButton aria-label="operator" onClick={()=>{this.onAdd(constant.OPERATOR)}}>
+                                <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
+                            </IconButton>
+                        }
+                    />
+                </Card>
+            </Box>
+        )
 
     /**Action menu block */
     onAudit = (action, data) => {
@@ -56,7 +107,7 @@ class OrganizationList extends React.Component {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type:'Edit' },
-            { label: 'Update', onClick: this.onAdd, type:'Edit' },
+            { label: 'Update', onClick: this.onUpdate, type:'Edit' },
             { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type:'Edit' }
         ]
     }
@@ -113,7 +164,6 @@ class OrganizationList extends React.Component {
             requestType: [showOrganizations],
             sortBy: [fields.organizationName],
             keys: this.keys,
-            onAdd: this.onAdd,
             additionalDetail: shared.additionalDetail,
             viewMode: mode,
             grouping : true
@@ -167,7 +217,7 @@ class OrganizationList extends React.Component {
         return (
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%', height:'100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} />
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar}/>
                 </div>
         )
     }
