@@ -2510,6 +2510,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentClusterList: undefined,
                             currentOperLevel: undefined,
                             filteredCloudletEventLogList: this.state.allCloudletEventLogList,
+                            currentOrg: undefined,
                         })
                     }
                 } catch (e) {
