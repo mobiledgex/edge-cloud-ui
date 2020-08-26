@@ -330,6 +330,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
         }
 
 
+
         //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
         let appInstanceHwUsageList = []
         appInstanceHwUsageList = await Promise.allSettled(promiseList);
