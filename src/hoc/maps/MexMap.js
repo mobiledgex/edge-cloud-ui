@@ -23,8 +23,8 @@ let doing = false;
 let capture = true;
 let locDataOld = [];
 const outer = [
-  [100, 240],
-  [-100, -190],
+  [-90, -180],
+  [90, 180],
 ]
 
 let mapTileList = [
@@ -456,7 +456,7 @@ class ClustersMap extends Component {
                     onClick={this.handleMapClick}
                     ondragend={this.handleMove.bind(this)}
                     onZoomend={this.handleZoom.bind(this)}
-                    // maxBounds={outer}
+                    maxBounds={outer}
                     scrollWheelZoom={false}
                 >
                     <TileLayer
