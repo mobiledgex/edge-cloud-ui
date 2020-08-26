@@ -374,7 +374,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
             if (item.appInstanceHealth !== undefined && !isEmpty(item.appInstanceHealth.data["0"].Series)) {
                 let series = item.appInstanceHealth.data["0"].Series;
-                if (series.length === 3) {//todo: VM Type cluster
+                if (series.length === 3) {//todo: VM Type
                     networkSeriesIdx = "0";
                     memSeriesIdx = "1";
                     cpuSeriesIdx = "2";
