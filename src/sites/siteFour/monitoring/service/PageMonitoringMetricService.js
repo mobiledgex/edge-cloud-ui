@@ -485,7 +485,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
 
                 } else {//@todo: If series data is null
-                    showToast('no data!!!')
                     allUsageList.push({
                         instance: item.instanceData,
                         columns: "",
