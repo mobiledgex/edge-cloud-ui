@@ -503,7 +503,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                     })
                 }
             }
-            console.log('allUsageList===>', allUsageList);
         })
 
         let resultWithColorCode = []
