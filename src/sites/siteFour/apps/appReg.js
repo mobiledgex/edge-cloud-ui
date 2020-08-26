@@ -12,9 +12,9 @@ import { fields, getOrganization } from '../../../services/model/format';
 //model
 import * as serverData from '../../../services/model/serverData'
 import { getOrganizationList } from '../../../services/model/organization';
-import { getFlavorList } from '../../../services/model/flavor';
-import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
-import { getAutoProvPolicyList } from '../../../services/model/autoProvisioningPolicy';
+import { getFlavorList, showFlavors } from '../../../services/model/flavor';
+import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
+import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
 import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -23,6 +23,7 @@ import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
+import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 
@@ -38,8 +39,7 @@ class AppReg extends React.Component {
             flowDataList: []
         }
         this.isUpdate = this.props.isUpdate
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = cloneDeep(props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion)
+        this.regions = cloneDeep(localStorage.regions ? localStorage.regions.split(",") : [])
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.flavorList = []
         this.privacyPolicyList = []
@@ -58,6 +58,18 @@ class AppReg extends React.Component {
             let value = parseInt(form.value)
             if (value < 1 || value > 65535) {
                 form.error = 'Invalid Port Range (must be between 1-65535)'
+                return false;
+            }
+        }
+        form.error = undefined;
+        return true;
+    }
+
+    validateAppName = (form) => {
+        if (form.value && form.value.length > 0) {
+            let value = form.value
+            if (value.includes('_')) {
+                form.error = 'Invalid app name, please remove underscore'
                 return false;
             }
         }
@@ -657,12 +669,32 @@ class AppReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
+            let requestTypeList = []
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            this.flavorList = await getFlavorList(this, { region: data[fields.region] })
-            this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
-            this.autoProvPolicyList = await getAutoProvPolicyList(this, { region: data[fields.region] })
+            
+            requestTypeList.push(showFlavors({ region: data[fields.region] }))
+            requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
+            requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
+
+            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            if (mcRequestList && mcRequestList.length > 0) {
+                for (let i = 0; i < mcRequestList.length; i++) {
+                    let mcRequest = mcRequestList[i];
+                    let request = mcRequest.request;
+                    if (request.method === SHOW_FLAVOR) {
+                        this.flavorList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_AUTO_PROV_POLICY) {
+                        this.autoProvPolicyList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_PRIVACY_POLICY) {
+                        this.privacyPolicyList = mcRequest.response.data
+                    }
+                }
+            }
+
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                 this.configOptions = [constant.CONFIG_ENV_VAR]
             }
@@ -762,7 +794,7 @@ class AppReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name' },
+            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version' },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
@@ -868,25 +900,6 @@ class AppReg extends React.Component {
 
 };
 
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
-    }
-};
-
-
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -895,4 +908,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppReg));
+export default withRouter(connect(null, mapDispatchProps)(AppReg));

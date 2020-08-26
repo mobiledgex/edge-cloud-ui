@@ -23,6 +23,7 @@ class AutoProvPolicy extends React.Component {
         this.state = {
             currentView: null
         }
+        this.keys = keys()
     }
 
     onRegClose = (isEdited) => {
@@ -70,7 +71,7 @@ class AutoProvPolicy extends React.Component {
             requestType: [showAutoProvPolicies, showApps],
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
-            keys: keys,
+            keys: this.keys,
             onAdd: this.onAdd,
             viewMode: policySteps.stepsPolicy
         })
@@ -84,9 +85,6 @@ class AutoProvPolicy extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -94,4 +92,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AutoProvPolicy));
+export default withRouter(connect(null, mapDispatchProps)(AutoProvPolicy));

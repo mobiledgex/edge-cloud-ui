@@ -15,6 +15,7 @@ export const GRID_ITEM_TYPE = {
     CLIENT_STATUS_TABLE: 'CLIENT_STATUS_TABLE',
     MULTI_LINE_CHART: 'MULTI_CONNECTIONS',
     METHOD_USAGE_COUNT: 'METHOD_USAGE_COUNT',
+    CLOCK: 'CLOCK',
 }
 export const HARDWARE_TYPE_FOR_GRID = {
     ETC: 'ETC',
@@ -164,8 +165,8 @@ export const defaultHwMapperListForCluster = [
     },
     {
         id: '5',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
     {
         id: '6',
@@ -277,8 +278,8 @@ export const defaultHwMapperListForAdminCluster = [
     },
     {
         id: '7',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLUSTER_EVENT_LOG,
+        hwType: HARDWARE_TYPE_FOR_GRID.DISK,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
 ];
 
@@ -330,15 +331,15 @@ export const defaultHwMapperListForAdminCloudlet = [
     },
     {
         id: '7',
-        hwType: undefined,
-        graphType: GRID_ITEM_TYPE.CLOUDLET_EVENT_LOG,
+        hwType: HARDWARE_TYPE_FOR_GRID.ipv4Used,
+        graphType: GRID_ITEM_TYPE.LINE,
     },
 ];
 
 /*
-desc:#####################################
-desc:defaultLayoutForAppInst
-desc:#######################################
+todo:#####################################
+todo: default Layout For AppInst
+todo:#######################################
  */
 export const defaultLayoutForAppInst = [
 
@@ -677,13 +678,10 @@ export const ADMIN_LAYOUT_KEY = "_layout_admin";
 export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin";
 
 
-
 //todo : for test
 /*export const ADMIN_CLOUDLET_LAYOUT_KEY = "_layout_admin_cloudlet2";
 export const ADMIN_CLOUDLET_HW_MAPPER_KEY = "_layout_mapper_admin_cloudlet2";
-
 export const ADMIN_CLUSTER_LAYOUT_KEY = "_layout_admin_cluster2";
 export const ADMIN_CLUSTER_HW_MAPPER_KEY = "_layout_mapper_admin_cluster2";
-
 export const ADMIN_LAYOUT_KEY = "_layout_admin2";
 export const ADMIN_HW_MAPPER_KEY = "_layout_mapper_admin2";*/

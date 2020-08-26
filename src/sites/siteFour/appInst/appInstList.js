@@ -4,8 +4,8 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { fields, isAdmin, getUserRole } from '../../../services/model/format';
-import { keys, showAppInsts, deleteAppInst, streamAppInst, refreshAppInst, multiDataRequest, changePowerState } from '../../../services/model/appInstance';
+import { fields, getUserRole, isAdmin } from '../../../services/model/format';
+import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
@@ -14,7 +14,7 @@ import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
-import {appInstTutor} from "../../../tutorial";
+import { appInstTutor } from "../../../tutorial";
 
 
 const appInstSteps = appInstTutor();
@@ -84,12 +84,19 @@ class AppInstList extends React.Component {
         }
     }
 
+    getDialogNote = (data) => {
+        if (data[fields.clusterName]) {
+            return data[fields.clusterName].includes('autocluster') ? '' :
+                'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance'
+        }
+    }
+
     actionMenu = () => {
         return [
             { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
             { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
             { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance' },
+            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
             { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
             { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
@@ -99,8 +106,8 @@ class AppInstList extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader, type:'Edit' },
-            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader, type:'Edit' },
+            { label: 'Upgrade', onClick: refreshAppInst, icon: 'system_update', warning: 'upgrade all the selected App Instances', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
+            { label: 'Delete', onClick: deleteAppInst, icon: 'delete', warning: 'delete all the selected App Instances', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
             { label: 'Refresh', onClick: refreshAppInst, icon: 'refresh', warning: 'refresh all the selected App Instances', multiStepperHeader: this.multiStepperHeader },
         ]
     }
@@ -118,13 +125,14 @@ class AppInstList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : appInstSteps.stepsAppInst
+            viewMode : appInstSteps.stepsAppInst,
+            grouping : true
         })
     }
 
     /**
-   * Customized data block
-   **/
+     * Customized data block
+     **/
 
     getUpdate = (data, isDetailView) => {
         return (
@@ -179,10 +187,10 @@ class AppInstList extends React.Component {
     }
 
     /**
-    * Customized data block
-    * ** */
+     * Customized data block
+     * ** */
 
-   componentDidMount() {
+    componentDidMount() {
         this.customizedData()
     }
 
@@ -201,13 +209,10 @@ class AppInstList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppInstList));
+export default withRouter(connect(null, mapDispatchProps)(AppInstList));

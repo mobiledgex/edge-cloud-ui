@@ -47,8 +47,7 @@ class CloudletReg extends React.Component {
             mapCenter: [53,13]
         }
         this.isUpdate = this.props.isUpdate
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.infraApiAccessList = [constant.INFRA_API_ACCESS_DIRECT, constant.INFRA_API_ACCESS_RESTRICTED]
         //To avoid refecthing data from server
         this.requestedRegionList = [];
@@ -424,6 +423,9 @@ class CloudletReg extends React.Component {
                         case fields.platformType:
                             form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VSPHERE];
                             break;
+                        case fields.maintenanceState:
+                            form.options = [constant.MAINTENANCE_STATE_NORMAL_OPERATION, constant.MAINTENANCE_STATE_MAINTENANCE_START, constant.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
+                            break;
                         case fields.infraApiAccess:
                             form.options = this.infraApiAccessList;
                             form.value = constant.INFRA_API_ACCESS_DIRECT;
@@ -525,7 +527,8 @@ class CloudletReg extends React.Component {
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
-            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },             
+            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },    
+            { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: true, updateId: ['30'], tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false }         
         ]
     }
 
@@ -601,25 +604,7 @@ class CloudletReg extends React.Component {
         this.getFormData(this.props.data)
         this.props.handleViewMode(cloudletSteps.stepsCloudletReg)
     }
-
-
 };
-
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region
-    }
-};
-
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -629,4 +614,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletReg));
+export default withRouter(connect(null, mapDispatchProps)(CloudletReg));

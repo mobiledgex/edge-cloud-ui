@@ -9,32 +9,18 @@ export function getEP() {
     return EP;
 }
 
-const updateServerRequestCount = (requestData, self) =>
-{
-    if(self)
-    {
-        showSpinner(self, false)
-    }
-    if(requestData && requestData.method && !requestData.method.toLowerCase().includes('show') && !requestData.method.toLowerCase().includes('stream'))
-    {
-        localStorage.setItem('ServerRequestCount', parseInt(localStorage.getItem('ServerRequestCount'))+1)
-    }
-}
-
-export const mcURL = (isWebSocket) =>
-{
+export const mcURL = (isWebSocket) => {
     let serverURL = ''
     if (process.env.NODE_ENV === 'production') {
         var url = window.location.href
         var arr = url.split("/");
         serverURL = arr[0] + "//" + arr[2]
-        
+
         if (isWebSocket) {
             serverURL = serverURL.replace('http', 'ws')
         }
     }
-    else
-    {
+    else {
         if (isWebSocket) {
             serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
         }
@@ -42,8 +28,7 @@ export const mcURL = (isWebSocket) =>
     return serverURL
 }
 
-const getHttpURL = (request)=>
-{
+const getHttpURL = (request) => {
     return mcURL(false) + EP.getPath(request)
 }
 
@@ -92,7 +77,7 @@ const checkExpiry = (self, message) => {
 
 function responseError(self, request, error, callback) {
     if (error && error.response) {
-        let response  = error.response
+        let response = error.response
         let message = 'UnKnown';
         let code = response.status;
         if (response.data && response.data.message) {
@@ -108,17 +93,22 @@ function responseError(self, request, error, callback) {
     }
 }
 
-function responseStatus(self, status)
-{
+function responseStatus(self, status) {
     let valid = true
-    switch(status)
-    {
+    let msg = ''
+    switch (status) {
         case 504:
+            msg = '504 Gateway Timeout'
             valid = false
-            if (self.props.handleAlertInfo) {
-                self.props.handleAlertInfo('error', '504 Gateway Timeout')
-            }
             break;
+        case 502:
+            msg = '502 Bad Gateway'
+            valid = false
+            break;
+    }
+
+    if (!valid && self.props.handleAlertInfo) {
+        self.props.handleAlertInfo('error', msg)
     }
     return valid
 }
@@ -126,7 +116,7 @@ function responseStatus(self, status)
 export function sendWSRequest(request, callback) {
     const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
-        sockets.push({uuid: request.uuid, socket: ws, isClosed: false});
+        sockets.push({ uuid: request.uuid, socket: ws, isClosed: false });
         ws.send(`{"token": "${request.token}"}`);
         ws.send(JSON.stringify(request.data));
     }
@@ -134,26 +124,24 @@ export function sendWSRequest(request, callback) {
         let data = JSON.parse(evt.data);
         let response = {};
         response.data = data;
-        callback({request: request, response: response, wsObj:ws});
+        callback({ request: request, response: response, wsObj: ws });
     }
 
     ws.onclose = evt => {
         sockets.map((item, i) => {
             if (item.uuid === request.uuid) {
                 if (item.isClosed === false && evt.code === 1000) {
-                    callback({request: request, wsObj:ws})
+                    callback({ request: request, wsObj: ws })
                 }
                 sockets.splice(i, 1)
             }
         })
-        updateServerRequestCount(request)
     }
 }
 
 export function sendMultiRequest(self, requestDataList, callback) {
     if (requestDataList && requestDataList.length > 0) {
-        let isSpinner = requestDataList[0].showSpinner === undefined ? true : requestDataList[0].showSpinner;
-        showSpinner(self, isSpinner)
+        requestDataList[0].showSpinner === undefined && showSpinner(self, true)
         let promise = [];
         let resResults = [];
         requestDataList.map((request) => {
@@ -165,18 +153,45 @@ export function sendMultiRequest(self, requestDataList, callback) {
         })
         axios.all(promise)
             .then(responseList => {
-                updateServerRequestCount(requestDataList[0], self)
+                requestDataList[0].showSpinner === undefined && showSpinner(self, false)
                 responseList.map((response, i) => {
                     resResults.push(EP.formatData(requestDataList[i], response));
                 })
                 callback(resResults);
 
             }).catch(error => {
-                updateServerRequestCount(requestDataList[0], self)
                 if (error.response && responseStatus(self, error.response.status)) {
                     responseError(self, requestDataList[0], error, callback)
                 }
             })
+    }
+}
+
+export const sendSyncMultiRequest = async (self, requestDataList) => {
+    if (requestDataList && requestDataList.length > 0) {
+        requestDataList[0].showSpinner === undefined && showSpinner(self, true)
+        let promise = [];
+        let resResults = [];
+        requestDataList.map((request) => {
+            promise.push(axios.post(getHttpURL(request), request.data,
+                {
+                    headers: getHeader(request)
+                }))
+        })
+        try {
+            let responseList = await axios.all(promise)
+            requestDataList[0].showSpinner === undefined && showSpinner(self, false)
+            responseList.map((response, i) => {
+                resResults.push(EP.formatData(requestDataList[i], response));
+            })
+            return resResults
+        }
+        catch (error) {
+            if (error.response && responseStatus(self, error.response.status)) {
+                responseError(self, requestDataList[0], error)
+            }
+            requestDataList[0].showSpinner === undefined && showSpinner(self, false)
+        }
     }
 }
 
@@ -187,10 +202,9 @@ export const sendSyncRequest = async (self, request) => {
             {
                 headers: getHeader(request)
             });
-        updateServerRequestCount(request, self)
+        request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        updateServerRequestCount(request, self)
         if (error.response && responseStatus(self, error.response.status)) {
             responseError(self, request, error)
         }
@@ -205,10 +219,10 @@ export const sendSyncRequestWithError = async (self, request) => {
             {
                 headers: getHeader(request)
             });
-        updateServerRequestCount(request, self)
+        request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
-        updateServerRequestCount(request, self)
+        request.showSpinner === undefined && showSpinner(self, false)
         if (error.response && responseStatus(self, error.response.status)) {
             return { request: request, error: error }
         }
@@ -217,18 +231,16 @@ export const sendSyncRequestWithError = async (self, request) => {
 
 
 export function sendRequest(self, request, callback) {
-    let isSpinner = request.showSpinner === undefined ? true : request.showSpinner;
-    showSpinner(self, isSpinner)
+    request.showSpinner === undefined && showSpinner(self, true)
     axios.post(getHttpURL(request), request.data,
         {
             headers: getHeader(request)
         })
         .then(function (response) {
-            updateServerRequestCount(request, self)
+            request.showSpinner === undefined && showSpinner(self, false)
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
-            updateServerRequestCount(request, self)
             if (error.response && responseStatus(self, error.response.status)) {
                 responseError(self, request, error, callback)
             }

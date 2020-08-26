@@ -387,6 +387,8 @@ export const NETWORK_TYPE = {
     SEND_BYTES: 'SEND_BYTES',
 }
 
+export const FULFILLED= 'fulfilled'
+
 export const ADD_ITEM_LIST = [
     {text: 'MAP', value: 'MAP'},
     //{text: 'TAG_CLOUD', value: 'TAG_CLOUD'},
@@ -511,7 +513,7 @@ export const HARDWARE_TYPE = {
     SENDBYTES: 'SENDBYTES',
     RECVBYTES: 'RECVBYTES',
     BYTESSENT: "BYTESSENT",
-    BYTESRECVD:"BYTESRECVD",
+    BYTESRECVD: "BYTESRECVD",
 
     MEM: 'MEM',
     MEM2: 'MEM',

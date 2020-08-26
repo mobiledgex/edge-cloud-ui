@@ -10,7 +10,7 @@ import { Button, Icon } from 'semantic-ui-react';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData'
 
-class OrganizationList extends React.Component {
+class AccountList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +22,7 @@ class OrganizationList extends React.Component {
 
         this.action = '';
         this.data = {}
-        this.keys = Object.assign([], keys);
+        this.keys = keys();
     }
 
    
@@ -156,21 +156,10 @@ class OrganizationList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {
-        roleInfo: state.roleInfo ? state.roleInfo.role : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null
-    }
-};
-
 const mapDispatchProps = (dispatch) => {
     return {
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
-        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(OrganizationList));
+export default withRouter(connect(null, mapDispatchProps)(AccountList));

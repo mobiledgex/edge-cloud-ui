@@ -1,6 +1,5 @@
 
-import React, { Component } from 'react';
-import Terminal from '../hoc/terminal/mexTerminal'
+import React, { Component, Suspense, lazy } from 'react';
 import * as serviceMC from '../services/model/serviceMC'
 import * as serverData from '../services/model/serverData'
 import * as actions from "../actions";
@@ -11,70 +10,33 @@ import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms from '../hoc/forms/MexForms';
 import {fields} from '../services/model/format'
-import * as constant from '../constant';
 import { getUserRole } from '../services/model/format';
+import {RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM} from '../constant'
+import '../hoc/terminal/style.css'
+const Terminal = lazy(() => import('../hoc/terminal/mexTerminal'))
 
-
-const CMD_CLEAR = 'clear';
-const CMD_CLOSE = 'close';
-const RUN_COMMAND = 'Run Command';
-const SHOW_LOGS = 'Show Logs';
 
 class MexTerminal extends Component {
 
     constructor(props) {
         super(props)
         this.state = ({
-            success: false,
-            history: [],
             status: this.props.data.vm ? 'Connected' : 'Not Connected',
             statusColor: this.props.data.vm ? 'green' : 'red',
-            path: '#',
             open: false,
             forms: [],
             cmd: '',
             optionView: true,
-            editable: false,
             containerIds : [],
             vmURL : null,
-            isVM : false
+            isVM : false,
+            tempURL : undefined
         })
         this.ws = undefined
-        this.request = getUserRole() === constant.DEVELOPER_VIEWER ? SHOW_LOGS : RUN_COMMAND
-        this.success = false;
+        this.request = getUserRole() === DEVELOPER_VIEWER ? SHOW_LOGS : RUN_COMMAND
         this.localConnection = null;
         this.sendChannel = null;
         this.vmPage = React.createRef()
-    }
-
-
-
-    sendWSRequest = (url, data) =>{
-        this.ws = new WebSocket(url)
-        this.ws.onopen = () => {
-            this.success = true;
-            this.setState({
-                statusColor: 'green',
-                status: 'Connected'
-            })
-        }
-        this.ws.onmessage = evt => {
-            this.setState({
-                editable: data.Request === RUN_COMMAND ? true : false
-            })
-            this.setState(prevState => ({
-                history: [...prevState.history, evt.data]
-            }))
-        }
-    
-        this.ws.onclose = evt => {
-            this.ws = undefined
-            this.setState({
-                statusColor: 'red',
-                status: 'Not Connected',
-                editable: false
-            })
-        }
     }
 
     sendRequest = async (terminaData) => { 
@@ -140,7 +102,7 @@ class MexTerminal extends Component {
                         }
                     }
                     else {
-                        this.sendWSRequest(url, terminaData)
+                        this.setState({ tempURL: url, forceClose: false })
                     }
                 }
                 else
@@ -148,6 +110,7 @@ class MexTerminal extends Component {
                     this.props.handleAlertInfo('error', 'Access denied')
                     this.close()
                     this.setState({
+                        tempURL:undefined,
                         optionView: true,
                     }) 
                 }
@@ -155,6 +118,7 @@ class MexTerminal extends Component {
             else if (mcRequest.error) {
                 this.close()
                 this.setState({
+                    tempURL:undefined,
                     optionView: true,
                 })
             }
@@ -183,55 +147,14 @@ class MexTerminal extends Component {
     }
 
     close = () => {
-        this.success = false;
-        if(this.ws)
-        {
+        if (this.ws) {
             this.ws.close()
         }
         this.setState({
             optionView: true,
-            history: [],
-            path: '#',
             statusColor: 'red',
-            status: 'Not Connected'
-        })
-    }
-
-    onEnter = (cmd) => {
-        if (cmd === CMD_CLEAR) {
-            let history = this.state.history
-            history = history[history.length-1].split('\r')
-            history = history[history.length-1]
-            this.setState({
-                container: [],
-                history: [history]
-            })
-        }
-        else if (this.ws) {
-            if (cmd === CMD_CLOSE) {
-                this.close()
-            }
-            else {
-                if (this.ws.readyState === WebSocket.OPEN) {
-                    this.ws.send(cmd + '\n')
-                }
-                else {
-                    this.props.handleAlertInfo('error', 'Terminal not connected, please try again')
-                    this.close();
-                }
-            }
-        }
-    }
-
-    onContainerSelect = (event) => {
-        this.setState({
-            containerId: event.target.value
-        })
-    }
-
-    onCmd = (event) => {
-        this.setState({
-            cmd: event.target.value
+            status: 'Not Connected',
+            tempURL: undefined,
         })
     }
 
@@ -287,7 +210,7 @@ class MexTerminal extends Component {
 
     getForms = (containerIds) => (
         [
-            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(getUserRole() === constant.DEVELOPER_VIEWER ? [SHOW_LOGS] : [RUN_COMMAND, SHOW_LOGS]), value: this.request },
+            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(getUserRole() === DEVELOPER_VIEWER ? [SHOW_LOGS] : [RUN_COMMAND, SHOW_LOGS]), value: this.request },
             { field: 'Container', label: 'Container', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(containerIds), value: containerIds[0] },
             { field: 'Command', label: 'Command', formType: 'Input', rules: { required: true }, visible: this.request === RUN_COMMAND ? true : false, labelStyle: style.label, style: style.cmdLine },
             { uuid: 'ShowLogs', field: 'LogOptions', formType: 'MultiForm', visible: this.request === SHOW_LOGS ? true : false, forms: this.getLogOptions(), width: 4 },
@@ -341,6 +264,17 @@ class MexTerminal extends Component {
             <iframe title='VM' ref={this.vmPage} src={this.state.vmURL} style={{ width: '100%', height:window.innerHeight - 65}}></iframe> : null
     }
 
+    socketStatus = (flag, diff, ws) => {
+        this.ws = ws
+        this.setState({
+            statusColor: flag ? 'green' : 'red',
+            status: flag ? 'Connected' : 'Not Connected'
+        })
+        if (diff > 5000) {
+            this.setState({ optionView: !flag, tempURL : undefined })
+        }
+    }
+
     loadCommandSelector = (containerIds) => {
         return (
             containerIds.length > 0 ?
@@ -353,14 +287,17 @@ class MexTerminal extends Component {
                         </div>
                     </div>
                     :
-                    <div style={{ paddingLeft: 20, paddingTop: 30, height: constant.getHeight() }}>
-                        <Terminal editable={this.state.editable} open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
-                    </div> : null)
+                    this.state.tempURL ?
+                        <Suspense fallback={<div></div>}>
+                        <div className={`${this.request === RUN_COMMAND ? 'terminal_run_head' : 'terminal_log_head'}`}>
+                            <Terminal status={this.socketStatus} url={this.state.tempURL} request={this.request}/>
+                        </div></Suspense> : null
+                : null)
     }
 
     render() {
         return (
-            <div style={{ backgroundColor: 'black', height: '100%' }}>
+            <div style={{ backgroundColor: 'black', height: 'inherit' }}>
                 {this.loadHeader()}
                 {
                     this.state.isVM ? this.loadVMPage() : 
@@ -371,7 +308,7 @@ class MexTerminal extends Component {
 
     componentDidMount() {
         let data = this.props.data
-        if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
+        if (data[fields.deployment] === DEPLOYMENT_TYPE_VM) {
             this.setState({isVM : true})
             setTimeout(()=>{this.sendRequest()}, 1000)
         }

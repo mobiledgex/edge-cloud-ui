@@ -1,12 +1,13 @@
 import React from 'react'
-import { Dropdown } from 'semantic-ui-react'
-import { IconButton, Toolbar, Switch, withStyles, TextField, Input, InputAdornment } from '@material-ui/core'
-import RefreshIcon from '@material-ui/icons/Refresh';
-import AddIcon from '@material-ui/icons/Add';
-import CloseIcon from '@material-ui/icons/Close';
+import { isViewer } from '../services/model/format';
+import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box } from '@material-ui/core'
+import { Dropdown } from 'semantic-ui-react';
+import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
-import { getUserRole } from '../services/model/format';
-import * as constant from '../constant';
+import CloseIcon from '@material-ui/icons/Close';
+import AddIcon from '@material-ui/icons/Add';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import { Dustbin } from '../hoc/listView/mex_dnd/Dustbin';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -14,9 +15,25 @@ export const ACTION_REFRESH = 2
 export const ACTION_NEW = 3
 export const ACTION_CLOSE = 4
 export const ACTION_MAP = 5
+export const ACTION_SEARCH = 6;
+export const ACTION_CLEAR = 7;
 
+const useStyles = makeStyles((theme) => ({
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        transition: theme.transitions.create('width'),
+        width: '0ch',
+        height: 20,
+        [theme.breakpoints.up('sm')]: {
+            '&:focus': {
+                width: '20ch',
+            },
+        },
+    },
+}));
 
-//Todo: move to standard file
 const CustomSwitch = withStyles({
     switchBase: {
         color: '#D32F2F',
@@ -31,102 +48,148 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 
-const getRegion = (props)=>
-{
-    let options = []
-    if (props.regions) {
-        options = props.regions.map(region => {
-            return { key: region, value: region, text: region }
-        })
-        options.splice(0, 0, { key: 'ALL', value: REGION_ALL, text: 'ALL' })
-    }
-    return options
-}
-
-const canAdd = () => {
-    let valid = true
-    let role = getUserRole();
-    if (role && role.includes(constant.VIEWER)) {
-        valid = false
-    }
-    return valid
-}
-
 const MexToolbar = (props) => {
-    let requestInfo = props.requestInfo;
+    const classes = useStyles();
+    let requestInfo = props.requestInfo
 
-    const [map, setMap] = React.useState(true)
+    const [search, setSearch] = React.useState('')
     const [region, setRegion] = React.useState(REGION_ALL)
+    const [map, setMap] = React.useState(true)
+    const [focused, setFocused] = React.useState(false)
 
-    const onMapChange = (e)=>
-    {
-       setMap(e.target.checked) 
-       props.onAction(ACTION_MAP, e.target.checked)
+    /*Search Block*/
+    const handleSearch = (e) => {
+        setSearch(e ? e.target.value : '')
+        props.onAction(ACTION_SEARCH, e ? e.target.value : '')
     }
 
-    const onRegionChange = (value)=>
-    {
-       setRegion(value) 
-       props.onAction(ACTION_REGION, value)
+    const searchForm = () => (
+        <Box order={3} style={{marginTop:`${focused ? '0px' : '4px'}`}}>
+            <Input
+                onFocus={() => {
+                    setFocused(true)
+                }}
+                onBlur={() => {
+                    setFocused(false)
+                }}
+                size="small"
+                disableUnderline={!focused}
+                classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                }}
+                onChange={handleSearch}
+                startAdornment={
+                    <InputAdornment style={{ fontSize: 17, pointerEvents: "none", cursor: 'pointer' }} position="start" >
+                        <SearchIcon style={{ color: '#76FF03' }} />
+                    </InputAdornment>
+                }
+                value={search}
+                placeholder={'Search'} />
+        </Box>
+    )
+    /*Search Block*/
+
+    /*Add Block*/
+    const addForm = () => (
+        requestInfo.onAdd && !isViewer() ?
+            <Box order={5} >
+                <IconButton aria-label="new" style={{ marginTop: -3 }} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
+                    <AddIcon style={{ color: '#76ff03' }} />
+                </IconButton>
+            </Box> : null
+    )
+    /*Add Block*/
+
+    /*Region Block*/
+
+    const getRegions = () => {
+        let options = []
+        if (props.regions) {
+            options = props.regions.map(region => {
+                return { key: region, value: region, text: region }
+            })
+            options.splice(0, 0, { key: 'ALL', value: REGION_ALL, text: 'ALL' })
+        }
+        return options
     }
-    
-    const getDetail = (props) => (
+
+    const onRegionChange = (value) => {
+        setRegion(value)
+        props.onAction(ACTION_REGION, value)
+    }
+
+    const regionForm = () => (
+        requestInfo.isRegion ?
+            <Box order={2} p ={1} style={{marginTop:4, marginRight:12}}>
+                <strong>Region:&nbsp;&nbsp;</strong>
+                <Dropdown
+                    options={getRegions()}
+                    defaultValue={region}
+                    onChange={(e, { value }) => { onRegionChange(value) }}
+                />
+            </Box> : null
+    )
+    /*Region Block*/
+
+    /*Map Block*/
+    const onMapChange = (e) => {
+        setMap(e.target.checked)
+        props.onAction(ACTION_MAP, e.target.checked)
+    }
+
+    const mapForm = () => (
+        requestInfo.isMap ?
+            <Box order={4} p={1}>
+                <strong>Map:</strong>
+                <CustomSwitch size="small" color="primary" checked={map}
+                    onChange={onMapChange} />
+            </Box> :
+            null
+    )
+    /*Map Block*/
+
+    /*Refresh Block*/
+    const refreshForm = () => (
+        <Box order={6} >
+            <IconButton aria-label="refresh" style={{ marginTop: -3 }} onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
+                <RefreshIcon style={{ color: '#76ff03' }} />
+            </IconButton>
+        </Box>
+    )
+    /*Refresh Block*/
+
+    const getDetailView = (props) => (
         <div style={{ right: 0, position: 'absolute' }}>
-
             <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
                 <CloseIcon style={{ color: '#76ff03' }} />
             </IconButton>
         </div>
     )
 
-    const getList = (props) => {
-        let regions = getRegion(props)
-        return (
-            <div style={{ right: 0, position: 'absolute' }}>
-                <Input 
-                    onChange={(e) => { props.onFilterValue(e) }} 
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    }
-                    value = {props.filterText}
-                    placeholder={'Search'} 
-                />
-                {requestInfo.isRegion ?
-                    <div style={{ display: 'inline', margin: 20 }}>
-                        <strong>Region:&nbsp;&nbsp;</strong>
-                        <Dropdown
-                            options={regions}
-                            defaultValue={region}
-                            onChange={(e, { value }) => { onRegionChange(value) }}
-                        />
-                    </div> :
-                    null
-                }
-                {requestInfo.isMap ?
-                    <div style={{ display: 'inline', margin: 20 }}>
-                        <strong>Map:&nbsp;&nbsp;</strong>
-                        <CustomSwitch size="small" color="primary" checked={map}
-                            onChange={onMapChange} />
-                    </div> :
-                    null
-                }
-                {
-                    requestInfo.onAdd && canAdd() ?
-                        <IconButton aria-label="new" className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
-                            <AddIcon style={{ color: '#76ff03' }} />
-                        </IconButton> : null
-                }
-                <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
-                    <RefreshIcon style={{ color: '#76ff03' }} />
-                </IconButton>
-            </div>
-        )}
+    const dustBin = () => (
+        props.requestInfo.grouping ? <Box order={1} style={{marginTop:5}}><Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /></Box> : null
+    )
+
     return (
         <Toolbar>
             <label className='content_title_label'>{requestInfo.headerLabel}</label>
-            {props.isDetail ? getDetail(props) : getList(props)}
+            {
+                props.isDetail ?
+                    <div style={{ right: 0, position: 'absolute' }}>
+                        {getDetailView(props)}
+                    </div> :
+                    <div style={{ width: '100%' }}>
+                        <Box display="flex" justifyContent="flex-end">
+                            {dustBin()}
+                            {searchForm()}
+                            {regionForm()}
+                            {mapForm()}
+                            {addForm()}
+                            {refreshForm()}
+                        </Box>
+                    </div>
+            }
         </Toolbar>
     )
 }

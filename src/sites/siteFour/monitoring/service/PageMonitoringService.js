@@ -38,6 +38,7 @@ import uniqBy from 'lodash/uniqBy';
 import {mapTileList} from "../common/MapProperties";
 import * as dateUtil from '../../../../utils/date_util'
 import {Icon} from "semantic-ui-react";
+import * as reducer from "../../../../utils";
 
 const {Option} = Select;
 
@@ -324,7 +325,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             return chartDataSet
         }
     } catch (e) {
-        throw new error(e.toString())
+        throw new Error(e.toString())
     }
 };
 
@@ -424,16 +425,12 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                     series = item.udpSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
                     series = item.udpSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
-                    series = item.networkSeriesList
-                } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
+                } else if (hardwareType === HARDWARE_TYPE.BYTESSENT || hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     series = item.networkSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
                     series = item.networkSeriesList
-                }
-                //////todo:cloudllet/////////
-                else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
-                    series = item.series
+                } else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
+                    series = item.series //todo:for cloudllet
                 } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED || hardwareType === HARDWARE_TYPE.IPV4_USED) {
                     series = item.ipSeries
                 }
@@ -1108,52 +1105,48 @@ export const simpleGraphOptions = {
 
 export const makeLineChartDataForBigModal = (lineChartDataSet, _this: PageMonitoringView, currentColorIndex = -1) => {
     try {
-        const lineChartData = (canvas) => {
-            let gradientList = makeGradientColorList(canvas, 305, _this.state.chartColorList, true);
-            let levelTypeNameList = lineChartDataSet.levelTypeNameList
-            let usageSetList = lineChartDataSet.usageSetList
-            let newDateTimeList = lineChartDataSet.newDateTimeList
-            let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
-            let isStackedLineChart = _this.state.isStackedLineChart;
-            if (colorCodeIndexList !== undefined && colorCodeIndexList.length === 1) {
-                isStackedLineChart = true;
-            }
+        let levelTypeNameList = lineChartDataSet.levelTypeNameList
+        let usageSetList = lineChartDataSet.usageSetList
+        let newDateTimeList = lineChartDataSet.newDateTimeList
+        let colorCodeIndexList = lineChartDataSet.colorCodeIndexList;
 
-            let finalSeriesDataSets = [];
-            for (let index in usageSetList) {
-                let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
-                let dataSetsOne = {
-                    label: levelTypeNameList[index],
-                    radius: 0,
-                    borderWidth: 3.5,//todo:line border width
-                    fill: isStackedLineChart,
-                    backgroundColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
-                    borderColor: _this.state.isGradientColor ? gradientList[_colorIndex] : _this.state.chartColorList[colorCodeIndexList[index]],
-                    lineTension: 0.5,
-                    data: usageSetList[index],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                };
+        let isStackedLineChart = _this.state.isStackedLineChart;
+        let finalSeriesDataSets = [];
+        for (let index in usageSetList) {
+            let _colorIndex = usageSetList.length > 1 ? index : currentColorIndex;
+            let dataSetsOne = {
+                label: levelTypeNameList[index],
+                radius: 0,
+                borderWidth: 3.5,//todo:line border width
+                fill: isStackedLineChart,
+                backgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                borderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                lineTension: 0.5,
+                data: usageSetList[index],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointHoverBorderColor: _this.state.chartColorList[colorCodeIndexList[index]],
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+            };
 
-                finalSeriesDataSets.push(dataSetsOne)
-            }
-            return {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
-        };
+            finalSeriesDataSets.push(dataSetsOne)
+        }
+
+        let lineChartData = {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+
         return lineChartData;
     } catch (e) {
 
@@ -1256,13 +1249,13 @@ export const convertToClassification = (pClassification) => {
     }
 };
 
-export const reduceLegendClusterCloudletName = (item, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
+export const reduceLegendClusterCloudletName = (item: TypeCluster, _this: PageMonitoringView, stringLimit, isLegendExpanded = true, clusterListSize = 100) => {
 
     let clusterCloudletName = '';
     if (_this.state.userType.includes(USER_TYPE_SHORT.DEV)) {
-        clusterCloudletName = item.cluster + " [" + item.cloudlet + "]"
+        clusterCloudletName = item.ClusterName + " [" + item.Cloudlet + "]"
     } else {
-        clusterCloudletName = item.cluster
+        clusterCloudletName = item.ClusterName
     }
     return (
         <div style={{display: 'flex'}}>
@@ -1355,7 +1348,7 @@ export const makeCompleteDateTime = (date: string) => {
 }
 
 
-export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, dataLimitCount = 20, pStartTime = '', pEndTime = '') => {
 
     let appName = dataOne.AppName;
     if (dataOne.AppName.includes('[')) {
@@ -1383,9 +1376,7 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                     }
                 },
                 "selector": valid,
-                "last": fetchingDataNo,
-                "starttime": pStartTime,
-                "endtime": pEndTime,
+                "last": dataLimitCount,
             }
         }
         return form;
@@ -1412,8 +1403,7 @@ export const makeFormForAppLevelUsageList = (dataOne, valid = "*", token, fetchi
                     }
                 },
                 "selector": valid,
-                //"last": 25
-                "last": fetchingDataNo,
+                "last": dataLimitCount,
             }
         }
 
@@ -1572,11 +1562,6 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
     const treeData = [
         {
-            title: (<div style={{}}>All</div>),
-            value: 'Reset',
-            selectable: true,
-        },
-        {
             title: 'Operator',
             value: '1',
             selectable: false,
@@ -1594,9 +1579,13 @@ export const makeOrgTreeDropdown = (operOrgList, devOrgList) => {
 
 }
 
+export function makeMapMarkerObjectForDev(orgAppInstList, cloudletList) {
+    let markerMapObjectForMap = reducer.groupBy(orgAppInstList, CLASSIFICATION.CLOUDLET);
+    return markerMapObjectForMap;
+}
 
-export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList, _this, isShowRegion = true) => {
 
+export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletList, clusterList: TypeCluster, _this, isShowRegion = true) => {
     try {
         let treeCloudletList = []
         cloudletList.map((cloudletOne, cloudletIndex) => {
@@ -1614,8 +1603,8 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
 
             };
 
-            clusterList.map((clusterItemOne: any, innerIndex) => {
-                if (clusterItemOne.cloudlet === cloudletOne.CloudletName) {
+            clusterList.map((clusterItemOne: TypeCluster, innerIndex) => {
+                if (clusterItemOne.Cloudlet === cloudletOne.CloudletName) {
                     newCloudletOne.children.push({
                         title: (
                             <div style={{display: 'flex'}}>
@@ -1623,12 +1612,12 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                                     {_this.renderClusterDot(clusterItemOne.colorCodeIndex, 10)}
                                 </Center>
                                 <div style={{marginLeft: 5,}}>
-                                    {reduceString(clusterItemOne.cluster, 40)}
+                                    {reduceString(clusterItemOne.ClusterName, 40)} {clusterItemOne.Reservable === 'YES' ? <Tag color="#3b5999">Reservable</Tag> : null}
                                 </div>
 
                             </div>
                         ),
-                        value: clusterItemOne.cluster + " | " + cloudletOne.CloudletName,
+                        value: clusterItemOne.ClusterName + " | " + cloudletOne.CloudletName,
                         isParent: false,
 
                     })
@@ -1658,8 +1647,11 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
                 })
                 regionTreeList.push(regionMapOne)
             })
-
-            return regionTreeList;
+            //todo: Filter only if there is sub data value in the region
+            let newRegionList = regionTreeList.filter(item => {
+                return item.children.length > 0
+            })
+            return newRegionList;
         } else {
             return treeCloudletList
         }
@@ -1668,6 +1660,7 @@ export const makeRegionCloudletClusterTreeDropdown = (allRegionList, cloudletLis
     }
 
 }
+
 
 export const makeDropdownForCloudletForDevView = (pList) => {
     try {
@@ -1697,12 +1690,12 @@ export const makeDropdownForCloudletForDevView = (pList) => {
 
 export function renderCloudletInfoForAdmin(pCurrentCloudletMap) {
     return (
-        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 35, padding: 10, borderRadius: 10, marginLeft: 5, height: '170px !important'}}
+        <div style={{flex: .49, border: '0.5px solid grey', marginBottom: 5, padding: 20, borderRadius: 10, marginLeft: 5, height: '240px !important', marginTop: 25,}}
         >
             <div style={{
                 fontSize: 12,
                 fontWeight: 'bold',
-                marginTop: 0,
+                marginTop: -10,
                 fontFamily: 'Roboto',
                 display: 'flex',
             }}>
@@ -1769,7 +1762,8 @@ export function renderCloudletHwUsageDashBoardForAdmin(pCloudletUsageOne, bottom
             flex: .49,
             marginLeft: 30,
             borderRadius: 10,
-            marginTop: -30,
+            marginTop: 5,
+            marginBottom: 5,
         }}>
             <Center style={{height: bottomDivHeight,}}>
                 <div>
@@ -1855,14 +1849,7 @@ export const makeDropdownForCloudlet = (pList) => {
         })
 
         newArrayList = sortBy(newArrayList, [object => object.text.toLowerCase()], ['asc']);
-        let nameSortedArrayList = insert(newArrayList, 0, {
-            region: undefined,
-            key: 'Reset',
-            value: undefined,
-            text: 'Reset Filter',
-        })
-
-        return nameSortedArrayList;
+        return newArrayList;
     } catch (e) {
 
     }

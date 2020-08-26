@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import '../common/PageMonitoringStyles.css'
 import {FixedSizeList} from "react-window";
 import {makeTableRowStyle, reduceString, renderTitle} from "../service/PageMonitoringService";
-import {renderBarLoader} from "../service/PageMonitoringCommonService";
+import {renderBarLoader, renderEmptyMessageBox} from "../service/PageMonitoringCommonService";
 import {PageMonitoringStyles} from "../common/PageMonitoringStyles";
 import {FORMAT_FULL_DATE, FORMAT_FULL_TIME, time} from "../../../../utils/date_util";
 
@@ -18,6 +18,10 @@ export default function ClusterEventLogList(props) {
         justifyContent: 'center',
         flexDirection: 'column',
     }
+
+
+    useEffect(() => {
+    }, [props.eventLogList]);
 
 
     function renderHeader() {
@@ -161,11 +165,16 @@ export default function ClusterEventLogList(props) {
                 {renderBarLoader()}
             </div>}
             {renderTitle(props)}
+            {props.eventLogList.length === 0 && !props.loading &&
+            <div style={{marginTop: 70}}>
+                {renderEmptyMessageBox("No Data Available")}
+            </div>
+            }
             <table size="small" aria-label="a dense table"
                    className='thinScrBar'
                    style={PageMonitoringStyles.miniTableGrid}
                    stickyheader={true.toString()}>
-                {!props.parent.state.loading && renderHeader()}
+                {props.eventLogList.length !== 0 && !props.loading && renderHeader()}
                 {!props.loading ?
                     <FixedSizeList
                         height={179}

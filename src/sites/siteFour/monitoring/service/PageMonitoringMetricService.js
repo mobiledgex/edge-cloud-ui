@@ -1,9 +1,17 @@
 import axios from "axios";
 import type {TypeAppInst, TypeClientLocation, TypeCloudlet, TypeCluster} from "../../../../shared/Types";
 import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
-import {APP_INST_MATRIX_HW_USAGE_INDEX, CLOUDLET_METRIC_COLUMN, MEX_PROMETHEUS_APPNAME, USER_TYPE, USER_TYPE_SHORT, METRIC_DATA_FETCH_TIMEOUT} from "../../../../shared/Constants";
+import {
+    APP_INST_MATRIX_HW_USAGE_INDEX,
+    CLOUDLET_METRIC_COLUMN,
+    FULFILLED,
+    METRIC_DATA_FETCH_TIMEOUT,
+    MEX_PROMETHEUS_APPNAME,
+    USER_TYPE,
+    USER_TYPE_SHORT
+} from "../../../../shared/Constants";
 import {mcURL, sendSyncRequest} from "../../../../services/serviceMC";
-import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric} from "./PageMonitoringCommonService";
+import {isEmpty, makeFormForCloudletLevelMatric, makeFormForClusterLevelMatric, showToast} from "./PageMonitoringCommonService";
 import PageMonitoringView, {source} from "../view/PageMonitoringView";
 import {
     APP_INST_EVENT_LOG_ENDPOINT,
@@ -173,14 +181,14 @@ export const fetchAppInstList = async (pRegionList: string[] = localStorage.getI
             })
         }
 
-        let resultWithColorCode = []
+        let appInstListWithColorCode = []
         filteredAppInstList.map((item, index) => {
             item.colorCodeIndex = index;
-            resultWithColorCode.push(item)
+            appInstListWithColorCode.push(item)
         })
 
 
-        return resultWithColorCode;
+        return appInstListWithColorCode;
     } catch (e) {
         //throw new Error(e)
     }
@@ -299,45 +307,7 @@ export const fetchClusterList = async () => {
             item.colorCodeIndex = index;
             resultWithColorCode.push(item)
         })
-
         return resultWithColorCode;
-    } catch (e) {
-
-    }
-}
-
-
-export const getCloudletListAll = async () => {
-    try {
-
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
-        let regionList = localStorage.getItem('regions').split(",");
-
-        let promiseList = []
-        for (let i in regionList) {
-            let requestData = {showSpinner: false, token: token, method: SHOW_CLOUDLET, data: {region: regionList[i]}}
-            promiseList.push(sendSyncRequest(this, requestData))
-        }
-        let cloudletList = await Promise.all(promiseList);
-        let mergedCloudletList = [];
-        cloudletList.map(item => {
-            //@todo : null check
-            if (item.response.data["0"].Region !== '') {
-                let cloudletList = item.response.data;
-                cloudletList.map(item => {
-                    mergedCloudletList.push(item);
-                })
-            }
-        })
-
-        let listWithColorCode = []
-        mergedCloudletList.map((item, index) => {
-            item.colorCodeIndex = index;
-            listWithColorCode.push(item)
-        })
-
-        return listWithColorCode;
     } catch (e) {
 
     }
@@ -346,7 +316,6 @@ export const getCloudletListAll = async () => {
 
 export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, dataLimitCount, pStartTime = '', pEndTime = '', userType = '') => {
     try {
-
         let instanceBodyList = []
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         for (let index = 0; index < appInstanceList.length; index++) {
@@ -363,17 +332,13 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
 
         //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
         let appInstanceHwUsageList = []
-        try {
-            appInstanceHwUsageList = await Promise.all(promiseList);
-        } catch (e) {
-            //throw new Error(e)
-        }
+        appInstanceHwUsageList = await Promise.allSettled(promiseList);
 
         let usageListForAllInstance = []
         appInstanceList.map((item, index) => {
             usageListForAllInstance.push({
                 instanceData: appInstanceList[index],
-                appInstanceHealth: appInstanceHwUsageList[index],
+                appInstanceHealth: appInstanceHwUsageList[index].value,
             });
         })
 
@@ -467,8 +432,6 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                         memSeriesList,
                         diskSeriesList,
                         networkSeriesList,
-                        //connectionsSeriesList: networkSeriesList,
-                        //networkConnectionsSeriesList: networkSeriesList,
                         appName,
                         Cloudlet,
                         ClusterInst,
@@ -526,8 +489,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
         let token = store ? store.userToken : 'null';
 
         for (let index = 0; index < clusterList.length; index++) {
-            //let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
-
             let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, dataLimitCount, pStartTime, pEndTime)
             instanceBodyList.push(instanceInfoOneForm);
         }
@@ -536,10 +497,12 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
         for (let index = 0; index < instanceBodyList.length; index++) {
             promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
         }
-        let promiseClusterLevelUsageList = await Promise.all(promiseList);
+        let promiseClusterLevelUsageList = await Promise.allSettled(promiseList);
 
         let newClusterLevelUsageList = []
-        promiseClusterLevelUsageList.map((item, index) => {
+        promiseClusterLevelUsageList.map((itemOne, index) => {
+            let item = itemOne.value
+            let status = itemOne.status
 
             let sumSendBytes = 0;
             let sumRecvBytes = 0;
@@ -557,7 +520,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, dataL
             let cloudlet = '';
             let operator = '';
 
-            if (item.data["0"].Series !== null) {
+            if (item.data["0"].Series !== null && status === FULFILLED) {
 
                 columns = item.data["0"].Series["0"].columns
                 let udpSeriesList = item.data["0"].Series["0"].values
@@ -685,8 +648,7 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
             promiseList.push(getCloudletLevelMetric(instanceBodyList[index], token))
         }
 
-        let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-
+        let cloudletLevelMatricUsageList = await Promise.allSettled(promiseList);
         let netSendSeriesList = [];
         let netRecvSeriesList = [];
         let vCpuSeriesList = [];
@@ -700,8 +662,11 @@ export const getCloudletUsageList = async (cloudletList: TypeCloudlet, pHardware
         let columns = [];
 
         let usageList = []
-        cloudletLevelMatricUsageList.map((item, index) => {
-            if (!isEmpty(item) && !isEmpty(item.data["0"].Series)) {
+        cloudletLevelMatricUsageList.map((itemOne, index) => {
+            let item = itemOne.value
+            let status = itemOne.status
+
+            if (!isEmpty(item) && !isEmpty(item.data["0"].Series) && status === FULFILLED) {
                 Region = cloudletList[index].Region
                 let series = item.data["0"].Series["0"].values
                 let ipSeries = item.data["0"].Series["1"].values
@@ -854,6 +819,8 @@ export const getCloudletLevelMetric = async (serviceBody: any, pToken: string) =
 }
 
 export const getAppInstLevelMetric = async (serviceBodyForAppInstanceOneInfo: any) => {
+
+
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: mcURL() + APP_INST_METRICS_ENDPOINT,
@@ -953,7 +920,7 @@ export const getCloudletEventLog = async (cloudletMapOne: TypeCloudlet, startTim
 export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endTime = '', dataLimitCount) => {
     try {
         let promiseList = []
-        
+
         let range = getTimeRange(dataLimitCount)
         let periodStartTime = range[0]
         let periodEndTime = range[1]
@@ -984,11 +951,12 @@ export const getAllCloudletEventLogs = async (cloudletList, startTime = '', endT
  * @param clusterList
  * @returns {Promise<[]>}
  */
-export const getAllClusterEventLogList = async (clusterList, userType = USER_TYPE_SHORT.DEV) => {
+export const getAllClusterEventLogList = async (clusterList, userType = USER_TYPE_SHORT.DEV, dataLimitCount) => {
+
     try {
         let clusterPromiseList = []
         clusterList.map((clusterOne: TypeCluster, index) => {
-            clusterPromiseList.push(getClusterEventLogListOne(clusterOne, userType))
+            clusterPromiseList.push(getClusterEventLogListOne(clusterOne, userType, dataLimitCount))
         })
 
         let allClusterEventLogs = await Promise.all(clusterPromiseList);
@@ -1005,11 +973,17 @@ export const getAllClusterEventLogList = async (clusterList, userType = USER_TYP
 
         return completedEventLogList;
     } catch (e) {
-        throw new error(e.toString())
+        return null;
     }
 }
 
-export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType) => {
+export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, userType, dataLimitCount) => {
+
+    //todo: only 60min of eventlogs
+    let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(60))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
+    let periodStartTime = makeCompleteDateTime(date[0]);
+    let periodEndTime = makeCompleteDateTime(date[1]);
+
     let selectOrg = undefined
     let form = {};
     try {
@@ -1032,7 +1006,9 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
                 },
                 "organization": userType.toString().includes(USER_TYPE_SHORT.DEV) ? selectOrg : clusterItemOne.OrganizationName
             },
-            //"last": 10
+            "starttime": periodStartTime,
+            "endtime": periodEndTime,
+            //"last": 40
         }
 
         let result = await axios({
@@ -1048,41 +1024,46 @@ export const getClusterEventLogListOne = async (clusterItemOne: TypeCluster, use
 
             return response.data.data[0];
         }).catch(e => {
-            throw new error(e.toString())
+            return null;
         })
         return result;
     } catch (e) {
-        //throw new Error(e)
+        return null;
     }
 }
 
-export const getAppInstEventLogByRegion = async (region = 'EU') => {
+
+export const getAppInstEventLogsForOneAppInst = async (fullAppInst = undefined, dataLimitCount = 20) => {
     try {
 
         let selectOrg = localStorage.getItem('selectOrg')
+        let AppName = fullAppInst.split('|')[0].trim()
+        let Cloudlet = fullAppInst.split('|')[1].trim()
+        let ClusterInst = fullAppInst.split('|')[2].trim()
+        let Version = fullAppInst.split('|')[3].trim()
+        let Region = fullAppInst.split('|')[4].trim()
+        let Organization = fullAppInst.split('|')[6].trim()
 
         let form = {
-            "region": region,
+            "region": Region,
             "appinst": {
                 "app_key": {
                     "organization": selectOrg
                 },
                 "cluster_inst_key": {
                     "cluster_key": {
-                        "name": ""
+                        "name": ClusterInst
                     },
                     "cloudlet_key": {
-                        "name": "",
-                        "organization": ""
+                        "name": Cloudlet,
+                        "organization": Organization
                     }
                 }
-            }
-
-
+            },
+            "last": dataLimitCount,
         }
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
         return await axios({
             url: mcURL() + APP_INST_EVENT_LOG_ENDPOINT,
             method: 'post',
@@ -1093,8 +1074,6 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             },
             timeout: METRIC_DATA_FETCH_TIMEOUT
         }).then(async response => {
-
-
             if (isEmpty(response.data.data[0].Series)) {
                 return [];
             } else {
@@ -1102,51 +1081,44 @@ export const getAppInstEventLogByRegion = async (region = 'EU') => {
             }
 
         }).catch(e => {
-            throw new error(e.toString())
+            throw new Error(e.toString())
+
         })
     } catch (e) {
-        throw new error(e.toString())
+        throw new Error(e.toString())
     }
 
 }
 
-export const getAllAppInstEventLogs = async () => {
+
+export const getAllAppInstEventLogs = async (fullCurrentAppInst = undefined, dataLimitCount) => {
     try {
 
-        let regionList = localStorage.getItem('regions').split(",");
-        let promiseList = []
-        for (let i in regionList) {
-            promiseList.push(getAppInstEventLogByRegion(regionList[i]))
-        }
-
-        let allAppInstEventLogList = await Promise.all(promiseList);
+        let appInstEventLogList = await getAppInstEventLogsForOneAppInst(fullCurrentAppInst, dataLimitCount)
 
         let completedEventLogList = []
-        allAppInstEventLogList.map((item, index) => {
-
-            if (!isEmpty(item)) {
-                if (item.Series !== null) {
-                    let eventLogList = item.Series["0"].values;
-                    eventLogList.map(item => {
-                        completedEventLogList.push(item)
-                    })
-                }
+        if (!isEmpty(appInstEventLogList)) {
+            if (appInstEventLogList.Series !== null) {
+                let eventLogList = appInstEventLogList.Series["0"].values;
+                eventLogList.map(item => {
+                    completedEventLogList.push(item)
+                })
             }
-
-
-        })
+        }
 
         return completedEventLogList;
     } catch (e) {
-        throw new error(e.toString())
+        return [];
     }
 }
 
 
 /**
- * @desc : Inquire the status of the client attached to AppInstOne
+ *
  * @param appInst
- * @returns {Promise<AxiosResponse<any>>}
+ * @param startTime
+ * @param endTime
+ * @returns {Promise<{VerifyLocationCount: number, app: string, ver, FoundOperatorCount: number, apporg: string, cloudlet: string, RegisterClientCount: number, cloudletorg, FindCloudletCount: number}>}
  */
 export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', endTime = '') => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -1162,10 +1134,11 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
             }
         },
         "selector": "api",
+        //"last": 20,
         "starttime": startTime,
-        "endtime": endTime
-        //'last': 100
+        "endtime": endTime,
     }
+
 
     return await axios({
         url: mcURL() + SHOW_METRICS_CLIENT_STATUS,
@@ -1183,13 +1156,13 @@ export const getClientStateOne = async (appInst: TypeAppInst, startTime = '', en
         if (response.data.data[0].Series !== null) {
             seriesValues = response.data.data[0].Series[0].values
             column = response.data.data[0].Series[0].columns
-
         }
 
         let clientMatricSumDataOne = makeClientMatricSumDataOne(seriesValues, column, appInst)
-
         return clientMatricSumDataOne;
 
+    }).catch(e => {
+        //showToast(e.toString())
     })
 }
 
@@ -1226,7 +1199,9 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 
     seriesValues.map(item => {
-        let methodType = item[17];
+
+        let methodType = item[16];
+
         if (methodType === "RegisterClient") {
             RegisterClientCount++;
         }
@@ -1257,43 +1232,44 @@ export function makeClientMatricSumDataOne(seriesValues, columns, appInst: TypeA
 
 }
 
+export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
+    try {
+        let promiseList = []
+
+        let range = getTimeRange(dataLimitCount)
+        let periodStartTime = range[0]
+        let periodEndTime = range[1]
+
+        appInstList.map((appInstOne: TypeCloudlet, index) => {
+            promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
+        })
+        let newPromiseList = await Promise.allSettled(promiseList);
+
+        let mergedClientStatusList = []
+        newPromiseList.map((item, index) => {
+            if (item.value !== undefined) {
+                mergedClientStatusList.push(item.value)
+            }
+        })
+        return mergedClientStatusList;
+    } catch (e) {
+        showToast(e.toString())
+    }
+
+}
+
 export function convertDataCountToMins(dateLimitCount) {
     let dateOne = graphDataCount.filter(item => {
         return item.value === dateLimitCount
     })
     return dateOne[0].text.split(" ")[0]
-
 }
 
-const getTimeRange = (dataLimitCount)=>
-{
-    dataLimitCount = dataLimitCount ? dataLimitCount : 20    
+export const getTimeRange = (dataLimitCount) => {
+    dataLimitCount = dataLimitCount ? dataLimitCount : 20
     let periodMins = convertDataCountToMins(dataLimitCount)
     let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(parseInt(periodMins))), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractMins(0))]
     let periodStartTime = makeCompleteDateTime(date[0]);
     let periodEndTime = makeCompleteDateTime(date[1]);
     return [periodStartTime, periodEndTime]
-}
-
-
-export const getClientStatusList = async (appInstList, startTime, endTime, dataLimitCount) => {
-    let promiseList = []
-
-    let range = getTimeRange(dataLimitCount)
-    let periodStartTime = range[0]
-    let periodEndTime = range[1]
-    console.log('Rahul1234', periodStartTime)
-    appInstList.map((appInstOne: TypeCloudlet, index) => {
-        promiseList.push(getClientStateOne(appInstOne, periodStartTime, periodEndTime))
-    })
-    let newPromiseList = await Promise.all(promiseList);
-
-    let mergedClientStatusList = []
-    newPromiseList.map((item, index) => {
-        if (item !== undefined) {
-            mergedClientStatusList.push(item)
-        }
-    })
-    return mergedClientStatusList;
-
 }

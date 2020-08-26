@@ -113,7 +113,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
 
 
         } catch (e) {
-            throw new error(e.toString())
+            throw new Error(e.toString())
         }
 
 
@@ -283,6 +283,31 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
         )
     }
 
+    renderClockRadio() {
+        return (
+            <ChartIconOuterDiv style={{backgroundColor: 'transparent'}}>
+                <div
+                    onClick={() => {
+                        this.setState({
+                            currentItemType: GRID_ITEM_TYPE.CLOCK,
+                            isShowHWDropDown: false,
+                            isShowTableType: false,
+                        })
+                    }}
+                >
+                    <Center>
+                        <ReactSVG src={require('../images/chart/clock.svg')}
+                                  style={PageMonitoringStyles.chartIcon}
+                                  loading={() => (<Center><CircularProgress/></Center>)}/>
+                    </Center>
+                </div>
+                <div className='page_monitoring_form_radio_label'>
+                    <Radio value={GRID_ITEM_TYPE.CLOCK} className='page_monitoring_form_radio_text'>Clock </Radio>
+                </div>
+            </ChartIconOuterDiv>
+        )
+    }
+
     renderTableSelectForAppInst_Cluster() {
         return (
             <div className='page_monitoring_form_row'>
@@ -409,6 +434,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
                     <div className='page_monitoring_form_column_right2'>
                         <Select
                             maxTagCount={4}
+                            listHeight={512}
                             allowClear={true}
                             mode="multiple"
                             style={{width: '100%'}}
@@ -521,6 +547,7 @@ export default class AddItemPopupContainerNew extends React.Component<Props, Sta
                                         {this.props.parent.state.currentClassification === CLASSIFICATION.CLUSTER
                                         || this.props.parent.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN
                                         || this.props.parent.state.currentClassification === CLASSIFICATION.APPINST ? this.renderBubbleRadio() : null}
+                                        {this.renderClockRadio()}
                                     </div>
                                 </Radio.Group>
                             </div>

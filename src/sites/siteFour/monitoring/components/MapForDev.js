@@ -1,12 +1,12 @@
 import React, {createRef} from "react";
-import {Map, Marker, Polyline, Popup, TileLayer, Tooltip} from "react-leaflet";
+import {Map, Marker, Polyline, Popup, TileLayer} from "react-leaflet";
 import type {TypeAppInst, TypeClient, TypeCloudlet, TypeCloudletUsage} from "../../../../shared/Types";
 import Ripples from "react-ripples";
 import {CheckCircleOutlined} from '@material-ui/icons';
 import PageMonitoringView from "../view/PageMonitoringView";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Control from 'react-leaflet-control';
-import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader, showToast} from "../service/PageMonitoringCommonService";
+import {groupByKey_, removeDuplicates, renderBarLoader, renderSmallProgressLoader} from "../service/PageMonitoringCommonService";
 import MarkerClusterGroup from "leaflet-make-cluster-group";
 import {Icon} from "semantic-ui-react";
 import {Select} from 'antd'
@@ -18,7 +18,7 @@ import {listGroupByKey, makeMapThemeDropDown, reduceString, renderCloudletHwUsag
 import MomentTimezone from "moment-timezone";
 import {cellphoneIcon, cloudBlueIcon, cloudGreenIcon} from "../common/MapProperties";
 import '../common/PageMonitoringStyles.css'
-import {CLASSIFICATION, NO_APPS} from "../../../../shared/Constants";
+import {CLASSIFICATION} from "../../../../shared/Constants";
 import {getMexTimezone} from "../../../../utils/sharedPreferences_util";
 
 const {Option} = Select;
@@ -111,7 +111,7 @@ type State = {
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(
-    class MapForDevContainer extends React.Component<Props, State> {
+    class MapForDev extends React.Component<Props, State> {
         tooltip = createRef();
 
         constructor(props: Props) {
@@ -443,8 +443,10 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         renderAppInstPopup(listAppName, cloudletOne, cloudletIndex) {
+
+
             return (
-                <Popup index={cloudletIndex} permanent className='cloudlet_popup' ref={this.appInstPopup}>
+                <Popup index={parseInt(cloudletIndex + Math.floor(Math.random() * Math.floor(999999999)))} permanent className='cloudlet_popup' ref={this.appInstPopup}>
                     {listAppName.map((AppFullName, appIndex) => {
                         let AppName = AppFullName.trim().split(" | ")[0].trim()
                         let ClusterInst = AppFullName.trim().split(" | ")[1].trim()
@@ -459,10 +461,19 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         }
 
                         let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
-                        if (AppName !== NO_APPS) {
-                            return (
-                                <div style={PageMonitoringStyles.appPopupDiv}
-                                     key={appIndex * cloudletIndex}
+                        return (
+                            <div
+                                key={appIndex * cloudletIndex}
+                            >
+                                {appIndex === 0 &&
+                                <div
+                                    style={PageMonitoringStyles.mapCloudletLabelOne}
+                                >
+                                    {selectCloudlet}
+                                </div>
+                                }
+                                <div
+                                    style={PageMonitoringStyles.mapAppInstLabelOne}
                                 >
                                     <Ripples
                                         style={{marginLeft: 5,}}
@@ -488,21 +499,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                         {this.renderAppHealthCheckState(HealthCheckStatus)}
                                     </Ripples>
                                 </div>
-                            )
-                        } else {//todo: when no apps.
-                            return (
-                                <div style={PageMonitoringStyles.appPopupDiv}
-                                     key={appIndex * cloudletIndex}
-                                >
-                                    <div style={{
-                                        color: '#77BD25',
-                                        fontSize: 12
-                                    }}>
-                                        No App
-                                    </div>
-                                </div>
-                            )
-                        }
+                            </div>
+                        )
                     })}
                 </Popup>
             )
@@ -513,7 +511,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 let listAppName = cloudletOne.AppNames.split(",")
                 let cloudlets = cloudletOne.Cloudlet.toString().split(',');
                 return (
-                    <React.Fragment>
+                    <React.Fragment key={cloudletIndex}>
                         <Marker
                             ref={c => this.marker1 = c}
                             icon={this.props.cloudletIconColor === 'green' ? cloudGreenIcon : cloudBlueIcon}
@@ -522,30 +520,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                                 [cloudletOne.CloudletLocation.latitude, cloudletOne.CloudletLocation.longitude]
                             }
                         >
-                            <Tooltip
-                                className='mapCloudletTooltipDev'
-                                direction='right'
-                                offset={[14, -10]}//x,y
-                                opacity={0.8}
-                                permanent
-                                ref={c => {
-                                    this.toolTip = c;
-                                }}
-                                style={{cursor: 'pointer', pointerEvents: 'auto'}}
-
-                            >
-                                {cloudlets.map((item, index) => {
-                                    return (
-                                        <div
-                                            key={index}
-                                            className='mapCloudletTooltipInnerBlack'
-                                        >
-                                            {item}
-                                        </div>
-                                    )
-                                })}
-
-                            </Tooltip>
                             {/*desc:################################*/}
                             {/*desc:appInstPopup                    */}
                             {/*desc:################################*/}
@@ -650,7 +624,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
         renderHeader() {
             return (
                 <div>
-                    {!this.props.isFullScreenMap &&
                     <div className='page_monitoring_title_area draggable'>
                         <div style={{
                             display: 'flex',
@@ -677,8 +650,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                         </div>
                     </div>
-                    }
-
                     {this.props.parent.state.mapPopUploading &&
                     <div className='page_monitoring_title_area draggable'>
                         <div className='page_monitoring_title' style={{
@@ -735,7 +706,7 @@ export default connect(mapStateToProps, mapDispatchProps)(
                     {this.props.mapLoading && renderBarLoader(false)}
                     {this.renderHeader()}
                     <div className='page_monitoring_container'>
-                        <div style={{height: '100%', width: '100%', zIndex: 1}}>
+                        <div style={{height: '90%', width: '100%',}}>
                             <Map
                                 center={this.state.mapCenter}
                                 zoom={this.state.zoom}

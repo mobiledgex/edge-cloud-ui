@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as constant from '../constant'
 
-import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP } from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_CLEAR } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
@@ -18,31 +18,34 @@ import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiSt
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            newDataList:[],
             dataList: [],
             filterList: [],
             anchorEl: null,
             currentView: null,
             isDetail: false,
-            stepsArray: [],
             multiStepsArray: [],
             selected: [],
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
+            dropList:[]
         };
         this.filterText = ''
         this.requestCount = 0;
-        this.keys = props.requestInfo.keys;
+        this.requestInfo = this.props.requestInfo
+        this.keys = this.requestInfo.keys;
         this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.mapDetails = undefined
     }
 
@@ -51,10 +54,10 @@ class MexListView extends React.Component {
     }
 
     detailView = (data) => {
-        let additionalDetail = this.props.requestInfo.additionalDetail
+        let additionalDetail = this.requestInfo.additionalDetail
         this.props.handleViewMode(null)
         return (
-            <Card style={{ height: '95%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
+            <Card style={{ height: 'calc(100% - 49px)', backgroundColor: '#292c33', borderRadius:5, overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
@@ -213,7 +216,7 @@ class MexListView extends React.Component {
 
     onWarning = async (action, actionLabel, isMultiple, data) => {
         let message = action.dialogMessage ? action.dialogMessage(action, data) : undefined
-        this.setState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.props.requestInfo.nameField]}?`, action: action, isMultiple: isMultiple, data: data } });
+        this.setState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.requestInfo.nameField]}?`, action: action, isMultiple: isMultiple, data: data } });
     }
 
     /***Action Block */
@@ -257,7 +260,7 @@ class MexListView extends React.Component {
                 let cloudletLocation = data[fields.cloudletLocation]
                 let lat = roundOff(cloudletLocation[fields.latitude])
                 let lon = roundOff(cloudletLocation[fields.longitude])
-                return mapDataList.name.includes(data[this.props.requestInfo.nameField]) && coordinates[0] === lat && coordinates[1] === lon
+                return mapDataList.name.includes(data[this.requestInfo.nameField]) && coordinates[0] === lat && coordinates[1] === lon
             })
         }
         this.setState({ filterList: filterList })
@@ -268,14 +271,14 @@ class MexListView extends React.Component {
     }
     /*Action Block*/
     listView = () => {
-        let isMap = this.props.requestInfo.isMap && this.state.showMap
+        let isMap = this.requestInfo.isMap && this.state.showMap
 
         return (
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 400 }}>
                         <Map dataList={this.state.filterList}
-                             id={this.props.requestInfo.id}
+                             id={this.requestInfo.id}
                              onClick={this.onMapClick}
                              region={this.selectedRegion}
                              mapDetails={this.mapDetails}/>
@@ -287,118 +290,16 @@ class MexListView extends React.Component {
                     actionMenu={this.props.actionMenu}
                     cellClick={this.getCellClick}
                     actionClose={this.onActionClose}
-                    isMap={isMap} requestInfo={this.props.requestInfo}
+                    isMap={isMap} requestInfo={this.requestInfo}
                     groupActionMenu={this.props.groupActionMenu}
-                    groupActionClose={this.groupActionClose} />
+                    groupActionClose={this.groupActionClose}
+                    dropList={this.state.dropList}
+                    isDropped={this.isDropped} />
             </div>)
     }
-    /*
-    Stepper Block
-    Todo: Move to separate file
-    */
 
-    requestLastResponse = (data) => {
-        if (this.state.uuid === 0) {
-            let type = 'error'
-            if (data.code === 200) {
-                type = 'success'
-            }
-            if (data.message !== `Key doesn't exist`) {
-                this.props.handleAlertInfo(type, data.message)
-            }
-        }
-    }
-
-    streamProgress = (dataList) => {
-        let stream = this.props.requestInfo.streamType;
-        if (stream) {
-            for (let i = 0; i < dataList.length; i++) {
-                let data = dataList[i];
-                if (data[fields.state] !== 5) {
-                    this.sendWSRequest(data)
-                }
-            }
-        }
-    }
-
-    sendWSRequest = (data) => {
-        let stream = this.props.requestInfo.streamType;
-        if (stream) {
-            let valid = false
-            let state = data[fields.state];
-            if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
-                valid = true
-            }
-            else if (data[fields.powerState]) {
-                let powerState = data[fields.powerState];
-                if (powerState !== 0 && powerState !== 3 && powerState !== 6 && powerState !== 9 && powerState !== 10) {
-                    valid = true
-                }
-            }
-            if (valid) {
-                serverData.sendWSRequest(this, stream(data), this.requestResponse)
-            }
-        }
-    }
-
-    requestResponse = (mcRequest) => {
-        let request = mcRequest.request;
-        let responseData = null;
-        let stepsArray = this.state.stepsArray;
-        if (stepsArray && stepsArray.length > 0) {
-            stepsArray = stepsArray.filter((item) => {
-                if (request.uuid === item.uuid) {
-                    if (mcRequest.response) {
-                        responseData = item;
-                        return item
-                    }
-                    else {
-                        if (item.steps && item.steps.length > 1) {
-                            this.requestLastResponse(item.steps[item.steps.length - 1]);
-                        }
-                        if (item.steps.length >= 1 && item.steps[0].code === 200) {
-                            item.steps.push({ code: CODE_FINISH })
-                            this.dataFromServer(this.selectedRegion)
-                        }
-
-                        if (this.state.uuid !== 0) {
-                            return item
-                        }
-                    }
-                }
-                return item
-            })
-
-        }
-
-        if (mcRequest.response) {
-            let response = mcRequest.response.data
-            let step = { code: response.code, message: response.data.message }
-            if (responseData === null) {
-                stepsArray.push({ uuid: request.uuid, steps: [step] })
-            }
-            else {
-                stepsArray.map((item, i) => {
-                    if (request.uuid === item.uuid) {
-                        item.steps.push(step)
-                    }
-                })
-            }
-        }
-
-        this.setState({
-            stepsArray: stepsArray
-        })
-    }
-
+    
     onCloseStepper = () => {
-        this.state.stepsArray.map((item, i) => {
-            item.steps.map(step => {
-                if (step.code === CODE_FINISH) {
-                    this.state.stepsArray.splice(i, 1)
-                }
-            })
-        })
         this.setState({
             uuid: 0
         })
@@ -430,12 +331,12 @@ class MexListView extends React.Component {
       Todo: Move to separate file
       */
 
-    onFilterValue = (e) => {
+    onFilterValue = (value) => {
         this.mapDetails = null
-        this.filterText = e ? e.target.value.toLowerCase() : this.filterText
+        this.filterText = value ? value.toLowerCase() : this.filterText
         let dataList = this.state.dataList
         let filterCount = 0
-        let filterList = dataList.filter(data => {
+        let filterList = this.filterText.length > 0 ? dataList.filter(data => {
             let valid = this.keys.map(key => {
                 if (key.filter) {
                     filterCount = + 1
@@ -444,8 +345,8 @@ class MexListView extends React.Component {
                 }
             })
             return filterCount === 0 || valid.includes(true)
-        })
-        if (e) {
+        }) : dataList
+        if (value !== undefined) {
             this.setState({ filterList: filterList })
         }
         return filterList
@@ -458,37 +359,56 @@ class MexListView extends React.Component {
         return null
     }
 
+    onRemoveDropItem = (item) => {
+        this.setState({ dropList: [] })
+    }
+
+    isDropped = (item)=>
+    {
+        this.setState({ dropList: [item] })
+    }
+
     render() {
         return (
-            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', padding: 10, color: 'white' }}>
+            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop:10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} stepsArray={this.state.stepsArray} />
+                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.dataFromServer} streamType={this.requestInfo.streamType} region={this.selectedRegion} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.props.requestInfo} onAction={this.onToolbarAction} isDetail={this.state.isDetail} onFilterValue={this.onFilterValue} regions={this.regions} filterText={this.filterText}/>
+                <DndProvider backend={HTML5Backend}>
+                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem}/>
+                {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
+                </DndProvider>
             </Card>
         );
 
     }
 
-    onToolbarAction = (type, data) => {
+    onToolbarAction = (type, value) => {
         switch (type) {
             case ACTION_REGION:
-                this.selectedRegion = data;
+                this.selectedRegion = value;
                 this.dataFromServer(this.selectedRegion)
                 break;
             case ACTION_REFRESH:
                 this.dataFromServer(this.selectedRegion)
                 break;
             case ACTION_NEW:
-                this.props.requestInfo.onAdd()
+                this.requestInfo.onAdd()
                 break;
             case ACTION_MAP:
-                this.setState({ showMap: data })
+                this.setState({ showMap: value })
                 break;
             case ACTION_CLOSE:
                 this.setState({ isDetail: false, currentView: null })
-                this.props.handleViewMode(this.props.requestInfo.viewMode)
+                this.props.handleViewMode(this.requestInfo.viewMode)
+                break;
+            case ACTION_SEARCH:
+                this.onFilterValue(value)
+                break;
+            case ACTION_CLEAR:
+                this.filterText = ''
+                this.onFilterValue(this.filterText)
                 break;
             default:
 
@@ -521,7 +441,7 @@ class MexListView extends React.Component {
 
     onServerResponse = (mcRequestList) => {
         this.requestCount -= 1
-        let requestInfo = this.props.requestInfo
+        let requestInfo = this.requestInfo
         let newDataList = []
 
         if (mcRequestList && mcRequestList.length > 0) {
@@ -549,20 +469,20 @@ class MexListView extends React.Component {
 
         if (newDataList.length > 0) {
             newDataList = orderBy(newDataList, requestInfo.sortBy)
-            this.streamProgress(newDataList)
             dataList = [...dataList, ...newDataList]
         }
 
         this.setState({
-            dataList: Object.assign([], dataList)
+            dataList: Object.assign([], dataList),
+            newDataList : newDataList
         })
         this.setState({ filterList: this.onFilterValue() })
-        this.props.handleViewMode(this.props.requestInfo.viewMode);
+        this.props.handleViewMode(this.requestInfo.viewMode);
     }
 
     dataFromServer = (region) => {
-        this.setState({ dataList: [], filterList: [], selected: [] })
-        let requestInfo = this.props.requestInfo
+        this.setState({ dataList: [], filterList: [], selected: [], newDataList : [] })
+        let requestInfo = this.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)
             this.requestCount = filterList.length;
@@ -579,27 +499,11 @@ class MexListView extends React.Component {
 
     }
 
-
     componentDidMount() {
         this.dataFromServer(REGION_ALL)
         this.props.handleViewMode(null)
     }
 }
-
-const mapStateToProps = (state) => {
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-    }
-};
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -609,6 +513,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));
-
-
+export default withRouter(connect(null, mapDispatchProps)(MexListView));

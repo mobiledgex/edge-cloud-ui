@@ -1,226 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import ListIcon from '@material-ui/icons/List';
-import { fields } from '../../services/model/format';
-import {Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core';
-import { getUserRole } from '../../services/model/format';
-import MaterialIcon from 'material-icons-react';
+import React from 'react'
+import { Table, TableBody, TableRow, IconButton, TableCell, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar } from '@material-ui/core'
+import ListToolbar from './ListToolbar'
+import ListHeader from './ListHeader'
+import ListBody from './ListBody'
 import * as constant from '../../constant'
-
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: '#1E2123',
-        },
-    },
-}))(TableRow);
-
-const StyledTableCell = withStyles((theme) => ({
-    root: {
-        maxWidth:250,
-        overflow:'hidden',
-        textOverflow:'ellipsis',
-        borderBottom: 'none',
-        height:50 
-    },
-}))(TableCell);
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
-function checkRole(form) {
-    let roles = form.roles
-    if (roles) {
-        let visible = false
-        form.detailView = false
-        for (let i = 0; i < roles.length; i++) {
-            let role = roles[i]
-            if (role === getUserRole()) {
-                visible = true
-                form.detailView = true
-                break;
-            }
-        }
-        form.visible = form.visible ? visible : form.visible
-    }
-}
-
-function EnhancedTableHead(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property) => (event) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead >
-            <TableRow >
-                {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#2A2C33' }}>
-                    <Checkbox
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
-                </TableCell> : null}
-                {props.headCells.map((headCell) => {
-                    checkRole(headCell)
-                    if (headCell.label === 'Actions' &&  headCell.visible) {
-                        headCell.visible = props.actionMenuLength > 0
-                    }
-                    if (headCell.visible) {
-                        return <TableCell
-                            style={{ backgroundColor: '#2A2C33' }}
-                            key={headCell.field}
-                            align={headCell.numeric ? 'right' : 'left'}
-                            padding={headCell.disablePadding ? 'none' : 'default'}
-                            sortDirection={orderBy === headCell.field ? order : false}
-                        >
-                            {headCell.sortable ?
-                                <TableSortLabel
-                                    active={orderBy === headCell.field}
-                                    direction={orderBy === headCell.field ? order : 'asc'}
-                                    onClick={createSortHandler(headCell.field)}
-                                >
-                                    {headCell.label}
-                                    {orderBy === headCell.field ? (
-                                        <span className={classes.visuallyHidden}>
-                                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                        </span>
-                                    ) : null}
-                                </TableSortLabel> : headCell.label}
-                        </TableCell>
-                    }
-                })}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-EnhancedTableHead.propTypes = {
-    classes: PropTypes.object.isRequired,
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-    actionMenuLength:PropTypes.number.isRequired
-};
-
-const useToolbarStyles = makeStyles((theme) => ({
-    root: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(1),
-    },
-    highlight:
-        {
-          color: theme.palette.text.primary,
-          backgroundColor: '#6E6E6D',
-        },
-    title: {
-        flex: '1 1 100%',
-    },
-}));
-
-const EnhancedTableToolbar = (props) => {
-    const classes = useToolbarStyles();
-    const { numSelected } = props;
-    return (
-        <Toolbar className={clsx(classes.root, {
-            [classes.highlight]: numSelected > 0,
-          })}>
-            {numSelected > 0 ? (
-                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-                    {numSelected} selected
-                </Typography>
-            ) : null}
-            {numSelected > 0 ? (
-                props.groupActionMenu ?
-                    props.groupActionMenu().map((actionMenu, i) => {
-                        return (
-                            <Tooltip key={i} title={actionMenu.label}>
-                                <IconButton aria-label={actionMenu.label} onClick={() => { props.groupActionClose(actionMenu) }}>
-                                    <MaterialIcon icon={actionMenu.icon} color={'white'}/>
-                                </IconButton>
-                            </Tooltip>)
-                    }) : null
-            ) : null}
-        </Toolbar>
-    );
-};
-
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired,
-};
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
-    paper: {
-        width: '100%',
-        marginBottom: theme.spacing(2),
-    },
-    table: {
-        minWidth: 750,
-    },
-    visuallyHidden: {
-        border: 0,
-        clip: 'rect(0 0 0 0)',
-        height: 1,
-        margin: -1,
-        overflow: 'hidden',
-        padding: 0,
-        position: 'absolute',
-        top: 20,
-        width: 1,
-    },
-    tip: {
-        width:'fit-content',
-        maxWidth:'100%',
-        overflow:'hidden',
-        textOverflow:'ellipsis',
-    }
-}));
+//icon
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { getUserRole } from '../../services/model/format'
+import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
 
 const canEdit = (action) => {
     let valid = true
@@ -233,78 +21,80 @@ const canEdit = (action) => {
     return valid
 }
 
-export default function EnhancedTable(props) {
-    const classes = useStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length>0 ? props.requestInfo.sortBy[0] : 'region');
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(25);
-    const [actionEl, setActionEl] = React.useState(null)
-    const [selectedRow, setSelectedRow] = React.useState({})
-    const actionMenu = props.actionMenu.filter(action => { return canEdit(action) })
+const getHeight = (props) => {
+    let height = props.isMap ? 579 : 179
+    var customToolbarEle = document.getElementById('mex_list_view_custom_toolbar')
+    if (customToolbarEle) {
+        height = height + customToolbarEle.clientHeight
+    }
+    return `calc(100vh - ${height}px)`
+}
 
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = props.dataList.map((n) => n);
-            props.setSelected(newSelecteds);
-            return;
+class ListViewer extends React.Component {
+    constructor(props) {
+        super(props)
+        this.requestInfo = props.requestInfo
+        this.state = {
+            expandedGroups: [],
+            order: 'asc',
+            orderBy: this.requestInfo.sortBy && this.requestInfo.sortBy.length > 0 ? this.requestInfo.sortBy[0] : 'region',
+            page: 0,
+            rowsPerPage: 25,
+            actionEl: null,
+            selectedRow: {}
         }
-        props.setSelected([]);
-    };
-
-    const handleClick = (event, row) => {
-        const selectedIndex = props.selected.indexOf(row);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(props.selected, row);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(props.selected.slice(1));
-        } else if (selectedIndex === props.selected.length - 1) {
-            newSelected = newSelected.concat(props.selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                props.selected.slice(0, selectedIndex),
-                props.selected.slice(selectedIndex + 1),
-            );
-        }
-
-        props.setSelected(newSelected);
-    };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    const isSelected = (name) => props.selected.indexOf(name) !== -1;
-
-    const cellClick = (header, row)=>
-    {
-        setSelectedRow(row)
-        props.cellClick(header, row)
+        this.actionMenu = props.actionMenu.filter(action => { return canEdit(action) })
+        this.columnLength = 0
     }
 
-    /*Action Block*/
+    handleChangePage = (e, newPage) => {
+        this.setState({ page: newPage });
+    };
 
-    const actionClose = (action) => {
-        setActionEl(null);
-        props.actionClose(action)
+    handleChangeRowsPerPage = (e) => {
+        this.setState({ page: 0, rowsPerPage: parseInt(e.target.value, 10) });
+    };
+
+    getGroupedData = rows => {
+        if (this.props.dropList.length > 0) {
+            const groupedData = rows.reduce((acc, item) => {
+                let key = item[this.props.dropList[0].field];
+                let groupData = acc[key] || [];
+                acc[key] = groupData.concat([item]);
+                return acc;
+            }, {});
+
+            const expandedGroups = {};
+            Object.keys(groupedData).forEach(item => {
+                expandedGroups[item] = this.state.expandedGroups.indexOf(item) !== -1;
+            });
+            return groupedData;
+        }
+    };
+
+    expandRow = key => {
+        let expandedGroups = this.state.expandedGroups;
+        if (expandedGroups.includes(key)) {
+            expandedGroups = expandedGroups.filter(item => item !== key);
+        } else {
+            expandedGroups.push(key)
+        }
+        this.setState({ expandedGroups });
+    };
+
+    handleRequestSort = (event, property) => {
+        const isAsc = this.state.orderBy === property && this.state.order === 'asc';
+        this.setState({ order: isAsc ? 'desc' : 'asc', orderBy: property })
+    };
+
+    updateColLength = (columnLength) => {
+        this.columnLength += 1
     }
 
-    const getActionMenu = () => {
+    actionMenuView = () => {
+        const { actionEl, selectedRow } = this.state
         return (
-            actionMenu.length > 0 ?
+            this.actionMenu.length > 0 ?
                 <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal>
                     {({ TransitionProps, placement }) => (
                         <Grow
@@ -312,11 +102,11 @@ export default function EnhancedTable(props) {
                             style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
                         >
                             <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
-                                <ClickAwayListener onClickAway={() => setActionEl(null)}>
+                                <ClickAwayListener onClickAway={() => this.setState({ actionEl: null })}>
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
-                                        {actionMenu.map((action, i) => {
+                                        {this.actionMenu.map((action, i) => {
                                             let visible = canEdit(action) ? action.visible ? action.visible(selectedRow) : true : false
-                                            return visible ? <MenuItem key={i} onClick={(e) => { actionClose(action) }}>{action.label}</MenuItem> : null
+                                            return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }}>{action.label}</MenuItem> : null
                                         })}
                                     </MenuList>
                                 </ClickAwayListener>
@@ -327,107 +117,137 @@ export default function EnhancedTable(props) {
         )
     }
 
-    const getAction = (item) => {
+    handleActionView = (e) => {
+        this.setState({ actionEl: e.currentTarget })
+    }
+
+    actionClose = (action) => {
+        this.setState({ actionEl: null })
+        this.props.actionClose(action)
+    }
+
+    handleSelectAllClick = (e) => {
+        if (e.target.checked) {
+            const newSelecteds = this.props.dataList
+            this.props.setSelected(newSelecteds);
+            return;
+        }
+        this.props.setSelected([]);
+    };
+
+    setSelectedRow = (header, row) => {
+        this.setState({ selectedRow: row })
+        this.props.cellClick(header, row)
+    }
+
+    groupActionClose = (action) => {
+        this.props.groupActionClose(action, this.props.selected)
+        this.props.setSelected([])
+    }
+
+    isDropped = (item) => {
+        this.setState({ page: 0 });
+        this.props.isDropped(item)
+    }
+
+
+    render() {
+        const grouping = this.requestInfo.grouping
+        const dropList = this.props.dropList
+        const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
+        let groupedData = grouping ? this.getGroupedData(this.props.dataList) : [];
+        let isGrouping = grouping && dropList.length > 0
         return (
-            <IconButton aria-label="Action" className='buttonActions' onClick={(e) => { setActionEl(e.currentTarget) }}>
-                <ListIcon style={{ color: '#76ff03' }} />
-            </IconButton>
+            <div style={{ width: '100%' }}>
+                <Paper style={{ backgroundColor: '#292C33' }}>
+                    <ListToolbar
+                        numSelected={this.props.selected.length}
+                        groupActionMenu={this.props.groupActionMenu}
+                        groupActionClose={this.groupActionClose} />
+                    <TableContainer style={{ height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${this.props.selected.length > 0 ? '0px' : '-40px'}` }}>
+                        <Table
+                            stickyHeader
+                            aria-labelledby="tableTitle"
+                            size={'small'}
+                            aria-label="enhanced table">
+                            <ListHeader
+                                numSelected={this.props.selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={this.handleSelectAllClick}
+                                onRequestSort={this.handleRequestSort}
+                                headCells={this.props.keys}
+                                rowCount={this.props.dataList.length}
+                                requestInfo={this.requestInfo}
+                                updateColLength={this.updateColLength}
+                                actionMenuLength={this.actionMenu.length}
+                                isDropped={this.isDropped}
+                            />
+                            <TableBody>
+                                {
+                                    isGrouping ?
+                                        stableSort(groupedData, getComparator(order, orderBy), isGrouping)
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, j) => {
+                                                return (
+                                                    <React.Fragment key={j}>
+                                                        <StyledTableRow>
+                                                            <StyledTableCell
+                                                                colSpan={this.columnLength}
+                                                                style={{ fontWeight: "bold", cursor: "pointer" }}
+                                                                onClick={this.expandRow.bind(null, key)}>
+                                                                <IconButton>
+                                                                    {expandedGroups.includes(key) ? <ExpandMoreIcon /> : <ChevronRightIcon />}
+                                                                </IconButton>
+                                                                <span style={{ display: 'inline', marginRight: 5 }}>{key}</span>
+                                                                <div style={{ display: 'inline' }}>{`(${groupedData[key].length})`}</div>
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                        {expandedGroups.includes(key) ?
+                                                            <ListBody
+                                                                colSpan={this.columnLength}
+                                                                dataList={groupedData[key]}
+                                                                keys={this.props.keys}
+                                                                requestInfo={this.requestInfo}
+                                                                selected={this.props.selected}
+                                                                setSelected={this.props.setSelected}
+                                                                selectedRow={this.setSelectedRow}
+                                                                handleActionView={this.handleActionView} /> : null}
+                                                    </React.Fragment>
+                                                )
+                                            }) : stableSort(this.props.dataList, getComparator(order, orderBy))
+                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, j) => {
+                                                    return (
+                                                        <React.Fragment key={j}>
+                                                            <ListBody
+                                                                row={row}
+                                                                index={j}
+                                                                keys={this.props.keys}
+                                                                requestInfo={this.requestInfo}
+                                                                selected={this.props.selected}
+                                                                setSelected={this.props.setSelected}
+                                                                selectedRow={this.setSelectedRow}
+                                                                handleActionView={this.handleActionView} />
+                                                        </React.Fragment>
+                                                    )
+                                                })
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[25, 50, 75]}
+                        component="div"
+                        count={isGrouping ? Object.keys(groupedData).length : this.props.dataList.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={this.handleChangePage}
+                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    />
+                </Paper>
+                {this.actionMenuView()}
+            </div>
         )
     }
-
-    const groupActionClose = (action)=>
-    {
-        props.groupActionClose(action, props.selected)
-        props.setSelected([])
-    }
-
-    /*Action Block*/
-
-    return (
-        <div className={classes.root}>
-            <Paper style={{ backgroundColor: '#2A2C33' }}>
-                <EnhancedTableToolbar numSelected={props.selected.length} groupActionMenu={props.groupActionMenu} groupActionClose={groupActionClose}/>
-                <TableContainer style={{ height: window.innerHeight - (props.isMap ? 600 : 200) }}>
-                    <Table
-                        stickyHeader
-                        aria-labelledby="tableTitle"
-                        size={'small'}
-                        aria-label="enhanced table"
-                    >
-                        <EnhancedTableHead
-                            classes={classes}
-                            numSelected={props.selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            headCells={props.keys}
-                            rowCount={props.dataList.length}
-                            requestInfo={props.requestInfo}
-                            actionMenuLength = {actionMenu.length}
-                        />
-                        <TableBody>
-                            {
-                                stableSort(props.dataList, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
-                                    const isItemSelected = isSelected(row);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
-
-                                    return (
-                                        <StyledTableRow
-                                            key={index}
-                                            hover
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                        >
-                                            {props.requestInfo.selection ?
-                                                <TableCell style={{ borderBottom: "none" }} padding="checkbox"
-                                                    onClick={(event) => handleClick(event, row)}>
-                                                    <Checkbox
-                                                        checked={isItemSelected}
-                                                        inputProps={{ 'aria-labelledby': labelId }}
-                                                    />
-                                                </TableCell> : null}
-                                            {props.keys.map((header, j) => {
-                                                checkRole(header)
-                                                if (header.visible) {
-                                                    let field = header.field;
-                                                    return (
-                                                        <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
-                                                            {field.indexOf('Name') !== -1 ?
-                                                                <Tooltip title={header.customizedData ? header.customizedData(row) : row[field] ? row[field] : ''} arrow>
-                                                                    <div className={classes.tip}>
-                                                                        {header.customizedData ? header.customizedData(row) : row[field]}
-                                                                    </div>
-                                                                </Tooltip>
-                                                            :
-                                                                field === fields.actions ? getAction(row) :
-                                                                    header.customizedData ? header.customizedData(row) : row[field]
-                                                            }
-                                                        </StyledTableCell>
-                                                    )
-                                                }
-                                            })
-                                            }
-                                        </StyledTableRow>
-                                    );
-                                })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[25, 50, 75]}
-                    component="div"
-                    count={props.dataList.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                />
-            </Paper>
-            {getActionMenu()}
-        </div>
-    );
 }
+
+export default ListViewer

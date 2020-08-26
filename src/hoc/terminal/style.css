@@ -1,0 +1,26 @@
+.terminal_run_head{
+    position: fixed;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+.terminal_log_head{
+    padding-left: 20px; 
+    padding-top: 30px; 
+}
+.term_run{
+    height: 450px;
+    padding:5px;
+    width:580px;
+    border:1px solid #93E019;
+}
+
+.term_log{
+    height:100;
+    width:100%;
+}
+
+#terminal {
+    height:calc(100vh - 90px);
+}

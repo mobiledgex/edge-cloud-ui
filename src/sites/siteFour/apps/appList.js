@@ -3,7 +3,6 @@ import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
 import * as constant from '../../../constant'
 import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
@@ -58,7 +57,8 @@ class AppList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : appSteps.stepsApp
+            viewMode : appSteps.stepsApp,
+            grouping : true
         })
     }
 
@@ -90,15 +90,9 @@ class AppList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
-        handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppList));
+export default withRouter(connect(null, mapDispatchProps)(AppList));

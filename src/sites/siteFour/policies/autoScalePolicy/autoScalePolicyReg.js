@@ -21,8 +21,7 @@ class AutoScalePolicyReg extends React.Component {
             forms: []
         }
         this.isUpdate  = this.props.action === 'Update'
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
     }
 
@@ -214,25 +213,7 @@ class AutoScalePolicyReg extends React.Component {
         this.getFormData(this.props.data)
         this.props.handleViewMode( policySteps.stepsNewPolicyPrivacy )
     }
-
 };
-
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-    }
-};
-
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -242,4 +223,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AutoScalePolicyReg));
+export default withRouter(connect(null, mapDispatchProps)(AutoScalePolicyReg));

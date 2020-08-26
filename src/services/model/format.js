@@ -40,6 +40,8 @@ export const fields = {
     autoPolicyName: 'autoPolicyName',
     deployClientCount: 'deployClientCount',
     deployIntervalCount: 'deployIntervalCount',
+    undeployClientCount:'undeployClientCount',
+    undeployIntervalCount:'undeployIntervalCount',
     cloudlets: 'cloudlets',
     organizations:'organizations',
     appName: 'appName',
@@ -80,7 +82,6 @@ export const fields = {
     username: 'username',
     password:'password',
     confirmPassword:'confirmPassword',
-    email:'email',
     role: 'role',
     email: 'email',
     emailVerified: 'emailVerified',
@@ -125,6 +126,7 @@ export const fields = {
     infraApiAccess:'infraApiAccess',
     infraFlavorName:'infraFlavorName',
     infraExternalNetworkName:'infraExternalNetworkName',
+    maintenanceState:'maintenanceState',
     manifest:'manifest',
     userRole: 'userRole',
     healthCheck: 'healthCheck',
@@ -149,6 +151,11 @@ export const getUserRole = () => {
 
 export const isAdmin = () => {
     return localStorage.selectRole && localStorage.selectRole === 'AdminManager'
+}
+
+export const isViewer = () => {
+    let role = getUserRole()
+    return role && role.includes('Viewer')
 }
 
 export const getOrganization = () => {

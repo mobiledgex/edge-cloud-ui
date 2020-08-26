@@ -72,7 +72,8 @@ class ClusterInstView extends React.Component {
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : clusterInstSteps.stepsClusterInst
+            viewMode : clusterInstSteps.stepsClusterInst,
+            grouping : true
         })
     }
 
@@ -107,9 +108,6 @@ class ClusterInstView extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -117,4 +115,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstView));
+export default withRouter(connect(null, mapDispatchProps)(ClusterInstView));

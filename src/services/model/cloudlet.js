@@ -39,6 +39,11 @@ export const getKey = (data, isCreate) => {
         if (data[fields.envVars]) {
             cloudlet.env_var = data[fields.envVars]
         }
+
+        if (data[fields.maintenanceState]) {
+            cloudlet.maintenance_state = constant.MaintenanceState(data[fields.maintenanceState])
+        }
+
         if (data[fields.fields]) {
             cloudlet.fields = data[fields.fields]
         }
@@ -82,8 +87,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
             for (let j = 0; j < cloudletInfoList.length; j++) {
                 let cloudletInfo = cloudletInfoList[j]
                 if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                    cloudlet[fields.cloudletStatus] = cloudletInfo[fields.state]
-                    break;
+                    cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? 999 : cloudletInfo[fields.state]
                 }
             }
         }
@@ -147,9 +151,9 @@ export const streamCloudlet = (data) => {
 
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group:true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group:true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
     { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
     { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
@@ -169,12 +173,13 @@ export const keys = () => ([
     { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name'},
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name'},
+    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailVisible : false},
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML},
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
 const customData = (value) => {
-    value[fields.cloudletStatus] = 4
+    value[fields.cloudletStatus] = value[fields.maintenanceState] && value[fields.maintenanceState] !== 0 ? 999 : 4
     value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
     value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])

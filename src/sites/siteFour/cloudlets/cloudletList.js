@@ -77,7 +77,8 @@ class CloudletList extends React.Component {
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd() ? this.onAdd : undefined,
-            viewMode : mode
+            viewMode : mode,
+            grouping : true
         })
     }
 
@@ -110,6 +111,10 @@ class CloudletList extends React.Component {
                 break;
             case 6:
                 state = 'Upgrade'
+                break;
+            case 999:
+                state = 'Under Maintenance'
+                color = 'yellow'
                 break;
             default:
                 state = 'Not Present'
@@ -152,12 +157,4 @@ class CloudletList extends React.Component {
     }
 };
 
-const mapStateToProps = (state) => {
-    return {}
-};
-const mapDispatchProps = (dispatch) => {
-    return {
-    };
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletList));
+export default withRouter(connect(null, null)(CloudletList));

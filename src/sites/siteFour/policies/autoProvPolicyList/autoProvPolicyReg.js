@@ -25,8 +25,7 @@ class AutoProvPolicyReg extends React.Component {
             forms: []
         }
         this.isUpdate = this.props.isUpdate
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
         this.cloudletList = []
     }
@@ -340,11 +339,13 @@ class AutoProvPolicyReg extends React.Component {
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to' },
             { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true, tip: 'Policy name' },
-            { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: true, dataValidateFunc: this.validatedeployClientCount, updateId: '3', tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
-            { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: true, updateId: '4', tip: 'Number of intervals to check before triggering deployment' },
+            { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: true, dataValidateFunc: this.validatedeployClientCount, updateId: ['3'], tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
+            { field: fields.undeployClientCount, label: 'Undeploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: true, updateId: ['8'], tip: 'Number of active clients for the undeploy interval below which trigers undeployment, 0 (default) disables auto undeploy' },
+            { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: true, updateId: ['4'], tip: 'Number of intervals to check before triggering deployment' },
+            { field: fields.undeployIntervalCount, label: 'Undeploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: true, updateId: ['9'], tip: 'Number of intervals to check before triggering undeployment' },
             { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: false }, visible: true, update: true, updateId: ['5', '5.1', '5.1.1', '5.1.2'], dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { field: fields.minActiveInstances, label: 'Min Active Instances (Required for HA)', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: '6', update: true, dataValidateFunc: this.validateMinInst, tip: 'Minimum number of active instances for High-Availability' },
-            { field: fields.maxInstances, label: 'Max Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: '7', update: true, dataValidateFunc: this.validateMaxInst, tip: 'Maximum number of instances (active or not)' },
+            { field: fields.minActiveInstances, label: 'Min Active Instances (Required for HA)', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: ['6'], update: true, dataValidateFunc: this.validateMinInst, tip: 'Minimum number of active instances for High-Availability' },
+            { field: fields.maxInstances, label: 'Max Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: ['7'], update: true, dataValidateFunc: this.validateMaxInst, tip: 'Maximum number of instances (active or not)' },
         ]
     }
 
@@ -412,25 +413,7 @@ class AutoProvPolicyReg extends React.Component {
         this.getFormData(this.props.data);
         this.props.handleViewMode( policySteps.stepsNewPolicy )
     }
-
-
 };
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-    }
-};
-
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -440,4 +423,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(AutoProvPolicyReg)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(AutoProvPolicyReg)));

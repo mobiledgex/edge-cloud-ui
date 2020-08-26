@@ -10,11 +10,12 @@ import * as constant from '../../../constant';
 import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { getOrgCloudletList } from '../../../services/model/cloudlet';
-import { getPrivacyPolicyList } from '../../../services/model/privacyPolicy';
-import { getClusterInstList } from '../../../services/model/clusterInstance';
-import { getFlavorList } from '../../../services/model/flavor';
+import { getOrgCloudletList, showOrgCloudlets } from '../../../services/model/cloudlet';
+import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
+import { getClusterInstList, showClusterInsts } from '../../../services/model/clusterInstance';
+import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAppList } from '../../../services/model/app';
+import * as serverData from '../../../services/model/serverData'
 import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -22,6 +23,7 @@ import { appInstTutor } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
+import { SHOW_ORG_CLOUDLET, SHOW_CLUSTER_INST, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 const appInstSteps = appInstTutor();
@@ -36,8 +38,7 @@ class ClusterInstReg extends React.Component {
             flowDataList: []
         }
         this.isUpdate = this.props.isUpdate
-        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
-        this.regions = props.regionInfo.region.length > 0 ? props.regionInfo.region : savedRegion
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.requestedRegionList = []
         this.organizationList = []
         this.cloudletList = []
@@ -353,7 +354,7 @@ class ClusterInstReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} App Instances`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
@@ -546,13 +547,14 @@ class ClusterInstReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
+            let requestTypeList = []
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.organizationName] })
-                this.clusterInstList = await getClusterInstList(this, { region: data[fields.region] })
-
+                requestTypeList.push(showOrgCloudlets({ region: data[fields.region], org: data[fields.organizationName] }))
+                requestTypeList.push(showClusterInsts({ region: data[fields.region] }))
+                requestTypeList.push(showFlavors({ region: data[fields.region] }))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
                 for (let i = 0; i < forms.length; i++) {
@@ -613,7 +615,27 @@ class ClusterInstReg extends React.Component {
             app[fields.accessType] = data[fields.accessType]
             this.appList = [app];
 
-            this.privacyPolicyList = await getPrivacyPolicyList(this, { region: data[fields.region] })
+            requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
+
+            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            if (mcRequestList && mcRequestList.length > 0) {
+                for (let i = 0; i < mcRequestList.length; i++) {
+                    let mcRequest = mcRequestList[i];
+                    let request = mcRequest.request;
+                    if (request.method === SHOW_ORG_CLOUDLET) {
+                        this.cloudletList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_CLUSTER_INST) {
+                        this.clusterInstList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_FLAVOR) {
+                        this.flavorList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_PRIVACY_POLICY) {
+                        this.privacyPolicyList = mcRequest.response.data
+                    }
+                }
+            }
         }
     }
 
@@ -684,27 +706,7 @@ class ClusterInstReg extends React.Component {
         this.getFormData(this.props.data)
         this.props.handleViewMode(appInstSteps.stepsCreateAppInst)
     }
-
 };
-
-const mapStateToProps = (state) => {
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
-    return {
-        getRegion: (state.getRegion) ? state.getRegion.region : null,
-        regionInfo: regionInfo,
-        region: region,
-        changeRegion: state.changeRegion ? state.changeRegion.region : null,
-        changedRegion: _changedRegion
-    }
-};
-
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -714,4 +716,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(null, mapDispatchProps)(ClusterInstReg));

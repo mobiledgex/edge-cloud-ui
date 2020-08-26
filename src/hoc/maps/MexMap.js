@@ -14,11 +14,18 @@ import './styles.css';
 import { fields } from '../../services/model/format'
 import * as actions from "../../actions";
 
-const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03"]
+const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03", '#EAAE00']
 const zoomControls = { center: [53, 13], zoom: 3 }
 const markerSize = [20, 24]
 let zoom = 1;
 let selectedIndex = 0;
+let doing = false;
+let capture = true;
+let locDataOld = [];
+const outer = [
+  [-90, -180],
+  [90, 180],
+]
 
 let mapTileList = [
     {
@@ -77,7 +84,7 @@ class ClustersMap extends Component {
             mapCenter: zoomControls.center,
             currentPos: null,
             anchorEl: null,
-            selectedIndex: 0
+            selectedIndex: 0,
         }
         this.handleMapClick = this.handleMapClick.bind(this);
         this.dir = 1;
@@ -93,8 +100,10 @@ class ClustersMap extends Component {
         }
     }
 
-    handleRefresh = () => {
-        this.setState({ mapCenter: this.state.detailMode ? this.state.mapCenter : (this.props.region === 'US') ? [41, -74] : [53, 13] })
+    handleRefresh = (event) => {
+        if(event) event.stopPropagation();
+        this.setState({ mapCenter: this.state.detailMode ? this.state.mapCenter : (this.props.region && this.props.region === 'US') ? [41, -74] : (this.state.mapCenter && this.state.mapCenter.length > 0) ? this.state.mapCenter:[53, 13] })
+        this.setState({ cities: this.state.mapCenter });
     }
 
 
@@ -114,22 +123,37 @@ class ClustersMap extends Component {
         if (this.props.zoomControl) {
             this.setState({ center: this.props.zoomControl.center, zoom: this.props.zoomControl.zoom })
         }
+        if (this.props.locData && this.props.locData.length > 0 ) {
+            this.setState({ mapCenter: [this.props.locData[0].cloudletLocation.latitude, this.props.locData[0].cloudletLocation.longitude] })
+        }
         this.setState({ oldCountry: this.state.selectedCity })
         let catchLeafLayer = document.getElementsByClassName("leaflet-tile-container");
         if (catchLeafLayer) {
             if (catchLeafLayer.length === 0) {
-                this.handleRefresh();
+                this.handleRefresh(null);
             }
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-
-        let createMode = nextProps.onMapClick ? true : false
+        let createMode = nextProps.onMapClick ? true : false;
+        let updateMode = (nextProps.locData && nextProps.locData.length > 0) ? true : false;
+        let hasLocation = [];
+        let newLocData = null;
+        if( updateMode ) {
+            createMode = false;
+            let long = nextProps.locData[0].longitude;
+            let lat = nextProps.locData[0].latitude;
+            // hasLocation = [lat ? lat : nextProps.locData[0].cloudletLocation.latitude, long ? long : nextProps.locData[0].cloudletLocation.longitude];
+            
+            // have to find last pointer of marker
+            hasLocation = [lat ? lat : nextProps.locData[0].cloudletLocation.latitude, long ? long : nextProps.locData[0].cloudletLocation.longitude];
+        }
 
         let initialData = (nextProps.dataList) ? nextProps.dataList : nextProps.locData;
         let data = nextProps.locData ? initialData : initialData.filter((item) => item[fields.state] == 5);
-        let mapCenter = (createMode) ? prevState.currentPos : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : [53, 13];
+        let mapCenter = (createMode) ? prevState.currentPos : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : (updateMode) ? hasLocation :[53, 13];
+        // let mapCenter = (!createMode) ? nextProps.mapCenter : (prevState.detailMode) ? prevState.mapCenter : (nextProps.region === 'US') ? [41, -74] : (updateMode) ? hasLocation :[53, 13];
 
         function reduceUp(value) {
             return Math.round(value)
@@ -155,7 +179,7 @@ class ClustersMap extends Component {
             if (item[fields.cloudletLocation]) {
 
                 if (item[fields.cloudletStatus]) {
-                    return ({ LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status: (item[fields.cloudletStatus] === 2) ? 'green' : 'red' })
+                    return ({ LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status: (item[fields.cloudletStatus] === 2) ? 'green' : item[fields.cloudletStatus] === 999 ? 'yellow' : 'red' })
                 }
                 return ({ LAT: reduceUp(item[fields.cloudletLocation].latitude), LON: reduceUp(item[fields.cloudletLocation].longitude), cloudlet: mapName(item), status: 'green' })
             }
@@ -190,17 +214,24 @@ class ClustersMap extends Component {
             let status = '';
             let online = false;
             let offline = false;
-
+            let maintenance = false;
 
             groupbyData[key].map((item, i) => {
-                if (item.status === 'green') {
+                if (item.status === 'yellow') {
+                    maintenance = true;
+                }
+                else if (item.status === 'green') {
                     online = true;
                 } else if (item.status === 'red') {
                     offline = true;
                 }
             })
 
-            if (online && offline) {
+            if(maintenance)
+            {
+                status = 'yellow'; 
+            }
+            else if (online && offline) {
                 status = 'orange';
             } else if (!online && offline) {
                 status = 'red';
@@ -233,7 +264,12 @@ class ClustersMap extends Component {
 
             let clickMarker = [];
             let zoom = nextProps.locData ? prevState.zoom : zoomControls.zoom
-            let center = nextProps.locData ? prevState.center : zoomControls.center
+           
+            let newLocData = (nextProps.locData && locDataOld) ? findNewData(nextProps.locData, locDataOld) : [];
+            let findIndex =  (nextProps.locData && newLocData.length > 0) ? nextProps.locData.findIndex( item => item === newLocData[0]) : 0;
+            if (findIndex < 0) findIndex = 0;
+            let centerLength = nextProps.locData ? nextProps.locData.length : 0;
+            let center = (nextProps.locData && nextProps.locData[findIndex]) ? [nextProps.locData[findIndex].cloudletLocation.latitude, nextProps.locData[findIndex].cloudletLocation.longitude] : zoomControls.center
 
             if (nextProps.mapDetails) {
                 if (d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
@@ -247,10 +283,13 @@ class ClustersMap extends Component {
                     clickMarker.push({ "name": item, "coordinates": nextProps.mapDetails.coordinates, "cost": 1 })
                 })
 
-                zoom = 4
+                zoom = 5
                 center = nextProps.mapDetails.coordinates
+                mapCenter = (updateMode) ? center : nextProps.mapDetails.coordinates
             }
-            return { mapCenter: mapCenter, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
+            if (updateMode) mapCenter = center; 
+            locDataOld = nextProps.locData;
+            return { mapCenter: mapCenter ? mapCenter : center, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
         }
         return null;
     }
@@ -265,10 +304,11 @@ class ClustersMap extends Component {
         let cost = city.cost ? city.cost : '';
         let colorKey = city.status === 'red' ? 0
             : city.status === 'orange' ? 1
-                : (config && config.pageId === 'cloudlet') ? 5
-                    : (config && config.pageId === 'cluster') ? 3
-                        : (config && config.pageId === 'app') ? 4
-                            : 5;
+                : city.status === 'yellow' ? 6
+                    : (config && config.pageId === 'cloudlet') ? 5
+                        : (config && config.pageId === 'cluster') ? 3
+                            : (config && config.pageId === 'app') ? 4
+                                : 5;
 
         let gradient = this.gradientFilter(colorKey);
 
@@ -325,11 +365,10 @@ class ClustersMap extends Component {
     }
 
     handleMapClick(e) {
-        if (this.props.onMapClick) {
+        if (this.props.onMapClick && capture) {
             let _lat = Math.round(e.latlng['lat'])
             let _lng = Math.round(e.latlng['lng'])
-
-            this.setState({ currentPos: [_lat, _lng] });
+            this.setState({ currentPos: [_lat, _lng], mapCenter: [_lat, _lng] });
 
             let location = { lat: _lat, long: _lng }
             let locationData = [
@@ -359,11 +398,30 @@ class ClustersMap extends Component {
         this.setState({ anchorEl: null });
     }
 
+    handleMove = (event) => {
+        if(this.state.detailMode && !doing) {
+            event.target.flyTo(this.state.center)
+            setTimeout(() => {
+                doing = false;
+            }, 1800);
+            doing = true;
+        }
+        
+        const {lat, lng} = event.target.getCenter();
+        this.setState({ mapCenter: [lat, lng]});
+    }
+    handleZoom = (event) => {
+        this.setState({zoom: event.target.getZoom()});
+    }
+
     attachControll = () => {
         return (
             <div className="leaflet-top leaflet-left" style={{ top: 79, position: 'absolute' }}>
                 <div className="zoom-inout-reset-clusterMap leaflet-control" style={{ left: 0, top: 0, position: 'absolute' }}>
-                    <Button id="mapZoomCtl" size='small' icon onClick={() => this.handleRefresh()}>
+                    <Button id="mapZoomCtl" size='small' icon 
+                    onMouseOver={() => capture = false}
+                    onMouseLeave={() => capture = true}
+                    onClick={this.handleRefresh}>
                         <Icon name='redo' />
                     </Button>
                 </div>
@@ -379,9 +437,12 @@ class ClustersMap extends Component {
     }
 
     render() {
+        const { zoom } = this.state;
         return (
             <div className="commom-listView-map">
                 <Map
+                    ref={this.map}
+                    // useFlyTo={true}
                     center={this.state.mapCenter}
                     zoom={zoom}
                     duration={1.2}
@@ -391,8 +452,12 @@ class ClustersMap extends Component {
                     zoomControl={true}
                     boundsOptions={{ padding: [50, 50] }}
                     scrollWheelZoom={true}
-                    viewport={this.state.mapCenter}
+                    viewport={{center: this.state.mapCenter, zoom:zoom}}
                     onClick={this.handleMapClick}
+                    ondragend={this.handleMove.bind(this)}
+                    onZoomend={this.handleZoom.bind(this)}
+                    maxBounds={outer}
+                    scrollWheelZoom={false}
                 >
                     <TileLayer
                         url={this.props.currentTyleLayer}
@@ -491,6 +556,13 @@ class ClustersMap extends Component {
     }
 }
 
+const findNewData = (newData, oldData) => {
+    let filtered = [];
+    
+    filtered = aggregation.filterDefine(newData, oldData);
+  
+    return filtered;
+}
 
 const mapStateToProps = (state, ownProps) => {
     let deleteReset = state.deleteReset.reset;

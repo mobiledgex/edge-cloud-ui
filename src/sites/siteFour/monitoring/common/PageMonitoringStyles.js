@@ -495,10 +495,30 @@ export const PageMonitoringStyles = {
     },
     gridTableData: {flex: .15, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
     gridTableData2: {flex: .15, backgroundColor: '#1e2025', height: 64, marginTop: 0, textAlign: 'center'},
-
-
     miniTableGrid: {width: '100%', overflowX: 'scroll', marginTop: -5, scrollbarWidth: 'thin'},
     appInstGridTableData: {flex: .083, backgroundColor: '#181A1F', height: 64, marginTop: 0, textAlign: 'center'},
+    mapCloudletLabelOne: {
+        color: 'yellow',
+        marginLeft: -9,
+        marginTop: -7,
+        marginBottom: 7,
+        boxSizing: 'border-box',
+        fontStyle: 'italic',
+        fontFamily: 'Ubuntu',
+        fontSize: 15,
+    },
+    mapAppInstLabelOne: {
+        fontSize: 14,
+        cursor: 'crosshair',
+        flexDirection: 'column',
+        marginBottom: 5,
+        borderRadius: 5,
+        justifyContents: 'center',
+        alignSelf: 'center',
+        alignItem: 'center,',
+        display: 'flex',
+        fontFamily: 'Ubuntu',
+    },
     mapStatusBox: {
         height: 48,
         backgroundColor: 'rgba(0,0,0,0.5)',

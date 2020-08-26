@@ -726,11 +726,11 @@ tr td {
 
 .tooltipForAdmin {
     font-weight: normal !important;
-    opacity: 0.8 !important;
+    opacity: 1.0 !important;
     border-width: thin !important;
     border-radius: 0px !important;
     border-style: solid !important;
-    border-color: green !important;
+    border-color: #77BD25 !important;
 }
 
 .mapCloudletPopup {
@@ -749,12 +749,13 @@ tr td {
 }
 
 .mapCloudletTooltipInnerForAdmin {
-    color: white;
+    color: white !important;
     padding: 2px;
     font-weight: normal !important;
-    border-color: green !important;
+    border-color: #77BD25 !important;
     border-width: thin !important;
     cursor: crosshair;
+
 }
 
 .mapCloudletTooltipInnerBlack {
@@ -775,10 +776,11 @@ tr td {
 
 .mapCloudletTooltipDev {
     color: black !important;
-    padding: 2px;
-    font-family: "Roboto Light" !important;
-    font-weight: normal !important;
-
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: bolder !important;
+    font-size: 9pt;
+    background-color: white !important;
 }
 
 .mapCloudletPopupInner2 {
@@ -1146,4 +1148,8 @@ tr td {
     margin-top: -3px;
     flex: .5;
     cursor: pointer;
+}
+
+.clockDiv {
+    font-size: 25pt;
 }
