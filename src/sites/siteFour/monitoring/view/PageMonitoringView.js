@@ -2533,7 +2533,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         })
                     }
                 } catch (e) {
-                    showToast(e.toString())
+                    //showToast(e.toString())
                 }
             }
 
