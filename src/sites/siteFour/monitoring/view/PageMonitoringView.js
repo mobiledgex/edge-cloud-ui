@@ -3579,7 +3579,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.setState({
                                             dataLimitCount: value,
                                         });
-                                        if (this.state.currentClassification.toString().includes('cloudlet')) {
+                                        if (this.state.currentClassification.toString().includes(CLASSIFICATION.cloudlet)) {
                                             this.handleOnChangeCloudletDropdownForAdmin(this.state.currentCloudLet)
                                         }
                                     }}
