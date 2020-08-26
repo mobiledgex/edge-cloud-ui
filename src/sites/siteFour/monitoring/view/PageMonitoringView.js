@@ -1363,12 +1363,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
                             <div className="remove page_monitoring_widget_icon"
-                                 style={{zIndex:99999999999999999}}
+                                 style={{zIndex: 99999999999999999}}
                                  onClick={() => {
                                      this.deleteGridItem(uniqueIndex)
                                  }}
                             >
-                                <MaterialIcon  size={'tiny'} icon='delete' color={'white'}
+                                <MaterialIcon size={'tiny'} icon='delete' color={'white'}
 
                                 />
                             </div>
@@ -3579,9 +3579,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.setState({
                                             dataLimitCount: value,
                                         });
-                                        await this.reloadDataFromRemote()
-
-                                        this.setChartDataForBigModal(this.state.allClusterUsageList)
+                                        if (this.state.currentClassification.toString().includes('cloudlet')) {
+                                            this.handleOnChangeCloudletDropdownForAdmin(this.state.currentCloudLet)
+                                        }
                                     }}
                                 >
                                     {graphDataCount.reverse().map((item, index) => {
@@ -4006,6 +4006,10 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                     <div style={{marginLeft: 5}}>
                                         {this.state.currentClassification === CLASSIFICATION.CLOUDLET_FOR_ADMIN && this.renderDateRangeDropdownForAdmin()}
                                     </div>
+
+                                    {/*todo: ######################*/}
+                                    {/*todo: The time period of the graph.*/}
+                                    {/*todo: ######################*/}
                                     <div style={{marginLeft: 25}}>
                                         {this.renderGraphDataCountDropdown()}
                                     </div>
