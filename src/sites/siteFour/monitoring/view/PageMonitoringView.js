@@ -3579,9 +3579,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.setState({
                                             dataLimitCount: value,
                                         });
-                                        await this.reloadDataFromRemote()
-
-                                        this.setChartDataForBigModal(this.state.allClusterUsageList)
+                                        if (this.state.currentClassification.toString().includes('cloudlet')) {
+                                            this.handleOnChangeCloudletDropdownForAdmin(this.state.currentCloudLet)
+                                        }
                                     }}
                                 >
                                     {graphDataCount.reverse().map((item, index) => {
