@@ -90,20 +90,8 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
 
             }
 
-            if (this.props.lineChartDataSet !== nextProps.lineChartDataSet) {
-                try {
-                    let usageListLength = nextProps.lineChartDataSet.newDateTimeList.length !== undefined ? nextProps.lineChartDataSet.newDateTimeList.length : 0;
-                    this.setState({
-                        usageListLength: usageListLength,
-                    });
-                } catch (e) {
-
-                }
-            }
-
             if (this.props.isShowBigGraph !== nextProps.isShowBigGraph) {
                 try {
-
                     this.setState({
                         appInstanceListGroupByCloudlet: nextProps.appInstanceListGroupByCloudlet,
                         selectedClientLocationListOnAppInst: nextProps.selectedClientLocationListOnAppInst,
@@ -115,9 +103,7 @@ export default connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight:
                         popupGraphHWType: nextProps.parent.state.currentBigModalHwType,
                     });
                 } catch (e) {
-
                 }
-
             }
         }
 
