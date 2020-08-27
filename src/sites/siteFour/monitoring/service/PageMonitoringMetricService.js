@@ -330,6 +330,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
         }
 
 
+
         //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
         let appInstanceHwUsageList = []
         appInstanceHwUsageList = await Promise.allSettled(promiseList);
@@ -364,11 +365,38 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
             let networkSeriesList = []
             let connectionsSeriesList = []
 
-            if (item.appInstanceHealth !== undefined) {
+            let cpuSeriesIdx = "3";
+            let memSeriesIdx = "1";
+            let diskSeriesIdx = "2";
+            let networkSeriesIdx = "4";
+            let connectionSeriesIdx = ''
+            let udpSeriesIdx = ''
+
+            if (item.appInstanceHealth !== undefined && !isEmpty(item.appInstanceHealth.data["0"].Series)) {
                 let series = item.appInstanceHealth.data["0"].Series;
+                if (series.length === 3) {//todo: VM Type
+                    networkSeriesIdx = "0";
+                    memSeriesIdx = "1";
+                    cpuSeriesIdx = "2";
+                    diskSeriesIdx = undefined;
+                } else if (series.length === 5) {
+                    networkSeriesIdx = "0";
+                    memSeriesIdx = "1";
+                    diskSeriesIdx = "2";
+                    cpuSeriesIdx = "3";
+                    connectionSeriesIdx = "4"
+                } else if (series.length === 6) {
+                    udpSeriesIdx = "0"
+                    networkSeriesIdx = "1";
+                    memSeriesIdx = "2";
+                    diskSeriesIdx = "3";
+                    cpuSeriesIdx = "4";
+                    connectionSeriesIdx = "5"
+                }
+
                 if (series !== null) {
-                    if (series["3"] !== undefined) {
-                        let cpuSeries = series["3"]
+                    if (series[cpuSeriesIdx] !== undefined) {
+                        let cpuSeries = series[cpuSeriesIdx]
                         columns = cpuSeries.columns;
                         cpuSeriesList = cpuSeries.values;
                         cpuSeries.values.map(item => {
@@ -378,8 +406,8 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                     }
 
                     //todo:MEM
-                    if (series["1"] !== undefined) {
-                        let memSeries = series["1"]
+                    if (series[memSeriesIdx] !== undefined) {
+                        let memSeries = series[memSeriesIdx]
                         columns = memSeries.columns;
                         memSeriesList = memSeries.values;
                         memSeries.values.map(item => {
@@ -389,8 +417,8 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                     }
 
                     //todo:DISK
-                    if (series["2"] !== undefined) {
-                        let diskSeries = series["2"]
+                    if (series[diskSeriesIdx] !== undefined) {
+                        let diskSeries = series[diskSeriesIdx]
                         diskSeriesList = diskSeries.values;
                         diskSeries.values.map(item => {
                             let usageOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.DISK];//diskUsage..index
@@ -399,8 +427,8 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                     }
 
                     //todo: SENDBYTES, RECVBYTES , CONNECTION
-                    if (series["4"] !== undefined) {
-                        let networkSeries = series["4"]
+                    if (series[networkSeriesIdx] !== undefined) {
+                        let networkSeries = series[networkSeriesIdx]
                         columns = networkSeries.columns;
                         networkSeriesList = networkSeries.values;
                         networkSeries.values.map(item => {
@@ -408,6 +436,23 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                             sumSendBytes += sendBytesOne;
                             let recvBytesOne = item[APP_INST_MATRIX_HW_USAGE_INDEX.BYTESRECVD];//recvBytesOne
                             sumRecvBytes += recvBytesOne;
+                            let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
+                            sumActiveConnection += connection1One;
+                            let connection2One = item[APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];//2
+                            sumHandledConnection += connection2One;
+                            let connection3One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACCEPTS];//3
+                            sumAcceptsConnection += connection3One;
+                        })
+                    }
+
+                    //todo: ################
+                    //todo: connnections
+                    //todo: ################
+                    if (series[connectionSeriesIdx] !== undefined) {
+                        let connectionSeries = series[connectionSeriesIdx]
+                        columns = connectionSeries.columns;
+                        connectionsSeriesList = connectionSeries.values;
+                        connectionSeries.values.map(item => {
                             let connection1One = item[APP_INST_MATRIX_HW_USAGE_INDEX.ACTIVE];//1
                             sumActiveConnection += connection1One;
                             let connection2One = item[APP_INST_MATRIX_HW_USAGE_INDEX.HANDLED];//2
@@ -432,10 +477,12 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                         memSeriesList,
                         diskSeriesList,
                         networkSeriesList,
+                        connectionsSeriesList,
                         appName,
                         Cloudlet,
                         ClusterInst,
                     })
+
 
                 } else {//@todo: If series data is null
                     allUsageList.push({
@@ -456,9 +503,7 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
                     })
                 }
             }
-
         })
-
 
         let resultWithColorCode = []
         allUsageList.map((item, index) => {
@@ -466,9 +511,9 @@ export const getAppInstLevelUsageList = async (appInstanceList, pHardwareType, d
             resultWithColorCode.push(item)
         })
 
-
         return resultWithColorCode;
     } catch (e) {
+       // showToast(e.toString())
     }
 
 }

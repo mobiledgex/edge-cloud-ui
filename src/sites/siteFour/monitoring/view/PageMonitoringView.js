@@ -60,7 +60,6 @@ import type {
     TypeBarChartData,
     TypeCloudlet,
     TypeCloudletEventLog,
-    TypeCloudletUsage,
     TypeCluster,
     TypeClusterUsageOne,
     TypeGridInstanceList,
@@ -1363,12 +1362,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             {/*desc:    delete btn                */}
                             {/*desc:############################*/}
                             <div className="remove page_monitoring_widget_icon"
-                                 style={{zIndex:99999999999999999}}
+                                 style={{zIndex: 99999999999999999}}
                                  onClick={() => {
                                      this.deleteGridItem(uniqueIndex)
                                  }}
                             >
-                                <MaterialIcon  size={'tiny'} icon='delete' color={'white'}
+                                <MaterialIcon size={'tiny'} icon='delete' color={'white'}
 
                                 />
                             </div>
@@ -2453,10 +2452,18 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
             }
 
             handleOnChangeCloudletDropdown = async (pCloudletFullOne, cloudletIndex) => {
+                await this.setState({
+                    loading: true,
+                })
+                let date = [dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(this.lastDay)), dateUtil.utcTime(dateUtil.FORMAT_DATE_24_HH_mm, dateUtil.subtractDays(0))]
+                let startTime = makeCompleteDateTime(date[0]);
+                let endTime = makeCompleteDateTime(date[1]);
 
                 try {
                     if (pCloudletFullOne !== undefined && pCloudletFullOne.toString() !== '0') {
-                        await this.setState({currentCloudLet: getOnlyCloudletName(pCloudletFullOne)})
+                        await this.setState({
+                            currentCloudLet: getOnlyCloudletName(pCloudletFullOne),
+                        })
                         let currentCloudletOne = this.state.currentCloudLet
                         let filteredClusterList = this.state.allClusterList.filter((clusterOne: TypeCluster, index) => {
                             return clusterOne.Cloudlet === currentCloudletOne
@@ -2464,9 +2471,12 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredClusterUsageList = this.state.allClusterUsageList.filter((clusterUsageOne: TypeClusterUsageOne, index) => {
                             return clusterUsageOne.cloudlet === currentCloudletOne
                         })
-                        let filteredCloudletUsageList = this.state.allCloudletUsageList.filter((item: TypeCloudletUsage, index) => {
-                            return item.cloudlet === currentCloudletOne
+
+                        let selectedCloudletList = this.state.cloudletList.filter(item => {
+                            return item.CloudletName === this.state.currentCloudLet
                         })
+
+                        let filteredCloudletUsageList = await getCloudletUsageList(selectedCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
 
                         let filteredCloudletList = this.state.cloudletList.filter((item: TypeCloudlet, index) => {
                             return item.CloudletName === currentCloudletOne
@@ -2479,7 +2489,6 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                         let filteredCloudletEventLogList = this.state.allCloudletEventLogList.filter((item: TypeCloudletEventLog, index) => {
                             return item[1] === currentCloudletOne
                         })
-
 
                         let filteredClientStatusList = filteredClientStatusListByAppName(filteredAppInstList, this.state.allClientStatusList)
 
@@ -2496,19 +2505,22 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentOperLevel: undefined,
                             filteredCloudletEventLogList: filteredCloudletEventLogList,
                             currentColorIndex: cloudletIndex,
+                            loading: false,
 
                         });
                     } else {//todo: When allCloudlet (RESET)
                         let allCloudletList = this.state.cloudletList
                         let markerList = reducer.groupBy(allCloudletList, CLASSIFICATION.CloudletName);
                         let cloudletDropdownList = makeDropdownForCloudlet(this.state.cloudletList)
+                        let allCloudletUsageList = await getCloudletUsageList(allCloudletList, "*", this.state.dataLimitCount, startTime, endTime);
+
                         await this.setState({
                             markerList: markerList,
                             cloudletDropdownList: cloudletDropdownList,
                             currentCloudLet: undefined,
                             filteredClusterList: [],
                             filteredClusterUsageList: [],
-                            filteredCloudletUsageList: this.state.allCloudletUsageList,
+                            filteredCloudletUsageList: allCloudletUsageList,
                             filteredCloudletList: this.state.cloudletList,
                             toggleOperMapZoom: !this.state.toggleOperMapZoom,
                             filteredClientStatusList: this.state.allClientStatusList,
@@ -2517,6 +2529,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             currentOperLevel: undefined,
                             filteredCloudletEventLogList: this.state.allCloudletEventLogList,
                             currentOrg: undefined,
+                            loading: false,
                         })
                     }
                 } catch (e) {
@@ -3579,9 +3592,21 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                                         await this.setState({
                                             dataLimitCount: value,
                                         });
-                                        await this.reloadDataFromRemote()
 
-                                        this.setChartDataForBigModal(this.state.allClusterUsageList)
+
+                                        if (this.state.currentClassification.toString() === CLASSIFICATION.Cloudlet) {//todo:oper
+                                            let currentCloudlet = isEmpty(this.state.currentCloudLet) ? undefined : this.state.currentCloudLet
+                                            this.handleOnChangeCloudletDropdown(currentCloudlet, this.state.currentColorIndex)
+                                        } else if (this.state.currentClassification.toString() === CLASSIFICATION.CLOUDLET_FOR_ADMIN) {
+                                            this.handleOnChangeCloudletDropdownForAdmin(this.state.currentCloudLet)
+                                        } else if (this.state.currentClassification.toString() === CLASSIFICATION.CLUSTER_FOR_ADMIN) {
+                                            this.handleOnChangeClusterDropdownForAdmin(this.state.currentClusterList)
+                                        } else if (this.state.currentClassification.toString() === CLASSIFICATION.CLUSTER) {
+                                            this.handleOnChangeClusterDropdownForDev(this.state.currentClusterList)
+                                        } else if (this.state.currentClassification.toLocaleLowerCase().includes(CLASSIFICATION.APPINST.toLocaleLowerCase())) {
+                                            this.handleOnChangeAppInstDropdown(this.state.currentAppInst)
+                                        }
+
                                     }}
                                 >
                                     {graphDataCount.reverse().map((item, index) => {
