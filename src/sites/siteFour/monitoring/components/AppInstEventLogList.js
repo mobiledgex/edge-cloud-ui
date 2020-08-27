@@ -55,7 +55,7 @@ export default function AppInstEventLogList(props) {
         return (
             <div style={{
                 display: 'flex',
-                width: '100%',
+                width: '90%',
                 height: 45
             }}>
                 <div className='page_monitoring_title draggable'
