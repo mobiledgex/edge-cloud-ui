@@ -14,12 +14,12 @@ export const fields = {
     nodeFlavor: 'nodeFlavor',
     numberOfMasters: 'numberOfMasters',
     numberOfNodes: 'numberOfNodes',
-    sharedVolumeSize : 'sharedVolumeSize',
-    autoClusterInstance:'autoClusterInstance',
+    sharedVolumeSize: 'sharedVolumeSize',
+    autoClusterInstance: 'autoClusterInstance',
     state: 'state',
     status: 'status',
     reservable: 'reservable',
-    reservedBy:'reservedBy',
+    reservedBy: 'reservedBy',
     deployment: 'deployment',
     cloudletLocation: 'cloudletLocation',
     latitude: 'latitude',
@@ -40,10 +40,10 @@ export const fields = {
     autoPolicyName: 'autoPolicyName',
     deployClientCount: 'deployClientCount',
     deployIntervalCount: 'deployIntervalCount',
-    undeployClientCount:'undeployClientCount',
-    undeployIntervalCount:'undeployIntervalCount',
+    undeployClientCount: 'undeployClientCount',
+    undeployIntervalCount: 'undeployIntervalCount',
     cloudlets: 'cloudlets',
-    organizations:'organizations',
+    organizations: 'organizations',
     appName: 'appName',
     version: 'version',
     uri: 'uri',
@@ -70,7 +70,7 @@ export const fields = {
     imageType: 'imageType',
     imagePath: 'imagePath',
     defaultFlavorName: 'defaultFlavorName',
-    defaultPrivacyPolicy:'defaultPrivacyPolicy',
+    defaultPrivacyPolicy: 'defaultPrivacyPolicy',
     ports: 'ports',
     authPublicKey: 'authPublicKey',
     scaleWithCluster: 'scaleWithCluster',
@@ -80,8 +80,8 @@ export const fields = {
     accessPorts: 'accessPorts',
     accessType: 'accessType',
     username: 'username',
-    password:'password',
-    confirmPassword:'confirmPassword',
+    password: 'password',
+    confirmPassword: 'confirmPassword',
     role: 'role',
     email: 'email',
     emailVerified: 'emailVerified',
@@ -94,40 +94,41 @@ export const fields = {
     locked: 'locked',
     outboundSecurityRulesCount: 'outboundSecurityRulesCount',
     cloudletCount: 'cloudletCount',
-    organizationCount:'organizationCount',
+    organizationCount: 'organizationCount',
     fullIsolation: 'fullIsolation',
     cloudletStatus: 'cloudletStatus',
     actions: 'actions',
     manage: 'manage',
-    poolName:'poolName',
-    clusterinst:'clusterinst',
-    container_ids:'container_ids',
-    openRCData:'openRCData',
-    caCertdata:'caCertdata',
-    clusterdeveloper:'clusterdeveloper',
-    containerVersion:'containerVersion',
-    vmImageVersion:'vmImageVersion',
-    configs:'configs',
-    config:'config',
-    kind:'kind',
-    annotations:'annotations',
-    key:'key',
-    value:'value',
-    publicImages:'publicImages',
-    updateAvailable:'updateAvailable',
-    update:'update',
-    appInstances:'appInstances',
-    upgrade:'upgrade',
-    refreshAppInst:'refreshAppInst',
-    restagmap:'restagmap',
-    powerState:'powerState',
-    tls:'tls',
-    userList:'userList',
-    infraApiAccess:'infraApiAccess',
-    infraFlavorName:'infraFlavorName',
-    infraExternalNetworkName:'infraExternalNetworkName',
-    maintenanceState:'maintenanceState',
-    manifest:'manifest',
+    poolName: 'poolName',
+    clusterinst: 'clusterinst',
+    container_ids: 'container_ids',
+    openRCData: 'openRCData',
+    caCertdata: 'caCertdata',
+    clusterdeveloper: 'clusterdeveloper',
+    appDeveloper: 'appDeveloper',
+    containerVersion: 'containerVersion',
+    vmImageVersion: 'vmImageVersion',
+    configs: 'configs',
+    config: 'config',
+    kind: 'kind',
+    annotations: 'annotations',
+    key: 'key',
+    value: 'value',
+    publicImages: 'publicImages',
+    updateAvailable: 'updateAvailable',
+    update: 'update',
+    appInstances: 'appInstances',
+    upgrade: 'upgrade',
+    refreshAppInst: 'refreshAppInst',
+    restagmap: 'restagmap',
+    powerState: 'powerState',
+    tls: 'tls',
+    userList: 'userList',
+    infraApiAccess: 'infraApiAccess',
+    infraFlavorName: 'infraFlavorName',
+    infraExternalNetworkName: 'infraExternalNetworkName',
+    maintenanceState: 'maintenanceState',
+    manifest: 'manifest',
     userRole: 'userRole',
     healthCheck: 'healthCheck',
     skipHCPorts: 'skipHCPorts',
@@ -138,11 +139,13 @@ export const fields = {
     scaleUpCPUThreshold: 'scaleUpCPUThreshold',
     scaleDownCPUThreshold: 'scaleDownCPUThreshold',
     triggerTime: 'triggerTime',
-    minActiveInstances:'minActiveInstances',
-    maxInstances:'maxInstances',
-    fields:'fields',
-    envVars:'envVars',
-    apps:'apps'
+    minActiveInstances: 'minActiveInstances',
+    maxInstances: 'maxInstances',
+    fields: 'fields',
+    envVars: 'envVars',
+    apps: 'apps',
+    eventType: 'eventType',
+    time: 'time',
 }
 
 export const getUserRole = () => {
@@ -233,6 +236,47 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     return values
 }
 
+export const formatEventData = (mcRequest, customData) => {
+    let eventData = {}
+    if (mcRequest && mcRequest.response) {
+        let response = mcRequest.response
+        let body = mcRequest.request.data
+        if (response.data && response.data.data) {
+            let dataList = response.data.data;
+            if (dataList && dataList.length > 0) {
+                let series = dataList[0].Series
+                let messages = dataList[0].messages
+                if (series && series.length > 0) {
+                    let formattedList = []
+                    let eventType = series[0].name
+                    let columns = series[0].columns
+                    let valuesArray = series[0].values
+                    if (columns && columns.length > 0) {
+                        try {
+                            for (let i = 0; i < valuesArray.length; i++) {
+                                let formatted = {}
+                                if (body) { formatted.region = body.region }
+                                let values = valuesArray[i]
+                                for (let j = 0; j < values.length; j++) {
+                                    formatted[columns[j]] = values[j];
+
+                                }
+                                //customData(formatted)
+                                formattedList.push(formatted)
+                            }
+                        }
+                        catch (e) {
+                            alert(e)
+                        }
+                    }
+                    eventData = { eventType: eventType, data: formattedList }
+                }
+            }
+        }
+    }
+    return eventData
+}
+
 export const compareObjects = (newData, oldData, ignoreCase) => {
     if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
         return true
@@ -243,32 +287,26 @@ export const compareObjects = (newData, oldData, ignoreCase) => {
     else if (newData === undefined && oldData !== undefined && oldData.length > 0) {
         return false
     }
-    else if(ignoreCase)
-    {
+    else if (ignoreCase) {
         return isEqual(newData.toLowerCase(), oldData.toLowerCase())
     }
-    else
-    {
+    else {
         return isEqual(newData, oldData)
     }
-  }
-  
-  export const updateFields = (self, forms, data, orgData)=>
-  {
+}
+
+export const updateFields = (self, forms, data, orgData) => {
     let updateFields = []
-    for(let i=0;i<forms.length;i++)
-    {
-      let form = forms[i]
-      if(form.update && form.updateId)
-      {
-        if (!compareObjects(data[form.field], orgData[form.field])) {
-          updateFields = [...updateFields, ...form.updateId]
+    for (let i = 0; i < forms.length; i++) {
+        let form = forms[i]
+        if (form.update && form.updateId) {
+            if (!compareObjects(data[form.field], orgData[form.field])) {
+                updateFields = [...updateFields, ...form.updateId]
+            }
         }
-      }
     }
-    if(updateFields.length === 0 )
-    {
+    if (updateFields.length === 0) {
         self.props.handleAlertInfo('error', 'Nothing to update')
     }
     return updateFields
-  }
+}

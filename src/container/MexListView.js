@@ -423,7 +423,7 @@ class MexListView extends React.Component {
                     region = this.regions[i];
                     let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
                     filter[fields.region] = region;
-                    filterList.push(filter)
+                    filterList.push(Object.assign({}, filter))
                 }
             }
             else {

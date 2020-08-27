@@ -681,6 +681,18 @@
 
 }
 
+.event_container {
+    background-color: #292C33;
+    width: '100%';
+    box-shadow: -3px 0 4px 0 rgba(0, 0, 0, 0.3);
+    height: calc(100vh - 0px);
+}
+
+.event_container_grid {
+    width: calc(100% - 8px);
+    height: 50%;
+}
+
 .audit_container {
     background-color: #292C33;
     width: 450px;
@@ -854,18 +866,19 @@
 
 .audit_timeline_Step {
     border-radius: 50%;
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    margin-left: 2px;
+    font-size: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .audit_timeline_Step .MuiSvgIcon-root {
-    width: 12px;
-    height: 12px;
-    font-size: 12px;
+    width: 10px;
+    height: 10px;
+    font-size: 10px;
 }
 
 .audit_container .MuiStepConnector-vertical {
