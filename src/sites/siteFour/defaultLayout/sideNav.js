@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MexHeader from './header'
-import {getUserRole} from '../../../services/model/format'
+import { getUserRole } from '../../../services/model/format'
 import * as constant from '../../../constant'
 
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
@@ -24,7 +24,7 @@ import FreeBreakfastOutlinedIcon from '@material-ui/icons/FreeBreakfastOutlined'
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
 import GamesOutlinedIcon from '@material-ui/icons/GamesOutlined';
-import TvOutlinedIcon from '@material-ui/icons/TvOutlined'; 
+import TvOutlinedIcon from '@material-ui/icons/TvOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PolicyIcon from '@material-ui/icons/Policy';
@@ -46,8 +46,8 @@ import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
 import PageMonitoringMain from '../monitoring/common/PageMonitoringMain'
 
-import {Collapse, Tooltip} from '@material-ui/core';
-import {Image} from 'semantic-ui-react';
+import { Collapse, Tooltip } from '@material-ui/core';
+import { Image } from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
 
 const drawerWidth = 250;
@@ -55,8 +55,8 @@ const drawerWidth = 250;
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
-        width:'100%',
-        height:'100%'
+        width: '100%',
+        height: '100%'
     },
     drawer: {
         width: drawerWidth,
@@ -131,7 +131,7 @@ const setNavState = (flag) => {
 export default function MiniDrawer(props) {
 
     const options = [
-        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization/>, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
         { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
         { divider: true },
@@ -154,13 +154,10 @@ export default function MiniDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(navstate() === 1 ? true : false);
-    const [expand, setExpand] = React.useState(false);
+    const [expand, setExpand] = React.useState(undefined);
     const [openLegend, setOpenLegend] = React.useState(false);
 
     const [page, setPage] = React.useState(defaultPage(options));
-
-    
- 
 
     const handleDrawerOpen = () => {
         setNavState(1)
@@ -172,19 +169,18 @@ export default function MiniDrawer(props) {
         setOpen(!open);
     };
 
-    const expandOptions = () => {
-        setExpand(!expand)
+    const expandOptions = (option) => {
+        setExpand(expand === option.label ? undefined : option.label)
     }
 
     const onOptionClick = (option, i) => {
-        if(props.history.location.pathname !== `/site4/pg=${option.pageId}`)
-        {
-          setPage(null)
+        if (props.history.location.pathname !== `/site4/pg=${option.pageId}`) {
+            setPage(null)
         }
         props.history.push({
             pathname: `/site4/pg=${option.pageId}`
         });
-        setTimeout(()=>{setPage(option.page)}, 1)
+        setTimeout(() => { setPage(option.page) }, 1)
     }
 
     const showOptionForm = (i, option) => {
@@ -193,11 +189,11 @@ export default function MiniDrawer(props) {
                 option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option)
             }}>
                 <Tooltip title={option.label} aria-label="add">
-                    <ListItemIcon style={{color: '#B1B2B4'}}>{option.icon}
+                    <ListItemIcon style={{ color: '#B1B2B4' }}>{option.icon}
                     </ListItemIcon>
                 </Tooltip>
-                <ListItemText style={{color: '#B1B2B4'}} primary={option.label}/>
-                {option.subOptions ? expand ? <ExpandLess style={{color: '#B1B2B4'}}/> : <ExpandMore style={{color: '#B1B2B4'}}/> : null}
+                <ListItemText style={{ color: '#B1B2B4' }} primary={option.label} />
+                {option.subOptions ? expand === option.label ? <ExpandLess style={{ color: '#B1B2B4' }} /> : <ExpandMore style={{ color: '#B1B2B4' }} /> : null}
             </ListItem>
         )
     }
@@ -211,8 +207,8 @@ export default function MiniDrawer(props) {
                 }}
             >
                 {
-                localStorage.selectRole && localStorage.selectRole!=='null'?
-                    <ListItemIcon>
+                    localStorage.selectRole && localStorage.selectRole !== 'null' ?
+                        <ListItemIcon>
                             <div className="markBox">
                                 {
                                     (localStorage.selectRole === 'AdminManager') ?
@@ -239,16 +235,16 @@ export default function MiniDrawer(props) {
                                                                 null
                                 }
                             </div>
-                    </ListItemIcon> :
-                    open ?
-                    null :
-                    <ListItemIcon><div className="markBox"><div className="mark markA markS">?</div></div></ListItemIcon>
+                        </ListItemIcon> :
+                        open ?
+                            null :
+                            <ListItemIcon><div className="markBox"><div className="mark markA markS">?</div></div></ListItemIcon>
                 }
                 <ListItemText>
-                    <strong style={{color: '#BFC0C2', fontSize: 14}}>
+                    <strong style={{ color: '#BFC0C2', fontSize: 14 }}>
                         {
                             localStorage.selectRole && localStorage.selectRole != 'null' ? localStorage.selectRole :
-                            open ? <div>
+                                open ? <div>
                                     <p>No Organization selected</p>
                                     <p>Click Manage to view and</p>
                                     <p>manage your Organization</p>
@@ -280,11 +276,11 @@ export default function MiniDrawer(props) {
             return options.map((option, i) => (
                 option.divider ?
                     <Divider key={i} /> :
-                    option.roles.includes(getRoleInfo(getUserRole())) ?
+                    option.roles && option.roles.includes(getRoleInfo(getUserRole())) ?
                         <div key={i}>
                             {showOptionForm(i, option)}
                             {option.subOptions ?
-                                <Collapse in={expand} timeout="auto" unmountOnExit>
+                                <Collapse in={expand === option.label} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {option.subOptions.map((subOption, j) => (
                                             showOptionForm(j, subOption)
@@ -307,11 +303,11 @@ export default function MiniDrawer(props) {
     return (
         <div className={classes.root}>
             {props.isShowHeader &&
-            <React.Fragment>
-                <CssBaseline/>
-                <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
-                           helpClick={props.helpClick} viewMode={props.viewMode}/>
-            </React.Fragment>
+                <React.Fragment>
+                    <CssBaseline />
+                    <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
+                        helpClick={props.helpClick} viewMode={props.viewMode} />
+                </React.Fragment>
             }
             <Drawer
                 variant="permanent"
@@ -325,21 +321,21 @@ export default function MiniDrawer(props) {
                         [classes.drawerClose]: !open,
                     }),
                 }}
-                style={{zIndex: 1}}
+                style={{ zIndex: 1 }}
             >
                 <div className={classes.toolbar}>
-                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg'/>
-                    <IconButton style={{color: '#B1B2B4'}} onClick={handleDrawerClose}>
-                        {!open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                    <IconButton style={{ color: '#B1B2B4' }} onClick={handleDrawerClose}>
+                        {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </div>
-                <List style={{backgroundColor: '#292c33', height: '100%'}}>
+                <List style={{ backgroundColor: '#292c33', height: '100%' }}>
                     {roleInfo()}
                     {menuList()}
                 </List>
             </Drawer>
             <main className={classes.content}>
-                <div className='contents_body' style={{marginTop:6, height:'calc(100% - 6px)'}}>
+                <div className='contents_body' style={{ marginTop: 6, height: 'calc(100% - 6px)' }}>
                     {page}
                 </div>
             </main>
