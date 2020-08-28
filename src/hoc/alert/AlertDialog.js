@@ -21,7 +21,7 @@ const MexAlert = (props) => {
             open={props.data !== undefined}
             autoHideDuration={20000}
         >
-            <Alert onClose={handleClose} severity={props.data.severity}>
+            <Alert onClose={handleClose} severity={props.data.mode}>
                 {props.data.msg}
             </Alert>
         </Snackbar>

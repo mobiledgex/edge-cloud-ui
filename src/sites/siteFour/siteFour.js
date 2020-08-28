@@ -9,7 +9,6 @@ import * as actions from '../../actions';
 import {GridLoader} from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
 import * as serverData from '../../services/model/serverData';
-import {tutor} from '../../tutorial';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
@@ -85,25 +84,17 @@ class SiteFour extends React.Component {
         this.setState({steps: currentStep, stepsEnabled: true, enable: true})
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-        if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
-            let alertInfo = {msg: nextProps.alertInfo.msg, severity: nextProps.alertInfo.mode}
-            nextProps.handleAlertInfo(undefined, undefined);
-            this.setState({mexAlertMessage: alertInfo})
-        }
-
-        // let formKey = Object.keys(nextProps.formInfo);
-        // if (formKey.length) {
-        //     if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
-        //         if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-        //             _self.setState({stepsEnabled: false})
-        //         }
-        //     }
-        // }
-    }
-
     onExit() {
         _self.setState({stepsEnabled: false})
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        let alertInfo = props.alertInfo
+        if (alertInfo !== state.mexAlertMessage && props.alertInfo.mode && alertInfo.msg) {
+            props.handleAlertInfo(undefined, undefined);
+            return { mexAlertMessage: alertInfo }
+        }
+        return null
     }
 
     render() {
@@ -130,7 +121,7 @@ class SiteFour extends React.Component {
                         />
                     </div> : null}
                 <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={_self.state.email}
-                         data={_self.props.userInfo.info} helpClick={this.helpClick} viewMode={_self.props.ViewMode}
+                         data={_self.props.userInfo.info} helpClick={this.helpClick} viewMode={_self.props.viewMode}
                          userRole={this.state.userRole}/>
 
                 {this.state.mexAlertMessage ?
@@ -143,19 +134,10 @@ class SiteFour extends React.Component {
     componentDidMount() {
         this.userRoleInfo()
     }
-
-    componentWillUnmount() {
-        _self.setState({learned: false})
-    }
-
 };
 
 const mapStateToProps = (state) => {
-    let formInfo = (state.form) ? state.form : null;
-    let submitInfo = (state.submitInfo) ? state.submitInfo : null;
-    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
-    let ViewMode = (state.ViewMode) ? state.ViewMode.mode : null;
-
+    let viewMode = (state.viewMode) ? state.viewMode.mode : null;
     return {
         isShowHeader: state.HeaderReducer.isShowHeader,
         userInfo: state.userInfo ? state.userInfo : null,
@@ -164,10 +146,7 @@ const mapStateToProps = (state) => {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
         },
-        ViewMode: ViewMode,
-        formInfo: formInfo,
-        submitInfo: submitInfo,
-        regionInfo: regionInfo
+        viewMode: viewMode
     }
 };
 
