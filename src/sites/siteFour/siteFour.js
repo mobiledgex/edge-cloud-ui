@@ -79,6 +79,11 @@ class SiteFour extends React.Component {
             }
         }
     }
+    
+    helpClick = (currentStep) =>
+    {
+        this.setState({steps: currentStep, stepsEnabled: true, enable: true})
+    }
 
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
@@ -125,7 +130,7 @@ class SiteFour extends React.Component {
                         />
                     </div> : null}
                 <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={_self.state.email}
-                         data={_self.props.userInfo.info} helpClick={()=>{this.setState({steps: currentStep, stepsEnabled: true, enable: true})}} viewMode={_self.props.ViewMode}
+                         data={_self.props.userInfo.info} helpClick={this.helpClick} viewMode={_self.props.ViewMode}
                          userRole={this.state.userRole}/>
 
                 {this.state.mexAlertMessage ?

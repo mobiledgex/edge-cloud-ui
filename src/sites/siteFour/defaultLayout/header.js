@@ -88,7 +88,7 @@ export default function Header(props) {
     };
 
     const helpClick = ()=>{
-        let currentStep = this.props.ViewMode ? tutor(this.props.ViewMode) : null;
+        let currentStep = props.viewMode ? tutor(props.viewMode) : null;
         if(currentStep)
         {
             props.helpClick(currentStep)
