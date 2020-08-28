@@ -43,7 +43,7 @@ class ListViewer extends React.Component {
             actionEl: null,
             selectedRow: {}
         }
-        this.actionMenu = props.actionMenu.filter(action => { return canEdit(action) })
+        this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(action) }) : []
         this.columnLength = 0
     }
 
