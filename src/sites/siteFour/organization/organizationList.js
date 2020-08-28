@@ -134,8 +134,10 @@ class OrganizationList extends React.Component {
                 let roleInfo = roleInfoList[i];
                 if (roleInfo.org === data[fields.organizationName]) {
                     this.props.handleUserRole(roleInfo.role)
+                    var event = new Event('SelectOrgChangeEvent');
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
+                    window.dispatchEvent(event);
                     this.forceUpdate()
                     break;
                 }

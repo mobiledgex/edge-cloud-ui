@@ -11,6 +11,7 @@ import { appInstEventLogs } from '../../../../services/model/appInstEvent'
 import { fields } from '../../../../services/model/format';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
+import MexCalendar from './MexCalendar'
 
 const drawerWidth = 450
 const styles = theme => ({
@@ -111,16 +112,17 @@ class GlobalEventLogs extends React.Component {
     }
 
     updateData = (eventData) => {
+        console.log('Rahul1234', eventData)
+        let keys = Object.keys(eventData)
         let liveData = this.state.liveData
-        if (liveData[eventData.eventType]) {
-            this.setState(prevState => ({
-                liveData: prevState.liveData[eventData.eventType].push(eventData.data)
-            }))
-        }
-        else {
-            liveData[eventData.eventType] = eventData.data
-            this.setState({ liveData: liveData })
-        }
+        keys.map(key => {
+            if (liveData[key]) {
+                liveData[key].push(eventData)
+            }
+            else {
+                this.setState({ liveData: eventData })
+            }
+        })
     }
 
     eventLogData = async () => {
@@ -129,8 +131,8 @@ class GlobalEventLogs extends React.Component {
         data[fields.organizationName] = localStorage.getItem('selectOrg')
         let eventData = await clusterEventLogs(this, data)
         this.updateData(eventData)
-        eventData = await appInstEventLogs(this, data)
-        this.updateData(eventData)
+        //eventData = await appInstEventLogs(this, data)
+        //this.updateData(eventData)
 
     }
 
