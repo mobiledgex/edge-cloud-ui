@@ -137,7 +137,7 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    let viewMode = (state.viewMode) ? state.viewMode.mode : null;
+    let viewMode = (state.ViewMode) ? state.ViewMode.mode : null;
     return {
         isShowHeader: state.HeaderReducer.isShowHeader,
         userInfo: state.userInfo ? state.userInfo : null,

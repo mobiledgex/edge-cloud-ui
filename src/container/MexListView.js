@@ -476,7 +476,6 @@ class MexListView extends React.Component {
             newDataList : newDataList
         })
         this.setState({ filterList: this.onFilterValue(undefined) })
-        this.props.handleViewMode(this.requestInfo.viewMode);
     }
 
     dataFromServer = (region) => {
@@ -500,7 +499,7 @@ class MexListView extends React.Component {
 
     componentDidMount() {
         this.dataFromServer(REGION_ALL)
-        this.props.handleViewMode(null)
+        this.props.handleViewMode(this.requestInfo.viewMode);
     }
 }
 
