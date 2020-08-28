@@ -15,7 +15,7 @@ import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../se
 //Map
 import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import { CloudletTutor } from "../../../tutorial";
+import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';
 import { syntaxHighLighter, codeHighLighter } from '../../../hoc/highLighter/highLighter'
 import { downloadData } from '../../../utils/file_util'
@@ -27,8 +27,6 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-
-const cloudletSteps = CloudletTutor();
 
 class CloudletReg extends React.Component {
     constructor(props) {
@@ -602,7 +600,7 @@ class CloudletReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode(cloudletSteps.stepsCloudletReg)
+        this.props.handleViewMode(HELP_CLOUDLET_REG)
     }
 };
 

@@ -19,14 +19,12 @@ import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services
 //Map
 import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import { clusterInstTutor } from "../../../tutorial";
+import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
 import { SHOW_PRIVACY_POLICY, SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-
-const clusterInstSteps = clusterInstTutor();
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -526,7 +524,7 @@ class ClusterInstReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode(clusterInstSteps.stepsClusterInstReg)
+        this.props.handleViewMode(HELP_CLUSTER_INST_REG)
     }
 };
 

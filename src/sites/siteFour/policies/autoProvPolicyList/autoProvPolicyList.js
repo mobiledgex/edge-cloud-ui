@@ -12,11 +12,7 @@ import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } fr
 import { showApps } from '../../../../services/model/app';
 //list
 import MexListView from '../../../../container/MexListView';
-import { PolicyTutor } from "../../../../tutorial";
-
-
-const policySteps = PolicyTutor();
-
+import { HELP_POLICY_LIST } from "../../../../tutorial";
 class AutoProvPolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -73,7 +69,7 @@ class AutoProvPolicy extends React.Component {
             sortBy: [fields.region, fields.autoPolicyName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode: policySteps.stepsPolicy
+            viewMode: HELP_POLICY_LIST
         })
     }
 

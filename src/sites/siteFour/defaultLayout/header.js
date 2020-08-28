@@ -1,26 +1,28 @@
 import React from 'react';
 import clsx from 'clsx';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import DescriptionIcon from '@material-ui/icons/Description';
 import HeaderGlobalMini from '../../../container/headerGlobalMini';
 import HeaderGlobalAudit from '../auditLog/headerGlobalAudit';
-
+import * as constant from '../../../constant'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import BusinessIcon from '@material-ui/icons/Business';
 import AccessTimeIcon from '@material-ui/icons/AccessTime'
 
-import {Button, Image} from 'semantic-ui-react';
-import {Dialog, DialogActions, List, ListItem, ListItemText, Menu, MenuItem} from '@material-ui/core';
-
+import { Button, Image } from 'semantic-ui-react';
+import { Dialog, DialogActions, List, ListItem, ListItemText, Menu, MenuItem } from '@material-ui/core';
+import { tutor } from '../../../tutorial'
 import MexVirtualSelect from './mexVirtualSelect'
-import {getMexTimezone} from '../../../utils/sharedPreferences_util';
-import {timezones} from '../../../utils/date_util'
+import { getMexTimezone } from '../../../utils/sharedPreferences_util';
+import { timezones } from '../../../utils/date_util'
 import MiniClockComponent from "./MiniClockComponent";
+import { getUserRole } from '../../../services/model/format';
 
 const drawerWidth = 250;
 
@@ -84,6 +86,21 @@ export default function Header(props) {
     const handleDialogClose = () => {
         setOpen(false);
     };
+
+    const helpClick = ()=>{
+        let currentStep = this.props.ViewMode ? tutor(this.props.ViewMode) : null;
+        if(currentStep)
+        {
+            props.helpClick(currentStep)
+        }
+    }
+
+    const docClick = () => {
+        let path = tutor(props.viewMode, true)
+        if (path) {
+            window.open(tutor(props.viewMode, true), '_blank');
+        }
+    }
 
     return (
 
@@ -155,11 +172,11 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
-                    <IconButton style={{backgroundColor: 'transparent',}} aria-label="timezone" color="inherit">
-                        <AccessTimeIcon fontSize='default'/>
-                        <MiniClockComponent/>
+                    <IconButton style={{ backgroundColor: 'transparent', }} aria-label="timezone" color="inherit">
+                        <AccessTimeIcon fontSize='default' />
+                        <MiniClockComponent />
                     </IconButton>
-                    <IconButton style={{ backgroundColor: 'transparent'}} onClick={()=>{onPref()}} aria-label="timezone" color="inherit">
+                    <IconButton style={{ backgroundColor: 'transparent' }} onClick={() => { onPref() }} aria-label="timezone" color="inherit">
                         <LanguageIcon fontSize='default' /> &nbsp;<h5>{getMexTimezone()}</h5>
                     </IconButton>
                     {localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
@@ -170,12 +187,16 @@ export default function Header(props) {
                             </h5>
                         </IconButton> : null}
                     <HeaderGlobalAudit />
-                    <IconButton style={{ backgroundColor: 'transparent'}} aria-label="help" color="inherit"
-                        onClick={(e) => props.helpClick()} disabled={props.viewMode !== null ? false : true}>
+                    <IconButton style={{ backgroundColor: 'transparent' }} aria-label="help" color="inherit"
+                        onClick={(e) => helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'} />
                     </IconButton>
-                    <MexVirtualSelect open={openPreferences} close={()=>{setOpenPreferences(false)}} data={timezones()} header={'Select Timezone'}/>
-                    <HeaderGlobalMini email={props.email} data={props.data}/>
+                    {getUserRole() && getUserRole().includes(constant.DEVELOPER) ? <IconButton style={{ backgroundColor: 'transparent' }} aria-label="help" color="inherit"
+                        onClick={(e) => docClick()} disabled={props.viewMode !== null ? false : true}>
+                        <DescriptionIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'} />
+                    </IconButton> : null}
+                    <MexVirtualSelect open={openPreferences} close={() => { setOpenPreferences(false) }} data={timezones()} header={'Select Timezone'} />
+                    <HeaderGlobalMini email={props.email} data={props.data} />
                 </div>
             </Toolbar>
         </AppBar>

@@ -13,11 +13,7 @@ import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
 import { getOrgCloudletList } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
-import {PolicyTutor} from "../../../../tutorial";
-
-
-const policySteps = PolicyTutor();
-
+import {HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1} from "../../../../tutorial";
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
@@ -148,7 +144,7 @@ class AutoProvPolicyReg extends React.Component {
             this.setState({
                 forms: forms
             })
-            this.props.handleViewMode( policySteps.stepsNewPolicy2 );
+            this.props.handleViewMode( HELP_AUTO_PROV_REG_2 );
         }
         else
         {
@@ -411,7 +407,7 @@ class AutoProvPolicyReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data);
-        this.props.handleViewMode( policySteps.stepsNewPolicy )
+        this.props.handleViewMode( HELP_AUTO_PROV_REG_1 )
     }
 };
 

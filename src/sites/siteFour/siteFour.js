@@ -9,14 +9,12 @@ import * as actions from '../../actions';
 import {GridLoader} from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
 import * as serverData from '../../services/model/serverData';
-import * as constant from '../../constant';
-import {MonitoringTutor} from '../../tutorial';
+import {tutor} from '../../tutorial';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 
 let _self = null
-const monitoringSteps = MonitoringTutor();
 
 class SiteFour extends React.Component {
     constructor(props) {
@@ -29,7 +27,6 @@ class SiteFour extends React.Component {
             page: 'pg=0',
             email: store ? store.email : 'Administrator',
             role: '',
-            userToken: null,
             adminShow: false,
             menuClick: false,
             learned: false,
@@ -83,62 +80,21 @@ class SiteFour extends React.Component {
         }
     }
 
-    enableSteps = () => {
-        let enable = false;
-        let currentStep = this.props.ViewMode ? this.props.ViewMode : null;
-
-        if (currentStep) {
-            enable = true;
-        }
-        if (this.props.match.params.pageId === `pg=${constant.PAGE_MONITORING}`) {
-            if (localStorage.selectRole === 'AdminManager') {
-                currentStep = monitoringSteps.stepsMonitoring;
-            } else if (localStorage.selectRole === 'DeveloperManager' || localStorage.selectRole === 'DeveloperContributor' || localStorage.selectRole === 'DeveloperViewer') {
-                currentStep = monitoringSteps.stepsMonitoringDev;
-            } else {
-                currentStep = monitoringSteps.stepsMonitoringOper;
-            }
-        }
-        _self.setState({steps: currentStep})
-        if (enable) {
-            _self.setState({stepsEnabled: true, enable: true})
-        }
-    }
-
     UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-
         if ((nextProps.alertInfo !== _self.props.alertInfo) && nextProps.alertInfo.mode) {
             let alertInfo = {msg: nextProps.alertInfo.msg, severity: nextProps.alertInfo.mode}
             nextProps.handleAlertInfo(undefined, undefined);
             this.setState({mexAlertMessage: alertInfo})
         }
 
-        let tutorial = localStorage.getItem('TUTORIAL')
-
-        let formKey = Object.keys(nextProps.formInfo);
-        if (formKey.length) {
-            if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
-                if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({stepsEnabled: false})
-                }
-            }
-        }
-
-        let enable = true;
-        setTimeout(() => {
-            if (enable && !_self.state.learned && !tutorial) {
-                _self.enableSteps();
-                _self.setState({stepsEnabled: true, learned: true})
-                localStorage.setItem('TUTORIAL', 'done')
-            }
-
-        }, 1000)
-
-        if (!_self.props.changeStep || _self.props.changeStep === '02') {
-            _self.setState({enable: true})
-        } else {
-            _self.setState({enable: false})
-        }
+        // let formKey = Object.keys(nextProps.formInfo);
+        // if (formKey.length) {
+        //     if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
+        //         if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
+        //             _self.setState({stepsEnabled: false})
+        //         }
+        //     }
+        // }
     }
 
     onExit() {
@@ -169,7 +125,7 @@ class SiteFour extends React.Component {
                         />
                     </div> : null}
                 <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={_self.state.email}
-                         data={_self.props.userInfo.info} helpClick={_self.enableSteps} viewMode={_self.props.ViewMode}
+                         data={_self.props.userInfo.info} helpClick={()=>{this.setState({steps: currentStep, stepsEnabled: true, enable: true})}} viewMode={_self.props.ViewMode}
                          userRole={this.state.userRole}/>
 
                 {this.state.mexAlertMessage ?
@@ -190,26 +146,20 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-
-    let tutorState = (state.tutorState) ? state.tutorState.state : null;
     let formInfo = (state.form) ? state.form : null;
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let ViewMode = (state.ViewMode) ? state.ViewMode.mode : null;
-    let changeStep = (state.changeStep) ? state.changeStep.step : null;
 
     return {
         isShowHeader: state.HeaderReducer.isShowHeader,
-        userToken: (state.userToken) ? state.userToken : null,
         userInfo: state.userInfo ? state.userInfo : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
         alertInfo: {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
         },
-        changeStep: changeStep,
         ViewMode: ViewMode,
-        tutorState: tutorState,
         formInfo: formInfo,
         submitInfo: submitInfo,
         regionInfo: regionInfo
@@ -218,24 +168,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => {
-            dispatch(actions.changeSite(data))
-        },
-        handleChangeStep: (data) => {
-            dispatch(actions.changeStep(data))
-        },
-        handleUserInfo: (data) => {
-            dispatch(actions.userInfo(data))
-        },
         handleLoadingSpinner: (data) => {
             dispatch(actions.loadingSpinner(data))
         },
         handleAlertInfo: (mode, msg) => {
             dispatch(actions.alertInfo(mode, msg))
         },
-        handleViewMode: (data) => {
-            dispatch(actions.viewMode(data))
-        }
     };
 };
 

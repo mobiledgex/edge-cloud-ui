@@ -19,14 +19,12 @@ import * as serverData from '../../../services/model/serverData'
 import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import { appInstTutor } from "../../../tutorial";
+import { HELP_APP_INST_REG } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
 import { SHOW_ORG_CLOUDLET, SHOW_CLUSTER_INST, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-
-const appInstSteps = appInstTutor();
 
 class ClusterInstReg extends React.Component {
     constructor(props) {
@@ -704,7 +702,7 @@ class ClusterInstReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode(appInstSteps.stepsCreateAppInst)
+        this.props.handleViewMode(HELP_APP_INST_REG)
     }
 };
 

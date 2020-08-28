@@ -11,10 +11,7 @@ import {fields, getOrganization} from '../../../../services/model/format';
 import {getOrganizationList} from '../../../../services/model/organization';
 import {updatePrivacyPolicy, createPrivacyPolicy} from '../../../../services/model/privacyPolicy';
 import * as serverData from '../../../../services/model/serverData';
-import {PolicyTutor} from "../../../../tutorial";
-
-const policySteps = PolicyTutor();
-
+import {HELP_PRIVACY_POLICY_REG} from "../../../../tutorial";
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
@@ -344,7 +341,7 @@ class AutoProvPolicyReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( policySteps.stepsNewPolicyPrivacy )
+        this.props.handleViewMode( HELP_PRIVACY_POLICY_REG )
     }
 };
 
