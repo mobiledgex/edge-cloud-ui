@@ -107,7 +107,6 @@ function mapStateToProps(state) {
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleUserInfo: (data) => { dispatch(actions.userInfo(data)) },

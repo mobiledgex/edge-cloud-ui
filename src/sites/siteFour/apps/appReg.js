@@ -18,16 +18,13 @@ import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/m
 import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import { appTutor } from "../../../tutorial";
+import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
 import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-
-
-const appSteps = appTutor();
 
 class AppReg extends React.Component {
     constructor(props) {
@@ -895,7 +892,7 @@ class AppReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode(appSteps.stepsCreateApp)
+        this.props.handleViewMode(HELP_APP_REG)
     }
 
 };

@@ -13,10 +13,8 @@ import { fields } from '../../../services/model/format';
 //model
 import { keys, createOrganization, updateOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
-import {organizationTutor} from "../../../tutorial";
+import {HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1} from "../../../tutorial";
 import { List } from "@material-ui/core";
-
-const orgaSteps = organizationTutor();
 
 const stepData = [
     {
@@ -183,7 +181,7 @@ class OrganizationReg extends React.Component {
         }
         else {
             this.setState({ step: 2 });
-            this.props.handleViewMode( orgaSteps.stepsNewOrg3 );
+            this.props.handleViewMode( HELP_ORG_REG_3 );
         }
     }
 
@@ -225,7 +223,7 @@ class OrganizationReg extends React.Component {
             step: 1,
             forms: forms
         })
-        this.props.handleViewMode( orgaSteps.stepsNewOrg2 );
+        this.props.handleViewMode( HELP_ORG_REG_2 );
     }
 
 
@@ -406,7 +404,7 @@ class OrganizationReg extends React.Component {
                 this.organizationInfo = data
                 this.addUserForm(data)
                 this.setState({ step: 1 })
-                this.props.handleViewMode(orgaSteps.stepsNewOrg2);
+                this.props.handleViewMode(HELP_ORG_REG_2);
                 return
             }
         }
@@ -434,7 +432,7 @@ class OrganizationReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( orgaSteps.stepsNewOrg )
+        this.props.handleViewMode( HELP_ORG_REG_1 )
     }
 
 };
