@@ -89,10 +89,11 @@ export default class PopDetailViewer extends React.Component {
     componentDidMount() {
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.open) {
-            this.setState({ open: nextProps.open});
+    static getDerivedStateFromProps(props, state) {
+        if (props.open) {
+            return { open: props.open}
         }
+        return null
     }
 
     close(mode) {

@@ -8,11 +8,8 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 //model
 import { createFlavor } from '../../../services/model/flavor';
-import { flavorTutor } from "../../../tutorial";
+import { HELP_FLAVOR_REG } from "../../../tutorial";
 import { Grid } from 'semantic-ui-react';
-
-
-const flavorSteps = flavorTutor();
 
 class FlavorReg extends React.Component {
     constructor(props) {
@@ -24,8 +21,6 @@ class FlavorReg extends React.Component {
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
-
-
 
     formKeys = () => {
         return [
@@ -162,7 +157,7 @@ class FlavorReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data);
-        this.props.handleViewMode(flavorSteps.stepsCreateFlavor)
+        this.props.handleViewMode(HELP_FLAVOR_REG)
     }
 };
 

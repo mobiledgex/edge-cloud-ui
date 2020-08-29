@@ -158,6 +158,7 @@ import {getMexTimezone} from '../../../../utils/sharedPreferences_util';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AddItemPopupContainerNew from "../components/AddItemPopupContainerNew";
 import ClockComponent from "../components/ClockComponent";
+import { HELP_MONITORING } from '../../../../tutorial';
 
 const {RangePicker} = DatePicker;
 const {Option} = Select;
@@ -699,6 +700,7 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
 
 
             componentDidMount = async () => {
+                this.props.handleViewMode(HELP_MONITORING)
                 moment.tz.setDefault(getMexTimezone())
                 window.addEventListener('MexTimezoneChangeEvent', () => {
                     this.setState({timezoneChange: !this.state.timezoneChange})

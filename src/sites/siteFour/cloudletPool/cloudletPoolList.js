@@ -9,10 +9,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
 import { showCloudletLinkOrg } from '../../../services/model/cloudletLinkOrg';
 import CloudletPoolReg from './cloudletPoolReg';
-import {CloudletPoolTutor} from "../../../tutorial";
-
-const cloudletPoolSteps = CloudletPoolTutor();
-
+import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
 class ClouldetPoolList extends React.Component {
     constructor(props) {
         super(props);
@@ -63,7 +60,7 @@ class ClouldetPoolList extends React.Component {
             sortBy: [fields.poolName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : cloudletPoolSteps.stepsCloudletPool
+            viewMode : HELP_CLOUDLET_POOL_LIST
         })
     }
 

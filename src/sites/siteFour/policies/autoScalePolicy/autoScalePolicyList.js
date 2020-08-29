@@ -7,11 +7,7 @@ import * as actions from '../../../../actions';
 
 import AutoScalePolicyReg from './autoScalePolicyReg'
 import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
-import {PolicyTutor} from "../../../../tutorial";
-
-
-const policySteps = PolicyTutor();
-
+import {HELP_POLICY_LIST} from "../../../../tutorial";
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -50,7 +46,7 @@ class AutoScalePolicy extends React.Component {
             sortBy: [fields.region, fields.autoScalePolicyName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : policySteps.stepsPolicy
+            viewMode : HELP_POLICY_LIST
         })
     }
 

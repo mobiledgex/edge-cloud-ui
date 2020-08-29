@@ -7,12 +7,6 @@ import {TOGGLE_LOADING} from "./ActionTypes";
 import {TOGGLE_THEME} from "./ActionTypes";
 import {SET_CHART_DATAS} from "./ActionTypes";
 
-export function changeSite(state) {
-    return {
-        type: types.CHANGE_SITE,
-        site: state
-    };
-}
 
 export function viewMode(mode) {
     return {
@@ -117,13 +111,6 @@ export function refreshData({params}) {
     return {
         type: types.REFRESH_DATA,
         params
-    }
-}
-
-export function btnManagement(view) {
-    return {
-        type: types.BTN_MANAGEMENT,
-        view
     }
 }
 

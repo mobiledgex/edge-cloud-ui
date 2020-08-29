@@ -41,6 +41,9 @@ export const PageDevMonitoringMapDispatchToProps = (dispatch) => {
         },
         setChartDataSets: (data) => {
             dispatch(actions.setChartDataSets(data))
+        },
+        handleViewMode: (data) => { 
+            dispatch(actions.viewMode(data)) 
         }
     };
 };

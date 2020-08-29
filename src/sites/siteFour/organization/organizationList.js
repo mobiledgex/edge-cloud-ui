@@ -12,9 +12,8 @@ import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
 
 import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
-import {organizationTutor} from "../../../tutorial";
+import {HELP_ORG_LIST} from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-const orgaSteps = organizationTutor();
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -155,8 +154,6 @@ class OrganizationList extends React.Component {
     }
 
     requestInfo = () => {
-        let mode = (localStorage.selectRole === 'AdminManager')? orgaSteps.stepsOrgDataAdmin : orgaSteps.stepsOrgDataDeveloper ;
-
         return ({
             id: 'Organizations',
             headerLabel: 'Organizations',
@@ -165,7 +162,7 @@ class OrganizationList extends React.Component {
             sortBy: [fields.organizationName],
             keys: this.keys,
             additionalDetail: shared.additionalDetail,
-            viewMode: mode,
+            viewMode: HELP_ORG_LIST,
             grouping : true
         })
     }
