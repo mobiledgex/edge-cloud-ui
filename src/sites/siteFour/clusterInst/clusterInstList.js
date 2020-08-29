@@ -46,10 +46,14 @@ class ClusterInstView extends React.Component {
         }
     }
 
+    updateVisible = (data) => {
+        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES
+    }
+
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type:'Edit' },
-            { label: 'Delete', onClick: deleteClusterInst, dialogMessage: this.getDeleteActionMessage, ws: true, type:'Edit' }
+            { label: 'Update', onClick: this.onAdd, visible: this.updateVisible, type: 'Edit' },
+            { label: 'Delete', onClick: deleteClusterInst, dialogMessage: this.getDeleteActionMessage, ws: true, type: 'Edit' }
         ]
     }
 
