@@ -361,7 +361,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false },
+            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false, update:true },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
