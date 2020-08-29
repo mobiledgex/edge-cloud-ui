@@ -103,32 +103,33 @@ const policy = (type, isDoc) => {
                     intro: 'Click this button to perform "Add Cloudlets", "Delete Cloudlets" and "Delete".'
                 }
             ]
-        case HELP_AUTO_PROV_REG: [
-            {
-                element: '.formRow-1',
-                intro: 'Select Region.'
-            },
-            {
-                element: '.formRow-2',
-                intro: 'Select Organization.'
-            },
-            {
-                element: '.formRow-3',
-                intro: 'Enter Auto Provisioning Policy Name.'
-            },
-            {
-                element: '.formRow-4',
-                intro: 'Enter Deploy Request Count.'
-            },
-            {
-                element: '.formRow-5',
-                intro: 'Enter Deploy Interval Count (s).'
-            },
-            {
-                element: '.formButton-6',
-                intro: 'Click this button to create Policy.'
-            },
-        ]
+        case HELP_AUTO_PROV_REG:
+            return [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select Region.'
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'Select Organization.'
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'Enter Auto Provisioning Policy Name.'
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'Enter Deploy Request Count.'
+                },
+                {
+                    element: '.formRow-5',
+                    intro: 'Enter Deploy Interval Count (s).'
+                },
+                {
+                    element: '.formButton-6',
+                    intro: 'Click this button to create Policy.'
+                },
+            ]
         case HELP_AUTO_PROV_REG_2:
             return [
                 {
@@ -384,6 +385,10 @@ const flavor = (type, isDoc) => {
                             intro: 'Click this button to perform "Delete".'
                         }
                     ]
+                }
+                else
+                {
+                    return null
                 }
             case HELP_FLAVOR_REG:
                 return [
