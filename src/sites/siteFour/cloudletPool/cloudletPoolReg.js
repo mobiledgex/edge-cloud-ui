@@ -16,10 +16,7 @@ import { createCloudletPool, updateCloudletPool } from '../../../services/model/
 import { createLinkPoolOrg, deleteLinkPoolOrg } from '../../../services/model/cloudletLinkOrg';
 
 import * as constant from '../../../constant';
-import { CloudletPoolTutor } from "../../../tutorial";
-
-
-const cloudletPoolSteps = CloudletPoolTutor();
+import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
 
 const stepData = [
     {
@@ -187,7 +184,7 @@ class CloudletPoolReg extends React.Component {
                 step: 1,
                 forms: step
             })
-            this.props.handleViewMode(cloudletPoolSteps.stepsNewPool3)
+            this.props.handleViewMode(HELP_CLOUDLET_POOL_REG_3)
         }
         else {
             this.props.handleAlertInfo('error', 'No organizations to unlink')
@@ -372,7 +369,7 @@ class CloudletPoolReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode(cloudletPoolSteps.stepsNewPool);
+        this.props.handleViewMode(HELP_CLOUDLET_POOL_REG_1);
     }
 };
 

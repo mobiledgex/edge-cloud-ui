@@ -8,10 +8,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
-import {appTutor} from "../../../tutorial";
-
-const appSteps = appTutor();
-
+import {HELP_APP_LIST} from "../../../tutorial";
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -57,7 +54,7 @@ class AppList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : appSteps.stepsApp,
+            viewMode : HELP_APP_LIST,
             grouping : true
         })
     }

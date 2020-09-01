@@ -42,7 +42,7 @@ const MexCheckbox = (props) => {
     )
 
     const getForm = ()=>(
-       <Form.Checkbox toggle onChange={(e, { checked })=>onChange(checked)} checked={value}/>
+       <Form.Checkbox toggle onChange={(e, { checked })=>onChange(checked)} checked={value} disabled={form.rules && form.rules.disabled}/>
     )
     return (
         form ?

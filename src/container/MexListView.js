@@ -252,7 +252,7 @@ class MexListView extends React.Component {
     }
 
     onMapClick = (mapDataList) => {
-        let filterList = this.onFilterValue()
+        let filterList = this.onFilterValue(undefined)
         if (mapDataList) {
             this.mapDetails = mapDataList
             let coordinates = mapDataList.coordinates
@@ -333,7 +333,10 @@ class MexListView extends React.Component {
 
     onFilterValue = (value) => {
         this.mapDetails = null
-        this.filterText = value ? value.toLowerCase() : this.filterText
+        if (value !== undefined && value.length >= 0) {
+            this.filterText = value.toLowerCase()
+        }
+
         let dataList = this.state.dataList
         let filterCount = 0
         let filterList = this.filterText.length > 0 ? dataList.filter(data => {
@@ -406,10 +409,6 @@ class MexListView extends React.Component {
             case ACTION_SEARCH:
                 this.onFilterValue(value)
                 break;
-            case ACTION_CLEAR:
-                this.filterText = ''
-                this.onFilterValue(this.filterText)
-                break;
             default:
 
         }
@@ -476,8 +475,7 @@ class MexListView extends React.Component {
             dataList: Object.assign([], dataList),
             newDataList : newDataList
         })
-        this.setState({ filterList: this.onFilterValue() })
-        this.props.handleViewMode(this.requestInfo.viewMode);
+        this.setState({ filterList: this.onFilterValue(undefined) })
     }
 
     dataFromServer = (region) => {
@@ -501,7 +499,7 @@ class MexListView extends React.Component {
 
     componentDidMount() {
         this.dataFromServer(REGION_ALL)
-        this.props.handleViewMode(null)
+        this.props.handleViewMode(this.requestInfo.viewMode);
     }
 }
 

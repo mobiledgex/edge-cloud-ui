@@ -5,10 +5,10 @@ import Timeline, {
     DateHeader
 } from 'react-calendar-timeline'
 import "react-calendar-timeline/lib/Timeline.css";
-import { Card, Button } from '@material-ui/core'
+import { Button, IconButton } from '@material-ui/core'
 import '../../../../../node_modules/react-calendar-timeline/lib/Timeline.css'
 import * as dateUtil from '../../../../utils/date_util'
-import * as moment from 'moment'
+import RefreshIcon from '@material-ui/icons/Refresh';
 import './style.css'
 
 const keys = {
@@ -39,14 +39,12 @@ class CalendarTimeline extends React.Component {
     }
 
     handleTimeChangeSecond = (visibleTimeStart, visibleTimeEnd, updateScrollCanvas) => {
-        //updateScrollCanvas(moment(new Date()).valueOf(), moment(new Date()).valueOf())
-        if (visibleTimeStart >= startRange && visibleTimeEnd <= endRange) {
-            this.setState({ visibleTimeStart, visibleTimeEnd })
-        }
-        else {
-            this.setState({ visibleTimeStart: startRange, visibleTimeEnd: endRange })
-        }
+        this.setState({ visibleTimeStart, visibleTimeEnd })
     };
+
+    onReset = () => {
+        this.setState({ visibleTimeStart: startRange, visibleTimeEnd: endRange })
+    }
 
     itemRenderer = ({ item, timelineContext, itemContext, getItemProps, getResizeProps }) => {
         const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
@@ -54,14 +52,13 @@ class CalendarTimeline extends React.Component {
         const borderColor = itemContext.resizing ? "red" : item.color;
         return (
             <div
+                style={{height:20}}
                 {...getItemProps({
                     style: {
                         backgroundColor,
                         color: '#FFF',
-                        // borderColor,
-                        // borderStyle: "solid",
-                        // borderWidth: 1,
-                        // borderRadius: 4,
+                        borderRadius:4,
+                        border:'none',
                         borderLeftWidth: itemContext.selected ? 3 : 1,
                         borderRightWidth: itemContext.selected ? 3 : 1
                     },
@@ -91,10 +88,10 @@ class CalendarTimeline extends React.Component {
 
     render() {
         return (
-            <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#292c33' }}>
-                {/* <Button>{"< Prev"}</Button>
-            <Button>{"Next >"}</Button> */}
-
+            <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', padding: 10 }}>
+                <IconButton aria-label="refresh" onClick={this.onReset}>
+                    <RefreshIcon style={{ color: '#76ff03' }} />
+                </IconButton>
                 <Timeline
                     scrollRef={el => (this.scrollRef = el)}
                     groups={this.props.groupList}
@@ -108,22 +105,28 @@ class CalendarTimeline extends React.Component {
                     itemTouchSendsClick={false}
                     stackItems
                     lineHeight={60}
-                    itemHeightRatio={0.75}
+                    itemHeightRatio={0.50}
                     visibleTimeStart={this.state.visibleTimeStart}
                     visibleTimeEnd={this.state.visibleTimeEnd}
                     onTimeChange={this.handleTimeChangeSecond}
+                    verticalLineClassNamesForTime={(timeStart, timeEnd) => {
+                        return []
+                    }}
                     itemRenderer={this.itemRenderer} >
                     <TimelineHeaders>
                         <SidebarHeader>
                             {({ getRootProps }) => {
-                                return <div {...getRootProps()} style={{ backgroundColor: '#292c33', width: 150, padding: 20 }}>Event Log</div>
+                                return <div {...getRootProps()} style={{ backgroundColor: '#1E2123', width: 150, padding: 20, borderBottom:'1px solid #BBBBBB' }}>Event Log</div>
                             }}
                         </SidebarHeader>
-                        <DateHeader unit="primaryHeader" style={{ backgroundColor: '#292c33' }} />
+                        <DateHeader unit="primaryHeader" style={{ backgroundColor: '#1E2123' }} />
                         <DateHeader />
                     </TimelineHeaders>
                 </Timeline>
             </div>)
+    }
+
+    componentDidMount() {
     }
 }
 

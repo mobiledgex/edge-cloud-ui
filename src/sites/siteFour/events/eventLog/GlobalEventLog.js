@@ -6,12 +6,16 @@ import * as actions from '../../../../actions';
 import { IconButton, Drawer, Grid, Paper } from '@material-ui/core';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import EventLog from './EventLog'
+import { showClusterInsts } from '../../../../services/model/clusterInstance'
+import { showAppInsts } from '../../../../services/model/appInstance'
 import { clusterEventLogs } from '../../../../services/model/clusterEvent'
 import { appInstEventLogs } from '../../../../services/model/appInstEvent'
 import { fields } from '../../../../services/model/format';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
 import MexCalendar from './MexCalendar'
+import { showSyncMultiData } from '../../../../services/model/serverData';
+import { SHOW_CLUSTER_INST } from '../../../../services/model/endPointTypes';
 
 const drawerWidth = 450
 const styles = theme => ({
@@ -112,15 +116,21 @@ class GlobalEventLogs extends React.Component {
     }
 
     updateData = (eventData) => {
-        console.log('Rahul1234', eventData)
         let keys = Object.keys(eventData)
-        let liveData = this.state.liveData
+        let oldEventData = this.state.liveData
         keys.map(key => {
-            if (liveData[key]) {
-                liveData[key].push(eventData)
-            }
-            else {
-                this.setState({ liveData: eventData })
+            if (eventData[key]) {
+                if (oldEventData[key]) {
+                    oldEventData[key].values.push(eventData[key].values)
+                }
+                else {
+                    let colorType = eventData[key].colorType
+                    let columns = eventData[key].columns
+                    let values = eventData[key].values
+                    oldEventData = {}
+                    oldEventData[key] = { columns: columns, colorType: colorType, values: [values] } 
+                }
+                this.setState({ liveData: oldEventData })
             }
         })
     }
@@ -128,12 +138,40 @@ class GlobalEventLogs extends React.Component {
     eventLogData = async () => {
         let data = {}
         data[fields.region] = 'EU'
-        data[fields.organizationName] = localStorage.getItem('selectOrg')
-        let eventData = await clusterEventLogs(this, data)
-        this.updateData(eventData)
-        //eventData = await appInstEventLogs(this, data)
-        //this.updateData(eventData)
+        let requestList = []
+        requestList.push(showClusterInsts(data))
+        requestList.push(showAppInsts(data))
+        let mcRequestList = await showSyncMultiData(this, requestList)
+        if(mcRequestList && mcRequestList.length>0)
+        {
+            let eventRequestList = []
+            mcRequestList.map((mcRequest)=>{
+                let request = mcRequest.request
+                if(mcRequest.response && mcRequest.response.data)
+                {
+                    let dataList = mcRequest.response.data
+                    if(request.method === SHOW_CLUSTER_INST)
+                    {
+                        dataList.map(item=>{
+                            eventRequestList.push(clusterEventLogs(item))
+                        }) 
+                    }
+                }
+            })
+            if (eventRequestList.length > 0) {
 
+                let eventResponseList = await showSyncMultiData(this, eventRequestList)
+                if (eventResponseList && eventResponseList.length > 0) {
+                    eventResponseList.map((mcRequest)=>{
+                        if(mcRequest.response && mcRequest.response.data)
+                        {
+                            let data = mcRequest.response.data
+                            this.updateData(data)
+                        }
+                    })
+                }
+            }
+        }
     }
 
     componentDidMount() {

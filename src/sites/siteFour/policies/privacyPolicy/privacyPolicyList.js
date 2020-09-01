@@ -8,11 +8,7 @@ import * as actions from '../../../../actions';
 import PrivacyPolicyReg from './privacyPolicyReg'
 import { keys, fields, showPrivacyPolicies, deletePrivacyPolicy, multiDataRequest } from '../../../../services/model/privacyPolicy';
 import { showApps } from '../../../../services/model/app';
-import {PolicyTutor} from "../../../../tutorial";
-
-
-const policySteps = PolicyTutor();
-
+import {HELP_POLICY_LIST} from "../../../../tutorial";
 class PrivacyPolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -61,7 +57,7 @@ class PrivacyPolicy extends React.Component {
             sortBy: [fields.region, fields.privacyPolicyName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : policySteps.stepsPolicy
+            viewMode : HELP_POLICY_LIST
         })
     }
 

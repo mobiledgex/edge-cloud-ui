@@ -236,45 +236,58 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     return values
 }
 
-export const formatEventData = (mcRequest, customData) => {
-    let eventData = {}
-    if (mcRequest && mcRequest.response) {
-        let response = mcRequest.response
-        let body = mcRequest.request.data
-        if (response.data && response.data.data) {
+export const colorType = (value) => {
+    switch (value) {
+        case 'UP':
+            return '#66BB6A'
+        case 'DOWN':
+            return '#EF5350'
+        case 'RESERVED':
+            return '#66BB6A'
+        case 'UNRESERVED':
+            return '#FF7043'
+        case 'DELETED':
+            return '#EF5350'
+        default:
+            return undefined
+    }
+}
+
+export const formatColumns = (columns, keys)=>
+{
+    let newColumns = []
+    keys.map(key=>{
+        newColumns[columns.indexOf(key.serverField)] = key
+    })
+    return newColumns
+}
+
+export const formatEventData = (response, body, keys) => {
+    let formatted = {}
+    try {
+        if (response && response.data && response.data.data) {
             let dataList = response.data.data;
             if (dataList && dataList.length > 0) {
                 let series = dataList[0].Series
                 let messages = dataList[0].messages
                 if (series && series.length > 0) {
-                    let formattedList = []
-                    let eventType = series[0].name
+                    let formattingData = {}
                     let columns = series[0].columns
-                    let valuesArray = series[0].values
-                    if (columns && columns.length > 0) {
-                        try {
-                            for (let i = 0; i < valuesArray.length; i++) {
-                                let formatted = {}
-                                if (body) { formatted.region = body.region }
-                                let values = valuesArray[i]
-                                for (let j = 0; j < values.length; j++) {
-                                    formatted[columns[j]] = values[j];
-
-                                }
-                                //customData(formatted)
-                                formattedList.push(formatted)
-                            }
-                        }
-                        catch (e) {
-                            alert(e)
-                        }
-                    }
-                    eventData = { eventType: eventType, data: formattedList }
+                    let values = series[0].values
+                    let key = series[0].name
+                    formattingData['columns'] = formatColumns(columns, keys)
+                    formattingData['values'] = values
+                    formattingData['colorType'] = colorType
+                    formatted[key] = formattingData
+                    return formatted
                 }
             }
         }
     }
-    return eventData
+    catch (e) {
+        alert(e)
+    }
+    return formatted
 }
 
 export const compareObjects = (newData, oldData, ignoreCase) => {

@@ -428,7 +428,7 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (hardwareType === HARDWARE_TYPE.BYTESSENT || hardwareType === HARDWARE_TYPE.SENDBYTES || hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.RECVBYTES) {
                     series = item.networkSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION || hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION || hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                    series = item.networkSeriesList
+                    series = item.connectionsSeriesList
                 } else if (hardwareType === HARDWARE_TYPE.NETSEND || hardwareType === HARDWARE_TYPE.NETRECV || hardwareType === HARDWARE_TYPE.MEM_USED || hardwareType === HARDWARE_TYPE.DISK_USED || hardwareType === HARDWARE_TYPE.VCPU_USED) {
                     series = item.series //todo:for cloudllet
                 } else if (hardwareType === HARDWARE_TYPE.FLOATING_IP_USED || hardwareType === HARDWARE_TYPE.IPV4_USED) {
@@ -1849,7 +1849,14 @@ export const makeDropdownForCloudlet = (pList) => {
         })
 
         newArrayList = sortBy(newArrayList, [object => object.text.toLowerCase()], ['asc']);
-        return newArrayList;
+        let nameSortedArrayList = insert(newArrayList, 0, {
+            region: undefined,
+            key: 'Reset',
+            value: undefined,
+            text: 'Reset Filter',
+        })
+
+        return nameSortedArrayList;
     } catch (e) {
 
     }

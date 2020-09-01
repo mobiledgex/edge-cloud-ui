@@ -11,9 +11,7 @@ import ClouldletReg from './cloudletReg';
 import * as constant from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
-import {CloudletTutor} from "../../../tutorial";
-
-const cloudletSteps = CloudletTutor();
+import {HELP_CLOUDLET_LIST} from "../../../tutorial";
 
 class CloudletList extends React.Component {
     constructor(props) {
@@ -65,7 +63,6 @@ class CloudletList extends React.Component {
 
 
     requestInfo = () => {
-        let mode = localStorage.selectRole.includes(constant.DEVELOPER)? null : cloudletSteps.stepsCloudlet
         return ({
             id: 'Cloudlets',
             headerLabel: 'Cloudlets',
@@ -77,7 +74,7 @@ class CloudletList extends React.Component {
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd() ? this.onAdd : undefined,
-            viewMode : mode,
+            viewMode : HELP_CLOUDLET_LIST,
             grouping : true
         })
     }

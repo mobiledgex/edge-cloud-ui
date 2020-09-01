@@ -254,6 +254,9 @@ export function formatData(request, response) {
         case SHOW_CLOUDLET_LINKORG:
             data = CloudletLinkOrg.getData(response, request.data)
             break;
+        case CLUSTER_EVENT_LOG_ENDPOINT:
+            data = ClusterEvent.getData(response, request.data)
+            break;
         default:
             data = undefined;
     }

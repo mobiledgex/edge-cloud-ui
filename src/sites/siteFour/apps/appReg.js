@@ -18,16 +18,13 @@ import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/m
 import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import { appTutor } from "../../../tutorial";
+import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
 import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-
-
-const appSteps = appTutor();
 
 class AppReg extends React.Component {
     constructor(props) {
@@ -107,8 +104,8 @@ class AppReg extends React.Component {
     portForm = () => ([
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2 },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3 },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update:true },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update:true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
     ])
 
@@ -131,8 +128,8 @@ class AppReg extends React.Component {
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2 },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3 },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update:true },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update:true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
     ])
 
@@ -802,7 +799,7 @@ class AppReg extends React.Component {
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: true, tip: 'URI of where image resides' },
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, tip: 'Upgrade App Instances running in the cloudlets' },
+            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, update:true, tip: 'Upgrade App Instances running in the cloudlets' },
             { label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
             { label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
             { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
@@ -895,7 +892,7 @@ class AppReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode(appSteps.stepsCreateApp)
+        this.props.handleViewMode(HELP_APP_REG)
     }
 
 };

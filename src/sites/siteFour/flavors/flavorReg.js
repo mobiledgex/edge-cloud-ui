@@ -8,11 +8,8 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 //model
 import { createFlavor } from '../../../services/model/flavor';
-import { flavorTutor } from "../../../tutorial";
+import { HELP_FLAVOR_REG } from "../../../tutorial";
 import { Grid } from 'semantic-ui-react';
-
-
-const flavorSteps = flavorTutor();
 
 class FlavorReg extends React.Component {
     constructor(props) {
@@ -25,8 +22,6 @@ class FlavorReg extends React.Component {
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
-
-
     formKeys = () => {
         return [
             { label: 'Create Flavor', formType: MAIN_HEADER, visible: true },
@@ -35,7 +30,7 @@ class FlavorReg extends React.Component {
             { field: fields.ram, label: 'RAM Size', formType: INPUT, placeholder: 'Enter RAM Size (MB)', unit: 'MB', rules: { required: true, type: 'number' }, visible: true, tip: 'RAM in megabytes' },
             { field: fields.vCPUs, label: 'Number of vCPUs', formType: INPUT, placeholder: 'Enter Number of vCPUs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of virtual CPUs' },
             { field: fields.disk, label: 'Disk Space', formType: INPUT, placeholder: 'Enter Disk Space (GB)', unit: 'GB', rules: { required: true, type: 'number' }, visible: true, tip: 'Amount of disk space in gigabytes' },
-            { field: fields.gpu, label: 'GPU', formType: CHECKBOX, visible: true, value: false, tip: 'Optional Resources request, key = [gpu, nas, nic] gpu kinds: [gpu, vgpu, pci] form: $resource=$kind:[$alias]$count ex: optresmap=gpu=vgpus:nvidia-63:1' },
+            { field: fields.gpu, label: 'GPU', formType: CHECKBOX, visible: true, value: false, update:true, tip: 'Optional Resources request, key = [gpu, nas, nic] gpu kinds: [gpu, vgpu, pci] form: $resource=$kind:[$alias]$count ex: optresmap=gpu=vgpus:nvidia-63:1' },
         ]
     }
 
@@ -162,7 +157,7 @@ class FlavorReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data);
-        this.props.handleViewMode(flavorSteps.stepsCreateFlavor)
+        this.props.handleViewMode(HELP_FLAVOR_REG)
     }
 };
 

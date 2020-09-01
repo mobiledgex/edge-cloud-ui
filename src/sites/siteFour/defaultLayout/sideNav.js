@@ -161,9 +161,6 @@ export default function MiniDrawer(props) {
 
     const [page, setPage] = React.useState(defaultPage(options));
 
-
-
-
     const handleDrawerOpen = () => {
         setNavState(1)
         setOpen(true);
@@ -175,7 +172,7 @@ export default function MiniDrawer(props) {
     };
 
     const expandOptions = (option) => {
-        setExpand(expand === option.label ? undefined :option.label)
+        setExpand(expand === option.label ? undefined : option.label)
     }
 
     const onOptionClick = (option, i) => {

@@ -3,14 +3,14 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import SearchFilter from '../../auditLog/SearchFilter'
-import { Paper, Tabs, Tab, Stepper, Accordion, AccordionSummary, Step, StepLabel, Typography, IconButton, Grid, List, ListItem, ListItemText, Card, CardHeader } from '@material-ui/core';
+import { Paper, Tabs, Tab, IconButton, List, ListItem, Card, CardHeader } from '@material-ui/core';
 
 import * as dateUtil from '../../../../utils/date_util'
 import uuid from 'uuid'
 import GamesOutlinedIcon from '@material-ui/icons/GamesOutlined';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { fields } from '../../../../services/model/format';
+import HistoryLog from '../../auditLog/HistoryLog';
 import MexCalendar from './MexCalendar'
 
 class EventLog extends React.Component {
@@ -21,6 +21,7 @@ class EventLog extends React.Component {
             dataList: {},
             tabValue: 0,
             fullScreen: false,
+            activeIndex:0,
             calendarList:[],
             groupList:[]
         }
@@ -52,43 +53,12 @@ class EventLog extends React.Component {
         this.setState({ tabValue: value })
     }
 
-    stepperView = (eventList) => {
-        return (
-            <Stepper className='audit_timeline_container' activeStep={eventList.length} orientation="vertical">
-                {eventList.map((data, j) => (
-                    <Accordion key={j}>
-                        <AccordionSummary id={`event_${j}`}>
-
-                            {/* <Step>
-                                <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
-                                    {dateUtil.unixTime(dateUtil.FORMAT_FULL_TIME, data.time)}<br />
-                                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM, data.time)}
-                                </div>
-                            </Step>
-                            <StepLabel StepIconComponent={()=>(<div className='audit_timeline_Step'
-                                    style={{ backgroundColor: '#388e3c' }}
-                                >
-                                    
-                                </div>)}>
-                                
-                                <div className='audit_timeline_title'>{data.status}</div>
-                            </StepLabel> */}
-                        </AccordionSummary>
-                    </Accordion>
-                ))}
-            </Stepper>
-        )
-    }
-
     detailedView = () => {
 
     }
 
-    formatCalendarData = (data) => {
+    formatCalendarData = (dataList, columns, colorType) => {
         let formattedList = []
-        let columns = data.columns
-        let dataList = data.values
-        let colorType = data.colorType
         let time = columns[0]
         let groupList = []
         for (let k = 0; k < columns.length; k++) {
@@ -97,12 +67,14 @@ class EventLog extends React.Component {
                 groupList.push({ id: k, title: column.label, rightTitle: column.label, bgColor: "#FFF" })
                 for (let i = dataList.length - 1; i >= 0; i--) {
                     let data = dataList[i]
+                    let color = colorType(data[k])
+                    color = color ? color : i % 2 === 0 ? '#9F6BD3' : '#B990E1'
                     let calendar = {
                         id: uuid(),
                         group: k,
                         title: data[k],
                         className: "item-weekend",
-                        bgColor: colorType(data[k]),
+                        bgColor: color,
                         selectedBgColor: "rgba(167, 116, 219, 1)",
                         start: dateUtil.timeInMilli(data[0]),
                         end: dateUtil.timeInMilli(data[0])
@@ -121,28 +93,29 @@ class EventLog extends React.Component {
             }
 
         }
-        console.log('Rahul1234', formattedList)
         this.setState({calendarList:formattedList, groupList:groupList})
         return formattedList
     }
 
-    handleFullScreenView = (eventInfo) => {
-        this.formatCalendarData(eventInfo)
-        this.setState(prevState => ({ fullScreen: !prevState.fullScreen }), () => {
+    handleFullScreenView = (eventInfo, columns, colorType, activeIndex) => {
+        this.formatCalendarData(eventInfo, columns, colorType)
+        this.setState(prevState => ({ fullScreen: true, activeIndex : activeIndex}), () => {
             this.props.fullScreenView(this.state.fullScreen)
         })
     }
 
-    stepperView2 = (eventList, i) => {
-        console.log('Rahul1234', eventList)
+    stepperView = (eventData, i) => {
+        let columns = eventData.columns
+        let colorType = eventData.colorType
+        let eventList = eventData.values
         return eventList.map((event, j) => {
-            let latestData = event.values[0]
+            let latestData = event[0]
             return (
-                <Card key={j}>
+                <Card key={j} style={{backgroundColor:this.state.fullScreen && this.state.activeIndex === j ? '#1E2123' : 'transparent'}}>
                     <CardHeader
                         title={
                             <List>
-                                {event.columns.map((item, i) => {
+                                {columns.map((item, i) => {
                                     return item.visible ? <ListItem key={i}>
                                         <h6><strong>{item.label}</strong>{`: ${latestData[i]}`}</h6>
                                     </ListItem> : false
@@ -151,7 +124,7 @@ class EventLog extends React.Component {
                             </List>
                         }
                         action={
-                            <IconButton aria-label="developer" onClick={() => this.handleFullScreenView(event)}>
+                            <IconButton aria-label="developer" onClick={() => this.handleFullScreenView(event, columns, colorType, j)}>
                                 <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
                             </IconButton>
                         }
@@ -166,7 +139,7 @@ class EventLog extends React.Component {
         
         return (
             <div style={{ height: '100%' }}>
-                <div style={{ width: 450, display: 'inline-block', height:'100%',backgroundColor:'#292C33', verticalAlign: 'top' }}>
+                <div style={{ width: 450, display: 'inline-block', height:'100%',backgroundColor:'#292C33', verticalAlign: 'top', overflow:'auto' }}>
                     <Paper square>
                         <Tabs
                             value={tabValue}
@@ -176,46 +149,24 @@ class EventLog extends React.Component {
                                 return <Tab key={i} label={eventType} />
                             })}
                         </Tabs>
+                        <div style={{ position: 'absolute', right: 0, top: 2 }} onClick={this.props.close}>
+                            <IconButton>
+                                <ArrowForwardIosIcon fontSize={'small'} />
+                            </IconButton>
+                        </div>
                     </Paper>
                     <br />
-                    <SearchFilter />
                     <br /><br />
                     {Object.keys(dataList).map((eventType, i) => {
                         let eventList = dataList[eventType]
-                        return tabValue === i ? this.stepperView2(eventList, i) : null
+                        return tabValue === i ? this.stepperView(eventList, i) : null
                     })}
                 </div>
                 {fullScreen ?
-                    <div style={{ width: 'calc(100vw - 452px)',height:'100%', display: 'inline-block', backgroundColor:'#292C33'}}>
+                    <div style={{ width: 'calc(100vw - 452px)',height:'100%', display: 'inline-block', backgroundColor:'#1E2123'}}>
                         <MexCalendar dataList={calendarList} groupList={groupList}/>
                     </div> : null}
             </div>
-            // <Grid container>
-            //     <Grid item className='audit_container' xs={fullScreen ? 2 : 12}>
-            //         <Paper square>
-            //             <Tabs
-            //                 value={tabValue}
-            //                 onChange={this.onTabChange}
-            //                 variant="fullWidth">
-            //                 {Object.keys(dataList).map((eventType, i) => {
-            //                     return <Tab key={i} label={eventType} />
-            //                 })}
-            //             </Tabs>
-            //         </Paper>
-            //         <br />
-            //         <SearchFilter />
-            //         <br /><br />
-            //         {Object.keys(dataList).map((eventType, i) => {
-            //             let eventList = dataList[eventType]
-            //             return tabValue === i ? this.stepperView2(eventList, i) : null
-            //         })}
-            //     </Grid >
-            //     {fullScreen ?
-            //         <Grid item xs={10}>
-            //             <MexCalendar dataList={calendarList}/>
-            //         </Grid> : null
-            //     }
-            // </Grid>
         )
     }
 
