@@ -1,14 +1,19 @@
 
 import * as formatter from './format'
 import { APP_INST_EVENT_LOG_ENDPOINT } from './endPointTypes'
-import * as dateUtil from '../../utils/date_util'
 
-let fields = formatter.fields
-
-
-const customData = (value) => {
-    value[fields.time] = dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, value[fields.time])
-}
+export const appEventKeys = [
+    {label:'Date', serverField:'time', visible : false, detailedView : false},
+    {label:'App', serverField:'app', visible : true, detailedView : false, groupBy : true},
+    {label:'Version', serverField:'ver', visible : true, detailedView : false, groupBy : true},
+    {label:'Cluster', serverField:'cluster', visible : true, detailedView : false, groupBy : true},
+    {label:'Cluster Developer', serverField:'clusterorg', visible : true, detailedView : false, groupBy : true},
+    {label:'Cloudlet', serverField:'cloudlet', visible : true, detailedView : false, groupBy : true},
+    {label:'Operator', serverField:'cloudletorg', visible : true, detailedView : false, groupBy : true},
+    {label:'App Developer', serverField:'apporg', visible : false, detailedView : false, groupBy : true},
+    {label:'Event', serverField:'event', visible : true, detailedView : true},
+    {label:'Status', serverField:'status', visible : true, detailedView : true},
+]
 
 export const appInstEventLogs = (data) => {
     if (!formatter.isAdmin()) {
@@ -20,11 +25,10 @@ export const appInstEventLogs = (data) => {
             }
         }
     }
-    data.last = 50
-    return { method: APP_INST_EVENT_LOG_ENDPOINT, data: data }
+    return { method: APP_INST_EVENT_LOG_ENDPOINT, data: data, showSpinner:false}
 }
 
-export const getData = (mcRequest) => {
-        return formatter.formatEventData(mcRequest, customData)
+export const getData = (response, body) => { 
+    return formatter.formatEventData(response, body, appEventKeys)
 }
 

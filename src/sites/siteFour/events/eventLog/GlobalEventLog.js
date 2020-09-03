@@ -3,19 +3,19 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //redux
-import { IconButton, Drawer, Grid, Paper } from '@material-ui/core';
+import { IconButton, Drawer } from '@material-ui/core';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import EventLog from './EventLog'
-import { showClusterInsts } from '../../../../services/model/clusterInstance'
-import { showAppInsts } from '../../../../services/model/appInstance'
 import { clusterEventLogs } from '../../../../services/model/clusterEvent'
 import { appInstEventLogs } from '../../../../services/model/appInstEvent'
-import { fields } from '../../../../services/model/format';
+import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
+import { fields, getOrganization, getUserRole } from '../../../../services/model/format';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
-import MexCalendar from './MexCalendar'
 import { showSyncMultiData } from '../../../../services/model/serverData';
-import { SHOW_CLUSTER_INST } from '../../../../services/model/endPointTypes';
+import * as dateUtil from '../../../../utils/date_util'
+import cloneDeep from 'lodash/cloneDeep'
+import * as constant from '../../../../constant'
 
 const drawerWidth = 450
 const styles = theme => ({
@@ -69,119 +69,130 @@ class GlobalEventLogs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen: false,
+            isOpen: props.open,
             liveData: {},
-            fullscreen: false,
         }
         this.action = '';
         this.data = {};
+        this.intervalId = undefined;
+        this.endRange = dateUtil.currentUTCTime()
+        this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
     }
 
     /*Action menu block*/
 
-    fullScreenView = (flag) => {
-        this.setState({ fullscreen: flag })
-    }
-
-    handleOpen = () => {
-        this.setState({ isOpen: true, isOrg: false });
-    }
-
     handleClose = () => {
+        this.props.close()
         this.setState({ isOpen: false });
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.open) {
+            return { isOpen: props.open }
+        }
+        return null
     }
 
     render() {
         const { classes } = this.props;
-        const { isOpen, liveData, fullscreen } = this.state
+        const { isOpen, liveData } = this.state
         return (
             <React.Fragment>
-                <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
-                    <EventNoteIcon fontSize='default' />
-                </IconButton>
-                <Drawer className={clsx(fullscreen ? classes.drawer_full : classes.drawer, {
-                    [fullscreen ? classes.drawerOpen_full : classes.drawerOpen]: isOpen,
+                <Drawer className={clsx(classes.drawer_full, {
+                    [classes.drawerOpen_full]: isOpen,
                     [classes.drawerClose]: !isOpen,
                 })}
                     classes={{
                         paper: clsx({
-                            [fullscreen ? classes.drawerOpen_full : classes.drawerOpen]: isOpen,
+                            [classes.drawerOpen_full]: isOpen,
                             [classes.drawerClose]: !isOpen,
                         }),
                     }} anchor={'right'} open={isOpen}>
-                    <EventLog close={this.handleClose} liveData={liveData} fullScreenView={this.fullScreenView} />
+                    <EventLog close={this.handleClose} liveData={liveData} />
                 </Drawer>
             </React.Fragment>
         )
     }
 
     updateData = (eventData) => {
-        let keys = Object.keys(eventData)
-        let oldEventData = this.state.liveData
-        keys.map(key => {
-            if (eventData[key]) {
-                if (oldEventData[key]) {
-                    oldEventData[key].values.push(eventData[key].values)
-                }
-                else {
-                    let colorType = eventData[key].colorType
-                    let columns = eventData[key].columns
-                    let values = eventData[key].values
-                    oldEventData = {}
-                    oldEventData[key] = { columns: columns, colorType: colorType, values: [values] } 
-                }
-                this.setState({ liveData: oldEventData })
+        let liveData = cloneDeep(this.state.liveData)
+        Object.keys(eventData).map(key => {
+            if (liveData[key]) {
+                let values = eventData[key].values
+                Object.keys(values).map(dataKey => {
+                    let oldValues = liveData[key].values[dataKey]
+                    if (oldValues && oldValues.length > 0) {
+                        liveData[key].values[dataKey] = [...values[dataKey], ...oldValues]
+                    }
+                    else {
+                        liveData[key].values[dataKey] = values[dataKey]
+                    }
+                })
+            }
+            else {
+                liveData[key] = eventData[key]
             }
         })
+        this.setState({ liveData: liveData })
     }
 
-    eventLogData = async () => {
-        let data = {}
-        data[fields.region] = 'EU'
-        let requestList = []
-        requestList.push(showClusterInsts(data))
-        requestList.push(showAppInsts(data))
-        let mcRequestList = await showSyncMultiData(this, requestList)
-        if(mcRequestList && mcRequestList.length>0)
-        {
+    eventLogData = async (starttime, endtime, enableInterval) => {
+        let userRole = getUserRole()
+        if (userRole) {
+            let data = {}
+            data[fields.region] = 'EU'
+            data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+            data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
             let eventRequestList = []
-            mcRequestList.map((mcRequest)=>{
-                let request = mcRequest.request
-                if(mcRequest.response && mcRequest.response.data)
-                {
-                    let dataList = mcRequest.response.data
-                    if(request.method === SHOW_CLUSTER_INST)
-                    {
-                        dataList.map(item=>{
-                            eventRequestList.push(clusterEventLogs(item))
-                        }) 
-                    }
-                }
-            })
-            if (eventRequestList.length > 0) {
+            if (userRole.includes(constant.DEVELOPER)) {
+                eventRequestList.push(clusterEventLogs(data))
+                eventRequestList.push(appInstEventLogs(data))
+            }
+            if (userRole.includes(constant.OPERATOR)) {
+                eventRequestList.push(cloudletEventLogs(data))
+            }
+            let eventResponseList = await showSyncMultiData(this, eventRequestList)
 
-                let eventResponseList = await showSyncMultiData(this, eventRequestList)
-                if (eventResponseList && eventResponseList.length > 0) {
-                    eventResponseList.map((mcRequest)=>{
-                        if(mcRequest.response && mcRequest.response.data)
-                        {
-                            let data = mcRequest.response.data
+            if (eventResponseList && eventResponseList.length > 0) {
+                eventResponseList.map((mcRequest) => {
+                    if (mcRequest.response && mcRequest.response.data) {
+                        let data = mcRequest.response.data
+                        if (Object.keys(data).length > 0) {
                             this.updateData(data)
                         }
-                    })
+                    }
+                })
+            }
+
+            if (enableInterval) {
+                if (this.intervalId) {
+                    clearInterval(this.intervalId)
                 }
+                this.intervalId = setInterval(() => {
+                    this.startRange = cloneDeep(this.endRange)
+                    this.endRange = dateUtil.currentUTCTime()
+                    this.eventLogData(this.startRange, this.endRange)
+                }, 10 * 2000);
             }
         }
     }
 
     componentDidMount() {
-        let organization = localStorage.getItem('selectOrg')
-        if (organization) {
-            this.eventLogData()
+        if (getOrganization()) {
+            this.eventLogData(this.startRange, this.endRange, true)
         }
         window.addEventListener('SelectOrgChangeEvent', () => {
-            this.eventLogData()
+            this.endRange = dateUtil.currentUTCTime()
+            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            this.setState({ liveData: {} })
+            this.eventLogData(this.startRange, this.endRange, true)
         })
+
+
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalId);
     }
 };
 

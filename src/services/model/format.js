@@ -146,6 +146,8 @@ export const fields = {
     apps: 'apps',
     eventType: 'eventType',
     time: 'time',
+    starttime:'starttime',
+    endtime:'endtime'
 }
 
 export const getUserRole = () => {
@@ -262,6 +264,29 @@ export const formatColumns = (columns, keys)=>
     return newColumns
 }
 
+export const groupByCompare = (dataList, columns) => {
+    let keys = []
+    columns.map((item, i) => {
+        if (item.groupBy) {
+            keys.push(i)
+        }
+    })
+    return dataList.reduce((accumulator, x) => {
+        let key = ''
+        for (let i = 0; i < keys.length; i++) {
+            key = key + x[keys[i]]
+            if (i < keys.length - 1) {
+                key = key + '_'
+            }
+        }
+        if (!accumulator[key]) {
+            accumulator[key] = [];
+        }
+        accumulator[key].push(x);
+        return accumulator;
+    }, {})
+}
+
 export const formatEventData = (response, body, keys) => {
     let formatted = {}
     try {
@@ -272,12 +297,9 @@ export const formatEventData = (response, body, keys) => {
                 let messages = dataList[0].messages
                 if (series && series.length > 0) {
                     let formattingData = {}
-                    let columns = series[0].columns
-                    let values = series[0].values
                     let key = series[0].name
-                    formattingData['columns'] = formatColumns(columns, keys)
-                    formattingData['values'] = values
-                    formattingData['colorType'] = colorType
+                    formattingData.columns = formatColumns(series[0].columns, keys)
+                    formattingData.values = groupByCompare(series[0].values, formattingData.columns)
                     formatted[key] = formattingData
                     return formatted
                 }

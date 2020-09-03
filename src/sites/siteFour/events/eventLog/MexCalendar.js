@@ -9,6 +9,8 @@ import { Button, IconButton } from '@material-ui/core'
 import '../../../../../node_modules/react-calendar-timeline/lib/Timeline.css'
 import * as dateUtil from '../../../../utils/date_util'
 import RefreshIcon from '@material-ui/icons/Refresh';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import './style.css'
 
 const keys = {
@@ -26,7 +28,7 @@ const keys = {
 
 
 const endRange = dateUtil.endOfDay().valueOf()
-const startRange = dateUtil.subtractDays(30, endRange).valueOf()
+const startRange = dateUtil.startOfDay().valueOf()
 
 class CalendarTimeline extends React.Component {
 
@@ -34,12 +36,13 @@ class CalendarTimeline extends React.Component {
         super(props)
         this.state = {
             visibleTimeStart: startRange,
-            visibleTimeEnd: endRange
+            visibleTimeEnd: endRange,
+            scrolling: true
         }
     }
 
     handleTimeChangeSecond = (visibleTimeStart, visibleTimeEnd, updateScrollCanvas) => {
-        this.setState({ visibleTimeStart, visibleTimeEnd })
+        this.setState({ visibleTimeStart, visibleTimeEnd, scrolling: true })
     };
 
     onReset = () => {
@@ -86,12 +89,40 @@ class CalendarTimeline extends React.Component {
         );
     }
 
+    onPrevClick = () => {
+        const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
+        this.setState(state => ({
+          visibleTimeStart: state.visibleTimeStart - zoom,
+          visibleTimeEnd: state.visibleTimeEnd - zoom,
+          //used to apply animation effect if scroll is programmatic
+          scrolling: false
+        }));
+      };
+    
+      onNextClick = () => {
+        const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
+        this.setState(state => ({
+          visibleTimeStart: state.visibleTimeStart + zoom,
+          visibleTimeEnd: state.visibleTimeEnd + zoom,
+          //used to apply animation effect if scroll is programmatic
+          scrolling: false
+        }));
+      };
+
     render() {
         return (
             <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', padding: 10 }}>
-                <IconButton aria-label="refresh" onClick={this.onReset}>
-                    <RefreshIcon style={{ color: '#76ff03' }} />
-                </IconButton>
+                <div style={{marginBottom:10}}>
+                    <IconButton onClick={this.onPrevClick}>
+                        <ArrowBackIosIcon fontSize='small' style={{ color: '#76ff03' }} />
+                    </IconButton>
+                    <IconButton aria-label="refresh" onClick={this.onNextClick}>
+                        <ArrowForwardIosIcon fontSize='small' style={{ color: '#76ff03' }} />
+                    </IconButton>
+                    <IconButton aria-label="refresh" onClick={this.onReset}>
+                        <RefreshIcon fontSize='small' style={{ color: '#76ff03' }} />
+                    </IconButton>
+                </div>
                 <Timeline
                     scrollRef={el => (this.scrollRef = el)}
                     groups={this.props.groupList}

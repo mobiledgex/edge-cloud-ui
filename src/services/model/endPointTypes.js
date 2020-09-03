@@ -257,6 +257,12 @@ export function formatData(request, response) {
         case CLUSTER_EVENT_LOG_ENDPOINT:
             data = ClusterEvent.getData(response, request.data)
             break;
+        case APP_INST_EVENT_LOG_ENDPOINT:
+            data = AppInstEvent.getData(response, request.data)
+            break;
+        case CLOUDLET_EVENT_LOG_ENDPOINT:
+            data = CloudletEvent.getData(response, request.data)
+            break;
         default:
             data = undefined;
     }
