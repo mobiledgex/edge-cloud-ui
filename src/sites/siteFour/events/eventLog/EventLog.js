@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import SearchFilter from '../SearchFilter'
-import { Paper, Tabs, Tab, IconButton } from '@material-ui/core';
+import { Paper, Tabs, Tab, IconButton, LinearProgress } from '@material-ui/core';
 
 import * as dateUtil from '../../../../utils/date_util'
 import uuid from 'uuid'
@@ -225,6 +225,7 @@ class EventLog extends React.Component {
                             </IconButton>
                         </div>
                     </Paper>
+                    {this.props.loading ? <LinearProgress /> : null}
                     <br/>
                     <div align={'center'}>
                         <SearchFilter style={{ width:'93%' }} onFilter={this.onFilter} ref={this.searchfilter}/>

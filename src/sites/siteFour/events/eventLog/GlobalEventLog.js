@@ -71,6 +71,7 @@ class GlobalEventLogs extends React.Component {
         this.state = {
             isOpen: props.open,
             liveData: {},
+            loading: false,
         }
         this.action = '';
         this.data = {};
@@ -95,7 +96,7 @@ class GlobalEventLogs extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { isOpen, liveData } = this.state
+        const { isOpen, liveData, loading } = this.state
         return (
             <React.Fragment>
                 <Drawer className={clsx(classes.drawer_full, {
@@ -108,7 +109,7 @@ class GlobalEventLogs extends React.Component {
                             [classes.drawerClose]: !isOpen,
                         }),
                     }} anchor={'right'} open={isOpen}>
-                    <EventLog close={this.handleClose} liveData={liveData} />
+                    <EventLog close={this.handleClose} liveData={liveData} loading={loading}/>
                 </Drawer>
             </React.Fragment>
         )
@@ -151,7 +152,10 @@ class GlobalEventLogs extends React.Component {
             if (userRole.includes(constant.OPERATOR)) {
                 eventRequestList.push(cloudletEventLogs(data))
             }
+            this.setState({loading:true})
             let eventResponseList = await showSyncMultiData(this, eventRequestList)
+
+            this.setState({loading:false})
 
             if (eventResponseList && eventResponseList.length > 0) {
                 eventResponseList.map((mcRequest) => {
