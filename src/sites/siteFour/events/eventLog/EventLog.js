@@ -193,13 +193,6 @@ class EventLog extends React.Component {
             this.onTabChange(this.state.activeIndex, this.state.dataList)
         }
     }
-
-    componentDidUpdate(prevProps, prevState) {
-
-    }
-
-    componentWillUnmount() {
-    }
 }
 
 const mapDispatchProps = (dispatch) => {

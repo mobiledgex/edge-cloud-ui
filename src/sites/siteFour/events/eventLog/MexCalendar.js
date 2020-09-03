@@ -5,7 +5,7 @@ import Timeline, {
     DateHeader
 } from 'react-calendar-timeline'
 import "react-calendar-timeline/lib/Timeline.css";
-import { Button, IconButton } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import '../../../../../node_modules/react-calendar-timeline/lib/Timeline.css'
 import * as dateUtil from '../../../../utils/date_util'
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -55,13 +55,13 @@ class CalendarTimeline extends React.Component {
         const borderColor = itemContext.resizing ? "red" : item.color;
         return (
             <div
-                style={{height:20}}
+                style={{ height: 20 }}
                 {...getItemProps({
                     style: {
                         backgroundColor,
                         color: '#FFF',
-                        borderRadius:4,
-                        border:'none',
+                        borderRadius: 4,
+                        border: 'none',
                         borderLeftWidth: itemContext.selected ? 3 : 1,
                         borderRightWidth: itemContext.selected ? 3 : 1
                     },
@@ -92,27 +92,27 @@ class CalendarTimeline extends React.Component {
     onPrevClick = () => {
         const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
         this.setState(state => ({
-          visibleTimeStart: state.visibleTimeStart - zoom,
-          visibleTimeEnd: state.visibleTimeEnd - zoom,
-          //used to apply animation effect if scroll is programmatic
-          scrolling: false
+            visibleTimeStart: state.visibleTimeStart - zoom,
+            visibleTimeEnd: state.visibleTimeEnd - zoom,
+            //used to apply animation effect if scroll is programmatic
+            scrolling: false
         }));
-      };
-    
-      onNextClick = () => {
+    };
+
+    onNextClick = () => {
         const zoom = this.state.visibleTimeEnd - this.state.visibleTimeStart;
         this.setState(state => ({
-          visibleTimeStart: state.visibleTimeStart + zoom,
-          visibleTimeEnd: state.visibleTimeEnd + zoom,
-          //used to apply animation effect if scroll is programmatic
-          scrolling: false
+            visibleTimeStart: state.visibleTimeStart + zoom,
+            visibleTimeEnd: state.visibleTimeEnd + zoom,
+            //used to apply animation effect if scroll is programmatic
+            scrolling: false
         }));
-      };
+    };
 
     render() {
         return (
             <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', padding: 10 }}>
-                <div style={{marginBottom:10}}>
+                <div style={{ marginBottom: 10 }}>
                     <IconButton onClick={this.onPrevClick}>
                         <ArrowBackIosIcon fontSize='small' style={{ color: '#76ff03' }} />
                     </IconButton>
@@ -147,7 +147,7 @@ class CalendarTimeline extends React.Component {
                     <TimelineHeaders>
                         <SidebarHeader>
                             {({ getRootProps }) => {
-                                return <div {...getRootProps()} style={{ backgroundColor: '#1E2123', width: 150, padding: 20, borderBottom:'1px solid #BBBBBB' }}>Event Log</div>
+                                return <div {...getRootProps()} style={{ backgroundColor: '#1E2123', width: 150, padding: 20, borderBottom: '1px solid #BBBBBB' }}>Event Log</div>
                             }}
                         </SidebarHeader>
                         <DateHeader unit="primaryHeader" style={{ backgroundColor: '#1E2123' }} />
@@ -155,9 +155,6 @@ class CalendarTimeline extends React.Component {
                     </TimelineHeaders>
                 </Timeline>
             </div>)
-    }
-
-    componentDidMount() {
     }
 }
 
