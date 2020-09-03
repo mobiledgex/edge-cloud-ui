@@ -30,42 +30,87 @@ const colorType = (value) => {
 }
 
 const formatCalendarData = (dataList, columns) => {
-    let formattedList = []
-    let time = columns[0]
-    let groupList = []
-    for (let k = 0; k < columns.length; k++) {
-        let column = columns[k]
-        if (column.detailedView) {
-            groupList.push({ id: k, title: column.label, rightTitle: column.label, bgColor: "#FFF" })
-            for (let i = dataList.length - 1; i >= 0; i--) {
-                let data = dataList[i]
-                let color = colorType(data[k])
-                color = color ? color : i % 2 === 0 ? '#9F6BD3' : '#B990E1'
-                let calendar = {
-                    id: uuid(),
-                    group: k,
-                    title: data[k],
-                    className: "item-weekend",
-                    bgColor: color,
-                    selectedBgColor: "rgba(167, 116, 219, 1)",
-                    start: dateUtil.timeInMilli(data[0]),
-                    end: dateUtil.timeInMilli(data[0])
-                }
-                let j = i - 1
-                for (; j >= 0; j--) {
-                    let nextData = dataList[j]
-                    if (data[k] !== nextData[k]) {
-                        break;
+    if (dataList && dataList.length > 0) {
+        let formattedList = []
+        let time = columns[0]
+        let groupList = []
+        for (let k = 0; k < columns.length; k++) {
+            let column = columns[k]
+            if (column.detailedView) {
+                groupList.push({ id: k, title: column.label, rightTitle: column.label, bgColor: "#FFF" })
+                for (let i = dataList.length - 1; i >= 0; i--) {
+                    let data = dataList[i]
+                    let color = colorType(data[k])
+                    color = color ? color : i % 2 === 0 ? '#9F6BD3' : '#B990E1'
+                    let calendar = {
+                        id: uuid(),
+                        group: k,
+                        title: data[k],
+                        className: "item-weekend",
+                        bgColor: color,
+                        selectedBgColor: "rgba(167, 116, 219, 1)",
+                        start: dateUtil.timeInMilli(data[0]),
+                        end: dateUtil.timeInMilli(data[0])
                     }
+                    let j = i - 1
+                    for (; j >= 0; j--) {
+                        let nextData = dataList[j]
+                        if (data[k] !== nextData[k]) {
+                            break;
+                        }
+                    }
+                    i = j + 1
+                    calendar.end = dateUtil.timeInMilli(j < 0 ? dateUtil.currentTimeInMilli() : dataList[j][0])
+                    formattedList.push(calendar)
                 }
-                i = j + 1
-                calendar.end = dateUtil.timeInMilli(j < 0 ? dateUtil.currentTimeInMilli() : dataList[j][0])
-                formattedList.push(calendar)
             }
-        }
 
+        }
+        return { formattedList, groupList }
     }
-    return { formattedList, groupList }
+    else
+    {
+        return { formattedList:[], groupList:[] } 
+    }
+}
+
+const filterData = (filterText, dataList, tabValue) => {
+    let keys = Object.keys(dataList)
+    let eventType = keys[tabValue]
+    if (dataList[eventType]) {
+        let columns = dataList[eventType].columns
+        let dataFilterList = []
+        Object.keys(dataList[eventType].values).map(data => {
+            let eventFirstData = dataList[eventType].values[data][0]
+            let valid = false
+            columns.map((column, i) => {
+                if (column.filter && eventFirstData[i].includes(filterText)) {
+                    valid = true
+                }
+            })
+            if (valid) {
+                dataFilterList[data] = dataList[eventType].values[data]
+            }
+        })
+        let filteredTab = { columns: columns, values: dataFilterList }
+        let filterList = {}
+        keys.map(key => {
+            if (key !== eventType) {
+                filterList[key] = dataList[key]
+            }
+            else {
+                filterList[key] = filteredTab
+            }
+        })
+        let eventKey = Object.keys(dataFilterList)[0]
+        let formattedData = formatCalendarData(dataFilterList[eventKey], columns)
+        formattedData.filterList = filterList
+        return formattedData
+    }
+    else
+    {
+        return {filterList:[], formattedList: [], groupList: []}
+    }
 }
 
 class EventLog extends React.Component {
@@ -74,31 +119,33 @@ class EventLog extends React.Component {
         super(props)
         this.state = {
             dataList: {},
+            filterList: {},
             tabValue: 0,
             activeIndex: 0,
             calendarList: [],
             groupList: [],
             infiniteHeight: 200,
+            filterText:''
         }
+        this.searchfilter = React.createRef()
     }
 
-    onFilterExpand = (flag) => {
+    onFilter = (value) => {
+        if (value !== undefined && value.length >= 0) {
+            this.setState({filterText:value.toLowerCase()})
+        }
+        else
+        {
+            value = this.state.filterText
+        }
+        let data = filterData(value, this.state.dataList, this.state.tabValue)
+        this.setState({ filterList: data.filterList, calendarList: data.formattedList, groupList: data.groupList, activeIndex: 0 })
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.liveData !== state.dataList) {
-            let data = { formattedList: [], groupList: [] }
-            let keys = Object.keys(props.liveData)
-            if (keys.length > 0) {
-                let eventType = keys[state.tabValue]
-                let eventData = props.liveData[eventType]
-                if (eventData) {
-                    let values = eventData.values
-                    let eventKey = Object.keys(values)[0]
-                    data = formatCalendarData(values[eventKey], eventData.columns)
-                }
-            }
-            return { dataList: props.liveData, calendarList: data.formattedList, groupList: data.groupList }
+        if (props.liveData !== state.dataList) { 
+            let data = filterData(state.filterText, props.liveData, state.tabValue)
+            return { dataList: props.liveData, filterList:data.filterList, calendarList: data.formattedList, groupList: data.groupList }
         }
         return null
     }
@@ -109,7 +156,11 @@ class EventLog extends React.Component {
         let values = eventData.values
         let eventKey = Object.keys(values)[0]
         let data = formatCalendarData(values[eventKey], eventData.columns)
-        this.setState({ tabValue: tabIndex, calendarList: data.formattedList, groupList: data.groupList })
+        if(this.searchfilter.current)
+        {
+            this.searchfilter.current.onClear()
+        }
+        this.setState({ tabValue: tabIndex, calendarList: data.formattedList, groupList: data.groupList, filterText:'', filterList:dataList, activeIndex:0 })
     }
 
     onEventTimeLine = (eventInfo, columns, activeIndex) => {
@@ -149,7 +200,7 @@ class EventLog extends React.Component {
     }
 
     render() {
-        const { dataList, tabValue, calendarList, groupList } = this.state
+        const { filterList, tabValue, calendarList, groupList, dataList } = this.state
 
         return (
             <div style={{ height: '100%' }} id='event_log'>
@@ -164,7 +215,7 @@ class EventLog extends React.Component {
                             value={tabValue}
                             onChange={(e, value) => this.onTabChange(value, dataList)}
                             variant="fullWidth">
-                            {Object.keys(dataList).map((eventType, i) => {
+                            {Object.keys(filterList).map((eventType, i) => {
                                 return <Tab key={i} label={eventType} />
                             })}
                         </Tabs>
@@ -174,21 +225,26 @@ class EventLog extends React.Component {
                             </IconButton>
                         </div>
                     </Paper>
-                    <br />
-                    {Object.keys(dataList).map((eventType, i) => {
-                        let eventList = dataList[eventType]
+                    <br/>
+                    <div align={'center'}>
+                        <SearchFilter style={{ width:'93%' }} onFilter={this.onFilter} ref={this.searchfilter}/>
+                    </div>
+                    <br/>
+                    <br/>
+                    {Object.keys(filterList).map((eventType, i) => {
+                        let eventList = filterList[eventType]
                         return tabValue === i ? this.stepperView(eventType, eventList, i) : null
                     })}
                 </div>
                 <div style={{ width: 'calc(100vw - 452px)', height: '100%', display: 'inline-block', backgroundColor: '#1E2123' }}>
-                    <MexCalendar dataList={calendarList} groupList={groupList} />
+                    {calendarList.length > 0 && groupList.length > 0 ? <MexCalendar dataList={calendarList} groupList={groupList} /> : null}
                 </div>
             </div>
         )
     }
 
     componentDidMount() {
-        this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 70 })
+        this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 140 })
         if (Object.keys(this.state.dataList).length > 0) {
             this.onTabChange(this.state.activeIndex, this.state.dataList)
         }

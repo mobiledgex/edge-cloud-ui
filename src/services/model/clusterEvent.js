@@ -3,7 +3,7 @@ import { CLUSTER_EVENT_LOG_ENDPOINT } from './endPointTypes'
 
 export const clusterEventKeys = [
     {label:'Date', serverField:'time', visible : false, detailedView : false},
-    {label:'Cluster', serverField:'cluster', visible : true, detailedView : false, groupBy:true},
+    {label:'Cluster', serverField:'cluster', visible : true, detailedView : false, groupBy:true, filter:true},
     {label:'Cluster Developer', serverField:'clusterorg', visible : false, detailedView : false, groupBy:false},
     {label:'Cloudlet', serverField:'cloudlet', visible : true, detailedView : false, groupBy:true},
     {label:'Operator', serverField:'cloudletorg', visible : true, detailedView : false, groupBy:true},

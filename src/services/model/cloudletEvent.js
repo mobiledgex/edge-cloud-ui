@@ -8,7 +8,7 @@ export const showKey = () => (
 
 export const cloudletEventKeys = [
     {label:'Date', serverField:'time', visible : false, detailedView : false},
-    {label:'Cloudlet', serverField:'cloudlet', visible : true, detailedView : false, groupBy : true},
+    {label:'Cloudlet', serverField:'cloudlet', visible : true, detailedView : false, groupBy : true, filter:true},
     {label:'Operator', serverField:'cloudletorg', visible : true, detailedView : false, groupBy : true},
     {label:'App Developer', serverField:'apporg', visible : false, detailedView : false, groupBy : true},
     {label:'Event', serverField:'event', visible : true, detailedView : true},

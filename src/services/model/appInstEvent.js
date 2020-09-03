@@ -4,7 +4,7 @@ import { APP_INST_EVENT_LOG_ENDPOINT } from './endPointTypes'
 
 export const appEventKeys = [
     {label:'Date', serverField:'time', visible : false, detailedView : false},
-    {label:'App', serverField:'app', visible : true, detailedView : false, groupBy : true},
+    {label:'App', serverField:'app', visible : true, detailedView : false, groupBy : true, filter:true},
     {label:'Version', serverField:'ver', visible : true, detailedView : false, groupBy : true},
     {label:'Cluster', serverField:'cluster', visible : true, detailedView : false, groupBy : true},
     {label:'Cluster Developer', serverField:'clusterorg', visible : true, detailedView : false, groupBy : true},
