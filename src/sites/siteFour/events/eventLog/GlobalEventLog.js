@@ -1,11 +1,9 @@
-import React from 'react';
+import React, {Suspense, lazy} from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //redux
-import { IconButton, Drawer } from '@material-ui/core';
-import EventNoteIcon from '@material-ui/icons/EventNote';
-import EventLog from './EventLog'
+import { Drawer } from '@material-ui/core';
 import { clusterEventLogs } from '../../../../services/model/clusterEvent'
 import { appInstEventLogs } from '../../../../services/model/appInstEvent'
 import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
@@ -16,7 +14,7 @@ import { showSyncMultiData } from '../../../../services/model/serverData';
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
 import * as constant from '../../../../constant'
-
+const EventLog = lazy(() => import('./EventLog'));
 const drawerWidth = 450
 const styles = theme => ({
     root: {
@@ -109,7 +107,9 @@ class GlobalEventLogs extends React.Component {
                             [classes.drawerClose]: !isOpen,
                         }),
                     }} anchor={'right'} open={isOpen}>
-                    <EventLog close={this.handleClose} liveData={liveData} loading={loading}/>
+                    <Suspense fallback={<div>loading</div>}>
+                        <EventLog close={this.handleClose} liveData={liveData} loading={loading}/>
+                    </Suspense>
                 </Drawer>
             </React.Fragment>
         )
