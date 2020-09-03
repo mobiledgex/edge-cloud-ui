@@ -28,7 +28,6 @@
     "cytoscape": "^3.15.2",
     "d3": "^5.16.0",
     "date-fns": "^2.15.0",
-    "faker": "^5.1.0",
     "history": "^4.7.2",
     "http-proxy-middleware": "^0.20.0",
     "interactjs": "^1.9.22",
