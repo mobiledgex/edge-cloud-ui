@@ -32,12 +32,12 @@ class EntranceGlobe extends Component {
 
     static getDerivedStateFromProps(props, state) {
 
-        if (props.alertInfo.mode && props.alertInfo.msg) {
-            let alertInfo = { msg: props.alertInfo.msg, severity: props.alertInfo.mode }
+        let alertInfo = props.alertInfo
+        if (alertInfo !== state.mexAlertMessage && props.alertInfo.mode && alertInfo.msg) {
             props.handleAlertInfo(undefined, undefined);
             return { mexAlertMessage: alertInfo }
         }
-
+        
         if (props.match.path === '/passwordreset') {
             return null
         }
