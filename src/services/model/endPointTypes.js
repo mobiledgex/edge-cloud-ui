@@ -4,8 +4,11 @@ import * as Users from './users';
 import * as Accounts from './accounts';
 import * as App from './app';
 import * as Cloudlet from './cloudlet';
+import * as CloudletEvent from './cloudletEvent';
 import * as CloudletInfo from './cloudletInfo';
 import * as ClusterInstance from './clusterInstance';
+import * as ClusterEvent from './clusterEvent';
+import * as AppInstEvent from './appInstEvent';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
@@ -91,9 +94,16 @@ export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
 export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
 export const UPDATE_AUTO_SCALE_POLICY = "UpdateAutoScalePolicy";
 export const DELETE_AUTO_SCALE_POLICY = "DeleteAutoScalePolicy";
+export const CLOUDLET_EVENT_LOG_ENDPOINT = 'cloudlet'
+export const CLUSTER_EVENT_LOG_ENDPOINT = 'cluster'
+export const APP_INST_EVENT_LOG_ENDPOINT = 'app'
 
 export function getPath(request) {
     switch (request.method) {
+        case CLOUDLET_EVENT_LOG_ENDPOINT:
+        case CLUSTER_EVENT_LOG_ENDPOINT:
+        case APP_INST_EVENT_LOG_ENDPOINT:
+            return `/api/v1/auth/events/${request.method}`
         case SHOW_ORG:
             return '/api/v1/auth/org/show';
         case DELETE_ORG:
@@ -243,6 +253,15 @@ export function formatData(request, response) {
             break;
         case SHOW_CLOUDLET_LINKORG:
             data = CloudletLinkOrg.getData(response, request.data)
+            break;
+        case CLUSTER_EVENT_LOG_ENDPOINT:
+            data = ClusterEvent.getData(response, request.data)
+            break;
+        case APP_INST_EVENT_LOG_ENDPOINT:
+            data = AppInstEvent.getData(response, request.data)
+            break;
+        case CLOUDLET_EVENT_LOG_ENDPOINT:
+            data = CloudletEvent.getData(response, request.data)
             break;
         default:
             data = undefined;

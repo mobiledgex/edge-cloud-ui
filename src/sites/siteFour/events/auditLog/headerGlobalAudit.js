@@ -2,13 +2,12 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
-import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
-import * as serverData from '../../../services/model/serverData';
-import PopDetailViewer from '../../../container/popDetailViewer';
-import { IconButton, Drawer } from '@material-ui/core';
+import * as actions from '../../../../actions';
+import * as serverData from '../../../../services/model/serverData';
+import PopDetailViewer from '../../../../container/popDetailViewer';
+import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
-import * as dateUtil from '../../../utils/date_util'
+import * as dateUtil from '../../../../utils/date_util'
 let _self = null;
 
 const CON_LIMIT = 25
@@ -113,11 +112,8 @@ class headerGlobalAudit extends React.Component {
         this.setState({ openDetail: false })
     }
 
-    handleOpen = () => {
-        this.setState({ isOpen: true, isOrg : false });
-    }
-
     handleClose = () => {
+        this.props.close()
         this.setState({ isOpen: false });
     }
 
@@ -125,13 +121,17 @@ class headerGlobalAudit extends React.Component {
         this.getDataAudit(starttime, endtime, limit)
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.open) {
+            return { isOpen: props.open, isOrg : false  }
+        }
+        return null
+    }
+
     render() {
         const { selectedDate, historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading, isOrg} = this.state
         return (
             <React.Fragment>
-                <IconButton style={{ backgroundColor: 'transparent' }} color='inherit' onClick={this.handleOpen}>
-                    <TimelineOutlinedIcon fontSize='default' />
-                </IconButton>
                 <Drawer anchor={'right'} open={isOpen}>
                     <HeaderAuditLog isOrg={isOrg} dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory}/>
                 </Drawer>

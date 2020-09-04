@@ -31,6 +31,11 @@ export const currentTimeInMilli = () =>
     return moment().valueOf()
 }
 
+export const timeInMilli = (date) =>
+{
+    return moment.tz(date, getMexTimezone()).valueOf()
+}
+
 export const convertToUnix = (date) =>
 {
     return moment(date).unix()

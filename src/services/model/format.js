@@ -14,12 +14,12 @@ export const fields = {
     nodeFlavor: 'nodeFlavor',
     numberOfMasters: 'numberOfMasters',
     numberOfNodes: 'numberOfNodes',
-    sharedVolumeSize : 'sharedVolumeSize',
-    autoClusterInstance:'autoClusterInstance',
+    sharedVolumeSize: 'sharedVolumeSize',
+    autoClusterInstance: 'autoClusterInstance',
     state: 'state',
     status: 'status',
     reservable: 'reservable',
-    reservedBy:'reservedBy',
+    reservedBy: 'reservedBy',
     deployment: 'deployment',
     cloudletLocation: 'cloudletLocation',
     latitude: 'latitude',
@@ -40,10 +40,10 @@ export const fields = {
     autoPolicyName: 'autoPolicyName',
     deployClientCount: 'deployClientCount',
     deployIntervalCount: 'deployIntervalCount',
-    undeployClientCount:'undeployClientCount',
-    undeployIntervalCount:'undeployIntervalCount',
+    undeployClientCount: 'undeployClientCount',
+    undeployIntervalCount: 'undeployIntervalCount',
     cloudlets: 'cloudlets',
-    organizations:'organizations',
+    organizations: 'organizations',
     appName: 'appName',
     version: 'version',
     uri: 'uri',
@@ -70,7 +70,7 @@ export const fields = {
     imageType: 'imageType',
     imagePath: 'imagePath',
     defaultFlavorName: 'defaultFlavorName',
-    defaultPrivacyPolicy:'defaultPrivacyPolicy',
+    defaultPrivacyPolicy: 'defaultPrivacyPolicy',
     ports: 'ports',
     authPublicKey: 'authPublicKey',
     scaleWithCluster: 'scaleWithCluster',
@@ -80,8 +80,8 @@ export const fields = {
     accessPorts: 'accessPorts',
     accessType: 'accessType',
     username: 'username',
-    password:'password',
-    confirmPassword:'confirmPassword',
+    password: 'password',
+    confirmPassword: 'confirmPassword',
     role: 'role',
     email: 'email',
     emailVerified: 'emailVerified',
@@ -94,40 +94,41 @@ export const fields = {
     locked: 'locked',
     outboundSecurityRulesCount: 'outboundSecurityRulesCount',
     cloudletCount: 'cloudletCount',
-    organizationCount:'organizationCount',
+    organizationCount: 'organizationCount',
     fullIsolation: 'fullIsolation',
     cloudletStatus: 'cloudletStatus',
     actions: 'actions',
     manage: 'manage',
-    poolName:'poolName',
-    clusterinst:'clusterinst',
-    container_ids:'container_ids',
-    openRCData:'openRCData',
-    caCertdata:'caCertdata',
-    clusterdeveloper:'clusterdeveloper',
-    containerVersion:'containerVersion',
-    vmImageVersion:'vmImageVersion',
-    configs:'configs',
-    config:'config',
-    kind:'kind',
-    annotations:'annotations',
-    key:'key',
-    value:'value',
-    publicImages:'publicImages',
-    updateAvailable:'updateAvailable',
-    update:'update',
-    appInstances:'appInstances',
-    upgrade:'upgrade',
-    refreshAppInst:'refreshAppInst',
-    restagmap:'restagmap',
-    powerState:'powerState',
-    tls:'tls',
-    userList:'userList',
-    infraApiAccess:'infraApiAccess',
-    infraFlavorName:'infraFlavorName',
-    infraExternalNetworkName:'infraExternalNetworkName',
-    maintenanceState:'maintenanceState',
-    manifest:'manifest',
+    poolName: 'poolName',
+    clusterinst: 'clusterinst',
+    container_ids: 'container_ids',
+    openRCData: 'openRCData',
+    caCertdata: 'caCertdata',
+    clusterdeveloper: 'clusterdeveloper',
+    appDeveloper: 'appDeveloper',
+    containerVersion: 'containerVersion',
+    vmImageVersion: 'vmImageVersion',
+    configs: 'configs',
+    config: 'config',
+    kind: 'kind',
+    annotations: 'annotations',
+    key: 'key',
+    value: 'value',
+    publicImages: 'publicImages',
+    updateAvailable: 'updateAvailable',
+    update: 'update',
+    appInstances: 'appInstances',
+    upgrade: 'upgrade',
+    refreshAppInst: 'refreshAppInst',
+    restagmap: 'restagmap',
+    powerState: 'powerState',
+    tls: 'tls',
+    userList: 'userList',
+    infraApiAccess: 'infraApiAccess',
+    infraFlavorName: 'infraFlavorName',
+    infraExternalNetworkName: 'infraExternalNetworkName',
+    maintenanceState: 'maintenanceState',
+    manifest: 'manifest',
     userRole: 'userRole',
     healthCheck: 'healthCheck',
     skipHCPorts: 'skipHCPorts',
@@ -138,11 +139,15 @@ export const fields = {
     scaleUpCPUThreshold: 'scaleUpCPUThreshold',
     scaleDownCPUThreshold: 'scaleDownCPUThreshold',
     triggerTime: 'triggerTime',
-    minActiveInstances:'minActiveInstances',
-    maxInstances:'maxInstances',
-    fields:'fields',
-    envVars:'envVars',
-    apps:'apps'
+    minActiveInstances: 'minActiveInstances',
+    maxInstances: 'maxInstances',
+    fields: 'fields',
+    envVars: 'envVars',
+    apps: 'apps',
+    eventType: 'eventType',
+    time: 'time',
+    starttime:'starttime',
+    endtime:'endtime'
 }
 
 export const getUserRole = () => {
@@ -233,6 +238,80 @@ export const formatData = (response, body, keys, customData, isUnique) => {
     return values
 }
 
+export const colorType = (value) => {
+    switch (value) {
+        case 'UP':
+            return '#66BB6A'
+        case 'DOWN':
+            return '#EF5350'
+        case 'RESERVED':
+            return '#66BB6A'
+        case 'UNRESERVED':
+            return '#FF7043'
+        case 'DELETED':
+            return '#EF5350'
+        default:
+            return undefined
+    }
+}
+
+export const formatColumns = (columns, keys)=>
+{
+    let newColumns = []
+    keys.map(key=>{
+        newColumns[columns.indexOf(key.serverField)] = key
+    })
+    return newColumns
+}
+
+export const groupByCompare = (dataList, columns) => {
+    let keys = []
+    columns.map((item, i) => {
+        if (item.groupBy) {
+            keys.push(i)
+        }
+    })
+    return dataList.reduce((accumulator, x) => {
+        let key = ''
+        for (let i = 0; i < keys.length; i++) {
+            key = key + x[keys[i]]
+            if (i < keys.length - 1) {
+                key = key + '_'
+            }
+        }
+        if (!accumulator[key]) {
+            accumulator[key] = [];
+        }
+        accumulator[key].push(x);
+        return accumulator;
+    }, {})
+}
+
+export const formatEventData = (response, body, keys) => {
+    let formatted = {}
+    try {
+        if (response && response.data && response.data.data) {
+            let dataList = response.data.data;
+            if (dataList && dataList.length > 0) {
+                let series = dataList[0].Series
+                let messages = dataList[0].messages
+                if (series && series.length > 0) {
+                    let formattingData = {}
+                    let key = series[0].name
+                    formattingData.columns = formatColumns(series[0].columns, keys)
+                    formattingData.values = groupByCompare(series[0].values, formattingData.columns)
+                    formatted[key] = formattingData
+                    return formatted
+                }
+            }
+        }
+    }
+    catch (e) {
+        alert(e)
+    }
+    return formatted
+}
+
 export const compareObjects = (newData, oldData, ignoreCase) => {
     if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
         return true
@@ -243,32 +322,26 @@ export const compareObjects = (newData, oldData, ignoreCase) => {
     else if (newData === undefined && oldData !== undefined && oldData.length > 0) {
         return false
     }
-    else if(ignoreCase)
-    {
+    else if (ignoreCase) {
         return isEqual(newData.toLowerCase(), oldData.toLowerCase())
     }
-    else
-    {
+    else {
         return isEqual(newData, oldData)
     }
-  }
-  
-  export const updateFields = (self, forms, data, orgData)=>
-  {
+}
+
+export const updateFields = (self, forms, data, orgData) => {
     let updateFields = []
-    for(let i=0;i<forms.length;i++)
-    {
-      let form = forms[i]
-      if(form.update && form.updateId)
-      {
-        if (!compareObjects(data[form.field], orgData[form.field])) {
-          updateFields = [...updateFields, ...form.updateId]
+    for (let i = 0; i < forms.length; i++) {
+        let form = forms[i]
+        if (form.update && form.updateId) {
+            if (!compareObjects(data[form.field], orgData[form.field])) {
+                updateFields = [...updateFields, ...form.updateId]
+            }
         }
-      }
     }
-    if(updateFields.length === 0 )
-    {
+    if (updateFields.length === 0) {
         self.props.handleAlertInfo('error', 'Nothing to update')
     }
     return updateFields
-  }
+}

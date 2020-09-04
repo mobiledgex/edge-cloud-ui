@@ -3,9 +3,9 @@ import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, D
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 import { Step, StepLabel, Stepper, Button } from '@material-ui/core';
-import * as dateUtil from '../../../utils/date_util'
+import * as dateUtil from '../../../../utils/date_util'
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import CloseIcon from '@material-ui/icons/CloseRounded';

@@ -31,6 +31,8 @@ import PolicyIcon from '@material-ui/icons/Policy';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 import LandscapeOutlinedIcon from '@material-ui/icons/LandscapeOutlined';
+import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import EventIcon from '@material-ui/icons/Event';
 
 import SiteFourPageOrganization from '../organization/organizationList';
 import SiteFourPageAccount from '../accounts/accountList';
@@ -44,7 +46,7 @@ import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
-import PageMonitoringMain from '../monitoring/common/PageMonitoringMain'
+import PageMonitoringMain from '../monitoring/common/PageMonitoringMain';
 
 import { Collapse, Tooltip } from '@material-ui/core';
 import { Image } from 'semantic-ui-react';
