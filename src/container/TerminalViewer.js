@@ -283,6 +283,9 @@ class MexTerminal extends Component {
                         <div style={style.container} align='center'>
                             <Paper variant="outlined" style={style.optionBody}>
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                                <div>
+                                    <p style={{color:'#FFC107'}}>Note: Only running containers are accessible</p>
+                                </div>
                             </Paper>
                         </div>
                     </div>
