@@ -159,7 +159,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
         componentDidMount = async () => {
             try {
                 let markerList = this.props.markerList
-
                 this.setCloudletLocation(markerList, true)
                 await this.setState({
                     cloudletUsageOne: this.props.cloudletUsageList[0],
@@ -320,7 +319,6 @@ export default connect(mapStateToProps, mapDispatchProps)(
                 let locationGrpList = listGroupByKey(newCloudLetLocationList, 'strCloudletLocation')
                 let locKeys = Object.keys(locationGrpList);
                 let locationGroupedCloudletList = this.makeLocationGroupedCloudletList(locationGrpList, locKeys)
-
                 this.setState({
                     selectedAppInstIndex: -1,
                     locationGroupedCloudletList: locationGroupedCloudletList,
@@ -443,8 +441,8 @@ export default connect(mapStateToProps, mapDispatchProps)(
         }
 
         renderAppInstPopup(listAppName, cloudletOne, cloudletIndex) {
-
-
+            let cloudletName = ''
+            let showCloudletLabel = false
             return (
                 <Popup index={parseInt(cloudletIndex + Math.floor(Math.random() * Math.floor(999999999)))} permanent className='cloudlet_popup' ref={this.appInstPopup}>
                     {listAppName.map((AppFullName, appIndex) => {
@@ -455,6 +453,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
                         let Version = AppFullName.trim().split(" | ")[4].trim()
                         let Operator = AppFullName.trim().split(" | ")[5].trim()
                         let selectCloudlet = AppFullName.trim().split(" | ")[6].trim()
+                        if(cloudletName !== selectCloudlet)
+                        {
+                            cloudletName = selectCloudlet
+                            showCloudletLabel = true
+                        }
+                        else
+                        {
+                            showCloudletLabel = false
+                        }
                         let serverLocation = {
                             lat: cloudletOne.CloudletLocation.latitude,
                             long: cloudletOne.CloudletLocation.longitude,
@@ -462,19 +469,15 @@ export default connect(mapStateToProps, mapDispatchProps)(
 
                         let fullAppInstOne = AppName + " | " + selectCloudlet + " | " + ClusterInst + " | " + Version + " | " + Region + " | " + HealthCheckStatus + " | " + Operator + " | " + JSON.stringify(serverLocation);
                         return (
-                            <div
-                                key={appIndex * cloudletIndex}
-                            >
-                                {appIndex === 0 &&
-                                <div
-                                    style={PageMonitoringStyles.mapCloudletLabelOne}
-                                >
-                                    {selectCloudlet}
-                                </div>
-                                }
-                                <div
-                                    style={PageMonitoringStyles.mapAppInstLabelOne}
-                                >
+                            <div key={appIndex * cloudletIndex}>
+                                {showCloudletLabel ?
+                                    <div>
+                                        <br />
+                                        <div style={PageMonitoringStyles.mapCloudletLabelOne}>
+                                            {selectCloudlet}
+                                        </div>
+                                    </div> : null}
+                                <div style={PageMonitoringStyles.mapAppInstLabelOne}>
                                     <Ripples
                                         style={{marginLeft: 5,}}
                                         color='#1cecff'
