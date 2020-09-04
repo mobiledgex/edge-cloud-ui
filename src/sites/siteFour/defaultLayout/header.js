@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import DescriptionIcon from '@material-ui/icons/Description';
 import HeaderGlobalMini from '../../../container/headerGlobalMini';
-import HeaderGlobalAudit from '../auditLog/headerGlobalAudit';
+import EventMenu from './eventMenu'
 import * as constant from '../../../constant'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
@@ -186,7 +186,7 @@ export default function Header(props) {
                                 {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg}
                             </h5>
                         </IconButton> : null}
-                    <HeaderGlobalAudit />
+                    <EventMenu/>
                     <IconButton style={{ backgroundColor: 'transparent' }} aria-label="help" color="inherit"
                         onClick={(e) => helpClick()} disabled={props.viewMode !== null ? false : true}>
                         <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'} />
