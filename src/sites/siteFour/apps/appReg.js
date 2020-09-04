@@ -50,15 +50,31 @@ class AppReg extends React.Component {
         this.updateFlowDataList = []
     }
 
-    validatePortRange = (form) => {
-        if (form.value && form.value.length > 0) {
-            let value = parseInt(form.value)
+    validatePortRange = (currentForm) => {
+        let forms = currentForm.parent.form.forms
+        let protocol = undefined
+        for(let i=0;i<forms.length;i++)
+        {
+            let form = forms[i]
+            if(form.field === fields.protocol)
+            {
+                protocol = form.value
+                break;
+            }
+        }
+        if (currentForm.value && currentForm.value.length > 0) {
+            let value = parseInt(currentForm.value)
             if (value < 1 || value > 65535) {
-                form.error = 'Invalid Port Range (must be between 1-65535)'
+                currentForm.error = 'Invalid Port Range (must be between 1-65535)'
+                return false;
+            }
+            else if(value === 22 && protocol === 'tcp')
+            {
+                currentForm.error = 'App cannot use tcp port 22, as it is reserved for platform inter-node SSH'
                 return false;
             }
         }
-        form.error = undefined;
+        currentForm.error = undefined;
         return true;
     }
 
