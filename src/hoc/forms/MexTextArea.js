@@ -8,7 +8,15 @@ const MexTextArea = (props) => {
 
     const onValueChange = (value) => {
         setValue(value)
-        props.onChange(form, value)
+        if (rules === undefined || (rules && !rules.onBlur)) {
+            props.onChange(form, value)
+        }
+    }
+
+    const onBlurChange = (value) => {
+        if (rules && rules.onBlur) {
+            props.onChange(form, value)
+        }
     }
 
     const getForm = () => (
@@ -21,6 +29,7 @@ const MexTextArea = (props) => {
             type={form.rules ? form.rules.type : 'text'}
             required={form.required ? form.rules.required : false}
             disabled={props.disabled}
+            onBlur={(e) => onBlurChange(e.target.value)}
             value={value}
             style={form.style ? form.style : {backgroundColor:'#18191E', color:'#939396'}}
         />
