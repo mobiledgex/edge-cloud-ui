@@ -48,6 +48,7 @@ class AppReg extends React.Component {
         this.expandAdvanceMenu = false
         this.tlsCount = 0
         this.updateFlowDataList = []
+        this.imagePathTyped = false
     }
 
     validatePortRange = (currentForm) => {
@@ -110,7 +111,7 @@ class AppReg extends React.Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false }, update: true, width: 14, visible: true },
+        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur:true }, update: true, width: 14, visible: true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
@@ -407,6 +408,23 @@ class AppReg extends React.Component {
         }
     }
 
+    deploymentManifestChange = (currentForm, forms, isInit, isAlert) => {
+        let manifest = currentForm.value
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.imagePath) {
+                let imagePath = form.value
+                if ((manifest && manifest.length > 0) && (imagePath && imagePath.length > 0) && !this.imagePathTyped) {
+                    this.props.handleAlertInfo('warning', 'Please verify if imagepath is valid, as it was auto generated')
+                }
+                break;
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
     checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
@@ -425,6 +443,10 @@ class AppReg extends React.Component {
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
+        else if(form.field === fields.imagePath)
+        {
+            this.imagePathTyped = true
+        }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
         }
@@ -438,6 +460,10 @@ class AppReg extends React.Component {
             flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.APP))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
+        }
+        else if(form.field === fields.deploymentManifest)
+        {
+            this.deploymentManifestChange(form, forms, isInit)
         }
         if (flowDataList.length > 0) {
             if (isInit) {
