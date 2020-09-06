@@ -408,7 +408,7 @@ class AppReg extends React.Component {
         }
     }
 
-    deploymentManifestChange = (currentForm, forms, isInit, isAlert) => {
+    deploymentManifestChange = (currentForm, forms, isInit) => {
         let manifest = currentForm.value
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
@@ -862,6 +862,10 @@ class AppReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
+                if(form.field === fields.refreshAppInst)
+                {
+                    form.visible = data[fields.deployment] !== constant.DEPLOYMENT_TYPE_VM 
+                }
                 if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
                 }
