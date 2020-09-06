@@ -598,7 +598,7 @@ class ClusterInstReg extends React.Component {
                                 configForm.value = config[fields.config]
                             }
                         }
-                        forms.splice(12 + multiFormCount, 0, this.getConfigForm(configForms))
+                        forms.splice(14 + multiFormCount, 0, this.getConfigForm(configForms))
                         multiFormCount += 1
                     }
                 }
@@ -685,7 +685,7 @@ class ClusterInstReg extends React.Component {
             <div className="round_panel">
                 <Grid style={{ display: 'flex' }}>
                     <Grid.Row>
-                        <Grid.Column width={this.state.showGraph ? 8 : 16} style={{ overflow: 'auto', height: '90vh' }}>
+                        <Grid.Column width={this.state.showGraph ? 8 : 16}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </Grid.Column>
                         {this.state.showGraph ? <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>

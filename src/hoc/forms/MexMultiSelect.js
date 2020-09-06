@@ -78,15 +78,16 @@ const MexMultiSelect = (props) => {
 
     const getForm = () => (
         <Form.Dropdown
+            id={form.field}
             multiple
             selection
-            icon={form.error ? <Icon color='red' name='times circle outline' style={{ marginRight: 10, position: 'absolute', right: '0px' }} /> : null}
+            icon={form.error ? <Icon color='red' name='times circle outline' style={{ marginRight: 10, marginTop:7, position: 'absolute', right: '0px' }} /> : null}
             placeholder={form.placeholder ? form.placeholder : null}
             label={props.label ? props.label : null}
             required={props.required}
             disabled={props.disabled}
             options={getData(form)}
-            style={{backgroundColor:'#16181D'}}
+            style={{backgroundColor:`${form.error ? 'rgba(211, 46, 46, 0.1)' : '#16181D'}`}}
             onChange={(e, { value }) => onSelected(value)}
             value={selected}
         />

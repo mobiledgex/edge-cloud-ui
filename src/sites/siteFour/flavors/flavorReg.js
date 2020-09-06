@@ -146,7 +146,7 @@ class FlavorReg extends React.Component {
             <div className="round_panel">
                 <Grid style={{ display: 'flex' }}>
                     <Grid.Row>
-                        <Grid.Column width={16} style={{ overflow: 'auto', height: '90vh' }}>
+                        <Grid.Column width={16}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </Grid.Column>
                     </Grid.Row>
