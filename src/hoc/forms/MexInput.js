@@ -35,7 +35,7 @@ const MexInput = (props) => {
                 required={form.required ? form.rules.required : false}
                 disabled={props.disabled}
                 value={value}
-                style={form.style ? form.style : { width: form.unit ? 'calc(100% - 45px)' : '100%' }}
+                style={form.style ? form.style : form.error ? { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor:'rgba(211, 46, 46, 0.1)'} : { width: form.unit ? 'calc(100% - 45px)' : '100%' }}
             />
         </div >
     )

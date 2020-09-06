@@ -239,6 +239,8 @@ export default function MexSelectRadioTree(props) {
     return (
         <div className={classes.root}>
             <div
+                id={form.field}
+                style={{backgroundColor:`${form.error ? 'rgba(211, 46, 46, 0.1)' : 'none'}`}}
                 className={open ? 'header_active' : 'header'}
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}

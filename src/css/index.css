@@ -86,14 +86,6 @@ body, button, input, textarea, optgroup, select, textarea,
     border-right: none !important;
 }
 
-
-.ui.grid .ui.form textarea {
-    background-color: rgba(0,0,0,.3) !important;
-    border: solid 1px rgba(255,255,255,.2) !important;
-    color: rgba(255,255,255,.6) !important;
-}
-
-
 /* dropdown input box select text */
 .ui.search.dropdown.active>input.search,
 .ui.search.dropdown.visible>input.search {
@@ -1734,7 +1726,8 @@ rect.zoom {
 }
 
 .loginValidation {
-    font-size: 17px;
+    font-size: 14px;
+    margin-left:60px;
     color:#FF1902;
 }
 

@@ -11,6 +11,7 @@ import MexButton from './MexButton';
 import MexSelectTree from './selectTree/MexSelectTree';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton, Tooltip } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
@@ -34,8 +35,8 @@ export const MULTI_FORM = 'MultiForm'
 export const SELECT_RADIO_TREE = 'SelectRadioTree'
 
 /***
-     * Map values from form to field
-     * ***/
+* Map values from form to field
+* ***/
 export const formattedData = (forms) => {
     let data = {};
     for (let i = 0; i < forms.length; i++) {
@@ -62,7 +63,7 @@ export const formattedData = (forms) => {
 
 const MexForms = (props) => {
     let forms = props.forms
-
+    const [error, setError] = React.useState(undefined)
     const getIcon = (id) => {
         switch (id) {
             case 'delete':
@@ -106,6 +107,14 @@ const MexForms = (props) => {
         return disabled;
     }
 
+    const errorBanner = (form) => {
+        setError(form.error)
+        let element = document.getElementById(form.field)
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+    }
+
     const validateRules = (form, valid) => {
         if (valid) {
             if (form.forms) {
@@ -129,19 +138,23 @@ const MexForms = (props) => {
                             }
                             if (form.value === undefined || form.value.length !== values.length) {
                                 form.error = `${form.label} is mandatory`
+                                errorBanner(form)
                                 valid = false;
 
                             } else {
                                 form.error = undefined
+                                errorBanner(form)
                             }
                         }
                         else {
                             if (form.value === null || form.value === undefined || form.value.length === 0) {
                                 form.error = `${form.label} is mandatory`
+                                errorBanner(form)
                                 valid = false;
                             }
                             else {
                                 form.error = undefined
+                                errorBanner(form)
                             }
                         }
                     }
@@ -150,6 +163,7 @@ const MexForms = (props) => {
         }
         if (valid && form.dataValidateFunc) {
             valid = form.dataValidateFunc(form)
+            errorBanner(form)
         }
         return valid
     }
@@ -232,7 +246,7 @@ const MexForms = (props) => {
         let subForms = form.forms
         return (
             <Grid style={{ width: '100%' }} key={index}>
-                <Grid.Row className={'formHeader-' + index} columns={2} key={uuid() + '' + index} style={{height:50}}>
+                <Grid.Row className={'formHeader-' + index} columns={2} key={uuid() + '' + index} style={{ height: 50 }}>
                     <Grid.Column width={15} className='detail_item'>
                         <h3 style={{ color: "white", display: 'inline' }}>{form.label}
                             {
@@ -360,42 +374,46 @@ const MexForms = (props) => {
 
     return (
         forms ?
-            <Form>
-                <Form.Group widths="equal" style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10, alignContent: 'space-around' }}>
-                    <Grid columns={2}>
-                        {forms.map((form, i) => {
-                            initValidateRules(form);
-                            checkRole(form)
-                            return (
-                                (form.advance === undefined || form.advance === true) && form.visible ?
-                                    form.formType === MAIN_HEADER ?
-                                        loadMainHeader(i, form) :
-                                        form.formType === HEADER ?
-                                            loadHeader(i, form) :
-                                            form.formType === MULTI_FORM ?
-                                            form.forms ?
-                                                <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
-                                                : null :
-                                            loadForms(i, form) :
-                                    null
-                            )
-                        })}
-                    </Grid>
-                </Form.Group>
-                <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
-                    <Form.Group inline>
-                        {forms.map((form, i) => {
-                            return (form.formType === BUTTON ?
-                                <MexButton
-                                    className={'formButton-' + i}
-                                    form={form}
-                                    key={i}
-                                    onClick={onSubmit} />
-                                : null)
-                        })}
+            <div>
+                {error ? <div><Alert severity="error">{error}</Alert>
+                    {props.style ? null : <div><br /><br /></div>}</div> : null}
+                <Form style={props.style ? props.style : { overflow: 'auto', height: `${error ? 83 : 90}vh` }}>
+                    <Form.Group widths="equal" style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10, alignContent: 'space-around' }}>
+                        <Grid columns={2}>
+                            {forms.map((form, i) => {
+                                initValidateRules(form);
+                                checkRole(form)
+                                return (
+                                    (form.advance === undefined || form.advance === true) && form.visible ?
+                                        form.formType === MAIN_HEADER ?
+                                            loadMainHeader(i, form) :
+                                            form.formType === HEADER ?
+                                                loadHeader(i, form) :
+                                                form.formType === MULTI_FORM ?
+                                                    form.forms ?
+                                                        <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                        : null :
+                                                    loadForms(i, form) :
+                                        null
+                                )
+                            })}
+                        </Grid>
                     </Form.Group>
-                </Form.Group>
-            </Form> : null
+                    <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
+                        <Form.Group inline>
+                            {forms.map((form, i) => {
+                                return (form.formType === BUTTON ?
+                                    <MexButton
+                                        className={'formButton-' + i}
+                                        form={form}
+                                        key={i}
+                                        onClick={onSubmit} />
+                                    : null)
+                            })}
+                        </Form.Group>
+                    </Form.Group>
+                </Form>
+            </div> : null
     )
 }
 export default MexForms

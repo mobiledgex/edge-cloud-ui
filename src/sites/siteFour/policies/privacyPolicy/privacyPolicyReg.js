@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Item } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import MexForms, { MAIN_HEADER, HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
@@ -231,11 +231,13 @@ class AutoProvPolicyReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-                    <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
-                    </Item>
-                </div>
+                <Grid style={{ display: 'flex' }}>
+                    <Grid.Row>
+                        <Grid.Column width={16}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </div>
         )
     }
