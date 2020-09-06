@@ -21,6 +21,7 @@ const MexTextArea = (props) => {
 
     const getForm = () => (
         <TextArea
+            id={form.field}
             rows = {rules ? rules.rows : 5}
             icon={form.error ? <Icon color='red' name='times circle outline' /> : null}
             label={props.label ? props.label : null}
@@ -31,7 +32,7 @@ const MexTextArea = (props) => {
             disabled={props.disabled}
             onBlur={(e) => onBlurChange(e.target.value)}
             value={value}
-            style={form.style ? form.style : {backgroundColor:'#18191E', color:'#939396'}}
+            style={form.style ? form.style : {backgroundColor:`${form.error ? 'rgba(211, 46, 46, 0.1)' : '#18191E'}`, color:'#939396'}}
         />
     )
     return (

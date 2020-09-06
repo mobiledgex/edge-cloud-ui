@@ -94,7 +94,7 @@ class RegistryUserForm extends React.Component{
     render() {
         return (
             <Fragment>
-                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} style={{height:'100%'}}/>
             </Fragment>
         );
     }

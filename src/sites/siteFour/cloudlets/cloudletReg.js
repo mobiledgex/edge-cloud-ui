@@ -375,7 +375,7 @@ class CloudletReg extends React.Component {
                     this.state.cloudletManifest ? this.cloudletManifestForm() : null :
                     <Grid style={{ display: 'flex' }}>
                         <Grid.Row>
-                            <Grid.Column width={8} style={{ overflow: 'auto', height: '90vh' }}>
+                            <Grid.Column width={8}>
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                             </Grid.Column>
                             <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent'}}>

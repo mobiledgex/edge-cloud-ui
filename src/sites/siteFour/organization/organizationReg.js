@@ -8,12 +8,12 @@ import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import {additionalDetail} from '../../../services/model/shared';
+import { additionalDetail } from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 //model
 import { keys, createOrganization, updateOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
-import {HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1} from "../../../tutorial";
+import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1 } from "../../../tutorial";
 import { List } from "@material-ui/core";
 
 const stepData = [
@@ -42,8 +42,8 @@ const roles =
             'Apps': 'Manage',
             'App Instances': 'Manage',
             'Policies': 'Manage',
-            'Monitoring' : 'View',
-            'Audit Logs' : 'View'
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
         },
         {
             'Users & Roles': 'View',
@@ -53,8 +53,8 @@ const roles =
             'Apps': 'Manage',
             'App Instances': 'Manage',
             'Policies': 'Manage',
-            'Monitoring' : 'View',
-            'Audit Logs' : 'View'
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
         },
         {
             'Users & Roles': 'View',
@@ -64,8 +64,8 @@ const roles =
             'Apps': 'View',
             'App Instances': 'View',
             'Policies': 'Manage',
-            'Monitoring' : 'View',
-            'Audit Logs' : 'View'
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
         }
     ],
     Operator: [
@@ -77,8 +77,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'View',
-            'Audit Logs' : 'View'
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
         },
         {
             'Users & Roles': 'View',
@@ -88,8 +88,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'View',
-            'Audit Logs' : 'View'
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
         },
         {
             'Users & Roles': 'View',
@@ -99,8 +99,8 @@ const roles =
             'Apps': 'disabled',
             'App Instances': 'disabled',
             'Policies': 'disabled',
-            'Monitoring' : 'View',
-            'Audit Logs' : 'View'
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
         },
     ]
 }
@@ -152,7 +152,7 @@ class OrganizationReg extends React.Component {
         <Grid.Row key={i}>
             <Card style={{ backgroundColor: '#18191E' }}>
                 <Card.Content>
-                    <h4 style={{ color: '#A3A3A5', border:'none', fontWeight:700 }}>{type} {item['header']}</h4>
+                    <h4 style={{ color: '#A3A3A5', border: 'none', fontWeight: 700 }}>{type} {item['header']}</h4>
                     <Card.Description>
                         {this.makeRoleList(type, i)}
                     </Card.Description>
@@ -181,7 +181,7 @@ class OrganizationReg extends React.Component {
         }
         else {
             this.setState({ step: 2 });
-            this.props.handleViewMode( HELP_ORG_REG_3 );
+            this.props.handleViewMode(HELP_ORG_REG_3);
         }
     }
 
@@ -196,8 +196,8 @@ class OrganizationReg extends React.Component {
                     this.props.handleAlertInfo('success', `User ${data[fields.username]} added successfully`)
                     this.addUserForm(this.organizationInfo)
                     userList.push({
-                        username : data[fields.username],
-                        userRole : data[fields.role]
+                        username: data[fields.username],
+                        userRole: data[fields.role]
                     })
                 }
             }
@@ -223,7 +223,7 @@ class OrganizationReg extends React.Component {
             step: 1,
             forms: forms
         })
-        this.props.handleViewMode( HELP_ORG_REG_2 );
+        this.props.handleViewMode(HELP_ORG_REG_2);
     }
 
 
@@ -232,7 +232,7 @@ class OrganizationReg extends React.Component {
             this.organizationInfo = data
             this.type = data[fields.type]
             data[fields.type] = data[fields.type].toLowerCase()
-            let mcRequest = this.isUpdate ? await updateOrganization(this, data) :  await createOrganization(this, data)
+            let mcRequest = this.isUpdate ? await updateOrganization(this, data) : await createOrganization(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
                 this.isUpdate ? this.props.onClose() : this.addUserForm(data)
@@ -254,8 +254,8 @@ class OrganizationReg extends React.Component {
                 <Grid>
                     <Grid.Column width={11}>
                         <Form>
-                            <br/>
-                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()}/>
+                            <br />
+                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()} />
                             {additionalDetail(this.organizationInfo)}
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organizations</Button>
@@ -272,41 +272,38 @@ class OrganizationReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
-
-                    <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                        {this.props.action || this.isUpdate ? null :
-                            <div>
-                                <Step.Group stackable='tablet' style={{ width: '100%' }}>
-                                    {
-                                        stepData.map((item, i) => (
-                                            <Step active={this.state.step === i} key={i} >
-                                                <Step.Content>
-                                                    <Step.Title>{item.step}</Step.Title>
-                                                    <Step.Description>{item.description}</Step.Description>
-                                                </Step.Content>
-                                            </Step>
-                                        ))
-                                    }
-                                </Step.Group>
-                            </div>}
-                        {this.state.step === 2 ?
-                            this.getStep3() :
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column width={this.state.step === 1 ? 12 : 16}>
-                                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate}/>
-                                    </Grid.Column>
-                                    {this.state.step === 1 ?
-                                        <Grid.Column width={4}>
-                                            {items.map((item, i) => (
-                                                this.makeCardContent(item, i, this.type)
-                                            ))}
-                                        </Grid.Column> : null}
-                                </Grid.Row>
-                            </Grid>}
-                    </Item>
-                </div>
+                <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
+                    {this.props.action || this.isUpdate ? null :
+                        <div>
+                            <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                                {
+                                    stepData.map((item, i) => (
+                                        <Step active={this.state.step === i} key={i} >
+                                            <Step.Content>
+                                                <Step.Title>{item.step}</Step.Title>
+                                                <Step.Description>{item.description}</Step.Description>
+                                            </Step.Content>
+                                        </Step>
+                                    ))
+                                }
+                            </Step.Group>
+                        </div>}
+                    {this.state.step === 2 ?
+                        this.getStep3() :
+                        <Grid>
+                            <Grid.Row>
+                                <Grid.Column width={this.state.step === 1 ? 12 : 16}>
+                                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                                </Grid.Column>
+                                {this.state.step === 1 ?
+                                    <Grid.Column width={4}>
+                                        {items.map((item, i) => (
+                                            this.makeCardContent(item, i, this.type)
+                                        ))}
+                                    </Grid.Column> : null}
+                            </Grid.Row>
+                        </Grid>}
+                </Item>
             </div>
         )
     }
@@ -356,7 +353,7 @@ class OrganizationReg extends React.Component {
         }
     }
 
-    validatePhone= (form) => {
+    validatePhone = (form) => {
         if (!/^\+?(?:[0-9] ?){6,14}[0-9]$/.test(form.value) && !/^\d{3}-\d{3}-\d{4}$/.test(form.value)) {
             form.error = 'Phone should only contain "+" and 7~15 digits.'
             return false;
@@ -408,7 +405,7 @@ class OrganizationReg extends React.Component {
                 return
             }
         }
-        
+
         let forms = this.step1()
         forms.push(
             { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreateOrganization, validate: true },
@@ -426,19 +423,19 @@ class OrganizationReg extends React.Component {
         this.setState({
             forms: forms
         })
-        
+
 
     }
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( HELP_ORG_REG_1 )
+        this.props.handleViewMode(HELP_ORG_REG_1)
     }
 
 };
 
 const mapStateToProps = (state) => {
-    return{}
+    return {}
 };
 
 
