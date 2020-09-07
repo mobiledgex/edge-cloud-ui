@@ -3,6 +3,7 @@ import { CLUSTER_EVENT_LOG_ENDPOINT } from './endPointTypes'
 
 export const clusterEventKeys = [
     {label:'Date', serverField:'time', visible : false, detailedView : false},
+    {label:'Region', serverField:'region', visible : true, detailedView : false, groupBy:true, filter:true},
     {label:'Cluster', serverField:'cluster', visible : true, detailedView : false, groupBy:true, filter:true},
     {label:'Cluster Developer', serverField:'clusterorg', visible : false, detailedView : false, groupBy:false},
     {label:'Cloudlet', serverField:'cloudlet', visible : true, detailedView : false, groupBy:true},
@@ -13,7 +14,7 @@ export const clusterEventKeys = [
     {label:'Disk', serverField:'disk', visible : false, detailedView : true},
     {label:'Other', serverField:'other', visible : false, detailedView : false},
     {label:'Event', serverField:'event', visible : true, detailedView : true},
-    {label:'Status', serverField:'status', visible : true, detailedView : true},
+    {label:'Status', serverField:'status', visible : true, detailedView : true}
 ]
 
 export const clusterEventLogs = (data) => {

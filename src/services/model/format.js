@@ -257,6 +257,7 @@ export const colorType = (value) => {
 
 export const formatColumns = (columns, keys)=>
 {
+    columns.splice(1, 0, 'region');
     let newColumns = []
     keys.map(key=>{
         newColumns[columns.indexOf(key.serverField)] = key
@@ -264,7 +265,7 @@ export const formatColumns = (columns, keys)=>
     return newColumns
 }
 
-export const groupByCompare = (dataList, columns) => {
+export const groupByCompare = (dataList, columns, region) => {
     let keys = []
     columns.map((item, i) => {
         if (item.groupBy) {
@@ -272,6 +273,7 @@ export const groupByCompare = (dataList, columns) => {
         }
     })
     return dataList.reduce((accumulator, x) => {
+        x.splice(1, 0, region);
         let key = ''
         for (let i = 0; i < keys.length; i++) {
             key = key + x[keys[i]]
@@ -299,7 +301,7 @@ export const formatEventData = (response, body, keys) => {
                     let formattingData = {}
                     let key = series[0].name
                     formattingData.columns = formatColumns(series[0].columns, keys)
-                    formattingData.values = groupByCompare(series[0].values, formattingData.columns)
+                    formattingData.values = groupByCompare(series[0].values, formattingData.columns, body.region)
                     formatted[key] = formattingData
                     return formatted
                 }

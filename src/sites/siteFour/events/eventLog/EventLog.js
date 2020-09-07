@@ -29,6 +29,7 @@ const colorType = (value) => {
     }
 }
 
+//format data whic is supported by react-calendar-timline
 const formatCalendarData = (dataList, columns) => {
     if (dataList && dataList.length > 0) {
         let formattedList = []
@@ -74,6 +75,7 @@ const formatCalendarData = (dataList, columns) => {
     }
 }
 
+//search filter support
 const filterData = (filterText, dataList, tabValue) => {
     let keys = Object.keys(dataList)
     let eventType = keys[tabValue]
@@ -163,6 +165,10 @@ class EventLog extends React.Component {
         this.setState({ tabValue: tabIndex, calendarList: data.formattedList, groupList: data.groupList, filterText:'', filterList:dataList, activeIndex:0 })
     }
 
+    onRegionTabChange = (tabIndex, dataList)=>{
+
+    }
+
     onEventTimeLine = (eventInfo, columns, activeIndex) => {
         let data = formatCalendarData(eventInfo, columns)
         this.setState({ activeIndex: activeIndex, calendarList: data.formattedList, groupList: data.groupList })
@@ -191,7 +197,7 @@ class EventLog extends React.Component {
         let columns = eventData.columns
         let eventList = eventData.values
         let keys = Object.keys(eventList)
-        let itemSize = eventType === 'clusterinst' ? 160 : eventType === 'appinst' ? 247 : 133
+        let itemSize = eventType === 'clusterinst' ? 190 : eventType === 'appinst' ? 277 : 163
         return (
             <FixedSizeList key={i} className={'no-scrollbars'} height={this.state.infiniteHeight} itemSize={itemSize} itemCount={keys.length} itemData={{ columns: columns, keys: keys, dataList: eventList }}>
                 {this.renderRow}
@@ -237,7 +243,7 @@ class EventLog extends React.Component {
                         return tabValue === i ? this.stepperView(eventType, eventList, i) : null
                     })}
                 </div>
-                <div style={{ width: 'calc(100vw - 452px)', height: '100%', display: 'inline-block', backgroundColor: '#1E2123' }}>
+                <div style={{ width: 'calc(100vw - 450px)', height: '100%', display: 'inline-block', backgroundColor: '#1E2123' }}>
                     {calendarList.length > 0 && groupList.length > 0 ? <MexCalendar dataList={calendarList} groupList={groupList} /> : null}
                 </div>
             </div>
