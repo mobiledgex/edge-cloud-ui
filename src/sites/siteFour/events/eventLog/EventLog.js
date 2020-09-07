@@ -29,6 +29,7 @@ const colorType = (value) => {
     }
 }
 
+//format data whic is supported by react-calendar-timline
 const formatCalendarData = (dataList, columns) => {
     if (dataList && dataList.length > 0) {
         let formattedList = []
@@ -74,6 +75,7 @@ const formatCalendarData = (dataList, columns) => {
     }
 }
 
+//search filter support
 const filterData = (filterText, dataList, tabValue) => {
     let keys = Object.keys(dataList)
     let eventType = keys[tabValue]

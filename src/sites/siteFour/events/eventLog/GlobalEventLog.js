@@ -190,6 +190,7 @@ class GlobalEventLogs extends React.Component {
 
     componentDidUpdate(prePros, preState)
     {
+        //enable interval only when event log is visible
         if(preState.isOpen !== this.state.isOpen)
         {
             if(this.state.isOpen)
@@ -206,9 +207,11 @@ class GlobalEventLogs extends React.Component {
     }
 
     componentDidMount() {
+        // default request made when organization is available
         if (getOrganization()) {
             this.eventLogData(this.startRange, this.endRange)
         }
+        //Live data is reset when end user changes organization and timer is reset back to one month
         window.addEventListener('SelectOrgChangeEvent', () => {
             this.endRange = dateUtil.currentUTCTime()
             this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
