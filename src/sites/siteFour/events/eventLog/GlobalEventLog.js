@@ -1,4 +1,4 @@
-import React, {Suspense, lazy} from 'react';
+import React, { Suspense, lazy } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -71,6 +71,7 @@ class GlobalEventLogs extends React.Component {
             liveData: {},
             loading: false,
         }
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.action = '';
         this.data = {};
         this.intervalId = undefined;
@@ -108,7 +109,7 @@ class GlobalEventLogs extends React.Component {
                         }),
                     }} anchor={'right'} open={isOpen}>
                     <Suspense fallback={<div>loading</div>}>
-                        <EventLog close={this.handleClose} liveData={liveData} loading={loading}/>
+                        <EventLog close={this.handleClose} liveData={liveData} loading={loading} />
                     </Suspense>
                 </Drawer>
             </React.Fragment>
@@ -139,23 +140,26 @@ class GlobalEventLogs extends React.Component {
 
     eventLogData = async (starttime, endtime, enableInterval) => {
         let userRole = getUserRole()
-        if (userRole) {
-            let data = {}
-            data[fields.region] = 'EU'
-            data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
-            data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+        if (userRole && this.regions && this.regions.length > 0) {
             let eventRequestList = []
-            if (userRole.includes(constant.DEVELOPER)) {
-                eventRequestList.push(clusterEventLogs(data))
-                eventRequestList.push(appInstEventLogs(data))
-            }
-            if (userRole.includes(constant.OPERATOR)) {
-                eventRequestList.push(cloudletEventLogs(data))
-            }
-            this.setState({loading:true})
+            this.regions.map(region => {
+                let data = {}
+                data[fields.region] = region
+                data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+                data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+                if (userRole.includes(constant.DEVELOPER)) {
+                    eventRequestList.push(clusterEventLogs(data))
+                    eventRequestList.push(appInstEventLogs(data))
+                }
+                else if (userRole.includes(constant.OPERATOR)) {
+                    eventRequestList.push(cloudletEventLogs(data))
+                }
+            })
+
+            this.setState({ loading: true })
             let eventResponseList = await showSyncMultiData(this, eventRequestList)
 
-            this.setState({loading:false})
+            this.setState({ loading: false })
 
             if (eventResponseList && eventResponseList.length > 0) {
                 eventResponseList.map((mcRequest) => {
@@ -173,26 +177,44 @@ class GlobalEventLogs extends React.Component {
                     clearInterval(this.intervalId)
                 }
                 this.intervalId = setInterval(() => {
-                    this.startRange = cloneDeep(this.endRange)
-                    this.endRange = dateUtil.currentUTCTime()
-                    this.eventLogData(this.startRange, this.endRange)
+                    if(this.state.isOpen)
+                    {
+                        this.startRange = cloneDeep(this.endRange)
+                        this.endRange = dateUtil.currentUTCTime()
+                        this.eventLogData(this.startRange, this.endRange)
+                    }
                 }, 10 * 2000);
+            }
+        }
+    }
+
+    componentDidUpdate(prePros, preState)
+    {
+        if(preState.isOpen !== this.state.isOpen)
+        {
+            if(this.state.isOpen)
+            {
+                this.startRange = cloneDeep(this.endRange)
+                this.endRange = dateUtil.currentUTCTime()
+                this.eventLogData(this.startRange, this.endRange, true)
+            }
+            else
+            {
+                clearInterval(this.intervalId)
             }
         }
     }
 
     componentDidMount() {
         if (getOrganization()) {
-            this.eventLogData(this.startRange, this.endRange, true)
+            this.eventLogData(this.startRange, this.endRange)
         }
         window.addEventListener('SelectOrgChangeEvent', () => {
             this.endRange = dateUtil.currentUTCTime()
             this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
             this.setState({ liveData: {} })
-            this.eventLogData(this.startRange, this.endRange, true)
+            this.eventLogData(this.startRange, this.endRange)
         })
-
-
     }
 
     componentWillUnmount() {
