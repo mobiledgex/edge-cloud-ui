@@ -160,6 +160,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
                 callback(resResults);
 
             }).catch(error => {
+                requestDataList[0].showSpinner === undefined && showSpinner(self, false)
                 if (error.response && responseStatus(self, error.response.status)) {
                     responseError(self, requestDataList[0], error, callback)
                 }
@@ -187,10 +188,10 @@ export const sendSyncMultiRequest = async (self, requestDataList) => {
             return resResults
         }
         catch (error) {
+            requestDataList[0].showSpinner === undefined && showSpinner(self, false)
             if (error.response && responseStatus(self, error.response.status)) {
                 responseError(self, requestDataList[0], error)
             }
-            requestDataList[0].showSpinner === undefined && showSpinner(self, false)
         }
     }
 }
@@ -205,6 +206,7 @@ export const sendSyncRequest = async (self, request) => {
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
     } catch (error) {
+        request.showSpinner === undefined && showSpinner(self, false)
         if (error.response && responseStatus(self, error.response.status)) {
             responseError(self, request, error)
         }
@@ -241,6 +243,7 @@ export function sendRequest(self, request, callback) {
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
+            request.showSpinner === undefined && showSpinner(self, false)
             if (error.response && responseStatus(self, error.response.status)) {
                 responseError(self, request, error, callback)
             }

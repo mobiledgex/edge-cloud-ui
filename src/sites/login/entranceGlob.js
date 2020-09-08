@@ -21,7 +21,6 @@ class EntranceGlobe extends Component {
     }
 
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT).userToken : null
         if (this.props.match.path === '/logout') {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
         }
