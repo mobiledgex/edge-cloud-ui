@@ -306,7 +306,7 @@ class AppReg extends React.Component {
                 form.visible = currentForm.value === 'tcp' && accessType === constant.ACCESS_TYPE_LOAD_BALANCER
             }
             else if (form.field === fields.skipHCPorts) {
-                form.visible = currentForm.value === 'tcp'
+                form.visible = currentForm.value === 'tcp' && accessType === constant.ACCESS_TYPE_LOAD_BALANCER
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -389,9 +389,11 @@ class AppReg extends React.Component {
                         protocol = childForm.value;
                     }
                     else if (childForm.field === fields.tls) {
-                        childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp' ? true : false
+                        childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp'
                         childForm.value = childForm.visible ? childForm.value : false
-                        protocol = undefined
+                    }
+                    else if (childForm.field === fields.skipHCPorts) {
+                        childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp'
                     }
                 }
             }
