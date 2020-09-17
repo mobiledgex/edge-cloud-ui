@@ -183,6 +183,7 @@ const customData = (value) => {
     value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
     value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])
+    return value
 }
 
 export const getData = (response, body) => {

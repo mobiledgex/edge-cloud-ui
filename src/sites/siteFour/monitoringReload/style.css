@@ -1,0 +1,75 @@
+.monitoring-main{
+    padding: 10px 15px 0px 15px;
+}
+
+.monitoring-header {
+    height: 70px;
+}
+
+.mex-monitoring-header-label {
+    padding-top: 15px;
+}
+
+.mex-monitoring-filter-left {
+    display: inline-block;
+}
+.mex-monitoring-filter-right {
+    float: right;
+    right:40px;
+}
+
+.mex-monitoring-select-container {
+    color:rgba(255, 255, 255, 0.85);
+    margin-right: 15px;
+    display: inline-block; 
+}
+
+.mex-monitoring-select{
+    height: 20px;
+    z-index: 999 !important;
+}
+
+.mex-map{
+    width:100%;
+    height: calc(35vh - 0px);
+    border-radius: 3px;
+}
+
+.map-control {
+    background-color: rgba(128,128,128,.3);
+    border-radius: 3px;
+    width: 30px;
+    height: 'auto';
+}
+
+.map-control-div {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 4px;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    flex-direction: column;
+}
+
+.map-control-div-icon {
+    font-size: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+
+.map-control-div-marker-popup .leaflet-popup-content-wrapper {
+    border-radius: 0px;
+    overflow: auto;
+    height: 100px;
+    border-color: #43c02a;
+    background-color: black;
+    border-style: groove;
+}
+
+.map-control-div-marker-popup-label {
+    margin-bottom: 10px;
+    cursor: pointer;
+}

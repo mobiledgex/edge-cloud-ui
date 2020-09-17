@@ -202,6 +202,7 @@ const customData = (value) => {
             config.kind = constant.configType(config.kind)
         }
     }
+    return value
 }
 
 export const getData = (response, body) => {

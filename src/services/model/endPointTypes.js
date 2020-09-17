@@ -9,6 +9,7 @@ import * as CloudletInfo from './cloudletInfo';
 import * as ClusterInstance from './clusterInstance';
 import * as ClusterEvent from './clusterEvent';
 import * as AppInstEvent from './appInstEvent';
+import * as AppMetrics from './appMetrics';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
@@ -94,16 +95,22 @@ export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
 export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
 export const UPDATE_AUTO_SCALE_POLICY = "UpdateAutoScalePolicy";
 export const DELETE_AUTO_SCALE_POLICY = "DeleteAutoScalePolicy";
-export const CLOUDLET_EVENT_LOG_ENDPOINT = 'cloudlet'
-export const CLUSTER_EVENT_LOG_ENDPOINT = 'cluster'
-export const APP_INST_EVENT_LOG_ENDPOINT = 'app'
+export const CLOUDLET_EVENT_LOG_ENDPOINT = 'events/cloudlet';
+export const CLUSTER_EVENT_LOG_ENDPOINT = 'events/cluster';
+export const APP_INST_EVENT_LOG_ENDPOINT = 'events/app';
+export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
+export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
+export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 
 export function getPath(request) {
     switch (request.method) {
+        case CLOUDLET_METRICS_ENDPOINT:
+        case CLUSTER_METRICS_ENDPOINT:
+        case APP_INST_METRICS_ENDPOINT:
         case CLOUDLET_EVENT_LOG_ENDPOINT:
         case CLUSTER_EVENT_LOG_ENDPOINT:
         case APP_INST_EVENT_LOG_ENDPOINT:
-            return `/api/v1/auth/events/${request.method}`
+            return `/api/v1/auth/${request.method}`
         case SHOW_ORG:
             return '/api/v1/auth/org/show';
         case DELETE_ORG:
@@ -262,6 +269,9 @@ export function formatData(request, response) {
             break;
         case CLOUDLET_EVENT_LOG_ENDPOINT:
             data = CloudletEvent.getData(response, request.data)
+            break;
+        case APP_INST_METRICS_ENDPOINT:
+            data = AppMetrics.getData(response, request.data)
             break;
         default:
             data = undefined;

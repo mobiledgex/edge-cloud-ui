@@ -37,6 +37,7 @@ export const deleteAccount = (data) => {
 const customData = (value) => {
     value[fields.emailVerified] = value[fields.emailVerified] ? value[fields.emailVerified] : false
     value[fields.locked] = value[fields.locked] ? value[fields.locked] : false
+    return value
 }
 
 export const getData = (response, body) => {

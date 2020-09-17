@@ -80,6 +80,11 @@ export const subtractMins = (mins) => {
     return mins ? moment().subtract(mins, 'minutes') : moment().subtract('minutes')
 }
 
+export const addSeconds = (value, date) => {
+    let obj = date ? moment(date) : moment()
+    return value ? obj.add(value, 'seconds') : obj.add('seconds')
+}
+
 export const subtractMonth = (value) => {
     return value ? moment().subtract(value, 'month') : moment().subtract('month')
 }

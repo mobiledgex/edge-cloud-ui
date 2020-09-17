@@ -4,7 +4,9 @@ import * as constant from '../../constant'
 import * as serverData from './serverData'
 import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO, SHOW_AUTO_PROV_POLICY } from './endPointTypes'
 import {FORMAT_FULL_DATE_TIME} from '../../utils/date_util'
+
 let fields = formatter.fields;
+const userRole = formatter.getUserRole()
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true },
@@ -113,8 +115,6 @@ export const multiDataRequest = (keys, mcRequestList) => {
           appInst[fields.cloudletStatus] = cloudletInfo[fields.state]
         }
       }
-
-
       appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
     }
   }
@@ -204,6 +204,11 @@ const customData = (value) => {
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
   value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
   value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
+  if(userRole && userRole.includes(constant.DEVELOPER) && value[fields.appName] === 'MEXPrometheusAppName')
+  {
+    value = undefined
+  }
+  return value
 }
 
 export const getData = (response, body) => {

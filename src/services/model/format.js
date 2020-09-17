@@ -226,8 +226,11 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     map(value, data, keys)
                     if (isUnique) { value.uuid = generateUniqueId() }
                     if (body) { value.region = body.region }
-                    customData(value)
-                    values.push(value)
+                    let newValue = customData(value)
+                    if(newValue)
+                    {
+                        values.push(newValue)
+                    }
                 }
             }
         }

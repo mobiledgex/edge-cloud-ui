@@ -125,6 +125,7 @@ export default class LineChartContainer extends React.Component<Props, State> {
     }
 
     renderLineChartCore() {
+        console.log('Rahul1234',makeLineChartOptions(this.state.pHardwareType, this.state.chartDataSet, this.props.parent, undefined, this.lineChart, this.props.isScrollEnableForLineChart) )
         return (
             <Line
                 ref={c => this.lineChart = c}

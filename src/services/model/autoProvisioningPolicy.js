@@ -151,6 +151,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
  * **/
 const customData = (value) => {
   value[fields.cloudletCount] = value[fields.cloudlets].length;
+  return value
 }
 
 /** 
