@@ -16,17 +16,11 @@ import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../se
 import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
-import { Card, IconButton, Box, Link, Tooltip } from '@material-ui/core';
-import { syntaxHighLighter, codeHighLighter } from '../../../hoc/highLighter/highLighter'
-import { downloadData } from '../../../utils/file_util'
 import { Grid } from 'semantic-ui-react';
-
-
-import GetAppIcon from '@material-ui/icons/GetApp';
-import CloseIcon from '@material-ui/icons/Close';
-
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
+
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
+const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
 
 class CloudletReg extends React.Component {
     constructor(props) {
@@ -312,60 +306,15 @@ class CloudletReg extends React.Component {
             }
         }
     }
-
-
+    
     cloudletManifestForm = () => {
-        let cloudletManifest = this.state.cloudletManifest;
-        let imagePath = cloudletManifest.image_path;
-        let imageFileNameWithExt = imagePath.substring(imagePath.lastIndexOf('/') + 1)
-        let imageFileName = imageFileNameWithExt.substring(0, imageFileNameWithExt.lastIndexOf('.'))
         let fileName = `${this.cloudletData[fields.cloudletName]}-${this.cloudletData[fields.operatorName]}-pf`
-        return (
-            <Card style={{ height: '100%', backgroundColor: '#2A2C33', overflowY: 'auto' }}>
-                <div style={{ margin: 20, color: 'white' }}>
-                    <Box display="flex" p={1}>
-                        <Box p={1} flexGrow={1}>
-                            <h2><b>Cloudlet Manifest</b></h2>
-                        </Box>
-                        <Box p={1}>
-                            <IconButton onClick={() => this.props.onClose(true)}><CloseIcon /></IconButton>
-                        </Box>
-                    </Box>
-                    <Box display="flex" p={1}>
-                        <Box p={1} flexGrow={1}><h4><b>Perform the following steps to setup cloudlet</b></h4></Box>
-                    </Box>
-                    <br />
-                    <ul style={{listStyleType: 'decimal'}}>
-                        <li>
-                            <h4>Download MobiledgeX bootstrap VM image (please use your console credentials)</h4>
-                            <Link href={imagePath} target='_blank'><h4 style={{ color: '#77bd06', margin: 10 }}>{imagePath}</h4></Link>
-                        </li>
-                        <li style={{ marginTop: 30 }}>
-                            <h4>
-                                Execute the following command to upload the image to your glance store &nbsp;&nbsp;&nbsp;
-                            </h4>
-                            {codeHighLighter(`openstack image create ${imageFileName} --disk-format qcow2 --container-format bare --file ${imageFileNameWithExt}`)}
-                        </li>
-                        <li style={{ marginTop: 20 }}>
-                            <h4>
-                                Download the following manifest template
-                                <Tooltip title={'download'} aria-label="download">
-                                    <IconButton onClick={() => downloadData(`${fileName}.yml`, this.state.cloudletManifest.manifest)}><GetAppIcon fontSize='small' /></IconButton>
-                                </Tooltip>
-                            </h4>
-                            <div style={{ padding: 1, overflow: 'auto', width: '70vw', height:'50vh' }}>
-                                {syntaxHighLighter('yaml', cloudletManifest.manifest, true)}
-                            </div>
-                        </li>
-                        <li style={{ marginTop: 30 }}>
-                            <h4>Execute the following command to use manifest to setup cloudlet &nbsp;&nbsp;&nbsp;
-                            </h4>
-                            {codeHighLighter(`openstack stack create -t ${fileName}.yml ${fileName}`)}
-                        </li>
-                    </ul>
-                </div>
-            </Card>
-        )
+        let cloudletManifest = this.state.cloudletManifest;
+        if (cloudletManifest && cloudletManifest['manifest']) {
+            return (
+                <CloudletManifest cloudletManifest={cloudletManifest} fileName={fileName}/>
+            )
+        }
     }
 
     render() {
