@@ -52,6 +52,9 @@ import { Collapse, Tooltip } from '@material-ui/core';
 import { Image } from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
 
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend, } from 'react-dnd-html5-backend'
+
 const drawerWidth = 250;
 
 const useStyles = makeStyles(theme => ({
@@ -338,9 +341,11 @@ export default function MiniDrawer(props) {
                 </List>
             </Drawer>
             <main className={classes.content}>
-                <div className='contents_body' style={{ marginTop: 6, height: 'calc(100% - 6px)' }}>
-                    {page}
-                </div>
+                <DndProvider backend={HTML5Backend}>
+                    <div className='contents_body' style={{ marginTop: 6, height: 'calc(100% - 6px)' }}>
+                        {page}
+                    </div>
+                </DndProvider>
             </main>
             <PopLegendViewer dimmer={false} open={openLegend} close={closeLegend}></PopLegendViewer>
         </div>
