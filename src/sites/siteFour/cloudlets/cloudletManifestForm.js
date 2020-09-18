@@ -15,37 +15,41 @@ const COMMAND = 'command'
 const URL = 'url'
 const BASH = 'bash'
 const YAML = 'yaml'
+const MANIFEST = 'manifest'
+const MANIFEST_ITEMS = 'manifestitems'
 
 const CloudletManifest = (props) => {
-    const manifestArray = yaml.load(props.cloudletManifest['manifest'])['manifestitems']
+    const manifestArray = yaml.load(props.cloudletManifest[MANIFEST])[MANIFEST_ITEMS]
 
     const contentSubType = (manifest) => {
-        let content = manifest[CONTENT]
-        return syntaxHighLighter(manifest[CONTENT_SUB_TYPE], content)
-    }
-
-    const contentType = (manifest) => {
-        let content = manifest[CONTENT]
-        switch (manifest[CONTENT_TYPE]) {
-            case URL:
-                return <Link href={content} target='_blank'><h4 style={{ color: '#77bd06', margin: 10 }}>{content}</h4></Link>
-            case COMMAND:
-                return codeHighLighter(content)
-            case CODE:
-                return (
-                    <div style={{ padding: 1, overflow: 'auto', width: '70vw', maxHeight: '50vh' }}>
-                        {contentSubType(manifest)}
-                    </div>
-                )
-            default:
-                return null
+        if (manifest[CONTENT_SUB_TYPE]) {
+            let content = manifest[CONTENT]
+            return syntaxHighLighter(manifest[CONTENT_SUB_TYPE], content)
         }
     }
 
-    const fileExtension = (manifest)=>
-    {
-        switch(manifest[CONTENT_SUB_TYPE])
-        {
+    const contentType = (manifest) => {
+        if (manifest[CONTENT] && manifest[CONTENT_TYPE]) {
+            let content = manifest[CONTENT]
+            switch (manifest[CONTENT_TYPE]) {
+                case URL:
+                    return <Link href={content} target='_blank'><h4 style={{ color: '#77bd06', margin: 10 }}>{content}</h4></Link>
+                case COMMAND:
+                    return codeHighLighter(content)
+                case CODE:
+                    return (
+                        <div style={{ padding: 1, overflow: 'auto', width: '70vw', maxHeight: '50vh' }}>
+                            {contentSubType(manifest)}
+                        </div>
+                    )
+                default:
+                    return null
+            }
+        }
+    }
+
+    const fileExtension = (manifest) => {
+        switch (manifest[CONTENT_SUB_TYPE]) {
             case YAML:
                 return '.yml'
             case BASH:
@@ -56,15 +60,17 @@ const CloudletManifest = (props) => {
     }
 
     const titleAdditionalInfo = (manifest) => {
-        switch (manifest[CONTENT_TYPE]) {
-            case CODE:
-                return (
-                    <Tooltip title={'download'} aria-label="download">
-                        <IconButton onClick={() => downloadData(`${props.fileName}${fileExtension(manifest)}`, manifest[CONTENT])}><GetAppIcon fontSize='small' /></IconButton>
-                    </Tooltip>
-                )
-            default:
-                return null
+        if (manifest[CONTENT_TYPE]) {
+            switch (manifest[CONTENT_TYPE]) {
+                case CODE:
+                    return (
+                        <Tooltip title={'download'} aria-label="download">
+                            <IconButton onClick={() => downloadData(`${props.fileName}${fileExtension(manifest)}`, manifest[CONTENT])}><GetAppIcon fontSize='small' /></IconButton>
+                        </Tooltip>
+                    )
+                default:
+                    return null
+            }
         }
     }
 

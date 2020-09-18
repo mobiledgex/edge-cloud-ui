@@ -18,14 +18,12 @@ import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiSt
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend'
 
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newDataList:[],
+            newDataList: [],
             dataList: [],
             filterList: [],
             anchorEl: null,
@@ -36,7 +34,7 @@ class MexListView extends React.Component {
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
-            dropList:[]
+            dropList: []
         };
         this.filterText = ''
         this.requestCount = 0;
@@ -57,7 +55,7 @@ class MexListView extends React.Component {
         let additionalDetail = this.requestInfo.additionalDetail
         this.props.handleViewMode(null)
         return (
-            <Card style={{ height: 'calc(100% - 49px)', backgroundColor: '#292c33', borderRadius:5, overflowY: 'auto' }}>
+            <Card style={{ height: 'calc(100% - 49px)', backgroundColor: '#292c33', borderRadius: 5, overflowY: 'auto' }}>
                 <MexDetailViewer detailData={data} keys={this.keys} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
@@ -278,10 +276,10 @@ class MexListView extends React.Component {
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 400 }}>
                         <Map dataList={this.state.filterList}
-                             id={this.requestInfo.id}
-                             onClick={this.onMapClick}
-                             region={this.selectedRegion}
-                             mapDetails={this.mapDetails}/>
+                            id={this.requestInfo.id}
+                            onClick={this.onMapClick}
+                            region={this.selectedRegion}
+                            mapDetails={this.mapDetails} />
                     </div> : null
                 }
                 <MexListViewer keys={this.keys} dataList={this.state.filterList}
@@ -298,7 +296,7 @@ class MexListView extends React.Component {
             </div>)
     }
 
-    
+
     onCloseStepper = () => {
         this.setState({
             uuid: 0
@@ -366,22 +364,19 @@ class MexListView extends React.Component {
         this.setState({ dropList: [] })
     }
 
-    isDropped = (item)=>
-    {
+    isDropped = (item) => {
         this.setState({ dropList: [item] })
     }
 
     render() {
         return (
-            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop:10 }}>
+            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.dataFromServer} streamType={this.requestInfo.streamType} region={this.selectedRegion} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <DndProvider backend={HTML5Backend}>
-                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem}/>
+                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
-                </DndProvider>
             </Card>
         );
 
@@ -473,13 +468,13 @@ class MexListView extends React.Component {
 
         this.setState({
             dataList: Object.assign([], dataList),
-            newDataList : newDataList
+            newDataList: newDataList
         })
         this.setState({ filterList: this.onFilterValue(undefined) })
     }
 
     dataFromServer = (region) => {
-        this.setState({ dataList: [], filterList: [], selected: [], newDataList : [] })
+        this.setState({ dataList: [], filterList: [], selected: [], newDataList: [] })
         let requestInfo = this.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)
