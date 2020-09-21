@@ -4,6 +4,7 @@ export const layout = {
   textAlign: "center"
 }
 export const container = {
+  height:'100%',
   display: 'inline-block',
   verticalAlign: "middle"
 }
