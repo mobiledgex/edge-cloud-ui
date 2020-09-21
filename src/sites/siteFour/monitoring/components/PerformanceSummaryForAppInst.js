@@ -99,6 +99,7 @@ export default function PerformanceSummaryForAppInst(props) {
                         </TableHead>
                         <TableBody padding={'none'} style={{width: 'auto', overflowX: 'scroll'}}>
                             {props.filteredUsageList !== undefined && props.filteredUsageList.map((item, index) => {
+                                console.log('Rahul1234', item)
                                 return (
                                     <TableRow
                                         key={index}
