@@ -160,9 +160,9 @@ export const renderUsageLabelByType = (usageOne, hardwareType, userType = '') =>
         return convertByteToMegaGigaByte(parseInt(usageOne.sumUdpSent))
     } else if (hardwareType === HARDWARE_TYPE.UDPRECV) {
         return convertByteToMegaGigaByte(usageOne.sumUdpRecv)
-    } else if (hardwareType === HARDWARE_TYPE.BYTESSENT) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESSENT || hardwareType === HARDWARE_TYPE.SENDBYTES) {
         return convertByteToMegaGigaByte(usageOne.sumSendBytes)
-    } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD) {
+    } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.RECVBYTES) {
         return convertByteToMegaGigaByte(usageOne.sumRecvBytes)
     }
     ////Cloudlet
@@ -290,7 +290,7 @@ export const makeBarChartDataForAppInst = (allHWUsageList, hardwareType, _this: 
             typedUsageList = allHWUsageList[0]
         } else if (hardwareType === HARDWARE_TYPE.MEM) {
             typedUsageList = allHWUsageList[1]
-        } else if (hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.BYTESSENT) {
+        } else if (hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
             typedUsageList = allHWUsageList[2]
         } else if (hardwareType === HARDWARE_TYPE.DISK) {
             typedUsageList = allHWUsageList[3]
@@ -435,7 +435,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 }
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
-
                 if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
                 } else if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase())) {
@@ -711,7 +710,7 @@ export const covertYAxisUnits = (value, hardwareType, _this) => {
             } else if (_this.state.currentClassification === CLASSIFICATION.APPINST || _this.state.currentClassification === CLASSIFICATION.APP_INST_FOR_ADMIN) {
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     return value.toFixed(3) + " %";
-                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.BYTESRECVD || hardwareType === HARDWARE_TYPE.BYTESSENT) {
+                } else if (hardwareType === HARDWARE_TYPE.DISK || hardwareType === HARDWARE_TYPE.MEM || hardwareType === HARDWARE_TYPE.RECVBYTES || hardwareType === HARDWARE_TYPE.SENDBYTES) {
                     return convertByteToMegaGigaByte(value.toFixed(1));
                 } else {
                     return value;

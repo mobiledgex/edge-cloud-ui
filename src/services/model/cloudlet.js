@@ -173,7 +173,7 @@ export const keys = () => ([
     { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name'},
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name'},
-    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailVisible : false},
+    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView : false},
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML},
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
