@@ -97,9 +97,9 @@ export default class MultiHwLineChartContainer extends React.Component<Props, St
             return 'Recv UDP Datagram'
         } else if (title.includes(HARDWARE_TYPE.UDPSENT)) {
             return 'Sent UDP Datagram'
-        } else if (title.includes(HARDWARE_TYPE.BYTESRECVD)) {
+        } else if (title.includes(HARDWARE_TYPE.BYTESRECVD) || title.includes(HARDWARE_TYPE.RECVBYTES)) {
             return 'Network Recv'
-        } else if (title.includes(HARDWARE_TYPE.BYTESSENT)) {
+        } else if (title.includes(HARDWARE_TYPE.BYTESSENT) || title.includes(HARDWARE_TYPE.SENDBYTES)) {
             return 'Network Sent'
         } else if (title.includes(HARDWARE_TYPE.VCPU_USED)) {
             return 'vCPU Utilization'
