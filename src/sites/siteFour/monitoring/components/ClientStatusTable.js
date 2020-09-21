@@ -76,7 +76,7 @@ export default function ClientStatusTable(props) {
             <div className='page_monitoring_title_area draggable' style={{backgroundColor: 'transparent'}}>
                 <div className='page_monitoring_title_for_table' onClick={() => {
                 }}>
-                    App Instance {props.loading ?
+                    App Instances {props.loading ?
                     <div style={{marginLeft: 5,}}>
                         <div style={{}}>
                             {renderSmallProgressLoader(0)}
