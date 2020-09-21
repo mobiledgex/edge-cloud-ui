@@ -1424,9 +1424,9 @@ export default withSize()(connect(PageDevMonitoringMapStateToProps, PageDevMonit
                             chartDataSets = undefined;
                         } else {
                             if (pHwType.toLowerCase() === HARDWARE_TYPE.SENDBYTES.toLowerCase()) {
-                                pHwType = HARDWARE_TYPE.BYTESSENT
+                                pHwType = HARDWARE_TYPE.SENDBYTES
                             } else if (pHwType.toLowerCase() === HARDWARE_TYPE.RECVBYTES.toLowerCase()) {
-                                pHwType = HARDWARE_TYPE.BYTESRECVD
+                                pHwType = HARDWARE_TYPE.RECVBYTES
                             }
                             chartDataSets = makeLineChartData(this.state.filteredAppInstUsageList, pHwType, this)
                         }
