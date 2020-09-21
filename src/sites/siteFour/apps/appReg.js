@@ -54,13 +54,17 @@ class AppReg extends React.Component {
     validatePortRange = (currentForm) => {
         let forms = currentForm.parent.form.forms
         let protocol = undefined
+        let portRange = undefined
         for(let i=0;i<forms.length;i++)
         {
             let form = forms[i]
             if(form.field === fields.protocol)
             {
                 protocol = form.value
-                break;
+            }
+            else if(form.field === fields.portRangeMax || form.field === fields.portRangeMin)
+            {
+                portRange = form.value
             }
         }
         if (currentForm.value && currentForm.value.length > 0) {
@@ -69,10 +73,19 @@ class AppReg extends React.Component {
                 currentForm.error = 'Invalid Port Range (must be between 1-65535)'
                 return false;
             }
-            else if(value === 22 && protocol === 'tcp')
-            {
-                currentForm.error = 'App cannot use tcp port 22, as it is reserved for platform inter-node SSH'
-                return false;
+            else if (protocol === 'tcp') {
+                if (value === 22) {
+                    currentForm.error = 'App cannot use tcp port 22, as it is reserved for platform inter-node SSH'
+                    return false;
+                }
+                else if (currentForm.field === fields.portRangeMax || currentForm.field === fields.portRangeMin) {
+                    let portRangeMin = portRange > currentForm.value ? currentForm.value : portRange
+                    let portRangeMax = portRange < currentForm.value ? currentForm.value : portRange
+                    if (22 >= portRangeMin && 22 <= portRangeMax) {
+                        currentForm.error = 'App port range cannot use tcp port 22, as it is reserved for platform inter-node SSH'
+                        return false;
+                    }
+                }
             }
         }
         currentForm.error = undefined;
