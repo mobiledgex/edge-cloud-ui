@@ -282,7 +282,7 @@ class MexTerminal extends Component {
                     <div style={style.layout}>
                         <div style={style.container} align='center'>
                             <Paper variant="outlined" style={style.optionBody}>
-                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{}}/>
                                 <div>
                                     <p style={{color:'#FFC107'}}>Note: Only running containers are accessible</p>
                                 </div>
@@ -292,9 +292,11 @@ class MexTerminal extends Component {
                     :
                     this.state.tempURL ?
                         <Suspense fallback={<div></div>}>
-                        <div className={`${this.request === RUN_COMMAND ? 'terminal_run_head' : 'terminal_log_head'}`}>
-                            <Terminal status={this.socketStatus} url={this.state.tempURL} request={this.request}/>
-                        </div></Suspense> : null
+                            <div className={`${this.request === RUN_COMMAND ? 'terminal_run_head' : 'terminal_log_head'}`}>
+                                <Terminal status={this.socketStatus} url={this.state.tempURL} request={this.request} />
+                            </div>
+                        </Suspense> : 
+                        null
                 : null)
     }
 
