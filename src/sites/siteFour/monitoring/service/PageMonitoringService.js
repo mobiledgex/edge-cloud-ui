@@ -393,7 +393,6 @@ export function makeMultiLineChartDatas(multiLineChartDataSets) {
  */
 export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string, _this: PageMonitoringView) => {
     try {
-
         if (hardwareUsageList.length === 0) {
             return (
                 <div style={PageMonitoringStyles.noData}>
@@ -436,7 +435,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 }
 
                 hardWareUsageIndex = findUsageIndexByKey(usageColumnList, hardwareType)
-
                 if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLUSTER.toLowerCase())) {
                     classificationName = item.cluster + "\n[" + item.cloudlet + "]";
                 } else if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.CLOUDLET.toLowerCase())) {
