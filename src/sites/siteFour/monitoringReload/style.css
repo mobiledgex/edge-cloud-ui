@@ -1,13 +1,19 @@
-.monitoring-main{
-    padding: 10px 15px 0px 15px;
-}
-
 .monitoring-header {
-    height: 70px;
+    padding: 10px 15px 0px 15px;
+    width: 100%;
+    margin-bottom: 5px;
+    height: 50px;
 }
 
 .mex-monitoring-header-label {
-    padding-top: 15px;
+    width: 100%;
+}
+
+.monitoring-content {
+    width: 100%;
+    padding: 0px 15px 0px 15px;
+    height: calc(100vh - 119px);
+    overflow: auto;
 }
 
 .mex-monitoring-filter-left {
@@ -15,6 +21,7 @@
 }
 .mex-monitoring-filter-right {
     float: right;
+    margin-top: -10px;
     right:40px;
 }
 

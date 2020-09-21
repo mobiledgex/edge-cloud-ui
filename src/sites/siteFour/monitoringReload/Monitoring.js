@@ -18,7 +18,8 @@ export default class Monitoring extends React.Component {
         this.state = {
             chartData:{},
             mapData: {},
-            loading: false
+            loading: false,
+            filter : {}
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
@@ -27,7 +28,9 @@ export default class Monitoring extends React.Component {
     }
 
     onRegionSelectChange = (value) => {
-
+        let filter = this.state.filter
+        filter[fields.region] = value
+        this.setState({filter})
     }
 
     renderSelect = (placeholder, dataList, click,  isMultiple, field) => {
@@ -53,7 +56,7 @@ export default class Monitoring extends React.Component {
     }
 
     render() {
-        const { mapData, dataList, loading, chartData } = this.state
+        const { mapData, loading, filter } = this.state
         return (
             <div className="monitoring-main" mex-test="component-monitoring">
                 {loading ? <LinearProgress /> : null}
@@ -61,15 +64,17 @@ export default class Monitoring extends React.Component {
                     <div className="mex-monitoring-filter-left">
                         <h2 className="mex-monitoring-header-label">Monitoring</h2>
                     </div>
-                    {/* <div className="mex-monitoring-filter-right">
+                    <div className="mex-monitoring-filter-right">
                         {this.renderSelect('Region', this.regions, this.onRegionSelectChange, false)}
-                        {this.renderSelect('App Instances', dataList, this.onAppInstSelectChange, true, fields.appName)}
-                    </div> */}
+                        {/* {this.renderSelect('App Instances', dataList, this.onAppInstSelectChange, true, fields.appName)} */}
+                    </div>
                 </div>
-                <Card style={{width:'100%'}}>
-                    <MexMap data={mapData} />
-                </Card>
-                <MexChart/>
+                <div className="monitoring-content">
+                    <Card style={{ width: '100%' }}>
+                        <MexMap data={mapData} />
+                    </Card>
+                    <MexChart filter={filter}/>
+                </div>
             </div>
         )
     }

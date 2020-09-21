@@ -147,7 +147,8 @@ export const fields = {
     eventType: 'eventType',
     time: 'time',
     starttime:'starttime',
-    endtime:'endtime'
+    endtime:'endtime',
+    selector:'selector'
 }
 
 export const getUserRole = () => {

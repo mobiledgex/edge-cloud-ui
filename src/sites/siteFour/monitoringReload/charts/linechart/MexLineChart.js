@@ -5,12 +5,7 @@ import * as dateUtil from '../../../../../utils/date_util'
 import moment from 'moment'
 import randomColor from 'randomcolor'
 
-const covertYAxisUnits = (value) => {
-    return value.toFixed(3) + " %"
-}
-
 const MexLineChart = (props) => {
-
     const options = {
         stacked: true,
         bezierCurve:true,
@@ -49,11 +44,12 @@ const MexLineChart = (props) => {
             yAxes: [{
                 scaleLabel: {
                     display: true,
-                    labelString: 'CPU'
+                    labelString: props.label(props.id)
                 },
                 ticks: {
-                    beginAtZero : true,
-                    callback: covertYAxisUnits
+                    callback: (label, index, labels) => {
+                        return props.convertUnit(props.id, label);
+                    }
                 }
             }]
         }
@@ -72,34 +68,34 @@ const MexLineChart = (props) => {
         return labels
     }
 
-    const formatData = (data) => {
-        const columnLength = props.data ? props.data.columns.length : 0
-        const values = props.data ? props.data.values : {}
+    const formatData = (chartData) => {
+        const columnLength = chartData ? chartData.columns.length : 0
+        const values = chartData ? chartData.values : {}
         let keys = Object.keys(values)
         let moreColors = randomColor({
             count: keys.length,
         });
-        console.log('Rahul1234', moreColors)
         let datasets = keys.map((key, i) => {
             let data = values[key].map(value => {
-                return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[columnLength - 1] }
+                return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[columnLength] }
             })
+            let color = moreColors[i]
             return {
                 label: values[key][0][2],
                 fill: false,
                 lineTension: 0.5,
-                backgroundColor: moreColors[i],
-                borderColor: moreColors[i],
+                backgroundColor: color,
+                borderColor: color,
                 borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: moreColors[i],
-                pointBackgroundColor: moreColors[i],
+                pointBorderColor: color,
+                pointBackgroundColor: color,
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: moreColors[i],
-                pointHoverBorderColor: moreColors[i],
+                pointHoverBackgroundColor: color,
+                pointHoverBorderColor: color,
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
@@ -109,12 +105,17 @@ const MexLineChart = (props) => {
         return datasets
     }
 
+    
+
     const labels = distributeTime(props.data, 15)
     const datasets = formatData(props.data)
 
     return (
-        <Card style={{ width: '50%', height: 400, marginTop: 20, padding: 50 }} mex-test="component-line-chart">
-            <div style={{ padding: 10, width: '100%' }}>
+        <Card style={{ height: 400, padding: 30 }} mex-test="component-line-chart">
+            <div align="center">
+                <h3>{props.data.region}</h3>
+            </div>
+            <div style={{ padding: 20, width: '100%' }}>
                 <Line options={options} data={{ labels, datasets }} height={320} />
             </div>
         </Card>
