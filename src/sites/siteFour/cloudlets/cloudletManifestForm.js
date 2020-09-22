@@ -83,7 +83,7 @@ const CloudletManifest = (props) => {
                             <h2><b>Cloudlet Manifest</b></h2>
                         </Box>
                         <Box p={1}>
-                            <IconButton onClick={() => this.props.onClose(true)}><CloseIcon /></IconButton>
+                            <IconButton onClick={() => props.onClose(true)}><CloseIcon /></IconButton>
                         </Box>
                     </Box>
                     <Box display="flex" p={1}>
