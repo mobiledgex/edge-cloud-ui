@@ -1,32 +1,27 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
-import { Card } from '@material-ui/core'
 import * as dateUtil from '../../../../../utils/date_util'
 import moment from 'moment'
 import randomColor from 'randomcolor'
+import isEqual from 'lodash/isEqual';
 
-const MexLineChart = (props) => {
-
-    const metric = props.data.metric
-    const header = metric ? metric.header : ''
-    const unit = metric ? metric.unit : undefined
-    const position = metric ? metric.position : 0
-    const tags = props.tags
-    const tagFormats = props.tagFormats
-
-    const options = {
+const optionsGenerator = (header, unit) => {
+    return {
         stacked: true,
-        bezierCurve:true,
+        bezierCurve: true,
         animation: {
             duration: 500
         },
-        datasetStrokeWidth : 1,
+        datasetStrokeWidth: 1,
         pointDotStrokeWidth: 2,
         responsive: true,
         maintainAspectRatio: false,
         legend: {
             position: "bottom",
-            display: true
+            display: false,
+            labels: {
+                boxWidth: 2
+            }
         },
         scales: {
             xAxes: [{
@@ -42,28 +37,44 @@ const MexLineChart = (props) => {
                     }
                 },
                 scaleLabel: {
-                    display: true,
+                    display: false,
                     labelString: 'Date'
                 },
-                ticks : {
+                ticks: {
                     maxTicksLimit: 15
                 }
             }],
             yAxes: [{
                 scaleLabel: {
-                    display: true,
+                    display: false,
                     labelString: header
                 },
                 ticks: {
                     callback: (label, index, labels) => {
-                        return unit ? unit(label) : label 
+                        return unit ? unit(label) : label
                     }
                 }
             }]
         }
     }
+}
+class MexLineChart extends React.Component {
+    
+    constructor(props) {
+        super(props)
+        this.state = {
+            chartData : {}
+        }
+        this.metric = props.data.metric
+        this.header = this.metric ? this.metric.header : ''
+        this.unit = this.metric ? this.metric.unit : undefined
+        this.position = this.metric ? this.metric.position : 0
+        this.tags = props.tags
+        this.tagFormats = props.tagFormats
+        this.options = optionsGenerator(this.header, this.unit)
+    }
 
-    const distributeTime = (data, interval) => {
+    distributeTime = (data, interval) => {
         let labels = []
         if (data) {
             let starttime = data.starttime
@@ -76,12 +87,12 @@ const MexLineChart = (props) => {
         return labels
     }
 
-    const formatLabel = (value)=>{
+    formatLabel = (value) => {
         let metricLabel = ''
-        tags.map((tag, j) => {
+        this.tags.map((tag, j) => {
             let labelVal = value[tag]
             if (labelVal && labelVal !== null) {
-                let tagFormat = tagFormats[j]
+                let tagFormat = this.tagFormats[j]
                 switch (tagFormat) {
                     case '[':
                         metricLabel = metricLabel + ` [${labelVal}]`
@@ -95,7 +106,7 @@ const MexLineChart = (props) => {
         return metricLabel
     }
 
-    const formatData = (chartData) => {
+    formatData = (chartData) => {
         let datasets = []
         const values = chartData ? chartData.values : {}
         if (values) {
@@ -106,12 +117,12 @@ const MexLineChart = (props) => {
             datasets = keys.map((key, i) => {
                 let valueData = values[key]
                 let data = valueData.map(value => {
-                    return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[position] }
+                    return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
                 })
                 let color = moreColors[i]
 
                 return {
-                    label: formatLabel(valueData[0]),
+                    label: this.formatLabel(valueData[0]),
                     fill: false,
                     lineTension: 0.5,
                     backgroundColor: color,
@@ -136,21 +147,29 @@ const MexLineChart = (props) => {
         return datasets
     }
 
+    static getDerivedStateFromProps(props, state) {
+        let propsValues = props.data.values
+        let stateValues = state.chartData.values
+        if(propsValues && !isEqual(stateValues, propsValues))
+        {
+            return { chartData : props.data}
+        }
+        return null
+    }
 
-
-    const labels = distributeTime(props.data, 15)
-    const datasets = formatData(props.data)
-
-    return (
-        <Card style={{ height: 400, padding: 30 }} mex-test="component-line-chart">
-            <div align="center">
-                <h3>{`${header} - ${props.data.region}`}</h3>
+    render() {
+        const { chartData } = this.state
+        return (
+            <div style={{ height: 400, padding: 30 }} mex-test="component-line-chart">
+                <div align="center">
+                    <h3>{this.header}</h3>
+                </div>
+                <div style={{ padding: 20, width: '100%' }}>
+                    <Line options={this.options} data={{ labels : this.distributeTime(chartData, 15), datasets : this.formatData(chartData) }} height={320} />
+                </div>
             </div>
-            <div style={{ padding: 20, width: '100%' }}>
-                <Line options={options} data={{ labels, datasets }} height={320} />
-            </div>
-        </Card>
-    )
+        )
+    }
 }
 
 export default MexLineChart

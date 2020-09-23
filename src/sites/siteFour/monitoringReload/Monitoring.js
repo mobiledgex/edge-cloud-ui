@@ -19,9 +19,10 @@ export default class Monitoring extends React.Component {
             chartData:{},
             mapData: {},
             loading: false,
-            filter : {}
+            filter : {region : 'ALL'}
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions.splice(0, 0, 'ALL')
     }
 
     onAppInstSelectChange = (value) => {
@@ -70,9 +71,9 @@ export default class Monitoring extends React.Component {
                     </div>
                 </div>
                 <div className="monitoring-content">
-                    <Card style={{ width: '100%' }}>
+                    {/* <Card style={{ width: '100%' }}>
                         <MexMap data={mapData} />
-                    </Card>
+                    </Card> */}
                     <MexChart filter={filter}/>
                 </div>
             </div>

@@ -5,7 +5,8 @@ import * as serverData from '../../../../services/model/serverData'
 import * as dateUtil from '../../../../utils/date_util'
 import { convertByteToMegaGigaByte } from '../../../../utils/math_util'
 import { fields } from '../../../../services/model/format'
-import { Grid } from '@material-ui/core'
+import { Grid, Card, Box } from '@material-ui/core'
+import { Dropdown } from 'semantic-ui-react'
 
 const appInstMetricKeys = [
     { serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10 },
@@ -20,31 +21,53 @@ class MexChart extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            chartData: {}
+            chartData: {},
+            chartSelectiveFilter : []
+
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.filter = props.filter
+        this.tempFilter = []
     }
 
-    static getDerivedStateFromProps(props, state) {
-        return null
+    validateRegionFilter = (region)=>
+    {
+        let regionFilter = this.filter[fields.region]
+        return regionFilter === 'ALL' || region === regionFilter
     }
 
     render() {
-        const { chartData } = this.state
+        const { chartData, chartSelectiveFilter } = this.state
         return (
             <div style={{ marginTop: 10 }}>
                 <Grid container spacing={1}>
                     {Object.keys(chartData).map((region, i) => {
-                        let chartDataRegion = chartData[region]
-                        return (
-                            <Grid item xs={6} key={i}>
-                                <Grid container spacing={1} direction="column-reverse">
-                                    {Object.keys(chartDataRegion).map((key, j) => {
-                                        return <Grid item xs={12} key={j}><AppInstLineChart id={key} data={chartDataRegion[key]} keys={appMetricsKeys} tags={[2, 3, 4]} tagFormats={['', '[', '[']} /></Grid>
-                                    })}
+                        if (this.validateRegionFilter(region)) {
+                            let chartDataRegion = chartData[region]
+                            return (
+                                <Grid item xs={6} key={i}>
+                                    <Card>
+                                        <div className="grid-charts-header">
+                                            <Box display="flex" p={1}>
+                                                <Box p={1} flexGrow={1}>
+                                                    <h4>{region}</h4>
+                                                </Box>
+                                                <Box p={1}>
+                                                    <Dropdown options={chartSelectiveFilter.map(data => {
+                                                        return { key: data, value: data, text: data }
+                                                    })} />
+                                                </Box>
+                                            </Box>
+                                        </div>
+                                        <Grid container spacing={1} direction="column-reverse" className="grid-charts">
+                                            {Object.keys(chartDataRegion).map((key, j) => {
+                                                return <Grid item xs={12} key={j}><AppInstLineChart id={key} data={chartDataRegion[key]} keys={appMetricsKeys} tags={[2, 3, 4]} tagFormats={['', '[', '[']} /></Grid>
+                                            })}
+                                        </Grid>
+                                    </Card>
                                 </Grid>
-                            </Grid>
-                        )
+                            )
+                        }
                     })}
                 </Grid>
             </div>
@@ -78,9 +101,13 @@ class MexChart extends React.Component {
             data[objectId].endtime = requestData.endtime
             data[objectId].region = region
             data[objectId].metric = metric
-
+            let chartSelectiveFilter = []
+            Object.keys(data[objectId].values).map(key=>{
+                let value = data[objectId].values[key][0]
+                chartSelectiveFilter.push(value[2])
+            })
             chartData[region][this.metricKeyGenerator(region, metric)] = data[objectId]
-            this.setState({ chartData })
+            this.setState({ chartData, chartSelectiveFilter })
         }
     }
 

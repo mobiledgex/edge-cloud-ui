@@ -80,3 +80,11 @@
     margin-bottom: 10px;
     cursor: pointer;
 }
+
+.grid-charts-header{
+    padding: 10px;
+}
+
+.grid-charts {
+    margin-top: 0px;
+}
