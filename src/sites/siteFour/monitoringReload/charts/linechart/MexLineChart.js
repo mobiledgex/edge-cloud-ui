@@ -151,7 +151,7 @@ class MexLineChart extends React.Component {
     render() {
         const { chartData } = this.state
         return (
-            <div style={{ height: 375}} mex-test="component-line-chart">
+            <div mex-test="component-line-chart">
                 <div align="center">
                     <h3>{`${this.props.data.region}`}</h3>
                 </div>

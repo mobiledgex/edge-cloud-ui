@@ -8,7 +8,7 @@ import { fields } from '../../../../services/model/format'
 import { Grid, Card, Box, Tabs, Tab, Typography, TextField } from '@material-ui/core'
 import randomColor from 'randomcolor'
 import { Icon } from 'semantic-ui-react'
-
+import SearchFilter from '../../events/SearchFilter'
 const appInstMetricKeys = [
     { serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10 },
     { serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
@@ -93,12 +93,11 @@ class MexChart extends React.Component {
                                 let chartDataRegion = chartData[region]
                                 return (
                                     <Grid item xs={6} key={i}>
-                                        <Card style={{padding:10}}>
+                                        <Card style={{padding:10, height:400}}>
                                             <Grid container spacing={1}>
                                                 <Grid item xs={3}>
                                                     <div className="grid-charts-header">
-                                                        <div>
-                                                            <TextField/>
+                                                        <div style={{width:'100%'}}>
                                                         </div>
                                                         <br/>
                                                         <div className="grid-charts-header-legend">
@@ -135,7 +134,8 @@ class MexChart extends React.Component {
                                                         })}
                                                     </div>
                                                 </Grid>
-                                            </Grid></Card>
+                                            </Grid>
+                                        </Card>
                                     </Grid>
                                 )
                             }

@@ -107,7 +107,7 @@
 }
 
 .grid-charts-header-legend{
-    height: calc(100vh - 680px);
+    height: calc(100% - 60px);
     overflow: auto;
 }
 
