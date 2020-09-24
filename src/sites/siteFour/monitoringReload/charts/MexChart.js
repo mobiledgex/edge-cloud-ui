@@ -115,7 +115,7 @@ class MexChart extends React.Component {
                                                         <div align="center">
                                                             {
                                                                 chartDataFilter.map((data, k) => {
-                                                                    return <div key={k} onClick={()=>{this.legendClick(data.key, region)}}style={{cursor:'pointer', marginRight: 10, marginBottom:10, textAlign:'left' }}><Icon name='circle' style={{color:data.color}}/>{data.key}</div>
+                                                                    return <div key={k} onClick={()=>{this.legendClick(data.key, region)}}style={{cursor:'pointer', marginRight: 10, marginBottom:10, textAlign:'left', color: legendFilter[region].includes(data.key) ? '#000' : '#FFF' }}><Icon name='circle' style={{color:data.color}}/>{data.key}</div>
                                                                 })
                                                             }
                                                         </div>
@@ -136,7 +136,6 @@ class MexChart extends React.Component {
                             })}
                         </Grid>
                     </div>
-              
             </Card>
             
         )
