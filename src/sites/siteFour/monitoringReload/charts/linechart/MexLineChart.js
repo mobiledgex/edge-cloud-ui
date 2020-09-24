@@ -2,7 +2,6 @@ import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
 import moment from 'moment'
-import randomColor from 'randomcolor'
 import isEqual from 'lodash/isEqual';
 
 const optionsGenerator = (header, unit) => {
@@ -17,10 +16,10 @@ const optionsGenerator = (header, unit) => {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
-            position: "bottom",
+            position: "left",
             display: false,
             labels: {
-                boxWidth: 2
+                // boxWidth: 2
             }
         },
         scales: {
@@ -111,15 +110,38 @@ class MexLineChart extends React.Component {
         const values = chartData ? chartData.values : {}
         if (values) {
             let keys = Object.keys(values)
-            let moreColors = randomColor({
-                count: keys.length,
-            });
+            
             datasets = keys.map((key, i) => {
                 let valueData = values[key]
-                let data = valueData.map(value => {
+                let filters = this.props.filter
+                let color = '#fff'
+                for (let j = 0; j < filters.length; j++) {
+                    let filter = filters[j]
+                    if(key.includes(filter.key))
+                    {
+                        color = filter.color
+                    }
+                }
+                
+                let legendFilter = this.props.legendFilter
+                let valid = false
+                if(legendFilter.length > 0)
+                {
+                    for(let j=0; j<legendFilter.length; j++)
+                    {
+                        if(key.includes(legendFilter[j]))
+                        {
+                            valid = true
+                        }
+                    }
+                }
+                else
+                {
+                    valid = true
+                }
+                let data =valid ? valueData.map(value => {
                     return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
-                })
-                let color = moreColors[i]
+                }) : []
 
                 return {
                     label: this.formatLabel(valueData[0]),
@@ -160,9 +182,9 @@ class MexLineChart extends React.Component {
     render() {
         const { chartData } = this.state
         return (
-            <div style={{ height: 400, padding: 30 }} mex-test="component-line-chart">
+            <div style={{ height: 400}} mex-test="component-line-chart">
                 <div align="center">
-                    <h3>{this.header}</h3>
+                    <h3>{`${this.header} - ${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
                     <Line options={this.options} data={{ labels : this.distributeTime(chartData, 15), datasets : this.formatData(chartData) }} height={320} />

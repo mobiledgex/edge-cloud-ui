@@ -71,9 +71,9 @@ export default class Monitoring extends React.Component {
                     </div>
                 </div>
                 <div className="monitoring-content">
-                    {/* <Card style={{ width: '100%' }}>
+                    <Card style={{ width: '100%' }}>
                         <MexMap data={mapData} />
-                    </Card> */}
+                    </Card>
                     <MexChart filter={filter}/>
                 </div>
             </div>

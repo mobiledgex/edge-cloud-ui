@@ -33,6 +33,7 @@
 
 .mex-monitoring-select{
     height: 20px;
+    overflow:visible;
     z-index: 999 !important;
 }
 
@@ -81,10 +82,8 @@
     cursor: pointer;
 }
 
-.grid-charts-header{
-    padding: 10px;
-}
-
 .grid-charts {
-    margin-top: 0px;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
 }
