@@ -37,6 +37,20 @@
     z-index: 999 !important;
 }
 
+.mex-monitoring-time-range-input {
+    width:50px;
+    height:33px;
+    padding:10px;
+    border:solid 1px rgba(255,255,255,.2);
+    border-radius:.28571429rem;
+    background-color:black;
+    color: rgba(255,255,255,.6) !important;
+}
+
+.mex-monitoring-time-range-input:hover {
+    border:solid 1px rgba(255,255,255,.4);
+}
+
 .mex-map{
     width:100%;
     height: calc(35vh - 0px);
@@ -86,4 +100,27 @@
     height: 100%;
     overflow: auto;
     overflow-x: hidden;
+}
+
+.grid-charts-header{
+    height: 100%;
+}
+
+.grid-charts-header-legend{
+    height: calc(100vh - 680px);
+    overflow: auto;
+}
+
+.grid-charts-legend {
+    cursor: pointer;
+    text-align: left; 
+}
+
+.grid-charts-legend-label{
+    width: 250px;
+    flex: 1;
+    font-size:12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

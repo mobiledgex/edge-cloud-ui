@@ -1,7 +1,6 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
-import moment from 'moment'
 import isEqual from 'lodash/isEqual';
 
 const optionsGenerator = (header, unit) => {
@@ -73,19 +72,6 @@ class MexLineChart extends React.Component {
         this.options = optionsGenerator(this.header, this.unit)
     }
 
-    distributeTime = (data, interval) => {
-        let labels = []
-        if (data) {
-            let starttime = data.starttime
-            let endtime = moment(data.endtime)
-            while (moment(starttime).isBefore(endtime)) {
-                starttime = dateUtil.addSeconds(interval, starttime).valueOf()
-                labels.push(dateUtil.time(dateUtil.FORMAT_FULL_TIME, starttime))
-            }
-        }
-        return labels
-    }
-
     formatLabel = (value) => {
         let metricLabel = ''
         this.tags.map((tag, j) => {
@@ -108,38 +94,21 @@ class MexLineChart extends React.Component {
     formatData = (chartData) => {
         let datasets = []
         const values = chartData ? chartData.values : {}
+        let filter = this.props.filter
+        let selectedCount = 0
+        Object.keys(filter).map(key=>{
+            let item = filter[key]
+            if(item.regions.includes(chartData.region) && item.selected)
+            {
+                selectedCount += 1
+            }
+        })
         if (values) {
             let keys = Object.keys(values)
-            
             datasets = keys.map((key, i) => {
                 let valueData = values[key]
-                let filters = this.props.filter
-                let color = '#fff'
-                for (let j = 0; j < filters.length; j++) {
-                    let filter = filters[j]
-                    if(key.includes(filter.key))
-                    {
-                        color = filter.color
-                    }
-                }
-                
-                let legendFilter = this.props.legendFilter
-                let valid = false
-                if(legendFilter.length > 0)
-                {
-                    for(let j=0; j<legendFilter.length; j++)
-                    {
-                        if(key.includes(legendFilter[j]))
-                        {
-                            valid = true
-                        }
-                    }
-                }
-                else
-                {
-                    valid = true
-                }
-                let data =valid ? valueData.map(value => {
+                let color = filter[key].color
+                let data =selectedCount ===0 || filter[key].selected ? valueData.map(value => {
                     return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
                 }) : []
 
@@ -182,12 +151,12 @@ class MexLineChart extends React.Component {
     render() {
         const { chartData } = this.state
         return (
-            <div style={{ height: 400}} mex-test="component-line-chart">
+            <div style={{ height: 375}} mex-test="component-line-chart">
                 <div align="center">
-                    <h3>{`${this.header} - ${this.props.data.region}`}</h3>
+                    <h3>{`${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line options={this.options} data={{ labels : this.distributeTime(chartData, 15), datasets : this.formatData(chartData) }} height={320} />
+                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={320} />
                 </div>
             </div>
         )

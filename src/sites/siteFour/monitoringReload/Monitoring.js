@@ -6,26 +6,41 @@ import { showAppInsts } from '../../../services/model/appInstance'
 import { appInstMetrics } from '../../../services/model/appMetrics'
 import * as serverData from '../../../services/model/serverData'
 import { fields } from '../../../services/model/format'
-import { LinearProgress, Card, Box } from '@material-ui/core'
+import { LinearProgress, Card, Box, TextField, IconButton } from '@material-ui/core'
 import MexChart from './charts/MexChart'
 import './style.css'
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Icon } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom';
+import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
 
+const timeUnit = [
+    { unit: 'Minute', min: 1, max: 59, default: 5 },
+    { unit: 'Hour', min: 1, max: 24, default: 24 },
+    { unit: 'Day', max: 31, min: 1, default: 1 },
+    { unit: 'Month', min: 1, max: 12, default: 5 },
+    { unit: 'Year', min: 1, max: 1, default: 1 }
+]
 export default class Monitoring extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            chartData:{},
+            chartData: {},
             mapData: {},
             loading: false,
-            filter : {region : 'ALL'}
+            timeUnit : timeUnit[2],
+            filter: { region: 'ALL', time: timeUnit[2].default, unit: timeUnit[2].unit },
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.regions.splice(0, 0, 'ALL')
     }
 
-    onAppInstSelectChange = (value) => {
+    onTimeSelectUnit = (value) => {
+        this.setState(prevState=>{
+            let filter = prevState.filter
+            filter.time = value.default
+            filter.unit = value.unit
+            return {filter, timeUnit:value}
+        })
     }
 
     onRegionSelectChange = (value) => {
@@ -34,11 +49,20 @@ export default class Monitoring extends React.Component {
         this.setState({filter})
     }
 
-    renderSelect = (placeholder, dataList, click,  isMultiple, field) => {
+    onTimeChange = (event)=>{
+        let value = event.target.value
+        this.setState(prevState=>{
+            let filter = prevState.filter
+            filter.time = value
+            return {filter}
+        })
+    }
+
+    renderSelect = (placeholder, dataList, click,  isMultiple, value, field) => {
         return (
             <div className="mex-monitoring-select-container">
                 <Box order={2} p={1} style={{ marginTop: 4, marginRight: 12  }}>
-                    <strong>{placeholder}:&nbsp;&nbsp;</strong>
+                    {placeholder ? <strong>{placeholder}:&nbsp;&nbsp;</strong> : null}
                     <Dropdown
                         className="mex-monitoring-select"
                         selection
@@ -48,10 +72,20 @@ export default class Monitoring extends React.Component {
                             let text = field ? data[field] : data
                             return { key: text, value: data, text: text }
                         })}
-                        defaultValue={dataList[0]}
+                        defaultValue={value}
                         onChange={(e, { value }) => { click(value) }}
                     />
                 </Box>
+            </div>
+        )
+    }
+
+    renderTimeRange = (filter) => {
+        return (
+            <div style={{ display: 'inline' }}>
+                <Icon name='clock outline' size='large' style={{color:'rgba(255,255,255,.6)'}}/>
+                <input className="mex-monitoring-time-range-input" type="number" value={filter.time} onChange={this.onTimeChange}/>
+                {this.renderSelect(null, timeUnit, this.onTimeSelectUnit, false, this.state.timeUnit, 'unit')}
             </div>
         )
     }
@@ -66,8 +100,8 @@ export default class Monitoring extends React.Component {
                         <h2 className="mex-monitoring-header-label">Monitoring</h2>
                     </div>
                     <div className="mex-monitoring-filter-right">
-                        {this.renderSelect('Region', this.regions, this.onRegionSelectChange, false)}
-                        {/* {this.renderSelect('App Instances', dataList, this.onAppInstSelectChange, true, fields.appName)} */}
+                        {this.renderSelect('Region', this.regions, this.onRegionSelectChange, false, filter.region)}
+                        {this.renderTimeRange(filter)}
                     </div>
                 </div>
                 <div className="monitoring-content">

@@ -1,13 +1,12 @@
 import React from 'react'
 import AppInstLineChart from './linechart/MexLineChart'
-import { appMetricsKeys, appInstMetrics } from '../../../../services/model/appMetrics'
+import { appInstMetrics } from '../../../../services/model/appMetrics'
 import * as serverData from '../../../../services/model/serverData'
 import * as dateUtil from '../../../../utils/date_util'
 import { convertByteToMegaGigaByte } from '../../../../utils/math_util'
 import { fields } from '../../../../services/model/format'
-import { Grid, Card, Box, Chip, Tabs, Tab, Typography } from '@material-ui/core'
+import { Grid, Card, Box, Tabs, Tab, Typography, TextField } from '@material-ui/core'
 import randomColor from 'randomcolor'
-import uniq from 'lodash/uniq'
 import { Icon } from 'semantic-ui-react'
 
 const appInstMetricKeys = [
@@ -21,32 +20,31 @@ const appInstMetricKeys = [
 
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props;
-  
+
     return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`vertical-tabpanel-${index}`}
-        aria-labelledby={`vertical-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box p={1}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`vertical-tabpanel-${index}`}
+            aria-labelledby={`vertical-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={1}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
     );
-  }
+}
 
 class MexChart extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             chartData: {},
-            chartSelectiveFilter : {},
-            tabValue :0,
-            legendFilter:{}
+            chartFilter: {},
+            tabValue: 0,
 
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
@@ -54,96 +52,103 @@ class MexChart extends React.Component {
         this.tempFilter = []
     }
 
-    validateRegionFilter = (region)=>
-    {
+    validateRegionFilter = (region) => {
         let regionFilter = this.filter[fields.region]
         return regionFilter === 'ALL' || region === regionFilter
     }
 
     tabChange = (event, tabValue) => {
-        this.setState({tabValue});
+        this.setState({ tabValue });
     };
 
-    legendClick = (value, region)=>
-    {
-        let legendFilter = this.state.legendFilter
-        if(legendFilter[region].includes(value))
-        {
-            legendFilter[region] = legendFilter[region].filter(legend=>{
-                return legend !== value
-            })
-        }
-        else
-        {
-            legendFilter[region].push(value)
-        }
-        this.setState({legendFilter})
+    legendClick = (filterKey) => {
+        let chartFilter = this.state.chartFilter
+        chartFilter[filterKey]['selected'] = !chartFilter[filterKey]['selected']
+        this.setState({ chartFilter })
     }
 
     render() {
-        const { chartData, chartSelectiveFilter, tabValue, legendFilter } = this.state
+        const { chartData, chartFilter, tabValue } = this.state
 
         return (
-            <Card style={{flexGrow: 1, marginTop:10}}>
+            <div style={{ flexGrow: 1, marginTop: 10 }}>
                 <Tabs
                     variant="fullWidth"
                     value={tabValue}
                     onChange={this.tabChange}
                     aria-label="Vertical tabs example"
+                    textColor="primary"
+                    TabIndicatorProps={{
+                        style: { background: "#68DB01"}
+                    }}
                 >
                     {appInstMetricKeys.map((appInstMetricKey, i) => {
-                        return <Tab style={{textAlign:'left'}} key={i} label={appInstMetricKey.header} />
+                        return <Tab style={{ textAlign: 'left' }} key={i} label={appInstMetricKey.header} />
                     })}
                 </Tabs>
-                    <div style={{ marginTop: 10 }}>
-                        <Grid container spacing={1}>
-                            {Object.keys(chartData).map((region, i) => {
-                                if (this.validateRegionFilter(region)) {
-                                    let chartDataRegion = chartData[region]
-                                    let chartSelectiveFilterRegion = chartSelectiveFilter[region]
-                                    let regionMetricsColor = randomColor({
-                                        count: chartSelectiveFilterRegion ? chartSelectiveFilterRegion.length : 0,
-                                    });
-                                    let chartDataFilter = chartSelectiveFilterRegion ? chartSelectiveFilterRegion.map((chartSelective, l) => {
-                                        return { key: chartSelective, color: regionMetricsColor[l] }
-                                    }) : []
-                                    return (
-                                        <Grid item xs={6} key={i}>
+                <div style={{ marginTop: 10 }}>
+                    <Grid container spacing={1}>
+                        {Object.keys(chartData).map((region, i) => {
+                            if (this.validateRegionFilter(region)) {
+                                let chartDataRegion = chartData[region]
+                                return (
+                                    <Grid item xs={6} key={i}>
+                                        <Card style={{padding:10}}>
                                             <Grid container spacing={1}>
                                                 <Grid item xs={3}>
                                                     <div className="grid-charts-header">
-                                                        <div align="center">
+                                                        <div>
+                                                            <TextField/>
+                                                        </div>
+                                                        <br/>
+                                                        <div className="grid-charts-header-legend">
                                                             {
-                                                                chartDataFilter.map((data, k) => {
-                                                                    return <div key={k} onClick={()=>{this.legendClick(data.key, region)}}style={{cursor:'pointer', marginRight: 10, marginBottom:10, textAlign:'left', color: legendFilter[region].includes(data.key) ? '#000' : '#FFF' }}><Icon name='circle' style={{color:data.color}}/>{data.key}</div>
+                                                                Object.keys(chartFilter).map((filterKey, j) => {
+                                                                    let filter = chartFilter[filterKey]
+                                                                    return filter.regions.includes(region) ?
+
+                                                                        <div key={j} onClick={() => { this.legendClick(filterKey) }} className="grid-charts-legend" style={{ color: '#FFF' }}>
+                                                                            <Box display="flex" p={1}>
+                                                                                <Box order={1}>
+                                                                                    <h4 className="grid-charts-legend-label">
+                                                                                        <Icon name='circle' style={{ color: filter.color }} />{filter.label}
+                                                                                    </h4>
+                                                                                </Box>
+                                                                                <Box order={2} style={{marginLeft:10}}>
+                                                                                    {filter.selected ? <Icon name='check' style={{ display: 'inline' }} /> : null}
+                                                                                </Box>
+                                                                            </Box>
+                                                                        </div> : null
                                                                 })
                                                             }
                                                         </div>
-                                                    </div></Grid>
+                                                    </div>
+                                                </Grid>
                                                 <Grid item xs={9}>
                                                     <div className="grid-charts">
                                                         {Object.keys(chartDataRegion).map((key, j) => {
-                                                            return <TabPanel key={j} value={tabValue} index={j}>
-                                                                <AppInstLineChart id={key} data={chartDataRegion[key]} legendFilter={legendFilter[region]} filter={chartDataFilter} keys={appMetricsKeys} tags={[2, 3, 4]} tagFormats={['', '[', '[']} />
-                                                            </TabPanel>
+                                                            return (
+                                                                <TabPanel key={j} value={tabValue} index={j}>
+                                                                    <AppInstLineChart id={key} data={chartDataRegion[key]} filter={chartFilter} tags={[2, 3, 4]} tagFormats={['', '[', '[']} />
+                                                                </TabPanel>
+                                                            )
                                                         })}
                                                     </div>
                                                 </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    )
-                                }
-                            })}
-                        </Grid>
-                    </div>
-            </Card>
-            
+                                            </Grid></Card>
+                                    </Grid>
+                                )
+                            }
+                        })}
+                    </Grid>
+                </div>
+            </div>
+
         )
     }
 
-    metricKeyGenerator = (region, metric)=>
-    {
-        return `appinst-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}` 
+    metricKeyGenerator = (region, metric) => {
+        return `appinst-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
     }
 
     timeRangeInMin = (range) => {
@@ -155,6 +160,7 @@ class MexChart extends React.Component {
     }
 
 
+
     serverRequest = async (metric, requestData) => {
         let mcRequest = await serverData.sendRequest(this, requestData)
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
@@ -164,18 +170,27 @@ class MexChart extends React.Component {
             let chartData = this.state.chartData
 
             let objectId = `appinst-${metric.serverField}`
-            data[objectId].starttime = requestData.starttime
-            data[objectId].endtime = requestData.endtime
             data[objectId].region = region
             data[objectId].metric = metric
-            let chartSelectiveFilter = this.state.chartSelectiveFilter
-            Object.keys(data[objectId].values).map(key=>{
+
+            let chartFilter = this.state.chartFilter
+            Object.keys(data[objectId].values).map(key => {
                 let value = data[objectId].values[key][0]
-                chartSelectiveFilter[region].push(`${value[2]}_${value[3]}_${value[4]}`)
+                chartFilter[key] = chartFilter[key] ? chartFilter[key] : {
+                    label: `${value[2]}_${value[3]}_${value[4]}_${value[5]}`,
+                    regions: [region],
+                    color: randomColor({
+                        count: 1,
+                    })[0], selected: false
+                }
+                let legendRegions = chartFilter[key]['regions']
+                if (!legendRegions.includes(region)) {
+                    legendRegions.push(region)
+                }
             })
-            chartSelectiveFilter[region] = uniq(chartSelectiveFilter[region])
+
             chartData[region][this.metricKeyGenerator(region, metric)] = data[objectId]
-            this.setState({ chartData, chartSelectiveFilter })
+            this.setState({ chartData, chartFilter: chartFilter })
         }
     }
 
@@ -196,18 +211,14 @@ class MexChart extends React.Component {
     }
 
     componentDidMount() {
-        let legendFilter = {}
         let chartData = {}
-        let chartSelectiveFilter = {}
-        this.regions.map((region)=>{
+        this.regions.map((region) => {
             chartData[region] = {}
-            chartSelectiveFilter[region] = []
-            legendFilter[region] = []
-            appInstMetricKeys.map(metric=>{ chartData[region][this.metricKeyGenerator(region, metric)] = {region, metric}})
+            appInstMetricKeys.map(metric => { chartData[region][this.metricKeyGenerator(region, metric)] = { region, metric } })
         })
-        this.setState({chartData, chartSelectiveFilter, legendFilter})
+        this.setState({ chartData })
         this.fetchDefaultData()
     }
 }
- 
+
 export default MexChart
