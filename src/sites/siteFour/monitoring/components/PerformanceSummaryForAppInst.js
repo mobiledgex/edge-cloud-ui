@@ -45,7 +45,6 @@ export default function PerformanceSummaryForAppInst(props) {
             </div>
         )
     }
-
     return (
         <React.Fragment>
             {props.loading && <div>

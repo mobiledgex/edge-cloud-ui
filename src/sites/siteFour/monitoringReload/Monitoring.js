@@ -2,16 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import MexMap from './mexmap/MexMap'
-import { showAppInsts } from '../../../services/model/appInstance'
-import { appInstMetrics } from '../../../services/model/appMetrics'
-import * as serverData from '../../../services/model/serverData'
+import { appInstMetricTypeKeys } from '../../../services/model/appMetrics'
 import { fields } from '../../../services/model/format'
 import { LinearProgress, Card, Box, TextField, IconButton } from '@material-ui/core'
 import MexChart from './charts/MexChart'
 import './style.css'
 import { Dropdown, Icon } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom';
-import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
 
 const timeUnit = [
     { unit: 'Minute', min: 1, max: 59, default: 5 },
@@ -20,6 +17,8 @@ const timeUnit = [
     { unit: 'Month', min: 1, max: 12, default: 5 },
     { unit: 'Year', min: 1, max: 1, default: 1 }
 ]
+
+
 export default class Monitoring extends React.Component {
     constructor(props) {
         super(props)
@@ -28,7 +27,7 @@ export default class Monitoring extends React.Component {
             mapData: {},
             loading: false,
             timeUnit : timeUnit[2],
-            filter: { region: 'ALL', time: timeUnit[2].default, unit: timeUnit[2].unit },
+            filter: { region: 'ALL', time: timeUnit[2].default, unit: timeUnit[2].unit, metricType: [appInstMetricTypeKeys[0]] },
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.regions.splice(0, 0, 'ALL')
@@ -46,6 +45,12 @@ export default class Monitoring extends React.Component {
     onRegionSelectChange = (value) => {
         let filter = this.state.filter
         filter[fields.region] = value
+        this.setState({filter})
+    }
+
+    onAppInstMetricTypeChange = (value) => {
+        let filter = this.state.filter
+        filter['metricType'] = value
         this.setState({filter})
     }
 
@@ -100,6 +105,7 @@ export default class Monitoring extends React.Component {
                         <h2 className="mex-monitoring-header-label">Monitoring</h2>
                     </div>
                     <div className="mex-monitoring-filter-right">
+                        {this.renderSelect('Metric Type', appInstMetricTypeKeys, this.onAppInstMetricTypeChange, true, filter.metricType, 'header')}
                         {this.renderSelect('Region', this.regions, this.onRegionSelectChange, false, filter.region)}
                         {this.renderTimeRange(filter)}
                     </div>

@@ -1,7 +1,9 @@
 
 import * as formatter from './format'
 import { APP_INST_METRICS_ENDPOINT } from './endPointTypes'
-import * as dateUtil from '../../utils/date_util'
+import { convertByteToMegaGigaByte } from '../../utils/math_util'
+
+let fields = formatter.fields;
 
 export const appMetricsKeys = [
     {label:'Date', serverField:'time', visible : false},
@@ -13,6 +15,33 @@ export const appMetricsKeys = [
     {label:'Cloudlet', serverField:'cloudlet', visible : true, groupBy : true},
     {label:'Operator', serverField:'cloudletorg', visible : true, groupBy : true},
     {label:'App Developer', serverField:'pod', visible : false, groupBy : true}
+]
+
+
+
+export const appMetricsListKeys = [
+    { field: 'region', label: 'Region', sortable: true, visible: true},
+    { field: 'app', label: 'App', sortable: true, visible: true },
+    { field: 'ver', label: 'Version', sortable: true, visible: true },
+    { field: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true },
+    { field: 'cloudletorg', label: 'Operator', sortable: true, visible: true },
+    { field: 'cluster', label: 'Cluster', sortable: true, visible: true },
+    { field: 'clusterorg', label: 'Cluster Developer', sortable: true, visible: true },
+    { field: 'cpu', label: 'CPU', sortable: true, visible: true },
+    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true },
+    { field: 'mem', label: 'Memory', sortable: true, visible: true },
+    { field: 'sent', label: 'Network Sent', sortable: true, visible: true },
+    { field: 'received', label: 'Network Received', sortable: true, visible: true},
+    { field: 'connections', label: 'Active Connections', sortable: true, visible: true},
+]
+
+export const appInstMetricTypeKeys = [
+    { field:'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: (value) => { return value.toFixed(3) + " %" } },
+    { field:'mem', serverField: 'mem', header: 'Memory', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
+    { field:'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
+    { field:'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
+    { field:'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
+    { field:'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10 },
 ]
 
 export const appInstMetrics = (data) => {

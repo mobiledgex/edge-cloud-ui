@@ -155,6 +155,7 @@ class ListViewer extends React.Component {
         const grouping = this.requestInfo.grouping
         const dropList = this.props.dropList
         const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
+        const {style} = this.props
         let groupedData = grouping ? this.getGroupedData(this.props.dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         return (
@@ -164,7 +165,7 @@ class ListViewer extends React.Component {
                         numSelected={this.props.selected.length}
                         groupActionMenu={this.props.groupActionMenu}
                         groupActionClose={this.groupActionClose} />
-                    <TableContainer style={{ height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${this.props.selected.length > 0 ? '0px' : '-40px'}` }}>
+                    <TableContainer style={style ? style : { height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${this.props.selected.length > 0 ? '0px' : '-40px'}` }}>
                         <Table
                             stickyHeader
                             aria-labelledby="tableTitle"
