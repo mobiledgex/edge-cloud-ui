@@ -8,7 +8,7 @@ const optionsGenerator = (header, unit) => {
         stacked: true,
         bezierCurve: true,
         animation: {
-            duration: 500
+            duration: 0
         },
         datasetStrokeWidth: 1,
         pointDotStrokeWidth: 2,
@@ -19,6 +19,11 @@ const optionsGenerator = (header, unit) => {
             display: false,
             labels: {
                 // boxWidth: 2
+            }
+        },
+        elements: {
+            line: {
+                tension: 0 // disables bezier curves
             }
         },
         scales: {
@@ -94,11 +99,10 @@ class MexLineChart extends React.Component {
     formatData = (chartData) => {
         let datasets = []
         const values = chartData ? chartData.values : {}
-        let filter = this.props.filter
         let selectedCount = 0
-        Object.keys(filter).map(key=>{
-            let item = filter[key]
-            if(item.regions.includes(chartData.region) && item.selected)
+        let avgDataRegion = this.props.avgDataRegion
+        avgDataRegion.map((avgData)=>{
+            if(avgData.selected)
             {
                 selectedCount += 1
             }
@@ -106,33 +110,34 @@ class MexLineChart extends React.Component {
         if (values) {
             let keys = Object.keys(values)
             datasets = keys.map((key, i) => {
-                let valueData = values[key]
-                let color = filter[key].color
-                let data =selectedCount ===0 || filter[key].selected ? valueData.map(value => {
-                    return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
-                }) : []
+                    let valueData = values[key]
+                    let color = avgDataRegion[i] ? avgDataRegion[i].color : '#FFF'
+                    let selected = avgDataRegion[i] ? avgDataRegion[i].selected : false
+                    let data = key.includes(this.props.globalFilter.search) && selectedCount === 0 || selected ? valueData.map(value => {
+                        return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
+                    }) : []
 
-                return {
-                    label: this.formatLabel(valueData[0]),
-                    fill: false,
-                    lineTension: 0.5,
-                    backgroundColor: color,
-                    borderColor: color,
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: color,
-                    pointBackgroundColor: color,
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: color,
-                    pointHoverBorderColor: color,
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: data
-                }
+                    return {
+                        label: this.formatLabel(valueData[0]),
+                        fill: false,
+                        lineTension: 0.5,
+                        backgroundColor: color,
+                        borderColor: color,
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: color,
+                        pointBackgroundColor: color,
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: color,
+                        pointHoverBorderColor: color,
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: data
+                    }
             })
         }
         return datasets

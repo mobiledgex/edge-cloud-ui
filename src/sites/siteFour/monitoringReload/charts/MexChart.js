@@ -1,93 +1,73 @@
 import React from 'react'
 import AppInstLineChart from './linechart/MexLineChart'
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys } from '../../../../services/model/appMetrics'
+import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, appMetricsKeys, summaryList } from '../../../../services/model/appMetrics'
 import * as serverData from '../../../../services/model/serverData'
 import * as dateUtil from '../../../../utils/date_util'
 import { fields } from '../../../../services/model/format'
-import { Grid, Card, Box, Typography, TextField } from '@material-ui/core'
-import MexListViewer from '../../../../hoc/listView/ListViewer';
+import { Grid, Card, LinearProgress } from '@material-ui/core'
+import MexChartList from './MexChartList'
 import randomColor from 'randomcolor'
-import { Icon } from 'semantic-ui-react'
 import meanBy from 'lodash/meanBy'
-import cloneDeep from 'lodash/cloneDeep'
+import maxBy from 'lodash/maxBy'
+import minBy from 'lodash/minBy'
+import MonitoringToolbar from '../MonitoringToolbar'
 class MexChart extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            chartData: {},
-            chartFilter: {},
-            avgDataList: []
-        }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        this.filter = props.filter
-        this.tempFilter = []
+        this.state = {
+            loading:false,
+            chartData: {},
+            avgData: {},
+            filter:{region: this.regions, search: '', metricType: [appInstMetricTypeKeys[0]], summary:summaryList[0] }
+        }
+        this.requestCount = 0
     }
 
     validateRegionFilter = (region) => {
-        let regionFilter = this.filter[fields.region]
-        return regionFilter === 'ALL' || region === regionFilter
+        let regionFilter = this.state.filter[fields.region]
+        return regionFilter.includes(region)
     }
 
-    legendClick = (filterKey) => {
-        let chartFilter = this.state.chartFilter
-        chartFilter[filterKey]['selected'] = !chartFilter[filterKey]['selected']
-        this.setState({ chartFilter })
+    onRowClick = (region, value, index)=>{
+        let avgData = this.state.avgData
+        avgData[region][index]['selected'] = !avgData[region][index]['selected']
+        this.setState({avgData})
+    }
+
+    onToolbar = (filter)=>{
+        this.setState({filter})
     }
 
     render() {
-        const { chartData, chartFilter, avgDataList } = this.state
-
+        const { chartData, avgData, loading, filter } = this.state
+        let xs = filter.region.length > 1
         return (
-            <div style={{ flexGrow: 1, marginTop: 10 }}>
+            <div style={{ flexGrow: 1}}>
                 <Card>
-                    <MexListViewer keys={appMetricsListKeys} dataList={avgDataList} requestInfo={{}} selected={[]} style={{height:250, overflow: 'auto', marginTop:-40}}/>
+                    {loading ? <LinearProgress /> : null}
+                    <MonitoringToolbar regions={this.regions} metricKeys={appInstMetricTypeKeys} onUpdateFilter={this.onToolbar}/>
+                    <MexChartList data={avgData} rows={appMetricsListKeys} filter={filter} onRowClick={this.onRowClick} />
                 </Card>
-                <div style={{ marginTop: 10 }}>
+                <div style={{ marginTop: 10 }} className='grid-charts'>
                     <Grid container spacing={1}>
                         {Object.keys(chartData).map((region, i) => {
                             if (this.validateRegionFilter(region)) {
                                 let chartDataRegion = chartData[region]
+                                let avgDataRegion = avgData[region] ? avgData[region] : []
+
                                 return (
-                                    <Grid item xs={6} key={i}>
-                                        <Card style={{ padding: 10, height: '100%' }}>
-                                            <Grid container spacing={1}>
-                                                <Grid item xs={3}>
-                                                    <div className="grid-charts-header">
-                                                        <div className="grid-charts-header-legend">
-                                                            {
-                                                                Object.keys(chartFilter).map((filterKey, j) => {
-                                                                    let filter = chartFilter[filterKey]
-                                                                    return filter.regions.includes(region) ?
-
-                                                                        <div key={j} onClick={() => { this.legendClick(filterKey) }} className="grid-charts-legend" style={{ color: '#FFF' }}>
-
-                                                                            <Box display="flex" p={1}>
-                                                                                <Box order={1}>
-                                                                                    <h4 className="grid-charts-legend-label">
-                                                                                        <Icon name='circle' style={{ color: filter.color }} />{filter.label}
-                                                                                    </h4>
-                                                                                </Box>
-                                                                                <Box order={2} style={{ marginLeft: 10 }}>
-                                                                                    {filter.selected ? <Icon name='check' style={{ display: 'inline' }} /> : null}
-                                                                                </Box>
-                                                                            </Box>
-
-                                                                        </div> : null
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </Grid>
-                                                <Grid item xs={9}>
-                                                    <div className="grid-charts">
-                                                        {Object.keys(chartDataRegion).map((key, j) => {
-                                                            return this.filter.metricType.includes(chartDataRegion[key].metric) ?
-                                                                <AppInstLineChart key={j} id={key} data={chartDataRegion[key]} filter={chartFilter} tags={[2, 3, 4]} tagFormats={['', '[', '[']} /> : null
-                                                        })}
-                                                    </div>
-                                                </Grid>
-                                            </Grid>
-                                        </Card>
+                                    <Grid item xs={xs ? 6 : 12} key={i}>
+                                        <Grid container spacing={1}>
+                                            {Object.keys(chartDataRegion).map((key, j) => {
+                                                return filter.metricType.includes(chartDataRegion[key].metric) ?
+                                                    <Grid  key={j} item xs={xs ? 12 : 6}>
+                                                        <Card style={{ padding: 10, marginTop: 10, height: '100%' }}>
+                                                            <AppInstLineChart id={key} data={chartDataRegion[key]} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3, 4]} tagFormats={['', '[', '[']} />
+                                                        </Card>
+                                                    </Grid> : null
+                                            })}
+                                        </Grid>
                                     </Grid>
                                 )
                             }
@@ -111,46 +91,66 @@ class MexChart extends React.Component {
         return { starttime, endtime }
     }
 
-    avgCalculator = async (data, metric) => {
-        let avgDataList = this.state.avgDataList
-        Object.keys(data.values).map(key => {
-            let value = data.values[key][0]
+    avgCalculator = async (data, region, metricType, metric) => {
+        setTimeout(() => {
+            let avgData = this.state.avgData
+            let avgDataList = avgData[region]
+            avgDataList = avgDataList ? avgDataList : []
+            Object.keys(data.values).map(key => {
+                let value = data.values[key][0]
 
-            let avg = meanBy(data.values[key], v => (v[metric.position]))
+                let avg = meanBy(data.values[key], v => (v[metric.position]))
+                let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
+                let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
 
-            let avgKey = ''
-            data.columns.map((column, i) => {
-                if (i !== 0) {
-                    avgKey += i === 1 ? value[i] : `_${value[i]}`
-                }
-            })
 
-            let avgValues = undefined
-            let position = avgDataList.length
-            for (let i = 0; i < avgDataList.length; i++) {
-                if (avgDataList[i]['key'] === avgKey) {
-                    avgValues = avgDataList[i]
-                    position = i
-                    break;
-                }
-            }
-
-            if (avgValues === undefined) {
-                avgValues = {}
-                avgValues['key'] = avgKey
+                let avgKey = ''
                 data.columns.map((column, i) => {
-                    avgValues[column.serverField] = value[i]
+                    if (i !== 0) {
+                        avgKey += i === 1 ? value[i] : `_${value[i]}`
+                    }
                 })
-            }
 
-            avgValues[metric.field] = metric.unit ? metric.unit(avg) : avg
-            avgDataList[position] = avgValues
-        })
-        this.setState({ avgDataList })
+                let avgValues = undefined
+                let position = avgDataList.length
+                for (let i = 0; i < avgDataList.length; i++) {
+                    if (avgDataList[i]['key'] === avgKey) {
+                        avgValues = avgDataList[i]
+                        position = i
+                        break;
+                    }
+                }
+
+                if (avgValues === undefined) {
+                    avgValues = {}
+                    avgValues['key'] = avgKey
+                    data.columns.map((column, i) => {
+                        avgValues[column.serverField] = value[i]
+                    })
+                    avgValues['color'] = randomColor({
+                        count: 1,
+                    })[0]
+                    avgValues['selected'] = false
+                }
+
+                let avgUnit = metric.unit ? metric.unit(avg) : avg
+                let maxUnit = metric.unit ? metric.unit(max) : max
+                let minUnit = metric.unit ? metric.unit(min) : min
+                avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
+                avgDataList[position] = avgValues
+            })
+            avgData[region] = avgDataList
+            this.setState({ avgData })
+        }, 100)
     }
 
     serverRequest = async (metric, requestData) => {
+        this.setState({ loading: true })
         let mcRequest = await serverData.sendRequest(this, requestData)
+        this.requestCount -= 1
+        if (this.requestCount === 0) {
+            this.setState({ loading: false })
+        }
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
             let requestData = mcRequest.request.data
             let region = requestData.region
@@ -162,30 +162,17 @@ class MexChart extends React.Component {
                 data[objectId].region = region
                 data[objectId].metric = metric
 
-                let chartFilter = this.state.chartFilter
-                Object.keys(data[objectId].values).map(key => {
-                    let value = data[objectId].values[key][0]
-                    chartFilter[key] = chartFilter[key] ? chartFilter[key] : {
-                        label: `${value[2]}_${value[3]}_${value[4]}_${value[5]}`,
-                        regions: [region],
-                        color: randomColor({
-                            count: 1,
-                        })[0], selected: false
-                    }
-                    let legendRegions = chartFilter[key]['regions']
-                    if (!legendRegions.includes(region)) {
-                        legendRegions.push(region)
-                    }
-                })
+            
                 let metricKey = this.metricKeyGenerator(region, metric)
                 chartData[region][metricKey] = data[objectId]
-                this.avgCalculator(chartData[region][metricKey], metric)
-                this.setState({ chartData, chartFilter: chartFilter })
+                this.avgCalculator(chartData[region][metricKey], region, metricKey, metric)
+                this.setState({ chartData })
             }
         }
     }
 
     fetchDefaultData = () => {
+        this.requestCount = appInstMetricTypeKeys.length * this.regions.length
         let range = this.timeRangeInMin(20)
         if (this.regions && this.regions.length > 0) {
             this.regions.map(region => {
@@ -203,13 +190,15 @@ class MexChart extends React.Component {
 
     componentDidMount() {
         let chartData = {}
+        let avgData = {}
         this.regions.map((region) => {
             chartData[region] = {}
+            avgData[region] = []
             appInstMetricTypeKeys.map(metric => {
                 chartData[region][this.metricKeyGenerator(region, metric)] = { region, metric }
             })
         })
-        this.setState({ chartData })
+        this.setState({ chartData, avgData })
         this.fetchDefaultData()
     }
 }

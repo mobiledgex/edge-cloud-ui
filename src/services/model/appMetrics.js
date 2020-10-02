@@ -8,7 +8,7 @@ let fields = formatter.fields;
 export const appMetricsKeys = [
     {label:'Date', serverField:'time', visible : false},
     {label:'Region', serverField:'region', visible : true, groupBy:true},
-    {label:'App', serverField:'app', visible : true, groupBy : true},
+    {label: 'App', serverField: 'app', visible: true, groupBy: true, filter: true },
     {label:'Version', serverField:'ver', visible : true, groupBy : true},
     {label:'Cluster', serverField:'cluster', visible : true, groupBy : true},
     {label:'Cluster Developer', serverField:'clusterorg', visible : true, groupBy : true},
@@ -17,7 +17,11 @@ export const appMetricsKeys = [
     {label:'App Developer', serverField:'pod', visible : false, groupBy : true}
 ]
 
-
+export const summaryList = [
+    { label: 'Avg', field: 'avg', position : 0 },
+    { label: 'Min', field: 'min', position : 1 },
+    { label: 'Max', field: 'max', position : 2 },
+]
 
 export const appMetricsListKeys = [
     { field: 'region', label: 'Region', sortable: true, visible: true},
@@ -27,12 +31,12 @@ export const appMetricsListKeys = [
     { field: 'cloudletorg', label: 'Operator', sortable: true, visible: true },
     { field: 'cluster', label: 'Cluster', sortable: true, visible: true },
     { field: 'clusterorg', label: 'Cluster Developer', sortable: true, visible: true },
-    { field: 'cpu', label: 'CPU', sortable: true, visible: true },
-    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true },
-    { field: 'mem', label: 'Memory', sortable: true, visible: true },
-    { field: 'sent', label: 'Network Sent', sortable: true, visible: true },
-    { field: 'received', label: 'Network Received', sortable: true, visible: true},
-    { field: 'connections', label: 'Active Connections', sortable: true, visible: true},
+    { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray : true },
+    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray : true },
+    { field: 'mem', label: 'Memory', sortable: true, visible: true, isArray : true },
+    { field: 'sent', label: 'Network Sent', sortable: true, visible: true, isArray : true },
+    { field: 'received', label: 'Network Received', sortable: true, visible: true, isArray : true},
+    { field: 'connections', label: 'Active Connections', sortable: true, visible: true, isArray : true},
 ]
 
 export const appInstMetricTypeKeys = [

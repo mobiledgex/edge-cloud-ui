@@ -1,6 +1,7 @@
 .monitoring-header {
-    padding: 10px 0px 0px 15px;
+    padding: 10px 0px 0px 0px;
     width: 100%;
+    font-size:25px;
     margin-bottom: 5px;
     height: 50px;
 }
@@ -16,15 +17,6 @@
     overflow: auto;
 }
 
-.mex-monitoring-filter-left {
-    display: inline-block;
-}
-.mex-monitoring-filter-right {
-    float: right;
-    margin-top: -10px;
-    right:40px;
-}
-
 .mex-monitoring-select-container {
     color:rgba(255, 255, 255, 0.85);
     margin-right: 0px;
@@ -37,10 +29,21 @@
     z-index: 999 !important;
 }
 
+.montoring-manual-scroll{
+    position: absolute;
+    cursor: pointer;
+    right : 10px;
+    bottom: 10px;
+    height: 50px;
+    width: 50px;
+    margin: auto;
+    padding: 15px;
+    background-color: #3B3F47;
+    border-radius: 50px;
+}
+
 .mex-monitoring-time-range-input {
     width:50px;
-    height:33px;
-    padding:10px;
     border:solid 1px rgba(255,255,255,.2);
     border-radius:.28571429rem;
     background-color:black;
@@ -96,8 +99,17 @@
     cursor: pointer;
 }
 
+.grid-charts {
+    height: calc(100vh - 330px);
+    overflow: auto;
+    overflow-x: hidden;
+}
 
-.monitoring-content{
+.grid-charts::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.grid-charts{
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
   
@@ -114,19 +126,10 @@
     }
   }
 
-.monitoring-content::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
-}
-
-.grid-charts {
-    max-height: '100%';
-    overflow: auto;
-    overflow-x: hidden;
-}
-
 .grid-charts-header{
     height: 100%;
 }
+
 
 .grid-charts-header-legend{
     height: calc(100% - 15px);
@@ -146,4 +149,13 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.toolbar-summary {
+    background-color: rgba(118, 255, 3, 0.8);
+    border-radius:5;
+    width:40;
+    height:20; 
+    font-size:12;
+    padding:2;
 }
