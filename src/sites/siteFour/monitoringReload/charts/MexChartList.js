@@ -38,8 +38,8 @@ export default function BasicTable(props) {
     return regionFilter.includes(region)
   }
 
-  const handleClick = (region, value, index) => {
-    props.onRowClick(region, value, index)
+  const handleClick = (region, value, key) => {
+    props.onRowClick(region, value, key)
   }
 
   const rowValue = (row, value) => {
@@ -53,7 +53,7 @@ export default function BasicTable(props) {
   }
 
   return (
-    <TableContainer component={Paper} style={{ height: 200, overflow: 'auto' }}>
+    <TableContainer component={Paper} style={{ maxHeight: 200, overflow: 'auto' }}>
       <Table className={classes.table} aria-label="simple table" stickyHeader size={'small'}>
         <TableHead>
           <TableRow>
@@ -67,16 +67,17 @@ export default function BasicTable(props) {
           {Object.keys(data).map(region => {
             let values = data[region]
             return validateRegionFilter(region) ?
-              values.map((value, i) => (
-                value.key.includes(props.filter.search) ?
-                  <TableRow key={i} onClick={(event) => handleClick(region, value, i)}>
+              Object.keys(values).map((key, i) => {
+                let value = values[key]
+                return (key.includes(props.filter.search) ?
+                  <TableRow key={i} onClick={(event) => handleClick(region, value, key)}>
                     <TableCell><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
                     {rows.map((row, j) => (
                       <TableCell key={j}>{rowValue(row, value)}</TableCell>
                     ))
                     }
-                  </TableRow> : null
-              )) : null
+                  </TableRow> : null)
+              }) : null
           })}
 
         </TableBody>

@@ -53,7 +53,7 @@ const CustomSwitch = withStyles({
 
 const MexToolbar = (props) => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: [props.metricKeys[0]], summary:summaryList[0]})
+    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: props.metricKeys, summary:summaryList[0]})
     const [focused, setFocused] = React.useState(false)
     const [metricAnchorEl, setMetricAnchorEl] = React.useState(null)
     const [regionAnchorEl, setRegionAnchorEl] = React.useState(null)

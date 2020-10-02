@@ -19,7 +19,7 @@ class MexChart extends React.Component {
             loading:false,
             chartData: {},
             avgData: {},
-            filter:{region: this.regions, search: '', metricType: [appInstMetricTypeKeys[0]], summary:summaryList[0] }
+            filter:{region: this.regions, search: '', metricType: appInstMetricTypeKeys, summary:summaryList[0] }
         }
         this.requestCount = 0
     }
@@ -29,9 +29,9 @@ class MexChart extends React.Component {
         return regionFilter.includes(region)
     }
 
-    onRowClick = (region, value, index)=>{
+    onRowClick = (region, value, key)=>{
         let avgData = this.state.avgData
-        avgData[region][index]['selected'] = !avgData[region][index]['selected']
+        avgData[region][key]['selected'] = !value['selected']
         this.setState({avgData})
     }
 
@@ -54,7 +54,7 @@ class MexChart extends React.Component {
                         {Object.keys(chartData).map((region, i) => {
                             if (this.validateRegionFilter(region)) {
                                 let chartDataRegion = chartData[region]
-                                let avgDataRegion = avgData[region] ? avgData[region] : []
+                                let avgDataRegion = avgData[region] ? avgData[region] : {}
 
                                 return (
                                     <Grid item xs={xs ? 6 : 12} key={i}>
@@ -111,19 +111,10 @@ class MexChart extends React.Component {
                     }
                 })
 
-                let avgValues = undefined
-                let position = avgDataList.length
-                for (let i = 0; i < avgDataList.length; i++) {
-                    if (avgDataList[i]['key'] === avgKey) {
-                        avgValues = avgDataList[i]
-                        position = i
-                        break;
-                    }
-                }
-
+                let avgValues = avgDataList[key]
+                
                 if (avgValues === undefined) {
                     avgValues = {}
-                    avgValues['key'] = avgKey
                     data.columns.map((column, i) => {
                         avgValues[column.serverField] = value[i]
                     })
@@ -137,7 +128,7 @@ class MexChart extends React.Component {
                 let maxUnit = metric.unit ? metric.unit(max) : max
                 let minUnit = metric.unit ? metric.unit(min) : min
                 avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
-                avgDataList[position] = avgValues
+                avgDataList[key] = avgValues
             })
             avgData[region] = avgDataList
             this.setState({ avgData })
@@ -193,7 +184,7 @@ class MexChart extends React.Component {
         let avgData = {}
         this.regions.map((region) => {
             chartData[region] = {}
-            avgData[region] = []
+            avgData[region] = {}
             appInstMetricTypeKeys.map(metric => {
                 chartData[region][this.metricKeyGenerator(region, metric)] = { region, metric }
             })

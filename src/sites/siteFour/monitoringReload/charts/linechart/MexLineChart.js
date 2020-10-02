@@ -101,8 +101,8 @@ class MexLineChart extends React.Component {
         const values = chartData ? chartData.values : {}
         let selectedCount = 0
         let avgDataRegion = this.props.avgDataRegion
-        avgDataRegion.map((avgData)=>{
-            if(avgData.selected)
+        Object.keys(avgDataRegion).map((key)=>{
+            if(avgDataRegion[key].selected)
             {
                 selectedCount += 1
             }
@@ -111,8 +111,8 @@ class MexLineChart extends React.Component {
             let keys = Object.keys(values)
             datasets = keys.map((key, i) => {
                     let valueData = values[key]
-                    let color = avgDataRegion[i] ? avgDataRegion[i].color : '#FFF'
-                    let selected = avgDataRegion[i] ? avgDataRegion[i].selected : false
+                    let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
+                    let selected = avgDataRegion[key] ? avgDataRegion[key].selected : false
                     let data = key.includes(this.props.globalFilter.search) && selectedCount === 0 || selected ? valueData.map(value => {
                         return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
                     }) : []
