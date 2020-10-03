@@ -15,19 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-export default function BasicTable(props) {
+const MexChartList = (props) => {
   const classes = useStyles();
 
   const data = props.data
@@ -46,20 +34,20 @@ export default function BasicTable(props) {
     let data = value[row.field]
     if (data && row.isArray) {
       return data[props.filter.summary.position]
-    } 
+    }
     else {
-      return data? data : '-'
+      return data ? data : '-'
     }
   }
 
   return (
-    <TableContainer component={Paper} style={{ maxHeight: 200, overflow: 'auto' }}>
-      <Table className={classes.table} aria-label="simple table" stickyHeader size={'small'}>
+    <TableContainer component={Paper} style={{ height: 200, overflow: 'auto' }}>
+      <Table aria-label="mex chart list" stickyHeader size={'small'}>
         <TableHead>
           <TableRow>
-            <TableCell style={{backgroundColor:'#292c33'}}></TableCell>
+            <TableCell style={{ backgroundColor: '#292c33' }}></TableCell>
             {rows.map((row, i) => {
-              return <TableCell key={i} style={{backgroundColor:'#292c33'}}>{row.label}</TableCell>
+              return <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell>
             })}
           </TableRow>
         </TableHead>
@@ -85,3 +73,4 @@ export default function BasicTable(props) {
     </TableContainer>
   );
 }
+export default MexChartList

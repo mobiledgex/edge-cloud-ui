@@ -49,7 +49,7 @@ class MexChart extends React.Component {
                     <MonitoringToolbar regions={this.regions} metricKeys={appInstMetricTypeKeys} onUpdateFilter={this.onToolbar}/>
                     <MexChartList data={avgData} rows={appMetricsListKeys} filter={filter} onRowClick={this.onRowClick} />
                 </Card>
-                <div style={{ marginTop: 10 }} className='grid-charts'>
+                <div className='grid-charts'>
                     <Grid container spacing={1}>
                         {Object.keys(chartData).map((region, i) => {
                             if (this.validateRegionFilter(region)) {
@@ -62,7 +62,7 @@ class MexChart extends React.Component {
                                             {Object.keys(chartDataRegion).map((key, j) => {
                                                 return filter.metricType.includes(chartDataRegion[key].metric) ?
                                                     <Grid  key={j} item xs={xs ? 12 : 6}>
-                                                        <Card style={{ padding: 10, marginTop: 10, height: '100%' }}>
+                                                        <Card style={{ padding: 10, marginTop: 7, height: '100%' }}>
                                                             <AppInstLineChart id={key} data={chartDataRegion[key]} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3, 4]} tagFormats={['', '[', '[']} />
                                                         </Card>
                                                     </Grid> : null
