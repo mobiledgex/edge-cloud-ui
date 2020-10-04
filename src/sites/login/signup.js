@@ -86,7 +86,7 @@ class RegistryUserForm extends React.Component{
         [
             { field: fields.username, label:'Username', labelIcon: <PersonOutlineOutlinedIcon style={{color:"#ADB0B1"}}/>, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete:"off" }, visible: true, dataValidateFunc:this.validateUsername },
             { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{color:"#ADB0B1"}}/>, formType: INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete:"off" }, visible: true, dataValidateFunc:this.validatePassword },
-            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{color:"#ADB0B1"}}/>, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password' }, visible: true, dataValidateFunc:this.validatePassword },
+            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{color:"#ADB0B1"}}/>, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete:"off" }, visible: true, dataValidateFunc:this.validatePassword },
             { field: fields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{color:"#ADB0B1"}}/>, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email' }, visible: true, dataValidateFunc:this.validateEmail },
         ]
     )
