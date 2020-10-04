@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Grid, Input, Icon } from 'semantic-ui-react'
+import { Container, Button, Grid, Input, Icon, Form} from 'semantic-ui-react'
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
@@ -33,7 +33,7 @@ const FormContainer = (props) => (
             <Grid.Column >
                 <Icon name='keyboard outline' /><sup>{' *'}</sup>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Input style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
+                <Input autoComplete="off"  style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
