@@ -314,7 +314,7 @@ class Login extends Component {
                     self.props.handleAlertInfo('error', message)
 
                 }
-                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false });
+                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false, email : data[fields.email]});
                 setTimeout(() => self.props.handleChangeLoginMode('signuped'), 600);
             }
         }
@@ -396,7 +396,7 @@ class Login extends Component {
         if (mode === 'verify') {
             let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/#/verify` })
             if (valid) {
-                self.props.handleAlertInfo('success', 'Success')
+                self.props.handleAlertInfo('success', 'We have e-mailed your verification link')
                 self.setState({ loginMode: 'signup', forgotMessage: true })
             }
         } else if (mode === 'back') {
