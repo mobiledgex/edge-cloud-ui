@@ -222,7 +222,7 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .login_main::before {    
     content: "";
-    /* background-image: url("/assets/images/map.png"); */
+    background-image: url("/assets/images/map.jpg");
     background-size: cover;
     position: absolute;
     top: 0px;
