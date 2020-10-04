@@ -75,7 +75,7 @@ class EntranceGlobe extends Component {
                 <div style={{ position: 'absolute', width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
                     <div className='login_head' >
                         <div className='intro_login'>
-                            <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200}></img>
+                            <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200} alt="MobiledgeX"/>
                             <Login location={this.props.location} history={this.props.history} signup={this.state.signup} loginFlag={this.state.loginFlag} onSignUp={this.onSignUp}></Login>
                         </div>
                     </div>

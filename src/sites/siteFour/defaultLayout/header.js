@@ -139,7 +139,7 @@ export default function Header(props) {
                                 <ListItem>
                                     <ListItemText align="center">
                                         <p>
-                                            <Image size='medium' src='/assets/brand/MobiledgeX_Logo_tm_white.svg' />
+                                            <Image size='medium' src='/assets/brand/MobiledgeX_Logo_tm_white.svg'/>
                                         </p>
                                         <p>
                                             <strong>{process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'version 0.0.0'}</strong>
