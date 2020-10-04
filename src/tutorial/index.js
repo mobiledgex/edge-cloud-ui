@@ -25,7 +25,13 @@ export const HELP_AUTO_PROV_REG_1 = 'autoProvReg_1'
 export const HELP_AUTO_PROV_REG_2 = 'autoProvReg_2'
 export const HELP_PRIVACY_POLICY_REG = 'privacyPolicyReg'
 export const HELP_MONITORING = 'monitoringAdmin'
+export const HELP_USER_ROLES = 'userRoles'
 
+export const userRoles = (type, isDoc) => {
+    if (isDoc) {
+        return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/org-users#view-users'
+    }
+}
 
 export const monitoring = (type, isDoc) => {
     if (isDoc) {
@@ -785,5 +791,7 @@ export const tutor = (type, isDoc) => {
             return policy(type, isDoc)
         case HELP_MONITORING:
             return monitoring(type, isDoc)
+        case HELP_USER_ROLES:
+            return userRoles(type, isDoc)
     }
 }
