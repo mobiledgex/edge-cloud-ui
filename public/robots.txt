@@ -1,0 +1,4 @@
+# https://www.robotstxt.org/robotstxt.html
+Sitemap: https://console.mobiledgex.net/sitemap.xml
+User-agent: *
+Disallow:
