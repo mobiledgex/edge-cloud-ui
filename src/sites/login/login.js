@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Grid, Input, Icon } from 'semantic-ui-react'
+import { Container, Button, Grid, Input, Icon, Form} from 'semantic-ui-react'
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
@@ -33,7 +33,7 @@ const FormContainer = (props) => (
             <Grid.Column >
                 <Icon name='keyboard outline' /><sup>{' *'}</sup>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Input style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
+                <Input autoComplete="off"  style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -314,7 +314,7 @@ class Login extends Component {
                     self.props.handleAlertInfo('error', message)
 
                 }
-                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false });
+                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false, email : data[fields.email]});
                 setTimeout(() => self.props.handleChangeLoginMode('signuped'), 600);
             }
         }
@@ -396,7 +396,7 @@ class Login extends Component {
         if (mode === 'verify') {
             let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/#/verify` })
             if (valid) {
-                self.props.handleAlertInfo('success', 'Success')
+                self.props.handleAlertInfo('success', 'We have e-mailed your verification link')
                 self.setState({ loginMode: 'signup', forgotMessage: true })
             }
         } else if (mode === 'back') {

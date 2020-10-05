@@ -139,7 +139,7 @@ export default function Header(props) {
                                 <ListItem>
                                     <ListItemText align="center">
                                         <p>
-                                            <Image size='medium' src='/assets/brand/MobiledgeX_Logo_tm_white.svg' />
+                                            <Image size='medium' src='/assets/brand/MobiledgeX_Logo_tm_white.svg'/>
                                         </p>
                                         <p>
                                             <strong>{process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'version 0.0.0'}</strong>
@@ -189,7 +189,7 @@ export default function Header(props) {
                     <EventMenu/>
                     <IconButton style={{ backgroundColor: 'transparent' }} aria-label="help" color="inherit"
                         onClick={(e) => helpClick()} disabled={props.viewMode !== null ? false : true}>
-                        <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'} />
+                        <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode && tutor(props.viewMode) ? 'inherit' : 'disabled'} />
                     </IconButton>
                     {getUserRole() && getUserRole().includes(constant.DEVELOPER) ? <IconButton style={{ backgroundColor: 'transparent' }} aria-label="help" color="inherit"
                         onClick={(e) => docClick()} disabled={props.viewMode !== null ? false : true}>

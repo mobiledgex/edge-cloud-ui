@@ -312,7 +312,7 @@ class CloudletReg extends React.Component {
         let cloudletManifest = this.state.cloudletManifest;
         if (cloudletManifest && cloudletManifest['manifest']) {
             return (
-                <CloudletManifest cloudletManifest={cloudletManifest} fileName={fileName}/>
+                <CloudletManifest cloudletManifest={cloudletManifest} fileName={fileName} onClose={this.props.onClose}/>
             )
         }
     }

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
+import { HELP_USER_ROLES } from '../../../tutorial';
 
 class UserList extends React.Component {
     constructor(props) {
@@ -40,7 +41,7 @@ class UserList extends React.Component {
             requestType: [showUsers],
             sortBy: [fields.username],
             keys: this.keys,
-            viewMode : null,
+            viewMode: HELP_USER_ROLES,
             grouping : true
         })
     }
