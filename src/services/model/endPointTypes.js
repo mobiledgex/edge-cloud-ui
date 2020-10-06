@@ -10,6 +10,8 @@ import * as ClusterInstance from './clusterInstance';
 import * as ClusterEvent from './clusterEvent';
 import * as AppInstEvent from './appInstEvent';
 import * as AppMetrics from './appMetrics';
+import * as ClusterMetrics from './clusterMetrics';
+import * as CloudletMetrics from './cloudletMetrics';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
@@ -272,6 +274,12 @@ export function formatData(request, response) {
             break;
         case APP_INST_METRICS_ENDPOINT:
             data = AppMetrics.getData(response, request.data)
+            break;
+        case CLUSTER_METRICS_ENDPOINT:
+            data = ClusterMetrics.getData(response, request.data)
+            break;
+        case CLOUDLET_METRICS_ENDPOINT:
+            data = CloudletMetrics.getData(response, request.data)
             break;
         default:
             data = undefined;

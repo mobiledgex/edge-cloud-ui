@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import MexMap from './mexmap/MexMap'
-import { appInstMetricTypeKeys } from '../../../services/model/appMetrics'
 import { fields } from '../../../services/model/format'
 import { LinearProgress, Card, Fab} from '@material-ui/core'
 import MexChart from './charts/MexChart'

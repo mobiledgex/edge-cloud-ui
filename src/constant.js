@@ -111,7 +111,7 @@ export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
 export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
 export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
-export const PAGE_MONITORING_RELOAD = 'MonitoringReload'
+export const PAGE_MONITORING_RELOAD = 'Reload'
 
 export const MaintenanceState = (id) => {
     switch (id) {

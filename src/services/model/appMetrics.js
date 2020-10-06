@@ -17,12 +17,6 @@ export const appMetricsKeys = [
     {label:'App Developer', serverField:'pod', visible : false, groupBy : true}
 ]
 
-export const summaryList = [
-    { label: 'Avg', field: 'avg', position : 0 },
-    { label: 'Min', field: 'min', position : 1 },
-    { label: 'Max', field: 'max', position : 2 },
-]
-
 export const appMetricsListKeys = [
     { field: 'region', label: 'Region', sortable: true, visible: true},
     { field: 'app', label: 'App', sortable: true, visible: true },
@@ -40,12 +34,12 @@ export const appMetricsListKeys = [
 ]
 
 export const appInstMetricTypeKeys = [
-    { field:'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: (value) => { return value.toFixed(3) + " %" } },
-    { field:'mem', serverField: 'mem', header: 'Memory', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
-    { field:'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
-    { field:'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
-    { field:'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) } },
-    { field:'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10 },
+    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: (value) => { return value.toFixed(3) + " %" }, serverRequest: true },
+    { field: 'mem', serverField: 'mem', header: 'Memory', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: true },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: true },
+    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: true },
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: false },
+    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, serverRequest: true },
 ]
 
 export const appInstMetrics = (data) => {

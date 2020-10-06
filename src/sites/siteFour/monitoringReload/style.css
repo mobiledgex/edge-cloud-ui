@@ -100,9 +100,10 @@
 }
 
 .grid-charts {
-    height: calc(100vh - 325px);
+    height: calc(100vh - 330px);
     overflow: auto;
     overflow-x: hidden;
+    margin-top: 5px;
 }
 
 .grid-charts::-webkit-scrollbar { 

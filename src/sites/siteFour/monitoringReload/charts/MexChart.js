@@ -1,9 +1,8 @@
 import React from 'react'
-import AppInstLineChart from './linechart/MexLineChart'
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, appMetricsKeys, summaryList } from '../../../../services/model/appMetrics'
+import LineChart from './linechart/MexLineChart'
 import * as serverData from '../../../../services/model/serverData'
 import * as dateUtil from '../../../../utils/date_util'
-import { fields } from '../../../../services/model/format'
+import { fields, getUserRole } from '../../../../services/model/format'
 import { Grid, Card, LinearProgress } from '@material-ui/core'
 import MexChartList from './MexChartList'
 import randomColor from 'randomcolor'
@@ -11,15 +10,17 @@ import meanBy from 'lodash/meanBy'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
 import MonitoringToolbar from '../MonitoringToolbar'
+import { summaryList, metricParentTypes, DEVELOPER } from '../helper/Constant'
 class MexChart extends React.Component {
     constructor(props) {
         super(props)
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        let defaultMetricParentTypes = metricParentTypes[getUserRole().includes(DEVELOPER)  ? 0 : 2]
         this.state = {
-            loading:false,
+            loading: false,
             chartData: {},
             avgData: {},
-            filter:{region: this.regions, search: '', metricType: appInstMetricTypeKeys, summary:summaryList[0] }
+            filter: { region: this.regions, search: '', metricType: defaultMetricParentTypes.metricTypeKeys, summary: summaryList[0], parent: defaultMetricParentTypes  }
         }
         this.requestCount = 0
     }
@@ -29,41 +30,43 @@ class MexChart extends React.Component {
         return regionFilter.includes(region)
     }
 
-    onRowClick = (region, value, key)=>{
+    onRowClick = (region, value, key) => {
         let avgData = this.state.avgData
-        avgData[region][key]['selected'] = !value['selected']
-        this.setState({avgData})
+        avgData[this.state.filter.parent.id][region][key]['selected'] = !value['selected']
+        this.setState({ avgData })
     }
 
-    onToolbar = (filter)=>{
-        this.setState({filter})
+    onToolbar = (filter) => {
+        this.setState({ filter })
     }
 
     render() {
         const { chartData, avgData, loading, filter } = this.state
+        const chartDataParent = chartData[filter.parent.id]
+        const avgDataParent = avgData[filter.parent.id] ? avgData[filter.parent.id] : {}
         let xs = filter.region.length > 1
         return (
-            <div style={{ flexGrow: 1}}>
+            <div style={{ flexGrow: 1 }}>
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar regions={this.regions} metricKeys={appInstMetricTypeKeys} onUpdateFilter={this.onToolbar}/>
-                    <MexChartList data={avgData} rows={appMetricsListKeys} filter={filter} onRowClick={this.onRowClick} />
+                    <MonitoringToolbar regions={this.regions} metricTypeKeys={filter.parent.metricTypeKeys} onUpdateFilter={this.onToolbar} />
+                    <MexChartList data={avgDataParent} rows={filter.parent.metricListKeys} filter={filter} onRowClick={this.onRowClick} />
                 </Card>
                 <div className='grid-charts'>
                     <Grid container spacing={1}>
-                        {Object.keys(chartData).map((region, i) => {
+                        {chartDataParent && Object.keys(chartDataParent).map((region, i) => {
                             if (this.validateRegionFilter(region)) {
-                                let chartDataRegion = chartData[region]
-                                let avgDataRegion = avgData[region] ? avgData[region] : {}
+                                let chartDataRegion = chartDataParent[region]
+                                let avgDataRegion = avgDataParent[region] ? avgDataParent[region] : {}
 
                                 return (
                                     <Grid item xs={xs ? 6 : 12} key={i}>
                                         <Grid container spacing={1}>
                                             {Object.keys(chartDataRegion).map((key, j) => {
                                                 return filter.metricType.includes(chartDataRegion[key].metric) ?
-                                                    <Grid  key={j} item xs={xs ? 12 : 6}>
-                                                        <Card style={{ padding: 10, marginTop: 7, height: '100%' }}>
-                                                            <AppInstLineChart id={key} data={chartDataRegion[key]} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3, 4]} tagFormats={['', '[', '[']} />
+                                                    <Grid key={key} item xs={xs ? 12 : 6}>
+                                                        <Card style={{ padding: 10, height: '100%' }}>
+                                                            <LineChart id={key} data={chartDataRegion[key]} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} />
                                                         </Card>
                                                     </Grid> : null
                                             })}
@@ -79,8 +82,8 @@ class MexChart extends React.Component {
         )
     }
 
-    metricKeyGenerator = (region, metric) => {
-        return `appinst-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
+    metricKeyGenerator = (parentTypeId, region, metric) => {
+        return `${parentTypeId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
     }
 
     timeRangeInMin = (range) => {
@@ -91,10 +94,10 @@ class MexChart extends React.Component {
         return { starttime, endtime }
     }
 
-    avgCalculator = async (data, region, metricType, metric) => {
+    avgCalculator = async (parent, data, region, metricType, metric) => {
         setTimeout(() => {
             let avgData = this.state.avgData
-            let avgDataList = avgData[region]
+            let avgDataList = avgData[parent.id][region]
             avgDataList = avgDataList ? avgDataList : []
             Object.keys(data.values).map(key => {
                 let value = data.values[key][0]
@@ -112,7 +115,7 @@ class MexChart extends React.Component {
                 })
 
                 let avgValues = avgDataList[key]
-                
+
                 if (avgValues === undefined) {
                     avgValues = {}
                     data.columns.map((column, i) => {
@@ -130,12 +133,12 @@ class MexChart extends React.Component {
                 avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
                 avgDataList[key] = avgValues
             })
-            avgData[region] = avgDataList
+            avgData[parent.id][region] = avgDataList
             this.setState({ avgData })
         }, 100)
     }
 
-    serverRequest = async (metric, requestData) => {
+    serverRequest = async (parent, serverField,  requestData) => {
         this.setState({ loading: true })
         let mcRequest = await serverData.sendRequest(this, requestData)
         this.requestCount -= 1
@@ -143,38 +146,61 @@ class MexChart extends React.Component {
             this.setState({ loading: false })
         }
         if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            let requestData = mcRequest.request.data
-            let region = requestData.region
-            let data = mcRequest.response.data
-            let chartData = this.state.chartData
+            parent.metricTypeKeys.map(metric => {
+                if (metric.serverField === serverField) {
+                    let requestData = mcRequest.request.data
+                    let region = requestData.region
+                    let data = mcRequest.response.data
+                    let chartData = this.state.chartData
+                    let objectId = `${parent.id}-${serverField}`
+                    if (data[objectId]) {
+                        let newData = {}
+                        newData.region = region
+                        newData.metric = metric
+                        newData.values = data[objectId].values
+                        newData.columns = data[objectId].columns
+                        let metricKey = this.metricKeyGenerator(parent.id, region, metric)
+                        chartData[parent.id][region][metricKey] = newData
+                        this.avgCalculator(parent, chartData[parent.id][region][metricKey], region, metricKey, metric)
+                        this.setState({ chartData })
+                    }
+                }
+            })
 
-            let objectId = `appinst-${metric.serverField}`
-            if (data[objectId]) {
-                data[objectId].region = region
-                data[objectId].metric = metric
-
-            
-                let metricKey = this.metricKeyGenerator(region, metric)
-                chartData[region][metricKey] = data[objectId]
-                this.avgCalculator(chartData[region][metricKey], region, metricKey, metric)
-                this.setState({ chartData })
-            }
         }
     }
 
     fetchDefaultData = () => {
-        this.requestCount = appInstMetricTypeKeys.length * this.regions.length
-        let range = this.timeRangeInMin(20)
-        if (this.regions && this.regions.length > 0) {
-            this.regions.map(region => {
-                appInstMetricTypeKeys.map(metric => {
-                    let data = {}
-                    data[fields.region] = region
-                    data[fields.starttime] = range.starttime
-                    data[fields.endtime] = range.endtime
-                    data[fields.selector] = metric.serverField
-                    this.serverRequest(metric, appInstMetrics(data))
+        metricParentTypes.map(parent => {
+            if (getUserRole() && getUserRole().includes(parent.role)) {
+                this.regions.map(region => {
+                    parent.metricTypeKeys.map(metric => {
+                        if(metric.serverRequest)
+                        {
+                            this.requestCount += 1
+                        }
+                    })
                 })
+            }
+        })
+        let range = this.timeRangeInMin(20)
+
+        if (this.regions && this.regions.length > 0) {
+            metricParentTypes.map(parent => {
+                if (getUserRole() && getUserRole().includes(parent.role)) {
+                    this.regions.map(region => {
+                        parent.metricTypeKeys.map(metric => {
+                            if (metric.serverRequest) {
+                                let data = {}
+                                data[fields.region] = region
+                                data[fields.starttime] = range.starttime
+                                data[fields.endtime] = range.endtime
+                                data[fields.selector] = metric.serverField
+                                this.serverRequest(parent, metric.serverField, parent.request(data))
+                            }
+                        })
+                    })
+                }
             })
         }
     }
@@ -182,12 +208,21 @@ class MexChart extends React.Component {
     componentDidMount() {
         let chartData = {}
         let avgData = {}
-        this.regions.map((region) => {
-            chartData[region] = {}
-            avgData[region] = {}
-            appInstMetricTypeKeys.map(metric => {
-                chartData[region][this.metricKeyGenerator(region, metric)] = { region, metric }
-            })
+        metricParentTypes.map(parent => {
+            if (getUserRole() && getUserRole().includes(parent.role)) {
+                chartData[parent.id] = {}
+                avgData[parent.id] = {}
+                this.regions.map((region) => {
+                    chartData[parent.id][region] = {}
+                    avgData[parent.id][region] = {}
+                    parent.metricTypeKeys.map(metric => {
+                        let metricData = {}
+                        metricData['region'] = region
+                        metricData['metric'] = metric
+                        chartData[parent.id][region][this.metricKeyGenerator(parent.id, region, metric)] = metricData
+                    })
+                })
+            }
         })
         this.setState({ chartData, avgData })
         this.fetchDefaultData()

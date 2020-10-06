@@ -58,6 +58,15 @@ const optionsGenerator = (header, unit) => {
                     }
                 }
             }]
+        },
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label 
+                    let value = unit ? unit(tooltipItem.yLabel) : tooltipItem.yLabel
+                    return `${label} : ${value}`
+                }
+            }
         }
     }
 }
@@ -101,13 +110,15 @@ class MexLineChart extends React.Component {
         const values = chartData ? chartData.values : {}
         let selectedCount = 0
         let avgDataRegion = this.props.avgDataRegion
-        Object.keys(avgDataRegion).map((key)=>{
+        
+        let avgDataRegionKeys = Object.keys(avgDataRegion)
+        avgDataRegionKeys.map((key)=>{
             if(avgDataRegion[key].selected)
             {
                 selectedCount += 1
             }
         })
-        if (values) {
+        if (values && avgDataRegionKeys.length > 0) {
             let keys = Object.keys(values)
             datasets = keys.map((key, i) => {
                     let valueData = values[key]
@@ -116,9 +127,8 @@ class MexLineChart extends React.Component {
                     let data = key.includes(this.props.globalFilter.search) && selectedCount === 0 || selected ? valueData.map(value => {
                         return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
                     }) : []
-
                     return {
-                        label: this.formatLabel(valueData[0]),
+                        label: valueData[0][2],
                         fill: false,
                         lineTension: 0.5,
                         backgroundColor: color,
@@ -161,7 +171,7 @@ class MexLineChart extends React.Component {
                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={320} />
+                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={320} redraw/>
                 </div>
             </div>
         )
