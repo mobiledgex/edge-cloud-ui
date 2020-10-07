@@ -8,6 +8,7 @@ export const clusterEventKeys = [
     {label:'Cluster Developer', serverField:'clusterorg', visible : false, detailedView : false, groupBy:false},
     {label:'Cloudlet', serverField:'cloudlet', visible : true, detailedView : false, groupBy:true},
     {label:'Operator', serverField:'cloudletorg', visible : true, detailedView : false, groupBy:true},
+    {label:'Reserved By', serverField:'reservedBy', visible : false, detailedView : false, groupBy:false},
     {label:'Flavor', serverField:'flavor', visible : false, detailedView : true},
     {label:'vCPU', serverField:'vcpu', visible : false, detailedView : true},
     {label:'RAM', serverField:'ram', visible : false, detailedView : true},
