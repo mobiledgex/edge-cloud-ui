@@ -42,6 +42,10 @@ export const appInstMetricTypeKeys = [
     { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, serverRequest: true },
 ]
 
+export const appActions = [
+    {label : 'Show Clients'}
+]
+
 export const appInstMetrics = (data) => {
 
     if (!formatter.isAdmin()) {

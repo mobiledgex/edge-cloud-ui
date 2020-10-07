@@ -8,6 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Icon } from 'semantic-ui-react';
+import ListIcon from '@material-ui/icons/List';
+import { IconButton } from '@material-ui/core';
 
 const useStyles = makeStyles({
   table: {
@@ -19,7 +21,8 @@ const MexChartList = (props) => {
   const classes = useStyles();
 
   const data = props.data
-  const rows = props.rows
+  const rows = props.filter.parent.metricListKeys
+  const actions = props.filter.parent.actions
 
   const validateRegionFilter = (region) => {
     let regionFilter = props.filter.region
@@ -40,6 +43,14 @@ const MexChartList = (props) => {
     }
   }
 
+  const actionView = (item) => {
+    return (
+      <IconButton aria-label="Action" style={{height:20}}>
+        <ListIcon  style={{ color: '#76ff03'}} />
+      </IconButton>
+    )
+  }
+
   return (
     <TableContainer component={Paper} style={{ height: 200, overflow: 'auto' }}>
       <Table aria-label="mex chart list" stickyHeader size={'small'}>
@@ -49,6 +60,7 @@ const MexChartList = (props) => {
             {rows.map((row, i) => {
               return <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell>
             })}
+            {actions ? <TableCell style={{ backgroundColor: '#292c33' }}>Action</TableCell> : null}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -58,12 +70,13 @@ const MexChartList = (props) => {
               Object.keys(values).map((key, i) => {
                 let value = values[key]
                 return (key.includes(props.filter.search) ?
-                  <TableRow key={i} onClick={(event) => handleClick(region, value, key)}>
-                    <TableCell><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
+                  <TableRow key={i}>
+                    <TableCell onClick={(event) => handleClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
                     {rows.map((row, j) => (
-                      <TableCell key={j}>{rowValue(row, value)}</TableCell>
+                      <TableCell key={j} onClick={(event) => handleClick(region, value, key)}>{rowValue(row, value)}</TableCell>
                     ))
                     }
+                    {actions ? <TableCell>{actionView()}</TableCell> : null}
                   </TableRow> : null)
               }) : null
           })}

@@ -1,5 +1,5 @@
 import * as mainConstant from '../../../../constant'
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys } from '../../../../services/model/appMetrics'
+import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, appActions } from '../../../../services/model/appMetrics'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys } from '../../../../services/model/cloudletMetrics'
 
@@ -13,7 +13,7 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = [
-    { id:'appinst', label: 'App Inst', request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.DEVELOPER] },
+    { id:'appinst', label: 'App Inst', request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, actions : appActions, role: [mainConstant.DEVELOPER] },
     { id:'cluster', label: 'Cluster Inst', request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
     { id:'cloudlet', label: 'Cloudlet', request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
 ]

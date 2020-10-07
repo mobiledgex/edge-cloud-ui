@@ -136,6 +136,7 @@ class MexLineChart extends React.Component {
                         borderCapStyle: 'butt',
                         borderDash: [],
                         borderDashOffset: 0.0,
+                        borderWidth : 2,
                         borderJoinStyle: 'miter',
                         pointBorderColor: color,
                         pointBackgroundColor: color,

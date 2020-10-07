@@ -50,7 +50,7 @@ class MexChart extends React.Component {
                 <Card>
                     {loading ? <LinearProgress /> : null}
                     <MonitoringToolbar regions={this.regions} metricTypeKeys={filter.parent.metricTypeKeys} onUpdateFilter={this.onToolbar} />
-                    <MexChartList data={avgDataParent} rows={filter.parent.metricListKeys} filter={filter} onRowClick={this.onRowClick} />
+                    <MexChartList data={avgDataParent} filter={filter} onRowClick={this.onRowClick}/>
                 </Card>
                 <div className='grid-charts'>
                     <Grid container spacing={1}>
