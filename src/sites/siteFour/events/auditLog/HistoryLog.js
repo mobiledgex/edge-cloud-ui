@@ -10,7 +10,7 @@ import { InputAdornment, TextField, Button, Grid, Accordion, AccordionSummary, A
 import DataUsageIcon from '@material-ui/icons/DataUsage';
 import * as dateUtil from '../../../../utils/date_util'
 import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIosRounded';
+import CloseIcon from '@material-ui/icons/CloseRounded';
 
 const endDate = dateUtil.currentTimeInMilli()
 const startDate = dateUtil.subtractMonth(1).valueOf()
@@ -86,7 +86,7 @@ const MaterialUIPickers = (props) => {
                 <div onClick={(e) => { e.stopPropagation() }} align={'center'} style={{ width: '100%', height: 50 }}>
                     <div style={{ position: 'absolute', right: 0, top: 2 }} onClick={onClose}>
                         <IconButton>
-                            <ArrowForwardIosIcon fontSize={'small'} />
+                            <CloseIcon fontSize={'small'} />
                         </IconButton>
                     </div>
                 </div>
