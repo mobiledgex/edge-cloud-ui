@@ -183,9 +183,9 @@ class EventLog extends React.Component {
         return (
             <div key={index} style={style}>
                 <div style={{ pointer: 'cursor', borderRadius: 5, border: '1px solid #E0E0E1', margin: '0 10px 10px 10px', padding: 10, backgroundColor: this.state.activeIndex === index ? '#1E2123' : 'transparent' }} onClick={() => this.onEventTimeLine(dataList[keys[index]], columns, index)}>
-                    <div style={{ display: 'inline-block' }}>{columns.map((item, i) => {
-                        return item && item.visible ?
-                            <p style={{ fontSize: 12 }} key={i}><strong>{item.label}</strong>{`: ${latestData[i]}`}</p> : false
+                    <div style={{ display: 'inline-block' }}>{columns.map((column, i) => {
+                        return column && column.visible ?
+                            <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${latestData[i]}`}</p> : false
                     })}
                     </div>
                 </div>
