@@ -1,7 +1,7 @@
 import React from 'react'
 import { Input, InputAdornment } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/SearchRounded';
-import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
+import ClearAllOutlinedIcon from '@material-ui/icons/ClearAllOutlined';
 class SearchFilter extends React.Component {
 
     constructor(props) {
@@ -35,7 +35,7 @@ class SearchFilter extends React.Component {
                 }
                 endAdornment={
                     <InputAdornment position="end">
-                        <BackspaceOutlinedIcon style={{ fontSize: 17 }} onClick={this.onClear} />
+                        <ClearAllOutlinedIcon style={{ fontSize: 17 }} onClick={this.onClear} />
                     </InputAdornment>
                 }
                 onChange={this.onValueChange}

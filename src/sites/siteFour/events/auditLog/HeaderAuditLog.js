@@ -11,7 +11,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import CheckIcon from '@material-ui/icons/CheckRounded';
 import SearchIcon from '@material-ui/icons/SearchRounded';
 import HistoryLog from './HistoryLog';
-import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
+import ClearAllOutlinedIcon from '@material-ui/icons/ClearAllOutlined';
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
@@ -213,7 +213,7 @@ class HeaderAuditLog extends React.Component {
                     }
                     endAdornment={
                         <InputAdornment position="end">
-                            <BackspaceOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
+                            <ClearAllOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
                         </InputAdornment>
                     }
                     onChange = {this.onFilterValue}
