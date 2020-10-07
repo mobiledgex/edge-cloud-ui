@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import { summaryList, metricParentTypes, DEVELOPER } from './helper/Constant';
+import { summaryList, metricParentTypes, OPERATOR } from './helper/Constant';
 import { getUserRole } from '../../../services/model/format';
 
 const timeUnits = [
@@ -52,7 +52,7 @@ const CustomSwitch = withStyles({
 
 const MexToolbar = (props) => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: props.metricTypeKeys, summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(DEVELOPER)  ? 0 : 2] })
+    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: props.metricTypeKeys, summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0] })
     const [focused, setFocused] = React.useState(false)
     const [metricAnchorEl, setMetricAnchorEl] = React.useState(null)
     const [regionAnchorEl, setRegionAnchorEl] = React.useState(null)

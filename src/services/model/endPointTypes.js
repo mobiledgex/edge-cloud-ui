@@ -19,6 +19,7 @@ import * as PrivacyPolicy from './privacyPolicy';
 import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
+import * as AppInstClient from './appInstClient';
 
 
 export const SHOW_ORG = "showOrg";
@@ -103,6 +104,7 @@ export const APP_INST_EVENT_LOG_ENDPOINT = 'events/app';
 export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
 export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
+export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
 
 export function getPath(request) {
     switch (request.method) {
@@ -170,7 +172,7 @@ export function getPath(request) {
         case SHOW_CLOUDLET_POOL:
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
-        case UPDATE_CLOUDLET_POOL:  
+        case UPDATE_CLOUDLET_POOL:
         case SHOW_AUTO_PROV_POLICY:
         case CREATE_AUTO_PROV_POLICY:
         case UPDATE_AUTO_PROV_POLICY:
@@ -189,6 +191,7 @@ export function getPath(request) {
         case SHOW_LOGS:
         case SHOW_CONSOLE:
         case GET_CLOUDLET_MANIFEST:
+        case SHOW_APP_INST_CLIENT:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -280,6 +283,9 @@ export function formatData(request, response) {
             break;
         case CLOUDLET_METRICS_ENDPOINT:
             data = CloudletMetrics.getData(response, request.data)
+            break;
+        case SHOW_APP_INST_CLIENT:
+            data = AppInstClient.getData(response, request.data)
             break;
         default:
             data = undefined;

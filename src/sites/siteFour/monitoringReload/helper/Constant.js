@@ -4,6 +4,7 @@ import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '.
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys } from '../../../../services/model/cloudletMetrics'
 
 export const DEVELOPER = mainConstant.DEVELOPER
+export const OPERATOR = mainConstant.OPERATOR
 
 export const summaryList = [
     { label: 'Avg', field: 'avg', position: 0 },

@@ -10,12 +10,12 @@ import meanBy from 'lodash/meanBy'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
 import MonitoringToolbar from '../MonitoringToolbar'
-import { summaryList, metricParentTypes, DEVELOPER } from '../helper/Constant'
+import { summaryList, metricParentTypes, OPERATOR } from '../helper/Constant'
 class MexChart extends React.Component {
     constructor(props) {
         super(props)
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        let defaultMetricParentTypes = metricParentTypes[getUserRole().includes(DEVELOPER)  ? 0 : 2]
+        let defaultMetricParentTypes = metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0]
         this.state = {
             loading: false,
             chartData: {},
@@ -183,7 +183,7 @@ class MexChart extends React.Component {
                 })
             }
         })
-        let range = this.timeRangeInMin(20)
+        let range = this.timeRangeInMin(2)
 
         if (this.regions && this.regions.length > 0) {
             metricParentTypes.map(parent => {

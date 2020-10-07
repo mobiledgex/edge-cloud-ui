@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import MexMap from './mexmap/MexMap'
 import { fields } from '../../../services/model/format'
-import { LinearProgress, Card, Fab} from '@material-ui/core'
 import MexChart from './charts/MexChart'
 import './style.css'
 import { withRouter } from 'react-router-dom';
 import KeyboardArrowDownOutlinedIcon from '@material-ui/icons/KeyboardArrowDownOutlined';
 export default class Monitoring extends React.Component {
     constructor(props) {
-        super(props)
+        super()
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.state = {
             chartData: {},
@@ -18,18 +17,18 @@ export default class Monitoring extends React.Component {
         }
     }
 
-   
+
     render() {
         const { mapData } = this.state
         return (
             <div className="monitoring-main" mex-test="component-monitoring">
-                    {/* <Card style={{ width: '100%' }}>
+                {/* <Card style={{ width: '100%' }}>
                         <MexMap data={mapData} />
                     </Card> */}
-                    <MexChart/>
-                <div className='montoring-manual-scroll'>
+                <MexChart />
+                {/* <div className='montoring-manual-scroll'>
                     <KeyboardArrowDownOutlinedIcon />
-                </div>
+                </div> */}
             </div>
         )
     }
