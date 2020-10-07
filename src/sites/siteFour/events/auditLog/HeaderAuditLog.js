@@ -8,10 +8,10 @@ import { Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import CloseIcon from '@material-ui/icons/CloseRounded';
 import CheckIcon from '@material-ui/icons/CheckRounded';
 import SearchIcon from '@material-ui/icons/SearchRounded';
 import HistoryLog from './HistoryLog';
+import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
@@ -213,7 +213,7 @@ class HeaderAuditLog extends React.Component {
                     }
                     endAdornment={
                         <InputAdornment position="end">
-                            <CloseIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
+                            <BackspaceOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
                         </InputAdornment>
                     }
                     onChange = {this.onFilterValue}
