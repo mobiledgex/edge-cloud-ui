@@ -1,6 +1,8 @@
 import * as mainConstant from '../../../../constant'
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, appActions } from '../../../../services/model/appMetrics'
+import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, appActions, fetchLocation } from '../../../../services/model/appMetrics'
+import { showAppInsts } from '../../../../services/model/appInstance'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
+import { showClusterInsts } from '../../../../services/model/clusterInstance'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys } from '../../../../services/model/cloudletMetrics'
 
 export const DEVELOPER = mainConstant.DEVELOPER
@@ -13,7 +15,7 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = [
-    { id:'appinst', label: 'App Inst', request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, actions : appActions, role: [mainConstant.DEVELOPER] },
-    { id:'cluster', label: 'Cluster Inst', request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
-    { id:'cloudlet', label: 'Cloudlet', request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
+    { id: 'appinst', label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, actions: appActions, role: [mainConstant.DEVELOPER], fetchLocation:fetchLocation },
+    { id: 'cluster', label: 'Cluster Inst', showRequest: showClusterInsts, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
+    { id: 'cloudlet', label: 'Cloudlet', request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
 ]

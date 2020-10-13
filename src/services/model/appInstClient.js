@@ -34,6 +34,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    console.log('Rahul1234', response)
     //return formatter.formatData(response, body, keys(), customData, true)
 }

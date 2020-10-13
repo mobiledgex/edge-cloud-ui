@@ -165,8 +165,10 @@ class GlobalEventLogs extends React.Component {
                 eventResponseList.map((mcRequest) => {
                     if (mcRequest.response && mcRequest.response.data) {
                         let data = mcRequest.response.data
-                        if (Object.keys(data).length > 0) {
-                            this.updateData(data)
+                        if (data && data.length > 0) {
+                            if (Object.keys(data[0]).length > 0) {
+                                this.updateData(data[0])
+                            }
                         }
                     }
                 })
@@ -177,8 +179,7 @@ class GlobalEventLogs extends React.Component {
                     clearInterval(this.intervalId)
                 }
                 this.intervalId = setInterval(() => {
-                    if(this.state.isOpen)
-                    {
+                    if (this.state.isOpen) {
                         this.startRange = cloneDeep(this.endRange)
                         this.endRange = dateUtil.currentUTCTime()
                         this.eventLogData(this.startRange, this.endRange)

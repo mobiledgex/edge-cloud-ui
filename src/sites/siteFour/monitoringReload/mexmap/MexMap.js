@@ -1,6 +1,5 @@
 import React from "react";
-import { Map, Marker, Polyline, Popup, TileLayer, LayersControl, Tooltip, Circle } from "react-leaflet";
-import { divIcon } from "leaflet";
+import { Map, Marker, Polyline, Popup, TileLayer, LayersControl } from "react-leaflet";
 import Control from 'react-leaflet-control';
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon, Button } from "semantic-ui-react";
@@ -18,24 +17,29 @@ class MexMap extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            mapCenter: MAP_CENTER
+            mapCenter: MAP_CENTER,
+            zoom : DEFAULT_ZOOM
         }
         this.map = React.createRef();
+        this.popup = React.createRef();
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
     onMapMarkerClick = (data) => {
+        this.setState({mapCenter : [data.location.latitude, data.location.longitude], zoom : 12})
+        this.popup.current.leafletElement.options.leaflet.map.closePopup();
+        this.props.onMapClick(data)
     }
 
 
     renderMarkerPopup = (dataList) => {
         return (
-            <Popup className="map-control-div-marker-popup">
+            <Popup className="map-control-div-marker-popup" ref={this.popup}>
                 {
                     dataList.map((data, i) => {
                         return (
-                            <div key={i} className="map-control-div-marker-popup-label" onClick={() => { this.onMapMarkerClick(data) }}>
-                                {data['label']}
+                            <div key={i} className="map-control-div-marker-popup-label" style={{ color: data.color ? data.color : '#FFF' }} onClick={() => { this.onMapMarkerClick(data) }}>
+                                {data.label}
                             </div>
                         )
                     })
@@ -47,17 +51,31 @@ class MexMap extends React.Component {
     renderMarker = () => {
         let mapData = this.props.data
         if (mapData) {
-            return Object.keys(mapData).map((key, i) => {
-                let dataList = mapData[key]
-                let location = dataList[0][fields.location]
-                let lat = location.latitude
-                let lon = location.longitude
-                return (
-                    <React.Fragment key={i}>
-                        <MexCircleMarker coords={{lat:lat, lng: lon}} label={dataList[0]['label']}/>
-                    </React.Fragment>
-                )
+            return Object.keys(mapData).map((type, j) => {
+                let mapDataType = mapData[type]
+                return Object.keys(mapDataType).map((key, i) => {
+                    let dataList = mapDataType[key]
+                    let location = dataList[0][fields.location]
+                    let lat = location.latitude
+                    let lon = location.longitude
+                    return (
+                        <React.Fragment key={`${i}_${j}_${type}`}>
+                            {
+                                type === 'cloudlet' ?
+                                    <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                        {this.renderMarkerPopup(dataList)}
+                                    </Marker> : null
+                            }
+                            {
+                                type === 'devices' ?
+                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={dataList[0]['label']} /> : null
+                            }
+                        </React.Fragment>
+                    )
+                })
+
             })
+
         }
     }
 
@@ -98,11 +116,11 @@ class MexMap extends React.Component {
     render() {
         const { zoom, mapCenter } = this.state
         return (
-            <div className="mex-map" mex-test="component-map" style={this.props.style}>
+            <div className="mex-map" mex-test="component-map">
                 <Map
                     ref={this.map}
                     center={mapCenter}
-                    zoom={DEFAULT_ZOOM}
+                    zoom={zoom}
                     easeLinearity={1}
                     useFlyTo={true}
                     dragging={true}

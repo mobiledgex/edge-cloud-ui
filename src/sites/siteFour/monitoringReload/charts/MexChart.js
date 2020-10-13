@@ -19,15 +19,15 @@ class MexChart extends React.Component {
         return (
             <div>
                 <Grid container spacing={1}>
-                    {chartData && Object.keys(chartData).map((region, i) => {
+                    {chartData && Object.keys(chartData).map(region => {
                         if (this.validateRegionFilter(region)) {
                             let chartDataRegion = chartData[region]
                             let avgDataRegion = avgData[region] ? avgData[region] : {}
                             return (
-                                <Grid item xs={xs ? 6 : 12} key={i}>
+                                <Grid item xs={xs ? 6 : 12} key={region}>
                                     <Grid container spacing={1}>
-                                        {Object.keys(chartDataRegion).map((key, j) => {
-                                            return filter.metricType.includes(chartDataRegion[key].metric) ?
+                                        {Object.keys(chartDataRegion).map(key => {
+                                            return filter.metricType.includes(chartDataRegion[key].metric.field) ?
                                                 <Grid key={key} item xs={xs ? 12 : 6}>
                                                     <Card style={{ padding: 10, height: '100%' }}>
                                                         <LineChart id={key} data={chartDataRegion[key]} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} />

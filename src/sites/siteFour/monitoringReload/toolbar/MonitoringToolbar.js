@@ -50,9 +50,13 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 
+const fetchMetricTypeField = (metricTypeKeys) =>{
+    return metricTypeKeys.map(metricType=>{return metricType.field})
+}
+
 const MexToolbar = (props) => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: props.metricTypeKeys, summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0] })
+    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: fetchMetricTypeField(props.metricTypeKeys), summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0] })
     const [focused, setFocused] = React.useState(false)
     const [metricAnchorEl, setMetricAnchorEl] = React.useState(null)
     const [regionAnchorEl, setRegionAnchorEl] = React.useState(null)
@@ -117,14 +121,14 @@ const MexToolbar = (props) => {
             filter[type] = types
             if(type === 'parent')
             {
-                filter['metricType'] =  value.metricTypeKeys
+                filter['metricType'] =  fetchMetricTypeField(value.metricTypeKeys)
             }
             props.onUpdateFilter(filter)
             return filter
         })
     }
 
-    const renderMenu = (icon, order, dataList, anchorEl, setAnchorEl, isMultiple, type, labelKey) => {
+    const renderMenu = (icon, order, dataList, anchorEl, setAnchorEl, isMultiple, type, labelKey, field) => {
         return (
             <Box order={order}>
                 <IconButton aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
@@ -139,11 +143,11 @@ const MexToolbar = (props) => {
                 >
                     {dataList.map((data, i) => {
                         let valid = data.role ? getUserRole().includes(data.role) : true
-                        return valid ? <ListItem key={i} role={undefined} dense button onClick={()=>{onMenuChange(type, data, isMultiple, setAnchorEl)}}>
+                        return valid ? <ListItem key={i} role={undefined} dense button onClick={()=>{onMenuChange(type, field ? data[field] : data , isMultiple, setAnchorEl)}}>
                             {isMultiple ? <ListItemIcon>
                                 <Checkbox
                                     edge="start"
-                                    checked={filter[type].includes(data)}
+                                    checked={filter[type].includes(field ? data[field] : data)}
                                     tabIndex={-1}
                                     disableRipple
                                     inputProps={{ 'aria-labelledby': 1 }}
@@ -163,9 +167,9 @@ const MexToolbar = (props) => {
             {
                 <div style={{ width: '100%' }}>
                     <Box display="flex" justifyContent="flex-end">
-                         {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:100, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.parent.label}</strong>, 1, metricParentTypes, parentAnchorEl, setParentAnchorEl, false, 'parent', 'label')}
+                        {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:100, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.parent.label}</strong>, 1, metricParentTypes, parentAnchorEl, setParentAnchorEl, false, 'parent', 'label')}
                         {renderMenu(<PublicOutlinedIcon style={{color: '#76FF03'}}/>, 2, props.regions, regionAnchorEl, setRegionAnchorEl, true, 'region')}
-                        {renderMenu(<InsertChartIcon style={{color: '#76FF03'}}/>, 3, props.metricTypeKeys, metricAnchorEl, setMetricAnchorEl, true, 'metricType', 'header')}
+                        {renderMenu(<InsertChartIcon style={{color: '#76FF03'}}/>, 3, props.metricTypeKeys, metricAnchorEl, setMetricAnchorEl, true, 'metricType', 'header', 'field')}
                         {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:70, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.summary.label}</strong>, 4, summaryList, summaryAnchorEl, setSummaryAnchorEl, false, 'summary', 'label')}
                         {searchForm(5)}
                     </Box>

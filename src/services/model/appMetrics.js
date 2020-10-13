@@ -35,16 +35,34 @@ export const appMetricsListKeys = [
 
 export const appInstMetricTypeKeys = [
     { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: (value) => { return value.toFixed(3) + " %" }, serverRequest: true },
-    { field: 'mem', serverField: 'mem', header: 'Memory', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: true },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: true },
-    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: true },
-    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: false },
-    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, serverRequest: true },
+    { field: 'mem', serverField: 'mem', header: 'Memory', position: 11, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: false },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 12, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: false },
+    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 13, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: false },
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 14, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1)) }, serverRequest: false },
+    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 16, serverRequest: false },
 ]
 
 export const appActions = [
     {label : 'Show Clients'}
 ]
+
+export const fetchLocation = (metricData, showList)=>{
+    for(let i=0;i<showList.length;i++)
+    {
+        let show = showList[i]
+        let valid = metricData.includes(show[fields.region]) && 
+                    metricData.includes(show[fields.appName]) && 
+                    metricData.includes(show[fields.organizationName]) && 
+                    metricData.includes(show[fields.clusterName]) && 
+                    metricData.includes(show[fields.clusterdeveloper]) && 
+                    metricData.includes(show[fields.cloudletName]) && 
+                    metricData.includes(show[fields.operatorName])
+        if(valid)
+        {
+            return show[fields.cloudletLocation]
+        }
+    }
+}
 
 export const appInstMetrics = (data) => {
 
