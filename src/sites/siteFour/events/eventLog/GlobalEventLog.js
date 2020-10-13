@@ -190,7 +190,7 @@ class GlobalEventLogs extends React.Component {
 
     componentDidUpdate(prePros, preState)
     {
-        //enable interval only when event log is visible
+        //enable interval only when billing log is visible
         if(preState.isOpen !== this.state.isOpen)
         {
             if(this.state.isOpen)

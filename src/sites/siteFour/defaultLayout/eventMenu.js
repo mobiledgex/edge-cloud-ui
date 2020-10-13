@@ -60,7 +60,7 @@ const EventMenu = () => {
                         <ListItemIcon>
                             <TimelineIcon fontSize="small" />
                         </ListItemIcon>
-                        <ListItemText primary="Event Log" />
+                        <ListItemText primary="Billing Log" />
                     </MenuItem> : null}
             </Menu>
             <HeaderGlobalAudit open={audit} close={handleClose} />
