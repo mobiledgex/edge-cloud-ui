@@ -12,7 +12,7 @@ export const cloudletEventKeys = [
     {label:'Cloudlet', serverField:'cloudlet', visible : true, detailedView : false, groupBy : true, filter:true},
     {label:'Operator', serverField:'cloudletorg', visible : true, detailedView : false, groupBy : true},
     {label:'App Developer', serverField:'apporg', visible : false, detailedView : false, groupBy : true},
-    {label:'Event', serverField:'event', visible : true, detailedView : true},
+    {label:'Action', serverField:'event', visible : true, detailedView : true},
     {label:'Status', serverField:'status', visible : true, detailedView : true}
 ]
 
