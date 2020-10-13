@@ -29,8 +29,12 @@ const MexChartList = (props) => {
     return regionFilter.includes(region)
   }
 
-  const handleClick = (region, value, key) => {
-    props.onRowClick(region, value, key)
+  const onCellClick = (region, value, key) => {
+    props.onCellClick(region, value, key)
+  }
+
+  const onActionClick = (data) =>{
+    props.onAction(data)
   }
 
   const rowValue = (row, value) => {
@@ -43,9 +47,9 @@ const MexChartList = (props) => {
     }
   }
 
-  const actionView = (item) => {
+  const actionView = (data) => {
     return (
-      <IconButton aria-label="Action" style={{height:20}}>
+      <IconButton aria-label="Action" style={{height:20}} onClick={()=>{onActionClick(data)}}>
         <ListIcon  style={{ color: '#76ff03'}} />
       </IconButton>
     )
@@ -71,12 +75,12 @@ const MexChartList = (props) => {
                 let value = values[key]
                 return (key.includes(props.filter.search) ?
                   <TableRow key={i}>
-                    <TableCell onClick={(event) => handleClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
+                    <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
                     {rows.map((row, j) => (
-                      <TableCell key={j} onClick={(event) => handleClick(region, value, key)}>{rowValue(row, value)}</TableCell>
+                      <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell>
                     ))
                     }
-                    {actions ? <TableCell>{actionView()}</TableCell> : null}
+                    {actions ? <TableCell>{actionView(value)}</TableCell> : null}
                   </TableRow> : null)
               }) : null
           })}

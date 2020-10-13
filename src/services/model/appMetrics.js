@@ -14,7 +14,7 @@ export const appMetricsKeys = [
     {label:'Cluster Developer', serverField:'clusterorg', visible : true, groupBy : true},
     {label:'Cloudlet', serverField:'cloudlet', visible : true, groupBy : true},
     {label:'Operator', serverField:'cloudletorg', visible : true, groupBy : true},
-    {label:'App Developer', serverField:'pod', visible : false, groupBy : true}
+    {label:'App Developer', serverField:'apporg', visible : false, groupBy : true}
 ]
 
 export const appMetricsListKeys = [

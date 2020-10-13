@@ -22,9 +22,9 @@ export const cloudletMetricsListKeys = [
 ]
 
 export const cloudletMetricTypeKeys = [
-    { field: 'vCpuUsed', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Usage', position: 4, unit: (value) => { return value.toFixed(3) + " %" }, serverRequest: true },
-    { field: 'diskUsed', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Usage', position: 8, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1))}, serverRequest: false },
-    { field: 'memUsed', serverField: 'utilization', subId: 'memUsed', header: 'Memory Usage', position: 6, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1))}, serverRequest: false },
+    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Usage', position: 4, unit: (value) => { return value.toFixed(3) + " %" }, serverRequest: true },
+    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Usage', position: 8, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1))}, serverRequest: false },
+    { field: 'mem', serverField: 'utilization', subId: 'memUsed', header: 'Memory Usage', position: 6, unit: (value) => { return convertByteToMegaGigaByte(value.toFixed(1))}, serverRequest: false },
 ]
 
 export const cloudletMetrics = (data) => {

@@ -1,31 +1,33 @@
 import { SHOW_APP_INST_CLIENT } from './endPointTypes'
 import * as formatter from './format'
 
-export const showAppInstClient = () => {
-    let data = {
-        "region": "EU",
-        "appinstclientkey": {
-            "key": {
-                    "app_key": {
-                        "organization": "forwARdgame",
-                        "name": "stackaarrooms",
-                        "version": "1"
+const fields = formatter.fields
+
+export const showAppInstClient = (data) => {
+    let requestData = {
+        region: data[fields.region],
+        appinstclientkey: {
+            key: {
+                    app_key: {
+                        organization: data['apporg'],
+                        name: data['app'],
+                        version: data['ver']
                     },
-                    "cluster_inst_key": {
-                        "cloudlet_key": {
-                            "name": "berlin-main",
-                            "organization": "TDG"
+                    cluster_inst_key: {
+                        cloudlet_key: {
+                            name: data['cloudlet'],
+                            organization: data['cloudletorg']
                         },
-                        "cluster_key": {
-                            "name": "multiroom"
+                        cluster_key: {
+                            name: data['cluster']
                         },
-                        "organization": "forwARdgame"
+                        organization: data['clusterorg']
                     }
             }
         },
-        "selector": "*"
+        selector: "*"
     }
-    return { method: SHOW_APP_INST_CLIENT, data: data }
+    return { method: SHOW_APP_INST_CLIENT, data: requestData }
 }
 
 const customData = (value) => {

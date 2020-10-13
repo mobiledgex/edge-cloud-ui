@@ -160,3 +160,12 @@
     font-size:12;
     padding:2;
 }
+
+.leaflet-tooltip-pane .text {
+    color: white; 
+    font-weight: bold;
+    background: transparent;
+    border:0;
+    box-shadow: none;
+    font-size:1em;
+  }

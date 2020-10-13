@@ -146,9 +146,11 @@ export const fields = {
     apps: 'apps',
     eventType: 'eventType',
     time: 'time',
-    starttime:'starttime',
-    endtime:'endtime',
-    selector:'selector'
+    starttime: 'starttime',
+    endtime: 'endtime',
+    selector: 'selector',
+    metric: 'metric',
+    location:'location'
 }
 
 export const getUserRole = () => {
@@ -228,8 +230,7 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     if (isUnique) { value.uuid = generateUniqueId() }
                     if (body) { value.region = body.region }
                     let newValue = customData(value)
-                    if(newValue)
-                    {
+                    if (newValue) {
                         values.push(newValue)
                     }
                 }
@@ -259,11 +260,10 @@ export const colorType = (value) => {
     }
 }
 
-export const formatColumns = (columns, keys)=>
-{
+export const formatColumns = (columns, keys) => {
     columns.splice(1, 0, 'region');
     let newColumns = []
-    keys.map(key=>{
+    keys.map(key => {
         newColumns[columns.indexOf(key.serverField)] = key
     })
     return newColumns

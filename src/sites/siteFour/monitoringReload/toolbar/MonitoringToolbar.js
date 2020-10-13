@@ -4,8 +4,8 @@ import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import { summaryList, metricParentTypes, OPERATOR } from './helper/Constant';
-import { getUserRole } from '../../../services/model/format';
+import { summaryList, metricParentTypes, OPERATOR } from '../helper/Constant';
+import { getUserRole } from '../../../../services/model/format';
 
 const timeUnits = [
     { unit: 'Minute', min: 1, max: 59, default: 5 },

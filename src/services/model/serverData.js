@@ -2,7 +2,7 @@ import * as serviceMC from './serviceMC';
 
 import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_SELF, SHOW_AUDIT_ORG, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
 
-const getToken = (self) => {
+export const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     if (store) {
         return store.userToken
