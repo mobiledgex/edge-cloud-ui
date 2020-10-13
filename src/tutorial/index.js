@@ -109,7 +109,7 @@ const policy = (type, isDoc) => {
                     intro: 'Click this button to perform "Add Cloudlets", "Delete Cloudlets" and "Delete".'
                 }
             ]
-        case HELP_AUTO_PROV_REG:
+        case HELP_AUTO_PROV_REG_1:
             return [
                 {
                     element: '.formRow-1',
