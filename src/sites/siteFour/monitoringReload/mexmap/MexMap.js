@@ -3,11 +3,9 @@ import { Map, Marker, Polyline, Popup, TileLayer, LayersControl } from "react-le
 import Control from 'react-leaflet-control';
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon, Button } from "semantic-ui-react";
-import { cloudGreenIcon } from "./MapProperties";
 import { fields } from "../../../../services/model/format";
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { Card, NativeSelect, InputLabel, FormControl, Select } from "@material-ui/core";
-import MexCircleMarker from './MexCircleMarker'
 
 const DEFAULT_ZOOM = 3
 const MAP_CENTER = [43.4, 51.7]
@@ -32,52 +30,7 @@ class MexMap extends React.Component {
     }
 
 
-    renderMarkerPopup = (dataList) => {
-        return (
-            <Popup className="map-control-div-marker-popup" ref={this.popup}>
-                {
-                    dataList.map((data, i) => {
-                        return (
-                            <div key={i} className="map-control-div-marker-popup-label" style={{ color: data.color ? data.color : '#FFF' }} onClick={() => { this.onMapMarkerClick(data) }}>
-                                {data.label}
-                            </div>
-                        )
-                    })
-                }
-            </Popup>
-        )
-    }
-
-    renderMarker = () => {
-        let mapData = this.props.data
-        if (mapData) {
-            return Object.keys(mapData).map((type, j) => {
-                let mapDataType = mapData[type]
-                return Object.keys(mapDataType).map((key, i) => {
-                    let dataList = mapDataType[key]
-                    let location = dataList[0][fields.location]
-                    let lat = location.latitude
-                    let lon = location.longitude
-                    return (
-                        <React.Fragment key={`${i}_${j}_${type}`}>
-                            {
-                                type === 'cloudlet' ?
-                                    <Marker icon={cloudGreenIcon} position={[lat, lon]}>
-                                        {this.renderMarkerPopup(dataList)}
-                                    </Marker> : null
-                            }
-                            {
-                                type === 'devices' ?
-                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={dataList[0]['label']} /> : null
-                            }
-                        </React.Fragment>
-                    )
-                })
-
-            })
-
-        }
-    }
+    
 
     zoomReset = () => {
         this.map.current.leafletElement.setZoom(DEFAULT_ZOOM)
@@ -115,6 +68,7 @@ class MexMap extends React.Component {
 
     render() {
         const { zoom, mapCenter } = this.state
+        const { renderMarker } = this.props
         return (
             <div className="mex-map" mex-test="component-map">
                 <Map
@@ -136,7 +90,7 @@ class MexMap extends React.Component {
                         style={{ zIndex: 1 }}
                     />
                     {this.renderMapControl()}
-                    {this.renderMarker()}
+                    {renderMarker()}
                 </Map>
             </div>
         )

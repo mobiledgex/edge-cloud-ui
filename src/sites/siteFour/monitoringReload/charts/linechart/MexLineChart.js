@@ -44,7 +44,7 @@ const optionsGenerator = (header, unit) => {
                     labelString: 'Date'
                 },
                 ticks: {
-                    maxTicksLimit: 15
+                    maxTicksLimit: 5
                 }
             }],
             yAxes: [{

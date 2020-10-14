@@ -22,7 +22,6 @@ const MexChartList = (props) => {
 
   const data = props.data
   const rows = props.filter.parent.metricListKeys
-  const actions = props.filter.parent.actions
 
   const validateRegionFilter = (region) => {
     let regionFilter = props.filter.region
@@ -31,10 +30,6 @@ const MexChartList = (props) => {
 
   const onCellClick = (region, value, key) => {
     props.onCellClick(region, value, key)
-  }
-
-  const onActionClick = (data) =>{
-    props.onAction(data)
   }
 
   const rowValue = (row, value) => {
@@ -47,14 +42,6 @@ const MexChartList = (props) => {
     }
   }
 
-  const actionView = (data) => {
-    return (
-      <IconButton aria-label="Action" style={{height:20}} onClick={()=>{onActionClick(data)}}>
-        <ListIcon  style={{ color: '#76ff03'}} />
-      </IconButton>
-    )
-  }
-
   return (
     <TableContainer component={Paper} style={{ height: 200, overflow: 'auto' }}>
       <Table aria-label="mex chart list" stickyHeader size={'small'}>
@@ -64,7 +51,6 @@ const MexChartList = (props) => {
             {rows.map((row, i) => {
               return <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell>
             })}
-            {actions ? <TableCell style={{ backgroundColor: '#292c33' }}>Action</TableCell> : null}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -80,7 +66,6 @@ const MexChartList = (props) => {
                       <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell>
                     ))
                     }
-                    {actions ? <TableCell>{actionView(value)}</TableCell> : null}
                   </TableRow> : null)
               }) : null
           })}

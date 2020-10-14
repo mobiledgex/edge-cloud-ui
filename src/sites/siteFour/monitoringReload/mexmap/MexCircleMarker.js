@@ -5,7 +5,7 @@ import { CircleMarker, Tooltip } from 'react-leaflet';
 const PolygonWithText = props => {
     const center = latLng(props.coords.lat, props.coords.lng)
     return (
-        <CircleMarker radius={20} center={center}>
+        <CircleMarker radius={13} center={center}>
             <Tooltip permanent={true} direction={'center'} className='text'>
                 {props.label}
         </Tooltip>

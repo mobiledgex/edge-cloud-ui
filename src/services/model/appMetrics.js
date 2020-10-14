@@ -24,7 +24,7 @@ export const appMetricsListKeys = [
     { field: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true },
     { field: 'cloudletorg', label: 'Operator', sortable: true, visible: true },
     { field: 'cluster', label: 'Cluster', sortable: true, visible: true },
-    { field: 'clusterorg', label: 'Cluster Developer', sortable: true, visible: true },
+    // { field: 'clusterorg', label: 'Cluster Developer', sortable: true, visible: false },
     { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray : true },
     { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray : true },
     { field: 'mem', label: 'Memory', sortable: true, visible: true, isArray : true },
