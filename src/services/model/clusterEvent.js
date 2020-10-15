@@ -1,8 +1,13 @@
 import * as formatter from './format'
 import { CLUSTER_EVENT_LOG_ENDPOINT } from './endPointTypes'
+import * as dateUtil from '../../utils/date_util'
+
+const formatDate = (value)=>{
+    return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, value)
+}
 
 export const clusterEventKeys = [
-    {label:'Date', serverField:'time', visible : false, detailedView : false},
+    {label:'Starttime', serverField:'time', visible : true, detailedView : false, format: formatDate},
     {label:'Region', serverField:'region', visible : true, detailedView : false, groupBy:true, filter:true},
     {label:'Cluster', serverField:'cluster', visible : true, detailedView : false, groupBy:true, filter:true},
     {label:'Cluster Developer', serverField:'clusterorg', visible : false, detailedView : false, groupBy:false},
