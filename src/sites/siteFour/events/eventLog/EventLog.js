@@ -184,8 +184,9 @@ class EventLog extends React.Component {
             <div key={index} style={style}>
                 <div style={{ pointer: 'cursor', borderRadius: 5, border: '1px solid #E0E0E1', margin: '0 10px 10px 10px', padding: 10, backgroundColor: this.state.activeIndex === index ? '#1E2123' : 'transparent' }} onClick={() => this.onEventTimeLine(dataList[keys[index]], columns, index)}>
                     <div style={{ display: 'inline-block' }}>{columns.map((column, i) => {
+                        let value = column.format ? column.format(latestData[i]) : latestData[i]
                         return column && column.visible ?
-                            <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${latestData[i]}`}</p> : false
+                            <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${value}`}</p> : false
                     })}
                     </div>
                 </div>
@@ -197,7 +198,7 @@ class EventLog extends React.Component {
         let columns = eventData.columns
         let eventList = eventData.values
         let keys = Object.keys(eventList)
-        let itemSize = eventType === 'clusterinst' ? 190 : eventType === 'appinst' ? 277 : 163
+        let itemSize = eventType === 'clusterinst' ? 215 : eventType === 'appinst' ? 302 : 186
         return (
             <FixedSizeList key={i} className={'no-scrollbars'} height={this.state.infiniteHeight} itemSize={itemSize} itemCount={keys.length} itemData={{ columns: columns, keys: keys, dataList: eventList }}>
                 {this.renderRow}
