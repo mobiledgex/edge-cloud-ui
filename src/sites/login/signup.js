@@ -29,6 +29,10 @@ const validateConsecutive = (value) => {
     return /(.)\1\1/.test(value)
 }
 
+const calculateStrength = (value)=>{
+    return zxcvbn(value).score
+}
+
 class RegistryUserForm extends React.Component {
     constructor(props) {
         super(props);
@@ -83,7 +87,7 @@ class RegistryUserForm extends React.Component {
             currentForm.error = 'Too many consecutive identical characters'
             return false;
         }
-        else if (zxcvbn(value).score < 4) {
+        else if (calculateStrength(value) < 4) {
             currentForm.error = 'Password is weak'
             return false;
         }
@@ -126,8 +130,7 @@ class RegistryUserForm extends React.Component {
 
     passwordHelper = (form) => {
         let value = form.value ? form.value : ''
-        let score = zxcvbn(value).score
-        let suggestion = zxcvbn(value).feedback
+        let score = calculateStrength(value)
         let letterCase = validateLetterCase(value)
         let count = validateCharacterCount(value)
         let digit = validateDigit(value)
