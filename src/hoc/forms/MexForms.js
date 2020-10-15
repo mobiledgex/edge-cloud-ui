@@ -4,6 +4,7 @@ import uuid from 'uuid';
 import MexSelect from './MexSelect';
 import MexMultiSelect from './MexMultiSelect'
 import MexInput from './MexInput';
+import MexPopupInput from './MexPopupInput';
 import MexTextArea from './MexTextArea';
 import MexDualList from './MexDualList';
 import MexCheckbox from './MexCheckbox';
@@ -27,6 +28,7 @@ export const SELECT = 'Select'
 export const MULTI_SELECT = 'MultiSelect'
 export const DUALLIST = 'DualList'
 export const INPUT = 'Input'
+export const POPUP_INPUT = 'PopupInput'
 export const CHECKBOX = 'Checkbox'
 export const ICON_BUTTON = 'IconButton'
 export const TEXT_AREA = 'TextArea'
@@ -199,6 +201,8 @@ const MexForms = (props) => {
         return (
             form.formType === INPUT ?
                 <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                form.formType === POPUP_INPUT ?
+                    <MexPopupInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                 form.formType === TEXT_AREA ?
                     <MexTextArea form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                     null
@@ -291,7 +295,7 @@ const MexForms = (props) => {
                     <Grid.Column width={form.width ? form.width : parentForm.width} key={key}>
                         {form.label ? <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label> : null}
                         {
-                            form.formType === INPUT || form.formType === TEXT_AREA ?
+                            form.formType === INPUT || form.formType === TEXT_AREA || form.formType === POPUP_INPUT ?
                                 loadInputForms(form, required, disabled) :
                                 form.formType === SELECT ?
                                     loadDropDownForms(form, required, disabled) :
@@ -354,7 +358,7 @@ const MexForms = (props) => {
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === SELECT_RADIO_TREE ?
                                         <MexSelectTree form={form} forms={forms} onChange={onValueSelect} /> :
-                                        form.formType === INPUT || form.formType === TEXT_AREA ?
+                                        form.formType === INPUT || form.formType === TEXT_AREA || form.formType === POPUP_INPUT ?
                                             loadInputForms(form, required, disabled) :
                                             form.formType === CHECKBOX ?
                                                 <MexCheckbox form={form} onChange={onValueSelect} /> :
