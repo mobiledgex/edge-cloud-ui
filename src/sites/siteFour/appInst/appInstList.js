@@ -83,7 +83,7 @@ class AppInstList extends React.Component {
 
     getDialogNote = (data) => {
         if (data[fields.clusterName]) {
-            return data[fields.clusterName].includes('autocluster') ? '' :
+            return data[fields.clusterName].includes('autocluster') || data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? '' :
                 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance'
         }
     }
