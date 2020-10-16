@@ -78,9 +78,6 @@ class AppMexMap extends React.Component {
                 }
                 else {
                     polyline.push([location.latitude, location.longitude])
-                    polyline.push([20, -100])
-                    polyline.push([20, 100])
-                    polyline.push([30, -50])
                     data = { location, label: 1, devices: [uniqueId] }
                 }
                 mapData[key] = data
