@@ -51,7 +51,7 @@ export const fetchLocation = (metricData, showList)=>{
     {
         let show = showList[i]
         let valid = metricData.includes(show[fields.region]) && 
-                    metricData.includes(show[fields.appName]) && 
+                    metricData.includes(show[fields.appName].toLowerCase()) && 
                     metricData.includes(show[fields.organizationName]) && 
                     metricData.includes(show[fields.clusterName]) && 
                     metricData.includes(show[fields.clusterdeveloper]) && 
@@ -59,7 +59,7 @@ export const fetchLocation = (metricData, showList)=>{
                     metricData.includes(show[fields.operatorName])
         if(valid)
         {
-            return show[fields.cloudletLocation]
+            return show
         }
     }
 }

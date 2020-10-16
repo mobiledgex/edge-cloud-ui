@@ -9,19 +9,19 @@ export const showAppInstClient = (data) => {
         appinstclientkey: {
             key: {
                     app_key: {
-                        organization: data['apporg'],
-                        name: data['app'],
-                        version: data['ver']
+                        organization: data[fields.organizationName],
+                        name: data[fields.appName],
+                        version: data[fields.version]
                     },
                     cluster_inst_key: {
                         cloudlet_key: {
-                            name: data['cloudlet'],
-                            organization: data['cloudletorg']
+                            name: data[fields.cloudletName],
+                            organization: data[fields.operatorName]
                         },
                         cluster_key: {
-                            name: data['cluster']
+                            name: data[fields.clusterName]
                         },
-                        organization: data['clusterorg']
+                        organization: data[fields.clusterdeveloper]
                     }
             }
         },

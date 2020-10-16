@@ -1,36 +1,19 @@
 import React from "react";
-import { Map, Marker, Polyline, Popup, TileLayer, LayersControl } from "react-leaflet";
+import { Map, TileLayer } from "react-leaflet";
 import Control from 'react-leaflet-control';
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
-import { Icon, Button } from "semantic-ui-react";
-import { fields } from "../../../../services/model/format";
-import LinearProgress from '@material-ui/core/LinearProgress'
-import { Card, NativeSelect, InputLabel, FormControl, Select } from "@material-ui/core";
+import { Icon } from "semantic-ui-react";
 
-const DEFAULT_ZOOM = 3
-const MAP_CENTER = [43.4, 51.7]
+export const DEFAULT_ZOOM = 3
+export const MAP_CENTER = [43.4, 51.7]
 
 class MexMap extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            mapCenter: MAP_CENTER,
-            zoom : DEFAULT_ZOOM
-        }
         this.map = React.createRef();
-        this.popup = React.createRef();
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
-
-    onMapMarkerClick = (data) => {
-        this.setState({mapCenter : [data.location.latitude, data.location.longitude], zoom : 12})
-        this.popup.current.leafletElement.options.leaflet.map.closePopup();
-        this.props.onMapClick(data)
-    }
-
-
-    
 
     zoomReset = () => {
         this.map.current.leafletElement.setZoom(DEFAULT_ZOOM)
@@ -50,7 +33,8 @@ class MexMap extends React.Component {
         let controllers = [
             { icon: 'redo', onClick: () => { this.zoomReset() } },
             { icon: 'add', onClick: () => { this.zoomIn() } },
-            { icon: 'minus', onClick: () => { this.zoomOut() } }
+            { icon: 'minus', onClick: () => { this.zoomOut() } },
+            { icon: 'chevron left', onClick: () => { this.props.back() } }
         ]
         return (
             <Control position="topleft" className="map-control">
@@ -67,8 +51,7 @@ class MexMap extends React.Component {
     }
 
     render() {
-        const { zoom, mapCenter } = this.state
-        const { renderMarker } = this.props
+        const { renderMarker, mapCenter, zoom } = this.props
         return (
             <div className="mex-map" mex-test="component-map">
                 <Map
@@ -81,6 +64,8 @@ class MexMap extends React.Component {
                     boundsOptions={{ padding: [50, 50] }}
                     minZoom={3}
                     minNativeZoom={3}
+                    animate={false}
+                    scrollWheelZoom={false}
                     zoomControl={false}
                     maxBounds={[[-90.0, -180.0], [90.0, 180.0]]}>
                     <TileLayer
