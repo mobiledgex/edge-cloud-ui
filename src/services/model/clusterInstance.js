@@ -92,13 +92,17 @@ export const showClusterInsts = (data) => {
     return { method: SHOW_CLUSTER_INST, data: data }
 }
 
-export const clusterKey = (data, isCreate) => {
-    let clusterinst = {}
-    clusterinst.key = {
+export const clusterInstanceKey = (data)=>{
+    return {
         cluster_key: { name: data[fields.clusterName] },
         cloudlet_key: { organization: data[fields.operatorName], name: data[fields.cloudletName] },
         organization: data[fields.organizationName]
     }
+}
+
+export const clusterKey = (data, isCreate) => {
+    let clusterinst = {}
+    clusterinst.key = clusterInstanceKey(data)
     clusterinst.flavor = { name: data[fields.flavorName] }
     if (isCreate) {
         clusterinst.deployment = data[fields.deployment]
@@ -160,7 +164,7 @@ export const deleteClusterInst = (data) => {
 }
 
 export const streamClusterInst = (data) => {
-    let requestData = clusterKey(data)
+    let requestData = {region:data[fields.region], clusterinstkey : clusterInstanceKey(data)}
     return { uuid: data.uuid, method: STREAM_CLUSTER_INST, data: requestData }
 }
 
