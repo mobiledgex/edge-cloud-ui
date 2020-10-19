@@ -118,8 +118,10 @@ class Monitoring extends React.Component {
                 avgValues['selected'] = false
                 if (parent.fetchLocation) {
                     let showData = parent.fetchLocation(value, showList)
-                    avgValues['location'] = showData[fields.cloudletLocation]
-                    avgValues['showData'] = showData
+                    if (showData) {
+                        avgValues['location'] = showData[fields.cloudletLocation]
+                        avgValues['showData'] = showData
+                    }
                 }
             }
 

@@ -7,9 +7,11 @@ export const getToken = (self) => {
     if (store) {
         return store.userToken
     }
-    self.props.history.push({
-        pathname: '/logout'
-    })
+    if (self && self.props && self.props.history) {
+        self.props.history.push({
+            pathname: '/logout'
+        })
+    }
 }
 
 export const sendRequest = async (self, requestData) => {
@@ -116,17 +118,17 @@ export const controllers = async (self, token) => {
 }
 
 export const verifyEmail = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: VERIFY_EMAIL, data : data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: VERIFY_EMAIL, data: data })
     return mcRequest
 }
 
 export const showSelf = async (self, data, showSpinner) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_SELF, data: data, showSpinner:showSpinner })
+    let mcRequest = await sendRequest(self, { method: SHOW_SELF, data: data, showSpinner: showSpinner })
     return mcRequest
 }
 
 export const showAuditOrg = async (self, data, showSpinner) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_AUDIT_ORG, data: data, showSpinner:showSpinner })
+    let mcRequest = await sendRequest(self, { method: SHOW_AUDIT_ORG, data: data, showSpinner: showSpinner })
     return mcRequest
 }
 
@@ -150,12 +152,12 @@ export const createUser = async (self, data) => {
     return mcRequest
 }
 
-export const login = async(self, data) => {
+export const login = async (self, data) => {
     let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: LOGIN, data: data })
     return mcRequest
 }
 
-export const resetPasswordRequest = async(self, data) => {
+export const resetPasswordRequest = async (self, data) => {
     let valid = false
     let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESET_PASSWORD_REQUEST, data: data })
     if (mcRequest && mcRequest.response) {
