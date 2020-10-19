@@ -3,7 +3,7 @@ import uuid from 'uuid'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
 import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO, SHOW_AUTO_PROV_POLICY } from './endPointTypes'
-import {FORMAT_FULL_DATE_TIME} from '../../utils/date_util'
+import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 let fields = formatter.fields;
 const userRole = formatter.getUserRole()
@@ -25,8 +25,8 @@ export const keys = () => ([
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
-  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access'},
-  { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size'},
+  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access' },
+  { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
   { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false },
@@ -34,14 +34,13 @@ export const keys = () => ([
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
-  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true},  
-  { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false},  
+  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true },
+  { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
-export const getKey = (data, isCreate) => {
-  let appinst = {}
-  appinst.key = {
+export const getAppInstanceKey = (data) => {
+  return {
     app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
     cluster_inst_key: {
       cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
@@ -49,6 +48,11 @@ export const getKey = (data, isCreate) => {
       organization: data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
     }
   }
+}
+
+export const getKey = (data, isCreate) => {
+  let appinst = {}
+  appinst.key = getAppInstanceKey(data)
 
   if (isCreate) {
     if (data[fields.privacyPolicyName]) {
@@ -64,11 +68,11 @@ export const getKey = (data, isCreate) => {
     }
 
     if (data[fields.sharedVolumeSize]) {
-        appinst.shared_volume_size = parseInt(data[fields.sharedVolumeSize])
+      appinst.shared_volume_size = parseInt(data[fields.sharedVolumeSize])
     }
 
     if (data[fields.flavorName]) {
-      appinst.flavor = {name : data[fields.flavorName]}
+      appinst.flavor = { name: data[fields.flavorName] }
     }
 
   }
@@ -147,7 +151,7 @@ export const createAppInst = (self, data, callback) => {
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
-export const updateAppInst = (self, data, callback) =>{
+export const updateAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   let updateFields = ["27", '27.1', '27.2']
   requestData.appinst.fields = updateFields
@@ -159,7 +163,7 @@ export const changePowerState = (data) => {
   let requestData = getKey(data)
   requestData.appinst.power_state = data[fields.powerState]
   requestData.appinst.fields = ['31']
-  return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData}
+  return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData }
 }
 
 export const deleteAppInst = (data) => {
@@ -193,7 +197,7 @@ export const refreshAllAppInst = (data) => {
 }
 
 export const streamAppInst = (data) => {
-  let requestData = getKey(data)
+  let requestData = { region: data[fields.region], appinstkey: getAppInstanceKey(data) }
   return { uuid: data.uuid, method: STREAM_APP_INST, data: requestData }
 }
 

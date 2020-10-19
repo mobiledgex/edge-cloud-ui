@@ -144,7 +144,7 @@ export const getCloudletManifest = async (self, data, showSpinner) => {
 }
 
 export const streamCloudlet = (data) => {
-    let requestData = getKey(data)
+    let requestData = {region : data[fields.region], cloudletkey : getCloudletKey(data)}
     return { uuid: data.uuid, method: STREAM_CLOUDLET, data: requestData }
 }
 
