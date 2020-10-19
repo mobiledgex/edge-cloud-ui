@@ -34,7 +34,8 @@ class MexListView extends React.Component {
             showMap: true,
             dialogMessageInfo: {},
             uuid: 0,
-            dropList: []
+            dropList: [],
+            resetStream:false
         };
         this.filterText = ''
         this.requestCount = 0;
@@ -369,10 +370,11 @@ class MexListView extends React.Component {
     }
 
     render() {
+        const {resetStream} = this.state
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.dataFromServer} streamType={this.requestInfo.streamType} region={this.selectedRegion} />
+                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.dataFromServer} streamType={this.requestInfo.streamType} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
                 <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
@@ -474,7 +476,7 @@ class MexListView extends React.Component {
     }
 
     dataFromServer = (region) => {
-        this.setState({ dataList: [], filterList: [], selected: [], newDataList: [] })
+        this.setState(prevState=>({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream :  !prevState.resetStream}))
         let requestInfo = this.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)

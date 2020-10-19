@@ -6,10 +6,12 @@ import { green, red } from '@material-ui/core/colors';
 import * as serverData from '../../services/model/serverData';
 import { fields } from '../../services/model/format';
 import { cloneDeep } from 'lodash';
+import { CODE_FAILED_403 } from './mexMessageMultiStream';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
+export const CODE_FAILED_UNKNOWN = 999;
 
 
 const useStyles = {
@@ -70,7 +72,8 @@ class VerticalStepper extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            stepsArray: []
+            stepsArray: [],
+            resetToggle: undefined
         }
         this.body = React.createRef()
     }
@@ -117,9 +120,12 @@ class VerticalStepper extends React.Component {
 
         }
 
-        if (mcRequest.response) {
+        if (responseData === null && !mcRequest.response) {
+            stepsList.push({ uuid: request.uuid, steps: [{ code: CODE_FAILED_UNKNOWN, message: 'Progress Unknown' }] })
+        }
+        else if (mcRequest.response) {
             let response = mcRequest.response.data
-            let step = { code: response.code, message: response.data.message }
+            let step = { code: response.code, message: response.data.msg }
             if (responseData === null) {
                 stepsList.push({ uuid: request.uuid, steps: [step] })
             }
@@ -133,6 +139,14 @@ class VerticalStepper extends React.Component {
         }
         this.setState({ stepsArray: stepsList })
     }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.resetStream !== state.resetToggle) {
+            return { resetToggle: props.resetStream, stepsArray: [] }
+        }
+        return null
+    }
+
 
     sendWSRequest = (data) => {
         let stream = this.props.streamType;
@@ -209,16 +223,19 @@ class VerticalStepper extends React.Component {
                                                     step.message ?
                                                         <Step key={index}>
                                                             <StepLabel StepIconComponent={(stepperProps) => {
+                                                                let code = item.steps[stepperProps.icon - 1].code
                                                                 return (<div style={classes.root}>
                                                                     {
-                                                                        stepperProps.completed ?
-                                                                            item.steps[stepperProps.icon - 1].code === CODE_FAILED ?
-                                                                                <ErrorIcon style={classes.error} /> :
-                                                                                <Check style={classes.success} /> :
-                                                                            <div style={classes.wrapper}>
-                                                                                <p style={classes.iconLabel}>{stepperProps.icon}</p>
-                                                                                <CircularProgress style={classes.progress} size={25} thickness={3} />
-                                                                            </div>
+                                                                        code === CODE_FAILED_UNKNOWN ?
+                                                                            <ErrorIcon style={classes.error} /> :
+                                                                            stepperProps.completed ?
+                                                                                code === CODE_FAILED ?
+                                                                                    <ErrorIcon style={classes.error} /> :
+                                                                                    <Check style={classes.success} /> :
+                                                                                <div style={classes.wrapper}>
+                                                                                    <p style={classes.iconLabel}>{stepperProps.icon}</p>
+                                                                                    <CircularProgress style={classes.progress} size={25} thickness={3} />
+                                                                                </div>
                                                                     }
                                                                 </div>)
 
