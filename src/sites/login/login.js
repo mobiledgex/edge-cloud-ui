@@ -209,9 +209,7 @@ class Login extends Component {
         // by default it takes ua string from current browser's window.navigator.userAgent
         let resultPs = parser.getResult();
         this.clientSysInfo = { os: resultPs.os, browser: resultPs.browser };
-        (async () => {
-            this.receiveClientIp(await PublicIP.v4());
-        })();
+        this.receiveClientIp();
 
     }
 
@@ -268,11 +266,13 @@ class Login extends Component {
 
     }
 
-    receiveClientIp(IPAddress) {
-        if (IPAddress) {
-            self.clientSysInfo['clientIP'] = IPAddress;
-        } else {
-            self.clientSysInfo['clientIP'] = '127.0.0.1';
+    receiveClientIp = async () => {
+        try {
+            let IPAddress = await PublicIP.v4()
+            self.clientSysInfo['clientIP'] = IPAddress ? IPAddress : '127.0.0.1';
+        }
+        catch (e) {
+
         }
     }
 
