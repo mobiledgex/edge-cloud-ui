@@ -33,7 +33,7 @@ class AppMexMap extends React.Component {
     }
 
     mapClick = (data) => {
-        this.setState({ mapCenter: [data.location.latitude, data.location.longitude], zoom: 12 })
+        this.setState({ mapCenter: [data.location.latitude, data.location.longitude], zoom: 7 })
         this.popup.current.leafletElement.options.leaflet.map.closePopup();
         let showData = data.keyData.showData
         let main = { location: showData[fields.cloudletLocation] }

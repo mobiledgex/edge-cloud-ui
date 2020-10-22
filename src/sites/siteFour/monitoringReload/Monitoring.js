@@ -117,11 +117,7 @@ class Monitoring extends React.Component {
                 })[0]
                 avgValues['selected'] = false
                 if (parent.fetchLocation) {
-                    let showData = parent.fetchLocation(value, showList)
-                    if (showData) {
-                        avgValues['location'] = showData[fields.cloudletLocation]
-                        avgValues['showData'] = showData
-                    }
+                    avgValues = parent.fetchLocation(avgValues, value, showList)
                 }
             }
 
@@ -200,7 +196,7 @@ class Monitoring extends React.Component {
                 })
             }
         })
-        let range = this.timeRangeInMin(2)
+        let range = this.timeRangeInMin(40)
 
         if (this.regions && this.regions.length > 0) {
             metricParentTypes.map(parent => {

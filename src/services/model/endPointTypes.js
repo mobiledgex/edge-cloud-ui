@@ -12,6 +12,7 @@ import * as AppInstEvent from './appInstEvent';
 import * as AppMetrics from './appMetrics';
 import * as ClusterMetrics from './clusterMetrics';
 import * as CloudletMetrics from './cloudletMetrics';
+import * as ClientMetrics from './clientMetrics';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
@@ -67,9 +68,6 @@ export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
-export const CLOUDLET_METRICS_APP = "CloudletMetricsApp";
-export const CLUSTER_INST_METRICS_APP = "ClusterInstMetricsApp";
-export const APP_INST_METRICS_APP = "AppInstMetricsApp";
 export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
 export const SHOW_CLOUDLET_LINKORG = "orgcloudletpool";
 export const SHOW_LINK_POOL_ORG = "orgcloudletpool";
@@ -105,6 +103,7 @@ export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
 export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
+export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
 
 export function getPath(request) {
     switch (request.method) {
@@ -114,11 +113,16 @@ export function getPath(request) {
         case CLOUDLET_EVENT_LOG_ENDPOINT:
         case CLUSTER_EVENT_LOG_ENDPOINT:
         case APP_INST_EVENT_LOG_ENDPOINT:
+        case CLIENT_METRICS_ENDPOINT:
             return `/api/v1/auth/${request.method}`
         case SHOW_ORG:
             return '/api/v1/auth/org/show';
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
+        case CREATE_ORG:
+            return '/api/v1/auth/org/create';
+        case UPDATE_ORG:
+            return '/api/v1/auth/org/update';
         case SHOW_AUDIT_ORG:
             return '/api/v1/auth/audit/showorg';
         case SHOW_USERS:
@@ -141,10 +145,6 @@ export function getPath(request) {
             return '/api/v1/auth/audit/showself';
         case ADD_USER_ROLE:
             return '/api/v1/auth/role/adduser';
-        case CREATE_ORG:
-            return '/api/v1/auth/org/create';
-        case UPDATE_ORG:
-            return '/api/v1/auth/org/update';
         case SHOW_CLOUDLET:
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
@@ -200,10 +200,6 @@ export function getPath(request) {
         case RESET_PASSWORD_REQUEST:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
-        case CLOUDLET_METRICS_APP:
-        case CLUSTER_INST_METRICS_APP:
-        case APP_INST_METRICS_APP:
-            return '/api/v1/auth/metrics/app';
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:
@@ -277,6 +273,9 @@ export function formatData(request, response) {
             break;
         case APP_INST_METRICS_ENDPOINT:
             data = AppMetrics.getData(response, request.data)
+            break;
+        case CLIENT_METRICS_ENDPOINT:
+            data = ClientMetrics.getData(response, request.data)
             break;
         case CLUSTER_METRICS_ENDPOINT:
             data = ClusterMetrics.getData(response, request.data)

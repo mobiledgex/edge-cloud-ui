@@ -17,6 +17,6 @@ export const summaryList = [
 
 export const metricParentTypes = [
     { id: 'appinst', label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.DEVELOPER], fetchLocation:fetchLocation },
-    { id: 'cluster', label: 'Cluster Inst', showRequest: showClusterInsts, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
+    //{ id: 'cluster', label: 'Cluster Inst', showRequest: showClusterInsts, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
     { id: 'cloudlet', label: 'Cloudlet', showRequest: showCloudlets,request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
 ]

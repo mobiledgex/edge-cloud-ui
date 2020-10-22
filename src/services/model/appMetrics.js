@@ -46,22 +46,24 @@ export const appActions = [
     {label : 'Show Clients'}
 ]
 
-export const fetchLocation = (metricData, showList)=>{
+export const fetchLocation = (avgValues, metricData, showList)=>{
     for(let i=0;i<showList.length;i++)
     {
         let show = showList[i]
         let valid = metricData.includes(show[fields.region]) && 
                     metricData.includes(show[fields.appName].toLowerCase()) && 
-                    metricData.includes(show[fields.organizationName]) && 
-                    metricData.includes(show[fields.clusterName]) && 
-                    metricData.includes(show[fields.clusterdeveloper]) && 
-                    metricData.includes(show[fields.cloudletName]) && 
-                    metricData.includes(show[fields.operatorName])
-        if(valid)
-        {
-            return show
+            metricData.includes(show[fields.organizationName]) &&
+            metricData.includes(show[fields.clusterName]) &&
+            metricData.includes(show[fields.clusterdeveloper]) &&
+            metricData.includes(show[fields.cloudletName]) &&
+            metricData.includes(show[fields.operatorName])
+        if (valid) {
+            avgValues['location'] = show[fields.cloudletLocation]
+            avgValues[fields.healthCheck] = show[fields.healthCheck]
+            avgValues['showData'] = show
         }
     }
+    return avgValues
 }
 
 export const appInstMetrics = (data) => {

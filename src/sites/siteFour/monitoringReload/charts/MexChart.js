@@ -24,18 +24,14 @@ class MexChart extends React.Component {
                             let chartDataRegion = chartData[region]
                             let avgDataRegion = avgData[region] ? avgData[region] : {}
                             return (
-                                <Grid item xs={xs ? 6 : 12} key={region}>
-                                    <Grid container spacing={1}>
-                                        {Object.keys(chartDataRegion).map(key => {
+                                        Object.keys(chartDataRegion).map(key => {
                                             return filter.metricType.includes(chartDataRegion[key].metric.field) ?
-                                                <Grid key={key} item xs={xs ? 12 : 6}>
+                                                <Grid key={key} item xs={4} sm={4} md={6} lg={4} xl={3}>
                                                     <Card style={{ padding: 10, height: '100%' }}>
                                                         <LineChart id={key} data={chartDataRegion[key]} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} />
                                                     </Card>
                                                 </Grid> : null
-                                        })}
-                                    </Grid>
-                                </Grid>
+                                        })
                             )
                         }
                     })}

@@ -55,7 +55,8 @@ const optionsGenerator = (header, unit) => {
                 ticks: {
                     callback: (label, index, labels) => {
                         return unit ? unit(label) : label
-                    }
+                    },
+                    maxTicksLimit: 5
                 }
             }]
         },
@@ -172,7 +173,7 @@ class MexLineChart extends React.Component {
                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={320} redraw/>
+                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={210} redraw/>
                 </div>
             </div>
         )

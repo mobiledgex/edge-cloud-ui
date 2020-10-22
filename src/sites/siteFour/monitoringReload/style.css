@@ -56,7 +56,7 @@
 
 .mex-map{
     width:100%;
-    height: calc(30vh - 0px);
+    height: calc(37vh - 0px);
     border-radius: 3px;
 }
 
@@ -101,7 +101,7 @@
     height: calc(100vh - 330px);
     overflow: auto;
     overflow-x: hidden;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .grid-charts::-webkit-scrollbar { 
