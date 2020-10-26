@@ -43,7 +43,7 @@ const MexChartList = (props) => {
   }
 
   return (
-    <TableContainer component={Paper} style={{ height: 200, overflow: 'auto' }}>
+    <TableContainer component={Paper} style={{ height: 170, overflow: 'auto' }}>
       <Table aria-label="mex chart list" stickyHeader size={'small'}>
         <TableHead>
           <TableRow>

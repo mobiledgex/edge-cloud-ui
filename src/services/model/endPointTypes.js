@@ -104,6 +104,8 @@ export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
 export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
+export const EVENTS_FIND = 'events/find'
+export const EVENTS_SHOW = 'events/show'
 
 export function getPath(request) {
     switch (request.method) {
@@ -114,6 +116,8 @@ export function getPath(request) {
         case CLUSTER_EVENT_LOG_ENDPOINT:
         case APP_INST_EVENT_LOG_ENDPOINT:
         case CLIENT_METRICS_ENDPOINT:
+        case EVENTS_FIND:
+        case EVENTS_SHOW:    
             return `/api/v1/auth/${request.method}`
         case SHOW_ORG:
             return '/api/v1/auth/org/show';

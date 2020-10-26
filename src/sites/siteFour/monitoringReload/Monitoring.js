@@ -15,6 +15,7 @@ import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import cloneDeep from 'lodash/cloneDeep'
 import './style.css'
+import { DEVELOPER } from '../../../constant'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -98,13 +99,6 @@ class Monitoring extends React.Component {
             let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
             let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
 
-            let avgKey = ''
-            data.columns.map((column, i) => {
-                if (i !== 0) {
-                    avgKey += i === 1 ? value[i] : `_${value[i]}`
-                }
-            })
-
             let avgValues = avgDataObject[key]
 
             if (avgValues === undefined) {
@@ -115,6 +109,14 @@ class Monitoring extends React.Component {
                 avgValues['color'] = randomColor({
                     count: 1,
                 })[0]
+
+                if(getUserRole().includes(DEVELOPER))
+                {
+                    if(key.includes('envoy'))
+                    {
+                        avgValues['disabled'] = true
+                    }
+                }
                 avgValues['selected'] = false
                 if (parent.fetchLocation) {
                     avgValues = parent.fetchLocation(avgValues, value, showList)

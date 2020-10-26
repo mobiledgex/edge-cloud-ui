@@ -2,14 +2,14 @@ import React from 'react'
 import MexMap from '../../mexmap/AppMexMap'
 import MexChart from '../../charts/MexChart'
 import { Card, Grid } from '@material-ui/core'
-import MexPieChart from '../../charts/linechart/MexPieChart'
 import {clientMetrics} from '../../../../../services/model/clientMetrics'
 import * as serverData from '../../../../../services/model/serverData'
 import { fields } from '../../../../../services/model/format'
 import { OFFLINE, ONLINE } from '../../../../../constant';
 import isEqual from 'lodash/isEqual'
 import * as dateUtil from '../../../../../utils/date_util'
-
+import HorizontalBar from '../../charts/horizontalBar.js/MexHorizontalBar'
+import EventList from '../../list/EventList'
 const healthDataStructure = () => {
     let healthData = {}
     healthData[ONLINE] = { value: 0, color: '#66BB6A' }
@@ -22,7 +22,8 @@ class AppMonitoring extends React.Component {
         super()
         this.state = {
             mapData: {},
-            healthData: {}
+            stackedData : [],
+            healthData: {},
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
@@ -65,29 +66,23 @@ class AppMonitoring extends React.Component {
     }
 
     render() {
-        const { mapData, healthData } = this.state
+        const { mapData, stackedData } = this.state
         const { chartData, avgData, filter } = this.props
         return (
             filter.parent.id === 'appinst' ?
                 <div className='grid-charts'>
                     <Grid container spacing={1}>
-                        <Grid item xs={3} container>
-                            <Grid item xs={12} style={{ paddingBottom: 5 }}>
-                                <Card style={{ height: '100%', paddingTop: 10 }}>
-                                    <MexPieChart header='Health Status' chartData={healthData} />
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12} style={{ paddingTop: 5 }}>
-                                <Card style={{ height: '100%', paddingTop: 10 }}>
-                                </Card>
-                            </Grid>
+                    <Grid item xs={3}>
+                            <Card style={{ height: '100%', width: '100%' }}>
+                                {stackedData.length > 0 ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter} /> : null}
+                            </Card>
                         </Grid>
                         <Grid item xs={6}>
                             <MexMap data={mapData} mapClick={this.mapClick} />
                         </Grid>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-
+                                <EventList/>
                             </Card>
                         </Grid>
                     </Grid>
@@ -110,7 +105,35 @@ class AppMonitoring extends React.Component {
         let mc = await serverData.sendRequest(this, clientMetrics({region:'EU', selector: "api",
         starttime: range.starttime,
         endtime: range.endtime}))
-        console.log('Rahul1234', mc)
+       if(mc && mc.response && mc.response.data)
+       {
+           let findCloudletList = []
+           let registerClientList = []
+           let verifyLocationList = []
+           let labelList = []
+           let dataList= mc.response.data
+           dataList.map(clientData=>{
+            let dataObject = clientData['dme-api'].values
+            Object.keys(dataObject).map(key=>{
+                let findCloudlet = 0
+                let registerClient = 0
+                let verifyLocation = 0
+                dataObject[key].map(data=>{
+                    findCloudlet += data.includes('FindCloudlet') ? 1 : 0
+                    registerClient += data.includes('RegisterClient') ? 1 : 0
+                    verifyLocation += data.includes('VerifyLocation') ? 1 : 0
+                })
+                findCloudletList.push(findCloudlet)
+                registerClientList.push(registerClient)
+                verifyLocationList.push(verifyLocation)
+                labelList.push(`${dataObject[key][0][7]} [${dataObject[key][0][18]}]`)
+            })
+           })
+           let data = [{key:'labels', value:labelList},{key :'Find Cloudlet', value:findCloudletList, color:'#80C684'},{key :'Register Client', value:registerClientList, color:'#4693BC'},{key :'Verify Location', value:verifyLocationList, color:'#FD8D3C'}]
+           
+           this.setState({stackedData : data})
+           
+       }
     }
 
     componentDidMount (){

@@ -25,7 +25,7 @@ class MexChart extends React.Component {
                             let avgDataRegion = avgData[region] ? avgData[region] : {}
                             return (
                                         Object.keys(chartDataRegion).map(key => {
-                                            return filter.metricType.includes(chartDataRegion[key].metric.field) ?
+                                            return chartDataRegion[key].values && filter.metricType.includes(chartDataRegion[key].metric.field) ?
                                                 <Grid key={key} item xs={4} sm={4} md={6} lg={4} xl={3}>
                                                     <Card style={{ padding: 10, height: '100%' }}>
                                                         <LineChart id={key} data={chartDataRegion[key]} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} />

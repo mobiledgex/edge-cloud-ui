@@ -39,7 +39,6 @@ export const clientMetrics = (data) => {
 }
 
 export const getData = (response, body) => {
-    console.log('Rahul1234', response)
     return formatter.formatEventData(response, body, clientMetricsKeys)
 }
 

@@ -19,8 +19,8 @@ export const appMetricsKeys = [
 
 export const appMetricsListKeys = [
     { field: 'region', label: 'Region', sortable: true, visible: true},
-    { field: 'app', label: 'App', sortable: true, visible: true },
-    { field: 'ver', label: 'Version', sortable: true, visible: true },
+    { field: 'app', label: 'App', sortable: true, visible: false },
+    { field: 'ver', label: 'Version', sortable: true, visible: false },
     { field: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true },
     { field: 'cloudletorg', label: 'Operator', sortable: true, visible: true },
     { field: 'cluster', label: 'Cluster', sortable: true, visible: true },

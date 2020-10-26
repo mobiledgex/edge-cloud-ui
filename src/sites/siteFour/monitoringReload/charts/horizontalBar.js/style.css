@@ -1,0 +1,8 @@
+.horizontal-chart{
+    width : 300px;
+    position: relative;
+}
+
+.horizontal-legend{
+    margin-bottom: 10px;
+}

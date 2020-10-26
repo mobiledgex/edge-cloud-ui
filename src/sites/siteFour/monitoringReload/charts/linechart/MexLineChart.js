@@ -8,7 +8,7 @@ const optionsGenerator = (header, unit) => {
         stacked: true,
         bezierCurve: true,
         animation: {
-            duration: 0
+            duration: 1
         },
         datasetStrokeWidth: 1,
         pointDotStrokeWidth: 2,
@@ -125,7 +125,8 @@ class MexLineChart extends React.Component {
                     let valueData = values[key]
                     let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
                     let selected = avgDataRegion[key] ? avgDataRegion[key].selected : false
-                    let data = key.includes(this.props.globalFilter.search) && selectedCount === 0 || selected ? valueData.map(value => {
+                    let disabled = avgDataRegion[key] && avgDataRegion[key].disabled ? avgDataRegion[key].disabled : false
+                    let data = !disabled && key.includes(this.props.globalFilter.search) && selectedCount === 0 || selected ? valueData.map(value => {
                         return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
                     }) : []
                     return {
@@ -173,7 +174,7 @@ class MexLineChart extends React.Component {
                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={210} redraw/>
+                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={200} redraw/>
                 </div>
             </div>
         )

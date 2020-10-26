@@ -5,6 +5,7 @@ import store from './store';
 import {Provider} from 'react-redux';
 
 
+import 'chartjs-plugin-labels'
 ReactDOM.render(
     <Provider store={store} style={{width: '100%', height: '100%'}}>
         <App/>
