@@ -174,7 +174,7 @@ class MexLineChart extends React.Component {
                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={200} redraw/>
+                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={200}/>
                 </div>
             </div>
         )

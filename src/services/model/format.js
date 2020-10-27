@@ -296,7 +296,7 @@ export const groupByCompare = (dataList, columns, region) => {
 }
 
 export const formatEventData = (response, body, keys) => {
-    let formattedData = {}
+    let formattedData = []
     try {
         if (response && response.data && response.data.data) {
             let dataList = response.data.data;

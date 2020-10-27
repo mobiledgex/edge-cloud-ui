@@ -21,7 +21,7 @@ import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
 import * as AppInstClient from './appInstClient';
-
+import * as Events from './events';
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -289,6 +289,9 @@ export function formatData(request, response) {
             break;
         case SHOW_APP_INST_CLIENT:
             data = AppInstClient.getData(response, request.data)
+            break;
+        case EVENTS_SHOW:
+            data = Events.getData(response, request.data)
             break;
         default:
             data = undefined;

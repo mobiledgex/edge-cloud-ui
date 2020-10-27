@@ -18,19 +18,20 @@ const showDataLabel = (e) => {
             var data = dataset.data[index]
             if (data > 0) {
                 let x_postions = bar._model.x
-                if (data > 999) {
-                    x_postions = x_postions + 17
-                }
-                else if (data > 99) {
-                    x_postions = x_postions + 14
-                }
-                else if (data > 9) {
-                    x_postions = x_postions + 12
-                }
-                else {
-                    x_postions = x_postions + 7
-                }
-                ctx.fillText(data, x_postions, bar._model.y);
+                // if (data > 999) {
+                //     x_postions = x_postions + 17
+                // }
+                // else if (data > 99) {
+                //     x_postions = x_postions + 14
+                // }
+                // else if (data > 9) {
+                //     x_postions = x_postions + 12
+                // }
+                // else {
+                //     x_postions = x_postions + 7
+                // }
+                ctx.font = "bold 10pt Arial";
+                ctx.fillText(data, x_postions-10, bar._model.y);
             }
         });
     });
@@ -40,7 +41,7 @@ const optionsGenerator = () => {
         responsive: true,
         maintainAspectRatio: false,
         tooltips: {
-            enabled: false
+            enabled: true
         },
         legend: {
             display: false
@@ -99,13 +100,12 @@ class MexHorizontalBar extends React.Component {
     render() {
         const { chartData, header } = this.props
         return (
-            <div mex-test="component-pie-chart" style={{ padding: 5, width: '100%' }} >
-                <div align="left" style={{ marginBottom: 5 }}>
+            <div mex-test="component-pie-chart" className='horizontal-main' >
+                <div align="left" style={{ marginBottom: 10 }}>
                     <h3>{header}</h3>
                 </div>
-                <br />
-                <div style={{ height: 'calc(35vh - 0px)', overflow: 'auto', marginLeft: 10 }}>
-                    <div style={{ height: 80 * chartData[0].value.length }}>
+                <div style={{ height: 'calc(33vh - 0px)', overflow: 'auto' }}>
+                    <div style={{ height: 80 * chartData[0].value.length, width:'23vw'}}>
                         <HorizontalBar data={this.processData(chartData)} options={this.options} />
                     </div>
                 </div>

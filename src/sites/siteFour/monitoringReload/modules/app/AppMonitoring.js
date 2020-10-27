@@ -2,14 +2,17 @@ import React from 'react'
 import MexMap from '../../mexmap/AppMexMap'
 import MexChart from '../../charts/MexChart'
 import { Card, Grid } from '@material-ui/core'
-import {clientMetrics} from '../../../../../services/model/clientMetrics'
+import { clientMetrics } from '../../../../../services/model/clientMetrics'
+import { orgEvents } from '../../../../../services/model/events'
 import * as serverData from '../../../../../services/model/serverData'
-import { fields } from '../../../../../services/model/format'
+import { fields, getOrganization } from '../../../../../services/model/format'
 import { OFFLINE, ONLINE } from '../../../../../constant';
 import isEqual from 'lodash/isEqual'
 import * as dateUtil from '../../../../../utils/date_util'
 import HorizontalBar from '../../charts/horizontalBar.js/MexHorizontalBar'
 import EventList from '../../list/EventList'
+import cloneDeep from 'lodash/cloneDeep'
+
 const healthDataStructure = () => {
     let healthData = {}
     healthData[ONLINE] = { value: 0, color: '#66BB6A' }
@@ -22,8 +25,9 @@ class AppMonitoring extends React.Component {
         super()
         this.state = {
             mapData: {},
-            stackedData : [],
+            stackedData: [],
             healthData: {},
+            eventData:[]
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
@@ -66,13 +70,13 @@ class AppMonitoring extends React.Component {
     }
 
     render() {
-        const { mapData, stackedData } = this.state
+        const { mapData, stackedData, eventData } = this.state
         const { chartData, avgData, filter } = this.props
         return (
             filter.parent.id === 'appinst' ?
                 <div className='grid-charts'>
                     <Grid container spacing={1}>
-                    <Grid item xs={3}>
+                        <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
                                 {stackedData.length > 0 ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter} /> : null}
                             </Card>
@@ -82,8 +86,8 @@ class AppMonitoring extends React.Component {
                         </Grid>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-                                <EventList/>
-                            </Card>
+                                <EventList header='Events' eventData={eventData} avgData={avgData}/>
+                            </Card> 
                         </Grid>
                     </Grid>
                     <div style={{ marginBottom: 5 }}></div>
@@ -100,44 +104,88 @@ class AppMonitoring extends React.Component {
         return { starttime, endtime }
     }
 
-    client = async ()=>{
-        let range = this.timeRangeInMin(40)
-        let mc = await serverData.sendRequest(this, clientMetrics({region:'EU', selector: "api",
-        starttime: range.starttime,
-        endtime: range.endtime}))
-       if(mc && mc.response && mc.response.data)
-       {
-           let findCloudletList = []
-           let registerClientList = []
-           let verifyLocationList = []
-           let labelList = []
-           let dataList= mc.response.data
-           dataList.map(clientData=>{
-            let dataObject = clientData['dme-api'].values
-            Object.keys(dataObject).map(key=>{
-                let findCloudlet = 0
-                let registerClient = 0
-                let verifyLocation = 0
-                dataObject[key].map(data=>{
-                    findCloudlet += data.includes('FindCloudlet') ? 1 : 0
-                    registerClient += data.includes('RegisterClient') ? 1 : 0
-                    verifyLocation += data.includes('VerifyLocation') ? 1 : 0
+    client = async (region, range) => {
+        let mc = await serverData.sendRequest(this, clientMetrics({ region: region, selector: "api",  }))
+        if (mc && mc.response && mc.response.data) {
+            let findCloudletList = []
+            let registerClientList = []
+            let verifyLocationList = []
+            let labelList = []
+            let dataList = mc.response.data
+            dataList && dataList.map(clientData => {
+                let dataObject = clientData['dme-api'].values
+                Object.keys(dataObject).map(key => {
+                    let findCloudlet = 0
+                    let registerClient = 0
+                    let verifyLocation = 0
+                    dataObject[key].map(data => {
+                        findCloudlet += data.includes('FindCloudlet') ? 1 : 0
+                        registerClient += data.includes('RegisterClient') ? 1 : 0
+                        verifyLocation += data.includes('VerifyLocation') ? 1 : 0
+                    })
+                    findCloudletList.push(findCloudlet)
+                    registerClientList.push(registerClient)
+                    verifyLocationList.push(verifyLocation)
+                    labelList.push(`${region} - ${dataObject[key][0][7]} [${dataObject[key][0][18]}]`)
                 })
-                findCloudletList.push(findCloudlet)
-                registerClientList.push(registerClient)
-                verifyLocationList.push(verifyLocation)
-                labelList.push(`${dataObject[key][0][7]} [${dataObject[key][0][18]}]`)
             })
-           })
-           let data = [{key:'labels', value:labelList},{key :'Find Cloudlet', value:findCloudletList, color:'#80C684'},{key :'Register Client', value:registerClientList, color:'#4693BC'},{key :'Verify Location', value:verifyLocationList, color:'#FD8D3C'}]
-           
-           this.setState({stackedData : data})
-           
-       }
+
+            let stackedData = cloneDeep(this.state.stackedData)
+            if(stackedData.length === 0)
+            {
+                stackedData = [{ key: 'labels', value: labelList }, { key: 'Find Cloudlet', value: findCloudletList, color: '#80C684' }, { key: 'Register Client', value: registerClientList, color: '#4693BC' }, { key: 'Verify Location', value: verifyLocationList, color: '#FD8D3C' }]   
+                console.log('Rahul1234', stackedData)
+            }
+            else
+            {
+                stackedData.map(data=>{
+                    if(data.key === 'labels')
+                    {
+                        data.value = [...data.value, ...labelList]
+                    }
+                    else if(data.key === 'Find Cloudlet')
+                    {
+                        data.value = [...data.value, ...findCloudletList]
+                    }
+                    else if(data.key === 'Register Client')
+                    {
+                        data.value = [...data.value, ...registerClientList]
+                    }
+                    else if(data.key === 'Verify Location')
+                    {
+                        data.value = [...data.value, ...verifyLocationList]
+                    }
+                })
+                console.log('Rahul1234', stackedData)
+            }
+            this.setState({ stackedData })
+        }
     }
 
-    componentDidMount (){
-        this.client()
+    event = async (range) => {
+        let mc = await serverData.sendRequest(this, orgEvents({
+            // starttime: range.starttime,
+            // endtime: range.endtime,
+            match: {
+                orgs: [getOrganization()],
+                types: ["event"],
+                tags: { app: "*" }
+            },
+            limit: 10
+        }))
+        if (mc && mc.response && mc.response.data) {
+            let dataList = mc.response.data
+            this.setState({ eventData: dataList })
+        }
+    }
+
+    componentDidMount() {
+
+        let range = this.timeRangeInMin(40)
+        this.regions.map(region=>{
+            this.client(region, range)
+        })
+        this.event(range)
     }
 
     componentDidUpdate(prevProps, prevState) {
