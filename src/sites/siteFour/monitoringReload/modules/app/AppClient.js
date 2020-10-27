@@ -27,7 +27,8 @@ class MexAppClient extends React.Component {
 
     render() {
         const {stackedData} = this.state
-        return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} /> : null
+        const {filter} = this.props
+        return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter}/> : null
     }
 
     client = async (region, range) => {

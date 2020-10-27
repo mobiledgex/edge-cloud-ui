@@ -75,7 +75,7 @@ class AppMonitoring extends React.Component {
                     <Grid container spacing={1}>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-                                <AppClient regions={this.regions}/>
+                                <AppClient regions={this.regions} filter={filter}/>
                             </Card>
                         </Grid>
                         <Grid item xs={6}>

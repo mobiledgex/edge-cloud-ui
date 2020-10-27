@@ -89,25 +89,28 @@ class MexHorizontalBar extends React.Component {
         this.maxValue = 0
     }
 
-    processData = (chartData) => {
+    processData = (chartData, filter) => {
         let datasets = []
         let labels = []
         Object.keys(chartData).map(region => {
-
-            let chartDataRegion = chartData[region]
-            chartDataRegion.map(data => {
-                labels.push(data.key)
-                keys.map(key => {
-                    let id = key.order
-                    if (datasets[id]) {
-                        datasets[id]['data'].push(data[key.id])
+            if (filter.region.includes(region)) {
+                let chartDataRegion = chartData[region]
+                chartDataRegion.map(data => {
+                    if (data.key.includes(filter.search)) {
+                        labels.push(data.key)
+                        keys.map(key => {
+                            let id = key.order
+                            if (datasets[id]) {
+                                datasets[id]['data'].push(data[key.id])
+                            }
+                            else {
+                                datasets[id] = { backgroundColor: key.color, label: key.label, data: [data[key.id]] }
+                            }
+                            this.maxValue = data[key.id] > this.maxValue ? data[key.id] : this.maxValue
+                        })
                     }
-                    else {
-                        datasets[id] = { backgroundColor: key.color, label: key.label, data: [data[key.id]]}
-                    }
-                    this.maxValue = data[key.id] > this.maxValue ? data[key.id] : this.maxValue
                 })
-            })
+            }
         })
         return { datasets, labels }
     }
@@ -123,22 +126,22 @@ class MexHorizontalBar extends React.Component {
     }
 
     render() {
-        const { chartData, header } = this.props
-        const processedData = this.processData(chartData)
+        const { chartData, header, filter } = this.props
+        const processedData = this.processData(chartData, filter)
         
         return (
             <div mex-test="component-pie-chart" className='horizontal-main' >
                 <div align="left" style={{ marginBottom: 10 }}>
                     <h3>{header}</h3>
                 </div>
-                <div style={{ height: 'calc(33vh - 0px)', overflow: 'auto', width: '23vw'  }}>
+                <div style={{ height: 'calc(32vh - 0px)', overflow: 'auto', width: '23vw'  }}>
                     <div style={{ height : this.chartHeight(processedData)}}>
                         <HorizontalBar data={processedData} options={optionsGenerator(this.maxValue)} redraw/>
                     </div>
                 </div>
                 <div align="center" className="horizontal-legend">
-                    {this.keys.map((key, i) => {
-                        return <span key={key} style={{ marginRight: 10, display: 'inline', fontSize: 12 }}><Icon name='circle' style={{ color: this.color[i] }} /> {key}</span>
+                    {keys.map((key, i) => {
+                        return <span key={i} style={{ marginRight: 10, display: 'inline', fontSize: 12 }}><Icon name='circle' style={{ color: key.color}} /> {key.label}</span>
                     })}
                 </div>
             </div>
