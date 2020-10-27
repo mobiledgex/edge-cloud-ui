@@ -4,8 +4,7 @@ import * as dateUtil from '../../../../utils/date_util'
 import './style.css'
 import { Icon } from 'semantic-ui-react';
 
-import randomColor from 'randomcolor'
-const lis = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+const filters = ['app', 'cluster', 'cloudlet', 'cloudletorg', 'clusterorg', 'apporg']
 class Events extends React.Component {
     constructor(props) {
         super(props)
@@ -28,8 +27,20 @@ class Events extends React.Component {
         this.setState(prevState => ({ expand: prevState.expand === id ? -1 : id }))
     }
 
+    
+    searchFilterValid = (mtags, filter)=>{
+        let search  = filter.search
+        let valid = []
+        filters.map(filter => {
+            if (mtags[filter]) {
+                valid.push(mtags[filter].toLowerCase().includes(search.toLowerCase()))
+            }
+        })
+        return valid.includes(true)
+    }
+
     render() {
-        const { header, eventData, avgData } = this.props
+        const { header, eventData, filter, colors} = this.props
         const { expand } = this.state
         return (
             <div className="event-list-main">
@@ -41,10 +52,10 @@ class Events extends React.Component {
                         {eventData.map((data, i) => {
                             let mtags = data['mtags']
                             return (
-                                <React.Fragment key={i}>
+                                this.searchFilterValid(mtags, filter) ? <React.Fragment key={i}>
                                     <ListItem key={i} onClick={() => this.expandMenu(i)}>
                                         <ListItemIcon>
-                                            <div style={{width:30,height:30, borderRadius:50, backgroundColor:randomColor({count: 1,})[0], color:'white', textAlign:'center', padding:6, fontWeight:900}}><b>{data['name'].charAt(0).toUpperCase()}</b></div>
+                                            <div style={{ width: 30, height: 30, borderRadius: 50, backgroundColor: colors[i], color: 'white', textAlign: 'center', padding: 6, fontWeight: 900 }}><b>{data['name'].charAt(0).toUpperCase()}</b></div>
                                         </ListItemIcon>
                                         <ListItemText id="switch-list-label-wifi" secondary={`${mtags['app']} [${mtags['appver']}]`} primary={data['name']} />
                                         <ListItemSecondaryAction>
@@ -53,7 +64,7 @@ class Events extends React.Component {
                                         </ListItemSecondaryAction>
                                     </ListItem>
                                     <Collapse in={expand === i} timeout="auto" unmountOnExit>
-                                        <List component="div" style={{marginLeft:0}}>
+                                        <List component="div" style={{ marginLeft: 0 }}>
                                             <ListItem><ListItemText primary={`Hostname: ${mtags['hostname']}`} /></ListItem>
                                             <ListItem><ListItemText primary={`Line no: ${mtags['lineno']}`} /></ListItem>
                                             <ListItem> <ListItemText primary={`Span ID: ${mtags['spanid']}`} /></ListItem>
@@ -62,9 +73,9 @@ class Events extends React.Component {
                                         </List>
                                     </Collapse>
                                     <Divider component="li" />
-                                </React.Fragment>)
+                                </React.Fragment> : null)
                         })}
-                   </List>
+                    </List>
                 </div>
             </div>
         )

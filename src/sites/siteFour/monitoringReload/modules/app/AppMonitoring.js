@@ -68,14 +68,14 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData, eventData } = this.state
-        const { chartData, avgData, filter } = this.props
+        const { chartData, avgData, filter, range } = this.props
         return (
             filter.parent.id === 'appinst' ?
                 <div className='grid-charts'>
                     <Grid container spacing={1}>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-                                <AppClient regions={this.regions} filter={filter}/>
+                                <AppClient regions={this.regions} filter={filter} range={range}/>
                             </Card>
                         </Grid>
                         <Grid item xs={6}>
@@ -83,7 +83,7 @@ class AppMonitoring extends React.Component {
                         </Grid>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-                                <AppEvent regions={this.regions}/>
+                                <AppEvent regions={this.regions}  filter={filter} range={range}/>
                             </Card> 
                         </Grid>
                     </Grid>
@@ -91,14 +91,6 @@ class AppMonitoring extends React.Component {
                     <MexChart chartData={chartData} avgData={avgData} filter={filter} />
                 </div> : null
         )
-    }
-
-    timeRangeInMin = (range) => {
-        let endtime = dateUtil.currentUTCTime()
-        let starttime = dateUtil.subtractMins(range, endtime).valueOf()
-        starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
-        endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-        return { starttime, endtime }
     }
 
     componentDidUpdate(prevProps, prevState) {

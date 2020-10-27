@@ -32,10 +32,11 @@ class MexAppClient extends React.Component {
     }
 
     client = async (region, range) => {
-        // starttime: range.starttime,
-        // endtime: range.endtime
         let mc = await serverData.sendRequest(this, clientMetrics({
-            region: region, selector: "api",
+            region: region, 
+            selector: "api",
+            starttime: range.starttime,
+            endtime: range.endtime
         }))
         if (mc && mc.response && mc.response.data) {
             let data = []
@@ -72,7 +73,7 @@ class MexAppClient extends React.Component {
 
     componentDidMount() {
         this.regions.map(region => {
-            this.client(region)
+            this.client(region, this.props.range)
         })
     }
 }

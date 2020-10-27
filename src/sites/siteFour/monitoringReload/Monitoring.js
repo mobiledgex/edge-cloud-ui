@@ -20,6 +20,15 @@ import { DEVELOPER } from '../../../constant'
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
 }
+
+const timeRangeInMin = (range) => {
+    let endtime = dateUtil.currentUTCTime()
+    let starttime = dateUtil.subtractMins(range, endtime).valueOf()
+    starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+    endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+    return { starttime, endtime }
+}
+
 class Monitoring extends React.Component {
     constructor(props) {
         super(props)
@@ -32,6 +41,7 @@ class Monitoring extends React.Component {
             rowSelected: undefined,
             filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(defaultMetricParentTypes.metricTypeKeys), summary: summaryList[0], parent: defaultMetricParentTypes }
         }
+        this.range = timeRangeInMin(40)
         this.requestCount = 0
     }
 
@@ -67,7 +77,7 @@ class Monitoring extends React.Component {
                     <MonitoringToolbar regions={this.regions} metricTypeKeys={filter.parent.metricTypeKeys} onUpdateFilter={this.onToolbar} />
                     <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} />
                 </Card>
-                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} row={rowSelected} />
+                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} row={rowSelected} range={this.range}/>
                 <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} />
                 <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} />
             </div>
@@ -77,14 +87,6 @@ class Monitoring extends React.Component {
 
     metricKeyGenerator = (parentTypeId, region, metric) => {
         return `${parentTypeId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
-    }
-
-    timeRangeInMin = (range) => {
-        let endtime = dateUtil.currentUTCTime()
-        let starttime = dateUtil.subtractMins(range, endtime).valueOf()
-        starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
-        endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-        return { starttime, endtime }
     }
 
     avgCalculator = async (avgData, parent, data, region, metric, showList) => {
@@ -198,7 +200,6 @@ class Monitoring extends React.Component {
                 })
             }
         })
-        let range = this.timeRangeInMin(40)
 
         if (this.regions && this.regions.length > 0) {
             metricParentTypes.map(parent => {
@@ -208,8 +209,8 @@ class Monitoring extends React.Component {
                             if (metric.serverRequest) {
                                 let data = {}
                                 data[fields.region] = region
-                                data[fields.starttime] = range.starttime
-                                data[fields.endtime] = range.endtime
+                                data[fields.starttime] = this.range.starttime
+                                data[fields.endtime] = this.range.endtime
                                 data[fields.selector] = '*'
                                 this.serverRequest(parent, metric.serverField, [parent.request(data), parent.showRequest({ region: region })], region)
                             }
