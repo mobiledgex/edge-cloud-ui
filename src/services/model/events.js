@@ -6,5 +6,5 @@ export const orgEvents = (data) => {
 }
 
 export const getData = (response, body) => {
-    return response
+    return response && response.data ? response.data : []
 }

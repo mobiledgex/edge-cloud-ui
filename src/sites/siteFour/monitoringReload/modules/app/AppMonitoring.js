@@ -134,7 +134,6 @@ class AppMonitoring extends React.Component {
             if(stackedData.length === 0)
             {
                 stackedData = [{ key: 'labels', value: labelList }, { key: 'Find Cloudlet', value: findCloudletList, color: '#80C684' }, { key: 'Register Client', value: registerClientList, color: '#4693BC' }, { key: 'Verify Location', value: verifyLocationList, color: '#FD8D3C' }]   
-                console.log('Rahul1234', stackedData)
             }
             else
             {
@@ -156,7 +155,6 @@ class AppMonitoring extends React.Component {
                         data.value = [...data.value, ...verifyLocationList]
                     }
                 })
-                console.log('Rahul1234', stackedData)
             }
             this.setState({ stackedData })
         }
@@ -174,6 +172,7 @@ class AppMonitoring extends React.Component {
             limit: 10
         }))
         if (mc && mc.response && mc.response.data) {
+            console.log('Rahul1234', mc)
             let dataList = mc.response.data
             this.setState({ eventData: dataList })
         }

@@ -291,6 +291,7 @@ export function formatData(request, response) {
             data = AppInstClient.getData(response, request.data)
             break;
         case EVENTS_SHOW:
+        case EVENTS_FIND:
             data = Events.getData(response, request.data)
             break;
         default:
