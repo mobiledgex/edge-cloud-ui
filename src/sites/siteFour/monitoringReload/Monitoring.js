@@ -38,7 +38,7 @@ class Monitoring extends React.Component {
             loading: false,
             chartData: {},
             avgData: {},
-            rowSelected: undefined,
+            rowSelected: 0,
             filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(defaultMetricParentTypes.metricTypeKeys), summary: summaryList[0], parent: defaultMetricParentTypes }
         }
         this.range = timeRangeInMin(40)
@@ -52,8 +52,10 @@ class Monitoring extends React.Component {
 
     onCellClick = (region, value, key) => {
         let avgData = this.state.avgData
+        let rowSelected = this.state.rowSelected
         avgData[this.state.filter.parent.id][region][key]['selected'] = !value['selected']
-        this.setState({ avgData })
+        rowSelected = avgData[this.state.filter.parent.id][region][key]['selected'] ? rowSelected + 1 : rowSelected - 1
+        this.setState({ avgData, rowSelected })
     }
 
     onToolbar = (filter) => {
@@ -77,9 +79,9 @@ class Monitoring extends React.Component {
                     <MonitoringToolbar regions={this.regions} metricTypeKeys={filter.parent.metricTypeKeys} onUpdateFilter={this.onToolbar} />
                     <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} />
                 </Card>
-                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} row={rowSelected} range={this.range}/>
-                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} />
-                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} />
+                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={this.range} />
+                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={this.range} />
+                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={this.range} />
             </div>
 
         )

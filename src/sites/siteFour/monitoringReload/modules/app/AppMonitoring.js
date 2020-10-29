@@ -68,7 +68,7 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData, eventData } = this.state
-        const { chartData, avgData, filter, range } = this.props
+        const { chartData, avgData, filter, range, rowSelected } = this.props
         return (
             filter.parent.id === 'appinst' ?
                 <div className='grid-charts'>
@@ -88,7 +88,7 @@ class AppMonitoring extends React.Component {
                         </Grid>
                     </Grid>
                     <div style={{ marginBottom: 5 }}></div>
-                    <MexChart chartData={chartData} avgData={avgData} filter={filter} />
+                    <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected}/>
                 </div> : null
         )
     }

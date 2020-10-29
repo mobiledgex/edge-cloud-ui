@@ -66,11 +66,9 @@ const MexToolbar = (props) => {
     /*Search Block*/
     const handleSearch = (e) => {
         let value = e ? e.target.value : ''
-        setFilter(filter => {
-            filter.search = value
-            props.onUpdateFilter(filter)
-            return filter
-        })
+        filter.search = value
+        setFilter(filter)
+        props.onUpdateFilter(filter)
     }
 
     const searchForm = (order) => (

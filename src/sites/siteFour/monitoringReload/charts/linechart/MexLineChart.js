@@ -26,6 +26,11 @@ const optionsGenerator = (header, unit) => {
                 tension: 0 // disables bezier curves
             }
         },
+        animation: {
+            onComplete() {
+                this.options.animation.onComplete = null
+            }
+        },
         scales: {
             xAxes: [{
                 type: "time",
@@ -62,8 +67,8 @@ const optionsGenerator = (header, unit) => {
         },
         tooltips: {
             callbacks: {
-                label: function(tooltipItem, data) {
-                    var label = data.datasets[tooltipItem.datasetIndex].label 
+                label: function (tooltipItem, data) {
+                    var label = data.datasets[tooltipItem.datasetIndex].label
                     let value = unit ? unit(tooltipItem.yLabel) : tooltipItem.yLabel
                     return `${label} : ${value}`
                 }
@@ -72,11 +77,11 @@ const optionsGenerator = (header, unit) => {
     }
 }
 class MexLineChart extends React.Component {
-    
+
     constructor(props) {
         super(props)
         this.state = {
-            chartData : {}
+            chartData: {},
         }
         this.metric = props.data.metric
         this.header = this.metric ? this.metric.header : ''
@@ -106,52 +111,42 @@ class MexLineChart extends React.Component {
         return metricLabel
     }
 
-    formatData = (chartData) => {
+    formatData = (chartData, avgDataRegion, globalFilter, rowSelected) => {
         let datasets = []
         const values = chartData ? chartData.values : {}
-        let selectedCount = 0
-        let avgDataRegion = this.props.avgDataRegion
-        
-        let avgDataRegionKeys = Object.keys(avgDataRegion)
-        avgDataRegionKeys.map((key)=>{
-            if(avgDataRegion[key].selected)
-            {
-                selectedCount += 1
+        let keys = Object.keys(values)
+        let length = keys.length
+        for (let i = 0; i < length; i++) {
+            let key = keys[i]
+            let valueData = values[key]
+            if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
+                let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
+                let data = valueData.map(value => {
+                    return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
+                })
+                datasets.push({
+                    label: valueData[0][2],
+                    fill: false,
+                    lineTension: 0.5,
+                    backgroundColor: color,
+                    borderColor: color,
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderWidth: 2,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: color,
+                    pointBackgroundColor: color,
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: color,
+                    pointHoverBorderColor: color,
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: data
+                })
             }
-        })
-        if (values && avgDataRegionKeys.length > 0) {
-            let keys = Object.keys(values)
-            datasets = keys.map((key, i) => {
-                    let valueData = values[key]
-                    let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
-                    let selected = avgDataRegion[key] ? avgDataRegion[key].selected : false
-                    let disabled = avgDataRegion[key] && avgDataRegion[key].disabled ? avgDataRegion[key].disabled : false
-                    let data = !disabled && key.includes(this.props.globalFilter.search) && selectedCount === 0 || selected ? valueData.map(value => {
-                        return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
-                    }) : []
-                    return {
-                        label: valueData[0][2],
-                        fill: false,
-                        lineTension: 0.5,
-                        backgroundColor: color,
-                        borderColor: color,
-                        borderCapStyle: 'butt',
-                        borderDash: [],
-                        borderDashOffset: 0.0,
-                        borderWidth : 2,
-                        borderJoinStyle: 'miter',
-                        pointBorderColor: color,
-                        pointBackgroundColor: color,
-                        pointBorderWidth: 1,
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: color,
-                        pointHoverBorderColor: color,
-                        pointHoverBorderWidth: 2,
-                        pointRadius: 1,
-                        pointHitRadius: 10,
-                        data: data
-                    }
-            })
         }
         return datasets
     }
@@ -159,22 +154,22 @@ class MexLineChart extends React.Component {
     static getDerivedStateFromProps(props, state) {
         let propsValues = props.data.values
         let stateValues = state.chartData.values
-        if(propsValues && !isEqual(stateValues, propsValues))
-        {
-            return { chartData : props.data}
+        if (propsValues && !isEqual(stateValues, propsValues)) {
+            return { chartData: props.data }
         }
         return null
     }
 
     render() {
-        const { chartData } = this.state
+        const { chartData, load } = this.state
+        const { avgDataRegion, rowSelected, globalFilter, id } = this.props
         return (
             <div mex-test="component-line-chart">
                 <div align="center">
                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line options={this.options} data={{ datasets : this.formatData(chartData) }} height={200}/>
+                    <Line datasetKeyProvider={()=>{return id}} options={this.options} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
                 </div>
             </div>
         )

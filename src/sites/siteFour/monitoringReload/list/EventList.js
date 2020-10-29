@@ -1,8 +1,9 @@
 import React from 'react'
-import {  Collapse, Divider, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Typography } from '@material-ui/core'
+import {  Collapse, Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import * as dateUtil from '../../../../utils/date_util'
 import './style.css'
-import { Icon } from 'semantic-ui-react';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const filters = ['app', 'cluster', 'cloudlet', 'cloudletorg', 'clusterorg', 'apporg']
 class Events extends React.Component {
@@ -51,20 +52,28 @@ class Events extends React.Component {
                     <List dense={false} >
                         {eventData.map((data, i) => {
                             let mtags = data['mtags']
+                            let cluster = mtags['cluster']
+                            let cloudlet = mtags['cloudlet']
+                            let cloudletorg = mtags['cloudletorg']
                             return (
                                 this.searchFilterValid(mtags, filter) ? <React.Fragment key={i}>
                                     <ListItem key={i} onClick={() => this.expandMenu(i)}>
                                         <ListItemIcon>
                                             <div style={{ width: 30, height: 30, borderRadius: 50, backgroundColor: colors[i], color: 'white', textAlign: 'center', padding: 6, fontWeight: 900 }}><b>{data['name'].charAt(0).toUpperCase()}</b></div>
                                         </ListItemIcon>
-                                        <ListItemText id="switch-list-label-wifi" secondary={`${mtags['app']} [${mtags['appver']}]`} primary={data['name']} />
-                                        <ListItemSecondaryAction>
-                                            <code style={{ marginRight: 15, marginBottom: 15 }}>{dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data['timestamp'])}</code>
-                                            <Icon name={expand === i ? "chevron down" : "chevron up"} />
-                                        </ListItemSecondaryAction>
+                                        <ListItemText id="switch-list-label-wifi" primary={data['name']} secondary={
+                                            <React.Fragment>
+                                                {`${mtags['app']} [${mtags['appver']}]`}
+                                                {cluster ? <code style={{color:'#74B724'}}><br/>{`${cluster}`}</code> : null}
+                                                <br/>
+                                                {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data['timestamp'])}
+                                            </React.Fragment>}  />
+                                        {expand === i ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
                                     </ListItem>
                                     <Collapse in={expand === i} timeout="auto" unmountOnExit>
-                                        <List component="div" style={{ marginLeft: 0 }}>
+                                        <List component="div" style={{ marginLeft: 0 }} dense={true}>
+                                            {cloudlet ? <ListItem><ListItemText primary={`Cloudlet: ${cloudlet}`} /></ListItem> :null}
+                                            <ListItem><ListItemText primary={`Cloudlet: ${cloudletorg}`} /></ListItem>
                                             <ListItem><ListItemText primary={`Hostname: ${mtags['hostname']}`} /></ListItem>
                                             <ListItem><ListItemText primary={`Line no: ${mtags['lineno']}`} /></ListItem>
                                             <ListItem> <ListItemText primary={`Span ID: ${mtags['spanid']}`} /></ListItem>
