@@ -2,6 +2,7 @@ import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
 import isEqual from 'lodash/isEqual';
+import uuid from 'uuid'
 
 const optionsGenerator = (header, unit) => {
     return {
@@ -161,7 +162,7 @@ class MexLineChart extends React.Component {
     }
 
     render() {
-        const { chartData, load } = this.state
+        const { chartData } = this.state
         const { avgDataRegion, rowSelected, globalFilter, id } = this.props
         return (
             <div mex-test="component-line-chart">
@@ -169,7 +170,7 @@ class MexLineChart extends React.Component {
                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>
                 </div>
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line datasetKeyProvider={()=>{return id}} options={this.options} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
+                    <Line datasetKeyProvider={()=>(uuid())} options={this.options} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
                 </div>
             </div>
         )
