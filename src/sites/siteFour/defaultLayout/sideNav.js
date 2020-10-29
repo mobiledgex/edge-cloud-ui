@@ -47,7 +47,7 @@ import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
 import PageMonitoringMain from '../monitoring/common/PageMonitoringMain';
-
+import Monitoring from '../monitoringReload/Monitoring';
 import { Collapse, Tooltip } from '@material-ui/core';
 import { Image } from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
@@ -153,7 +153,8 @@ export default function MiniDrawer(props) {
                 { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: ['AdminManager', 'DeveloperManager'] },
             ]
         },
-        { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] }
+        { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+        { label: 'Reload', icon: <TvOutlinedIcon />, pg: 'Reload', pageId: constant.PAGE_MONITORING_RELOAD, page: <Monitoring />, roles: [constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] }
     ]
 
     const classes = useStyles();

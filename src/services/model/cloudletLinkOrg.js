@@ -33,6 +33,7 @@ export const deleteLinkPoolOrg = (data) => {
 }
 
 const customData = (value) => {
+    return value
 }
 
 export const getData = (response, body) => {

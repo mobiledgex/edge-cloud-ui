@@ -66,6 +66,7 @@ export const deleteOrganization = (data) => {
 
 const customData = (value) => {
     value[fields.publicImages] = value[fields.publicImages] ? constant.YES : constant.NO
+    return value
 }
 
 export const getData = (response, body) => {

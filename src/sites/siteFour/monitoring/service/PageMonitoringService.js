@@ -442,7 +442,6 @@ export const makeLineChartData = (hardwareUsageList: Array, hardwareType: string
                 } else if (_this.state.currentClassification.toLowerCase().includes(CLASSIFICATION.APPINST.toLowerCase())) {
                     classificationName = item.instance.AppName
                 }
-
                 let usageList = [];
                 for (let j in series) {
                     let usageOne = series[j][hardWareUsageIndex];
@@ -1183,7 +1182,6 @@ export const reduceString = (str: string, lengthLimit: number, legendItemCount) 
  */
 export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDateTimeList, _this: PageMonitoringView, isGradientColor = false, hwType, isOnlyOneData = false, colorCodeIndexList) => {
     try {
-
         const lineChartData = (canvas) => {
             let gradientList = makeGradientColorList(canvas, 250, _this.state.chartColorList);
             let finalSeriesDataSets = [];
@@ -1214,7 +1212,6 @@ export const makeGradientLineChartData = (levelTypeNameList, usageSetList, newDa
                 };
                 finalSeriesDataSets.push(datasetsOne)
             }
-
 
             let chartDataSet = {
                 labels: newDateTimeList,

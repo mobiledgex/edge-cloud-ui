@@ -1,0 +1,170 @@
+.monitoring-header {
+    padding: 10px 0px 0px 0px;
+    width: 100%;
+    font-size:25px;
+    margin-bottom: 5px;
+    height: 50px;
+}
+
+.mex-monitoring-header-label {
+    width: 100%;
+}
+
+.monitoring-content {
+    width: 100%;
+    padding: 0px 15px 0px 15px;
+    height: calc(100vh - 119px);
+    overflow: auto;
+}
+
+.mex-monitoring-select-container {
+    color:rgba(255, 255, 255, 0.85);
+    margin-right: 0px;
+    display: inline-block; 
+}
+
+.mex-monitoring-select{
+    height: 20px;
+    overflow:visible;
+    z-index: 999 !important;
+}
+
+.montoring-manual-scroll{
+    position: absolute;
+    cursor: pointer;
+    right : 10px;
+    bottom: 20px;
+    height: 50px;
+    width: 50px;
+    margin: auto;
+    padding: 15px;
+    background-color: #3B3F47;
+    border-radius: 50px;
+}
+
+.mex-monitoring-time-range-input {
+    width:50px;
+    border:solid 1px rgba(255,255,255,.2);
+    border-radius:.28571429rem;
+    background-color:black;
+    color: rgba(255,255,255,.6) !important;
+}
+
+.mex-monitoring-time-range-input:hover {
+    border:solid 1px rgba(255,255,255,.4);
+}
+
+.mex-map{
+    width:100%;
+    min-height: 40vh;
+    height: 100%;
+    border-radius: 3px;
+}
+
+.map-control {
+    background-color: rgba(128,128,128,.3);
+    border-radius: 3px;
+    width: 30px;
+    height: 'auto';
+}
+
+.map-control-div {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 4px;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    flex-direction: column;
+}
+
+.map-control-div-icon {
+    font-size: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+
+.map-control-div-marker-popup .leaflet-popup-content-wrapper {
+    overflow: auto;
+    height: 100px;
+    background-color: #292c33;
+    border-style: none;
+}
+
+.map-control-div-marker-popup-label {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.grid-charts {
+    height: calc(100vh - 300px);
+    overflow: auto;
+    overflow-x: hidden;
+    margin-top: 10px;
+}
+
+.grid-charts::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.grid-charts{
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+  }
+
+.grid-charts-header{
+    height: 100%;
+}
+
+
+.grid-charts-header-legend{
+    height: calc(100% - 15px);
+    overflow: auto;
+}
+
+.grid-charts-legend {
+    cursor: pointer;
+    display: inline;
+    text-align: left; 
+}
+
+.grid-charts-legend-label{
+    width: 250px;
+    flex: 1;
+    font-size:12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toolbar-summary {
+    background-color: rgba(118, 255, 3, 0.8);
+    border-radius:5;
+    width:40;
+    height:20; 
+    font-size:12;
+    padding:2;
+}
+
+.leaflet-tooltip-pane .text {
+    color: white; 
+    font-weight: bold;
+    background: transparent;
+    border:0;
+    box-shadow: none;
+    font-size:1em;
+  }

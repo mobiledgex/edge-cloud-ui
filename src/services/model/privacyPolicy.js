@@ -101,6 +101,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
 const customData = (value) => {
   value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRules].length;
   value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRulesCount] === 0 ? 'Full Isolation' : value[fields.outboundSecurityRulesCount];
+  return value
 }
 
 export const getData = (response, body) => {
