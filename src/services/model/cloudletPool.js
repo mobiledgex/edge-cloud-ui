@@ -94,6 +94,7 @@ export const deleteCloudletPool = (data) => {
 const customData = (value) => {
     value[fields.cloudletCount] = value[fields.cloudlets] ? value[fields.cloudlets].length : 0
     value[fields.organizationCount] = 0
+    return value
 }
 
 export const getData = (response, body) => {

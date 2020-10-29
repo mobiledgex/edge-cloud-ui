@@ -81,6 +81,7 @@ export const deleteAutoScalePolicy = (data) => {
 }
 
 const customData = (value) => {
+  return value
 }
 
 export const getData = (response, body) => {

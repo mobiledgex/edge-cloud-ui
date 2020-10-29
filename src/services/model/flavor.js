@@ -54,6 +54,7 @@ export const deleteFlavor = (data) => {
 
 const customData = (value) => {
     value[fields.gpu] = value.gpu === 'gpu:1' ? 1 : 0;
+    return value
 }
 
 export const getData = (response, body) => {

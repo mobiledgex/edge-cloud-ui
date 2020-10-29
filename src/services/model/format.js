@@ -146,8 +146,13 @@ export const fields = {
     apps: 'apps',
     eventType: 'eventType',
     time: 'time',
-    starttime:'starttime',
-    endtime:'endtime'
+    starttime: 'starttime',
+    endtime: 'endtime',
+    selector: 'selector',
+    metric: 'metric',
+    location: 'location',
+    values: 'values',
+    columns: 'columns'
 }
 
 export const getUserRole = () => {
@@ -226,8 +231,10 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     map(value, data, keys)
                     if (isUnique) { value.uuid = generateUniqueId() }
                     if (body) { value.region = body.region }
-                    customData(value)
-                    values.push(value)
+                    let newValue = customData(value)
+                    if (newValue) {
+                        values.push(newValue)
+                    }
                 }
             }
         }
@@ -255,11 +262,10 @@ export const colorType = (value) => {
     }
 }
 
-export const formatColumns = (columns, keys)=>
-{
+export const formatColumns = (columns, keys) => {
     columns.splice(1, 0, 'region');
     let newColumns = []
-    keys.map(key=>{
+    keys.map(key => {
         newColumns[columns.indexOf(key.serverField)] = key
     })
     return newColumns
@@ -290,7 +296,7 @@ export const groupByCompare = (dataList, columns, region) => {
 }
 
 export const formatEventData = (response, body, keys) => {
-    let formatted = {}
+    let formattedData = []
     try {
         if (response && response.data && response.data.data) {
             let dataList = response.data.data;
@@ -298,12 +304,16 @@ export const formatEventData = (response, body, keys) => {
                 let series = dataList[0].Series
                 let messages = dataList[0].messages
                 if (series && series.length > 0) {
-                    let formattingData = {}
-                    let key = series[0].name
-                    formattingData.columns = formatColumns(series[0].columns, keys)
-                    formattingData.values = groupByCompare(series[0].values, formattingData.columns, body.region)
-                    formatted[key] = formattingData
-                    return formatted
+                    formattedData = series.map(data => {
+                        let formatted = {}
+                        let formattingData = {}
+                        let key = data.name
+                        formattingData.columns = formatColumns(data.columns, keys)
+                        formattingData.values = groupByCompare(data.values, formattingData.columns, body.region)
+                        formatted[key] = formattingData
+                        return formatted
+                    })
+
                 }
             }
         }
@@ -311,7 +321,7 @@ export const formatEventData = (response, body, keys) => {
     catch (e) {
         alert(e)
     }
-    return formatted
+    return formattedData
 }
 
 export const compareObjects = (newData, oldData, ignoreCase) => {

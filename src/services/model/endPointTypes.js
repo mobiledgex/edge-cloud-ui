@@ -9,6 +9,10 @@ import * as CloudletInfo from './cloudletInfo';
 import * as ClusterInstance from './clusterInstance';
 import * as ClusterEvent from './clusterEvent';
 import * as AppInstEvent from './appInstEvent';
+import * as AppMetrics from './appMetrics';
+import * as ClusterMetrics from './clusterMetrics';
+import * as CloudletMetrics from './cloudletMetrics';
+import * as ClientMetrics from './clientMetrics';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
@@ -16,7 +20,8 @@ import * as PrivacyPolicy from './privacyPolicy';
 import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
-
+import * as AppInstClient from './appInstClient';
+import * as Events from './events';
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -63,9 +68,6 @@ export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
-export const CLOUDLET_METRICS_APP = "CloudletMetricsApp";
-export const CLUSTER_INST_METRICS_APP = "ClusterInstMetricsApp";
-export const APP_INST_METRICS_APP = "AppInstMetricsApp";
 export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
 export const SHOW_CLOUDLET_LINKORG = "orgcloudletpool";
 export const SHOW_LINK_POOL_ORG = "orgcloudletpool";
@@ -94,20 +96,37 @@ export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
 export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
 export const UPDATE_AUTO_SCALE_POLICY = "UpdateAutoScalePolicy";
 export const DELETE_AUTO_SCALE_POLICY = "DeleteAutoScalePolicy";
-export const CLOUDLET_EVENT_LOG_ENDPOINT = 'cloudlet'
-export const CLUSTER_EVENT_LOG_ENDPOINT = 'cluster'
-export const APP_INST_EVENT_LOG_ENDPOINT = 'app'
+export const CLOUDLET_EVENT_LOG_ENDPOINT = 'events/cloudlet';
+export const CLUSTER_EVENT_LOG_ENDPOINT = 'events/cluster';
+export const APP_INST_EVENT_LOG_ENDPOINT = 'events/app';
+export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
+export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
+export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
+export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
+export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
+export const EVENTS_FIND = 'events/find'
+export const EVENTS_SHOW = 'events/show'
 
 export function getPath(request) {
     switch (request.method) {
+        case CLOUDLET_METRICS_ENDPOINT:
+        case CLUSTER_METRICS_ENDPOINT:
+        case APP_INST_METRICS_ENDPOINT:
         case CLOUDLET_EVENT_LOG_ENDPOINT:
         case CLUSTER_EVENT_LOG_ENDPOINT:
         case APP_INST_EVENT_LOG_ENDPOINT:
-            return `/api/v1/auth/events/${request.method}`
+        case CLIENT_METRICS_ENDPOINT:
+        case EVENTS_FIND:
+        case EVENTS_SHOW:    
+            return `/api/v1/auth/${request.method}`
         case SHOW_ORG:
             return '/api/v1/auth/org/show';
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
+        case CREATE_ORG:
+            return '/api/v1/auth/org/create';
+        case UPDATE_ORG:
+            return '/api/v1/auth/org/update';
         case SHOW_AUDIT_ORG:
             return '/api/v1/auth/audit/showorg';
         case SHOW_USERS:
@@ -130,10 +149,6 @@ export function getPath(request) {
             return '/api/v1/auth/audit/showself';
         case ADD_USER_ROLE:
             return '/api/v1/auth/role/adduser';
-        case CREATE_ORG:
-            return '/api/v1/auth/org/create';
-        case UPDATE_ORG:
-            return '/api/v1/auth/org/update';
         case SHOW_CLOUDLET:
         case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
@@ -161,7 +176,7 @@ export function getPath(request) {
         case SHOW_CLOUDLET_POOL:
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
-        case UPDATE_CLOUDLET_POOL:  
+        case UPDATE_CLOUDLET_POOL:
         case SHOW_AUTO_PROV_POLICY:
         case CREATE_AUTO_PROV_POLICY:
         case UPDATE_AUTO_PROV_POLICY:
@@ -180,6 +195,7 @@ export function getPath(request) {
         case SHOW_LOGS:
         case SHOW_CONSOLE:
         case GET_CLOUDLET_MANIFEST:
+        case SHOW_APP_INST_CLIENT:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -188,10 +204,6 @@ export function getPath(request) {
         case RESET_PASSWORD_REQUEST:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
-        case CLOUDLET_METRICS_APP:
-        case CLUSTER_INST_METRICS_APP:
-        case APP_INST_METRICS_APP:
-            return '/api/v1/auth/metrics/app';
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:
@@ -262,6 +274,25 @@ export function formatData(request, response) {
             break;
         case CLOUDLET_EVENT_LOG_ENDPOINT:
             data = CloudletEvent.getData(response, request.data)
+            break;
+        case APP_INST_METRICS_ENDPOINT:
+            data = AppMetrics.getData(response, request.data)
+            break;
+        case CLIENT_METRICS_ENDPOINT:
+            data = ClientMetrics.getData(response, request.data)
+            break;
+        case CLUSTER_METRICS_ENDPOINT:
+            data = ClusterMetrics.getData(response, request.data)
+            break;
+        case CLOUDLET_METRICS_ENDPOINT:
+            data = CloudletMetrics.getData(response, request.data)
+            break;
+        case SHOW_APP_INST_CLIENT:
+            data = AppInstClient.getData(response, request.data)
+            break;
+        case EVENTS_SHOW:
+        case EVENTS_FIND:
+            data = Events.getData(response, request.data)
             break;
         default:
             data = undefined;

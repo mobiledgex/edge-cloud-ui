@@ -98,6 +98,9 @@ export const HEALTH_CHECK_FAIL_ROOTLB_OFFLINE = 'Rootlb Offline'
 export const HEALTH_CHECK_FAIL_SERVER_FAIL = 'Server Fail'
 export const HEALTH_CHECK_OK = 'OK'
 
+export const OFFLINE = 'Offline'
+export const ONLINE = 'Online'
+
 export const PAGE_ORGANIZATIONS = 'Organizations'
 export const PAGE_USER_ROLES = 'UserRoles'
 export const PAGE_ACCOUNTS = 'Accounts'
@@ -111,6 +114,7 @@ export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
 export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
 export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
+export const PAGE_MONITORING_RELOAD = 'Reload'
 
 export const MaintenanceState = (id) => {
     switch (id) {
