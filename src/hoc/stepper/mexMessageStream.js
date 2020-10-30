@@ -11,7 +11,6 @@ import { CODE_FAILED_403 } from './mexMessageMultiStream';
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
-export const CODE_FAILED_UNKNOWN = 999;
 
 
 const useStyles = {
@@ -84,9 +83,6 @@ class VerticalStepper extends React.Component {
             if (data.code === 200) {
                 type = 'success'
             }
-            if (data.message !== `Key doesn't exist`) {
-                //this.props.handleAlertInfo(type, data.message)
-            }
         }
     }
 
@@ -120,10 +116,7 @@ class VerticalStepper extends React.Component {
 
         }
 
-        if (responseData === null && !mcRequest.response) {
-            stepsList.push({ uuid: request.uuid, steps: [{ code: CODE_FAILED_UNKNOWN, message: 'Progress Unknown' }] })
-        }
-        else if (mcRequest.response) {
+       if (mcRequest.response) {
             let response = mcRequest.response.data
             let step = { code: response.code, message: response.data.msg }
             if (responseData === null) {
@@ -226,16 +219,14 @@ class VerticalStepper extends React.Component {
                                                                 let code = item.steps[stepperProps.icon - 1].code
                                                                 return (<div style={classes.root}>
                                                                     {
-                                                                        code === CODE_FAILED_UNKNOWN ?
-                                                                            <ErrorIcon style={classes.error} /> :
-                                                                            stepperProps.completed ?
-                                                                                code === CODE_FAILED ?
-                                                                                    <ErrorIcon style={classes.error} /> :
-                                                                                    <Check style={classes.success} /> :
-                                                                                <div style={classes.wrapper}>
-                                                                                    <p style={classes.iconLabel}>{stepperProps.icon}</p>
-                                                                                    <CircularProgress style={classes.progress} size={25} thickness={3} />
-                                                                                </div>
+                                                                        stepperProps.completed ?
+                                                                            code === CODE_FAILED ?
+                                                                                <ErrorIcon style={classes.error} /> :
+                                                                                <Check style={classes.success} /> :
+                                                                            <div style={classes.wrapper}>
+                                                                                <p style={classes.iconLabel}>{stepperProps.icon}</p>
+                                                                                <CircularProgress style={classes.progress} size={25} thickness={3} />
+                                                                            </div>
                                                                     }
                                                                 </div>)
 

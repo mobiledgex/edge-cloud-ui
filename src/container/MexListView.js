@@ -318,12 +318,6 @@ class MexListView extends React.Component {
         this.setState({
             uuid: data.uuid
         })
-
-        if (data[fields.state] === 5) {
-            this.setState({
-                stepsArray: [{ uuid: data.uuid, steps: [{ message: 'Created successfully', code: CODE_FINISH }] }]
-            })
-        }
     }
     /*
       Stepper Block
