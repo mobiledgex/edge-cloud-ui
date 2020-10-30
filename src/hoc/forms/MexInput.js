@@ -34,8 +34,6 @@ const MexInput = (props) => {
                 type={form.rules ? form.rules.type : 'text'}
                 required={form.required ? form.rules.required : false}
                 autoComplete = {form.autocomplete ? form.autocomplete : 'on'}
-                readOnly = {true}
-                onFocus="this.removeAttribute('readonly');"
                 disabled={props.disabled}
                 value={value}
                 style={form.style ? form.style : form.error ? { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor:'rgba(211, 46, 46, 0.1)'} : { width: form.unit ? 'calc(100% - 45px)' : '100%' }}
