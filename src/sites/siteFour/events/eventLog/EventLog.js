@@ -208,7 +208,7 @@ class EventLog extends React.Component {
 
     render() {
         const { filterList, tabValue, calendarList, groupList, dataList } = this.state
-
+        const { endRange } = this.props
         return (
             <div style={{ height: '100%' }} id='event_log'>
                 <div style={{ width: 450, display: 'inline-block', height: '100%', backgroundColor: '#292C33', verticalAlign: 'top', overflow: 'auto' }}>
@@ -243,6 +243,9 @@ class EventLog extends React.Component {
                         let eventList = filterList[eventType]
                         return tabValue === i ? this.stepperView(eventType, eventList, i) : null
                     })}
+                    <div style={{paddingLeft:20, marginTop:20}} align="left">
+                        <p style={{ fontSize: 14 }}><strong>Last Requested</strong>{`: ${dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, endRange)}`}</p>
+                    </div>
                 </div>
                 <div style={{ width: 'calc(100vw - 450px)', height: '100%', display: 'inline-block', backgroundColor: '#1E2123' }}>
                     {calendarList.length > 0 && groupList.length > 0 ? <MexCalendar dataList={calendarList} groupList={groupList} /> : null}
@@ -252,7 +255,7 @@ class EventLog extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 140 })
+        this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 190 })
         if (Object.keys(this.state.dataList).length > 0) {
             this.onTabChange(this.state.activeIndex, this.state.dataList)
         }

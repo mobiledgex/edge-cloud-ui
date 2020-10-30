@@ -109,7 +109,7 @@ class GlobalEventLogs extends React.Component {
                         }),
                     }} anchor={'right'} open={isOpen}>
                     <Suspense fallback={<div>loading</div>}>
-                        <EventLog close={this.handleClose} liveData={liveData} loading={loading} />
+                        <EventLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange}/>
                     </Suspense>
                 </Drawer>
             </React.Fragment>
@@ -135,7 +135,7 @@ class GlobalEventLogs extends React.Component {
                 liveData[key] = eventData[key]
             }
         })
-        this.setState({ liveData: liveData })
+        this.setState({ liveData })
     }
 
     eventLogData = async (starttime, endtime, enableInterval) => {
