@@ -149,7 +149,7 @@ class RegistryUserForm extends React.Component {
                 <br/>
                 {consecutive ?
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
-                    <p style={{ color: '#CCCCCC' }}>Avoid password that you use with other websites or that might be easy for someone else to guess</p>
+                    <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse and follow the above recommended password guidelines to prevent brute force attack</p>
                 }
             </div>
         )
