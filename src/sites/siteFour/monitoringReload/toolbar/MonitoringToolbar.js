@@ -6,6 +6,7 @@ import InsertChartIcon from '@material-ui/icons/InsertChart';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import { summaryList, metricParentTypes, OPERATOR } from '../helper/Constant';
 import { getUserRole } from '../../../../services/model/format';
+import {refreshRates} from '../helper/Constant'
 
 const timeUnits = [
     { unit: 'Minute', min: 1, max: 59, default: 5 },
@@ -56,12 +57,13 @@ const fetchMetricTypeField = (metricTypeKeys) =>{
 
 const MexToolbar = (props) => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: fetchMetricTypeField(props.metricTypeKeys), summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0] })
+    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: fetchMetricTypeField(props.metricTypeKeys), summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0], refreshRate:refreshRates[0] })
     const [focused, setFocused] = React.useState(false)
     const [metricAnchorEl, setMetricAnchorEl] = React.useState(null)
     const [regionAnchorEl, setRegionAnchorEl] = React.useState(null)
     const [summaryAnchorEl, setSummaryAnchorEl] = React.useState(null)
     const [parentAnchorEl, setParentAnchorEl] = React.useState(null)
+    const [refreshRateAnchorEl, setRefreshRateAnchorEl] = React.useState(null)
     const myRef = useRef(null);
     /*Search Block*/
     const handleSearch = (e) => {
@@ -99,31 +101,28 @@ const MexToolbar = (props) => {
     /*Search Block*/
 
     const onMenuChange = (type, value, isMultiple, setAnchorEl) => {
-        setFilter(filter => {
-            let types = filter[type]
-            if (isMultiple) {
-                if (types.includes(value)) {
-                    types = types.filter(type => {
-                        return type !== value
-                    })
-                }
-                else {
-                    types.push(value)
-                }
+        let types = filter[type]
+        if (isMultiple) {
+            if (types.includes(value)) {
+                types = types.filter(type => {
+                    return type !== value
+                })
             }
-            else
-            {
-                types = value
-                setAnchorEl(null)
+            else {
+                types.push(value)
             }
-            filter[type] = types
-            if(type === 'parent')
-            {
-                filter['metricType'] =  fetchMetricTypeField(value.metricTypeKeys)
-            }
-            props.onUpdateFilter(filter)
-            return filter
-        })
+        }
+        else {
+            types = value
+            setAnchorEl(null)
+        }
+        
+        filter[type] = types
+        if (type === 'parent') {
+            filter['metricType'] = fetchMetricTypeField(value.metricTypeKeys)
+        }
+        setFilter(filter)
+        props.onUpdateFilter(filter)
     }
 
     const renderMenu = (icon, order, dataList, anchorEl, setAnchorEl, isMultiple, type, labelKey, field) => {
@@ -170,6 +169,7 @@ const MexToolbar = (props) => {
                         {renderMenu(<InsertChartIcon style={{color: '#76FF03'}}/>, 3, props.metricTypeKeys, metricAnchorEl, setMetricAnchorEl, true, 'metricType', 'header', 'field')}
                         {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:70, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.summary.label}</strong>, 4, summaryList, summaryAnchorEl, setSummaryAnchorEl, false, 'summary', 'label')}
                         {searchForm(5)}
+                        {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:100, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.refreshRate.label}</strong>, 6, refreshRates, refreshRateAnchorEl, setRefreshRateAnchorEl, false, 'refreshRate', 'label')}
                     </Box>
                 </div>
             }
