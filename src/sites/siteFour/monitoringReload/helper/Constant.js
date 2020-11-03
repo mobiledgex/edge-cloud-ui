@@ -9,6 +9,13 @@ import { showCloudlets } from '../../../../services/model/cloudlet'
 export const DEVELOPER = mainConstant.DEVELOPER
 export const OPERATOR = mainConstant.OPERATOR
 
+export const ACTION_REGION = 0
+export const ACTION_METRIC_PARENT_TYPE = 1
+export const ACTION_METRIC_TYPE = 2
+export const ACTION_SUMMARY = 3
+export const ACTION_SEARCH = 4
+export const ACTION_REFRESH_RATE = 5
+
 export const summaryList = [
     { label: 'Avg', field: 'avg', position: 0 },
     { label: 'Min', field: 'min', position: 1 },
@@ -20,6 +27,8 @@ export const metricParentTypes = [
     // { id: 'cluster', label: 'Cluster Inst', showRequest: showClusterInsts, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
     { id: 'cloudlet', label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
 ]
+
+
 
 export const refreshRates = [
     { label: 'Off', duration: 0 },

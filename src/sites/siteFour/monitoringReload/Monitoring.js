@@ -9,7 +9,7 @@ import meanBy from 'lodash/meanBy'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
-import { summaryList, metricParentTypes, OPERATOR } from './helper/Constant'
+import * as constant from './helper/Constant'
 import AppInstMonitoring from './modules/app/AppMonitoring'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
@@ -33,14 +33,15 @@ class Monitoring extends React.Component {
     constructor(props) {
         super(props)
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        let defaultMetricParentTypes = metricParentTypes[getUserRole().includes(OPERATOR) ? 2 : 0]
+        this.defaultMetricParentTypes = constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
         this.state = {
             loading: false,
             chartData: {},
             avgData: {},
             rowSelected: 0,
-            filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(defaultMetricParentTypes.metricTypeKeys), summary: summaryList[0], parent: defaultMetricParentTypes }
+            filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(this.defaultMetricParentTypes.metricTypeKeys), summary: constant.summaryList[0], parent: this.defaultMetricParentTypes }
         }
+        this.refreshId = undefined;
         this.range = timeRangeInMin(40)
         this.requestCount = 0
     }
@@ -58,11 +59,46 @@ class Monitoring extends React.Component {
         this.setState({ avgData, rowSelected })
     }
 
-    onToolbar = (filter) => {
-        this.setState({ filter })
+    onRefreshChange = (value) => {
+        let duration = value.duration
+        if (this.refreshId) {
+            clearInterval(this.refreshId)
+        }
+        if (duration > 0) {
+            this.refreshId = setInterval(() => {
+                
+            }, duration * 1000);
+        }
     }
 
 
+    onToolbar = async (action, value) => {
+        this.setState(prevState => {
+            let filter = prevState.filter
+            switch (action) {
+                case constant.ACTION_REGION:
+                    filter.region = value
+                    break;
+                case constant.ACTION_METRIC_PARENT_TYPE:
+                    filter.parent = value
+                    break;
+                case constant.ACTION_METRIC_TYPE:
+                    filter.metricType = value
+                    break;
+                case constant.ACTION_SUMMARY:
+                    filter.summary = value
+                    break;
+                case constant.ACTION_SEARCH:
+                    filter.search = value
+                    break;
+                case constant.ACTION_REFRESH_RATE:
+                    this.onRefreshChange(value)
+                    break;
+
+            }
+            return filter
+        })
+    }
 
     onAction = (data) => {
         this.setState({ rowSelected: data })
@@ -76,7 +112,7 @@ class Monitoring extends React.Component {
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar regions={this.regions} metricTypeKeys={filter.parent.metricTypeKeys} onUpdateFilter={this.onToolbar} />
+                    <MonitoringToolbar regions={this.regions} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} />
                     <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} />
                 </Card>
                 <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={this.range} />
@@ -114,10 +150,8 @@ class Monitoring extends React.Component {
                     count: 1,
                 })[0]
 
-                if(getUserRole().includes(DEVELOPER))
-                {
-                    if(key.includes('envoy'))
-                    {
+                if (getUserRole().includes(DEVELOPER)) {
+                    if (key.includes('envoy')) {
                         avgValues['disabled'] = true
                     }
                 }
@@ -191,7 +225,7 @@ class Monitoring extends React.Component {
     }
 
     fetchMetricData = () => {
-        metricParentTypes.map(parent => {
+        constant.metricParentTypes.map(parent => {
             if (getUserRole() && getUserRole().includes(parent.role)) {
                 this.regions.map(region => {
                     parent.metricTypeKeys.map(metric => {
@@ -204,7 +238,7 @@ class Monitoring extends React.Component {
         })
 
         if (this.regions && this.regions.length > 0) {
-            metricParentTypes.map(parent => {
+            constant.metricParentTypes.map(parent => {
                 if (getUserRole() && getUserRole().includes(parent.role)) {
                     this.regions.map(region => {
                         parent.metricTypeKeys.map(metric => {
@@ -223,10 +257,10 @@ class Monitoring extends React.Component {
         }
     }
 
-    componentDidMount() {
+    defaultDataStructure = ()=>{
         let chartData = {}
         let avgData = {}
-        metricParentTypes.map(parent => {
+        constant.metricParentTypes.map(parent => {
             if (getUserRole() && getUserRole().includes(parent.role)) {
                 chartData[parent.id] = {}
                 avgData[parent.id] = {}
@@ -243,6 +277,10 @@ class Monitoring extends React.Component {
             }
         })
         this.setState({ chartData, avgData })
+    }
+
+    componentDidMount() {
+        this.defaultDataStructure()
         this.fetchMetricData()
     }
 }

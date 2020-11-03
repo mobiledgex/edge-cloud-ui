@@ -4,9 +4,9 @@ import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import { summaryList, metricParentTypes, OPERATOR } from '../helper/Constant';
+import * as constant from '../helper/Constant';
 import { getUserRole } from '../../../../services/model/format';
-import {refreshRates} from '../helper/Constant'
+import MonitoringMenu from './MonitoringMenu'
 
 const timeUnits = [
     { unit: 'Minute', min: 1, max: 59, default: 5 },
@@ -15,6 +15,9 @@ const timeUnits = [
     { unit: 'Month', min: 1, max: 12, default: 5 },
     { unit: 'Year', min: 1, max: 1, default: 1 }
 ]
+
+
+
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -30,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
-    searchAdorment : {
-        fontSize: 17, 
-        pointerEvents: "none", 
+    searchAdorment: {
+        fontSize: 17,
+        pointerEvents: "none",
         cursor: 'pointer'
     }
 }));
@@ -51,30 +54,24 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 
-const fetchMetricTypeField = (metricTypeKeys) =>{
-    return metricTypeKeys.map(metricType=>{return metricType.field})
+const fetchMetricTypeField = (metricTypeKeys) => {
+    return metricTypeKeys.map(metricType => { return metricType.field })
 }
 
 const MexToolbar = (props) => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: fetchMetricTypeField(props.metricTypeKeys), summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0], refreshRate:refreshRates[0] })
+    const [search, setSearch] = React.useState('')
     const [focused, setFocused] = React.useState(false)
-    const [metricAnchorEl, setMetricAnchorEl] = React.useState(null)
-    const [regionAnchorEl, setRegionAnchorEl] = React.useState(null)
-    const [summaryAnchorEl, setSummaryAnchorEl] = React.useState(null)
-    const [parentAnchorEl, setParentAnchorEl] = React.useState(null)
-    const [refreshRateAnchorEl, setRefreshRateAnchorEl] = React.useState(null)
-    const myRef = useRef(null);
+
     /*Search Block*/
     const handleSearch = (e) => {
         let value = e ? e.target.value : ''
-        filter.search = value
-        setFilter(filter)
-        props.onUpdateFilter(filter)
+        setSearch(value)
+        props.onChange(constant.ACTION_SEARCH, value)
     }
 
     const searchForm = (order) => (
-        <Box order={order} style={{ marginTop: `${focused ? '0px' : '7px'}`, marginLeft:10 }}>
+        <Box order={order} style={{ marginTop: `${focused ? '0px' : '7px'}`, marginLeft: 10 }}>
             <Input
                 onFocus={() => {
                     setFocused(true)
@@ -94,69 +91,35 @@ const MexToolbar = (props) => {
                         <SearchIcon style={{ color: '#76FF03' }} />
                     </InputAdornment>
                 }
-                value={filter.search}
+                value={search}
                 placeholder={'Search'} />
         </Box>
     )
     /*Search Block*/
 
-    const onMenuChange = (type, value, isMultiple, setAnchorEl) => {
-        let types = filter[type]
-        if (isMultiple) {
-            if (types.includes(value)) {
-                types = types.filter(type => {
-                    return type !== value
-                })
-            }
-            else {
-                types.push(value)
-            }
-        }
-        else {
-            types = value
-            setAnchorEl(null)
-        }
-        
-        filter[type] = types
-        if (type === 'parent') {
-            filter['metricType'] = fetchMetricTypeField(value.metricTypeKeys)
-        }
-        setFilter(filter)
-        props.onUpdateFilter(filter)
+
+    const onRegionChange = (values) => {
+        props.onChange(constant.ACTION_REGION, values)
     }
 
-    const renderMenu = (icon, order, dataList, anchorEl, setAnchorEl, isMultiple, type, labelKey, field) => {
-        return (
-            <Box order={order}>
-                <IconButton aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
-                    {icon}
-                </IconButton>
-                <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    onClose={()=>{setAnchorEl(null)}}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                >
-                    {dataList.map((data, i) => {
-                        let valid = data.role ? getUserRole().includes(data.role) : true
-                        return valid ? <ListItem key={i} role={undefined} dense button onClick={()=>{onMenuChange(type, field ? data[field] : data , isMultiple, setAnchorEl)}}>
-                            {isMultiple ? <ListItemIcon>
-                                <Checkbox
-                                    edge="start"
-                                    checked={filter[type].includes(field ? data[field] : data)}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{ 'aria-labelledby': 1 }}
-                                />
-                            </ListItemIcon> : null}
-                            <ListItemText id={1} primary={labelKey ? data[labelKey] : data} />
-                        </ListItem> : null
-                    })}
-                </Menu>
-            </Box>
-        )
+
+    const onMetricParentTypeChange = (value) => {
+        props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
     }
+
+    const onMetricTypeChange = (values) => {
+        props.onChange(constant.ACTION_METRIC_TYPE, values)
+    }
+
+
+    const onSummaryChange = (value) => {
+        props.onChange(constant.ACTION_SUMMARY, values)
+    }
+
+    const onRefreshRateChange = (value) => {
+        props.onChange(constant.ACTION_REFRESH_RATE, value)
+    }
+
 
     return (
         <Toolbar>
@@ -164,12 +127,12 @@ const MexToolbar = (props) => {
             {
                 <div style={{ width: '100%' }}>
                     <Box display="flex" justifyContent="flex-end">
-                        {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:100, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.parent.label}</strong>, 1, metricParentTypes, parentAnchorEl, setParentAnchorEl, false, 'parent', 'label')}
-                        {renderMenu(<PublicOutlinedIcon style={{color: '#76FF03'}}/>, 2, props.regions, regionAnchorEl, setRegionAnchorEl, true, 'region')}
-                        {renderMenu(<InsertChartIcon style={{color: '#76FF03'}}/>, 3, props.metricTypeKeys, metricAnchorEl, setMetricAnchorEl, true, 'metricType', 'header', 'field')}
-                        {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:70, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.summary.label}</strong>, 4, summaryList, summaryAnchorEl, setSummaryAnchorEl, false, 'summary', 'label')}
+                        <MonitoringMenu data={constant.metricParentTypes} labelKey='label' order={1} onChange={onMetricParentTypeChange} />
+                        <MonitoringMenu data={props.regions} order={2} multiple={true} icon={<PublicOutlinedIcon style={{ color: '#76FF03' }} />} onChange={onRegionChange} />
+                        <MonitoringMenu data={props.metricTypeKeys} labelKey='header' order={3} multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: '#76FF03' }} />} onChange={onMetricTypeChange} />
+                        <MonitoringMenu data={constant.summaryList} labelKey='label' order={4} onChange={onSummaryChange} />
                         {searchForm(5)}
-                        {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:100, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.refreshRate.label}</strong>, 6, refreshRates, refreshRateAnchorEl, setRefreshRateAnchorEl, false, 'refreshRate', 'label')}
+                        <MonitoringMenu data={constant.refreshRates} labelKey='label' order={6} onChange={onRefreshRateChange} />
                     </Box>
                 </div>
             }
