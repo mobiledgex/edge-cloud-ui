@@ -9,7 +9,7 @@ import AppInstMonitoring from './modules/app/AppMonitoring'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import './style.css'
-import myWorker from 'worker-loader!./services/metric.worker.js'
+import myWorker from './services/metric.worker.js'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
