@@ -16,58 +16,61 @@ const healthDataStructure = () => {
     return healthData
 }
 
+const processData = (avgData) => {
+    let mapData = {}
+    let selected = 0
+    let healthData = healthDataStructure()
+    Object.keys(avgData).map(region => {
+        let avgDataRegion = avgData[region]
+        Object.keys(avgDataRegion).map(key => {
+            let keyData = avgDataRegion[key]
+            let health = keyData[fields.healthCheck]
+            if (health === 3) {
+                healthData[ONLINE]['value'] = parseInt(healthData[ONLINE]['value']) + 1
+            }
+            else {
+                healthData[OFFLINE]['value'] = parseInt(healthData[OFFLINE]['value']) + 1
+            }
+            if (keyData.location) {
+                let location = keyData.location
+                let key = `${location.latitude}_${location.longitude}`
+                let cloudletKey = keyData.cloudlet
+                let data = { location, keyData: keyData }
+                selected += (keyData.selected ? 1 : 0)
+                let mapDataLocation = mapData[key]
+                mapDataLocation = mapDataLocation ? mapDataLocation : { location }
+                mapDataLocation.selected = selected
+                if (mapDataLocation[cloudletKey]) {
+                    mapDataLocation[cloudletKey].push(data)
+                }
+                else {
+                    mapDataLocation[cloudletKey] = [data]
+                }
+                mapData[key] = mapDataLocation
+            }
+        })
+    })
+    return { mapData, healthData }
+}
+
 class AppMonitoring extends React.Component {
     constructor(props) {
         super()
         this.state = {
             mapData: {},
-            healthData: {},
-            eventData:[]
+            healthData: {}
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
-    processData = (avgData) => {
-        let mapData = {}
-        let selected = 0
-        let healthData = healthDataStructure()
-        Object.keys(avgData).map(region => {
-            let avgDataRegion = avgData[region]
-            Object.keys(avgDataRegion).map(key => {
-                let keyData = avgDataRegion[key]
-                let health = keyData[fields.healthCheck]
-                if (health === 3) {
-                    healthData[ONLINE]['value'] = parseInt(healthData[ONLINE]['value']) + 1
-                }
-                else {
-                    healthData[OFFLINE]['value'] = parseInt(healthData[OFFLINE]['value']) + 1
-                }
-                if (keyData.location) {
-                    let location = keyData.location
-                    let key = `${location.latitude}_${location.longitude}`
-                    let cloudletKey = keyData.cloudlet
-                    let data = { location, keyData: keyData }
-                    selected += (keyData.selected ? 1 : 0)
-                    let mapDataLocation = mapData[key]
-                    mapDataLocation = mapDataLocation ? mapDataLocation : { location }
-                    mapDataLocation.selected = selected
-                    if (mapDataLocation[cloudletKey]) {
-                        mapDataLocation[cloudletKey].push(data)
-                    }
-                    else {
-                        mapDataLocation[cloudletKey] = [data]
-                    }
-                    mapData[key] = mapDataLocation
-                }
-            })
-        })
-        this.setState({ mapData, healthData })
+    
+
+    static getDerivedStateFromProps(props, state) {
+        return processData(props.avgData)
     }
 
-   
-
     render() {
-        const { mapData, eventData } = this.state
+        const { mapData } = this.state
         const { chartData, avgData, filter, range, rowSelected } = this.props
         return (
             filter.parent.id === 'appinst' ?
@@ -91,12 +94,6 @@ class AppMonitoring extends React.Component {
                     <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected}/>
                 </div> : null
         )
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (!isEqual(prevProps.avgData, this.props.avgData)) {
-            this.processData(this.props.avgData)
-        }
     }
 }
 export default AppMonitoring

@@ -1,21 +1,15 @@
 import React from 'react'
-import * as serverData from '../../../services/model/serverData'
 import * as dateUtil from '../../../utils/date_util'
 import { fields, getUserRole } from '../../../services/model/format'
 import { Card, LinearProgress } from '@material-ui/core'
 import MonitoringList from './list/MonitoringList'
-import randomColor from 'randomcolor'
-import meanBy from 'lodash/meanBy'
-import maxBy from 'lodash/maxBy'
-import minBy from 'lodash/minBy'
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
 import * as constant from './helper/Constant'
 import AppInstMonitoring from './modules/app/AppMonitoring'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
-import cloneDeep from 'lodash/cloneDeep'
 import './style.css'
-import { DEVELOPER } from '../../../constant'
+import myWorker from 'worker-loader!./services/metric.worker.js'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -39,10 +33,11 @@ class Monitoring extends React.Component {
             chartData: {},
             avgData: {},
             rowSelected: 0,
-            filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(this.defaultMetricParentTypes.metricTypeKeys), summary: constant.summaryList[0], parent: this.defaultMetricParentTypes }
+            filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(this.defaultMetricParentTypes.metricTypeKeys), summary: constant.summaryList[0], parent: this.defaultMetricParentTypes },
+            duration:constant.relativeTimeRanges[0],
+            range : timeRangeInMin(constant.relativeTimeRanges[0].duration)
         }
         this.refreshId = undefined;
-        this.range = timeRangeInMin(40)
         this.requestCount = 0
     }
 
@@ -60,44 +55,84 @@ class Monitoring extends React.Component {
     }
 
     onRefreshChange = (value) => {
-        let duration = value.duration
+        let interval = value.duration
         if (this.refreshId) {
             clearInterval(this.refreshId)
         }
-        if (duration > 0) {
+        if (interval > 0) {
             this.refreshId = setInterval(() => {
+                this.setState({ range: timeRangeInMin(this.state.duration.duration) }, () => {
                 
-            }, duration * 1000);
+                    this.fetchMetricData()
+                })
+            }, interval * 1000);
         }
     }
 
+    onTimeRange = (value) => {
+        if (this.refreshId) {
+            clearInterval(this.refreshId)
+        }
+        this.setState({range : value}, ()=>{
+            this.fetchMetricData()
+        })
+    }
 
+    onRelativeTime = (duration) => {
+        this.setState({ duration, range: timeRangeInMin(duration.duration) }, () => {
+            this.fetchMetricData()
+        })
+    }
+
+    onParentChange = () =>{
+        this.fetchMetricData()
+    }
+    
     onToolbar = async (action, value) => {
-        this.setState(prevState => {
-            let filter = prevState.filter
+        if (action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME  || action === constant.ACTION_REFRESH) {
             switch (action) {
-                case constant.ACTION_REGION:
-                    filter.region = value
-                    break;
-                case constant.ACTION_METRIC_PARENT_TYPE:
-                    filter.parent = value
-                    break;
-                case constant.ACTION_METRIC_TYPE:
-                    filter.metricType = value
-                    break;
-                case constant.ACTION_SUMMARY:
-                    filter.summary = value
-                    break;
-                case constant.ACTION_SEARCH:
-                    filter.search = value
-                    break;
                 case constant.ACTION_REFRESH_RATE:
                     this.onRefreshChange(value)
                     break;
-
+                case constant.ACTION_TIME_RANGE:
+                    this.onTimeRange(value)
+                    break;
+                case constant.ACTION_RELATIVE_TIME:
+                    this.onRelativeTime(value)
+                    break;
+                case constant.ACTION_REFRESH:
+                    this.fetchMetricData()
+                    break;
             }
-            return filter
-        })
+        }
+        else {
+            this.setState(prevState => {
+                let filter = prevState.filter
+                switch (action) {
+                    case constant.ACTION_REGION:
+                        filter.region = value
+                        break;
+                    case constant.ACTION_METRIC_PARENT_TYPE:
+                        filter.parent = value
+                        break;
+                    case constant.ACTION_METRIC_TYPE:
+                        filter.metricType = value
+                        break;
+                    case constant.ACTION_SUMMARY:
+                        filter.summary = value
+                        break;
+                    case constant.ACTION_SEARCH:
+                        filter.search = value
+                        break;
+                }
+                return filter
+            }, ()=>{
+                if(action === constant.ACTION_METRIC_PARENT_TYPE)
+                {
+                    this.onParentChange()
+                }
+            })
+        }
     }
 
     onAction = (data) => {
@@ -105,19 +140,19 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { chartData, avgData, loading, filter, rowSelected } = this.state
+        const { chartData, avgData, loading, filter, rowSelected, range, duration } = this.state
         const chartDataParent = chartData[filter.parent.id]
         const avgDataParent = avgData[filter.parent.id] ? avgData[filter.parent.id] : {}
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
-                    {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar regions={this.regions} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} />
+                    {loading ? <LinearProgress/> : null}
+                    <MonitoringToolbar defaultParent={this.defaultMetricParentTypes} regions={this.regions} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
                     <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} />
                 </Card>
-                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={this.range} />
-                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={this.range} />
-                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={this.range} />
+                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} />
+                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} />
+                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} />
             </div>
 
         )
@@ -127,91 +162,31 @@ class Monitoring extends React.Component {
         return `${parentTypeId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
     }
 
-    avgCalculator = async (avgData, parent, data, region, metric, showList) => {
-        let avgDataObject = avgData[parent.id][region]
-        avgDataObject = avgDataObject ? avgDataObject : {}
-
-
-        Object.keys(data.values).map(key => {
-            let value = data.values[key][0]
-
-            let avg = meanBy(data.values[key], v => (v[metric.position]))
-            let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
-            let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
-
-            let avgValues = avgDataObject[key]
-
-            if (avgValues === undefined) {
-                avgValues = {}
-                data.columns.map((column, i) => {
-                    avgValues[column.serverField] = value[i]
-                })
-                avgValues['color'] = randomColor({
-                    count: 1,
-                })[0]
-
-                if (getUserRole().includes(DEVELOPER)) {
-                    if (key.includes('envoy')) {
-                        avgValues['disabled'] = true
-                    }
-                }
-                avgValues['selected'] = false
-                if (parent.fetchLocation) {
-                    avgValues = parent.fetchLocation(avgValues, value, showList)
-                }
-            }
-
-            let avgUnit = metric.unit ? metric.unit(avg) : avg
-            let maxUnit = metric.unit ? metric.unit(max) : max
-            let minUnit = metric.unit ? metric.unit(min) : min
-            avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
-            avgDataObject[key] = avgValues
-        })
-        avgData[parent.id][region] = avgDataObject
-    }
-
     processMetricData = (parent, serverField, region, metricDataList, showList) => {
-        let chartData = cloneDeep(this.state.chartData)
-        let avgData = cloneDeep(this.state.avgData)
-        if (metricDataList && metricDataList.length > 0) {
-            metricDataList.map(metricData => {
-                let key = Object.keys(metricData)[0]
-                parent.metricTypeKeys.map(metric => {
-                    let objectId = `${parent.id}-${metric.serverField}`
-                    if (key === objectId) {
-                        if (metricData[objectId]) {
-                            let newData = {}
-                            newData.region = region
-                            newData.metric = metric
-                            newData.values = metricData[objectId].values
-                            newData.columns = metricData[objectId].columns
-                            let metricKey = this.metricKeyGenerator(parent.id, region, metric)
-                            chartData[parent.id][region][metricKey] = newData
-                            this.avgCalculator(avgData, parent, newData, region, metric, showList)
-                        }
-                    }
-                })
+        const worker = new myWorker();
+        worker.postMessage({ type: 'process', metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys })
+        worker.addEventListener('message', event => {
+            let chartData = event.data.chartData
+            let avgData = event.data.avgData
+            this.setState(prevState => {
+                let preChartData = prevState.chartData
+                let preAvgData = prevState.avgData
+                preChartData[parent.id][region] = chartData[parent.id][region]
+                preAvgData[parent.id][region] = avgData[parent.id][region]
+                return { preChartData, preAvgData }
             })
-        }
-        this.setState({ chartData, avgData })
+        });
     }
 
-    serverRequest = async (parent, serverField, requestList, region) => {
-        this.setState({ loading: true })
-        let mcRequestList = await serverData.showSyncMultiData(this, requestList)
-        this.requestCount -= 1
-        if (this.requestCount === 0) {
-            this.setState({ loading: false })
-        }
-
+    serverRequest = (parent, serverField, mcRequestList, region) => {
         let showList = []
         let metricData = {}
         if (mcRequestList && mcRequestList.length > 0) {
             mcRequestList.map(mcRequest => {
-                if (mcRequest && mcRequest.response && mcRequest.response.data) {
+                if (mcRequest && mcRequest.data) {
                     let request = mcRequest.request
                     let method = request.method
-                    let data = mcRequest.response.data
+                    let data = mcRequest.data
                     if (method === parent.request({}).method) {
                         metricData = data
                     }
@@ -225,30 +200,38 @@ class Monitoring extends React.Component {
     }
 
     fetchMetricData = () => {
-        constant.metricParentTypes.map(parent => {
-            if (getUserRole() && getUserRole().includes(parent.role)) {
-                this.regions.map(region => {
-                    parent.metricTypeKeys.map(metric => {
-                        if (metric.serverRequest) {
-                            this.requestCount += 1
-                        }
-                    })
-                })
-            }
-        })
-
+        let count = this.regions.length
         if (this.regions && this.regions.length > 0) {
             constant.metricParentTypes.map(parent => {
-                if (getUserRole() && getUserRole().includes(parent.role)) {
+                if (getUserRole() && getUserRole().includes(parent.role) && parent === this.state.filter.parent) {
                     this.regions.map(region => {
                         parent.metricTypeKeys.map(metric => {
                             if (metric.serverRequest) {
                                 let data = {}
                                 data[fields.region] = region
-                                data[fields.starttime] = this.range.starttime
-                                data[fields.endtime] = this.range.endtime
+                                data[fields.starttime] = this.state.range.starttime
+                                data[fields.endtime] = this.state.range.endtime
                                 data[fields.selector] = '*'
-                                this.serverRequest(parent, metric.serverField, [parent.request(data), parent.showRequest({ region: region })], region)
+
+                                const worker = new myWorker();
+                                let metricRequest = parent.request(data)
+                                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+                                metricRequest.token = store.userToken
+                                metricRequest.keys = parent.metricKeys
+
+                                let showRequest = parent.showRequest({ region: region })
+                                showRequest.token = store.userToken
+                                showRequest.keys = parent.showKeys
+
+                                this.setState({ loading: true })
+                                worker.postMessage({ type: 'server', request: [metricRequest, showRequest] });
+                                worker.addEventListener('message', event => {
+                                    count = count - 1
+                                    if (count === 0) {
+                                        this.setState({ loading: false })
+                                    }
+                                    this.serverRequest(parent, metric.serverField, event.data, region)
+                                });
                             }
                         })
                     })
@@ -257,7 +240,7 @@ class Monitoring extends React.Component {
         }
     }
 
-    defaultDataStructure = ()=>{
+    defaultDataStructure = () => {
         let chartData = {}
         let avgData = {}
         constant.metricParentTypes.map(parent => {

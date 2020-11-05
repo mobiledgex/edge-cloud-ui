@@ -25,6 +25,14 @@ const getLoader = function (rules, matcher) {
 
 
 module.exports = {
+    module: {
+        rules: [
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader' },
+            },
+        ],
+    },
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
@@ -72,7 +80,8 @@ module.exports = {
                 'no-loop-func': 'off',
                 'no-unused-expressions': 'off',
                 'no-sequences': 'off',
-                'no-whitespace-before-property': 'off'
+                'no-whitespace-before-property': 'off',
+                "import/no-webpack-loader-syntax": "off"
             }
         }
     },

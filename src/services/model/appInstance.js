@@ -201,7 +201,7 @@ export const streamAppInst = (data) => {
   return { uuid: data.uuid, method: STREAM_APP_INST, data: requestData }
 }
 
-const customData = (value) => {
+export const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined

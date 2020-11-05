@@ -240,7 +240,7 @@ export const formatData = (response, body, keys, customData, isUnique) => {
         }
     }
     catch (e) {
-        alert(e)
+        console.log('Response Error', e)
     }
     return values
 }
@@ -319,7 +319,7 @@ export const formatEventData = (response, body, keys) => {
         }
     }
     catch (e) {
-        alert(e)
+        //alert(e)
     }
     return formattedData
 }

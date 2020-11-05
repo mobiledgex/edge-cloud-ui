@@ -19,7 +19,13 @@ class MexAppEvent extends React.Component {
     render() {
         const { eventData, colors } = this.state
         const { filter } = this.props
-        return eventData.length > 0 ? <EventList header='Events' eventData={eventData} filter={filter} colors={colors}/> : null
+        return eventData.length > 0 ? <EventList header='Events' eventData={eventData} filter={filter} colors={colors}/> : 
+        <div className="event-list-main" align="center" style={{textAlign:'center', verticalAlign:'middle'}}>
+            <div align="left" className="event-list-header">
+                <h3>Events</h3>
+            </div>
+            <h3 style={{marginTop:'16vh'}}><b>No Data</b></h3>
+        </div>
     }
 
     event = async (range) => {
@@ -37,6 +43,13 @@ class MexAppEvent extends React.Component {
             let dataList = mc.response.data
             let colors = randomColor({ count: dataList.length, })
             this.setState({ eventData: dataList, colors })
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.range !== this.props.range)
+        {
+            this.event(this.props.range)
         }
     }
 
