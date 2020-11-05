@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import * as serverData from '../../../../services/model/serverData';
+import { showAudits } from '../../../../services/model/events'
 import PopDetailViewer from '../../../../container/popDetailViewer';
 import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
@@ -19,7 +19,7 @@ class headerGlobalAudit extends React.Component {
             historyList: [],
             liveData: [],
             rawViewData: [],
-            isOrg:false,
+            isOrg: false,
             openDetail: false,
             isOpen: false,
             loading: false,
@@ -33,7 +33,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await serverData.showAuditOrg(_self, { "org": orgName })
+        let mcRequest = await showAudits(_self, {match : { orgs: [orgName] }})
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
@@ -45,23 +45,22 @@ class headerGlobalAudit extends React.Component {
     }
 
     updateStatus = (data) => {
-        if (data.operationname.includes('/ws/') || data.operationname.includes('/wss/')) {
+        if (data.name.includes('/ws/') || data.name.includes('/wss/')) {
             data.status = data.response.includes('"code":400') ? 400 : data.status
         }
     }
 
     updateSelectedDate = (date) => {
-        this.setState({ selectedDate: date ? date :  dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)})
+        this.setState({ selectedDate: date ? date : dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE) })
     }
 
-    clearHistory = () =>
-    {
-        this.setState({historyList:[]})
+    clearHistory = () => {
+        this.setState({ historyList: [] })
     }
 
     loadMore = () => {
         let dataList = this.state.liveData
-        let time = dateUtil.convertToUnix(dataList[dataList.length - 1].starttime)
+        let time = dateUtil.utcTime(dataList[dataList.length - 1].starttime)
         let endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, time)
         this.getDataAudit(this.starttime, endtime)
     }
@@ -69,7 +68,7 @@ class headerGlobalAudit extends React.Component {
     getDataAudit = async (starttime, endtime, limit, isLive, orgTime) => {
         isLive ? this.setState({ loading: true }) : this.setState({ historyLoading: true })
         limit = limit ? limit : CON_LIMIT
-        let mcRequest = await serverData.showSelf(_self, { starttime: starttime, endtime: endtime, limit: parseInt(limit) }, false)
+        let mcRequest = await showAudits(_self, { starttime: starttime, endtime: endtime, limit: parseInt(limit) }, false)
         this.setState({ historyLoading: false, loading: false, limit: 25 })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
@@ -77,12 +76,11 @@ class headerGlobalAudit extends React.Component {
                 let dataList = response.data
                 dataList = dataList.filter((data, index) => {
                     this.updateStatus(data)
-                    return orgTime ? data.starttime > orgTime : true
+                    return orgTime ? data.timestamp > orgTime : true
                 })
                 if (isLive) {
                     let newDataList = [...dataList, ...this.state.liveData]
-                    if(newDataList && newDataList.length > 250)
-                    {
+                    if (newDataList && newDataList.length > 250) {
                         newDataList.splice(251, newDataList.length - 251);
                     }
                     this.setState({ liveData: newDataList })
@@ -91,11 +89,9 @@ class headerGlobalAudit extends React.Component {
                     this.setState({ historyList: dataList })
                 }
             }
-            else
-            {
-                if(!isLive)
-                {
-                    this.setState({historyList:[]})
+            else {
+                if (!isLive) {
+                    this.setState({ historyList: [] })
                 }
             }
         }
@@ -123,17 +119,17 @@ class headerGlobalAudit extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.open) {
-            return { isOpen: props.open, isOrg : false  }
+            return { isOpen: props.open, isOrg: false }
         }
         return null
     }
 
     render() {
-        const { selectedDate, historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading, isOrg} = this.state
+        const { selectedDate, historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading, isOrg } = this.state
         return (
             <React.Fragment>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog isOrg={isOrg} dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory}/>
+                    <HeaderAuditLog isOrg={isOrg} dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
@@ -146,8 +142,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg)
-        {
+        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
             this.props.handleShowAuditLog(null)
         }
@@ -157,7 +152,7 @@ class headerGlobalAudit extends React.Component {
         this.getDataAudit(this.starttime, this.endtime, CON_LIMIT, true);
         this.intervalId = setInterval(() => {
             let dataList = this.state.liveData
-            let time = dataList.length > 0 ? dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.convertToUnix(dataList[0].starttime)) : this.starttime
+            let time = dataList.length > 0 ? dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.utcTime(dataList[0].starttime)) : this.starttime
             let orgTime = dataList.length > 0 ? dataList[0].starttime : undefined
             this.getDataAudit(time, this.endtime, CON_LIMIT, true, orgTime)
         }, 10 * 1000);
