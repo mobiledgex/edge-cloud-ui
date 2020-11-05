@@ -1,3 +1,4 @@
+/* eslint-disable */
 import axios from 'axios';
 import { maxBy, meanBy, minBy } from 'lodash';
 import * as formatter from '../../../../services/model/format'
