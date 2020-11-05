@@ -1,10 +1,11 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
+import {unit} from '../../../../../utils/math_util'
 import isEqual from 'lodash/isEqual';
 import uuid from 'uuid'
 
-const optionsGenerator = (header, unit) => {
+const optionsGenerator = (header, unitId) => {
     return {
         stacked: true,
         bezierCurve: true,
@@ -37,7 +38,7 @@ const optionsGenerator = (header, unit) => {
                 type: "time",
                 time: {
                     format: dateUtil.FORMAT_FULL_TIME,
-                    tooltipFormat: 'HH:mm:ss',
+                    tooltipFormat: 'MM/DD/YYYY HH:mm:ss',
                     displayFormats: {
                         millisecond: 'HH:mm:ss.SSS',
                         second: 'HH:mm:ss',
@@ -60,7 +61,7 @@ const optionsGenerator = (header, unit) => {
                 },
                 ticks: {
                     callback: (label, index, labels) => {
-                        return unit ? unit(label) : label
+                        return unit ? unit(unitId, label) : label
                     },
                     maxTicksLimit: 5
                 }
@@ -70,7 +71,7 @@ const optionsGenerator = (header, unit) => {
             callbacks: {
                 label: function (tooltipItem, data) {
                     var label = data.datasets[tooltipItem.datasetIndex].label
-                    let value = unit ? unit(tooltipItem.yLabel) : tooltipItem.yLabel
+                    let value = unit ? unit(unitId, tooltipItem.yLabel) : tooltipItem.yLabel
                     return `${label} : ${value}`
                 }
             }

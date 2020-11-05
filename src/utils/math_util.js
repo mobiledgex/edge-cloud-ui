@@ -18,3 +18,17 @@ export const convertByteToMegaGigaByte = (bytes) => {
     // return GB if less than a TB
     else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
+
+export const unit = (type, value) => {
+    if (value) {
+        switch (type) {
+            case 1:
+                return convertByteToMegaGigaByte(value.toFixed(1))
+            case 2:
+                return value.toFixed(3) + " %"
+            case 3:
+                return value.toFixed(4)
+        }
+    }
+}
+

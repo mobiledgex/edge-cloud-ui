@@ -62,6 +62,10 @@ export const currentTime = (format) => {
     return convertToTimezone().format(format)
 }
 
+export const currentDate = () => {
+    return convertToTimezone().toDate()
+}
+
 export const utcTime = (format, date) => {
     return moment(date).utc().format(format)
 }
@@ -76,8 +80,8 @@ export const isAfter = (start, end) =>
     return moment(start).isAfter(end)
 }
 
-export const subtractMins = (value, date) => {
-    let obj = date ? moment(date) : moment()
+export const subtractMins = (value, date, isUtc) => {
+    let obj = date ? isUtc ? moment.utc(date) : moment(date) : moment()
     return value ? obj.subtract(value, 'minutes') : obj.subtract('minutes')
 }
 

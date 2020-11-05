@@ -28,7 +28,13 @@ class MexAppClient extends React.Component {
     render() {
         const {stackedData} = this.state
         const {filter} = this.props
-        return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter}/> : null
+        return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter}/> : 
+        <div className="event-list-main" align="center" style={{textAlign:'center', verticalAlign:'middle'}}>
+            <div align="left" className="event-list-header">
+                <h3>Client API Usage Count</h3>
+            </div>
+            <h3 style={{marginTop:'16vh'}}><b>No Data</b></h3>
+        </div>
     }
 
     client = async (region, range) => {
@@ -70,6 +76,16 @@ class MexAppClient extends React.Component {
             })
         }
     }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.range !== this.props.range)
+        {
+            this.regions.map(region => {
+                this.client(region, this.props.range)
+            })
+        }
+    }
+
 
     componentDidMount() {
         this.regions.map(region => {
