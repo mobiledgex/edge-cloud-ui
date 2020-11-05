@@ -99,7 +99,7 @@
 }
 
 .grid-charts {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 305px);
     overflow: auto;
     overflow-x: hidden;
     margin-top: 10px;

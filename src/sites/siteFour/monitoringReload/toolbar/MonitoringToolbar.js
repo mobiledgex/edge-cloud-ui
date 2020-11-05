@@ -1,11 +1,14 @@
-import React, { useRef } from 'react'
-import { Toolbar, Input, InputAdornment, Switch, makeStyles, Box, Menu, ListItem, ListItemIcon, Checkbox, ListItemText, IconButton } from '@material-ui/core'
+import React from 'react'
+import { Toolbar, Input, InputAdornment, Switch, makeStyles, Box, Menu, ListItem, ListItemIcon, Checkbox, ListItemText, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import { summaryList, metricParentTypes, OPERATOR } from '../helper/Constant';
-import { getUserRole } from '../../../../services/model/format';
+import * as constant from '../helper/Constant';
+import MexTimer from '../helper/MexTimer'
+import MonitoringMenu from './MonitoringMenu'
+import RefreshIcon from '@material-ui/icons/Refresh';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const timeUnits = [
     { unit: 'Minute', min: 1, max: 59, default: 5 },
@@ -14,6 +17,9 @@ const timeUnits = [
     { unit: 'Month', min: 1, max: 12, default: 5 },
     { unit: 'Year', min: 1, max: 1, default: 1 }
 ]
+
+
+
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -29,9 +35,9 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
-    searchAdorment : {
-        fontSize: 17, 
-        pointerEvents: "none", 
+    searchAdorment: {
+        fontSize: 17,
+        pointerEvents: "none",
         cursor: 'pointer'
     }
 }));
@@ -50,29 +56,22 @@ const CustomSwitch = withStyles({
     track: {},
 })(Switch);
 
-const fetchMetricTypeField = (metricTypeKeys) =>{
-    return metricTypeKeys.map(metricType=>{return metricType.field})
-}
 
 const MexToolbar = (props) => {
     const classes = useStyles();
-    const [filter, setFilter] = React.useState({ region: props.regions, search: '', metricType: fetchMetricTypeField(props.metricTypeKeys), summary:summaryList[0], parent : metricParentTypes[getUserRole().includes(OPERATOR)  ? 2 : 0] })
+    const [search, setSearch] = React.useState('')
     const [focused, setFocused] = React.useState(false)
-    const [metricAnchorEl, setMetricAnchorEl] = React.useState(null)
-    const [regionAnchorEl, setRegionAnchorEl] = React.useState(null)
-    const [summaryAnchorEl, setSummaryAnchorEl] = React.useState(null)
-    const [parentAnchorEl, setParentAnchorEl] = React.useState(null)
-    const myRef = useRef(null);
+    const [refreshRange, setRefreshRange] = React.useState(constant.refreshRates[0])
+
     /*Search Block*/
     const handleSearch = (e) => {
         let value = e ? e.target.value : ''
-        filter.search = value
-        setFilter(filter)
-        props.onUpdateFilter(filter)
+        setSearch(value)
+        props.onChange(constant.ACTION_SEARCH, value)
     }
 
     const searchForm = (order) => (
-        <Box order={order} style={{ marginTop: `${focused ? '0px' : '7px'}`, marginLeft:10 }}>
+        <Box order={order} style={{ marginTop: `${focused ? '0px' : '7px'}`, marginLeft: 10 }}>
             <Input
                 onFocus={() => {
                     setFocused(true)
@@ -89,75 +88,60 @@ const MexToolbar = (props) => {
                 onChange={handleSearch}
                 startAdornment={
                     <InputAdornment className={classes.searchAdorment} position="start" >
-                        <SearchIcon style={{ color: '#76FF03' }} />
+                        <SearchIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
                     </InputAdornment>
                 }
-                value={filter.search}
+                value={search}
                 placeholder={'Search'} />
         </Box>
     )
     /*Search Block*/
 
-    const onMenuChange = (type, value, isMultiple, setAnchorEl) => {
-        setFilter(filter => {
-            let types = filter[type]
-            if (isMultiple) {
-                if (types.includes(value)) {
-                    types = types.filter(type => {
-                        return type !== value
-                    })
-                }
-                else {
-                    types.push(value)
-                }
-            }
-            else
-            {
-                types = value
-                setAnchorEl(null)
-            }
-            filter[type] = types
-            if(type === 'parent')
-            {
-                filter['metricType'] =  fetchMetricTypeField(value.metricTypeKeys)
-            }
-            props.onUpdateFilter(filter)
-            return filter
-        })
+    const onRegionChange = (values) => {
+        props.onChange(constant.ACTION_REGION, values)
     }
 
-    const renderMenu = (icon, order, dataList, anchorEl, setAnchorEl, isMultiple, type, labelKey, field) => {
-        return (
-            <Box order={order}>
-                <IconButton aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
-                    {icon}
-                </IconButton>
-                <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    onClose={()=>{setAnchorEl(null)}}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                >
-                    {dataList.map((data, i) => {
-                        let valid = data.role ? getUserRole().includes(data.role) : true
-                        return valid ? <ListItem key={i} role={undefined} dense button onClick={()=>{onMenuChange(type, field ? data[field] : data , isMultiple, setAnchorEl)}}>
-                            {isMultiple ? <ListItemIcon>
-                                <Checkbox
-                                    edge="start"
-                                    checked={filter[type].includes(field ? data[field] : data)}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{ 'aria-labelledby': 1 }}
-                                />
-                            </ListItemIcon> : null}
-                            <ListItemText id={1} primary={labelKey ? data[labelKey] : data} />
-                        </ListItem> : null
-                    })}
-                </Menu>
-            </Box>
-        )
+
+    const onMetricParentTypeChange = (value) => {
+        props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
     }
+
+    const onMetricTypeChange = (values) => {
+        props.onChange(constant.ACTION_METRIC_TYPE, values)
+    }
+
+
+    const onSummaryChange = (value) => {
+        props.onChange(constant.ACTION_SUMMARY, value)
+    }
+
+    const onRefreshRateChange = (value) => {
+        setRefreshRange(value)
+        props.onChange(constant.ACTION_REFRESH_RATE, value)
+    }
+    
+    const onTimeRangeChange = (from, to)=>{
+        setRefreshRange(constant.refreshRates[0])
+        props.onChange(constant.ACTION_TIME_RANGE, {starttime:from, endtime:to})
+    }
+
+    const onRelativeTimeChange = (duration) =>{
+        props.onChange(constant.ACTION_RELATIVE_TIME, duration)
+    }
+
+    const onRefresh = ()=>{
+        props.onChange(constant.ACTION_REFRESH)
+    }
+
+    const renderRefresh = (order) => (
+        <Box order={order}>
+            <Grid container>
+                <IconButton onClick={onRefresh}><RefreshIcon style={{ color: 'rgba(118, 255, 3, 0.7)'}} /></IconButton>
+                <Divider orientation="vertical" style={{marginTop:13, marginBottom:13}} flexItem/>
+                <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: '#76FF03'}}/>} value={refreshRange} tip={'Refresh Rate'}/>
+            </Grid>
+        </Box>
+    )
 
     return (
         <Toolbar>
@@ -165,11 +149,13 @@ const MexToolbar = (props) => {
             {
                 <div style={{ width: '100%' }}>
                     <Box display="flex" justifyContent="flex-end">
-                        {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:100, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.parent.label}</strong>, 1, metricParentTypes, parentAnchorEl, setParentAnchorEl, false, 'parent', 'label')}
-                        {renderMenu(<PublicOutlinedIcon style={{color: '#76FF03'}}/>, 2, props.regions, regionAnchorEl, setRegionAnchorEl, true, 'region')}
-                        {renderMenu(<InsertChartIcon style={{color: '#76FF03'}}/>, 3, props.metricTypeKeys, metricAnchorEl, setMetricAnchorEl, true, 'metricType', 'header', 'field')}
-                        {renderMenu(<strong style={{backgroundColor: 'rgba(118, 255, 3, 0.7)', borderRadius:5, maxWidth:70, height:20, fontSize:12, padding:'2px 5px 0px 5px' }}>{filter.summary.label}</strong>, 4, summaryList, summaryAnchorEl, setSummaryAnchorEl, false, 'summary', 'label')}
-                        {searchForm(5)}
+                        <MexTimer order={1}  onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
+                        <MonitoringMenu data={constant.metricParentTypes} default={props.defaultParent} labelKey='label' order={2} onChange={onMetricParentTypeChange} default={props.defaultParent}/>
+                        <MonitoringMenu data={props.regions} order={3} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region'/>
+                        <MonitoringMenu data={props.metricTypeKeys} labelKey='header' order={4} multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Metric Type'/>
+                        <MonitoringMenu data={constant.summaryList} labelKey='label' order={5} onChange={onSummaryChange} />
+                        {renderRefresh(7)}
+                        {searchForm(8)}
                     </Box>
                 </div>
             }

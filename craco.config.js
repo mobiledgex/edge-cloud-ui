@@ -225,7 +225,11 @@ module.exports = {
                     ));
                     const appendTo = oneOfRule ? oneOfRule.oneOf : webpackConfig.module.rules;
                     appendTo.push(lessRules);
-
+                    
+                    webpackConfig.module.rules.push({
+                        test: /\.worker\.js$/,
+                        use: { loader: 'worker-loader' }
+                      })
                     return webpackConfig;
                 }
             }
