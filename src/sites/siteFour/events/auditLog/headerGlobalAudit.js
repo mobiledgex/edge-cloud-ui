@@ -33,7 +33,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await showAudits(_self, {match : { orgs: [orgName] }})
+        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] } })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
@@ -45,8 +45,9 @@ class headerGlobalAudit extends React.Component {
     }
 
     updateStatus = (data) => {
+        let mtags = data.mtags
         if (data.name.includes('/ws/') || data.name.includes('/wss/')) {
-            data.status = data.response.includes('"code":400') ? 400 : data.status
+            mtags.status = mtags.response.includes('"code":400') ? 400 : mtags.status
         }
     }
 
