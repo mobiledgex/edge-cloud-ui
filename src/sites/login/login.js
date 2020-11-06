@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Grid, Input, Icon, Form} from 'semantic-ui-react'
+import { Container, Button, Grid, Input, Icon, Form } from 'semantic-ui-react'
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
@@ -11,8 +11,7 @@ import RegistryUserForm from './signup';
 import RegistryResetForm from '../../components/reduxForm/resetPassword';
 import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
-import { Box } from '@material-ui/core';
-
+import ReCAPTCHA from "react-google-recaptcha";
 
 const host = window.location.host;
 let self = null;
@@ -33,7 +32,7 @@ const FormContainer = (props) => (
             <Grid.Column >
                 <Icon name='keyboard outline' /><sup>{' *'}</sup>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Input autoComplete="off"  style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
+                <Input autoComplete="off" style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -189,7 +188,8 @@ class Login extends Component {
             forgotPass: false,
             forgotMessage: false,
             created: false,
-            resultMsg: ''
+            resultMsg: '',
+            captchaValidated:false
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -248,7 +248,7 @@ class Login extends Component {
             }
 
         } else if (nextProps.loginMode === 'signup') {
-            this.setState({ successCreate: false, loginMode: 'signup', forgotMessage: false, forgotPass: false, errorCreate: false });
+            this.setState({ successCreate: false, loginMode: 'signup', forgotMessage: false, forgotPass: false, errorCreate: false, captchaValidated:false });
         } else if (nextProps.loginMode === 'forgot') {
             this.setState({ successCreate: false, loginMode: 'forgot', forgotMessage: false, forgotPass: false });
         } else if (nextProps.loginMode === 'verify') {
@@ -314,7 +314,7 @@ class Login extends Component {
                     self.props.handleAlertInfo('error', message)
 
                 }
-                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false, email : data[fields.email]});
+                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false, email: data[fields.email] });
                 setTimeout(() => self.props.handleChangeLoginMode('signuped'), 600);
             }
         }
@@ -439,18 +439,36 @@ class Login extends Component {
         };
     }
 
+    onCaptchaChange = (value) => {
+        if (value) {
+            this.setState({ captchaValidated: true })
+        }
+    }
+
     signUpForm = () => (
-        <Grid>
-            <Grid.Row>
-                <span className='title'>Create New Account</span>
-            </Grid.Row>
-            <RegistryUserForm createUser={this.createUser} />
-            <Grid.Row>
-                <span style={{ marginTop: 30 }}>
-                    By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
-                </span>
-            </Grid.Row>
-        </Grid>
+        this.state.captchaValidated ?
+            <Grid>
+                <Grid.Row>
+                    <span className='title'>Create New Account</span>
+                </Grid.Row>
+                <RegistryUserForm createUser={this.createUser} />
+                <Grid.Row>
+                    <span style={{ marginTop: 40 }}>
+                        By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
+                    </span>
+                </Grid.Row>
+            </Grid> :
+            <Grid>
+                <Grid.Row>
+                    <span className='title'>Validate Captcha for Signup</span>
+                </Grid.Row>
+                <Grid.Row>
+                    <ReCAPTCHA
+                        sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
+                        onChange={this.onCaptchaChange}
+                    />
+                </Grid.Row>
+        </Grid> 
     )
 
 
