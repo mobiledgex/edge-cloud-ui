@@ -104,7 +104,6 @@ class RegistryUserForm extends React.Component {
                         currentForm.error = undefined
                         return true;
                     }
-                    break;
                 }
             }
         }
