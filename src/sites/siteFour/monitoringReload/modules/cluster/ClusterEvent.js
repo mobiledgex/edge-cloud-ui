@@ -5,10 +5,7 @@ import { orgEvents } from '../../../../../services/model/events'
 import { getOrganization } from '../../../../../services/model/format'
 import randomColor from 'randomcolor'
 
-const appEventKeys = [
-    { label: 'App', serverField: 'app', summary: false, filter:true },
-    { label: 'App Developer', serverField: 'apporg', summary: false, filter:true },
-    { label: 'Version', serverField: 'appver', summary: false },
+const clusterEventKeys = [
     { label: 'Cluster', serverField: 'cluster', summary: false, filter:true },
     { label: 'Cluster Developer', serverField: 'clusterorg', summary: false, filter:true },
     { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter:true },
@@ -33,10 +30,9 @@ class MexAppEvent extends React.Component {
 
     header = (data) => {
         let cluster = data['cluster']
-        return ( 
+        return (
             <React.Fragment>
-                {`${data['app']} [${data['appver']}]`}
-                {cluster ? <code style={{ color: '#74B724' }}><br />{`${cluster}`}</code> : null}
+                {cluster}
             </React.Fragment>
         )
     }
@@ -44,7 +40,7 @@ class MexAppEvent extends React.Component {
     render() {
         const { eventData, colors } = this.state
         const { filter } = this.props
-        return eventData.length > 0 ? <EventList eventData={eventData} filter={filter} colors={colors} keys={appEventKeys} header={this.header}/> : 
+        return eventData.length > 0 ? <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={clusterEventKeys} header={this.header}/> : 
         <div className="event-list-main" align="center" style={{textAlign:'center', verticalAlign:'middle'}}>
             <div align="left" className="event-list-header">
                 <h3>Events</h3>
@@ -58,7 +54,8 @@ class MexAppEvent extends React.Component {
             match: {
                 orgs: [getOrganization()],
                 types: ["event"],
-                tags: { app: "*" },
+                tags: { cluster: "*" },
+                names: ["*cluster*", "*Cluster*"],
                 starttime: range.starttime,
                 endtime: range.endtime,
             },
