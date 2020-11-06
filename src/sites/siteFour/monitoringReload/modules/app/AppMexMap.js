@@ -1,19 +1,17 @@
 import React from 'react'
-import MexMap from './MexMap'
 import { Icon } from 'semantic-ui-react'
-import { Marker, Polyline, Popup } from "react-leaflet";
-import MexCircleMarker from './utils/MexCircleMarker'
-import { fields } from '../../../../services/model/format';
-import { cloudGreenIcon } from "./MapProperties";
-import { mcURL } from '../../../../services/model/serviceMC'
-import { getPath } from '../../../../services/model/endPointTypes'
-import * as serverData from '../../../../services/model/serverData'
-import { showAppInstClient } from '../../../../services/model/appInstClient'
+import { Marker, Popup } from "react-leaflet";
+import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../mexmap/MexMap'
+import MexCircleMarker from '../../mexmap/utils/MexCircleMarker'
+import { fields } from '../../../../../services/model/format';
+import { cloudGreenIcon } from "../../mexmap/MapProperties";
+import { mcURL } from '../../../../../services/model/serviceMC'
+import { getPath } from '../../../../../services/model/endPointTypes'
+import * as serverData from '../../../../../services/model/serverData'
+import { showAppInstClient } from '../../../../../services/model/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
-import { MAP_CENTER, DEFAULT_ZOOM } from './MexMap'
 
-import MexCurve from './utils/MexCurve'
-import { polyline } from 'leaflet';
+import MexCurve from '../../mexmap/utils/MexCurve'
 
 
 class AppMexMap extends React.Component {
@@ -26,7 +24,8 @@ class AppMexMap extends React.Component {
             showDevices: false,
             mapCenter: MAP_CENTER,
             zoom: DEFAULT_ZOOM,
-            curveColor : 'red'
+            curveColor : 'red',
+            backswitch:false
         }
         this.popup = React.createRef();
         this.ws = undefined
@@ -38,7 +37,7 @@ class AppMexMap extends React.Component {
         let showData = data.keyData.showData
         let main = { location: showData[fields.cloudletLocation] }
         main[showData[fields.cloudletName]] = [data]
-        this.setState({ mapData: { main }, polyline:[[data.location.latitude, data.location.longitude]], curveColor:data.keyData.color })
+        this.setState({ mapData: { main }, polyline:[[data.location.latitude, data.location.longitude]], curveColor:data.keyData.color, backswitch:true })
         this.sendWSRequest(showAppInstClient(showData))
     }
 
@@ -47,7 +46,7 @@ class AppMexMap extends React.Component {
             this.ws.close()
             this.ws = undefined
         }
-        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM })
+        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch:false })
     }
 
     sendWSRequest = (request) => {
@@ -156,9 +155,9 @@ class AppMexMap extends React.Component {
     }
 
     render() {
-        const { mapCenter, zoom } = this.state
+        const { mapCenter, zoom, backswitch } = this.state
         return (
-            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} />
+            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch}/>
         )
     }
 }
