@@ -10,6 +10,7 @@ import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import './style.css'
 import MexWorker from '../../../services/worker/mex.worker.js'
+import {WORKER_METRIC, WORKER_SERVER} from '../../../services/worker/constant'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -164,7 +165,7 @@ class Monitoring extends React.Component {
 
     processMetricData = (parent, serverField, region, metricDataList, showList) => {
         const worker = new MexWorker();
-        worker.postMessage({ type: 'process', metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys })
+        worker.postMessage({ type: WORKER_METRIC, metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys })
         worker.addEventListener('message', event => {
             let chartData = event.data.chartData
             let avgData = event.data.avgData
@@ -224,7 +225,7 @@ class Monitoring extends React.Component {
                                 showRequest.keys = parent.showKeys
 
                                 this.setState({ loading: true })
-                                worker.postMessage({ type: 'server', request: [metricRequest, showRequest], requestType:'array' });
+                                worker.postMessage({ type: WORKER_SERVER, request: [metricRequest, showRequest], requestType:'array' });
                                 worker.addEventListener('message', event => {
                                     count = count - 1
                                     if (count === 0) {

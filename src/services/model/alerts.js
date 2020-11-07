@@ -2,6 +2,7 @@ import AlertWorker from '../worker/mex.worker.js'
 import { SHOW_ALERT } from './endPointTypes'
 import { getToken } from './serverData'
 import * as formatter from './format'
+import { WORKER_METRIC } from '../worker/constant.js'
 
 let fields = formatter.fields
 const showAlertKeys = () => (
@@ -33,7 +34,7 @@ export const showAlerts = (data) => {
 
 export const sendRequest = (request, callback) => {
     const worker = new AlertWorker();
-    worker.postMessage({ type: 'server', request: request, requestType: 'object' });
+    worker.postMessage({ type: WORKER_METRIC, request: request, requestType: 'object' });
     worker.addEventListener('message', event => {
         callback(event.data)
     });
