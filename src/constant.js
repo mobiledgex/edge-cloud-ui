@@ -432,3 +432,7 @@ export const filterData = (selectedDatas, dataList, field) => {
     return dataList
 }
 
+export const regions = ()=>{
+    return localStorage.regions ? localStorage.regions.split(",") : [];
+}
+

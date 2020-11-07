@@ -1,80 +1,10 @@
 /* eslint-disable */
-import axios from 'axios';
-import { maxBy, meanBy, minBy } from 'lodash';
-import * as formatter from '../../../../services/model/format'
+/**Fetch monitoring metric data for app, cluster and cloudlet */
+
 import randomColor from 'randomcolor'
-import { unit } from '../../../../utils/math_util'
-
-self.addEventListener("message", processWorker);
-
-const fields = formatter.fields
-const SHOW_APP_INST = "ShowAppInst";
-const SHOW_CLOUDLET = "ShowCloudlet";
-const SHOW_ORG_CLOUDLET = "orgcloudlet";
-const SHOW_CLUSTER_INST = "ShowClusterInst";
-const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
-const APP_INST_METRICS_ENDPOINT = 'metrics/app';
-const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
-
-
-function getPath(request) {
-    switch (request.method) {
-        case CLOUDLET_METRICS_ENDPOINT:
-        case APP_INST_METRICS_ENDPOINT:
-        case CLUSTER_METRICS_ENDPOINT:
-            return `/api/v1/auth/${request.method}`
-        case SHOW_CLOUDLET:
-        case SHOW_APP_INST:
-        case SHOW_CLUSTER_INST:
-            return `/api/v1/auth/ctrl/${request.method}`;
-        case SHOW_ORG_CLOUDLET:
-            return `/api/v1/auth/orgcloudlet/show`;
-        default:
-            return null;
-    }
-}
-
-function customData(value) {
-    return value
-}
-
-function formatData(request, response) {
-    let data = undefined;
-    switch (request.method) {
-        case APP_INST_METRICS_ENDPOINT:
-        case CLUSTER_METRICS_ENDPOINT:
-        case CLOUDLET_METRICS_ENDPOINT:
-            data = formatter.formatEventData(response, request.data, request.keys)
-            break;
-        case SHOW_APP_INST:
-        case SHOW_CLUSTER_INST:
-        case SHOW_ORG_CLOUDLET:
-        case SHOW_CLOUDLET:
-            data = formatter.formatData(response, request.data, request.keys, customData, true)
-            break;
-
-    }
-    return data
-}
-
-function fetchData(requestList) {
-    let promise = []
-    requestList.map((request) => {
-        promise.push(axios.post(getPath(request), request.data,
-            {
-                headers: { 'Authorization': `Bearer ${request.token}` }
-            }))
-    })
-    axios.all(promise)
-        .then(function (responseList) {
-            let formattedResponseList = [];
-            responseList.map((response, i) => {
-                let request = requestList[i]
-                formattedResponseList.push({ request, data: formatData(request, response) });
-            })
-            self.postMessage(formattedResponseList)
-        })
-}
+import { maxBy, meanBy, minBy } from 'lodash';
+import { unit } from '../../utils/math_util'
+import {fields} from '../model/format'
 
 const metricKeyGenerator = (parentId, region, metric) => {
     return `${parentId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
@@ -142,7 +72,7 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
     })
 }
 
-function processRequest(data) {
+const processData = (data) => {
     let metricDataList = data.metric
     let showList = data.show
     let parentId = data.parentId
@@ -180,15 +110,6 @@ function processRequest(data) {
     self.postMessage({ chartData, avgData })
 }
 
-function processWorker(event) {
-    let data = event.data
-    switch (data.type) {
-        case 'server':
-            fetchData(data.request)
-            break;
-        case 'process':
-            processRequest(data)
-            break;
-    }
-
+export const format = (worker) => {
+    processData(worker)
 }

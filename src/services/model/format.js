@@ -1,4 +1,4 @@
-import { generateUniqueId } from '../serviceMC';
+import uuid from 'uuid'
 import { toJson } from '../../utils/json_util'
 import isEqual from 'lodash/isEqual';
 
@@ -152,7 +152,13 @@ export const fields = {
     metric: 'metric',
     location: 'location',
     values: 'values',
-    columns: 'columns'
+    columns: 'columns',
+    labels:'labels',
+    job:'job',
+    instance:'instance',
+    activeAt:'activeAt',
+    alertname:'alertname',
+    envoyclustername:'envoyclustername'
 }
 
 export const getUserRole = () => {
@@ -229,9 +235,9 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
                     let value = {}
                     map(value, data, keys)
-                    if (isUnique) { value.uuid = generateUniqueId() }
+                    if (isUnique) { value.uuid = uuid() }
                     if (body) { value.region = body.region }
-                    let newValue = customData(value)
+                    let newValue = customData ? customData(value) : value
                     if (newValue) {
                         values.push(newValue)
                     }

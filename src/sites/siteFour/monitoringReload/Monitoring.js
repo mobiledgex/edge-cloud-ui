@@ -9,7 +9,7 @@ import AppInstMonitoring from './modules/app/AppMonitoring'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import './style.css'
-import myWorker from './services/metric.worker.js'
+import MexWorker from '../../../services/worker/mex.worker.js'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -163,7 +163,7 @@ class Monitoring extends React.Component {
     }
 
     processMetricData = (parent, serverField, region, metricDataList, showList) => {
-        const worker = new myWorker();
+        const worker = new MexWorker();
         worker.postMessage({ type: 'process', metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys })
         worker.addEventListener('message', event => {
             let chartData = event.data.chartData
@@ -183,10 +183,10 @@ class Monitoring extends React.Component {
         let metricData = {}
         if (mcRequestList && mcRequestList.length > 0) {
             mcRequestList.map(mcRequest => {
-                if (mcRequest && mcRequest.data) {
+                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                     let request = mcRequest.request
                     let method = request.method
-                    let data = mcRequest.data
+                    let data = mcRequest.response.data
                     if (method === parent.request({}).method) {
                         metricData = data
                     }
@@ -213,7 +213,7 @@ class Monitoring extends React.Component {
                                 data[fields.endtime] = this.state.range.endtime
                                 data[fields.selector] = '*'
 
-                                const worker = new myWorker();
+                                const worker = new MexWorker();
                                 let metricRequest = parent.request(data)
                                 let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
                                 metricRequest.token = store.userToken
@@ -224,7 +224,7 @@ class Monitoring extends React.Component {
                                 showRequest.keys = parent.showKeys
 
                                 this.setState({ loading: true })
-                                worker.postMessage({ type: 'server', request: [metricRequest, showRequest] });
+                                worker.postMessage({ type: 'server', request: [metricRequest, showRequest], requestType:'array' });
                                 worker.addEventListener('message', event => {
                                     count = count - 1
                                     if (count === 0) {

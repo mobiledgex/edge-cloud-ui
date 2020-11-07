@@ -106,6 +106,7 @@ export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
 export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
 export const EVENTS_FIND = 'events/find'
 export const EVENTS_SHOW = 'events/show'
+export const SHOW_ALERT = 'ShowAlert'
 
 export function getPath(request) {
     switch (request.method) {
@@ -196,6 +197,7 @@ export function getPath(request) {
         case SHOW_CONSOLE:
         case GET_CLOUDLET_MANIFEST:
         case SHOW_APP_INST_CLIENT:
+        case SHOW_ALERT:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
