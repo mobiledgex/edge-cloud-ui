@@ -1,6 +1,7 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,6 +15,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MexHeader from './header'
 import { getUserRole } from '../../../services/model/format'
 import * as constant from '../../../constant'
+import * as actions from '../../../actions';
 
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
@@ -31,8 +33,6 @@ import PolicyIcon from '@material-ui/icons/Policy';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 import LandscapeOutlinedIcon from '@material-ui/icons/LandscapeOutlined';
-import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import EventIcon from '@material-ui/icons/Event';
 
 import SiteFourPageOrganization from '../organization/organizationList';
 import SiteFourPageAccount from '../accounts/accountList';
@@ -48,16 +48,19 @@ import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
 import PageMonitoringMain from '../monitoring/common/PageMonitoringMain';
 import Monitoring from '../monitoringReload/Monitoring';
+import Alerts from '../alerts/receiver/AlertReceiver';
+
 import { Collapse, Tooltip } from '@material-ui/core';
 import { Image } from 'semantic-ui-react';
 import PopLegendViewer from '../../../container/popLegendViewer';
 
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend, } from 'react-dnd-html5-backend'
+import { withStyles } from '@material-ui/styles';
 
 const drawerWidth = 250;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = theme => ({
     root: {
         display: 'flex',
         width: '100%',
@@ -103,7 +106,7 @@ const useStyles = makeStyles(theme => ({
         margin: 5,
         marginTop: 53 /* header height(48) + margin(5) */
     },
-}));
+});
 
 const defaultPage = (options) => {
     let page = <SiteFourPageOrganization />
@@ -133,66 +136,72 @@ const setNavState = (flag) => {
     return localStorage.setItem('navigation', flag)
 }
 
-export default function MiniDrawer(props) {
+const options = [
+    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
+    { divider: true },
+    { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, pageId: constant.PAGE_CLOUDLETS, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, pageId: constant.PAGE_CLOUDLET_POOLS, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN_MANAGER, constant.OPERATOR_MANAGER, constant.OPERATOR_CONTRIBUTOR] },
+    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, pageId: constant.PAGE_FLAVORS, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, pageId: constant.PAGE_CLUSTER_INSTANCES, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, pageId: constant.PAGE_APPS, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },
+    { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, pageId: constant.PAGE_APP_INSTANCES, page: <SiteFourPageAppInst />, roles: ['AdminManager', 'DeveloperManager'] },
+    {
+        label: 'Policies', icon: <TrackChangesIcon />, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
+            { label: 'Auto Provisioning Policy', icon: <GroupWorkIcon />, pg: 8, pageId: constant.PAGE_AUTO_PROVISIONING_POLICY, page: <AutoProvPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+            { label: 'Privacy Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_PRIVACY_POLICY, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+            { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+        ]
+    },
+    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
+    { label: 'Reload', icon: <TvOutlinedIcon />, pg: 'Reload', pageId: constant.PAGE_MONITORING_RELOAD, page: <Monitoring />, roles: [constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
+    { label: 'Alerts', icon: <TvOutlinedIcon />, pg: 'Alerts', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER] }
+]
 
-    const options = [
-        { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-        { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-        { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: ['AdminManager'] },
-        { divider: true },
-        { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, pageId: constant.PAGE_CLOUDLETS, page: <SiteFourPageCloudlet />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-        { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, pageId: constant.PAGE_CLOUDLET_POOLS, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN_MANAGER, constant.OPERATOR_MANAGER, constant.OPERATOR_CONTRIBUTOR] },
-        { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, pageId: constant.PAGE_FLAVORS, page: <SiteFourPageFlavor />, roles: ['AdminManager', 'DeveloperManager'] },
-        { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, pageId: constant.PAGE_CLUSTER_INSTANCES, page: <SiteFourPageClusterInst />, roles: ['AdminManager', 'DeveloperManager'] },
-        { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, pageId: constant.PAGE_APPS, page: <SiteFourPageApps />, roles: ['AdminManager', 'DeveloperManager'] },
-        { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, pageId: constant.PAGE_APP_INSTANCES, page: <SiteFourPageAppInst />, roles: ['AdminManager', 'DeveloperManager'] },
-        {
-            label: 'Policies', icon: <TrackChangesIcon />, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
-                { label: 'Auto Provisioning Policy', icon: <GroupWorkIcon />, pg: 8, pageId: constant.PAGE_AUTO_PROVISIONING_POLICY, page: <AutoProvPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
-                { label: 'Privacy Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_PRIVACY_POLICY, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
-                { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: ['AdminManager', 'DeveloperManager'] },
-            ]
-        },
-        { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-        { label: 'Reload', icon: <TvOutlinedIcon />, pg: 'Reload', pageId: constant.PAGE_MONITORING_RELOAD, page: <Monitoring />, roles: [constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] }
-    ]
+class SideNav extends React.Component {
 
-    const classes = useStyles();
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(navstate() === 1 ? true : false);
-    const [expand, setExpand] = React.useState(undefined);
-    const [openLegend, setOpenLegend] = React.useState(false);
+    constructor(props) {
+        super(props)
+        this.state = {
+            open: navstate() === 1 ? true : false,
+            expand: undefined,
+            openLegend: false,
+            page: defaultPage(options)
+        }
+    }
+    // const classes = useStyles();
+    // const theme = useTheme();
 
-    const [page, setPage] = React.useState(defaultPage(options));
-
-    const handleDrawerOpen = () => {
+    handleDrawerOpen = () => {
         setNavState(1)
-        setOpen(true);
+        this.setState({ open: true })
     };
 
-    const handleDrawerClose = () => {
+    handleDrawerClose = () => {
         setNavState(0)
-        setOpen(!open);
+        this.setState(prevState => ({ open: !prevState.open }))
     };
 
-    const expandOptions = (option) => {
-        setExpand(expand === option.label ? undefined : option.label)
+    expandOptions = (option) => {
+        this.setState(prevState => ({ expand: prevState.expand === option.label ? undefined : option.label }))
     }
 
-    const onOptionClick = (option, i) => {
-        if (props.history.location.pathname !== `/site4/pg=${option.pageId}`) {
-            setPage(null)
+    onOptionClick = (option) => {
+        if (this.props.history.location.pathname !== `/site4/pg=${option.pageId}`) {
+            this.setState({ page: null })
         }
-        props.history.push({
+        this.props.history.push({
             pathname: `/site4/pg=${option.pageId}`
         });
-        setTimeout(() => { setPage(option.page) }, 1)
+        setTimeout(() => { this.setState({ page: option.page }) }, 1)
     }
 
-    const showOptionForm = (i, option) => {
+    showOptionForm = (i, option) => {
+        const { expand } = this.state
         return (
             <ListItem button key={option.label} onClick={() => {
-                option.pg !== undefined ? onOptionClick(option, i) : expandOptions(option)
+                option.pg !== undefined ? this.onOptionClick(option) : this.expandOptions(option)
             }}>
                 <Tooltip title={option.label} aria-label="add">
                     <ListItemIcon style={{ color: '#B1B2B4' }}>{option.icon}
@@ -205,11 +214,11 @@ export default function MiniDrawer(props) {
     }
 
 
-    const roleInfo = () => {
+    roleInfo = (open) => {
         return (
             <ListItem
                 onClick={(e) => {
-                    setOpenLegend(localStorage.selectRole && localStorage.selectRole != 'null')
+                    this.setState({ openLegend: localStorage.selectRole && localStorage.selectRole != 'null' })
                 }}
             >
                 {
@@ -264,7 +273,7 @@ export default function MiniDrawer(props) {
         )
     }
 
-    const getRoleInfo = (role) => {
+    getRoleInfo = (role) => {
         switch (role) {
             case 'DeveloperViewer':
             case 'DeveloperContributor':
@@ -277,19 +286,19 @@ export default function MiniDrawer(props) {
         }
     }
 
-    const menuList = () => {
+    menuList = (expand) => {
         if (getUserRole()) {
             return options.map((option, i) => (
                 option.divider ?
                     <Divider key={i} /> :
-                    option.roles && option.roles.includes(getRoleInfo(getUserRole())) ?
+                    option.roles && option.roles.includes(this.getRoleInfo(getUserRole())) ?
                         <div key={i}>
-                            {showOptionForm(i, option)}
+                            {this.showOptionForm(i, option)}
                             {option.subOptions ?
                                 <Collapse in={expand === option.label} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {option.subOptions.map((subOption, j) => (
-                                            showOptionForm(j, subOption)
+                                            this.showOptionForm(j, subOption)
                                         ))}
 
                                     </List>
@@ -303,51 +312,81 @@ export default function MiniDrawer(props) {
      * Legend Block
      * * */
 
-    const closeLegend = () => {
-        setOpenLegend(false)
+    closeLegend = () => {
+        this.setState({ openLegend: false })
     }
-    return (
-        <div className={classes.root}>
-            {props.isShowHeader &&
-                <React.Fragment>
-                    <CssBaseline />
-                    <MexHeader handleDrawerOpen={handleDrawerOpen} open={open} email={props.email} data={props.data}
-                        helpClick={props.helpClick} viewMode={props.viewMode} />
-                </React.Fragment>
-            }
-            <Drawer
-                variant="permanent"
-                className={clsx(classes.drawer, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                })}
-                classes={{
-                    paper: clsx({
+
+    render() {
+        const { classes, isShowHeader, email, data, viewMode, helpClick } = this.props;
+        const { open, expand, page, openLegend } = this.state;
+        return (
+            <div className={classes.root}>
+                {isShowHeader &&
+                    <React.Fragment>
+                        <CssBaseline />
+                        <MexHeader handleDrawerOpen={this.handleDrawerOpen} open={open} email={email} data={data}
+                            helpClick={helpClick} viewMode={viewMode} />
+                    </React.Fragment>
+                }
+                <Drawer
+                    variant="permanent"
+                    className={clsx(classes.drawer, {
                         [classes.drawerOpen]: open,
                         [classes.drawerClose]: !open,
-                    }),
-                }}
-                style={{ zIndex: 1 }}
-            >
-                <div className={classes.toolbar}>
-                    <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
-                    <IconButton style={{ color: '#B1B2B4' }} onClick={handleDrawerClose}>
-                        {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                    </IconButton>
-                </div>
-                <List style={{ backgroundColor: '#292c33', height: '100%' }}>
-                    {roleInfo()}
-                    {menuList()}
-                </List>
-            </Drawer>
-            <main className={classes.content}>
-                <DndProvider backend={HTML5Backend}>
-                    <div className='contents_body' style={{ marginTop: 6, height: 'calc(100% - 6px)' }}>
-                        {page}
+                    })}
+                    classes={{
+                        paper: clsx({
+                            [classes.drawerOpen]: open,
+                            [classes.drawerClose]: !open,
+                        }),
+                    }}
+                    style={{ zIndex: 1 }}
+                >
+                    <div className={classes.toolbar}>
+                        <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                        <IconButton style={{ color: '#B1B2B4' }} onClick={this.handleDrawerClose}>
+                            {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        </IconButton>
                     </div>
-                </DndProvider>
-            </main>
-            <PopLegendViewer dimmer={false} open={openLegend} close={closeLegend}></PopLegendViewer>
-        </div>
-    );
+                    <List style={{ backgroundColor: '#292c33', height: '100%' }}>
+                        {this.roleInfo(open)}
+                        {this.menuList(expand)}
+                    </List>
+                </Drawer>
+                <main className={classes.content}>
+                    <DndProvider backend={HTML5Backend}>
+                        <div className='contents_body' style={{ marginTop: 6, height: 'calc(100% - 6px)' }}>
+                            {page}
+                        </div>
+                    </DndProvider>
+                </main>
+                <PopLegendViewer dimmer={false} open={openLegend} close={this.closeLegend}></PopLegendViewer>
+            </div>
+        );
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.redirectPage && prevProps.redirectPage !== this.props.redirectPage) {
+            options.map(option=>{
+                if(option.pageId === this.props.redirectPage)
+                {
+                    this.onOptionClick(option)
+                }
+            })
+            this.props.handlePageRedirect(null)
+        }
+    }
 }
+
+function mapStateToProps(state) {
+    return {
+        redirectPage: state.redirectPage.page
+    }
+}
+const mapDispatchProps = (dispatch) => {
+    return {
+        handlePageRedirect: (mode, msg) => { dispatch(actions.redirectPage(mode, msg)) },
+    };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(withStyles(useStyles)(SideNav)))

@@ -38,7 +38,7 @@ import editInstance from './editInstance';
 import deleteReset from './deleteReset';
 import checkedAudit from './checkedAudit';
 import showAuditLog from './showAuditLog';
-import stateStream from './stateStream';
+import redirectPage from './redirectPage';
 import resetMap from './resetMap';
 import submitObj from './submitObj';
 import LoadingReducer from "./LoadingReducer";
@@ -69,7 +69,7 @@ const reducers = combineReducers({
     regionInfo,
     checkedAudit,
     showAuditLog,
-    stateStream,
+    redirectPage,
     resetMap,
     submitObj,
     registryAccount,

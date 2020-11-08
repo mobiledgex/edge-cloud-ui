@@ -1,11 +1,12 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts, sendRequest } from '../../../services/model/alerts'
 import * as constant from '../../../constant'
-
 import AlertLocal from './AlertLocal'
+import './style.css'
 
 class AlertGlobal extends React.Component {
 
@@ -27,7 +28,7 @@ class AlertGlobal extends React.Component {
     };
 
     render() {
-        const { anchorEl, dataList } = this.state
+        const { anchorEl, dataList} = this.state
         return (
             <div style={{ marginTop: 5 }}>
                 <IconButton onClick={this.handleClick}>
@@ -50,7 +51,7 @@ class AlertGlobal extends React.Component {
                     }}
                 >
                     <div style={{ width: 400, height: 500 }}>
-                        <AlertLocal data={dataList} />
+                        <AlertLocal data={dataList} handleClose={this.handleClose}/>
                     </div>
                 </Popover>
             </div>
@@ -75,4 +76,4 @@ class AlertGlobal extends React.Component {
     }
 }
 
-export default AlertGlobal
+export default withRouter(AlertGlobal)

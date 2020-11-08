@@ -1,15 +1,14 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    state: null
+    audit: null
 };
-export default function checkedAudit( state = initialState, action) {
+export default function redirectPage( state = initialState, action) {
     switch( action.type ) {
-        case types.STATE_STREAM :
+        case types.REDIRECT_PAGE :
             return Object.assign({}, state, {
-                state:action.data
+                page:action.data
             })
-            break;
         default:
             return state
     }

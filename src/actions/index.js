@@ -238,13 +238,6 @@ export function showFlavor(flavor) {
     }
 }
 
-export function blinkMark(blink) {
-    return {
-        type: types.BLINK_MARK,
-        blink
-    }
-}
-
 export function changeLoginMode(mode) {
     return {
         type: types.LOGIN_MODE,
@@ -383,11 +376,13 @@ export function showAuditLog(data) {
 }
 
 /**
- *
- **/
-export function stateStream(data) {
+ * audit
+ * @param data
+ * @returns {{data: *, type: string}}
+ */
+export function redirectPage(data) {
     return {
-        type: types.STATE_STREAM,
+        type: types.REDIRECT_PAGE,
         data
     }
 }

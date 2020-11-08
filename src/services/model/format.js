@@ -158,7 +158,11 @@ export const fields = {
     instance:'instance',
     activeAt:'activeAt',
     alertname:'alertname',
-    envoyclustername:'envoyclustername'
+    envoyclustername:'envoyclustername',
+    slackchannel:'slackchannel',
+    slackwebhook:'slackwebhook',
+    severity:'severity',
+    slack:'slack'
 }
 
 export const getUserRole = () => {
@@ -241,6 +245,29 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     if (newValue) {
                         values.push(newValue)
                     }
+                }
+            }
+        }
+    }
+    catch (e) {
+        console.log('Response Error', e)
+    }
+    return values
+}
+
+export const formatAlertData = (response, body, keys, customData, isUnique) => {
+    let values = [];
+    try {
+        if (response.data) {
+            let jsonData = response.data
+            for (let i = 0; i < jsonData.length; i++) {
+                let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
+                let value = {}
+                map(value, data, keys)
+                if (isUnique) { value.uuid = uuid() }
+                let newValue = customData ? customData(value) : value
+                if (newValue) {
+                    values.push(newValue)
                 }
             }
         }

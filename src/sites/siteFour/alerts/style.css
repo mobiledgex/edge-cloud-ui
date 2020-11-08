@@ -1,0 +1,10 @@
+.alert-toolbar {
+    padding: 10px;
+}
+.alert-toolbar-left {
+    float: left;
+}
+
+.alert-toolbar-right {
+    float: right;
+}

@@ -43,6 +43,8 @@ export const YES = 'Yes'
 export const NO = 'No'
 export const RUN_COMMAND = 'Run Command';
 export const SHOW_LOGS = 'Show Logs';
+export const RECEIVER_TYPE_EMAIL = 'Email'
+export const RECEIVER_TYPE_SLACK = 'Slack'
 
 export const MAINTENANCE_STATE_NORMAL_OPERATION  = 'Normal Operation'
 export const MAINTENANCE_STATE_MAINTENANCE_START  = 'Maintenance Start'
@@ -115,6 +117,7 @@ export const PAGE_PRIVACY_POLICY = 'PrivacyPolicy'
 export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
 export const PAGE_MONITORING_RELOAD = 'Reload'
+export const PAGE_ALERTS = 'Alerts'
 
 export const MaintenanceState = (id) => {
     switch (id) {
