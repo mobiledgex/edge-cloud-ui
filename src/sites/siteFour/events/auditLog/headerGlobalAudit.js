@@ -8,6 +8,7 @@ import PopDetailViewer from '../../../../container/popDetailViewer';
 import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'
+import cloneDeep from 'lodash/cloneDeep'
 let _self = null;
 
 const CON_LIMIT = 25
@@ -29,7 +30,7 @@ class headerGlobalAudit extends React.Component {
         _self = this
         this.intervalId = undefined
         this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
-        this.endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.endOfDay())
+        this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
     }
 
     getDataAuditOrg = async (orgName) => {
@@ -143,20 +144,41 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        
         if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
             this.props.handleShowAuditLog(null)
         }
+        if(prevState.isOpen !== this.state.isOpen)
+        {
+            if(this.state.isOpen)
+            {
+                this.starttime = cloneDeep(this.endtime)
+                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+                this.initAudit(this.starttime, this.endtime, true)
+            }
+            else
+            {
+                clearInterval(this.intervalId)
+            }
+        }
+    }
+
+    initAudit = (starttime, endtime, enableInterval) => {
+        this.getDataAudit(starttime, endtime, CON_LIMIT, true);
+        if (enableInterval) {
+            this.intervalId = setInterval(() => {
+                let dataList = this.state.liveData
+                let orgTime = dataList.length > 0 ? dataList[0].starttime : undefined
+                this.starttime = cloneDeep(this.endtime)
+                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+                this.getDataAudit(this.starttime, this.endtime, CON_LIMIT, true, orgTime)
+            }, 10 * 2000);
+        }
     }
 
     componentDidMount() {
-        this.getDataAudit(this.starttime, this.endtime, CON_LIMIT, true);
-        this.intervalId = setInterval(() => {
-            let dataList = this.state.liveData
-            let time = dataList.length > 0 ? dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.utcTime(dataList[0].starttime)) : this.starttime
-            let orgTime = dataList.length > 0 ? dataList[0].starttime : undefined
-            this.getDataAudit(time, this.endtime, CON_LIMIT, true, orgTime)
-        }, 10 * 1000);
+        this.initAudit(this.starttime, this.endtime, false);
     }
 
     componentWillUnmount = () => {
