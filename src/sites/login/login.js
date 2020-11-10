@@ -446,29 +446,23 @@ class Login extends Component {
     }
 
     signUpForm = () => (
-        this.state.captchaValidated ?
             <Grid>
                 <Grid.Row>
                     <span className='title'>Create New Account</span>
                 </Grid.Row>
-                <RegistryUserForm createUser={this.createUser} />
-                <Grid.Row>
-                    <span style={{ marginTop: 40 }}>
-                        By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
-                    </span>
-                </Grid.Row>
-            </Grid> :
-            <Grid>
-                <Grid.Row>
-                    <span className='title'>Validate Captcha for Signup</span>
-                </Grid.Row>
-                <Grid.Row>
+                <RegistryUserForm createUser={this.createUser} captchaValidated={this.state.captchaValidated}/>
+                <Grid.Row style={{ marginTop: 40, marginLeft:25 }}>
                     <ReCAPTCHA
                         sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
                         onChange={this.onCaptchaChange}
                     />
                 </Grid.Row>
-        </Grid> 
+                <Grid.Row>
+                    <span>
+                        By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
+                    </span>
+                </Grid.Row>
+            </Grid>
     )
 
 
