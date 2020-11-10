@@ -1,6 +1,6 @@
 import * as serviceMC from './serviceMC';
 
-import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_SELF, SHOW_AUDIT_ORG, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
+import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_AUDIT_ORG, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
 
 export const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -119,11 +119,6 @@ export const controllers = async (self, token) => {
 
 export const verifyEmail = async (self, data) => {
     let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: VERIFY_EMAIL, data: data })
-    return mcRequest
-}
-
-export const showSelf = async (self, data, showSpinner) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_SELF, data: data, showSpinner: showSpinner })
     return mcRequest
 }
 
