@@ -1,4 +1,6 @@
 import React, { Fragment } from "react";
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../hoc/forms/MexForms";
 import { fields } from "../../services/model/format";
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
@@ -114,7 +116,14 @@ class RegistryUserForm extends React.Component {
     }
 
     onCreate = (data) => {
+        if(this.props.captchaValidated)
+        {
         this.props.createUser(data)
+        }
+        else
+        {
+            this.props.handleAlertInfo('error', 'Please validate captcha')
+        }
     }
 
     onValueChange = (form) => {
@@ -184,4 +193,11 @@ class RegistryUserForm extends React.Component {
     }
 };
 
-export default RegistryUserForm;
+
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+    };
+};
+
+export default connect(null, mapDispatchProps)(RegistryUserForm);

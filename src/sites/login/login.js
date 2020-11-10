@@ -450,8 +450,8 @@ class Login extends Component {
                 <Grid.Row>
                     <span className='title'>Create New Account</span>
                 </Grid.Row>
-                <RegistryUserForm createUser={this.createUser} />
-                <Grid.Row style={{ marginTop: 40 }}>
+                <RegistryUserForm createUser={this.createUser} captchaValidated={this.state.captchaValidated}/>
+                <Grid.Row style={{ marginTop: 40, marginLeft:25 }}>
                     <ReCAPTCHA
                         sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
                         onChange={this.onCaptchaChange}
