@@ -1,5 +1,5 @@
 import React from 'react'
-import MexMap from '../../mexmap/AppMexMap'
+import MexMap from './AppMexMap'
 import MexChart from '../../charts/MexChart'
 import { Card, Grid } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
@@ -82,7 +82,7 @@ class AppMonitoring extends React.Component {
                             </Card>
                         </Grid>
                         <Grid item xs={6}>
-                            <MexMap data={mapData} mapClick={this.mapClick} />
+                            <MexMap data={mapData} />
                         </Grid>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>

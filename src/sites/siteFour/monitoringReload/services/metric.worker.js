@@ -80,29 +80,28 @@ const metricKeyGenerator = (parentId, region, metric) => {
     return `${parentId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
 }
 
-export const fetchAppLocation = (avgValues, metricData, showList) => {
+export const fetchLocation = (parentId, avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {
         let show = showList[i]
-        let valid = metricData.includes(show[fields.region]) &&
-            metricData.includes(show[fields.appName].toLowerCase()) &&
-            metricData.includes(show[fields.organizationName]) &&
-            metricData.includes(show[fields.clusterName]) &&
-            metricData.includes(show[fields.clusterdeveloper]) &&
-            metricData.includes(show[fields.cloudletName]) &&
-            metricData.includes(show[fields.operatorName])
+        let valid = false
+        if (parentId === 'appinst') {
+            valid = metricData.includes(show[fields.region]) &&
+                metricData.includes(show[fields.appName].toLowerCase()) &&
+                metricData.includes(show[fields.organizationName]) &&
+                metricData.includes(show[fields.clusterName]) &&
+                metricData.includes(show[fields.clusterdeveloper]) &&
+                metricData.includes(show[fields.cloudletName]) &&
+                metricData.includes(show[fields.operatorName])
+        }
+        else {
+            valid = metricData.includes(show[fields.region]) &&
+                metricData.includes(show[fields.cloudletName]) &&
+                metricData.includes(show[fields.operatorName])
+        }
         if (valid) {
             avgValues['location'] = show[fields.cloudletLocation]
-            avgValues[fields.healthCheck] = show[fields.healthCheck]
             avgValues['showData'] = show
         }
-    }
-    return avgValues
-}
-
-const fetchLocation = (parentId, avgValues, value, showList) => {
-    switch (parentId) {
-        case 'appinst':
-            avgValues = fetchAppLocation(avgValues, value, showList)
     }
     return avgValues
 }

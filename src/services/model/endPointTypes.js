@@ -55,7 +55,6 @@ export const SHOW_APP_INST = "ShowAppInst";
 export const CREATE_APP_INST = "CreateAppInst";
 export const UPDATE_APP_INST = "UpdateAppInst";
 export const DELETE_APP_INST = "DeleteAppInst";
-export const SHOW_SELF = "showself";
 export const LOGIN = "login";
 export const SETTING_LOCK = "SettingLock";
 export const CURRENT_USER = "current";
@@ -145,8 +144,6 @@ export function getPath(request) {
             return '/api/v1/auth/restricted/user/update';
         case CURRENT_USER:
             return '/api/v1/auth/user/current';
-        case SHOW_SELF:
-            return '/api/v1/auth/audit/showself';
         case ADD_USER_ROLE:
             return '/api/v1/auth/role/adduser';
         case SHOW_CLOUDLET:

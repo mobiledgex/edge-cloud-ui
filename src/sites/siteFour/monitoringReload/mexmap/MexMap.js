@@ -3,8 +3,9 @@ import { Map, TileLayer } from "react-leaflet";
 import Control from 'react-leaflet-control';
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon } from "semantic-ui-react";
+import { Tooltip } from "@material-ui/core";
 
-export const DEFAULT_ZOOM = 3
+export const DEFAULT_ZOOM = 2
 export const MAP_CENTER = [43.4, 51.7]
 
 class MexMap extends React.Component {
@@ -16,7 +17,7 @@ class MexMap extends React.Component {
     }
 
     zoomReset = () => {
-        this.map.current.leafletElement.setZoom(DEFAULT_ZOOM)
+        this.map.current.leafletElement.setView(MAP_CENTER, DEFAULT_ZOOM)
     }
 
     zoomIn = () => {
@@ -29,29 +30,31 @@ class MexMap extends React.Component {
         this.map.current.leafletElement.setZoom(zoom - 1)
     }
 
-    renderMapControl = () => {
+    renderMapControl = (backswitch) => {
         let controllers = [
-            { icon: 'redo', onClick: () => { this.zoomReset() } },
-            { icon: 'add', onClick: () => { this.zoomIn() } },
-            { icon: 'minus', onClick: () => { this.zoomOut() } },
-            { icon: 'chevron left', onClick: () => { this.props.back() } }
+            { label: 'Zoom In', icon: 'add', onClick: () => { this.zoomIn() }, visible:true },
+            { label: 'Zoom Out', icon: 'minus', onClick: () => { this.zoomOut() }, visible:true },
+            { label: 'Zoom Reset', icon: 'redo', onClick: () => { this.zoomReset() }, visible:true },
+            { label: 'Back', icon: 'compress', onClick: () => { this.props.back() }, visible:backswitch }
         ]
         return (
             <Control position="topleft" className="map-control">
                 {controllers.map((controller, key) => (
-                    <div key={key} className="map-control-div">
-                        <div
-                            onClick={controller.onClick}>
-                            <Icon name={controller.icon} className="map-control-div-icon" />
-                        </div>
-                    </div>
+                    controller.visible ? <div key={key} className="map-control-div">
+                        <Tooltip title={controller.label}>
+                            <div
+                                onClick={controller.onClick}>
+                                <Icon name={controller.icon} className="map-control-div-icon" />
+                            </div>
+                        </Tooltip>
+                    </div> : null
                 ))}
             </Control>
         )
     }
 
     render() {
-        const { renderMarker, mapCenter, zoom } = this.props
+        const { renderMarker, mapCenter, zoom, backswitch } = this.props
         return (
             <div className="mex-map" mex-test="component-map">
                 <Map
@@ -62,7 +65,7 @@ class MexMap extends React.Component {
                     useFlyTo={true}
                     dragging={true}
                     boundsOptions={{ padding: [50, 50] }}
-                    minZoom={3}
+                    minZoom={2}
                     minNativeZoom={3}
                     animate={false}
                     scrollWheelZoom={false}
@@ -74,7 +77,7 @@ class MexMap extends React.Component {
                         zoom={2}
                         style={{ zIndex: 1 }}
                     />
-                    {this.renderMapControl()}
+                    {this.renderMapControl(backswitch)}
                     {renderMarker()}
                 </Map>
             </div>
