@@ -19,16 +19,16 @@ class HeaderAuditLog extends React.Component {
             expanded: (-1),
             dayData: [],
             dataList: [],
-            filterList:[],
+            filterList: [],
             filterExpand: false,
-            filterText:'',
-            isOrg : false
+            filterText: '',
+            isOrg: false
         }
     }
 
-    setAllView = (dummyConts, sId) => {
-        if (dummyConts && dummyConts['traceid']) {
-            return dummyConts
+    setAllView = (mtags, sId) => {
+        if (mtags && mtags['traceid']) {
+            return mtags
         }
         return {}
     }
@@ -53,9 +53,8 @@ class HeaderAuditLog extends React.Component {
         return item.charAt(0).toUpperCase() + item.slice(1)
     }
 
-    getStepLabel = (item, stepperProps) => {
+    getStepLabel = (data, stepperProps) => {
         let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"));
-        let data = item;
         let storageSelectedTraceidIndex = (-1);
         if (storageSelectedTraceidList) {
             storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === data.traceid) : (-1)
@@ -64,7 +63,7 @@ class HeaderAuditLog extends React.Component {
         return (
             <div>
                 <div className='audit_timeline_Step'
-                    style={{ backgroundColor: (data.status === 200) ? '#388e3c' : '#b71c1c' }}
+                    style={{ backgroundColor: (data.status === '200') ? '#388e3c' : '#b71c1c' }}
                 >
                     {(storageSelectedTraceidIndex !== (-1)) ?
                         <CheckIcon />
@@ -76,7 +75,7 @@ class HeaderAuditLog extends React.Component {
     }
 
     onClickViewDetail = (data) => {
-        let rawViewData = (data) ? this.setAllView(data) : {};
+        let rawViewData = (data.mtags) ? this.setAllView(data.mtags) : {};
         this.props.detailView(rawViewData)
     }
 
@@ -85,60 +84,64 @@ class HeaderAuditLog extends React.Component {
         this.setState({ expanded: newExpanded ? index : false });
     };
 
-    expandablePanelSummary = (index, data) => (
-        <AccordionSummary id="panel1a-header">
-            <Step key={index}>
-                <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
-                    {dateUtil.unixTime(dateUtil.FORMAT_FULL_TIME, data.starttime)}<br />
-                    {dateUtil.unixTime(dateUtil.FORMAT_AM_PM, data.starttime)}
-                </div>
-                <StepLabel StepIconComponent={(stepperProps) => {
-                    return this.getStepLabel(data, stepperProps)
-                }}>
-                    <div className='audit_timeline_title'>{this.makeOper(data.operationname)}</div>
-                    <div className='audit_timeline_traceID'>Trace ID : <span>{data.traceid}</span></div>
-                </StepLabel>
-            </Step>
-        </AccordionSummary>
-    )
+    expandablePanelSummary = (index, data) => {
+        let mtags = data.mtags
+        return (
+            <AccordionSummary id="panel1a-header">
+                <Step key={index}>
+                    <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
+                        {dateUtil.time(dateUtil.FORMAT_FULL_TIME, data.timestamp)}<br />
+                        {dateUtil.time(dateUtil.FORMAT_AM_PM, data.timestamp)}
+                    </div>
+                    <StepLabel StepIconComponent={(stepperProps) => {
+                        return this.getStepLabel(mtags, stepperProps)
+                    }}>
+                        <div className='audit_timeline_title'>{this.makeOper(data.name)}</div>
+                        <div className='audit_timeline_traceID'>Trace ID : <span>{mtags.traceid}</span></div>
+                    </StepLabel>
+                </Step>
+            </AccordionSummary>
+        )
+    }
 
-    expandablePanelDetails = (data) => (
-        <AccordionDetails>
+    expandablePanelDetails = (data) => {
+        let mtags = data.mtags
+        return (<AccordionDetails>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Start Time</div>
-                <div className='audit_timeline_detail_right'>{dateUtil.unixTime(dateUtil.FORMAT_FULL_DATE_TIME, data.starttime)}</div>
+                <div className='audit_timeline_detail_right'>{dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data.timestamp)}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Trace ID</div>
-                <div className='audit_timeline_detail_right'>{data.traceid}</div>
+                <div className='audit_timeline_detail_right'>{mtags.traceid}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Client IP</div>
-                <div className='audit_timeline_detail_right'>{data.clientip}</div>
+                <div className='audit_timeline_detail_right'>{mtags['remote-ip']}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Duration</div>
-                <div className='audit_timeline_detail_right'>{data.duration}</div>
+                <div className='audit_timeline_detail_right'>{mtags.duration}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Operation Name</div>
-                <div className='audit_timeline_detail_right'>{this.makeOper(data.operationname)}</div>
+                <div className='audit_timeline_detail_right'>{this.makeOper(data.name)}</div>
             </div>
             <div className='audit_timeline_detail_row'>
                 <div className='audit_timeline_detail_left'>Status</div>
-                <div className='audit_timeline_detail_right' style={{ color: data.status === 200 ? '#4caf50' : '#E53935' }}>{data.status}</div>
+                <div className='audit_timeline_detail_right' style={{ color: mtags.status === '200' ? '#4caf50' : '#E53935' }}>{mtags.status}</div>
             </div>
             <div className='audit_timeline_detail_button'>
                 <Button onClick={() => this.onClickViewDetail(data)}>
                     VIEW DETAIL
                 </Button>
             </div>
-        </AccordionDetails>
-    )
+        </AccordionDetails>)
+    }
 
     renderStepper = (data, index) => {
         return (
-            data.operationname ?
+            data.name ?
                 <Accordion key={index} square expanded={this.state.expanded === index} onChange={this.handleExpandedChange(index, data.traceid)} last='' completed='' active={undefined}>
                     {this.expandablePanelSummary(index, data)}
                     {this.expandablePanelDetails(data)}
@@ -153,9 +156,8 @@ class HeaderAuditLog extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if(nextProps.isOrg)
-        {
-            return {isOrg : nextProps.isOrg}
+        if (nextProps.isOrg) {
+            return { isOrg: nextProps.isOrg }
         }
         else if (prevState.filterExpand && nextProps.historyList !== prevState.dataList) {
             return { dataList: nextProps.historyList }
@@ -168,8 +170,7 @@ class HeaderAuditLog extends React.Component {
 
     onFilterExpand = (flag) => {
         this.setState({ filterExpand: flag, dataList: flag ? [] : this.props.liveData })
-        if(!flag)
-        {
+        if (!flag) {
             this.props.clearHistory()
             this.props.onSelectedDate()
         }
@@ -181,17 +182,16 @@ class HeaderAuditLog extends React.Component {
         let filterText = value.toLowerCase()
         let dataList = this.state.dataList
         let filterList = dataList.filter(data => {
-            return data['operationname'].toLowerCase().includes(filterText)
+            return data['name'].toLowerCase().includes(filterText)
         })
         if (value !== undefined) {
-            this.setState({ filterText:value, filterList: filterList })
+            this.setState({ filterText: value, filterList: filterList })
         }
         return filterList
     }
 
-    onFilterClear = ()=>
-    {
-        this.setState({filterText:''}, ()=>{this.onFilterValue()})
+    onFilterClear = () => {
+        this.setState({ filterText: '' }, () => { this.onFilterValue() })
     }
 
     render() {
@@ -216,12 +216,12 @@ class HeaderAuditLog extends React.Component {
                             <ClearAllOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
                         </InputAdornment>
                     }
-                    onChange = {this.onFilterValue}
+                    onChange={this.onFilterValue}
                     placeholder={'Search'} />
                 {!this.isOrg && this.props.loading && !filterExpand ? <LinearProgress /> : null}
                 {!this.isOrg && this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
                 <Divider />
-                {this.state.isOrg ? null : <div align={'right'}><h4 style={{padding:'10px 10px 0px 0px'}}><b>{this.props.selectedDate}</b></h4></div>}
+                {this.state.isOrg ? null : <div align={'right'}><h4 style={{ padding: '10px 10px 0px 0px' }}><b>{this.props.selectedDate}</b></h4></div>}
                 <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
                     {
                         filterList && filterList.length > 0 ?
@@ -238,10 +238,8 @@ class HeaderAuditLog extends React.Component {
         )
     }
 
-    componentDidUpdate(prevProps, prevState)
-    {
-        if(prevState.dataList !== this.state.dataList)
-        {
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.dataList !== this.state.dataList) {
             this.onFilterValue()
         }
     }
