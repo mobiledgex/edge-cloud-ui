@@ -23,13 +23,6 @@ export function changeTab(state) {
     };
 }
 
-export function clickTab(state) {
-    return {
-        type: types.CLICK_TAB,
-        clickTab: state
-    };
-}
-
 export function injectData(state) {
     return {
         type: types.INJECT_DATA,
@@ -58,12 +51,7 @@ export function setUser(user) {
     };
 }
 
-export function stopVideo(act) {
-    return {
-        type: types.SET_VIDEO,
-        status: act,
-    };
-}
+
 
 export function loadedData(act) {
     return {
@@ -90,13 +78,6 @@ export function getRegion(state) {
     return {
         type: types.GET_REGION,
         region: state
-    };
-}
-
-export function deleteReset(state) {
-    return {
-        type: types.DELETE_RESET,
-        reset: state
     };
 }
 
@@ -170,6 +151,7 @@ export function searchValue(search, scType) {
         scType
     }
 }
+
 
 export function changeRegion(region) {
     return {
@@ -337,13 +319,6 @@ export function submitObj(data) {
     }
 }
 
-export function editInstance(data) {
-    return {
-        type: types.EDIT_INSTANCE,
-        data
-    }
-}
-
 export function regionInfo(data) {
     return {
         type: types.REGION_INFO,
@@ -375,17 +350,7 @@ export function showAuditLog(data) {
     }
 }
 
-/**
- * audit
- * @param data
- * @returns {{data: *, type: string}}
- */
-export function redirectPage(data) {
-    return {
-        type: types.REDIRECT_PAGE,
-        data
-    }
-}
+
 
 export function resetMap(region) {
     return {
@@ -398,5 +363,17 @@ export function changeNext(next) {
     return {
         type: types.CHANGE_NEXT,
         next
+    }
+}
+
+
+/**
+ * redirect page
+ * @param data
+ */
+export function redirectPage(data) {
+    return {
+        type: types.REDIRECT_PAGE,
+        data
     }
 }

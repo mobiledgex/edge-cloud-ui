@@ -1,8 +1,6 @@
 import {combineReducers} from 'redux';
 import {reducer as formReducer} from 'redux-form';
-import videoControl from './videoControl';
 import tabChanger from './tabChanger';
-import tabClick from './tabClick';
 import receiveDataReduce from './receiveDataReduce';
 import registryAccount from './registryAccount';
 import cityChanger from './cityChanger';
@@ -34,8 +32,6 @@ import tutorState from './tutorState';
 import submitInfo from './submitInfo';
 import getRegion from './getRegion';
 import regionInfo from './regionInfo';
-import editInstance from './editInstance';
-import deleteReset from './deleteReset';
 import checkedAudit from './checkedAudit';
 import showAuditLog from './showAuditLog';
 import redirectPage from './redirectPage';
@@ -49,9 +45,7 @@ import ChartDataReducer from "./ChartDataReducer";
 import ViewMode from "./ViewMode";
 
 const reducers = combineReducers({
-    videoControl,
     tabChanger,
-    tabClick,
     receiveDataReduce,
     changeRegion,
     showFlavor,
@@ -64,8 +58,6 @@ const reducers = combineReducers({
     tutorState,
     submitInfo,
     getRegion,
-    deleteReset,
-    editInstance,
     regionInfo,
     checkedAudit,
     showAuditLog,

@@ -565,12 +565,10 @@ const findNewData = (newData, oldData) => {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    let deleteReset = state.deleteReset.reset;
     return {
         data: state.receiveDataReduce.data,
         itemLabel: state.computeItem.item,
         currentTyleLayer: state.MapTyleLayerReducer.currentTyleLayer,
-        deleteReset,
     };
 };
 const mapDispatchProps = (dispatch) => {
