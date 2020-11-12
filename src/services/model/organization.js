@@ -6,13 +6,15 @@ import { SHOW_ORG, CREATE_ORG, UPDATE_ORG, DELETE_ORG } from './endPointTypes'
 let fields = formatter.fields;
 
 export const keys = () => ([
-    { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true, filter:true },
-    { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter:true, group: true},
+    { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true, filter: true },
+    { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
-    { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true},
-    { field: fields.userList, label: 'User List', sortable: true, visible: false,
-        keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]},
+    { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
+    {
+        field: fields.userList, label: 'User List', sortable: true, visible: false,
+        keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
+    },
     { field: 'manage', label: 'Manage', visible: false, clickable: true },
     { field: fields.actions, label: 'Actions', visible: true, clickable: true }
 ])
@@ -31,7 +33,7 @@ export const getKey = (data, isCreate) => {
 }
 
 export const showOrganizations = (data) => {
-    return { method: SHOW_ORG, data: data }
+    return { method: SHOW_ORG, data: data, token: serverData.getToken(), keys: keys() }
 }
 
 export const getOrganizationList = async (self, data) => {

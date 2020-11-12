@@ -20,15 +20,20 @@ const MexSelect = (props) => {
                 for (let i = 0; i < dependentData.length; i++) {
                     filteredList = []
                     let dependentForm = forms[dependentData[i].index]
-                    if(dependentForm.value === undefined)
-                    {
-                        dataList = []
-                        break;
+                    if ((form.strictDependency === undefined || form.strictDependency) && (dependentForm.value === undefined || dependentForm.value.length === 0)) {
+                        if (dependentData[i].strictDependency === undefined || dependentData[i].strictDependency) {
+                            dataList = []
+                            break;
+                        }
                     }
                     for (let j = 0; j < dataList.length; j++) {
                         let data = dataList[j];
                         let valid = false
-                        if(Array.isArray(dependentForm.value))
+                        if(dependentForm.value === undefined || dependentForm.value.length === 0)
+                        {
+                            valid = true
+                        }
+                        else if(Array.isArray(dependentForm.value))
                         {
                             valid =  dependentForm.value.includes(data[dependentForm.field])
                         }
