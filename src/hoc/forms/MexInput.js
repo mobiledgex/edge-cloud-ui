@@ -36,7 +36,7 @@ const MexInput = (props) => {
                 autoComplete = {form.autocomplete ? form.autocomplete : 'on'}
                 disabled={props.disabled}
                 value={value}
-                style={form.style ? form.style : form.error ? { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor:'rgba(211, 46, 46, 0.1)'} : { width: form.unit ? 'calc(100% - 45px)' : '100%' }}
+                style={form.style ? form.style : form.error ? { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor:'rgba(211, 46, 46, 0.1)'} : { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor:'rgba(22, 24, 29, 0.5)' }}
             />
         </div >
     )

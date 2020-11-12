@@ -14,13 +14,15 @@ class AlertGlobal extends React.Component {
         super(props)
         this.state = {
             anchorEl: null,
-            dataList: []
+            dataList: [],
+            showDot: false
         }
+        this.intervalId = undefined
         this.regions = constant.regions()
     }
 
     handleClick = (event) => {
-        this.setState({ anchorEl: event.currentTarget })
+        this.setState({ anchorEl: event.currentTarget, showDot: false })
     };
 
     handleClose = () => {
@@ -28,13 +30,14 @@ class AlertGlobal extends React.Component {
     };
 
     render() {
-        const { anchorEl, dataList} = this.state
+        const { anchorEl, dataList, showDot } = this.state
         return (
             <div style={{ marginTop: 5 }}>
                 <IconButton onClick={this.handleClick}>
-                    <Badge color="secondary" variant="dot">
+                    {showDot ? <Badge color="secondary" variant="dot">
                         <NotificationsNoneIcon />
-                    </Badge>
+                    </Badge> : <NotificationsNoneIcon />}
+
                 </IconButton>
                 <Popover
                     id={'Alert Receiver'}
@@ -50,8 +53,8 @@ class AlertGlobal extends React.Component {
                         horizontal: 'center',
                     }}
                 >
-                    <div style={{ width: 400, height: 500 }}>
-                        <AlertLocal data={dataList} handleClose={this.handleClose}/>
+                    <div style={{ width: 500, height: 500 }}>
+                        <AlertLocal data={dataList} handleClose={this.handleClose} />
                     </div>
                 </Popover>
             </div>
@@ -63,8 +66,19 @@ class AlertGlobal extends React.Component {
             let data = mc.response.data
             this.setState(prevState => {
                 let dataList = prevState.dataList
-                dataList = [...dataList, ...data]
-                return { dataList }
+                dataList = data
+                let latestData = dataList[dataList.length-1]
+                let activeAt = localStorage.getItem('LatestAlert')
+                let showDot = false
+                if (activeAt) {
+                    showDot = latestData.activeAt > activeAt
+                }
+                else {
+                    showDot = true
+                }
+
+                localStorage.setItem('LatestAlert', latestData.activeAt)
+                return { dataList, showDot }
             })
         }
     }
@@ -73,6 +87,16 @@ class AlertGlobal extends React.Component {
         this.regions.map(region => {
             sendRequest(showAlerts({ region }), this.serverResponse)
         })
+
+        this.intervalId = setInterval(() => {
+            this.regions.map(region => {
+                sendRequest(showAlerts({ region }), this.serverResponse)
+            })
+        }, 10 * 2000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalId)
     }
 }
 

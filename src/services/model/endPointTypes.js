@@ -24,7 +24,7 @@ import * as AppInstClient from './appInstClient';
 import * as Alerts from './alerts';
 import * as Events from './events';
 
-export const SHOW_ORG = "showOrg";
+export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
 export const DELETE_ORG = "deleteOrg";
 export const UPDATE_ORG = "updateOrg";
@@ -75,7 +75,7 @@ export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "ShowOrgCloudletInfo";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
@@ -125,9 +125,9 @@ export function getPath(request) {
         case ALERT_SHOW_RECEIVER:  
         case ALERT_CREATE_RECEIVER: 
         case ALERT_DELETE_RECEIVER:   
-            return `/api/v1/auth/${request.method}`
         case SHOW_ORG:
-            return '/api/v1/auth/org/show';
+        case SHOW_ORG_CLOUDLET:
+            return `/api/v1/auth/${request.method}`
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
         case CREATE_ORG:
@@ -216,8 +216,6 @@ export function getPath(request) {
             return `/api/v1/auth/orgcloudletpool/create`;
         case DELETE_LINK_POOL_ORG:
             return `/api/v1/auth/orgcloudletpool/delete`;
-        case SHOW_ORG_CLOUDLET:
-            return `/api/v1/auth/orgcloudlet/show`;
         case SHOW_ORG_CLOUDLET_INFO:
             return `/api/v1/auth/orgcloudletinfo/show`;
         default:

@@ -1,6 +1,6 @@
 import * as formatter from './format'
 
-export const SHOW_ORG = "showOrg";
+export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
 export const DELETE_ORG = "deleteOrg";
 export const UPDATE_ORG = "updateOrg";
@@ -52,7 +52,7 @@ export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "ShowOrgCloudletInfo";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
@@ -93,7 +93,7 @@ export const getPath = (request) => {
         case SHOW_ALERT:
             return `/api/v1/auth/ctrl/${request.method}`;
         case SHOW_ORG_CLOUDLET:
-            return `/api/v1/auth/orgcloudlet/show`;
+        case SHOW_ORG:
         case CLOUDLET_METRICS_ENDPOINT:
         case APP_INST_METRICS_ENDPOINT:
         case CLUSTER_METRICS_ENDPOINT:
@@ -115,6 +115,7 @@ export function formatData(request, response) {
         case SHOW_CLUSTER_INST:
         case SHOW_ALERT:
         case SHOW_ORG_CLOUDLET:
+        case SHOW_ORG:
             data = formatter.formatData(response, request.data, request.keys)
             break;
         case CLOUDLET_METRICS_ENDPOINT:

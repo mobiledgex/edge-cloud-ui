@@ -1,13 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
+import { Chip, Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { PAGE_ALERTS } from '../../../constant';
 import {showAlertKeys} from '../../../services/model/alerts'
 import * as actions from '../../../actions';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { fields } from '../../../services/model/format';
+import { time } from '../../../utils/date_util';
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 
 class AlertLocal extends React.Component {
     constructor(props) {
@@ -37,14 +41,32 @@ class AlertLocal extends React.Component {
         this.setState(prevState => ({ expand: prevState.expand === id ? -1 : id }))
     }
 
+    renderState = (data) => {
+        let label = 'Firing'
+        let icon = <WhatshotIcon />
+        let color = '#FF7043'
+        switch (data[fields.state]) {
+            case 'resolved':
+                icon = <DoneAllIcon />
+                color = '#66BB6A'
+                label = 'Resolved'
+                break;
+
+        }
+        return <Chip component="div" variant="outlined" size="small" icon={icon} label={label} style={{ marginLeft: 5, backgroundColor: color }} />
+    }
+
     header = (data) => {
-        let alertName = data['alertname']
         return ( 
-            <React.Fragment>
-                {showAlertKeys().map(key=>{
-                    return key.visible ? data[key.field] : null
-                })}
-            </React.Fragment>
+            <div>
+                <h4><b>{data[fields.alertname]}</b>{this.renderState(data)}</h4>
+                <div style={{marginTop:5}}></div>
+                <Chip component="div" variant="outlined" size="small" label={`Developer: ${data[fields.appDeveloper]}`} style={{marginBottom:5, marginRight:5}}/>
+                <Chip variant="outlined" size="small" label={`App: ${data[fields.appName]} [${data[fields.version]}]`}  style={{marginBottom:5, marginRight:5}}/>
+                <Chip variant="outlined" size="small" label={`Cluster: ${data[fields.clusterName]}`}  style={{marginBottom:5, marginRight:5}}/>
+                <Chip variant="outlined" size="small" label={`Cloudlet: ${data[fields.cloudletName]}`}  style={{marginBottom:5, marginRight:5}}/>
+                <Chip variant="outlined" size="small" label={`Operator: ${data[fields.operatorName]}`}  style={{marginBottom:5, marginRight:5}}/>
+            </div>
         )
     }
 
@@ -60,18 +82,16 @@ class AlertLocal extends React.Component {
                                 {/* <ListItemIcon>
                                     <div style={{ width: 30, height: 30, borderRadius: 50, backgroundColor: colors[i], color: 'white', textAlign: 'center', padding: 6, fontWeight: 900 }}><b>{data['name'].charAt(0).toUpperCase()}</b></div>
                                 </ListItemIcon> */}
-                                <ListItemText id="switch-list-label-wifi" primary={data['name']} secondary={
-                                    <React.Fragment>
-                                        {this.header(item)}
-                                    </React.Fragment>} />
+                                <ListItemText  id="switch-list-label-wifi" primary={data['name']}/>
+                                {this.header(item)}
                                 {expand === i ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                             </ListItem>
                             <Collapse in={expand === i} timeout="auto" unmountOnExit>
-                                <List component="div" dense={true}>
+                                <List component="div" dense={true} style={{marginLeft:4}}>
                                     {showAlertKeys().map((key, j) => {
                                         let value = item[key.field]
                                         if (key.summary && value) {
-                                            return <ListItem key={j}><ListItemText primary={`${key.label}: ${value}`} /></ListItem>
+                                            return <ListItem key={j}><ListItemText primary={<p><b>{key.label}</b> {`: ${key.formatDate ?  time(key.formatDate, parseInt(value+'000')) : value}`}</p>} /></ListItem>
                                         }
                                     })}
                                 </List>
@@ -87,8 +107,10 @@ class AlertLocal extends React.Component {
         return (
             <React.Fragment>
                 {this.renderToolbar()}
-                <br/>
-                {this.renderList()}
+                <br />
+                <div style={{ height: 'calc(52vh - 1px)', overflow: 'auto', width:'100%' }}>
+                    {this.renderList()}
+                </div>
             </React.Fragment>
         )
     }

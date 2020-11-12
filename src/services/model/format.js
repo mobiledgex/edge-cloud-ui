@@ -162,7 +162,10 @@ export const fields = {
     slackchannel:'slackchannel',
     slackwebhook:'slackwebhook',
     severity:'severity',
-    slack:'slack'
+    slack:'slack',
+    appCloudlet:'appCloudlet',
+    appOperator:'appOperator',
+    receiverAddress:'receiverAddress'
 }
 
 export const getUserRole = () => {

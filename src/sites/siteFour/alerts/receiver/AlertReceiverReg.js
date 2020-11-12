@@ -7,67 +7,73 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { fields, getOrganization } from '../../../../services/model/format';
 //model
-import { createAlertReceiver } from '../../../../services/model/alerts';
-import { HELP_FLAVOR_REG } from "../../../../tutorial";
+import { createAlertReceiver, sendRequests } from '../../../../services/model/alerts';
 import { Grid } from 'semantic-ui-react';
 import * as constant from '../../../../constant'
-import { getOrgCloudletList } from '../../../../services/model/cloudlet';
-import { getOrganizationList } from '../../../../services/model/organization';
-import { getAppInstList } from '../../../../services/model/appInstance';
-import { getClusterInstList } from '../../../../services/model/clusterInstance';
+import * as endpoints from '../../../../services/model/endpoints'
+import { showOrganizations } from '../../../../services/model/organization';
+import { showCloudlets } from '../../../../services/model/cloudlet';
+import { showAppInsts } from '../../../../services/model/appInstance';
+import { showClusterInsts } from '../../../../services/model/clusterInstance';
 import uuid from 'uuid'
-
+import cloneDeep from 'lodash/cloneDeep';
+import { LinearProgress } from '@material-ui/core'
 
 const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK]
 const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]
 
+const SELECTOR = [
+    { selector: 'App', key: 'appname' },
+    { selector: 'Cluster', key: 'cluster' },
+    { selector: 'Cloudlet', key: 'cloudlet' },
+]
 class FlavorReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             step: 0,
             forms: [],
+            loading: true
         }
         this.isUpdate = this.props.isUpdate
         this.regions = constant.regions()
-        this.requestedRegionList = [];
+        this.organizationList = []
         this.cloudletList = [];
         this.appInstList = [];
         this.clusterInstList = []
     }
 
     locationForm = () => ([
-        { field: fields.slackchannel, label: 'Slack Channel', formType: INPUT, placeholder: 'Enter Slack Channel to be Receiving the Alert', rules: { required: true }, width: 8, visible: true, update:true, init:true},
-        { field: fields.slackwebhook, label: 'Slack URL', formType: INPUT, placeholder: 'Enter Slack Webhook URL', rules: { required: true }, width: 8, visible: true, update:true, init:true }
+        { field: fields.slackchannel, label: 'Slack Channel', formType: INPUT, placeholder: 'Enter Slack Channel to be Receiving the Alert', rules: { required: true }, width: 8, visible: true, update: true, init: true },
+        { field: fields.slackwebhook, label: 'Slack URL', formType: INPUT, placeholder: 'Enter Slack Webhook URL', rules: { required: true }, width: 8, visible: true, update: true, init: true }
     ])
 
     formKeys = () => {
         return [
-            { label: 'Create Alert', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },
+            { label: 'Create Alert Receiver', formType: MAIN_HEADER, visible: true },
             { field: fields.alertname, label: 'Alert Name', formType: INPUT, placeholder: 'Enter Alert Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
             { field: fields.type, label: 'Receiver Type', formType: SELECT, placeholder: 'Select Receiver Type', rules: { required: true }, visible: true, tip: 'Receiver type - email, or slack' },
-            { uuid: uuid(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.locationForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url'},
+            { uuid: uuid(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.locationForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 8, field: fields.operatorName }] },
-            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 8, field: fields.operatorName }, { index: 9, field: fields.cloudletName }] },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 8, field: fields.operatorName }, { index: 9, field: fields.cloudletName }, { index: 10, field: fields.clusterName }] },
-            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: true, dependentData: [{ index: 9, field: fields.appName }] },
+            { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
+            { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false }, visible: false, tip: 'Cluster or App Developer' },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false },
+            { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 8, field: fields.operatorName }], strictDependency: false },
+            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.organizationName }, { index: 8, field: fields.operatorName, strictDependency: false }, { index: 9, field: fields.cloudletName, strictDependency: false }] },
+            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.organizationName }, { index: 8, field: fields.operatorName }, { index: 9, field: fields.cloudletName }, { index: 10, field: fields.clusterName }], strictDependency: false },
+            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: fields.appName }], strictDependency: false }
         ]
     }
 
-    typeChange = (currentForm, forms, isInit) =>{
+    typeChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.email) {
                 form.visible = currentForm.value === constant.RECEIVER_TYPE_EMAIL
             }
-            else if(form.field === fields.slack)
-            {
-                form.visible = currentForm.value === constant.RECEIVER_TYPE_SLACK  
+            else if (form.field === fields.slack) {
+                form.visible = currentForm.value === constant.RECEIVER_TYPE_SLACK
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -79,6 +85,7 @@ class FlavorReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.version) {
+                form.value = undefined
                 this.updateUI(form)
             }
         }
@@ -87,63 +94,24 @@ class FlavorReg extends React.Component {
         }
     }
 
-    getAppInstInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.appInstList = [...this.appInstList, ...await getAppInstList(this, { region: region })]
-        }
-        this.updateUI(form)
-        this.appNameValueChange(form, forms, true)
-        this.setState({ forms: forms })
-    }
-
-    getClusterInstInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.clusterInstList = [...this.clusterInstList, ...await getClusterInstList(this, { region: region })]
-        }
-        this.updateUI(form)
-        this.setState({ forms: forms })
-    }
-
-
-    getCloudletInfo = async (form, forms) => {
-        let region = undefined;
-        let organizationName = undefined;
-        for (let i = 0; i < forms.length; i++) {
-            let tempForm = forms[i]
-            if (tempForm.field === fields.region) {
-                region = tempForm.value
-            }
-            else if (tempForm.field === fields.organizationName) {
-                organizationName = tempForm.value
-            }
-        }
-        if (region && organizationName) {
-            this.cloudletList = await getOrgCloudletList(this, { region: region, org: organizationName })
-            this.updateUI(form)
-            this.setState({ forms: forms })
-        }
-    }
-
     organizationValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.operatorName) {
-                this.operatorValueChange(form, forms, isInit)
-                if (isInit === undefined || isInit === false) {
-                    this.getCloudletInfo(form, forms)
-                }
-            }
-            else if (form.field === fields.appName) {
+            if (form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
+                form.value = undefined
                 this.updateUI(form)
-                this.appNameValueChange(form, forms, true)
             }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
         }
     }
 
     clusterValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.appName) {
+            if (form.field === fields.appName || form.field === fields.version) {
+                form.value = undefined
                 this.updateUI(form)
             }
         }
@@ -155,7 +123,8 @@ class FlavorReg extends React.Component {
     cloudletValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.clusterName) {
+            if (form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
+                form.value = undefined
                 this.updateUI(form)
             }
         }
@@ -167,45 +136,57 @@ class FlavorReg extends React.Component {
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.cloudletName) {
+            if (form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName || form.field === fields.cloudletName) {
+                form.value = undefined
                 this.updateUI(form)
-                if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
-                }
-                break;
             }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
         }
     }
 
-    regionValueChange = (currentForm, forms, isInit) => {
-        let region = currentForm.value;
-        this.setState({ region: region })
+    selectorValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.operatorName) {
-                this.operatorValueChange(form, forms, isInit)
-                if (isInit === undefined || isInit === false) {
-                    this.getCloudletInfo(form, forms)
-                }
-            }
-            else if (form.field === fields.appName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getAppInstInfo(region, form, forms)
-                }
-            }
-            else if (form.field === fields.clusterName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getClusterInstInfo(region, form, forms)
-                }
+            switch (form.field) {
+                case fields.organizationName:
+                    let valid = currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    form.rules.required = valid
+                    form.visible = valid
+                    break;
+                case fields.appName:
+                    form.visible = currentForm.value === 'App'
+                    break;
+                case fields.version:
+                    form.visible = currentForm.value === 'App'
+                    break;
+                case fields.clusterName:
+                    form.visible = currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    break;
+                case fields.cloudletName:
+                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    break;
+                case fields.operatorName:
+                    form.rules.required = currentForm.value === 'Cloudlet'
+                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    form.value = undefined
+                    break;
             }
         }
-        this.requestedRegionList.push(region);
-
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
     }
 
+
+
     checkForms = (form, forms, isInit) => {
-        if (form.field === fields.region) {
-            this.regionValueChange(form, forms, isInit)
+        if (form.field === fields.type) {
+            this.typeChange(form, forms, isInit)
+        }
+        else if (form.field === fields.selector) {
+            this.selectorValueChange(form, forms, isInit)
         }
         else if (form.field === fields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
@@ -221,9 +202,6 @@ class FlavorReg extends React.Component {
         }
         else if (form.field === fields.clusterName) {
             this.clusterValueChange(form, forms, isInit)
-        }
-        else if (form.field === fields.type) {
-            this.typeChange(form, forms, isInit)
         }
     }
 
@@ -251,7 +229,11 @@ class FlavorReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
-            createAlertReceiver(this, data)
+            let mcRequest = await createAlertReceiver(this, data)
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                this.props.handleAlertInfo('success', `Alert Receiver ${data[fields.alertname]} created successfully`)
+                this.props.onClose(true)
+            }
         }
     }
 
@@ -293,14 +275,14 @@ class FlavorReg extends React.Component {
                         case fields.organizationName:
                             form.options = this.organizationList
                             break;
-                        case fields.region:
-                            form.options = this.regions;
-                            break;
                         case fields.type:
                             form.options = RECEIVER_TYPE;
                             break;
                         case fields.severity:
                             form.options = RECEIVER_SEVERITY;
+                            break;
+                        case fields.selector:
+                            form.options = SELECTOR;
                             break;
                         case fields.operatorName:
                             form.options = this.cloudletList
@@ -336,7 +318,6 @@ class FlavorReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList(this)
         }
 
         let forms = this.formKeys()
@@ -361,22 +342,71 @@ class FlavorReg extends React.Component {
     }
 
     render() {
+        const { loading } = this.state
         return (
-            <div className="round_panel">
-                <Grid style={{ display: 'flex' }}>
-                    <Grid.Row>
-                        <Grid.Column width={16}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </div>
+            <div>
+                {loading ? <LinearProgress /> : null}
+                <div className="round_panel">
+                    <Grid style={{ display: 'flex' }}>
+                        <Grid.Row>
+                            <Grid.Column width={16}>
+                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div></div>
         )
+    }
+
+    serverResponse = (mcList) => {
+        mcList.map(mc => {
+            if (mc && mc.response && mc.response.status === 200) {
+                let request = mc.request
+                let data = mc.response.data
+                if (request.method === endpoints.SHOW_CLOUDLET || request.method === endpoints.SHOW_ORG_CLOUDLET) {
+                    this.cloudletList = [...this.cloudletList, ...data]
+                }
+                else if (request.method === endpoints.SHOW_APP_INST) {
+                    this.appInstList = [...this.appInstList, ...data]
+                }
+                else if (request.method === endpoints.SHOW_CLUSTER_INST) {
+                    this.clusterInstList = [...this.clusterInstList, ...data]
+                }
+                else if (request.method === endpoints.SHOW_ORG) {
+                    this.organizationList = [...this.organizationList, ...data]
+                }
+            }
+        })
+
+        let forms = cloneDeep(this.state.forms)
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.selector) {
+                form.rules.disabled = false
+            }
+            this.updateUI(form)
+        }
+
+        this.setState({
+            forms: forms,
+            loading: false
+        })
+    }
+
+    fetchData = () => {
+        let requestList = []
+        requestList.push(showOrganizations())
+        this.regions.map(region => {
+            requestList.push(showCloudlets({ region }))
+            requestList.push(showAppInsts({ region }))
+            requestList.push(showClusterInsts({ region }))
+        })
+        sendRequests(requestList, this.serverResponse)
     }
 
     componentDidMount() {
         this.getFormData(this.props.data);
-        this.props.handleViewMode(HELP_FLAVOR_REG)
+        this.fetchData()
     }
 };
 
