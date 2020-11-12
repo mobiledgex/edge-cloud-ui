@@ -1,15 +1,14 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    data: null
+    audit: null
 };
-export default function selectOrg( state = initialState, action) {
+export default function redirectPage( state = initialState, action) {
     switch( action.type ) {
-        case types.EDIT_INSTANCE :
+        case types.REDIRECT_PAGE :
             return Object.assign({}, state, {
-                data:action.data
+                page:action.data
             })
-            break;
         default:
             return state
     }

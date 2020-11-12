@@ -132,10 +132,10 @@ class OrganizationList extends React.Component {
             for (let i = 0; i < roleInfoList.length; i++) {
                 let roleInfo = roleInfoList[i];
                 if (roleInfo.org === data[fields.organizationName]) {
-                    this.props.handleUserRole(roleInfo.role)
                     var event = new Event('SelectOrgChangeEvent');
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
+                    this.props.handleUserRole(roleInfo.role)
                     window.dispatchEvent(event);
                     this.forceUpdate()
                     break;
@@ -178,8 +178,8 @@ class OrganizationList extends React.Component {
             for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
-                    this.props.handleUserRole(userRole.role);
                     localStorage.setItem('selectRole', userRole.role)
+                    this.props.handleUserRole(userRole.role)
                     isAdmin = true
                     break;
                 }
@@ -233,7 +233,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleShowAuditLog: (data) => {dispatch(actions.showAuditLog(data))},
+        handleShowAuditLog: (data) => {dispatch(actions.showAuditLog(data))}
     };
 };
 

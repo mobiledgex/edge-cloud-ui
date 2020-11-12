@@ -89,7 +89,7 @@ export const showClusterInsts = (data) => {
             }
         }
     }
-    return { method: SHOW_CLUSTER_INST, data: data }
+    return { method: SHOW_CLUSTER_INST, data: data, token: serverData.getToken(), keys : keys()}
 }
 
 export const clusterInstanceKey = (data)=>{

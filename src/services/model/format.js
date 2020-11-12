@@ -1,4 +1,4 @@
-import { generateUniqueId } from '../serviceMC';
+import uuid from 'uuid'
 import { toJson } from '../../utils/json_util'
 import isEqual from 'lodash/isEqual';
 
@@ -152,7 +152,20 @@ export const fields = {
     metric: 'metric',
     location: 'location',
     values: 'values',
-    columns: 'columns'
+    columns: 'columns',
+    labels:'labels',
+    job:'job',
+    instance:'instance',
+    activeAt:'activeAt',
+    alertname:'alertname',
+    envoyclustername:'envoyclustername',
+    slackchannel:'slackchannel',
+    slackwebhook:'slackwebhook',
+    severity:'severity',
+    slack:'slack',
+    appCloudlet:'appCloudlet',
+    appOperator:'appOperator',
+    receiverAddress:'receiverAddress'
 }
 
 export const getUserRole = () => {
@@ -229,12 +242,35 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
                     let value = {}
                     map(value, data, keys)
-                    if (isUnique) { value.uuid = generateUniqueId() }
+                    if (isUnique) { value.uuid = uuid() }
                     if (body) { value.region = body.region }
-                    let newValue = customData(value)
+                    let newValue = customData ? customData(value) : value
                     if (newValue) {
                         values.push(newValue)
                     }
+                }
+            }
+        }
+    }
+    catch (e) {
+        console.log('Response Error', e)
+    }
+    return values
+}
+
+export const formatAlertData = (response, body, keys, customData, isUnique) => {
+    let values = [];
+    try {
+        if (response.data) {
+            let jsonData = response.data
+            for (let i = 0; i < jsonData.length; i++) {
+                let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
+                let value = {}
+                map(value, data, keys)
+                if (isUnique) { value.uuid = uuid() }
+                let newValue = customData ? customData(value) : value
+                if (newValue) {
+                    values.push(newValue)
                 }
             }
         }

@@ -6,23 +6,20 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import DescriptionIcon from '@material-ui/icons/Description';
 import HeaderGlobalMini from '../../../container/headerGlobalMini';
 import EventMenu from './eventMenu'
-import * as constant from '../../../constant'
-import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
+import HelpMenu from './helpMenu'
 import LanguageIcon from '@material-ui/icons/Language';
 import BusinessIcon from '@material-ui/icons/Business';
 import AccessTimeIcon from '@material-ui/icons/AccessTime'
 
 import { Button, Image } from 'semantic-ui-react';
 import { Dialog, DialogActions, List, ListItem, ListItemText, Menu, MenuItem } from '@material-ui/core';
-import { tutor } from '../../../tutorial'
 import MexVirtualSelect from './mexVirtualSelect'
 import { getMexTimezone } from '../../../utils/sharedPreferences_util';
 import { timezones } from '../../../utils/date_util'
 import MiniClockComponent from "./MiniClockComponent";
-import { getUserRole } from '../../../services/model/format';
+import AlertReceiver from '../alerts/AlertGlobal'
 
 const drawerWidth = 250;
 
@@ -86,21 +83,6 @@ export default function Header(props) {
     const handleDialogClose = () => {
         setOpen(false);
     };
-
-    const helpClick = ()=>{
-        let currentStep = props.viewMode ? tutor(props.viewMode) : null;
-        if(currentStep)
-        {
-            props.helpClick(currentStep)
-        }
-    }
-
-    const docClick = () => {
-        let path = tutor(props.viewMode, true)
-        if (path) {
-            window.open(tutor(props.viewMode, true), '_blank');
-        }
-    }
 
     return (
 
@@ -187,15 +169,9 @@ export default function Header(props) {
                             </h5>
                         </IconButton> : null}
                     <EventMenu/>
-                    <IconButton style={{ backgroundColor: 'transparent' }} aria-label="help" color="inherit"
-                        onClick={(e) => helpClick()} disabled={props.viewMode !== null ? false : true}>
-                        <HelpOutlineOutlinedIcon fontSize='default' color={props.viewMode && tutor(props.viewMode) ? 'inherit' : 'disabled'} />
-                    </IconButton>
-                    {getUserRole() && getUserRole().includes(constant.DEVELOPER) ? <IconButton style={{ backgroundColor: 'transparent' }} aria-label="help" color="inherit"
-                        onClick={(e) => docClick()} disabled={props.viewMode !== null ? false : true}>
-                        <DescriptionIcon fontSize='default' color={props.viewMode === null ? 'disabled' : 'inherit'} />
-                    </IconButton> : null}
+                    <HelpMenu viewMode={props.viewMode} helpClick={props.helpClick}/>
                     <MexVirtualSelect open={openPreferences} close={() => { setOpenPreferences(false) }} data={timezones()} header={'Select Timezone'} />
+                    <AlertReceiver/>
                     <HeaderGlobalMini email={props.email} data={props.data} />
                 </div>
             </Toolbar>

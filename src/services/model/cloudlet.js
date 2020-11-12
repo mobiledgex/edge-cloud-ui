@@ -103,7 +103,7 @@ export const showCloudlets = (data) => {
     else {
         data.org = formatter.getOrganization()
     }
-    return { method: method, data: data }
+    return { method: method, data: data, token: serverData.getToken(), keys : keys()}
 }
 
 export const showOrgCloudlets = (data) => {

@@ -55,15 +55,12 @@ class AppReg extends React.Component {
         let forms = currentForm.parent.form.forms
         let protocol = undefined
         let portRange = undefined
-        for(let i=0;i<forms.length;i++)
-        {
+        for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if(form.field === fields.protocol)
-            {
+            if (form.field === fields.protocol) {
                 protocol = form.value
             }
-            else if(form.field === fields.portRangeMax || form.field === fields.portRangeMin)
-            {
+            else if (form.field === fields.portRangeMax || form.field === fields.portRangeMin) {
                 portRange = form.value
             }
         }
@@ -124,7 +121,7 @@ class AppReg extends React.Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur:true }, update: true, width: 14, visible: true },
+        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: true, width: 14, visible: true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
@@ -134,8 +131,8 @@ class AppReg extends React.Component {
     portForm = () => ([
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update:true },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update:true },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: true },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
     ])
 
@@ -158,8 +155,8 @@ class AppReg extends React.Component {
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update:true },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update:true },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: true },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
     ])
 
@@ -196,9 +193,9 @@ class AppReg extends React.Component {
 
     updateImagePath = (forms, form) => {
         let organizationName = undefined;
-        let version = undefined;
-        let deployment = undefined;
-        let appName = undefined;
+        let version = undefined
+        let deployment = undefined
+        let appName = undefined
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.organizationName) {
@@ -214,7 +211,7 @@ class AppReg extends React.Component {
                 appName = form.value
             }
         }
-        if (deployment && version && organizationName) {
+        if (deployment && organizationName && appName && version) {
             form.value = deployment === constant.DEPLOYMENT_TYPE_VM ?
                 `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}` :
                 deployment === constant.DEPLOYMENT_TYPE_HELM ?
@@ -422,8 +419,7 @@ class AppReg extends React.Component {
     }
 
     tlsValueChange = (form, forms, isInit) => {
-        if(!isInit)
-        {
+        if (!isInit) {
             this.tlsCount = form.value ? this.tlsCount + 1 : this.tlsCount - 1
         }
     }
@@ -463,8 +459,7 @@ class AppReg extends React.Component {
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
-        else if(form.field === fields.imagePath)
-        {
+        else if (form.field === fields.imagePath) {
             this.imagePathTyped = true
         }
         else if (form.field === fields.protocol) {
@@ -481,8 +476,7 @@ class AppReg extends React.Component {
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
-        else if(form.field === fields.deploymentManifest)
-        {
+        else if (form.field === fields.deploymentManifest) {
             this.deploymentManifestChange(form, forms, isInit)
         }
         if (flowDataList.length > 0) {
@@ -732,7 +726,7 @@ class AppReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            
+
             requestTypeList.push(showFlavors({ region: data[fields.region] }))
             requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
             requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
@@ -853,22 +847,22 @@ class AppReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, init:true },
-            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', init:true },
+            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, init: true },
+            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', init: true },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: true, tip: 'URI of where image resides' },
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, update:true, tip: 'Upgrade App Instances running in the cloudlets' },
+            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, update: true, tip: 'Upgrade App Instances running in the cloudlets' },
             { label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
             { label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
             { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'public key used for authentication', advance: false },
-            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }, {index: 2, field : fields.organizationName }], advance: false },
-            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region}, {index: 2, field : fields.organizationName }], advance: false },
+            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
+            { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
             { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
@@ -882,9 +876,8 @@ class AppReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                if(form.field === fields.refreshAppInst)
-                {
-                    form.visible = data[fields.deployment] !== constant.DEPLOYMENT_TYPE_VM 
+                if (form.field === fields.refreshAppInst) {
+                    form.visible = data[fields.deployment] !== constant.DEPLOYMENT_TYPE_VM
                 }
                 if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
@@ -941,7 +934,7 @@ class AppReg extends React.Component {
             <div className="round_panel">
                 <Grid style={{ display: 'flex' }}>
                     <Grid.Row>
-                        <Grid.Column width={this.state.showGraph ? 9: 16}>
+                        <Grid.Column width={this.state.showGraph ? 9 : 16}>
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </Grid.Column>
                         {this.state.showGraph ? <Grid.Column width={7} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
