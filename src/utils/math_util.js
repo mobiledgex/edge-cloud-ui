@@ -27,7 +27,9 @@ export const unit = (type, value) => {
             case 2:
                 return value.toFixed(3) + " %"
             case 3:
-                return value.toFixed(4)
+                return Math.floor(value)
+            default:
+                return value
         }
     }
 }

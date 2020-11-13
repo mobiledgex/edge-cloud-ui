@@ -44,6 +44,13 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
         let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
         let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
 
+        if(metric.field === 'connections')
+        {
+                avg = avg ? avg : '0'
+                max = max ? max : '0'
+                min = min ? min : '0'
+        }
+        
         let avgValues = avgData[parentId][region][key]
 
         if (avgValues === undefined) {
@@ -63,7 +70,6 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
             avgValues['selected'] = false
             avgValues = fetchLocation(parentId, avgValues, value, showList)
         }
-
         let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
         let maxUnit = metric.unit ? unit(metric.unit, max) : max
         let minUnit = metric.unit ? unit(metric.unit, min) : min
