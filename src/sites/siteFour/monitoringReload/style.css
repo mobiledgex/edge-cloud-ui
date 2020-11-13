@@ -105,6 +105,13 @@
     margin-top: 10px;
 }
 
+.grid-charts-minimize {
+    height: calc(100vh - 130px);
+    overflow: auto;
+    overflow-x: hidden;
+    margin-top: 10px;
+}
+
 .grid-charts::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }

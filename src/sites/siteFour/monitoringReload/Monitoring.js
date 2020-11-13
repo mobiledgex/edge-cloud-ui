@@ -40,7 +40,8 @@ class Monitoring extends React.Component {
             rowSelected: 0,
             filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(this.defaultMetricParentTypes.metricTypeKeys), summary: constant.summaryList[0], parent: this.defaultMetricParentTypes },
             duration:constant.relativeTimeRanges[0],
-            range : timeRangeInMin(constant.relativeTimeRanges[0].duration)
+            range : timeRangeInMin(constant.relativeTimeRanges[0].duration),
+            minimize : false
         }
         this.refreshId = undefined;
         this.requestCount = 0
@@ -100,7 +101,7 @@ class Monitoring extends React.Component {
     }
     
     onToolbar = async (action, value) => {
-        if (action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME  || action === constant.ACTION_REFRESH) {
+        if (action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME  || action === constant.ACTION_REFRESH) {
             switch (action) {
                 case constant.ACTION_REFRESH_RATE:
                     this.onRefreshChange(value)
@@ -113,6 +114,9 @@ class Monitoring extends React.Component {
                     break;
                 case constant.ACTION_REFRESH:
                     this.onRefresh()
+                    break;
+                case constant.ACTION_MINIMIZE:
+                    this.setState(prevState => ({ minimize: !prevState.minimize }))
                     break;
             }
         }
@@ -151,7 +155,7 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { chartData, avgData, loading, filter, rowSelected, range, duration } = this.state
+        const { chartData, avgData, loading, filter, rowSelected, range, duration, minimize } = this.state
         const chartDataParent = chartData[filter.parent.id]
         const avgDataParent = avgData[filter.parent.id] ? avgData[filter.parent.id] : {}
         return (
@@ -159,11 +163,11 @@ class Monitoring extends React.Component {
                 <Card>
                     {loading ? <LinearProgress/> : null}
                     <MonitoringToolbar defaultParent={this.defaultMetricParentTypes} regions={this.regions} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
-                    <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} />
+                    <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} minimize={minimize}/>
                 </Card>
-                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} />
-                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} />
-                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} />
+                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize}/>
+                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize}/>
+                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize}/>
             </div>
 
         )

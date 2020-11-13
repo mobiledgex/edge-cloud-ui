@@ -17,6 +17,7 @@ export const ACTION_REFRESH_RATE = 5
 export const ACTION_TIME_RANGE = 6
 export const ACTION_RELATIVE_TIME = 7
 export const ACTION_REFRESH = 8
+export const ACTION_MINIMIZE = 9
 
 export const summaryList = [
     { label: 'Avg', field: 'avg', position: 0 },
