@@ -71,10 +71,10 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { chartData, avgData, filter, range, rowSelected } = this.props
+        const { chartData, avgData, filter, range, rowSelected, minimize } = this.props
         return (
             filter.parent.id === 'appinst' ?
-                <div className='grid-charts'>
+                <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
                     <Grid container spacing={1}>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>

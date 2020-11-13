@@ -9,17 +9,7 @@ import MexTimer from '../helper/MexTimer'
 import MonitoringMenu from './MonitoringMenu'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-const timeUnits = [
-    { unit: 'Minute', min: 1, max: 59, default: 5 },
-    { unit: 'Hour', min: 1, max: 24, default: 24 },
-    { unit: 'Day', max: 31, min: 1, default: 1 },
-    { unit: 'Month', min: 1, max: 12, default: 5 },
-    { unit: 'Year', min: 1, max: 1, default: 1 }
-]
-
-
-
+import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -41,21 +31,6 @@ const useStyles = makeStyles((theme) => ({
         cursor: 'pointer'
     }
 }));
-
-const CustomSwitch = withStyles({
-    switchBase: {
-        color: '#D32F2F',
-        '&$checked': {
-            color: '#388E3C',
-        },
-        '&$checked + $track': {
-            backgroundColor: '#388E3C',
-        },
-    },
-    checked: {},
-    track: {},
-})(Switch);
-
 
 const MexToolbar = (props) => {
     const classes = useStyles();
@@ -133,12 +108,28 @@ const MexToolbar = (props) => {
         props.onChange(constant.ACTION_REFRESH)
     }
 
+    const onMinimize = ()=>{
+        props.onChange(constant.ACTION_MINIMIZE)
+    }
+
     const renderRefresh = (order) => (
         <Box order={order}>
             <Grid container>
-                <IconButton onClick={onRefresh}><RefreshIcon style={{ color: 'rgba(118, 255, 3, 0.7)'}} /></IconButton>
-                <Divider orientation="vertical" style={{marginTop:13, marginBottom:13}} flexItem/>
-                <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: '#76FF03'}}/>} value={refreshRange} tip={'Refresh Rate'}/>
+                <Tooltip title={<strong style={{ fontSize: 13 }}>Refresh</strong>} arrow>
+                    <IconButton onClick={onRefresh}><RefreshIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} /></IconButton>
+                </Tooltip>
+                <Divider orientation="vertical" style={{ marginTop: 13, marginBottom: 13 }} flexItem />
+                <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: '#76FF03' }} />} value={refreshRange} tip={'Refresh Rate'} />
+            </Grid>
+        </Box>
+    )
+
+    const renderMinimize = (order) => (
+        <Box order={order}>
+            <Grid container>
+                <Tooltip title={<strong style={{ fontSize: 13 }}>Minimize</strong>} arrow>
+                    <IconButton onClick={onMinimize}><IndeterminateCheckBoxOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} /></IconButton>
+                </Tooltip>
             </Grid>
         </Box>
     )
@@ -156,6 +147,7 @@ const MexToolbar = (props) => {
                         <MonitoringMenu data={constant.summaryList} labelKey='label' order={5} onChange={onSummaryChange} />
                         {renderRefresh(7)}
                         {searchForm(8)}
+                        {renderMinimize(9)}
                     </Box>
                 </div>
             }
