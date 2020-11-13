@@ -35,7 +35,7 @@ export const clientMetrics = (data) => {
             }
         }
     }
-    return { method: CLIENT_METRICS_ENDPOINT, data: data, showSpinner: false }
+    return { method: CLIENT_METRICS_ENDPOINT, data: data, keys : clientMetricsKeys}
 }
 
 export const getData = (response, body) => {

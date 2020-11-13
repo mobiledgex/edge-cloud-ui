@@ -4,6 +4,12 @@
 }
 
 .event-list-header{
-    margin-bottom: 10px ;
+    margin-bottom: 10px;
     padding-left: 5px;
+}
+
+.event-list-progress{
+    margin-bottom: 10px;
+    padding-right: 5px;
+    float: right;
 }

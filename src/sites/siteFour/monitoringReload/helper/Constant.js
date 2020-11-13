@@ -1,10 +1,9 @@
 import * as mainConstant from '../../../../constant'
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, appActions, fetchLocation, appMetricsKeys } from '../../../../services/model/appMetrics'
-import { showAppInsts, keys as appInstKeys  } from '../../../../services/model/appInstance'
-import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys, clusterMetricsKeys } from '../../../../services/model/clusterMetrics'
-import { showClusterInsts,  keys as clusterInstKeys  } from '../../../../services/model/clusterInstance'
-import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, cloudletMetricsKeys } from '../../../../services/model/cloudletMetrics'
-import { showCloudlets, keys as cloudletKeys } from '../../../../services/model/cloudlet'
+import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation } from '../../../../services/model/appMetrics'
+import { showAppInsts  } from '../../../../services/model/appInstance'
+import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
+import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys } from '../../../../services/model/cloudletMetrics'
+import { showCloudlets } from '../../../../services/model/cloudlet'
 
 export const DEVELOPER = mainConstant.DEVELOPER
 export const OPERATOR = mainConstant.OPERATOR
@@ -26,9 +25,9 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = [
-    { id: 'appinst', label: 'App Inst', showKeys: appInstKeys(), showRequest: showAppInsts, request: appInstMetrics, metricKeys: appMetricsKeys, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.DEVELOPER], fetchLocation: fetchLocation },
-    { id: 'cluster', label: 'Cluster Inst', showKeys: cloudletKeys(), showRequest: showCloudlets, request: clusterMetrics, metricKeys: clusterMetricsKeys, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
-    { id: 'cloudlet', label: 'Cloudlet', showKeys: cloudletKeys(), showRequest: showCloudlets, request: cloudletMetrics, metricKeys:cloudletMetricsKeys, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
+    { id: 'appinst', label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.DEVELOPER], fetchLocation: fetchLocation },
+    { id: 'cluster', label: 'Cluster Inst', showRequest: showCloudlets, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
+    { id: 'cloudlet', label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
 ]
 
 export const relativeTimeRanges = [

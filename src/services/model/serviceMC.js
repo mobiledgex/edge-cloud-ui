@@ -61,7 +61,7 @@ const showError = (self, request, message) => {
     }
 }
 
-const checkExpiry = (self, message) => {
+export const checkExpiry = (self, message) => {
     let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
     if (isExpired && self) {
         setTimeout(() => {
