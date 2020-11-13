@@ -118,7 +118,7 @@ class VerticalStepper extends React.Component {
 
        if (mcRequest.response) {
             let response = mcRequest.response.data
-            let step = { code: response.code, message: response.data.msg }
+            let step = { code: response.code, message: response.data.message }
             if (responseData === null) {
                 stepsList.push({ uuid: request.uuid, steps: [step] })
             }
