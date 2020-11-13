@@ -137,7 +137,7 @@ export const showAppInsts = (data) => {
       }
     }
   }
-  return { method: SHOW_APP_INST, data: data, token: serverData.getToken(), keys : keys()}
+  return { method: SHOW_APP_INST, data: data, keys : keys()}
 }
 
 export const getAppInstList = async (self, data) => {

@@ -3,7 +3,8 @@ import { withRouter } from 'react-router-dom';
 import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-import { showAlerts, sendRequest } from '../../../services/model/alerts'
+import { showAlerts } from '../../../services/model/alerts'
+import { sendRequest } from '../../../services/model/serverWorker'
 import * as constant from '../../../constant'
 import AlertLocal from './AlertLocal'
 import './style.css'
@@ -53,7 +54,7 @@ class AlertGlobal extends React.Component {
                         horizontal: 'center',
                     }}
                 >
-                    <div style={{ width: 500, height: 500 }}>
+                    <div style={{ width: 500, height: 502 }}>
                         <AlertLocal data={dataList} handleClose={this.handleClose} />
                     </div>
                 </Popover>
@@ -85,14 +86,14 @@ class AlertGlobal extends React.Component {
 
     componentDidMount() {
         this.regions.map(region => {
-            sendRequest(showAlerts({ region }), this.serverResponse)
+            sendRequest(this, showAlerts({ region }), this.serverResponse)
         })
 
         this.intervalId = setInterval(() => {
             this.regions.map(region => {
-                sendRequest(showAlerts({ region }), this.serverResponse)
+                sendRequest(this, showAlerts({ region }), this.serverResponse)
             })
-        }, 10 * 2000);
+        }, 60 * 1000);
     }
 
     componentWillUnmount() {

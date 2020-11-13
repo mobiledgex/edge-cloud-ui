@@ -10,7 +10,12 @@ import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import './style.css'
 import MexWorker from '../../../services/worker/mex.worker.js'
-import {WORKER_METRIC, WORKER_SERVER} from '../../../services/worker/constant'
+import {WORKER_METRIC} from '../../../services/worker/constant'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import * as actions from '../../../actions';
+import {sendRequests} from '../../../services/model/serverWorker'
+import cloneDeep from 'lodash/cloneDeep'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -85,6 +90,12 @@ class Monitoring extends React.Component {
         })
     }
 
+    onRefresh = () =>{
+        this.setState({ range: timeRangeInMin(this.state.duration.duration) }, () => {
+            this.fetchMetricData()
+        })
+    }
+
     onParentChange = () =>{
         this.fetchMetricData()
     }
@@ -102,7 +113,7 @@ class Monitoring extends React.Component {
                     this.onRelativeTime(value)
                     break;
                 case constant.ACTION_REFRESH:
-                    this.fetchMetricData()
+                    this.onRefresh()
                     break;
             }
         }
@@ -165,7 +176,8 @@ class Monitoring extends React.Component {
 
     processMetricData = (parent, serverField, region, metricDataList, showList) => {
         const worker = new MexWorker();
-        worker.postMessage({ type: WORKER_METRIC, metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys })
+        let avgData = this.state.avgData
+        worker.postMessage({ type: WORKER_METRIC, metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys, avgData:avgData })
         worker.addEventListener('message', event => {
             let chartData = event.data.chartData
             let avgData = event.data.avgData
@@ -214,24 +226,21 @@ class Monitoring extends React.Component {
                                 data[fields.endtime] = this.state.range.endtime
                                 data[fields.selector] = '*'
 
-                                const worker = new MexWorker();
                                 let metricRequest = parent.request(data)
-                                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                                metricRequest.token = store.userToken
-                                metricRequest.keys = parent.metricKeys
-
-                                let showRequest = parent.showRequest({ region: region })
-                                showRequest.token = store.userToken
-                                showRequest.keys = parent.showKeys
+                                let showRequest = parent.showRequest({region})
 
                                 this.setState({ loading: true })
-                                worker.postMessage({ type: WORKER_SERVER, request: [metricRequest, showRequest], requestType:'array' });
-                                worker.addEventListener('message', event => {
+                                sendRequests(this, [metricRequest, showRequest]).addEventListener('message', event => {
                                     count = count - 1
                                     if (count === 0) {
                                         this.setState({ loading: false })
                                     }
-                                    this.serverRequest(parent, metric.serverField, event.data, region)
+                                    if (event.data.status && event.data.status !== 200) {
+                                        this.props.handleAlertInfo(event.data.message)
+                                    }
+                                    else {
+                                        this.serverRequest(parent, metric.serverField, event.data, region)
+                                    }
                                 });
                             }
                         })
@@ -267,6 +276,16 @@ class Monitoring extends React.Component {
         this.defaultDataStructure()
         this.fetchMetricData()
     }
+
+    componentWillUnmount(){
+        clearInterval(this.refreshId)
+    }
 }
 
-export default Monitoring
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+    };
+};
+
+export default withRouter(connect(null, mapDispatchProps)(Monitoring));
