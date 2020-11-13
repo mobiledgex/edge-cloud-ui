@@ -1,9 +1,10 @@
 import React from 'react'
 import EventList from '../../list/EventList'
-import * as serverData from '../../../../../services/model/serverData'
 import { orgEvents } from '../../../../../services/model/events'
 import { getOrganization } from '../../../../../services/model/format'
+import { sendRequest } from '../../../../../services/model/serverWorker'
 import randomColor from 'randomcolor'
+import { withRouter } from 'react-router-dom'
 
 const appEventKeys = [
     { label: 'App', serverField: 'app', summary: false, filter:true },
@@ -53,8 +54,16 @@ class MexAppEvent extends React.Component {
         </div>
     }
 
+    serverResponse = (mc)=>{
+        if (mc && mc.response && mc.response.data) {
+            let dataList = mc.response.data
+            let colors = randomColor({ count: dataList.length, })
+            this.setState({ eventData: dataList, colors })
+        }
+    }
+
     event = async (range) => {
-        let mc = await serverData.sendRequest(this, orgEvents({
+        sendRequest(this, orgEvents({
             match: {
                 orgs: [getOrganization()],
                 types: ["event"],
@@ -63,12 +72,7 @@ class MexAppEvent extends React.Component {
                 endtime: range.endtime,
             },
             limit: 10
-        }))
-        if (mc && mc.response && mc.response.data) {
-            let dataList = mc.response.data
-            let colors = randomColor({ count: dataList.length, })
-            this.setState({ eventData: dataList, colors })
-        }
+        }), this.serverResponse)
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -82,5 +86,4 @@ class MexAppEvent extends React.Component {
         this.event(this.props.range)
     }
 }
-
-export default MexAppEvent
+export default withRouter(MexAppEvent);

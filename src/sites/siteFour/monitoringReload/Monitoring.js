@@ -15,7 +15,6 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions';
 import {sendRequests} from '../../../services/model/serverWorker'
-import cloneDeep from 'lodash/cloneDeep'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })

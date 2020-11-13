@@ -94,9 +94,11 @@ export const getPath = (request) => {
             return `/api/v1/auth/ctrl/${request.method}`;
         case SHOW_ORG_CLOUDLET:
         case SHOW_ORG:
+        case EVENTS_SHOW:
         case CLOUDLET_METRICS_ENDPOINT:
         case APP_INST_METRICS_ENDPOINT:
         case CLUSTER_METRICS_ENDPOINT:
+        case CLIENT_METRICS_ENDPOINT:
             return `/api/v1/auth/${request.method}`
         default:
             return null;
@@ -121,10 +123,11 @@ export function formatData(request, response) {
         case CLOUDLET_METRICS_ENDPOINT:
         case APP_INST_METRICS_ENDPOINT:
         case CLUSTER_METRICS_ENDPOINT:
+        case CLIENT_METRICS_ENDPOINT:
             data = formatter.formatEventData(response, request.data, request.keys)
             break;
         default:
-            return null;
+            data = response.data;
     }
     return { request, response : {status : response.status, data} }
 }
