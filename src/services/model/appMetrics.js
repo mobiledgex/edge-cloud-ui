@@ -78,7 +78,7 @@ export const appInstMetrics = (data) => {
             }
         }
     }
-    return { method: APP_INST_METRICS_ENDPOINT, data: data, showSpinner: false }
+    return { method: APP_INST_METRICS_ENDPOINT, data: data, keys: appMetricsKeys }
 }
 
 export const getData = (response, body) => {

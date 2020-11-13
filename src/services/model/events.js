@@ -1,4 +1,3 @@
-import * as formatter from './format'
 import { EVENTS_SHOW } from './endPointTypes'
 import * as serverData from './serverData'
 

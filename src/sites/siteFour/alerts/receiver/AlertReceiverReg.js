@@ -5,9 +5,10 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../.
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields, getOrganization } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
 //model
-import { createAlertReceiver, sendRequests } from '../../../../services/model/alerts';
+import { createAlertReceiver } from '../../../../services/model/alerts';
+import { sendRequests } from '../../../../services/model/serverWorker'
 import { Grid } from 'semantic-ui-react';
 import * as constant from '../../../../constant'
 import * as endpoints from '../../../../services/model/endpoints'
@@ -401,7 +402,7 @@ class FlavorReg extends React.Component {
             requestList.push(showAppInsts({ region }))
             requestList.push(showClusterInsts({ region }))
         })
-        sendRequests(requestList, this.serverResponse)
+        sendRequests(this, requestList, this.serverResponse)
     }
 
     componentDidMount() {

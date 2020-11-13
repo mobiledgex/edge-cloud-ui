@@ -65,8 +65,8 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
         }
 
         let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
-        let maxUnit = metric.unit ? unit(metric.unit, avg) : max
-        let minUnit = metric.unit ? unit(metric.unit, avg) : min
+        let maxUnit = metric.unit ? unit(metric.unit, max) : max
+        let minUnit = metric.unit ? unit(metric.unit, min) : min
         avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
         avgData[parentId][region][key] = avgValues
     })
@@ -78,12 +78,11 @@ const processData = (data) => {
     let parentId = data.parentId
     let region = data.region
     let metricTypeKeys = data.metricTypeKeys
-
     let chartData = {}
     chartData[parentId] = chartData[parentId] ? chartData[parentId] : {}
     chartData[parentId][region] = chartData[parentId][region] ? chartData[parentId][region] : {}
 
-    let avgData = {}
+    let avgData = data.avgData
     avgData[parentId] = avgData[parentId] ? avgData[parentId] : {}
     avgData[parentId][region] = avgData[parentId][region] ? avgData[parentId][region] : {}
 

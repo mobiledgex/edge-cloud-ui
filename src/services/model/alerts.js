@@ -3,8 +3,6 @@ import { SHOW_ALERT } from './endpoints'
 import { ALERT_SHOW_RECEIVER, ALERT_DELETE_RECEIVER, ALERT_CREATE_RECEIVER } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import AlertWorker from '../worker/mex.worker.js'
-import { WORKER_SERVER } from '../worker/constant.js'
 import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
@@ -145,24 +143,10 @@ export const deleteAlertReceiver = (data) => {
 }
 
 export const showAlerts = (data) => {
-    return { method: SHOW_ALERT, data: data, token: serverData.getToken(), keys: showAlertKeys() }
+    return { method: SHOW_ALERT, data: data, keys: showAlertKeys() }
 }
 
-export const sendRequest = (request, callback) => {
-    const worker = new AlertWorker();
-    worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object' });
-    worker.addEventListener('message', event => {
-        callback(event.data)
-    });
-}
 
-export const sendRequests = (requestList, callback) => {
-    const worker = new AlertWorker();
-    worker.postMessage({ type: WORKER_SERVER, request: requestList, requestType:'array' });
-    worker.addEventListener('message', event => {
-        callback(event.data)
-    });
-}
 
 
 

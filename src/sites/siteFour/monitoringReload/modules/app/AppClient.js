@@ -1,7 +1,8 @@
 import React from 'react'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
-import * as serverData from '../../../../../services/model/serverData'
 import { clientMetrics } from '../../../../../services/model/clientMetrics'
+import { sendRequest } from '../../../../../services/model/serverWorker'
+import { withRouter } from 'react-router-dom'
 
 class MexAppClient extends React.Component {
 
@@ -26,31 +27,26 @@ class MexAppClient extends React.Component {
     }
 
     render() {
-        const {stackedData} = this.state
-        const {filter} = this.props
-        return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter}/> : 
-        <div className="event-list-main" align="center" style={{textAlign:'center', verticalAlign:'middle'}}>
-            <div align="left" className="event-list-header">
-                <h3>Client API Usage Count</h3>
+        const { stackedData } = this.state
+        const { filter } = this.props
+        return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter} /> :
+            <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                <div align="left" className="event-list-header">
+                    <h3>Client API Usage Count</h3>
+                </div>
+                <h3 style={{ marginTop: '16vh' }}><b>No Data</b></h3>
             </div>
-            <h3 style={{marginTop:'16vh'}}><b>No Data</b></h3>
-        </div>
     }
 
-    client = async (region, range) => {
-        let mc = await serverData.sendRequest(this, clientMetrics({
-            region: region, 
-            selector: "api",
-            starttime: range.starttime,
-            endtime: range.endtime
-        }))
-        if (mc && mc.response && mc.response.data) {
+    serverResponse = (mc) => {
+        if (mc && mc.response && mc.response.status === 200) {
             let data = []
             let findCloudletList = []
             let registerClientList = []
             let verifyLocationList = []
             let labelList = []
             let dataList = mc.response.data
+            let region = mc.request.data.region
             dataList.map(clientData => {
                 let dataObject = clientData['dme-api'].values
                 Object.keys(dataObject).map(key => {
@@ -77,9 +73,18 @@ class MexAppClient extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.range !== this.props.range)
-        {
+    client = (region, range) => {
+        sendRequest(this, clientMetrics({
+            region: region,
+            selector: "api",
+            starttime: range.starttime,
+            endtime: range.endtime
+        }), this.serverResponse)
+
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.range !== this.props.range) {
             this.regions.map(region => {
                 this.client(region, this.props.range)
             })
@@ -94,4 +99,4 @@ class MexAppClient extends React.Component {
     }
 }
 
-export default MexAppClient
+export default withRouter(MexAppClient);

@@ -36,7 +36,7 @@ export const cloudletMetrics = (data) => {
             }
         }
     }
-    return { method: CLOUDLET_METRICS_ENDPOINT, data: data, showSpinner: false }
+    return { method: CLOUDLET_METRICS_ENDPOINT, data: data, keys: cloudletMetricsKeys }
 }
 
 export const getData = (response, body) => {

@@ -44,7 +44,7 @@ export const clusterMetrics = (data) => {
             }
         }
     }
-    return { method: CLUSTER_METRICS_ENDPOINT, data: data, showSpinner: false }
+    return { method: CLUSTER_METRICS_ENDPOINT, data: data, keys: clusterMetricsKeys }
 }
 
 export const getData = (response, body) => {
