@@ -42,7 +42,7 @@ class AlertList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            // { label: 'Update', onClick: this.onAdd, type: 'Edit' },
             { label: 'Delete', onClick: deleteAlertReceiver, type: 'Edit' }
         ]
     }
