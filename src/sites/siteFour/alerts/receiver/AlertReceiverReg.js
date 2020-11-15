@@ -8,6 +8,7 @@ import * as actions from '../../../../actions';
 import { fields } from '../../../../services/model/format';
 //model
 import { createAlertReceiver } from '../../../../services/model/alerts';
+import { currentUser } from '../../../../services/model/serverData';
 import { sendRequests } from '../../../../services/model/serverWorker'
 import { Grid } from 'semantic-ui-react';
 import * as constant from '../../../../constant'
@@ -72,6 +73,7 @@ class FlavorReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.email) {
                 form.visible = currentForm.value === constant.RECEIVER_TYPE_EMAIL
+                form.value = this.email
             }
             else if (form.field === fields.slack) {
                 form.visible = currentForm.value === constant.RECEIVER_TYPE_SLACK
@@ -319,6 +321,11 @@ class FlavorReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
+            let mc = await currentUser(this)
+            if(mc && mc.response && mc.response.status === 200)
+            {
+                this.email = mc.response.data.Email
+            }
         }
 
         let forms = this.formKeys()
@@ -335,11 +342,9 @@ class FlavorReg extends React.Component {
                 this.checkForms(form, forms, true)
             }
         }
-
         this.setState({
             forms: forms
         })
-
     }
 
     render() {
