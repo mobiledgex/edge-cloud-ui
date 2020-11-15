@@ -31,13 +31,13 @@ export const showAlertKeys = () => (
 
 export const showAlertReceiverKeys = () => (
     [
-        { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true },
-        { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true },
+        { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter:true },
+        { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true, filter:true },
         { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true },
         { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, detailView:false },
         { field: fields.slackchannel, serverField: 'SlackChannel', label: 'Slack Channel', sortable: true, visible: false, detailView:false},
-        { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false},
-        { field: fields.receiverAddress, label: 'Receiver Address', sortable: true, visible: true},
+        { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter:true},
+        { field: fields.receiverAddress, label: 'Receiver Address', sortable: true, visible: true, filter:true},
         { field: fields.slackwebhook, serverField: 'SlackWebhook', label: 'Slack Webhook', sortable: true, visible: false, detailView:false },
         // { field: fields.alertname, serverField: 'Cloudlet', label: 'Alert Name', sortable: true, visible: true },
         { field: fields.appDeveloper, serverField: 'AppInst#OS#app_key#OS#organization', label: 'App Developer', sortable: true, visible: false },
@@ -83,7 +83,7 @@ const clusterInstSelector = (data) =>{
 
 const selector = (data) => {
     let requestData = {}
-    if (data[fields.appName] || data[fields.version]) {
+    if (data[fields.appName] || data[fields.version] || data[fields.organizationName]) {
         let app_key = {}
         app_key.organization = data[fields.organizationName]
         if (data[fields.appName]) {
@@ -119,6 +119,10 @@ const getKey = (data) => {
     if(data[fields.selector] === 'Cloudlet')
     {
         alert['Cloudlet'] = cloudletSelector(data)
+    }
+    else if(data[fields.selector] === 'Cluster') {
+        alert['appinst'] = {}
+        alert['appinst']['cluster_inst_key'] = clusterInstSelector(data)
     }
     else {
         alert['appinst'] = selector(data)

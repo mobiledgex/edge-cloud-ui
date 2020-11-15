@@ -13,11 +13,12 @@ import * as constant from '../constant'
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_CLEAR } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
-import MexMessageStream, { CODE_FINISH } from '../hoc/stepper/mexMessageStream';
+import MexMessageStream from '../hoc/stepper/mexMessageStream';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
+import cloneDeep from 'lodash/cloneDeep';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -330,7 +331,7 @@ class MexListView extends React.Component {
             this.filterText = value.toLowerCase()
         }
 
-        let dataList = this.state.dataList
+        let dataList = cloneDeep(this.state.dataList)
         let filterCount = 0
         let filterList = this.filterText.length > 0 ? dataList.filter(data => {
             let valid = this.keys.map(key => {

@@ -5,8 +5,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import { green, red } from '@material-ui/core/colors';
 import * as serverData from '../../services/model/serverData';
 import { fields } from '../../services/model/format';
-import { cloneDeep } from 'lodash';
-import { CODE_FAILED_403 } from './mexMessageMultiStream';
+import cloneDeep from 'lodash/cloneDeep';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;

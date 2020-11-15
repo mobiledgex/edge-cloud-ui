@@ -11,7 +11,6 @@ import { fields } from '../../services/model/format';
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
-export const CODE_FAILED_403 = 403;
 let header = 'Cloudlet';
 
 const useStyles = makeStyles(theme => ({
@@ -148,7 +147,7 @@ const MultiStream = (props) => {
         return (<div className={classes.root}>
             {
                 stepperProps.completed ?
-                    code === CODE_FAILED || code === CODE_FAILED_403 ?
+                    code === CODE_FAILED ?
                         <ErrorIcon className={classes.error} /> :
                         <Check className={classes.success} /> :
                     <div className={classes.wrapper}>
