@@ -25,14 +25,14 @@ const LoginForm = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Icon name='user outline' style={{ color: '#FFF' }} /><sup>{' *'}</sup>
+                <Icon name='user outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <Input style={{ width: '80%', color: 'white' }} placeholder='Username or Email' name='username' ref={ipt => { props.self.uid = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column >
-                <Icon name='keyboard outline' style={{ color: '#FFF' }} /><sup>{' *'}</sup>
+                <Icon name='keyboard outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <Input autoComplete="off" style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
