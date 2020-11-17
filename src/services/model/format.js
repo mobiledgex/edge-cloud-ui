@@ -165,7 +165,8 @@ export const fields = {
     slack:'slack',
     appCloudlet:'appCloudlet',
     appOperator:'appOperator',
-    receiverAddress:'receiverAddress'
+    receiverAddress:'receiverAddress',
+    otp:'otp'
 }
 
 export const getUserRole = () => {

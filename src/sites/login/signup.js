@@ -1,11 +1,12 @@
 import React, { Fragment } from "react";
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../hoc/forms/MexForms";
+import MexForms, { INPUT, BUTTON, POPUP_INPUT, CHECKBOX } from "../../hoc/forms/MexForms";
 import { fields } from "../../services/model/format";
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
+import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 import zxcvbn from 'zxcvbn'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Icon } from "semantic-ui-react";
@@ -31,7 +32,7 @@ const validateConsecutive = (value) => {
     return /(.)\1\1/.test(value)
 }
 
-const calculateStrength = (value)=>{
+const calculateStrength = (value) => {
     return zxcvbn(value).score
 }
 
@@ -116,12 +117,10 @@ class RegistryUserForm extends React.Component {
     }
 
     onCreate = (data) => {
-        if(this.props.captchaValidated)
-        {
-        this.props.createUser(data)
+        if (this.props.captchaValidated) {
+            this.props.createUser(data)
         }
-        else
-        {
+        else {
             this.props.handleAlertInfo('error', 'Please validate captcha')
         }
     }
@@ -143,10 +142,10 @@ class RegistryUserForm extends React.Component {
         let count = validateCharacterCount(value)
         let digit = validateDigit(value)
         let symbol = validateSymbol(value)
-        let consecutive  = validateConsecutive(value)
+        let consecutive = validateConsecutive(value)
         let color = score < 4 ? '#F5382F' : '#F2F2F2'
         return (
-            <div style={{ fontSize: 12}}>
+            <div style={{ fontSize: 12 }}>
                 <p>Your password must have :</p>
                 <p style={{ color: count ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> 10 or more characters</p>
                 <p style={{ color: letterCase ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> upper &amp; lowercase letters</p>
@@ -154,7 +153,7 @@ class RegistryUserForm extends React.Component {
                 <p style={{ color: symbol ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one symbol</p>
                 <p>Strength:</p>
                 <LinearProgress variant="determinate" value={score * 25} style={{ backgroundColor: color }} />
-                <br/>
+                <br />
                 {consecutive ?
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
                     <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse and follow the above recommended password guidelines to prevent brute force attack</p>
@@ -165,17 +164,18 @@ class RegistryUserForm extends React.Component {
 
     forms = () => (
         [
-            { field: fields.username, label: 'Username', labelIcon: <PersonOutlineOutlinedIcon style={{ color: "#ADB0B1" }} />, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete: "off" }, visible: true, dataValidateFunc: this.validateUsername },
-            { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#ADB0B1" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy:false, paste:false }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
-            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#ADB0B1" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy:false, paste:false }, visible: true, dataValidateFunc: this.validatePassword },
-            { field: fields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#ADB0B1" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email' }, visible: true, dataValidateFunc: this.validateEmail },
+            { field: fields.username, label: 'Username', labelIcon: <PersonOutlineOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete: "off" }, visible: true, dataValidateFunc: this.validateUsername },
+            { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
+            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false }, visible: true, dataValidateFunc: this.validatePassword },
+            { field: fields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email' }, visible: true, dataValidateFunc: this.validateEmail },
+            { field: fields.otp, labelIcon: <SecurityOutlinedIcon style={{ color: "#FFF" }} />, formType: CHECKBOX, visible: true, value: false, style: { float: 'left', marginTop: 11 } }
         ]
     )
 
     render() {
         return (
             <Fragment>
-                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} style={{ height: '100%' }} />
+                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ height: '100%' }} />
             </Fragment>
         );
     }
