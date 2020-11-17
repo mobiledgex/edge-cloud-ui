@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Grid, Input, Icon, Form } from 'semantic-ui-react'
+import { Container, Button, Grid, Input, Icon } from 'semantic-ui-react'
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
@@ -8,6 +8,8 @@ import { LOCAL_STRAGE_KEY } from '../../constant'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from './signup';
+import MexOTPRegistration from './MexOTPRegistration';
+import MexOTPValidation from './MexOTPValidation';
 import RegistryResetForm from '../../components/reduxForm/resetPassword';
 import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
@@ -16,21 +18,21 @@ import ReCAPTCHA from "react-google-recaptcha";
 const host = window.location.host;
 let self = null;
 
-const FormContainer = (props) => (
+const LoginForm = (props) => (
     <Grid className="signUpBD" style={{ padding: '0 20px 0 20px' }}>
         <Grid.Row>
             <span className='title'>Sign into your account</span>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Icon name='user outline' /><sup>{' *'}</sup>
+                <Icon name='user outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <Input style={{ width: '80%', color: 'white' }} placeholder='Username or Email' name='username' ref={ipt => { props.self.uid = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column >
-                <Icon name='keyboard outline' /><sup>{' *'}</sup>
+                <Icon name='keyboard outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <Input autoComplete="off" style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
             </Grid.Column>
@@ -189,7 +191,9 @@ class Login extends Component {
             forgotMessage: false,
             created: false,
             resultMsg: '',
-            captchaValidated:false
+            captchaValidated: false,
+            totp: undefined,
+            loginOTP: undefined
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -242,19 +246,19 @@ class Login extends Component {
 
         if (nextProps.loginMode === 'login' || nextProps.loginFlag === 'login') {
             if (this.state.errorCreate) {
-                setTimeout(() => self.setState({ successCreate: false, errorCreate: false, forgotMessage: false, forgotPass: false }), 3000);
+                setTimeout(() => self.setState({ successCreate: false, errorCreate: false, forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined }), 1000);
             } else {
-                this.setState({ successCreate: false, loginMode: 'login', forgotMessage: false, forgotPass: false });
+                this.setState({ successCreate: false, loginMode: 'login', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
             }
 
         } else if (nextProps.loginMode === 'signup') {
-            this.setState({ successCreate: false, loginMode: 'signup', forgotMessage: false, forgotPass: false, errorCreate: false, captchaValidated:false });
+            this.setState({ successCreate: false, loginMode: 'signup', forgotMessage: false, forgotPass: false, errorCreate: false, captchaValidated: false, loginOTP: undefined, totp: undefined });
         } else if (nextProps.loginMode === 'forgot') {
-            this.setState({ successCreate: false, loginMode: 'forgot', forgotMessage: false, forgotPass: false });
+            this.setState({ successCreate: false, loginMode: 'forgot', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
         } else if (nextProps.loginMode === 'verify') {
-            this.setState({ successCreate: false, loginMode: 'verify', forgotMessage: false, forgotPass: false });
+            this.setState({ successCreate: false, loginMode: 'verify', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
         } else if (nextProps.loginMode === 'resetPass') {
-            this.setState({ successCreate: false, loginMode: 'resetPass', forgotMessage: false, forgotPass: false });
+            this.setState({ successCreate: false, loginMode: 'resetPass', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
         } else if (nextProps.loginMode === 'signuped' && nextProps.createSuccess) {
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Welcome to the Edge! Thank you for signing up.
@@ -287,35 +291,40 @@ class Login extends Component {
                 browser: self.clientSysInfo.browser.name,
                 callbackurl: `https://${host}/#/verify`,
                 clientip: self.clientSysInfo.clientIP,
-            }
+            },
+            EnableTOTP: data[fields.otp],
         })
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
                 let request = mcRequest.request;
-
-                if (typeof response.data === 'string' && response.data.indexOf("}{") > 0) {
-                    response.data.replace("}{", "},{")
-                    response.data = JSON.parse(response.data)
+                if (request.data.EnableTOTP) {
+                    this.setState({ totp: { requestData: request.data, responseData: response.data } })
                 }
-                let message = (response.data.message) ? response.data.message : null;
-                self.onProgress(false)
+                else {
+                    if (typeof response.data === 'string' && response.data.indexOf("}{") > 0) {
+                        response.data.replace("}{", "},{")
+                        response.data = JSON.parse(response.data)
+                    }
+                    let message = (response.data.Message) ? response.data.Message : null;
+                    self.onProgress(false)
 
-                if (message.indexOf('created') > -1) {
-                    this.props.onSignUp()
-                    let msg = `User ${request.data.name} created successfully`
-                    self.setState({ successCreate: true, loginMode: 'signuped', signup: false })
-                    self.props.handleAlertInfo('success', msg)
-                    self.props.handleCreateAccount({ success: true, info: request.data })
-                } else {
-                    self.setState({ successCreate: false, errorCreate: false, signup: false })
-                    self.forceUpdate();
-                    self.props.handleCreateAccount({ success: false, info: request.data })
-                    self.props.handleAlertInfo('error', message)
+                    if (message && message.indexOf('created') > -1) {
+                        this.props.onSignUp()
+                        let msg = `User ${request.data.name} created successfully`
+                        self.setState({ successCreate: true, loginMode: 'signuped', signup: false })
+                        self.props.handleAlertInfo('success', msg)
+                        self.props.handleCreateAccount({ success: true, info: request.data })
+                    } else {
+                        self.setState({ successCreate: false, errorCreate: false, signup: false })
+                        self.forceUpdate();
+                        self.props.handleCreateAccount({ success: false, info: request.data })
+                        self.props.handleAlertInfo('error', message)
 
+                    }
+                    self.setState({ successMsg: message ? message : self.state.successMsg, signup: false, email: data[fields.email] });
+                    setTimeout(() => self.props.handleChangeLoginMode('signuped'), 600);
                 }
-                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false, email: data[fields.email] });
-                setTimeout(() => self.props.handleChangeLoginMode('signuped'), 600);
             }
         }
     }
@@ -377,14 +386,20 @@ class Login extends Component {
             }
         }
         else if (mcRequest && mcRequest.error) {
-            let errorMessage = 'Invalid username/password'
-            if (mcRequest.error.response && mcRequest.error.response.data && mcRequest.error.response.data.message) {
-                errorMessage = mcRequest.error.response.data.message
-                if (errorMessage === 'Account is locked, please contact MobiledgeX support') {
-                    errorMessage = 'Your account is locked, please contact support@mobiledgex.com to unlock it'
-                }
+            let response = mcRequest.error.response
+            if (response.status === 511) {
+                this.setState({ loginOTP: mcRequest.request.data })
             }
-            this.props.handleAlertInfo('error', errorMessage)
+            else {
+                let errorMessage = 'Invalid username/password'
+                if (response && response.data && response.data.message) {
+                    errorMessage = response.data.message
+                    if (errorMessage === 'Account is locked, please contact MobiledgeX support') {
+                        errorMessage = 'Your account is locked, please contact support@mobiledgex.com to unlock it'
+                    }
+                }
+                this.props.handleAlertInfo('error', errorMessage)
+            }
         }
     }
 
@@ -446,23 +461,73 @@ class Login extends Component {
     }
 
     signUpForm = () => (
-            <Grid>
-                <Grid.Row>
-                    <span className='title'>Create New Account</span>
-                </Grid.Row>
-                <RegistryUserForm createUser={this.createUser} captchaValidated={this.state.captchaValidated}/>
-                <Grid.Row style={{ marginTop: 40, marginLeft:25 }}>
-                    <ReCAPTCHA
-                        sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
-                        onChange={this.onCaptchaChange}
-                    />
-                </Grid.Row>
-                <Grid.Row>
-                    <span>
-                        By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
+        <Grid>
+            <Grid.Row>
+                <span className='title'>Create New Account</span>
+            </Grid.Row>
+            <RegistryUserForm createUser={this.createUser} captchaValidated={this.state.captchaValidated} />
+            <Grid.Row style={{ marginTop: 40, marginLeft: 25 }}>
+                <ReCAPTCHA
+                    sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
+                    onChange={this.onCaptchaChange}
+                />
+            </Grid.Row>
+            <Grid.Row>
+                <span>
+                    By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
                     </span>
-                </Grid.Row>
-            </Grid>
+            </Grid.Row>
+        </Grid>
+    )
+
+    onOTPValidation = async (otp) => {
+        let data = this.state.loginOTP
+        let username = data.username
+        let mcRequest = await serverData.login(self, { username: username, password: data.password, totp: otp })
+        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+            let response = mcRequest.response;
+            if (response.data.token) {
+                self.params['userToken'] = response.data.token
+                this.getControllers(response.data.token)
+                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
+                this.validateUserName(username)
+                this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
+                this.setState({ loginOTP: undefined })
+            }
+        }
+        else if (mcRequest && mcRequest.error) {
+            let response = mcRequest.error.response
+            if (response.status === 511) {
+                this.setState({ loginOTP: mcRequest.request.data })
+            }
+            else {
+                let errorMessage = 'Invalid username/password'
+                if (response && response.data && response.data.message) {
+                    errorMessage = response.data.message
+                    if (errorMessage === 'Account is locked, please contact MobiledgeX support') {
+                        errorMessage = 'Your account is locked, please contact support@mobiledgex.com to unlock it'
+                    }
+                }
+                this.props.handleAlertInfo('error', errorMessage)
+            }
+        }
+    }
+
+    renderOTPForm = () => (
+        <MexOTPValidation onComplete={this.onOTPValidation} data={this.state.loginOTP} />
+    )
+
+    onOTPComplete = (data) => {
+        let requestData = this.state.totp.requestData
+        this.props.onSignUp()
+        let msg = `User ${requestData.name} created successfully`
+        self.setState({ successCreate: true, loginMode: 'signuped', signup: false, totp: undefined })
+        self.props.handleAlertInfo('success', msg)
+        self.props.handleCreateAccount({ success: true, info: requestData })
+    }
+
+    otpRegistration = () => (
+        <MexOTPRegistration onComplete={this.onOTPComplete} data={this.state.totp} />
     )
 
 
@@ -471,29 +536,31 @@ class Login extends Component {
         return (
             <Container style={{ width: this.props.signup ? 500 : 400 }}>
                 {
-                    this.props.signup ? this.signUpForm() :
-                        (this.state.loginMode === 'forgot') ?
-                            <FormForgotPass self={this} message={this.state.forgotMessage} />
-                            : (this.state.loginMode === 'resetPass') ?
-                                <ResetPassword self={this} />
-                                : (this.state.loginMode === 'forgotMessage') ?
-                                    <ForgotMessage self={this} />
-                                    : (this.state.loginMode === 'verify') ?
-                                        <FormResendVerify self={this} />
-                                        : (this.state.loginMode === 'signup') ?
-                                            (this.state.successCreate || this.state.errorCreate) ?
-                                                <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
-                                                :
-                                                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
+                    this.state.loginOTP ? this.renderOTPForm() :
+                        this.state.totp ? this.otpRegistration() :
+                            this.props.signup ? this.signUpForm() :
+                                (this.state.loginMode === 'forgot') ?
+                                    <FormForgotPass self={this} message={this.state.forgotMessage} />
+                                    : (this.state.loginMode === 'resetPass') ?
+                                        <ResetPassword self={this} />
+                                        : (this.state.loginMode === 'forgotMessage') ?
+                                            <ForgotMessage self={this} />
+                                            : (this.state.loginMode === 'verify') ?
+                                                <FormResendVerify self={this} />
+                                                : (this.state.loginMode === 'signup') ?
+                                                    (this.state.successCreate || this.state.errorCreate) ?
+                                                        <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                                        :
+                                                        <LoginForm self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
 
-                                            : (this.state.loginMode === 'signuped') ?
-                                                (this.state.successCreate || this.state.errorCreate) ?
-                                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
-                                                    : <div></div>
-                                                : (this.state.loginMode === 'login') ?
-                                                    <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
-                                                    :
-                                                    null
+                                                    : (this.state.loginMode === 'signuped') ?
+                                                        (this.state.successCreate || this.state.errorCreate) ?
+                                                            <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                                            : <div></div>
+                                                        : (this.state.loginMode === 'login') ?
+                                                            <LoginForm self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
+                                                            :
+                                                            null
                 }
             </Container>
 

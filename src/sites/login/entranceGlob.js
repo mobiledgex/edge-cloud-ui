@@ -6,6 +6,7 @@ import * as actions from '../../actions';
 import { PAGE_ORGANIZATIONS } from '../../constant';
 import { GridLoader } from "react-spinners";
 import MexAlert from '../../hoc/alert/AlertDialog';
+import './style.css'
 let self = null;
 class EntranceGlobe extends Component {
 

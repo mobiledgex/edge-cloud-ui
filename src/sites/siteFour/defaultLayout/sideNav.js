@@ -33,6 +33,7 @@ import PolicyIcon from '@material-ui/icons/Policy';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 import LandscapeOutlinedIcon from '@material-ui/icons/LandscapeOutlined';
+import NotificationsNoneOutlined from '@material-ui/icons/NotificationsNoneOutlined';
 
 import SiteFourPageOrganization from '../organization/organizationList';
 import SiteFourPageAccount from '../accounts/accountList';
@@ -156,7 +157,7 @@ const options = [
     },
     { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
     { label: 'Reload', icon: <TvOutlinedIcon />, pg: 'Reload', pageId: constant.PAGE_MONITORING_RELOAD, page: <Monitoring />, roles: [constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Alert Receivers', icon: <TvOutlinedIcon />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER] }
+    { label: 'Alert Receivers', icon: <NotificationsNoneOutlined />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER] }
 ]
 
 class SideNav extends React.Component {
