@@ -37,7 +37,7 @@ jobs:
           repository: mobiledgex/console-prod
           dockerfile: Dockerfile.prod
           tags: ${{ steps.get_tag.outputs.RELEASE_TAG }}
-          build_args: CONSOLE_IMAGE=registry.mobiledgex.net:5000/mobiledgex/console:${{ steps.get_tag.outputs.RELEASE_TAG }},REACT_APP_CAPTCHA_V2_KEY=${{ secret.RECAPTCHA_SITE_KEY }}
+          build_args: CONSOLE_IMAGE=registry.mobiledgex.net:5000/mobiledgex/console:${{ steps.get_tag.outputs.RELEASE_TAG }},REACT_APP_CAPTCHA_V2_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
 
       - name: Deploy to staging console
         uses: ./.github/actions/deploy-to-staging
