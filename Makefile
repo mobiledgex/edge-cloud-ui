@@ -5,7 +5,9 @@ PROD_IMAGE = registry.mobiledgex.net:$(REPO)/mobiledgex/console-prod:$(TAG)
 
 build:
 	docker build --build-arg TAG=$(TAG) -t $(IMAGE) .
-	docker build -f Dockerfile.prod --build-arg CONSOLE_IMAGE=$(IMAGE) -t $(PROD_IMAGE) .
+	docker build -f Dockerfile.prod --build-arg CONSOLE_IMAGE=$(IMAGE) \
+		--build-arg REACT_APP_CAPTCHA_V2_KEY=$(REACT_APP_CAPTCHA_V2_KEY) \
+		-t $(PROD_IMAGE) .
 
 publish:
 	docker push $(IMAGE)
