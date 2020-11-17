@@ -6,10 +6,12 @@ import { fields } from "../../services/model/format";
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
-import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 import zxcvbn from 'zxcvbn'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Icon } from "semantic-ui-react";
+
+const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
+const PasswordMinCrackTimeSec = 30 * 86400
 
 const validateLetterCase = (value) => {
     return /[a-z]/.test(value) && /[A-Z]/.test(value)
@@ -33,7 +35,13 @@ const validateConsecutive = (value) => {
 }
 
 const calculateStrength = (value) => {
-    return zxcvbn(value).score
+    return zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
+}
+
+const calculatePercentage = (score) => {
+    let value = score > PasswordMinCrackTimeSec ? PasswordMinCrackTimeSec : score
+    value = ((value - 0) / (PasswordMinCrackTimeSec - 0)) * (100 - 0) + 0
+    return value
 }
 
 class RegistryUserForm extends React.Component {
@@ -66,8 +74,6 @@ class RegistryUserForm extends React.Component {
         }
     }
 
-
-
     validatePassword = (currentForm) => {
         let value = currentForm.value
         if (!validateCharacterCount(value)) {
@@ -90,7 +96,7 @@ class RegistryUserForm extends React.Component {
             currentForm.error = 'Too many consecutive identical characters'
             return false;
         }
-        else if (calculateStrength(value) < 4) {
+        else if (calculateStrength(value) < PasswordMinCrackTimeSec) {
             currentForm.error = 'Password is weak'
             return false;
         }
@@ -143,7 +149,7 @@ class RegistryUserForm extends React.Component {
         let digit = validateDigit(value)
         let symbol = validateSymbol(value)
         let consecutive = validateConsecutive(value)
-        let color = score < 4 ? '#F5382F' : '#F2F2F2'
+        let color = score < PasswordMinCrackTimeSec ? '#F5382F' : '#F2F2F2'
         return (
             <div style={{ fontSize: 12 }}>
                 <p>Your password must have :</p>
@@ -152,7 +158,7 @@ class RegistryUserForm extends React.Component {
                 <p style={{ color: digit ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one number</p>
                 <p style={{ color: symbol ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one symbol</p>
                 <p>Strength:</p>
-                <LinearProgress variant="determinate" value={score * 25} style={{ backgroundColor: color }} />
+                <LinearProgress variant="determinate" value={calculatePercentage(score)} style={{ backgroundColor: color }} />
                 <br />
                 {consecutive ?
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
@@ -164,11 +170,11 @@ class RegistryUserForm extends React.Component {
 
     forms = () => (
         [
-            { field: fields.username, label: 'Username', labelIcon: <PersonOutlineOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete: "off", requiredColor:'#FFF'  }, visible: true, dataValidateFunc: this.validateUsername },
-            { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor:'#FFF'  }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
-            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor:'#FFF'  }, visible: true, dataValidateFunc: this.validatePassword },
-            { field: fields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email', requiredColor:'#FFF' }, visible: true, dataValidateFunc: this.validateEmail },
-            { field: fields.otp, label: '2FA', labelStyle:{fontWeight:500, color:'#FFF', fontSize:14}, formType: CHECKBOX, visible: true, value: false, style: { float: 'left' } }
+            { field: fields.username, label: 'Username', labelIcon: <PersonOutlineOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete: "off", requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validateUsername },
+            { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
+            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
+            { field: fields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email', requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validateEmail },
+            { field: fields.otp, label: '2FA', labelStyle: { fontWeight: 500, color: '#FFF', fontSize: 14 }, formType: CHECKBOX, visible: true, value: false, style: { float: 'left' } }
         ]
     )
 
