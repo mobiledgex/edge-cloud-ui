@@ -108,7 +108,7 @@ class AlertLocal extends React.Component {
             <React.Fragment>
                 {this.renderToolbar()}
                 <br />
-                <div style={{ height: 'calc(52vh - 1px)', overflow: 'auto', width:'100%' }}>
+                <div style={{ height: 'calc(32vh - 1px)', overflow: 'auto', width:'100%' }}>
                     {this.renderList()}
                 </div>
             </React.Fragment>

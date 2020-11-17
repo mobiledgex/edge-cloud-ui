@@ -335,11 +335,13 @@ const MexForms = (props) => {
     const loadForms = (index, form) => {
         form.id = { id: index }
         let required = false;
+        let requiredColor = undefined
         let disabled = false;
 
         if (form.rules) {
             let rules = form.rules;
             required = rules.required ? rules.required : false;
+            requiredColor = rules.requiredColor
             disabled = rules.disabled ? rules.disabled : false;
         }
         return (
@@ -347,8 +349,8 @@ const MexForms = (props) => {
                 <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-' + index}>
                     <Grid.Column width={4} className='detail_item'>
                         {form.labelIcon ?
-                            <IconButton disabled={true}>{form.labelIcon}<sup>{required ? ' *' : ''}</sup></IconButton> :
-                            <div style={form.labelStyle}>{form.label}<sup>{required ? ' *' : ''}</sup></div>}
+                            <IconButton disabled={true}>{form.labelIcon}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></IconButton> :
+                            <div style={form.labelStyle}>{form.label}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {

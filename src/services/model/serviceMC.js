@@ -62,17 +62,19 @@ const showError = (self, request, message) => {
 }
 
 export const checkExpiry = (self, message) => {
-    let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
-    if (isExpired && self) {
-        setTimeout(() => {
-            if (self && self.props && self.props.history) {
-                self.props.history.push({
-                    pathname: '/logout'
-                })
-            }
-        }, 2000);
+    if (message) {
+        let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
+        if (isExpired && self) {
+            setTimeout(() => {
+                if (self && self.props && self.props.history) {
+                    self.props.history.push({
+                        pathname: '/logout'
+                    })
+                }
+            }, 2000);
+        }
+        return !isExpired;
     }
-    return !isExpired;
 }
 
 function responseError(self, request, error, callback) {
