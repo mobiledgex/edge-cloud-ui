@@ -387,7 +387,7 @@ class Login extends Component {
         }
         else if (mcRequest && mcRequest.error) {
             let response = mcRequest.error.response
-            if (response.status === 412) {
+            if (response.status === 511) {
                 this.setState({ loginOTP: mcRequest.request.data })
             }
             else {
@@ -497,7 +497,7 @@ class Login extends Component {
         }
         else if (mcRequest && mcRequest.error) {
             let response = mcRequest.error.response
-            if (response.status === 412) {
+            if (response.status === 511) {
                 this.setState({ loginOTP: mcRequest.request.data })
             }
             else {
