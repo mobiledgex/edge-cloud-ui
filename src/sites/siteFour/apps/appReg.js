@@ -405,10 +405,15 @@ class AppReg extends React.Component {
                     }
                     else if (childForm.field === fields.tls) {
                         childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp'
-                        childForm.value = childForm.visible ? childForm.value : false
+                        if (!isInit) {
+                            childForm.value = childForm.visible ? childForm.value : false
+                        }
                     }
                     else if (childForm.field === fields.skipHCPorts) {
                         childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp'
+                        if (!isInit) {
+                            childForm.value = childForm.visible ? childForm.value : false
+                        }
                     }
                 }
             }
