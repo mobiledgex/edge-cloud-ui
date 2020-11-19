@@ -4,7 +4,7 @@
 import randomColor from 'randomcolor'
 import { maxBy, meanBy, minBy } from 'lodash';
 import { unit } from '../../utils/math_util'
-import {fields} from '../model/format'
+import { fields } from '../model/format'
 
 const metricKeyGenerator = (parentId, region, metric) => {
     return `${parentId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
@@ -40,19 +40,7 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
     Object.keys(data.values).map(key => {
         let value = data.values[key][0]
 
-        let avg = meanBy(data.values[key], v => (v[metric.position]))
-        let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
-        let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
-
-        if(metric.field === 'connections')
-        {
-                avg = avg ? avg : '0'
-                max = max ? max : '0'
-                min = min ? min : '0'
-        }
-        
         let avgValues = avgData[parentId][region][key]
-
         if (avgValues === undefined) {
             avgValues = {}
             data.columns.map((column, i) => {
@@ -62,18 +50,30 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
                 count: 1,
             })[0]
 
-            // if (getUserRole().includes(DEVELOPER)) {
-            //     if (key.includes('envoy')) {
-            //         avgValues['disabled'] = true
-            //     }
-            // }
             avgValues['selected'] = false
             avgValues = fetchLocation(parentId, avgValues, value, showList)
         }
-        let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
-        let maxUnit = metric.unit ? unit(metric.unit, max) : max
-        let minUnit = metric.unit ? unit(metric.unit, min) : min
-        avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
+
+        if (parentId === 'appinst' || parentId === 'cluster') {
+            let avg = meanBy(data.values[key], v => (v[metric.position]))
+            let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
+            let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
+
+            if (metric.field === 'connections') {
+                avg = avg ? avg : 0
+                max = max ? max : 0
+                min = min ? min : 0
+            }
+            let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
+            let maxUnit = metric.unit ? unit(metric.unit, max) : max
+            let minUnit = metric.unit ? unit(metric.unit, min) : min
+            avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
+        }
+        else {
+            let positionValue = value[metric.position] ? value[metric.position] : 0
+            avgValues[metric.field] = [metric.unit ? unit(metric.unit, positionValue) : positionValue]
+        }
+
         avgData[parentId][region][key] = avgValues
     })
 }
