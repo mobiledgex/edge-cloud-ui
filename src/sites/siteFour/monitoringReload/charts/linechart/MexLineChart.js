@@ -1,11 +1,13 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
-import {unit} from '../../../../../utils/math_util'
+import { unit } from '../../../../../utils/math_util'
 import isEqual from 'lodash/isEqual';
+import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import uuid from 'uuid'
+import { AppBar, Button, Dialog, Divider, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@material-ui/core';
 
-const optionsGenerator = (header, unitId) => {
+const optionsGenerator = (header, unitId, fullscreen) => {
     return {
         stacked: true,
         bezierCurve: true,
@@ -17,8 +19,8 @@ const optionsGenerator = (header, unitId) => {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
-            position: "left",
-            display: false,
+            position: "top",
+            display: fullscreen,
             labels: {
                 // boxWidth: 2
             }
@@ -51,7 +53,7 @@ const optionsGenerator = (header, unitId) => {
                     labelString: 'Date'
                 },
                 ticks: {
-                    maxTicksLimit: 5
+                    maxTicksLimit: fullscreen ? 15 : 5
                 }
             }],
             yAxes: [{
@@ -63,16 +65,17 @@ const optionsGenerator = (header, unitId) => {
                     callback: (label, index, labels) => {
                         return unit ? unit(unitId, label) : label
                     },
-                    maxTicksLimit: 5
+                    maxTicksLimit: fullscreen ? 15 : 5
                 }
             }]
         },
-        tooltips: {
+        tooltips: { 
+            mode: 'single',
             callbacks: {
                 label: function (tooltipItem, data) {
                     var label = data.datasets[tooltipItem.datasetIndex].label
                     let value = unit ? unit(unitId, tooltipItem.yLabel) : tooltipItem.yLabel
-                    return `${label} : ${value}`
+                    return `${label} : ${value ? value : 0}`
                 }
             }
         }
@@ -84,6 +87,7 @@ class MexLineChart extends React.Component {
         super(props)
         this.state = {
             chartData: {},
+            fullscreen: false
         }
         this.metric = props.data.metric
         this.header = this.metric ? this.metric.header : ''
@@ -91,7 +95,7 @@ class MexLineChart extends React.Component {
         this.position = this.metric ? this.metric.position : 0
         this.tags = props.tags
         this.tagFormats = props.tagFormats
-        this.options = optionsGenerator(this.header, this.unit)
+        this.options = optionsGenerator(this.header, this.unit, false)
     }
 
     formatLabel = (value) => {
@@ -162,17 +166,42 @@ class MexLineChart extends React.Component {
         return null
     }
 
+    closeFullScreen = () => {
+        this.setState({ fullscreen: false })
+    }
+
+    openFullScreen = () => {
+        this.setState({ fullscreen: true })
+    }
+
+    renderFullScreen = (fullscreen, chartData, avgDataRegion, rowSelected, globalFilter) => (
+        <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
+            <div style={{ padding: 20, height:'100vh' }}>
+                <Line datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen)} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
+            </div>
+        </Dialog>
+    )
+
     render() {
-        const { chartData } = this.state
+        const { fullscreen, chartData } = this.state
         const { avgDataRegion, rowSelected, globalFilter, id } = this.props
         return (
             <div mex-test="component-line-chart">
-                <div align="center">
-                    <h3>{`${this.header} - ${this.props.data.region}`}</h3>
+                <div className="line-chart-header">
+                    <div className="line-chart-header-left">
+                        <h3>{`${this.header} - ${this.props.data.region}`}</h3>
+                    </div>
+                    <div className="line-chart-header-right">
+                        <IconButton onClick={this.openFullScreen}>
+                            <AspectRatioIcon />
+                        </IconButton>
+                    </div>
                 </div>
+                <br />
                 <div style={{ padding: 20, width: '100%' }}>
-                    <Line datasetKeyProvider={()=>(uuid())} options={this.options} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
+                    <Line datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
                 </div>
+                {this.renderFullScreen(fullscreen, chartData, avgDataRegion, rowSelected, globalFilter)}
             </div>
         )
     }

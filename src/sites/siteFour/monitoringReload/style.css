@@ -175,3 +175,17 @@
     box-shadow: none;
     font-size:1em;
   }
+
+
+.line-chart-header-left {
+    float: left;
+    display: inline;
+}
+
+
+.line-chart-header-right{
+    float: right;
+    display: inline;
+}
+
+canvas#race{position:relative; z-index:999999;}
