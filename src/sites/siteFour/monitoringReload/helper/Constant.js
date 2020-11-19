@@ -19,16 +19,20 @@ export const ACTION_RELATIVE_TIME = 7
 export const ACTION_REFRESH = 8
 export const ACTION_MINIMIZE = 9
 
+export const PARENT_APP_INST = 'appinst'
+export const PARENT_CLUSTER_INST = 'cluster'
+export const PARENT_CLOUDLET = 'cloudlet'
+
 export const summaryList = [
-    { label: 'Avg', field: 'avg', position: 0 },
-    { label: 'Min', field: 'min', position: 1 },
-    { label: 'Max', field: 'max', position: 2 },
+    { label: 'Avg', field: 'avg', position: 0, metricType : [PARENT_APP_INST, PARENT_CLUSTER_INST] },
+    { label: 'Min', field: 'min', position: 1, metricType : [PARENT_APP_INST, PARENT_CLUSTER_INST]  },
+    { label: 'Max', field: 'max', position: 2, metricType : [PARENT_APP_INST, PARENT_CLUSTER_INST]  },
 ]
 
 export const metricParentTypes = [
-    { id: 'appinst', label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.DEVELOPER], fetchLocation: fetchLocation },
-    { id: 'cluster', label: 'Cluster Inst', showRequest: showCloudlets, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
-    { id: 'cloudlet', label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.DEVELOPER], fetchLocation: fetchLocation },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: showCloudlets, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
 ]
 
 export const relativeTimeRanges = [
@@ -45,7 +49,6 @@ export const refreshRates = [
     { label: 'Off', duration: 0 },
     // { label: '5s', duration: 5 },
     // { label: '10s', duration: 10 },
-    // { label: '30s', duration: 30 },
     { label: '30s', duration: 30 },
     { label: '1m', duration: 60 },
     { label: '5m', duration: 300 },

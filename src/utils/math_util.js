@@ -20,12 +20,12 @@ export const convertByteToMegaGigaByte = (bytes) => {
 }
 
 export const unit = (type, value) => {
-    if (value) {
+    if (value >= 0) {
         switch (type) {
             case 1:
-                return convertByteToMegaGigaByte(value.toFixed(1))
+                return convertByteToMegaGigaByte(value > 0 ? value.toFixed(1) : value)
             case 2:
-                return value.toFixed(3) + " %"
+                return (value > 0 ? value.toFixed(3) : value) + " %"
             case 3:
                 return Math.floor(value)
             default:
