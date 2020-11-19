@@ -37,7 +37,6 @@ const MexToolbar = (props) => {
     const [search, setSearch] = React.useState('')
     const [focused, setFocused] = React.useState(false)
     const [refreshRange, setRefreshRange] = React.useState(constant.refreshRates[0])
-
     /*Search Block*/
     const handleSearch = (e) => {
         let value = e ? e.target.value : ''
@@ -134,6 +133,10 @@ const MexToolbar = (props) => {
         </Box>
     )
 
+    const showSummary = () => {
+        return props.defaultParent.id !== constant.PARENT_CLOUDLET
+    }
+
     return (
         <Toolbar>
             <label className='monitoring-header'>Monitoring</label>
@@ -144,7 +147,7 @@ const MexToolbar = (props) => {
                         <MonitoringMenu data={constant.metricParentTypes} default={props.defaultParent} labelKey='label' order={2} onChange={onMetricParentTypeChange} default={props.defaultParent}/>
                         <MonitoringMenu data={props.regions} order={3} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region'/>
                         <MonitoringMenu data={props.metricTypeKeys} labelKey='header' order={4} multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Metric Type'/>
-                        <MonitoringMenu data={constant.summaryList} labelKey='label' order={5} onChange={onSummaryChange} />
+                        {showSummary() ? <MonitoringMenu data={constant.summaryList} labelKey='label' order={5} onChange={onSummaryChange} /> : null}
                         {renderRefresh(7)}
                         {searchForm(8)}
                         {renderMinimize(9)}
