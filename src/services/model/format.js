@@ -167,7 +167,8 @@ export const fields = {
     appOperator:'appOperator',
     receiverAddress:'receiverAddress',
     otp:'otp',
-    port:'port'
+    port:'port',
+    appRevision:'appRevision'
 }
 
 export const getUserRole = () => {

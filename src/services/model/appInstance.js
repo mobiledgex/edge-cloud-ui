@@ -110,6 +110,7 @@ export const multiDataRequest = (keys, mcRequestList) => {
           appInst[fields.deployment] = app[fields.deployment];
           appInst[fields.accessType] = app[fields.accessType];
           appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
+          appInst[fields.appRevision] = app[fields.revision]
           break;
         }
       }
