@@ -3,13 +3,13 @@ import { SHOW_ALERT } from './endpoints'
 import { ALERT_SHOW_RECEIVER, ALERT_DELETE_RECEIVER, ALERT_CREATE_RECEIVER } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL } from '../../constant'
+import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 let fields = formatter.fields
 export const showAlertKeys = () => (
     [
-        { field: fields.region, label: 'Region', sortable: true, visible: false, summary: false, filter: false },
+        { field: fields.region, label: 'Region', serverField: 'labels#OS#region', sortable: true, visible: true, summary: false },
         { field: fields.alertname, serverField: 'labels#OS#alertname', label: 'Alert Name', sortable: true, visible: true, summary: false },
         { field: fields.appName, serverField: 'labels#OS#app', label: 'App', sortable: true, visible: true, summary: false },
         { field: fields.appDeveloper, serverField: 'labels#OS#apporg', label: 'App Developer', sortable: true, visible: false, summary: false },
@@ -21,24 +21,25 @@ export const showAlertKeys = () => (
         { field: fields.envoyclustername, serverField: 'labels#OS#envoy_cluster_name', label: 'Envoy Cluster', sortable: true, visible: false, summary: true },
         { field: fields.instance, serverField: 'labels#OS#instance', label: 'Instance', sortable: true, visible: false, summary: true },
         { field: fields.job, serverField: 'labels#OS#job', label: 'Job', sortable: true, visible: false, summary: true },
-        { field: fields.status, serverField: 'labels#OS#status', label: 'Status', sortable: true, visible: false, summary: true },
+        { field: fields.port, serverField: 'labels#OS#port', label: 'Port', sortable: true, visible: false, summary: true },
+        { field: fields.status, serverField: 'labels#OS#status', label: 'Status', sortable: true, visible: false, summary: true, formatData: HEALTH_CHECK },
         { field: fields.state, serverField: 'state', label: 'State', sortable: true, visible: false, summary: false },
-        { field: fields.activeAt, serverField: 'active_at#OS#seconds', label: 'Active At', sortable: true, visible: false, summary: true, formatDate:FORMAT_FULL_DATE_TIME },
-        { field: fields.notifyId, serverField: 'notify_id', label: 'Notify ID', sortable: true, visible: false, summary: true },
-        { field: fields.controller, serverField: 'controller', label: 'Controller', sortable: true, visible: false, summary: true }
+        { field: fields.activeAt, serverField: 'active_at#OS#seconds', label: 'Active At', sortable: true, visible: false, summary: true, formatDate: FORMAT_FULL_DATE_TIME },
+        { field: fields.notifyId, serverField: 'notify_id', label: 'Notify ID', sortable: true, visible: false, summary: false },
+        { field: fields.controller, serverField: 'controller', label: 'Controller', sortable: true, visible: false, summary: false }
     ]
 )
 
 export const showAlertReceiverKeys = () => (
     [
-        { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter:true },
-        { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true, filter:true },
-        { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter:true },
-        { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, detailView:false, filter:true },
-        { field: fields.slackchannel, serverField: 'SlackChannel', label: 'Slack Channel', sortable: true, visible: false, detailView:false, filter:true},
-        { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter:true},
-        { field: fields.receiverAddress, label: 'Receiver Address', sortable: true, visible: true, filter:true},
-        { field: fields.slackwebhook, serverField: 'SlackWebhook', label: 'Slack Webhook', sortable: true, visible: false, detailView:false },
+        { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter: true },
+        { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true, filter: true },
+        { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter: true },
+        { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, detailView: false, filter: true },
+        { field: fields.slackchannel, serverField: 'SlackChannel', label: 'Slack Channel', sortable: true, visible: false, detailView: false, filter: true },
+        { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter: true },
+        { field: fields.receiverAddress, label: 'Receiver Address', sortable: true, visible: true, filter: true },
+        { field: fields.slackwebhook, serverField: 'SlackWebhook', label: 'Slack Webhook', sortable: true, visible: false, detailView: false },
         // { field: fields.alertname, serverField: 'Cloudlet', label: 'Alert Name', sortable: true, visible: true },
         { field: fields.appDeveloper, serverField: 'AppInst#OS#app_key#OS#organization', label: 'App Developer', sortable: true, visible: false },
         { field: fields.appName, serverField: 'AppInst#OS#app_key#OS#name', label: 'App Name', sortable: true, visible: false },
@@ -52,8 +53,7 @@ export const showAlertReceiverKeys = () => (
     ]
 )
 
-const cloudletSelector = (data)=>
-{
+const cloudletSelector = (data) => {
     let clouldet_key = {}
     if (data[fields.operatorName] || data[fields.cloudletName]) {
         if (data[fields.cloudletName]) {
@@ -66,18 +66,16 @@ const cloudletSelector = (data)=>
     return clouldet_key
 }
 
-const clusterInstSelector = (data) =>{
+const clusterInstSelector = (data) => {
     let requestData = {}
-    if(data[fields.clusterName] )
-    {
-        let cluster_key = {name: data[fields.clusterName]}
+    if (data[fields.clusterName]) {
+        let cluster_key = { name: data[fields.clusterName] }
         requestData.cluster_key = cluster_key
     }
-    if(data[fields.operatorName]  || data[fields.cloudletName])
-    {
+    if (data[fields.operatorName] || data[fields.cloudletName]) {
         requestData.cloudlet_key = cloudletSelector(data)
     }
-    requestData.organization =  data[fields.organizationName]
+    requestData.organization = data[fields.organizationName]
     return requestData
 }
 
@@ -107,20 +105,17 @@ const getKey = (data) => {
         type: data[fields.type].toLowerCase(),
         severity: data[fields.severity].toLowerCase()
     }
-    if(data[fields.type] === RECEIVER_TYPE_SLACK)
-    {
+    if (data[fields.type] === RECEIVER_TYPE_SLACK) {
         alert['slackchannel'] = data[fields.slackchannel]
         alert['slackwebhook'] = data[fields.slackwebhook]
     }
-    else if(data[fields.type] === RECEIVER_TYPE_EMAIL)
-    {
-       alert['email'] = data[fields.email] 
+    else if (data[fields.type] === RECEIVER_TYPE_EMAIL) {
+        alert['email'] = data[fields.email]
     }
-    if(data[fields.selector] === 'Cloudlet')
-    {
+    if (data[fields.selector] === 'Cloudlet') {
         alert['Cloudlet'] = cloudletSelector(data)
     }
-    else if(data[fields.selector] === 'Cluster') {
+    else if (data[fields.selector] === 'Cluster') {
         alert['appinst'] = {}
         alert['appinst']['cluster_inst_key'] = clusterInstSelector(data)
     }

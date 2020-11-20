@@ -8,3 +8,9 @@
 .alert-toolbar-right {
     float: right;
 }
+
+.alert-local-list {
+    height: calc(60vh - 100px);
+    overflow: auto; 
+    width: 100% ;
+}

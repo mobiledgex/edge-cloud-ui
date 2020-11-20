@@ -166,7 +166,8 @@ export const fields = {
     appCloudlet:'appCloudlet',
     appOperator:'appOperator',
     receiverAddress:'receiverAddress',
-    otp:'otp'
+    otp:'otp',
+    port:'port'
 }
 
 export const getUserRole = () => {

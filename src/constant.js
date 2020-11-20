@@ -1,4 +1,6 @@
-import {fields} from "./services/model/format"
+import { fields } from "./services/model/format"
+import { time } from './utils/date_util'
+
 export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
 export const TYPE_JSON = 'JSON'
 export const TYPE_STRING = 'String'
@@ -46,16 +48,16 @@ export const SHOW_LOGS = 'Show Logs';
 export const RECEIVER_TYPE_EMAIL = 'Email'
 export const RECEIVER_TYPE_SLACK = 'Slack'
 
-export const MAINTENANCE_STATE_NORMAL_OPERATION  = 'Normal Operation'
-export const MAINTENANCE_STATE_MAINTENANCE_START  = 'Maintenance Start'
-export const MAINTENANCE_STATE_FAILOVER_REQUESTED  = 'Failover Requested'
-export const MAINTENANCE_STATE_FAILOVER_DONE  = 'Failover Done'
-export const MAINTENANCE_STATE_FAILOVER_ERROR  = 'Failover Error'
-export const MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER  = 'Maintenance Start No Failover'
-export const MAINTENANCE_STATE_CRM_REQUESTED  = 'CRM Requested'
-export const MAINTENANCE_STATE_CRM_UNDER_MAINTENANCE  = 'CRM Under Maintenance'
-export const MAINTENANCE_STATE_CRM_ERROR  = 'CRM Error'
-export const MAINTENANCE_STATE_UNDER_MAINTENANCE  = 'Under Maintenance'
+export const MAINTENANCE_STATE_NORMAL_OPERATION = 'Normal Operation'
+export const MAINTENANCE_STATE_MAINTENANCE_START = 'Maintenance Start'
+export const MAINTENANCE_STATE_FAILOVER_REQUESTED = 'Failover Requested'
+export const MAINTENANCE_STATE_FAILOVER_DONE = 'Failover Done'
+export const MAINTENANCE_STATE_FAILOVER_ERROR = 'Failover Error'
+export const MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER = 'Maintenance Start No Failover'
+export const MAINTENANCE_STATE_CRM_REQUESTED = 'CRM Requested'
+export const MAINTENANCE_STATE_CRM_UNDER_MAINTENANCE = 'CRM Under Maintenance'
+export const MAINTENANCE_STATE_CRM_ERROR = 'CRM Error'
+export const MAINTENANCE_STATE_UNDER_MAINTENANCE = 'Under Maintenance'
 
 export const INFRA_API_ACCESS_DIRECT = 'Direct'
 export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
@@ -78,7 +80,7 @@ export const CONFIG_ENV_VAR = 'Environment Variables'
 export const CONFIG_HELM_CUST = 'Helm Customization'
 
 export const CRM_OVERRIDE_NO_OVERRIDE = 0
-export const CRM_OVERRIDE_IGNORE_CRM_ERRORS= 1
+export const CRM_OVERRIDE_IGNORE_CRM_ERRORS = 1
 export const CRM_OVERRIDE_IGNORE_CRM = 2
 export const CRM_OVERRIDE_IGNORE_TRANSIENT_STATE = 3
 export const CRM_OVERRIDE_IGNORE_CRM_AND_TRANSIENT_STATE = 4
@@ -95,6 +97,7 @@ export const POWER_STATE_REBOOTING = 'Rebooting'
 export const POWER_STATE_REBOOT = 'Reboot'
 export const POWER_STATE_ERROR = 'Error'
 
+export const HEALTH_CHECK = 'HEALTH_CHECK'
 export const HEALTH_CHECK_UNKNOWN = 'Unknown'
 export const HEALTH_CHECK_FAIL_ROOTLB_OFFLINE = 'Rootlb Offline'
 export const HEALTH_CHECK_FAIL_SERVER_FAIL = 'Server Fail'
@@ -118,6 +121,23 @@ export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
 export const PAGE_MONITORING_RELOAD = 'Reload'
 export const PAGE_ALERTS = 'AlertReceivers'
+
+const dataFormatter = (type, value) => {
+    switch (type) {
+        case HEALTH_CHECK:
+            return healthCheck(value)
+    }
+}
+
+export const formatData = (key, value) => {
+    if (key.formatDate) {
+        return time(key.formatDate, parseInt(value + '000'))
+    }
+    else if (key.formatData) {
+        return dataFormatter(key.formatData, value)
+    }
+    return value
+}
 
 export const MaintenanceState = (id) => {
     switch (id) {
@@ -264,7 +284,7 @@ export const infraApiAccess = (id) => {
 }
 
 export const healthCheck = (id) => {
-    switch (id) {
+    switch (parseInt(id)) {
         case 0:
             return HEALTH_CHECK_UNKNOWN
         case HEALTH_CHECK_UNKNOWN:
@@ -435,7 +455,7 @@ export const filterData = (selectedDatas, dataList, field) => {
     return dataList
 }
 
-export const regions = ()=>{
+export const regions = () => {
     return localStorage.regions ? localStorage.regions.split(",") : [];
 }
 

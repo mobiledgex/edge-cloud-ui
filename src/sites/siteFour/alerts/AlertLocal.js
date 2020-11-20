@@ -3,13 +3,12 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Chip, Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import { PAGE_ALERTS } from '../../../constant';
+import { PAGE_ALERTS, formatData } from '../../../constant';
 import {showAlertKeys} from '../../../services/model/alerts'
 import * as actions from '../../../actions';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { fields } from '../../../services/model/format';
-import { time } from '../../../utils/date_util';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 
@@ -61,6 +60,7 @@ class AlertLocal extends React.Component {
             <div>
                 <h4><b>{data[fields.alertname]}</b>{this.renderState(data)}</h4>
                 <div style={{marginTop:5}}></div>
+                <Chip component="div" variant="outlined" size="small" label={`Region: ${data[fields.region]}`} style={{marginBottom:5, marginRight:5}}/>
                 <Chip component="div" variant="outlined" size="small" label={`Developer: ${data[fields.appDeveloper]}`} style={{marginBottom:5, marginRight:5}}/>
                 <Chip variant="outlined" size="small" label={`App: ${data[fields.appName]} [${data[fields.version]}]`}  style={{marginBottom:5, marginRight:5}}/>
                 <Chip variant="outlined" size="small" label={`Cluster: ${data[fields.clusterName]}`}  style={{marginBottom:5, marginRight:5}}/>
@@ -69,6 +69,8 @@ class AlertLocal extends React.Component {
             </div>
         )
     }
+
+    
 
     renderList = () => {
         const { data } = this.props
@@ -91,7 +93,7 @@ class AlertLocal extends React.Component {
                                     {showAlertKeys().map((key, j) => {
                                         let value = item[key.field]
                                         if (key.summary && value) {
-                                            return <ListItem key={j}><ListItemText primary={<p><b>{key.label}</b> {`: ${key.formatDate ?  time(key.formatDate, parseInt(value+'000')) : value}`}</p>} /></ListItem>
+                                            return <ListItem key={j}><ListItemText primary={<p><b>{key.label}</b> {`: ${formatData(key, value)}`}</p>} /></ListItem>
                                         }
                                     })}
                                 </List>
@@ -108,7 +110,7 @@ class AlertLocal extends React.Component {
             <React.Fragment>
                 {this.renderToolbar()}
                 <br />
-                <div style={{ height: 'calc(32vh - 1px)', overflow: 'auto', width:'100%' }}>
+                <div className='alert-local-list'>
                     {this.renderList()}
                 </div>
             </React.Fragment>
