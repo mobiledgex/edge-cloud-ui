@@ -54,7 +54,7 @@ class AlertGlobal extends React.Component {
                         horizontal: 'center',
                     }}
                 >
-                    <div style={{ width: 500, height: 502 }}>
+                    <div style={{ width: 500 }}>
                         <AlertLocal data={dataList} handleClose={this.handleClose} />
                     </div>
                 </Popover>
