@@ -2,7 +2,9 @@
 /**Fetch monitoring metric data for app, cluster and cloudlet */
 
 import randomColor from 'randomcolor'
-import { maxBy, meanBy, minBy } from 'lodash';
+import maxBy from 'lodash/maxBy';
+import meanBy from 'lodash/meanBy';
+import minBy from 'lodash/minBy';
 import { unit } from '../../utils/math_util'
 import { fields } from '../model/format'
 

@@ -9,6 +9,10 @@ import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
 import zxcvbn from 'zxcvbn'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Icon } from "semantic-ui-react";
+import { generate } from 'generate-password'
+import { Button } from "@material-ui/core";
+import { copyData } from '../../utils/file_util'
+import cloneDeep from "lodash/cloneDeep";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 const PasswordMinCrackTimeSec = 30 * 86400
@@ -18,7 +22,7 @@ const validateLetterCase = (value) => {
 }
 
 const validateCharacterCount = (value) => {
-    return value.length >= 10
+    return value.length >= 13
 }
 
 //atleast on digit
@@ -141,6 +145,23 @@ class RegistryUserForm extends React.Component {
         })
     }
 
+    generatePassword = () => {
+        let password = generate({ length: 13, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
+        if (calculateStrength(password) < PasswordMinCrackTimeSec) {
+            password = this.generatePassword()
+        }
+        copyData(password)
+        let forms = cloneDeep(this.state.forms)
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.password || form.field === fields.confirmPassword) {
+                form.value = password
+            }
+        }
+        this.props.handleAlertInfo('success', 'Password generated successfully and copied to the clipboard, make sure to memorize the password')
+        this.setState({ forms })
+    }
+
     passwordHelper = (form) => {
         let value = form.value ? form.value : ''
         let score = calculateStrength(value)
@@ -153,7 +174,7 @@ class RegistryUserForm extends React.Component {
         return (
             <div style={{ fontSize: 12 }}>
                 <p>Your password must have :</p>
-                <p style={{ color: count ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> 10 or more characters</p>
+                <p style={{ color: count ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> 13 or more characters</p>
                 <p style={{ color: letterCase ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> upper &amp; lowercase letters</p>
                 <p style={{ color: digit ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one number</p>
                 <p style={{ color: symbol ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one symbol</p>
@@ -162,8 +183,9 @@ class RegistryUserForm extends React.Component {
                 <br />
                 {consecutive ?
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
-                    <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse and follow the above recommended password guidelines to prevent brute force attack</p>
+                    <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse and also avoid using recognizable words such as <i>Password, House, car, etc.</i>, use random characters such as <i>ngft3ferd$wiy</i> or click on the generate button to generate a secure password and make sure to memorize the password</p>
                 }
+                <div style={{ float: 'right' }}><Button onClick={this.generatePassword} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
             </div>
         )
     }
