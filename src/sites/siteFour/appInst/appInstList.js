@@ -12,7 +12,7 @@ import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import { Dialog } from '@material-ui/core';
+import { Dialog, Tooltip } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
 
@@ -122,8 +122,8 @@ class AppInstList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : HELP_APP_INST_LIST,
-            grouping : true
+            viewMode: HELP_APP_INST_LIST,
+            grouping: true
         })
     }
 
@@ -135,7 +135,9 @@ class AppInstList extends React.Component {
         return (
             isDetailView ? data :
                 data[fields.updateAvailable] ?
-                    <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{data[fields.region]}  </label> :
+                    <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br/><br/><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
+                        <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{data[fields.region]}  </label>
+                    </Tooltip> :
                     <label>{data[fields.region]}</label>
         )
     }
