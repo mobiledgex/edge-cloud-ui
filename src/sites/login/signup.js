@@ -9,9 +9,9 @@ import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
 import zxcvbn from 'zxcvbn'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Icon } from "semantic-ui-react";
-import {generate} from 'generate-password'
+import { generate } from 'generate-password'
 import { Button } from "@material-ui/core";
-import {copyData} from '../../utils/file_util'
+import { copyData } from '../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
@@ -146,7 +146,7 @@ class RegistryUserForm extends React.Component {
     }
 
     generatePassword = () => {
-        let password = generate({ length: 13, numbers: true, symbols: true, lowercase: true, uppercase: true })
+        let password = generate({ length: 13, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
         if (calculateStrength(password) < PasswordMinCrackTimeSec) {
             password = this.generatePassword()
         }
@@ -154,13 +154,12 @@ class RegistryUserForm extends React.Component {
         let forms = cloneDeep(this.state.forms)
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if(form.field === fields.password || form.field === fields.confirmPassword)
-            {
+            if (form.field === fields.password || form.field === fields.confirmPassword) {
                 form.value = password
             }
         }
         this.props.handleAlertInfo('success', 'Password generated successfully and copied to the clipboard, make sure to memorize the password')
-        this.setState({forms})
+        this.setState({ forms })
     }
 
     passwordHelper = (form) => {
@@ -186,7 +185,7 @@ class RegistryUserForm extends React.Component {
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
                     <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse and also avoid using recognizable words such as <i>Password, House, car, etc.</i>, use random characters such as <i>ngft3ferd$wiy</i> or click on the generate button to generate a secure password and make sure to memorize the password</p>
                 }
-                <div style={{float:'right'}}><Button onClick={this.generatePassword} size='small' style={{backgroundColor:'#7CC01D', textTransform:'none'}}>Generate</Button></div>
+                <div style={{ float: 'right' }}><Button onClick={this.generatePassword} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
             </div>
         )
     }
