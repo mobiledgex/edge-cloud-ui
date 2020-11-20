@@ -33,8 +33,8 @@ export const showAlertReceiverKeys = () => (
     [
         { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter:true },
         { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true, filter:true },
-        { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true },
-        { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, detailView:false },
+        { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter:true },
+        { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, detailView:false, filter:true },
         { field: fields.slackchannel, serverField: 'SlackChannel', label: 'Slack Channel', sortable: true, visible: false, detailView:false},
         { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter:true},
         { field: fields.receiverAddress, label: 'Receiver Address', sortable: true, visible: true, filter:true},
