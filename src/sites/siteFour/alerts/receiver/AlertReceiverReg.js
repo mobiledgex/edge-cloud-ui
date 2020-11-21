@@ -5,7 +5,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../.
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields } from '../../../../services/model/format';
+import { fields, getOrganization, getUserRole } from '../../../../services/model/format';
 //model
 import { createAlertReceiver } from '../../../../services/model/alerts';
 import { currentUser } from '../../../../services/model/serverData';
@@ -24,11 +24,18 @@ import { LinearProgress } from '@material-ui/core'
 const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK]
 const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]
 
-const SELECTOR = [
-    { selector: 'App', key: 'appname' },
-    { selector: 'Cluster', key: 'cluster' },
-    { selector: 'Cloudlet', key: 'cloudlet' },
-]
+
+const selector = () => {
+    let selector = []
+    if (getUserRole().includes(constant.ADMIN) || getUserRole().includes(constant.DEVELOPER)) {
+        selector.push({ selector: 'App', key: 'appname' })
+        selector.push({ selector: 'Cluster', key: 'cluster' })
+    }
+    if (getUserRole().includes(constant.ADMIN) || getUserRole().includes(constant.OPERATOR)) {
+        selector.push({ selector: 'Cloudlet', key: 'cloudlet' })
+    }
+    return selector
+}
 class FlavorReg extends React.Component {
     constructor(props) {
         super(props);
@@ -59,7 +66,7 @@ class FlavorReg extends React.Component {
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
-            { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false }, visible: false, tip: 'Cluster or App Developer' },
+            { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: false, tip: 'Cluster or App Developer' },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false },
             { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 8, field: fields.operatorName }], strictDependency: false },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.organizationName }, { index: 8, field: fields.operatorName, strictDependency: false }, { index: 9, field: fields.cloudletName, strictDependency: false }] },
@@ -285,7 +292,7 @@ class FlavorReg extends React.Component {
                             form.options = RECEIVER_SEVERITY;
                             break;
                         case fields.selector:
-                            form.options = SELECTOR;
+                            form.options = selector();
                             break;
                         case fields.operatorName:
                             form.options = this.cloudletList
@@ -322,8 +329,7 @@ class FlavorReg extends React.Component {
         }
         else {
             let mc = await currentUser(this)
-            if(mc && mc.response && mc.response.status === 200)
-            {
+            if (mc && mc.response && mc.response.status === 200) {
                 this.email = mc.response.data.Email
             }
         }
