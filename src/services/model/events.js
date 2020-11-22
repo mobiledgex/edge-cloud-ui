@@ -12,7 +12,7 @@ export const showEvents = async (self, data, showSpinner) => {
 
 export const showAudits = async (self, data, showSpinner) => {
     let match = data.match ? data.match : {}
-    match.types = ["audit"]
+    match.types = [data.type]
     data.match = match
     let mcRequest = await serverData.sendRequest(self, { method: EVENTS_SHOW, data: data, showSpinner: showSpinner })
     return mcRequest

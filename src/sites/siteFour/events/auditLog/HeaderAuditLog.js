@@ -1,5 +1,5 @@
 import React from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider } from '@material-ui/core';
+import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider, Chip } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -7,11 +7,63 @@ import * as actions from '../../../../actions';
 import { Step, StepLabel, Stepper, Button } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import LinearProgress from '@material-ui/core/LinearProgress';
-
-import CheckIcon from '@material-ui/icons/CheckRounded';
 import SearchIcon from '@material-ui/icons/SearchRounded';
 import HistoryLog from './HistoryLog';
 import ClearAllOutlinedIcon from '@material-ui/icons/ClearAllOutlined';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+const makeOper = (logName) => {
+    let item = '';
+    let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
+
+    if (nameArray[2] === 'login') {
+        item = nameArray[2]
+    } else if (nameArray[2] === 'auth') {
+        if (nameArray[3] === 'ctrl') {
+            item = nameArray[4]
+        } else if (nameArray[3] === 'restricted') {
+            item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1) + nameArray[5].charAt(0).toUpperCase() + nameArray[5].slice(1)
+        } else {
+            item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
+        }
+    } else {
+        item = nameArray[2]
+    }
+    return item.charAt(0).toUpperCase() + item.slice(1)
+
+}
+
+const formatDate = (data) => {
+    return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data)
+}
+
+
+const auditKeys = [
+    { label: 'Start Time', field: 'timestamp', formatData: formatDate },
+    { label: 'Trace ID', field: 'traceid', mtags: true },
+    { label: 'Client IP', field: 'remote-ip', mtags: true },
+    { label: 'Duration', field: 'duration', mtags: true },
+    { label: 'Operation Name', field: 'name', formatData: makeOper },
+    { label: 'Status', field: 'status', mtags: true },
+]
+
+const eventKeys = [
+    { label: 'Start Time', field: 'timestamp', formatData: formatDate },
+    { label: 'Trace ID', field: 'traceid', mtags: true },
+    { label: 'App', field: 'app', mtags: true },
+    { label: 'Version', field: 'appver', mtags: true },
+    { label: 'Developer', field: 'apporg', mtags: true },
+    { label: 'Cloudlet', field: 'cloudlet', mtags: true },
+    { label: 'Operator', field: 'cloudletorg', mtags: true },
+    { label: 'Cluster', field: 'cluster', mtags: true },
+    { label: 'Duration', field: 'duration', mtags: true },
+    { label: 'State', field: 'state', mtags: true }
+]
+
+const getKeys = (type) => {
+    return type === 'audit' ? auditKeys : eventKeys
+}
+
 class HeaderAuditLog extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +76,7 @@ class HeaderAuditLog extends React.Component {
             filterText: '',
             isOrg: false
         }
+        this.type = this.props.type
     }
 
     setAllView = (mtags, sId) => {
@@ -33,42 +86,13 @@ class HeaderAuditLog extends React.Component {
         return {}
     }
 
-    makeOper = (logName) => {
-        let item = '';
-        let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
-
-        if (nameArray[2] === 'login') {
-            item = nameArray[2]
-        } else if (nameArray[2] === 'auth') {
-            if (nameArray[3] === 'ctrl') {
-                item = nameArray[4]
-            } else if (nameArray[3] === 'restricted') {
-                item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1) + nameArray[5].charAt(0).toUpperCase() + nameArray[5].slice(1)
-            } else {
-                item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
-            }
-        } else {
-            item = nameArray[2]
-        }
-        return item.charAt(0).toUpperCase() + item.slice(1)
-    }
 
     getStepLabel = (data, stepperProps) => {
-        let storageSelectedTraceidList = JSON.parse(localStorage.getItem("selectedTraceid"));
-        let storageSelectedTraceidIndex = (-1);
-        if (storageSelectedTraceidList) {
-            storageSelectedTraceidIndex = (storageSelectedTraceidList) ? storageSelectedTraceidList.findIndex(s => s === data.traceid) : (-1)
-        }
-
         return (
             <div>
                 <div className='audit_timeline_Step'
-                    style={{ backgroundColor: (data.status === '200') ? '#388e3c' : '#b71c1c' }}
+                    style={{ backgroundColor: data.status ? (data.status === '200') ? '#388e3c' : '#b71c1c' : '#9d9d9d'}}
                 >
-                    {(storageSelectedTraceidIndex !== (-1)) ?
-                        <CheckIcon />
-                        : null
-                    }
                 </div>
             </div>
         )
@@ -84,59 +108,69 @@ class HeaderAuditLog extends React.Component {
         this.setState({ expanded: newExpanded ? index : false });
     };
 
-    expandablePanelSummary = (index, data) => {
+    eventHeader = (data) => {
+        let mtags = data.mtags
+        return ( 
+            <div>
+                <h4><b>{data['name']}</b></h4>
+                <div className='audit_timeline_traceID'><span>{dateUtil.time(dateUtil.FORMAT_FULL_TIME_12_A, data.timestamp)}</span></div>
+                <div style={{marginTop:5}}></div>
+                <Chip component="div" variant="outlined" size="small" label={`Developer: ${mtags['apporg']}`} style={{marginBottom:5, marginRight:5}}/>
+                <Chip variant="outlined" size="small" label={`App: ${mtags['app']} [${mtags['appver']}]`}  style={{marginBottom:5, marginRight:5}}/>
+                <Chip variant="outlined" size="small" label={`Cluster: ${mtags['cluster']}`}  style={{marginBottom:5, marginRight:5}}/>
+                <Chip variant="outlined" size="small" label={`Cloudlet: ${mtags['cloudlet']}`}  style={{marginBottom:5, marginRight:5}}/>
+                <br/>
+                <br/>
+            </div>
+        )
+    }
+
+    auditHeader = (data, index) => {
         let mtags = data.mtags
         return (
-            <AccordionSummary id="panel1a-header">
-                <Step key={index}>
-                    <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
-                        {dateUtil.time(dateUtil.FORMAT_FULL_TIME, data.timestamp)}<br />
-                        {dateUtil.time(dateUtil.FORMAT_AM_PM, data.timestamp)}
-                    </div>
-                    <StepLabel StepIconComponent={(stepperProps) => {
-                        return this.getStepLabel(mtags, stepperProps)
-                    }}>
-                        <div className='audit_timeline_title'>{this.makeOper(data.name)}</div>
-                        <div className='audit_timeline_traceID'>Trace ID : <span>{mtags.traceid}</span></div>
-                    </StepLabel>
-                </Step>
+            <Step key={index}>
+                <div className='audit_timeline_time' completed={undefined} icon='' active={undefined} expanded="false">
+                    {dateUtil.time(dateUtil.FORMAT_FULL_TIME_12, data.timestamp)}<br />
+                    {dateUtil.time(dateUtil.FORMAT_AM_PM, data.timestamp)}
+                </div>
+                <StepLabel StepIconComponent={(stepperProps) => {
+                    return this.getStepLabel(mtags, stepperProps)
+                }}>
+                    <div className='audit_timeline_title'>{makeOper(data.name)}</div>
+                    <div className='audit_timeline_traceID'>Trace ID : <span>{mtags.traceid}</span></div>
+                </StepLabel>
+            </Step>
+        )
+    }
+
+    expandablePanelSummary = (index, data) => {
+        return (
+            <AccordionSummary key={index} id="panel1a-header" style={{ height: '100%' }} expandIcon={<ExpandMoreIcon />}>
+                {this.type === 'event' ? this.eventHeader(data) : this.auditHeader(data, index)}
             </AccordionSummary>
         )
     }
 
     expandablePanelDetails = (data) => {
         let mtags = data.mtags
-        return (<AccordionDetails>
-            <div className='audit_timeline_detail_row'>
-                <div className='audit_timeline_detail_left'>Start Time</div>
-                <div className='audit_timeline_detail_right'>{dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data.timestamp)}</div>
-            </div>
-            <div className='audit_timeline_detail_row'>
-                <div className='audit_timeline_detail_left'>Trace ID</div>
-                <div className='audit_timeline_detail_right'>{mtags.traceid}</div>
-            </div>
-            <div className='audit_timeline_detail_row'>
-                <div className='audit_timeline_detail_left'>Client IP</div>
-                <div className='audit_timeline_detail_right'>{mtags['remote-ip']}</div>
-            </div>
-            <div className='audit_timeline_detail_row'>
-                <div className='audit_timeline_detail_left'>Duration</div>
-                <div className='audit_timeline_detail_right'>{mtags.duration}</div>
-            </div>
-            <div className='audit_timeline_detail_row'>
-                <div className='audit_timeline_detail_left'>Operation Name</div>
-                <div className='audit_timeline_detail_right'>{this.makeOper(data.name)}</div>
-            </div>
-            <div className='audit_timeline_detail_row'>
-                <div className='audit_timeline_detail_left'>Status</div>
-                <div className='audit_timeline_detail_right' style={{ color: mtags.status === '200' ? '#4caf50' : '#E53935' }}>{mtags.status}</div>
-            </div>
-            <div className='audit_timeline_detail_button'>
-                <Button onClick={() => this.onClickViewDetail(data)}>
-                    VIEW DETAIL
+        return (
+            <AccordionDetails>
+                {getKeys(this.type).map((key, i) => {
+                    let value = key.mtags ? mtags[key.field] : data[key.field]
+                    return (
+                        value ? <div key={i} className='audit_timeline_detail_row'>
+                            <div className='audit_timeline_detail_left'>{key.label}</div>
+                            <div className='audit_timeline_detail_right'>{key.formatData ? key.formatData(value) : value}</div>
+                        </div>
+                            : null
+                    )
+                })}
+                {this.type === 'audit' ? <div className='audit_timeline_detail_button'>
+                    <Button onClick={() => this.onClickViewDetail(data)}>
+                        VIEW DETAIL
                 </Button>
-            </div>
-        </AccordionDetails>)
+                </div> : null}
+            </AccordionDetails>)
     }
 
     renderStepper = (data, index) => {
