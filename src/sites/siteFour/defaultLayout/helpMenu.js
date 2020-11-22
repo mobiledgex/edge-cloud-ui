@@ -1,8 +1,8 @@
 import React from 'react'
-import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core'
+import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
-import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
-import DescriptionIcon from '@material-ui/icons/Description';
+import EmojiPeopleOutlinedIcon from '@material-ui/icons/EmojiPeopleOutlined';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import * as constant from '../../../constant'
 import { tutor } from '../../../tutorial'
 import { getUserRole } from '../../../services/model/format';
@@ -22,8 +22,7 @@ const HelpMenu = (props) => {
     const tutorialClick = () => {
         setAnchorEl(null);
         let currentStep = props.viewMode ? tutor(props.viewMode) : null;
-        if(currentStep)
-        {
+        if (currentStep) {
             props.helpClick(currentStep)
         }
     };
@@ -49,15 +48,11 @@ const HelpMenu = (props) => {
                 onClose={handleClose}
             >
                 <MenuItem onClick={tutorialClick} disabled={props.viewMode !== null ? false : true}>
-                    <ListItemIcon>
-                        <EmojiPeopleIcon fontSize="small" color={props.viewMode && tutor(props.viewMode) ? 'inherit' : 'disabled'}/>
-                    </ListItemIcon>
+                    <EmojiPeopleOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Tutorial" />
                 </MenuItem>
                 {getUserRole() && getUserRole().includes(constant.DEVELOPER) ? <MenuItem onClick={docClick} disabled={props.viewMode !== null ? false : true}>
-                    <ListItemIcon>
-                        <DescriptionIcon fontSize="small" color={props.viewMode === null ? 'disabled' : 'inherit'}/>
-                    </ListItemIcon>
+                    <DescriptionOutlinedIcon fontSize="small" color={props.viewMode === null ? 'disabled' : 'inherit'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Doc" />
                 </MenuItem> : null}
             </Menu>
