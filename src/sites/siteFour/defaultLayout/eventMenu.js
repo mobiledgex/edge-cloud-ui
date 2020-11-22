@@ -1,12 +1,13 @@
 import React from 'react'
-import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core'
+import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HeaderGlobalAudit from '../events/auditLog/headerGlobalAudit';
 import GlobalEventLog from '../events/eventLog/GlobalEventLog';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import { getUserRole } from '../../../services/model/format';
 import * as constant from '../../../constant'
-import TimelineIcon from '@material-ui/icons/Timeline';
-import FindInPageIcon from '@material-ui/icons/FindInPage';
+import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
+import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
+import BallotOutlinedIcon from '@material-ui/icons/BallotOutlined';
 
 const EventMenu = () => {
 
@@ -58,22 +59,16 @@ const EventMenu = () => {
                 onClose={handleClose}
             >
                 <MenuItem onClick={auditClick}>
-                    <ListItemIcon>
-                        <FindInPageIcon fontSize="small" />
-                    </ListItemIcon>
+                    <BallotOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Audit Log" />
                 </MenuItem>
                 <MenuItem onClick={eventClick}>
-                    <ListItemIcon>
-                        <FindInPageIcon fontSize="small" />
-                    </ListItemIcon>
+                    <EventOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Event Log" />
                 </MenuItem>
                 {showBilling() ?
                     <MenuItem onClick={billingClick}>
-                        <ListItemIcon>
-                            <TimelineIcon fontSize="small" />
-                        </ListItemIcon>
+                        <TimelineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Billing Log" />
                     </MenuItem> : null}
             </Menu>

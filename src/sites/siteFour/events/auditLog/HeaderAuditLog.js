@@ -39,25 +39,26 @@ const formatDate = (data) => {
 
 
 const auditKeys = [
-    { label: 'Start Time', field: 'timestamp', formatData: formatDate },
-    { label: 'Trace ID', field: 'traceid', mtags: true },
-    { label: 'Client IP', field: 'remote-ip', mtags: true },
-    { label: 'Duration', field: 'duration', mtags: true },
-    { label: 'Operation Name', field: 'name', formatData: makeOper },
-    { label: 'Status', field: 'status', mtags: true },
+    { label: 'Start Time', field: 'timestamp', formatData: formatDate, detail: true },
+    { label: 'Trace ID', field: 'traceid', mtags: true, detail: true },
+    { label: 'Client IP', field: 'remote-ip', mtags: true, detail: true },
+    { label: 'Duration', field: 'duration', mtags: true, detail: true },
+    { label: 'Operation Name', field: 'name', formatData: makeOper, detail: true, filter: true },
+    { label: 'Status', field: 'status', mtags: true, detail: true },
 ]
 
 const eventKeys = [
-    { label: 'Start Time', field: 'timestamp', formatData: formatDate },
-    { label: 'Trace ID', field: 'traceid', mtags: true },
-    { label: 'App', field: 'app', mtags: true },
-    { label: 'Version', field: 'appver', mtags: true },
-    { label: 'Developer', field: 'apporg', mtags: true },
-    { label: 'Cloudlet', field: 'cloudlet', mtags: true },
-    { label: 'Operator', field: 'cloudletorg', mtags: true },
-    { label: 'Cluster', field: 'cluster', mtags: true },
-    { label: 'Duration', field: 'duration', mtags: true },
-    { label: 'State', field: 'state', mtags: true }
+    { label: 'Start Time', field: 'timestamp', formatData: formatDate, detail: true },
+    { label: 'Trace ID', field: 'traceid', mtags: true, detail: true },
+    { label: 'Name', field: 'name', filter: true, detail: false },
+    { label: 'App', field: 'app', mtags: true, filter: true, detail: false },
+    { label: 'Version', field: 'appver', mtags: true, filter: true, detail: false },
+    { label: 'Developer', field: 'apporg', mtags: true, filter: true, detail: false },
+    { label: 'Cloudlet', field: 'cloudlet', mtags: true, filter: true, detail: false },
+    { label: 'Operator', field: 'cloudletorg', mtags: true, filter: true, detail: false },
+    { label: 'Cluster', field: 'cluster', mtags: true, filter: true, detail: false },
+    { label: 'Duration', field: 'duration', mtags: true, detail: true },
+    { label: 'State', field: 'state', mtags: true, detail: true }
 ]
 
 const getKeys = (type) => {
@@ -158,7 +159,7 @@ class HeaderAuditLog extends React.Component {
                 {getKeys(this.type).map((key, i) => {
                     let value = key.mtags ? mtags[key.field] : data[key.field]
                     return (
-                        value ? <div key={i} className='audit_timeline_detail_row'>
+                        key.detail && value ? <div key={i} className='audit_timeline_detail_row'>
                             <div className='audit_timeline_detail_left'>{key.label}</div>
                             <div className='audit_timeline_detail_right'>{key.formatData ? key.formatData(value) : value}</div>
                         </div>
@@ -215,8 +216,20 @@ class HeaderAuditLog extends React.Component {
         this.mapDetails = null
         let filterText = value.toLowerCase()
         let dataList = this.state.dataList
+        let filterCount = 0
+        let keys = getKeys(this.type)
         let filterList = dataList.filter(data => {
-            return data['name'].toLowerCase().includes(filterText)
+            let mtags = data.mtags
+            let valid = keys.map(key=>{
+                let dataValue = key.mtags ? mtags[key.field] : data[key.field]
+                if (key.filter) {
+                    filterCount = + 1
+                    let tempData = dataValue ? dataValue: ''
+                    return tempData.toLowerCase().includes(filterText)
+                }
+            })
+            console.log('Rahul1234',filterCount,valid )
+            return filterCount === 0 || valid.includes(true)
         })
         if (value !== undefined) {
             this.setState({ filterText: value, filterList: filterList })
