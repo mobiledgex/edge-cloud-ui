@@ -3,10 +3,12 @@ import {getMexTimezone} from './sharedPreferences_util'
 
 export const FORMAT_FULL_DATE = 'YYYY-MM-DD'
 export const FORMAT_FULL_TIME = 'HH:mm:ss'
+export const FORMAT_FULL_TIME_12 = 'hh:mm:ss'
 export const FORMAT_TIME_HH_mm = 'HH:mm'
 export const FORMAT_AM_PM = 'A'
 export const FORMAT_DAY = 'D'
 export const FORMAT_FULL_DATE_TIME = `${FORMAT_FULL_DATE} ${FORMAT_FULL_TIME}`
+export const FORMAT_FULL_TIME_12_A = `${FORMAT_FULL_TIME_12} ${FORMAT_AM_PM}`
 export const FORMAT_DATE_24_HH_mm = `${FORMAT_FULL_DATE} ${FORMAT_TIME_HH_mm}`
 export const FORMAT_FULL_T_Z = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}Z`
 export const FORMAT_FULL_T = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}`

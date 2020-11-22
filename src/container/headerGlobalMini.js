@@ -1,13 +1,13 @@
 import React from 'react';
-import {Button, Icon, Popup} from 'semantic-ui-react';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as serverData from '../services/model/serverData';
 import PopProfileViewer from '../container/popProfileViewer';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import {IconButton} from '@material-ui/core';
-
+import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 let _self = null;
 class headerGlobalMini extends React.Component {
     constructor(props) {
@@ -62,43 +62,40 @@ class headerGlobalMini extends React.Component {
             anchorEl: null
         })
     }
-    makeProfileButton = () => (
-        <Button.Group vertical className="table_actions_popup_group">
-            <Button className="table_actions_popup_group_button">
-                <strong>{this.state.userInfo['Name']}</strong>
-            </Button>
-            <Button onClick={() => this.profileView()} className="table_actions_popup_group_button">
-                <Icon name='user circle outline' size='large' />
-                <strong>Profile</strong>
-            </Button>
-            <Button onClick={() => this.logout('/logout')} className="table_actions_popup_group_button">
-                <Icon name='sign-out' size='large'/>
-                <strong>Logout</strong>
-            </Button>
-        </Button.Group>
-    )
+    
+    handleClick = (event) => {
+        this.setState({ anchorEl: event.currentTarget });
+    };
+
+    handleClose = () => {
+        this.setState({ anchorEl: null });
+    }
 
     render() {
+        const { anchorEl } = this.state
         return (
-
-            <div>
-                <Popup
-                    inverted
-                    trigger={
-                        <IconButton style={{ backgroundColor: 'transparent'}} color='inherit' onClick={(e) => { this.setState({ anchorEl: e.currentTarget }) }}>
-                            <br/>
-                            <AccountCircleOutlinedIcon fontSize='default'/>
-                        </IconButton>
-                    }
-                    content={this.makeProfileButton()}
-                    on='click'
-                    position='bottom right'
-                    className="table_actions_popup gnb_profile"
-                    basic
-                />
+            <div style={{ marginTop: '0.4em' }}>
+                <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={this.handleClick}>
+                    <AccountCircleOutlinedIcon />
+                </IconButton>
+                <Menu
+                    id="event-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={this.handleClose}
+                >
+                    <MenuItem onClick={() => this.profileView()}>
+                        <PersonOutlineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
+                        <ListItemText primary="Profile" />
+                    </MenuItem>
+                    <MenuItem onClick={() => this.logout('/logout')}>
+                        <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
+                        <ListItemText primary="Logout" />
+                    </MenuItem>
+                </Menu>
                 <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
             </div >
-
         )
     }
 }

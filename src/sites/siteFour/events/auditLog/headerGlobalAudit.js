@@ -31,10 +31,11 @@ class headerGlobalAudit extends React.Component {
         this.intervalId = undefined
         this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
         this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+        this.type = this.props.type
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] } })
+        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type:'audit' })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
@@ -70,7 +71,7 @@ class headerGlobalAudit extends React.Component {
     getDataAudit = async (starttime, endtime, limit, isLive, orgTime) => {
         isLive ? this.setState({ loading: true }) : this.setState({ historyLoading: true })
         limit = limit ? limit : CON_LIMIT
-        let mcRequest = await showAudits(_self, { starttime: starttime, endtime: endtime, limit: parseInt(limit) }, false)
+        let mcRequest = await showAudits(_self, { starttime: starttime, endtime: endtime, limit: parseInt(limit), type: this.type }, false)
         this.setState({ historyLoading: false, loading: false, limit: 25 })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
@@ -131,7 +132,7 @@ class headerGlobalAudit extends React.Component {
         return (
             <React.Fragment>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog isOrg={isOrg} dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
+                    <HeaderAuditLog type={this.type} isOrg={isOrg} dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
                 </Drawer>
                 <PopDetailViewer
                     rawViewData={rawViewData}
@@ -145,9 +146,8 @@ class headerGlobalAudit extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         
-        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
+        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg && this.type === 'audit') {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
-            this.props.handleShowAuditLog(null)
         }
         if(prevState.isOpen !== this.state.isOpen)
         {
@@ -162,6 +162,7 @@ class headerGlobalAudit extends React.Component {
                 clearInterval(this.intervalId)
             }
         }
+        this.props.handleShowAuditLog(null)
     }
 
     initAudit = (starttime, endtime, enableInterval) => {

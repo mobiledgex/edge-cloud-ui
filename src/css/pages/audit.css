@@ -177,7 +177,6 @@
     font-size: 14px;
     line-height: 1.43;
     letter-spacing: 0.1px;
-    text-align: right;
     color: #ffffff;
 }
 
@@ -188,11 +187,11 @@
     content:'';
     display: block;
     position: absolute;
-    top: 26px;
-    left: 11px;
-    width: 4px;
-    height: 24px;
-    background-color: #5d6576;
+    top: 18px;
+    left: 8px;
+    width: 1px;
+    height: 39px;
+    background-color: #3B3F47;
 }
 .audit_timeline_container .MuiExpansionPanel-root:last-child .MuiStepLabel-iconContainer:before{
     display: none;
@@ -200,9 +199,10 @@
 
 .audit_timeline_Step {
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    margin-left: 2px;
+    width: 12px;
+    height: 12px;
+    margin-top: 6px;
+    margin-left: 3px;
     font-size: 10px;
     display: flex;
     justify-content: center;
@@ -228,7 +228,7 @@
 }
 
 .audit_container .MuiCollapse-container {
-    background-color: #4c5260;
+    background-color: #3B3F47;
 }
 
 .audit_container .MuiAccordionDetails-root{
@@ -274,18 +274,18 @@
 }
 
 .audit_timeline_detail_left {
-    width:120px;
-    margin-right: 16px;
-    font-size: 14px;
+    width:130px;
+    font-size: 13px;
+    margin-left: 12px;
     font-weight: bold;
     line-height: 1.43;
     letter-spacing: 0.1px;
-    text-align: right;
+    text-align: left;
     color: #ffffff;
 }
 
 .audit_timeline_detail_right {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.43;
     letter-spacing: 0.1px;
     color: #ffffff;
