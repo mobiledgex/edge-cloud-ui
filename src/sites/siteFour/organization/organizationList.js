@@ -179,7 +179,7 @@ class OrganizationList extends React.Component {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
                     localStorage.setItem('selectRole', userRole.role)
-                    this.props.handleUserRole(userRole.role)
+                    // this.props.handleUserRole(userRole.role)
                     isAdmin = true
                     break;
                 }

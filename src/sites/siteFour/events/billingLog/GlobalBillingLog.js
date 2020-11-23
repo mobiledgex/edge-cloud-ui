@@ -7,15 +7,21 @@ import { Drawer } from '@material-ui/core';
 import { clusterEventLogs } from '../../../../services/model/clusterEvent'
 import { appInstEventLogs } from '../../../../services/model/appInstEvent'
 import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
-import { fields, getOrganization, getUserRole } from '../../../../services/model/format';
+import { sendRequest, sendRequests } from '../../../../services/model/serverWorker'
+import { showOrganizations } from '../../../../services/model/organization'
+
+import { fields, getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
-import { showSyncMultiData } from '../../../../services/model/serverData';
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
 import * as constant from '../../../../constant'
+import sortBy from 'lodash/sortBy';
+import './style.css'
+
 const BillingLog = lazy(() => import('./BillingLog'));
 const drawerWidth = 450
+
 const styles = theme => ({
     root: {
         display: 'flex',
@@ -77,6 +83,7 @@ class GlobalBillingLog extends React.Component {
         this.intervalId = undefined;
         this.endRange = dateUtil.currentUTCTime()
         this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+        this.organizationList = []
     }
 
     /*Action menu block*/
@@ -87,7 +94,7 @@ class GlobalBillingLog extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.open) {
+        if (props.open && !state.isOpen) {
             return { isOpen: props.open }
         }
         return null
@@ -109,7 +116,7 @@ class GlobalBillingLog extends React.Component {
                         }),
                     }} anchor={'right'} open={isOpen}>
                     <Suspense fallback={<div>loading</div>}>
-                        <BillingLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange}/>
+                        <BillingLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg}/>
                     </Suspense>
                 </Drawer>
             </React.Fragment>
@@ -138,43 +145,55 @@ class GlobalBillingLog extends React.Component {
         this.setState({ liveData })
     }
 
-    eventLogData = async (starttime, endtime, enableInterval) => {
+    serverResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (mc && mc.response && mc.response.status === 200) {
+                    let data = mc.response.data
+                    if (data && data.length > 0) {
+                        if (Object.keys(data[0]).length > 0) {
+                            this.updateData(data[0])
+                        }
+                    }
+                }
+            })
+        }
+        this.setState({ loading: false })
+    }
+
+    onOrganizationChange = (form, value) => {
+        this.setState({liveData:{}})
+        clearInterval(this.intervalId)
+        this.endRange = dateUtil.currentUTCTime()
+        this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+        this.selectedOrg = value
+        this.eventLogData(this.startRange, this.endRange, true)
+    }
+
+    eventLogData = async (starttime, endtime, isInit) => {
         let userRole = getUserRole()
         if (userRole && this.regions && this.regions.length > 0) {
-            let eventRequestList = []
+            let requestList = []
             this.regions.map(region => {
                 let data = {}
+                let org = getOrganization() ? getOrganization() : this.selectedOrg
                 data[fields.region] = region
                 data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
                 data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-                if (userRole.includes(constant.DEVELOPER)) {
-                    eventRequestList.push(clusterEventLogs(data))
-                    eventRequestList.push(appInstEventLogs(data))
+                if (userRole.includes(constant.ADMIN) || userRole.includes(constant.DEVELOPER)) {
+                    requestList.push(clusterEventLogs(cloneDeep(data), org))
+                    requestList.push(appInstEventLogs(cloneDeep(data), org))
                 }
-                else if (userRole.includes(constant.OPERATOR)) {
-                    eventRequestList.push(cloudletEventLogs(data))
+                if (userRole.includes(constant.ADMIN) || userRole.includes(constant.OPERATOR)) {
+                    requestList.push(cloudletEventLogs(cloneDeep(data), org))
                 }
             })
 
             this.setState({ loading: true })
-            let eventResponseList = await showSyncMultiData(this, eventRequestList)
+            sendRequests(this, requestList, this.serverResponse)
 
-            this.setState({ loading: false })
 
-            if (eventResponseList && eventResponseList.length > 0) {
-                eventResponseList.map((mcRequest) => {
-                    if (mcRequest.response && mcRequest.response.data) {
-                        let data = mcRequest.response.data
-                        if (data && data.length > 0) {
-                            if (Object.keys(data[0]).length > 0) {
-                                this.updateData(data[0])
-                            }
-                        }
-                    }
-                })
-            }
-
-            if (enableInterval) {
+            if (isInit) {
                 if (this.intervalId) {
                     clearInterval(this.intervalId)
                 }
@@ -184,26 +203,33 @@ class GlobalBillingLog extends React.Component {
                         this.endRange = dateUtil.currentUTCTime()
                         this.eventLogData(this.startRange, this.endRange)
                     }
-                }, 10 * 2000);
+                }, 60 * 1000);
             }
         }
     }
 
-    componentDidUpdate(prePros, preState)
-    {
+    componentDidUpdate(prePros, preState) {
         //enable interval only when billing log is visible
-        if(preState.isOpen !== this.state.isOpen)
-        {
-            if(this.state.isOpen)
-            {
+        if (preState.isOpen !== this.state.isOpen) {
+            if (this.state.isOpen) {
                 this.startRange = cloneDeep(this.endRange)
                 this.endRange = dateUtil.currentUTCTime()
                 this.eventLogData(this.startRange, this.endRange, true)
             }
-            else
-            {
+            else {
                 clearInterval(this.intervalId)
             }
+        }
+    }
+
+    orgResponse = (mc) => {
+        if (mc && mc.response && mc.response.status === 200) {
+            this.organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);
+            this.selectedOrg = this.organizationList[0][fields.organizationName]
+            this.endRange = dateUtil.currentUTCTime()
+            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            this.setState({ liveData: {} })
+            this.eventLogData(this.startRange, this.endRange)
         }
     }
 
@@ -211,6 +237,9 @@ class GlobalBillingLog extends React.Component {
         // default request made when organization is available
         if (getOrganization()) {
             this.eventLogData(this.startRange, this.endRange)
+        }
+        else if (isAdmin()) {
+            sendRequest(this, showOrganizations(), this.orgResponse)
         }
         //Live data is reset when end user changes organization and timer is reset back to one month
         window.addEventListener('SelectOrgChangeEvent', () => {

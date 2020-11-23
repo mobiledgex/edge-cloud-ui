@@ -23,6 +23,7 @@ class headerGlobalMini extends React.Component {
     }
 
     logout(path) {
+        localStorage.clear()
         this.props.history.push({
             pathname: path,
             userInfo: { info: null }

@@ -35,7 +35,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type:'audit' })
+        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type: 'audit' })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
@@ -145,20 +145,17 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        
+
         if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg && this.type === 'audit') {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
         }
-        if(prevState.isOpen !== this.state.isOpen)
-        {
-            if(this.state.isOpen)
-            {
+        if (prevState.isOpen !== this.state.isOpen) {
+            if (this.state.isOpen) {
                 this.starttime = cloneDeep(this.endtime)
                 this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
                 this.initAudit(this.starttime, this.endtime, true)
             }
-            else
-            {
+            else {
                 clearInterval(this.intervalId)
             }
         }
@@ -183,7 +180,9 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentWillUnmount = () => {
-        clearInterval(this.intervalId);
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
     }
 }
 

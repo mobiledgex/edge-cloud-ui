@@ -9,8 +9,8 @@ export const SHOW_USERS = "ShowUsers";
 export const DELETE_USER = "DeleteUser";
 export const SHOW_ACCOUNTS = "ShowAccounts";
 export const DELETE_ACCOUNT = "DeleteAccount";
-export const SHOW_ROLE = "ShowRole";
-export const SHOW_CONTROLLER = "showController"
+export const SHOW_ROLE = "role/assignment/show";
+export const SHOW_CONTROLLER = "controller/show"
 export const SHOW_CLOUDLET = "ShowCloudlet";
 export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
 export const DELETE_CLOUDLET = "DeleteCloudlet";
@@ -99,6 +99,11 @@ export const getPath = (request) => {
         case APP_INST_METRICS_ENDPOINT:
         case CLUSTER_METRICS_ENDPOINT:
         case CLIENT_METRICS_ENDPOINT:
+        case CLOUDLET_EVENT_LOG_ENDPOINT:
+        case CLUSTER_EVENT_LOG_ENDPOINT:
+        case APP_INST_EVENT_LOG_ENDPOINT:
+        case SHOW_ROLE:
+        case SHOW_CONTROLLER:
             return `/api/v1/auth/${request.method}`
         default:
             return null;
@@ -124,10 +129,13 @@ export function formatData(request, response) {
         case APP_INST_METRICS_ENDPOINT:
         case CLUSTER_METRICS_ENDPOINT:
         case CLIENT_METRICS_ENDPOINT:
+        case CLOUDLET_EVENT_LOG_ENDPOINT:
+        case CLUSTER_EVENT_LOG_ENDPOINT:
+        case APP_INST_EVENT_LOG_ENDPOINT:
             data = formatter.formatEventData(response, request.data, request.keys)
             break;
         default:
             data = response.data;
     }
-    return { request, response : {status : response.status, data} }
+    return { request, response: { status: response.status, data } }
 }

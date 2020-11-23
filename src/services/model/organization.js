@@ -33,7 +33,7 @@ export const getKey = (data, isCreate) => {
 }
 
 export const showOrganizations = (data) => {
-    return { method: SHOW_ORG, data: data, token: serverData.getToken(), keys: keys() }
+    return { method: SHOW_ORG, data: data, keys: keys() }
 }
 
 export const getOrganizationList = async (self, data) => {

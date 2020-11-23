@@ -228,7 +228,6 @@ class HeaderAuditLog extends React.Component {
                     return tempData.toLowerCase().includes(filterText)
                 }
             })
-            console.log('Rahul1234',filterCount,valid )
             return filterCount === 0 || valid.includes(true)
         })
         if (value !== undefined) {
