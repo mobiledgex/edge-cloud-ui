@@ -6,8 +6,8 @@ import Timeline, {
 } from 'react-calendar-timeline'
 import "react-calendar-timeline/lib/Timeline.css";
 import { IconButton } from '@material-ui/core'
-import '../../../../../node_modules/react-calendar-timeline/lib/Timeline.css'
-import * as dateUtil from '../../../../utils/date_util'
+import '../../../node_modules/react-calendar-timeline/lib/Timeline.css'
+import * as dateUtil from '../../utils/date_util'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -30,7 +30,7 @@ const keys = {
 const endRange = dateUtil.endOfDay().valueOf()
 const startRange = dateUtil.startOfDay().valueOf()
 
-class CalendarTimeline extends React.Component {
+class MexCalendar extends React.Component {
 
     constructor(props) {
         super(props)
@@ -157,4 +157,4 @@ class CalendarTimeline extends React.Component {
     }
 }
 
-export default CalendarTimeline
+export default MexCalendar

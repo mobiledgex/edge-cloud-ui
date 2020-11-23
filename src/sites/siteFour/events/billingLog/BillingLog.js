@@ -8,7 +8,7 @@ import { Paper, Tabs, Tab, IconButton, LinearProgress } from '@material-ui/core'
 import * as dateUtil from '../../../../utils/date_util'
 import uuid from 'uuid'
 import CloseIcon from '@material-ui/icons/Close';
-import MexCalendar from './MexCalendar'
+import MexCalendar from '../../../../hoc/calendar/MexCalendar'
 import { FixedSizeList } from 'react-window';
 
 const colorType = (value) => {

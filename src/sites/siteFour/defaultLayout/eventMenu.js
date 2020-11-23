@@ -1,7 +1,7 @@
 import React from 'react'
 import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HeaderGlobalAudit from '../events/auditLog/headerGlobalAudit';
-import GlobalEventLog from '../events/eventLog/GlobalEventLog';
+import GlobalBillingLog from '../events/billingLog/GlobalBillingLog';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import { getUserRole } from '../../../services/model/format';
 import * as constant from '../../../constant'
@@ -74,7 +74,7 @@ const EventMenu = () => {
             </Menu>
             <HeaderGlobalAudit open={event} close={handleClose} type={'event'} />
             <HeaderGlobalAudit open={audit} close={handleClose} type={'audit'} />
-            {showBilling() ? <GlobalEventLog open={billing} close={handleClose} /> : null}
+            {showBilling() ? <GlobalBillingLog open={billing} close={handleClose} /> : null}
         </div >
     )
 }

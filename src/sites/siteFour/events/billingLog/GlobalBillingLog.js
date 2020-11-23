@@ -14,7 +14,7 @@ import { showSyncMultiData } from '../../../../services/model/serverData';
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
 import * as constant from '../../../../constant'
-const EventLog = lazy(() => import('./EventLog'));
+const BillingLog = lazy(() => import('./BillingLog'));
 const drawerWidth = 450
 const styles = theme => ({
     root: {
@@ -63,7 +63,7 @@ const styles = theme => ({
         },
     },
 })
-class GlobalEventLogs extends React.Component {
+class GlobalBillingLog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -109,7 +109,7 @@ class GlobalEventLogs extends React.Component {
                         }),
                     }} anchor={'right'} open={isOpen}>
                     <Suspense fallback={<div>loading</div>}>
-                        <EventLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange}/>
+                        <BillingLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange}/>
                     </Suspense>
                 </Drawer>
             </React.Fragment>
@@ -233,4 +233,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(withStyles(styles)(GlobalEventLogs)));
+export default withRouter(connect(null, mapDispatchProps)(withStyles(styles)(GlobalBillingLog)));
