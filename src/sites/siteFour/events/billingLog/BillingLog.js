@@ -3,12 +3,14 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import SearchFilter from '../SearchFilter'
-import { Paper, Tabs, Tab, IconButton, LinearProgress } from '@material-ui/core';
+import { Paper, Tabs, Tab, IconButton, LinearProgress, Divider } from '@material-ui/core';
 
 import * as dateUtil from '../../../../utils/date_util'
 import uuid from 'uuid'
 import CloseIcon from '@material-ui/icons/Close';
-import MexCalendar from './MexCalendar'
+import MexCalendar from '../../../../hoc/calendar/MexCalendar'
+import { fields, isAdmin } from '../../../../services/model/format';
+import MexSelect from '../../../../hoc/forms/MexSelect'
 import { FixedSizeList } from 'react-window';
 
 const colorType = (value) => {
@@ -69,9 +71,8 @@ const formatCalendarData = (dataList, columns) => {
         }
         return { formattedList, groupList }
     }
-    else
-    {
-        return { formattedList:[], groupList:[] } 
+    else {
+        return { formattedList: [], groupList: [] }
     }
 }
 
@@ -109,9 +110,8 @@ const filterData = (filterText, dataList, tabValue) => {
         formattedData.filterList = filterList
         return formattedData
     }
-    else
-    {
-        return {filterList:[], formattedList: [], groupList: []}
+    else {
+        return { filterList: [], formattedList: [], groupList: [] }
     }
 }
 
@@ -127,17 +127,16 @@ class EventLog extends React.Component {
             calendarList: [],
             groupList: [],
             infiniteHeight: 200,
-            filterText:''
+            filterText: ''
         }
         this.searchfilter = React.createRef()
     }
 
     onFilter = (value) => {
         if (value !== undefined && value.length >= 0) {
-            this.setState({filterText:value.toLowerCase()})
+            this.setState({ filterText: value.toLowerCase() })
         }
-        else
-        {
+        else {
             value = this.state.filterText
         }
         let data = filterData(value, this.state.dataList, this.state.tabValue)
@@ -145,9 +144,9 @@ class EventLog extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.liveData !== state.dataList) { 
+        if (props.liveData !== state.dataList) {
             let data = filterData(state.filterText, props.liveData, state.tabValue)
-            return { dataList: props.liveData, filterList:data.filterList, calendarList: data.formattedList, groupList: data.groupList }
+            return { dataList: props.liveData, filterList: data.filterList, calendarList: data.formattedList, groupList: data.groupList }
         }
         return null
     }
@@ -158,20 +157,23 @@ class EventLog extends React.Component {
         let values = eventData.values
         let eventKey = Object.keys(values)[0]
         let data = formatCalendarData(values[eventKey], eventData.columns)
-        if(this.searchfilter.current)
-        {
+        if (this.searchfilter.current) {
             this.searchfilter.current.onClear()
         }
-        this.setState({ tabValue: tabIndex, calendarList: data.formattedList, groupList: data.groupList, filterText:'', filterList:dataList, activeIndex:0 })
+        this.setState({ tabValue: tabIndex, calendarList: data.formattedList, groupList: data.groupList, filterText: '', filterList: dataList, activeIndex: 0 })
     }
 
-    onRegionTabChange = (tabIndex, dataList)=>{
+    onRegionTabChange = (tabIndex, dataList) => {
 
     }
 
     onEventTimeLine = (eventInfo, columns, activeIndex) => {
         let data = formatCalendarData(eventInfo, columns)
         this.setState({ activeIndex: activeIndex, calendarList: data.formattedList, groupList: data.groupList })
+    }
+
+    formatDate = (format, value) => {
+        return dateUtil.time(format, value)
     }
 
     renderRow = (virtualProps) => {
@@ -184,7 +186,7 @@ class EventLog extends React.Component {
             <div key={index} style={style}>
                 <div style={{ pointer: 'cursor', borderRadius: 5, border: '1px solid #E0E0E1', margin: '0 10px 10px 10px', padding: 10, backgroundColor: this.state.activeIndex === index ? '#1E2123' : 'transparent' }} onClick={() => this.onEventTimeLine(dataList[keys[index]], columns, index)}>
                     <div style={{ display: 'inline-block' }}>{columns.map((column, i) => {
-                        let value = column.format ? column.format(latestData[i]) : latestData[i]
+                        let value = column.format ? this.formatDate(column.format, latestData[i]) : latestData[i]
                         return column && column.visible ?
                             <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${value}`}</p> : false
                     })}
@@ -204,6 +206,13 @@ class EventLog extends React.Component {
                 {this.renderRow}
             </FixedSizeList>
         )
+    }
+
+    customRender = () => {
+        return (
+            isAdmin() ? <div className='calendar-dropdown-select'>
+                <MexSelect form={{ field: fields.organizationName, label: 'Organization', placeholder: 'Select Organization', options: this.props.organizationList, value: this.props.selectedOrg, clear: false }} onChange={this.props.onOrgChange} />
+            </div> : null)
     }
 
     render() {
@@ -233,22 +242,23 @@ class EventLog extends React.Component {
                         </div>
                     </Paper>
                     {this.props.loading ? <LinearProgress /> : null}
-                    <br/>
+                    <br />
                     <div align={'center'}>
-                        <SearchFilter style={{ width:'93%' }} onFilter={this.onFilter} ref={this.searchfilter}/>
+                        <SearchFilter style={{ width: '93%' }} onFilter={this.onFilter} ref={this.searchfilter} />
                     </div>
-                    <br/>
-                    <br/>
+                    <br />
                     {Object.keys(filterList).map((eventType, i) => {
                         let eventList = filterList[eventType]
                         return tabValue === i ? this.stepperView(eventType, eventList, i) : null
                     })}
-                    <div style={{paddingLeft:20, marginTop:20}} align="left">
+                    <br/>
+                    <Divider/>
+                    <div style={{ paddingLeft: 20, position:'absolute', bottom:20 }} align="left">
                         <p style={{ fontSize: 14 }}><strong>Last Requested</strong>{`: ${dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, endRange)}`}</p>
                     </div>
                 </div>
                 <div style={{ width: 'calc(100vw - 450px)', height: '100%', display: 'inline-block', backgroundColor: '#1E2123' }}>
-                    {calendarList.length > 0 && groupList.length > 0 ? <MexCalendar dataList={calendarList} groupList={groupList} /> : null}
+                    <MexCalendar dataList={calendarList} groupList={groupList} customRender={this.customRender} />
                 </div>
             </div>
         )

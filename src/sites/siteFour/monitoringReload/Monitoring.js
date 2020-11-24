@@ -10,11 +10,11 @@ import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import './style.css'
 import MexWorker from '../../../services/worker/mex.worker.js'
-import {WORKER_METRIC} from '../../../services/worker/constant'
+import { WORKER_METRIC } from '../../../services/worker/constant'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions';
-import {sendRequests} from '../../../services/model/serverWorker'
+import { sendRequests } from '../../../services/model/serverWorker'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -39,9 +39,9 @@ class Monitoring extends React.Component {
             avgData: {},
             rowSelected: 0,
             filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(this.defaultMetricParentTypes.metricTypeKeys), summary: constant.summaryList[0], parent: this.defaultMetricParentTypes },
-            duration:constant.relativeTimeRanges[0],
-            range : timeRangeInMin(constant.relativeTimeRanges[0].duration),
-            minimize : false
+            duration: constant.relativeTimeRanges[0],
+            range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
+            minimize: false
         }
         this.refreshId = undefined;
         this.requestCount = 0
@@ -68,7 +68,7 @@ class Monitoring extends React.Component {
         if (interval > 0) {
             this.refreshId = setInterval(() => {
                 this.setState({ range: timeRangeInMin(this.state.duration.duration) }, () => {
-                
+
                     this.fetchMetricData()
                 })
             }, interval * 1000);
@@ -79,7 +79,7 @@ class Monitoring extends React.Component {
         if (this.refreshId) {
             clearInterval(this.refreshId)
         }
-        this.setState({range : value}, ()=>{
+        this.setState({ range: value }, () => {
             this.fetchMetricData()
         })
     }
@@ -90,18 +90,18 @@ class Monitoring extends React.Component {
         })
     }
 
-    onRefresh = () =>{
+    onRefresh = () => {
         this.setState({ range: timeRangeInMin(this.state.duration.duration) }, () => {
             this.fetchMetricData()
         })
     }
 
-    onParentChange = () =>{
+    onParentChange = () => {
         this.fetchMetricData()
     }
-    
+
     onToolbar = async (action, value) => {
-        if (action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME  || action === constant.ACTION_REFRESH) {
+        if (action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
             switch (action) {
                 case constant.ACTION_REFRESH_RATE:
                     this.onRefreshChange(value)
@@ -141,9 +141,8 @@ class Monitoring extends React.Component {
                         break;
                 }
                 return filter
-            }, ()=>{
-                if(action === constant.ACTION_METRIC_PARENT_TYPE)
-                {
+            }, () => {
+                if (action === constant.ACTION_METRIC_PARENT_TYPE) {
                     this.onParentChange()
                 }
             })
@@ -161,13 +160,13 @@ class Monitoring extends React.Component {
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
-                    {loading ? <LinearProgress/> : null}
+                    {loading ? <LinearProgress /> : null}
                     <MonitoringToolbar defaultParent={this.defaultMetricParentTypes} regions={this.regions} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
-                    <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} minimize={minimize}/>
+                    <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} minimize={minimize} />
                 </Card>
-                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize}/>
-                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize}/>
-                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize}/>
+                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} />
+                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} />
+                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} />
             </div>
 
         )
@@ -180,7 +179,7 @@ class Monitoring extends React.Component {
     processMetricData = (parent, serverField, region, metricDataList, showList) => {
         const worker = new MexWorker();
         let avgData = this.state.avgData
-        worker.postMessage({ type: WORKER_METRIC, metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys, avgData:avgData })
+        worker.postMessage({ type: WORKER_METRIC, metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys, avgData: avgData })
         worker.addEventListener('message', event => {
             let chartData = event.data.chartData
             let avgData = event.data.avgData
@@ -230,7 +229,7 @@ class Monitoring extends React.Component {
                                 data[fields.selector] = '*'
 
                                 let metricRequest = parent.request(data)
-                                let showRequest = parent.showRequest({region})
+                                let showRequest = parent.showRequest({ region })
 
                                 this.setState({ loading: true })
                                 sendRequests(this, [metricRequest, showRequest]).addEventListener('message', event => {
@@ -280,8 +279,10 @@ class Monitoring extends React.Component {
         this.fetchMetricData()
     }
 
-    componentWillUnmount(){
-        clearInterval(this.refreshId)
+    componentWillUnmount() {
+        if (this.refreshId) {
+            clearInterval(this.refreshId)
+        }
     }
 }
 

@@ -5,9 +5,9 @@ import Timeline, {
     DateHeader
 } from 'react-calendar-timeline'
 import "react-calendar-timeline/lib/Timeline.css";
-import { IconButton } from '@material-ui/core'
-import '../../../../../node_modules/react-calendar-timeline/lib/Timeline.css'
-import * as dateUtil from '../../../../utils/date_util'
+import { Divider, IconButton } from '@material-ui/core'
+import '../../../node_modules/react-calendar-timeline/lib/Timeline.css'
+import * as dateUtil from '../../utils/date_util'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -30,7 +30,7 @@ const keys = {
 const endRange = dateUtil.endOfDay().valueOf()
 const startRange = dateUtil.startOfDay().valueOf()
 
-class CalendarTimeline extends React.Component {
+class MexCalendar extends React.Component {
 
     constructor(props) {
         super(props)
@@ -109,6 +109,7 @@ class CalendarTimeline extends React.Component {
     };
 
     render() {
+        const { dataList, groupList } = this.props
         return (
             <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', padding: 10 }}>
                 <div style={{ marginBottom: 10 }}>
@@ -121,11 +122,13 @@ class CalendarTimeline extends React.Component {
                     <IconButton aria-label="refresh" onClick={this.onReset}>
                         <RefreshIcon fontSize='small' style={{ color: '#76ff03' }} />
                     </IconButton>
+                    {this.props.customRender()}
+                    <Divider/>
                 </div>
-                <Timeline
+                {dataList.length > 0 ? <Timeline
                     scrollRef={el => (this.scrollRef = el)}
-                    groups={this.props.groupList}
-                    items={this.props.dataList}
+                    groups={groupList}
+                    items={dataList}
                     keys={keys}
                     sidebarWidth={150}
                     canMove={false}
@@ -152,9 +155,13 @@ class CalendarTimeline extends React.Component {
                         <DateHeader unit="primaryHeader" style={{ backgroundColor: '#1E2123' }} />
                         <DateHeader />
                     </TimelineHeaders>
-                </Timeline>
+                </Timeline> : 
+                    <div align="center" style={{marginTop:'20%'}}>
+                        <h3>No Data</h3>
+                    </div>
+                }
             </div>)
     }
 }
 
-export default CalendarTimeline
+export default MexCalendar

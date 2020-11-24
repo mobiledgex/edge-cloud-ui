@@ -1,5 +1,5 @@
-import {combineReducers} from 'redux';
-import {reducer as formReducer} from 'redux-form';
+import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
 import tabChanger from './tabChanger';
 import receiveDataReduce from './receiveDataReduce';
 import registryAccount from './registryAccount';
@@ -43,8 +43,9 @@ import HeaderReducer from "./HeaderReducer";
 import ThemeReducer from "./ThemeReducer";
 import ChartDataReducer from "./ChartDataReducer";
 import ViewMode from "./ViewMode";
+import { USER_LOGGED_OUT } from '../actions/ActionTypes';
 
-const reducers = combineReducers({
+const appReducer = combineReducers({
     tabChanger,
     receiveDataReduce,
     changeRegion,
@@ -91,4 +92,13 @@ const reducers = combineReducers({
     form: formReducer
 });
 
-export default reducers;
+const rootReducer = (state, action) => {
+    // when a logout action is dispatched it will reset redux state
+    if (action.type === USER_LOGGED_OUT) {
+        state = undefined;
+    }
+
+    return appReducer(state, action);
+};
+
+export default rootReducer;

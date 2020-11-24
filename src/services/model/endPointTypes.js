@@ -33,8 +33,8 @@ export const SHOW_USERS = "ShowUsers";
 export const DELETE_USER = "DeleteUser";
 export const SHOW_ACCOUNTS = "ShowAccounts";
 export const DELETE_ACCOUNT = "DeleteAccount";
-export const SHOW_ROLE = "ShowRole";
-export const SHOW_CONTROLLER = "showController"
+export const SHOW_ROLE = "role/assignment/show";
+export const SHOW_CONTROLLER = "controller/show"
 export const SHOW_CLOUDLET = "ShowCloudlet";
 export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
 export const DELETE_CLOUDLET = "DeleteCloudlet";
@@ -127,6 +127,8 @@ export function getPath(request) {
         case ALERT_DELETE_RECEIVER:   
         case SHOW_ORG:
         case SHOW_ORG_CLOUDLET:
+        case SHOW_ROLE:
+        case SHOW_CONTROLLER:
             return `/api/v1/auth/${request.method}`
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
@@ -144,10 +146,6 @@ export function getPath(request) {
             return '/api/v1/auth/user/show';
         case DELETE_ACCOUNT:
             return '/api/v1/auth/user/delete';
-        case SHOW_ROLE:
-            return '/api/v1/auth/role/assignment/show';
-        case SHOW_CONTROLLER:
-            return '/api/v1/auth/controller/show';
         case SETTING_LOCK:
             return '/api/v1/auth/restricted/user/update';
         case CURRENT_USER:
