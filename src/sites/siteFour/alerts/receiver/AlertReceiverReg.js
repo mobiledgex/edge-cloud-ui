@@ -28,7 +28,7 @@ const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]
 const selector = () => {
     let selector = []
     if (getUserRole().includes(constant.ADMIN) || getUserRole().includes(constant.DEVELOPER)) {
-        selector.push({ selector: 'App', key: 'appname' })
+        selector.push({ selector: 'App Instance', key: 'appname' })
         selector.push({ selector: 'Cluster', key: 'cluster' })
     }
     if (getUserRole().includes(constant.ADMIN) || getUserRole().includes(constant.OPERATOR)) {
@@ -71,7 +71,7 @@ class FlavorReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: fields.operatorName }], strictDependency: false },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName, strictDependency: false }, { index: 10, field: fields.cloudletName, strictDependency: false }] },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName }, { index: 10, field: fields.cloudletName }, { index: 11, field: fields.clusterName }], strictDependency: false },
+            { field: fields.appName, label: 'App Instance', formType: SELECT, placeholder: 'Select App Instance', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName }, { index: 10, field: fields.cloudletName }, { index: 11, field: fields.clusterName }], strictDependency: false },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 10, field: fields.appName }], strictDependency: false }
         ]
     }
@@ -175,25 +175,25 @@ class FlavorReg extends React.Component {
             let form = forms[i]
             switch (form.field) {
                 case fields.organizationName:
-                    let valid = currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    let valid = currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
                     form.rules.required = valid
                     form.visible = valid
                     break;
                 case fields.appName:
-                    form.visible = currentForm.value === 'App'
+                    form.visible = currentForm.value === 'App Instance'
                     break;
                 case fields.version:
-                    form.visible = currentForm.value === 'App'
+                    form.visible = currentForm.value === 'App Instance'
                     break;
                 case fields.clusterName:
-                    form.visible = currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    form.visible = currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
                     break;
                 case fields.cloudletName:
-                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
                     break;
                 case fields.operatorName:
                     form.rules.required = currentForm.value === 'Cloudlet'
-                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App' || currentForm.value === 'Cluster'
+                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
                     form.value = undefined
                     break;
             }
