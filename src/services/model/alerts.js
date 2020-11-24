@@ -11,7 +11,7 @@ export const showAlertKeys = () => (
     [
         { field: fields.region, label: 'Region', serverField: 'labels#OS#region', sortable: true, visible: true, summary: false },
         { field: fields.alertname, serverField: 'labels#OS#alertname', label: 'Alert Name', sortable: true, visible: true, summary: false },
-        { field: fields.appName, serverField: 'labels#OS#app', label: 'App', sortable: true, visible: true, summary: false },
+        { field: fields.appName, serverField: 'labels#OS#app', label: 'App Instance', sortable: true, visible: true, summary: false },
         { field: fields.appDeveloper, serverField: 'labels#OS#apporg', label: 'App Developer', sortable: true, visible: false, summary: false },
         { field: fields.version, serverField: 'labels#OS#appver', label: 'App Version', sortable: true, visible: false, summary: false },
         { field: fields.cloudletName, serverField: 'labels#OS#cloudlet', label: 'Cloudlet', sortable: true, visible: false, summary: false },
@@ -43,7 +43,7 @@ export const showAlertReceiverKeys = () => (
         { field: fields.slackwebhook, serverField: 'SlackWebhook', label: 'Slack Webhook', sortable: true, visible: false, detailView: false },
         // { field: fields.alertname, serverField: 'Cloudlet', label: 'Alert Name', sortable: true, visible: true },
         { field: fields.appDeveloper, serverField: 'AppInst#OS#app_key#OS#organization', label: 'App Developer', sortable: true, visible: false },
-        { field: fields.appName, serverField: 'AppInst#OS#app_key#OS#name', label: 'App Name', sortable: true, visible: false },
+        { field: fields.appName, serverField: 'AppInst#OS#app_key#OS#name', label: 'App Instance', sortable: true, visible: false },
         { field: fields.version, serverField: 'AppInst#OS#app_key#OS#version', label: 'Version', sortable: true, visible: false },
         { field: fields.clusterName, serverField: 'AppInst#OS#cluster_inst_key#OS#cluster_key#OS#name', label: 'Cluster', sortable: true, visible: false },
         { field: fields.appOperator, serverField: 'AppInst#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', label: 'Operator', sortable: true, visible: false },
