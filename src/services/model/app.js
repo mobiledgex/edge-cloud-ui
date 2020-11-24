@@ -3,6 +3,7 @@ import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
+import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 
 let fields = formatter.fields
 
@@ -36,6 +37,7 @@ export const keys = () => ([
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
