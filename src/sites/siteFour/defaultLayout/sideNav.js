@@ -382,13 +382,11 @@ class SideNav extends React.Component {
 function mapStateToProps(state) {
     return {
         redirectPage: state.redirectPage.page,
-        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handlePageRedirect: (mode, msg) => { dispatch(actions.redirectPage(mode, msg)) },
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
+        handlePageRedirect: (mode, msg) => { dispatch(actions.redirectPage(mode, msg)) }
     };
 };
 

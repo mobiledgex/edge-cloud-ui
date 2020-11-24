@@ -132,11 +132,9 @@ class OrganizationList extends React.Component {
             for (let i = 0; i < roleInfoList.length; i++) {
                 let roleInfo = roleInfoList[i];
                 if (roleInfo.org === data[fields.organizationName]) {
-                    var event = new Event('SelectOrgChangeEvent');
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
-                    window.dispatchEvent(event);
                     this.forceUpdate()
                     break;
                 }
@@ -178,8 +176,6 @@ class OrganizationList extends React.Component {
             for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
-                    localStorage.setItem('selectRole', userRole.role)
-                    // this.props.handleUserRole(userRole.role)
                     isAdmin = true
                     break;
                 }
@@ -224,8 +220,7 @@ class OrganizationList extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        roleInfo: state.roleInfo ? state.roleInfo.role : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null,
+        roleInfo: state.roleInfo ? state.roleInfo.role : null
     }
 };
 

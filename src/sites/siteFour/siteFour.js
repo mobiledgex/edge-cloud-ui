@@ -8,14 +8,13 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { GridLoader } from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
-import * as serverData from '../../services/model/serverData';
 import MexWorker from '../../services/worker/mex.worker.js'
-import { sendRequests } from '../../services/model/serverWorker';
+import { sendRequest } from '../../services/model/serverWorker';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import { WORKER_ROLE } from '../../services/worker/constant';
-import { SHOW_CONTROLLER, SHOW_ROLE } from '../../services/model/endpoints';
+import { SHOW_ROLE } from '../../services/model/endpoints';
 
 let _self = null
 
@@ -38,43 +37,24 @@ class SiteFour extends React.Component {
         };
     }
 
-    roleResponse = (mcList) => {
-        let role = undefined
-        if (mcList) {
-            mcList.map(mc => {
-                let request = mc.request
-                if (mc && mc.response && mc.response.status === 200) {
-                    if (request.method === SHOW_CONTROLLER) {
-                        let data = mc.response.data
-                        let regions = []
-                        data.map((data) => {
-                            regions.push(data.Region)
-                        })
-                        localStorage.setItem('regions', regions)
-                    }
-                    else if (request.method === SHOW_ROLE) {
-                        let dataList = mc.response.data;
-                        const worker = new MexWorker();
-                        worker.postMessage({ type: WORKER_ROLE, data: dataList })
-                        worker.addEventListener('message', event => {
-                            if (event.data.isAdmin) {
-                                role = event.data.role
-                                localStorage.setItem('selectRole', role)
-                                this.setState({ userRole: role });
-                            }
-                        });
-                    }
+    roleResponse = (mc) => {
+        if (mc && mc.response && mc.response.status === 200) {
+            let dataList = mc.response.data;
+            const worker = new MexWorker();
+            worker.postMessage({ type: WORKER_ROLE, data: dataList })
+            worker.addEventListener('message', event => {
+                if (event.data.isAdmin) {
+                    let role = event.data.role
+                    localStorage.setItem('selectRole', role)
                     this.props.handleUserRole(role)
+                    this.setState({ userRole: role });
                 }
-            })
+            });
         }
     }
 
     userRoleInfo = () => {
-        let requestList = []
-        requestList.push({ method: SHOW_CONTROLLER })
-        requestList.push({ method: SHOW_ROLE })
-        sendRequests(this, requestList, this.roleResponse)
+        sendRequest(this, { method: SHOW_ROLE }, this.roleResponse)
     }
 
     helpClick = (currentStep) => {

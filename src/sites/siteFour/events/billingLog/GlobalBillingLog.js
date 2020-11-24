@@ -72,12 +72,12 @@ const styles = theme => ({
 class GlobalBillingLog extends React.Component {
     constructor(props) {
         super(props);
+        this._isMounted = false;
         this.state = {
             isOpen: props.open,
             liveData: {},
             loading: false,
         }
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.action = '';
         this.data = {};
         this.intervalId = undefined;
@@ -116,7 +116,7 @@ class GlobalBillingLog extends React.Component {
                         }),
                     }} anchor={'right'} open={isOpen}>
                     <Suspense fallback={<div>loading</div>}>
-                        <BillingLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg}/>
+                        <BillingLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
                     </Suspense>
                 </Drawer>
             </React.Fragment>
@@ -142,7 +142,9 @@ class GlobalBillingLog extends React.Component {
                 liveData[key] = eventData[key]
             }
         })
-        this.setState({ liveData })
+        if (this._isMounted) {
+            this.setState({ liveData })
+        }
     }
 
     serverResponse = (mcList) => {
@@ -158,11 +160,11 @@ class GlobalBillingLog extends React.Component {
                 }
             })
         }
-        this.setState({ loading: false })
+        if (this._isMounted) { this.setState({ loading: false }) }
     }
 
     onOrganizationChange = (form, value) => {
-        this.setState({liveData:{}})
+        this.setState({ liveData: {} })
         clearInterval(this.intervalId)
         this.endRange = dateUtil.currentUTCTime()
         this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
@@ -171,10 +173,11 @@ class GlobalBillingLog extends React.Component {
     }
 
     eventLogData = async (starttime, endtime, isInit) => {
+        let regions = localStorage.regions ? localStorage.regions.split(",") : [];
         let userRole = getUserRole()
-        if (userRole && this.regions && this.regions.length > 0) {
+        if (userRole && regions && regions.length > 0) {
             let requestList = []
-            this.regions.map(region => {
+            regions.map(region => {
                 let data = {}
                 let org = getOrganization() ? getOrganization() : this.selectedOrg
                 data[fields.region] = region
@@ -188,8 +191,7 @@ class GlobalBillingLog extends React.Component {
                     requestList.push(cloudletEventLogs(cloneDeep(data), org))
                 }
             })
-
-            this.setState({ loading: true })
+            if (this._isMounted) { this.setState({ loading: true }) }
             sendRequests(this, requestList, this.serverResponse)
 
 
@@ -198,7 +200,7 @@ class GlobalBillingLog extends React.Component {
                     clearInterval(this.intervalId)
                 }
                 this.intervalId = setInterval(() => {
-                    if (this.state.isOpen) {
+                    if (this._isMounted && this.state.isOpen) {
                         this.startRange = cloneDeep(this.endRange)
                         this.endRange = dateUtil.currentUTCTime()
                         this.eventLogData(this.startRange, this.endRange)
@@ -209,9 +211,21 @@ class GlobalBillingLog extends React.Component {
     }
 
     componentDidUpdate(prePros, preState) {
+        if (this.props.userRole && prePros.userRole !== this.props.userRole) {
+            if (this.props.userRole.includes(constant.ADMIN)) {
+                sendRequest(this, showOrganizations(), this.orgResponse)
+            }
+            else {
+                this.endRange = dateUtil.currentUTCTime()
+                this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+                this.setState({ liveData: {} })
+                this.eventLogData(this.startRange, this.endRange)
+            }
+        }
+
         //enable interval only when billing log is visible
         if (preState.isOpen !== this.state.isOpen) {
-            if (this.state.isOpen) {
+            if (this._isMounted && this.state.isOpen) {
                 this.startRange = cloneDeep(this.endRange)
                 this.endRange = dateUtil.currentUTCTime()
                 this.eventLogData(this.startRange, this.endRange, true)
@@ -234,24 +248,21 @@ class GlobalBillingLog extends React.Component {
     }
 
     componentDidMount() {
-        // default request made when organization is available
+        this._isMounted = true;
         if (getOrganization()) {
             this.eventLogData(this.startRange, this.endRange)
         }
-        else if (isAdmin()) {
-            sendRequest(this, showOrganizations(), this.orgResponse)
-        }
-        //Live data is reset when end user changes organization and timer is reset back to one month
-        window.addEventListener('SelectOrgChangeEvent', () => {
-            this.endRange = dateUtil.currentUTCTime()
-            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
-            this.setState({ liveData: {} })
-            this.eventLogData(this.startRange, this.endRange)
-        })
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.intervalId);
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 };
 
@@ -262,4 +273,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(withStyles(styles)(GlobalBillingLog)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(withStyles(styles)(GlobalBillingLog)));

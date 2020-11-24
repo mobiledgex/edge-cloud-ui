@@ -377,3 +377,9 @@ export function redirectPage(data) {
         data
     }
 }
+
+export function userLogout() {
+    return {
+        type: types.USER_LOGGED_OUT
+    }
+}

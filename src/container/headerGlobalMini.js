@@ -23,7 +23,7 @@ class headerGlobalMini extends React.Component {
     }
 
     logout(path) {
-        localStorage.clear()
+        this.props.handleLogout()
         this.props.history.push({
             pathname: path,
             userInfo: { info: null }
@@ -109,7 +109,8 @@ function mapStateToProps(state) {
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleLogout: () => { dispatch(actions.userLogout()) }
     };
 };
 
