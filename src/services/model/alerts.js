@@ -31,7 +31,8 @@ export const showAlertKeys = () => (
 )
 
 export const showAlertReceiverKeys = () => (
-    [
+    [   
+        { field: fields.region, serverField: 'Region', label: 'Region', visible: false, filter:true },
         { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter: true },
         { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true, filter: true },
         { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter: true },
@@ -104,6 +105,10 @@ const getKey = (data) => {
         name: data[fields.alertname],
         type: data[fields.type].toLowerCase(),
         severity: data[fields.severity].toLowerCase()
+    }
+    if(data[fields.region])
+    {
+        alert['region'] = data[fields.region] 
     }
     if (data[fields.type] === RECEIVER_TYPE_SLACK) {
         alert['slackchannel'] = data[fields.slackchannel]
