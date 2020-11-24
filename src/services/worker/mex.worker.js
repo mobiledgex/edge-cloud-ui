@@ -1,6 +1,7 @@
 /* eslint-disable */
-import {fetch} from './server'
-import {format} from './metric'
+import { fetch } from './server'
+import { format as metric } from './metric'
+import { format as role } from './role'
 import * as constant from './constant'
 
 self.addEventListener("message", processWorker);
@@ -12,7 +13,10 @@ function processWorker(event) {
             fetch(worker)
             break;
         case constant.WORKER_METRIC:
-            format(worker)
+            metric(worker)
+            break;
+        case constant.WORKER_ROLE:
+            role(worker)
             break;
     }
 }

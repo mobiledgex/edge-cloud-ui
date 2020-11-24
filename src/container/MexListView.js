@@ -23,6 +23,7 @@ import cloneDeep from 'lodash/cloneDeep';
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
+        this._isMounted = false
         this.state = {
             newDataList: [],
             dataList: [],
@@ -36,7 +37,7 @@ class MexListView extends React.Component {
             dialogMessageInfo: {},
             uuid: 0,
             dropList: [],
-            resetStream:false
+            resetStream: false
         };
         this.filterText = ''
         this.requestCount = 0;
@@ -112,7 +113,9 @@ class MexListView extends React.Component {
                     this.props.handleAlertInfo('success', `${mcRequest.request.success}`)
                     filterList.splice(filterList.indexOf(data), 1)
                     dataList.splice(dataList.indexOf(data), 1)
-                    this.setState({ dataList: dataList, filterList: filterList })
+                    if (this._isMounted) {
+                        this.setState({ dataList: dataList, filterList: filterList })
+                    }
                     valid = true;
                 }
                 if (action.onFinish) {
@@ -137,7 +140,9 @@ class MexListView extends React.Component {
                 responseData = mcRequest.response.data;
             }
             let labels = action.multiStepperHeader
-            this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mcRequest.wsObj) })
+            if (this._isMounted) {
+                this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mcRequest.wsObj) })
+            }
         }
     }
 
@@ -316,9 +321,11 @@ class MexListView extends React.Component {
     }
 
     onProgress(data) {
-        this.setState({
-            uuid: data.uuid
-        })
+        if (this._isMounted) {
+            this.setState({
+                uuid: data.uuid
+            })
+        }
     }
     /*
       Stepper Block
@@ -365,7 +372,7 @@ class MexListView extends React.Component {
     }
 
     render() {
-        const {resetStream} = this.state
+        const { resetStream } = this.state
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
@@ -463,15 +470,19 @@ class MexListView extends React.Component {
             dataList = [...dataList, ...newDataList]
         }
 
-        this.setState({
-            dataList: Object.assign([], dataList),
-            newDataList: newDataList
-        })
-        this.setState({ filterList: this.onFilterValue(undefined) })
+        if (this._isMounted) {
+            this.setState({
+                dataList: Object.assign([], dataList),
+                newDataList: newDataList
+            })
+            this.setState({ filterList: this.onFilterValue(undefined) })
+        }
     }
 
     dataFromServer = (region) => {
-        this.setState(prevState=>({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream :  !prevState.resetStream}))
+        if (this._isMounted) {
+            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream }))
+        }
         let requestInfo = this.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)
@@ -490,8 +501,13 @@ class MexListView extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.dataFromServer(REGION_ALL)
         this.props.handleViewMode(this.requestInfo.viewMode);
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 

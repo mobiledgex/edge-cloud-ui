@@ -69,6 +69,7 @@ class VerticalStepper extends React.Component {
 
     constructor(props) {
         super(props)
+        this._isMounted = false
         this.state = {
             stepsArray: [],
             resetToggle: undefined
@@ -129,7 +130,10 @@ class VerticalStepper extends React.Component {
                 })
             }
         }
-        this.setState({ stepsArray: stepsList })
+        if(this._isMounted)
+        {
+            this.setState({ stepsArray: stepsList })
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -255,6 +259,14 @@ class VerticalStepper extends React.Component {
         if (prevProps.dataList !== this.props.dataList) {
             this.streamProgress()
         }
+    }
+
+    componentDidMount(){
+        this._isMounted = true
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false   
     }
 }
 

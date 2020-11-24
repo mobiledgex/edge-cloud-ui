@@ -12,11 +12,12 @@ import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
 
 import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
-import {HELP_ORG_LIST} from "../../../tutorial";
+import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
+        this._isMounted = false
         this.state = {
             currentView: null
         }
@@ -35,7 +36,7 @@ class OrganizationList extends React.Component {
     }
 
     onAdd = (type) => {
-        this.setState({ currentView: <OrganizationReg onClose={this.onRegClose} type={type}/> });
+        this.setState({ currentView: <OrganizationReg onClose={this.onRegClose} type={type} /> });
     }
 
     onUpdate = (action, data) => {
@@ -45,11 +46,11 @@ class OrganizationList extends React.Component {
     customToolbar = () =>
         (
             isViewer() ? null : <Box display='flex' id="mex_list_view_custom_toolbar">
-                <Card style={{ margin: 10, width: '50%', maxHeight:200, overflow:'auto' }}>
+                <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
                     <CardHeader
                         avatar={
-                            <IconButton aria-label="developer" disabled={true}>  
-                                <img src='/assets/images/handset-sdk-green.svg'/>
+                            <IconButton aria-label="developer" disabled={true}>
+                                <img src='/assets/images/handset-sdk-green.svg' />
                             </IconButton>
                         }
                         title={
@@ -59,17 +60,17 @@ class OrganizationList extends React.Component {
                         }
                         // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                         action={
-                            <IconButton aria-label="developer" onClick={()=>{this.onAdd(constant.DEVELOPER)}}>
+                            <IconButton aria-label="developer" onClick={() => { this.onAdd(constant.DEVELOPER) }}>
                                 <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
                             </IconButton>
                         }
                     />
                 </Card>
-                <Card style={{ margin: 10, width: '50%',maxHeight:200, overflow:'auto'  }}>
+                <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
                     <CardHeader
                         avatar={
-                            <IconButton aria-label="operator"  disabled={true}>
-                                <img src='/assets/images/cloudlet-green.svg'/>
+                            <IconButton aria-label="operator" disabled={true}>
+                                <img src='/assets/images/cloudlet-green.svg' />
                             </IconButton>
                         }
                         title={
@@ -79,7 +80,7 @@ class OrganizationList extends React.Component {
                         }
                         // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                         action={
-                            <IconButton aria-label="operator" onClick={()=>{this.onAdd(constant.OPERATOR)}}>
+                            <IconButton aria-label="operator" onClick={() => { this.onAdd(constant.OPERATOR) }}>
                                 <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
                             </IconButton>
                         }
@@ -98,16 +99,18 @@ class OrganizationList extends React.Component {
             localStorage.removeItem('selectRole')
             localStorage.removeItem('selectOrg')
             this.props.handleUserRole(undefined)
-            this.forceUpdate()
+            if (this._isMounted) {
+                this.forceUpdate()
+            }
         }
     }
 
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
-            { label: 'Add User', onClick: this.onAddUser, type:'Edit' },
-            { label: 'Update', onClick: this.onUpdate, type:'Edit' },
-            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type:'Edit' }
+            { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
+            { label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
@@ -120,8 +123,8 @@ class OrganizationList extends React.Component {
     getManage = (data) => {
         return (
             <Button size={'small'}
-                    className='buttonManage'
-                    style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
+                className='buttonManage'
+                style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
                 <label>Manage</label>
             </Button>)
     }
@@ -132,12 +135,12 @@ class OrganizationList extends React.Component {
             for (let i = 0; i < roleInfoList.length; i++) {
                 let roleInfo = roleInfoList[i];
                 if (roleInfo.org === data[fields.organizationName]) {
-                    var event = new Event('SelectOrgChangeEvent');
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
-                    window.dispatchEvent(event);
-                    this.forceUpdate()
+                    if (this._isMounted) {
+                        this.forceUpdate()
+                    }
                     break;
                 }
             }
@@ -165,8 +168,17 @@ class OrganizationList extends React.Component {
             keys: this.keys,
             additionalDetail: shared.additionalDetail,
             viewMode: HELP_ORG_LIST,
-            grouping : true
+            grouping: true
         })
+    }
+    
+    render() {
+        return (
+            this.state.currentView ? this.state.currentView :
+                <div style={{ width: '100%', height: '100%' }}>
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar} />
+                </div>
+        )
     }
 
     getUserRoles = async (key) => {
@@ -178,8 +190,6 @@ class OrganizationList extends React.Component {
             for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
-                    localStorage.setItem('selectRole', userRole.role)
-                    this.props.handleUserRole(userRole.role)
                     isAdmin = true
                     break;
                 }
@@ -192,7 +202,9 @@ class OrganizationList extends React.Component {
         else {
             key.visible = false;
         }
-        this.forceUpdate()
+        if (this._isMounted) {
+            this.forceUpdate()
+        }
     }
 
     customizedData = () => {
@@ -209,23 +221,18 @@ class OrganizationList extends React.Component {
      * ** */
 
     componentDidMount() {
+        this._isMounted = true
         this.customizedData()
     }
 
-    render() {
-        return (
-            this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%', height:'100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar}/>
-                </div>
-        )
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 
 const mapStateToProps = (state) => {
     return {
-        roleInfo: state.roleInfo ? state.roleInfo.role : null,
-        userRole: state.showUserRole ? state.showUserRole.role : null,
+        roleInfo: state.roleInfo ? state.roleInfo.role : null
     }
 };
 
@@ -233,7 +240,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleShowAuditLog: (data) => {dispatch(actions.showAuditLog(data))}
+        handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) }
     };
 };
 

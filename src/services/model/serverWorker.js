@@ -17,7 +17,10 @@ const getToken = (self) => {
 const responseListener = (self, worker, callback) => {
     worker.addEventListener('message', event => {
         if (event.data.status && event.data.status !== 200) {
-            checkExpiry(self, event.data.message)
+            if(checkExpiry(self, event.data.message))
+            {
+                callback(event.data)
+            }
         }
         else {
             callback(event.data)

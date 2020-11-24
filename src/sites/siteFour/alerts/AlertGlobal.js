@@ -68,7 +68,7 @@ class AlertGlobal extends React.Component {
             this.setState(prevState => {
                 let dataList = prevState.dataList
                 dataList = data
-                let latestData = dataList[dataList.length-1]
+                let latestData = dataList[dataList.length - 1]
                 let activeAt = localStorage.getItem('LatestAlert')
                 let showDot = false
                 if (activeAt) {
@@ -97,7 +97,9 @@ class AlertGlobal extends React.Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.intervalId)
+        if (this.intervalId) {
+            clearInterval(this.intervalId)
+        }
     }
 }
 

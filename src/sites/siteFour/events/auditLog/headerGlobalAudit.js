@@ -15,6 +15,7 @@ const CON_LIMIT = 25
 class headerGlobalAudit extends React.Component {
     constructor(props) {
         super(props);
+        this._isMounted = false
         _self = this;
         this.state = {
             historyList: [],
@@ -35,10 +36,12 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type:'audit' })
+        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type: 'audit' })
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
-                this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
+                if (this._isMounted) {
+                    this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
+                }
             }
             else {
                 this.props.handleAlertInfo('error', 'No logs found')
@@ -69,10 +72,14 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAudit = async (starttime, endtime, limit, isLive, orgTime) => {
-        isLive ? this.setState({ loading: true }) : this.setState({ historyLoading: true })
+        if (this._isMounted) {
+            isLive ? this.setState({ loading: true }) : this.setState({ historyLoading: true })
+        }
         limit = limit ? limit : CON_LIMIT
         let mcRequest = await showAudits(_self, { starttime: starttime, endtime: endtime, limit: parseInt(limit), type: this.type }, false)
-        this.setState({ historyLoading: false, loading: false, limit: 25 })
+        if (this._isMounted) {
+            this.setState({ historyLoading: false, loading: false, limit: 25 })
+        }
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 let response = mcRequest.response;
@@ -86,14 +93,18 @@ class headerGlobalAudit extends React.Component {
                     if (newDataList && newDataList.length > 250) {
                         newDataList.splice(251, newDataList.length - 251);
                     }
-                    this.setState({ liveData: newDataList })
+                    if (this._isMounted) {
+                        this.setState({ liveData: newDataList })
+                    }
                 }
                 else {
-                    this.setState({ historyList: dataList })
+                    if (this._isMounted) {
+                        this.setState({ historyList: dataList })
+                    }
                 }
             }
             else {
-                if (!isLive) {
+                if (!isLive && this._isMounted) {
                     this.setState({ historyList: [] })
                 }
             }
@@ -101,10 +112,12 @@ class headerGlobalAudit extends React.Component {
     }
 
     onPopupDetail = (rawViewData) => {
-        this.setState({
-            rawViewData: rawViewData,
-            openDetail: true
-        })
+        if (this._isMounted) {
+            this.setState({
+                rawViewData: rawViewData,
+                openDetail: true
+            })
+        }
     }
 
     closeDetail = () => {
@@ -145,20 +158,17 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        
+
         if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg && this.type === 'audit') {
             this.getDataAuditOrg(this.props.showAuditLogWithOrg)
         }
-        if(prevState.isOpen !== this.state.isOpen)
-        {
-            if(this.state.isOpen)
-            {
+        if (prevState.isOpen !== this.state.isOpen) {
+            if (this.state.isOpen) {
                 this.starttime = cloneDeep(this.endtime)
                 this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
                 this.initAudit(this.starttime, this.endtime, true)
             }
-            else
-            {
+            else {
                 clearInterval(this.intervalId)
             }
         }
@@ -179,11 +189,15 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.initAudit(this.starttime, this.endtime, false);
     }
 
     componentWillUnmount = () => {
-        clearInterval(this.intervalId);
+        this._isMounted = false
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
     }
 }
 
