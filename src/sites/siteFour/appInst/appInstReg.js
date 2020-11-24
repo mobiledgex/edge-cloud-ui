@@ -29,6 +29,7 @@ const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 class ClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
+        this._isMounted = false
         this.state = {
             forms: [],
             stepsArray: [],
@@ -48,6 +49,12 @@ class ClusterInstReg extends React.Component {
         //To avoid refecthing data from server
     }
 
+    updateForm = (forms) => {
+        if (this._isMounted) {
+            this.setState({ forms })
+        }
+    }
+
     getCloudletInfo = async (form, forms) => {
         let region = undefined;
         let organizationName = undefined;
@@ -63,7 +70,7 @@ class ClusterInstReg extends React.Component {
         if (region && organizationName) {
             this.cloudletList = await getOrgCloudletList(this, { region: region, org: organizationName })
             this.updateUI(form)
-            this.setState({ forms: forms })
+            this.updateForm(forms)
         }
     }
 
@@ -72,7 +79,7 @@ class ClusterInstReg extends React.Component {
             this.clusterInstList = [...this.clusterInstList, ...await getClusterInstList(this, { region: region })]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateForm(forms)
     }
 
     getAppInfo = async (region, form, forms) => {
@@ -81,7 +88,7 @@ class ClusterInstReg extends React.Component {
         }
         this.updateUI(form)
         this.appNameValueChange(form, forms, true)
-        this.setState({ forms: forms })
+        this.updateForm(forms)
     }
 
     getFlavorInfo = async (region, form, forms) => {
@@ -89,7 +96,7 @@ class ClusterInstReg extends React.Component {
             this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateForm(forms)
     }
 
     getPrivacyPolicyInfo = async (region, form, forms) => {
@@ -97,7 +104,7 @@ class ClusterInstReg extends React.Component {
             this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateForm(forms)
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
@@ -106,7 +113,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
                 if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
+                    this.updateForm(forms)
                 }
                 break;
             }
@@ -130,7 +137,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateForm(forms)
         }
     }
 
@@ -146,7 +153,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateForm(forms)
         }
     }
 
@@ -159,7 +166,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateForm(forms)
         }
     }
 
@@ -252,7 +259,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: nForms })
+            this.updateForm(nForms)
         }
     }
 
@@ -306,7 +313,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateForm(forms)
         }
     }
 
@@ -318,7 +325,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateForm(forms)
         }
     }
 
@@ -328,9 +335,7 @@ class ClusterInstReg extends React.Component {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
-            this.setState({
-                forms: updateForms
-            })
+            this.updateForm(updateForms)
         }
 
     }
@@ -346,7 +351,9 @@ class ClusterInstReg extends React.Component {
     )
 
     addConfigs = () => {
-        this.setState(prevState => ({ forms: [...prevState.forms, this.getConfigForm(this.configForm())] }))
+        if (this._isMounted) {
+            this.setState(prevState => ({ forms: [...prevState.forms, this.getConfigForm(this.configForm())] }))
+        }
     }
 
     formKeys = () => {
@@ -359,7 +366,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false, update:true },
+            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false, update: true },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false },
             { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
@@ -401,7 +408,9 @@ class ClusterInstReg extends React.Component {
                 this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
             }
             else {
-                this.setState({ showGraph: true, flowDataList: flowDataList })
+                if (this._isMounted) {
+                    this.setState({ showGraph: true, flowDataList: flowDataList })
+                }
             }
         }
     }
@@ -422,7 +431,9 @@ class ClusterInstReg extends React.Component {
                 responseData = mcRequest.response.data;
             }
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+            if (this._isMounted) {
+                this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+            }
         }
     }
 
@@ -467,15 +478,19 @@ class ClusterInstReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
-            forms: this.state.forms
-        })
+        if (this._isMounted) {
+            this.setState({
+                forms: this.state.forms
+            })
+        }
     }
 
     stepperClose = () => {
-        this.setState({
-            stepsArray: []
-        })
+        if (this._isMounted) {
+            this.setState({
+                stepsArray: []
+            })
+        }
         this.props.onClose(true)
     }
 
@@ -661,22 +676,24 @@ class ClusterInstReg extends React.Component {
             }
         }
 
-        this.setState({
-            forms: forms
-        })
+        this.updateForm(forms)
 
         if (this.isUpdate || this.props.isLaunch) {
-            this.setState({
-                showGraph: true,
-                flowDataList: this.updateFlowDataList
-            })
+            if (this._isMounted) {
+                this.setState({
+                    showGraph: true,
+                    flowDataList: this.updateFlowDataList
+                })
+            }
         }
     }
 
     stepperClose = () => {
-        this.setState({
-            stepsArray: []
-        })
+        if (this._isMounted) {
+            this.setState({
+                stepsArray: []
+            })
+        }
         this.props.onClose(true)
     }
 
@@ -701,8 +718,13 @@ class ClusterInstReg extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data)
         this.props.handleViewMode(HELP_APP_INST_REG)
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 
