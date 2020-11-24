@@ -1,6 +1,7 @@
 import * as formatter from './format'
 import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, SHOW_CLOUDLET_LINKORG, UPDATE_CLOUDLET_POOL } from './endPointTypes'
 import * as constant from '../../constant'
+import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 
 const fields = formatter.fields;
 
@@ -17,6 +18,7 @@ export const keys = () => ([
         field: fields.organizations, label: 'Organizations',
         keys: [{ field: fields.organizationName, label: 'Organization Name' }]
     },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 

@@ -3,6 +3,7 @@ import uuid from 'uuid'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
+import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 const fields = formatter.fields;
 
@@ -175,6 +176,7 @@ export const keys = () => ([
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name'},
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView : false},
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML},
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 

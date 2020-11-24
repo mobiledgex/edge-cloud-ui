@@ -4,6 +4,7 @@ import * as constant from '../../constant'
 import uuid from 'uuid'
 import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, UPDATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 import { TYPE_JSON, IPAccessLabel } from '../../constant';
+import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 let fields = formatter.fields;
 
@@ -27,6 +28,7 @@ export const keys = () => ([
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
     { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: ['AdminManager'] },
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: ['AdminManager'] },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
