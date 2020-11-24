@@ -1,9 +1,14 @@
 import React from 'react'
-import {  Collapse, Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+import { withRouter } from 'react-router-dom';
+//redux
+import { connect } from 'react-redux';
+import * as actions from '../../../../actions';
+import {  Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@material-ui/core'
 import * as dateUtil from '../../../../utils/date_util'
 import './style.css'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined';
 
 class Events extends React.Component {
     constructor(props) {
@@ -29,6 +34,10 @@ class Events extends React.Component {
         return valid.includes(true)
     }
 
+    showEventLog = ()=>{
+        this.props.handleShowAuditLog({type:'event'})
+    }
+
     render() {
         const { header, eventData, filter, colors, keys} = this.props
         const { expand } = this.state
@@ -37,7 +46,7 @@ class Events extends React.Component {
                 <div align="left" className="event-list-header">
                     <h3>Events</h3>
                 </div>
-                <div style={{ height: 'calc(33vh - 0px)', overflow: 'auto' }}>
+                <div className='event-list-data'>
                     <List dense={false} >
                         {eventData.map((data, i) => {
                             let mtags = data['mtags']
@@ -70,9 +79,22 @@ class Events extends React.Component {
                         })}
                     </List>
                 </div>
+                <div className='event-list-more'>
+                    <Tooltip title='More' onClick={this.showEventLog}>
+                        <IconButton>
+                            <MoreHorizOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
             </div>
         )
     }
 }
 
-export default Events
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) }
+    };
+};
+
+export default withRouter(connect(null, mapDispatchProps)(Events));

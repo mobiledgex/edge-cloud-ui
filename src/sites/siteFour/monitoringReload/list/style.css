@@ -13,3 +13,14 @@
     padding-right: 5px;
     float: right;
 }
+
+.event-list-data{
+    height: calc(33vh - 0px);
+    overflow: auto;
+}
+
+.event-list-more{
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
