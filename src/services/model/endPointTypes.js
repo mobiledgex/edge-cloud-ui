@@ -127,6 +127,8 @@ export function getPath(request) {
         case ALERT_DELETE_RECEIVER:   
         case SHOW_ORG:
         case SHOW_ORG_CLOUDLET:
+        case SHOW_ROLE:
+        case SHOW_CONTROLLER:
             return `/api/v1/auth/${request.method}`
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
@@ -144,10 +146,6 @@ export function getPath(request) {
             return '/api/v1/auth/user/show';
         case DELETE_ACCOUNT:
             return '/api/v1/auth/user/delete';
-        case SHOW_ROLE:
-            return '/api/v1/auth/role/assignment/show';
-        case SHOW_CONTROLLER:
-            return `/api/v1/auth/${request.method}`;
         case SETTING_LOCK:
             return '/api/v1/auth/restricted/user/update';
         case CURRENT_USER:
