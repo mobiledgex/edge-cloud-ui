@@ -159,8 +159,14 @@ class headerGlobalAudit extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
 
-        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg && this.type === 'audit') {
-            this.getDataAuditOrg(this.props.showAuditLogWithOrg)
+        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
+            if (this.type === this.props.showAuditLogWithOrg.type  && this.type==='audit') {
+                this.getDataAuditOrg(this.props.showAuditLogWithOrg.org)
+            }
+            else if(this.type === this.props.showAuditLogWithOrg.type && this.type==='event')
+            {
+                this.setState({isOpen:true})
+            }
         }
         if (prevState.isOpen !== this.state.isOpen) {
             if (this.state.isOpen) {
