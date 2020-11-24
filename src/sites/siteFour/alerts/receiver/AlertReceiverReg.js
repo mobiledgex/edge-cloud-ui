@@ -66,12 +66,13 @@ class FlavorReg extends React.Component {
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: false }, visible: true },
             { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: false, tip: 'Cluster or App Developer' },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false },
-            { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 8, field: fields.operatorName }], strictDependency: false },
-            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.organizationName }, { index: 8, field: fields.operatorName, strictDependency: false }, { index: 9, field: fields.cloudletName, strictDependency: false }] },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.organizationName }, { index: 8, field: fields.operatorName }, { index: 9, field: fields.cloudletName }, { index: 10, field: fields.clusterName }], strictDependency: false },
-            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: fields.appName }], strictDependency: false }
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }] },
+            { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: fields.operatorName }], strictDependency: false },
+            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName, strictDependency: false }, { index: 10, field: fields.cloudletName, strictDependency: false }] },
+            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName }, { index: 10, field: fields.cloudletName }, { index: 11, field: fields.clusterName }], strictDependency: false },
+            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 10, field: fields.appName }], strictDependency: false }
         ]
     }
 
@@ -95,6 +96,19 @@ class FlavorReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.version) {
+                form.value = undefined
+                this.updateUI(form)
+            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
+    regionValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.operatorName || form.field === fields.cloudletName || form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
                 form.value = undefined
                 this.updateUI(form)
             }
@@ -198,6 +212,9 @@ class FlavorReg extends React.Component {
         else if (form.field === fields.selector) {
             this.selectorValueChange(form, forms, isInit)
         }
+        else if (form.field === fields.region) {
+            this.regionValueChange(form, forms, isInit)
+        }
         else if (form.field === fields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
         }
@@ -282,6 +299,9 @@ class FlavorReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
+                        case fields.region:
+                            form.options = this.regions
+                            break;
                         case fields.organizationName:
                             form.options = this.organizationList
                             break;
