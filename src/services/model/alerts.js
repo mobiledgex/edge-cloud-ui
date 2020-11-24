@@ -46,6 +46,7 @@ export const showAlertReceiverKeys = () => (
         { field: fields.appName, serverField: 'AppInst#OS#app_key#OS#name', label: 'App Instance', sortable: true, visible: false },
         { field: fields.version, serverField: 'AppInst#OS#app_key#OS#version', label: 'Version', sortable: true, visible: false },
         { field: fields.clusterName, serverField: 'AppInst#OS#cluster_inst_key#OS#cluster_key#OS#name', label: 'Cluster', sortable: true, visible: false },
+        { field: fields.clusterdeveloper, serverField: 'AppInst#OS#cluster_inst_key#OS#organization', label: 'Cluster Developer', sortable: true, visible: false },
         { field: fields.appOperator, serverField: 'AppInst#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', label: 'Operator', sortable: true, visible: false },
         { field: fields.appCloudlet, serverField: 'AppInst#OS#cluster_inst_key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: false },
         { field: fields.operatorName, serverField: 'Cloudlet#OS#organization', label: 'Operator', sortable: true, visible: false },
