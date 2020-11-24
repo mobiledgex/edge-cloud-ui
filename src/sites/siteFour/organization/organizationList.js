@@ -91,7 +91,7 @@ class OrganizationList extends React.Component {
 
     /**Action menu block */
     onAudit = (action, data) => {
-        this.props.handleShowAuditLog(data[fields.organizationName])
+        this.props.handleShowAuditLog({ type: 'audit', org: data[fields.organizationName] })
     }
 
     onDelete = (data, success) => {
@@ -171,7 +171,7 @@ class OrganizationList extends React.Component {
             grouping: true
         })
     }
-    
+
     render() {
         return (
             this.state.currentView ? this.state.currentView :
