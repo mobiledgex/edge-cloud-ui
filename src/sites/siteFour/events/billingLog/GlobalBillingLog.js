@@ -164,7 +164,9 @@ class GlobalBillingLog extends React.Component {
     }
 
     onOrganizationChange = (form, value) => {
-        this.setState({ liveData: {} })
+        if (this._isMounted) {
+            this.setState({ liveData: {} })
+        }
         clearInterval(this.intervalId)
         this.endRange = dateUtil.currentUTCTime()
         this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
@@ -218,7 +220,9 @@ class GlobalBillingLog extends React.Component {
             else {
                 this.endRange = dateUtil.currentUTCTime()
                 this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
-                this.setState({ liveData: {} })
+                if (this._isMounted) {
+                    this.setState({ liveData: {} })
+                }
                 this.eventLogData(this.startRange, this.endRange)
             }
         }
@@ -242,7 +246,9 @@ class GlobalBillingLog extends React.Component {
             this.selectedOrg = this.organizationList[0][fields.organizationName]
             this.endRange = dateUtil.currentUTCTime()
             this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
-            this.setState({ liveData: {} })
+            if (this._isMounted) {
+                this.setState({ liveData: {} })
+            }
             this.eventLogData(this.startRange, this.endRange)
         }
     }
