@@ -153,22 +153,22 @@ export const fields = {
     location: 'location',
     values: 'values',
     columns: 'columns',
-    labels:'labels',
-    job:'job',
-    instance:'instance',
-    activeAt:'activeAt',
-    alertname:'alertname',
-    envoyclustername:'envoyclustername',
-    slackchannel:'slackchannel',
-    slackwebhook:'slackwebhook',
-    severity:'severity',
-    slack:'slack',
-    appCloudlet:'appCloudlet',
-    appOperator:'appOperator',
-    receiverAddress:'receiverAddress',
-    otp:'otp',
-    port:'port',
-    appRevision:'appRevision'
+    labels: 'labels',
+    job: 'job',
+    instance: 'instance',
+    activeAt: 'activeAt',
+    alertname: 'alertname',
+    envoyclustername: 'envoyclustername',
+    slackchannel: 'slackchannel',
+    slackwebhook: 'slackwebhook',
+    severity: 'severity',
+    slack: 'slack',
+    appCloudlet: 'appCloudlet',
+    appOperator: 'appOperator',
+    receiverAddress: 'receiverAddress',
+    otp: 'otp',
+    port: 'port',
+    appRevision: 'appRevision'
 }
 
 export const getUserRole = () => {
@@ -332,6 +332,36 @@ export const groupByCompare = (dataList, columns, region) => {
         accumulator[key].push(x);
         return accumulator;
     }, {})
+}
+
+export const formatUsageData = (response, body, keys) => {
+    let formattedData = []
+    try {
+        if (response && response.data && response.data.data) {
+            let dataList = response.data.data;
+            if (dataList && dataList.length > 0) {
+                let series = dataList[0].Series
+                let messages = dataList[0].messages
+                if (series && series.length > 0) {
+                    series.map(data => {
+                        let columns = data.columns
+                        let values = data.values
+                        formattedData = values.map(value => {
+                            let data = {}
+                            columns.map((column, i) => {
+                                data[column] = value[i]
+                            })
+                            return data
+                        })
+                    })
+                }
+            }
+        }
+    }
+    catch (e) {
+        //alert(e)
+    }
+    return formattedData
 }
 
 export const formatEventData = (response, body, keys) => {

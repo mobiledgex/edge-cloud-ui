@@ -24,3 +24,15 @@
     margin-right: 10px;
     margin-bottom: 5px;
 }
+
+.usage-toolbar {
+    padding: 10px;
+}
+
+.usage-toolbar-left {
+    float: left;
+}
+
+.usage-toolbar-right {
+    float: right;
+}

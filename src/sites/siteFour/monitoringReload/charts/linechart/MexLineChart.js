@@ -198,7 +198,7 @@ class MexLineChart extends React.Component {
                     </div>
                     <div className="line-chart-header-right">
                         <IconButton onClick={this.openFullScreen}>
-                            <AspectRatioIcon />
+                            <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }}/>
                         </IconButton>
                     </div>
                 </div>

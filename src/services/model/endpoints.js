@@ -80,6 +80,7 @@ export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
 export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
+export const APP_INST_USAGE_ENDPOINT = 'usage/app'
 export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
 export const EVENTS_FIND = 'events/find'
 export const EVENTS_SHOW = 'events/show'
@@ -102,6 +103,7 @@ export const getPath = (request) => {
         case CLOUDLET_EVENT_LOG_ENDPOINT:
         case CLUSTER_EVENT_LOG_ENDPOINT:
         case APP_INST_EVENT_LOG_ENDPOINT:
+        case APP_INST_USAGE_ENDPOINT:
         case SHOW_ROLE:
         case SHOW_CONTROLLER:
             return `/api/v1/auth/${request.method}`
@@ -133,6 +135,9 @@ export function formatData(request, response) {
         case CLUSTER_EVENT_LOG_ENDPOINT:
         case APP_INST_EVENT_LOG_ENDPOINT:
             data = formatter.formatEventData(response, request.data, request.keys)
+            break;
+        case APP_INST_USAGE_ENDPOINT:
+            data = formatter.formatUsageData(response, request.data, request.keys)
             break;
         default:
             data = response.data;
