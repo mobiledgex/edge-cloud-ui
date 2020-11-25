@@ -10,6 +10,7 @@ import MonitoringMenu from './MonitoringMenu'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
+import { fields, isAdmin } from '../../../../services/model/format';
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -75,6 +76,9 @@ const MexToolbar = (props) => {
         props.onChange(constant.ACTION_REGION, values)
     }
 
+    const onOrgChange = (value) => {
+        props.onChange(constant.ACTION_ORG, value)
+    }
 
     const onMetricParentTypeChange = (value) => {
         props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
@@ -93,21 +97,21 @@ const MexToolbar = (props) => {
         setRefreshRange(value)
         props.onChange(constant.ACTION_REFRESH_RATE, value)
     }
-    
-    const onTimeRangeChange = (from, to)=>{
+
+    const onTimeRangeChange = (from, to) => {
         setRefreshRange(constant.refreshRates[0])
-        props.onChange(constant.ACTION_TIME_RANGE, {starttime:from, endtime:to})
+        props.onChange(constant.ACTION_TIME_RANGE, { starttime: from, endtime: to })
     }
 
-    const onRelativeTimeChange = (duration) =>{
+    const onRelativeTimeChange = (duration) => {
         props.onChange(constant.ACTION_RELATIVE_TIME, duration)
     }
 
-    const onRefresh = ()=>{
+    const onRefresh = () => {
         props.onChange(constant.ACTION_REFRESH)
     }
 
-    const onMinimize = ()=>{
+    const onMinimize = () => {
         props.onChange(constant.ACTION_MINIMIZE)
     }
 
@@ -137,17 +141,22 @@ const MexToolbar = (props) => {
         return props.defaultParent.id !== constant.PARENT_CLOUDLET
     }
 
+    const showOrg = () => {
+        return isAdmin() && props.organizations.length > 0
+    }
+
     return (
         <Toolbar>
             <label className='monitoring-header'>Monitoring</label>
             {
                 <div style={{ width: '100%' }}>
                     <Box display="flex" justifyContent="flex-end">
-                        <MexTimer order={1}  onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
-                        <MonitoringMenu data={constant.metricParentTypes} default={props.defaultParent} labelKey='label' order={2} onChange={onMetricParentTypeChange} default={props.defaultParent}/>
-                        <MonitoringMenu data={props.regions} order={3} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region'/>
-                        <MonitoringMenu data={props.metricTypeKeys} labelKey='header' order={4} multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Metric Type'/>
-                        {showSummary() ? <MonitoringMenu data={constant.summaryList} labelKey='label' order={5} onChange={onSummaryChange} /> : null}
+                        {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true}/> : null}
+                        <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
+                        <MonitoringMenu order={3} data={constant.metricParentTypes} labelKey='label' onChange={onMetricParentTypeChange} default={props.defaultParent} />
+                        <MonitoringMenu order={4} data={props.regions} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
+                        <MonitoringMenu order={5} data={props.metricTypeKeys} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Metric Type' />
+                        {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
                         {renderRefresh(7)}
                         {searchForm(8)}
                         {renderMinimize(9)}

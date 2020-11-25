@@ -2,6 +2,7 @@ import { Box, Checkbox, IconButton, ListItem, ListItemIcon, ListItemText, Menu, 
 import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
 import { getUserRole } from '../../../../services/model/format'
+import { validateRole } from '../helper/Constant'
 import CheckIcon from '@material-ui/icons/Check';
 import { Icon } from 'semantic-ui-react';
 
@@ -11,7 +12,7 @@ const fetchArray = (props) => {
 
 const MonitoringMenu = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null)
-    const [value, setValue] = React.useState(props.default ? props.default : (props.value ? props.value : (props.multiple ? fetchArray(props) : props.data[0])))
+    const [value, setValue] = React.useState(props.disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (props.multiple ? fetchArray(props) : props.data[0])))
 
     const onChange = (data) => {
         if (props.multiple) {
@@ -38,26 +39,32 @@ const MonitoringMenu = (props) => {
         }
     }
 
+    const getLabel = () => {
+        return props.value ? props.value[props.labelKey] : value ? value[props.labelKey] : props.placeHolder
+    }
+
     const renderIcon = ()=>(
         <IconButton aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
-            {props.icon ? props.icon : <strong style={{ color: 'rgba(118, 255, 3, 0.7)', border: 'solid 1px rgba(118, 255, 3, 0.7)', borderRadius: 5, maxWidth: 150, fontSize: 12, padding: 5, marginTop:-4 }}>{props.value ? props.value[props.labelKey] : value[props.labelKey]} <Icon name='chevron down'  style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}/></strong>}
+            {props.icon ? props.icon : <strong style={{ color: 'rgba(118, 255, 3, 0.7)', border: 'solid 1px rgba(118, 255, 3, 0.7)', borderRadius: 5, maxWidth: 150, fontSize: 12, padding: 5, marginTop:-4 }}>{getLabel()} <Icon name='chevron down'  style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}/></strong>}
         </IconButton>
     )
 
+    
     return (
         <Box order={props.order}>
             {props.tip ? <Tooltip title={<strong style={{ fontSize: 13 }}>{props.tip}</strong>} arrow>
                 {renderIcon()}
             </Tooltip> : renderIcon()}
             <Menu
-                id="simple-menu"
+                id="monitoring-toolbar-menu"
                 anchorEl={anchorEl}
                 onClose={() => { setAnchorEl(null) }}
                 keepMounted
+                style={{maxHeight:400}}
                 open={Boolean(anchorEl)}
             >
                 {props.data.map((item, i) => {
-                    let valid = item.role ? getUserRole().includes(item.role) : true
+                    let valid = item.role ? validateRole(item.role) : true
                     let selectedValue = props.value ? props.value : value
                     return valid ? <ListItem key={i} role={undefined} dense button onClick={() => { onChange(props.field ? item[props.field] : item) }}>
                         {props.multiple ?

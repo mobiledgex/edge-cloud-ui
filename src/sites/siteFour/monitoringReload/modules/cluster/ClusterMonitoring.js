@@ -47,7 +47,7 @@ class ClusterMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { chartData, avgData, filter, rowSelected, range, minimize } = this.props
+        const { chartData, avgData, filter, rowSelected, range, minimize, selectedOrg} = this.props
         return (
             filter.parent.id === 'cluster' ?
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
@@ -62,7 +62,7 @@ class ClusterMonitoring extends React.Component {
                         </Grid>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-                                <ClusterEvent regions={this.regions} filter={filter} range={range} />
+                                <ClusterEvent regions={this.regions} filter={filter} range={range}  org={selectedOrg}/>
                             </Card>
                         </Grid>
                     </Grid>
