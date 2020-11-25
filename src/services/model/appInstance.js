@@ -32,6 +32,7 @@ export const keys = () => ([
   { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+  { field: fields.updatedAt, serverField: 'updated_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true },
@@ -205,6 +206,7 @@ export const streamAppInst = (data) => {
 export const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
+  value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
   value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
   value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
