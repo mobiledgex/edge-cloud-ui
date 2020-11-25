@@ -59,14 +59,17 @@ const MexChartList = (props) => {
               return validateRegionFilter(region) ?
                 Object.keys(values).map((key, i) => {
                   let value = values[key]
-                  return (key.includes(props.filter.search) ?
-                    <TableRow key={i}>
-                      <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
-                      {rows.map((row, j) => (
-                        <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell>
-                      ))
-                      }
-                    </TableRow> : null)
+                  let visible = value.hidden ? false : true
+                  if (visible) {
+                    return (key.includes(props.filter.search) ?
+                      <TableRow key={i}>
+                        <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
+                        {rows.map((row, j) => (
+                          <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell>
+                        ))
+                        }
+                      </TableRow> : null)
+                  }
                 }) : null
             })}
 

@@ -81,13 +81,15 @@ const MexToolbar = (props) => {
     }
 
     const onMetricParentTypeChange = (value) => {
+        if (value.id === constant.PARENT_CLOUDLET) {
+            props.onChange(constant.ACTION_SUMMARY, constant.summaryList[0])
+        }
         props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
     }
 
     const onMetricTypeChange = (values) => {
         props.onChange(constant.ACTION_METRIC_TYPE, values)
     }
-
 
     const onSummaryChange = (value) => {
         props.onChange(constant.ACTION_SUMMARY, value)
@@ -138,7 +140,7 @@ const MexToolbar = (props) => {
     )
 
     const showSummary = () => {
-        return props.defaultParent.id !== constant.PARENT_CLOUDLET
+        return props.parent.id !== constant.PARENT_CLOUDLET
     }
 
     const showOrg = () => {
