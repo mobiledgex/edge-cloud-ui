@@ -1,3 +1,4 @@
+/* eslint-disable */
 const processData = (data) => {
     let isAdmin = false
     let role = undefined

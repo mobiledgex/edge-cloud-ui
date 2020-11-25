@@ -177,6 +177,7 @@ export const keys = () => ([
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView : false},
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML},
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
@@ -185,6 +186,8 @@ const customData = (value) => {
     value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
     value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])
+    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
+    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
     return value
 }
 

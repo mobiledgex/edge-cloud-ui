@@ -19,6 +19,7 @@ export const keys = () => ([
         keys: [{ field: fields.organizationName, label: 'Organization Name' }]
     },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -95,6 +96,8 @@ export const deleteCloudletPool = (data) => {
 
 const customData = (value) => {
     value[fields.cloudletCount] = value[fields.cloudlets] ? value[fields.cloudlets].length : 0
+    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
+    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
     value[fields.organizationCount] = 0
     return value
 }
