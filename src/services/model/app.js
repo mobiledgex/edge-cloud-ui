@@ -197,6 +197,7 @@ const customData = (value) => {
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
     value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
+    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     if (value[fields.configs]) {
         let configs = value[fields.configs]
         for (let i = 0; i < configs.length; i++) {

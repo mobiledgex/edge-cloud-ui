@@ -185,6 +185,7 @@ const customData = (value) => {
     value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
     value[fields.platformType] = constant.PlatformType(value[fields.platformType])
     value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])
+    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     return value
 }
 
