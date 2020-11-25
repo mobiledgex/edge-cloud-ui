@@ -26,16 +26,11 @@ export const clientMetricsKeys = [
     { label: 'Version', serverField: 'ver', visible: true, groupBy: false },
 ]
 
-export const clientMetrics = (data) => {
-
-    if (!formatter.isAdmin()) {
-        {
-            data.appinst = {
-                app_key : {organization: formatter.getOrganization()}
-            }
-        }
+export const clientMetrics = (data, org) => {
+    data.appinst = {
+        app_key: { organization: org }
     }
-    return { method: CLIENT_METRICS_ENDPOINT, data: data, keys : clientMetricsKeys}
+    return { method: CLIENT_METRICS_ENDPOINT, data: data, keys: clientMetricsKeys }
 }
 
 export const getData = (response, body) => {

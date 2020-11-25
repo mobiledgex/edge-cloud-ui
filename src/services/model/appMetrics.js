@@ -66,17 +66,13 @@ export const fetchLocation = (avgValues, metricData, showList) => {
     return avgValues
 }
 
-export const appInstMetrics = (data) => {
-
-    if (!formatter.isAdmin()) {
-        {
-            data.appinst = {
-                app_key: {
-                    organization: formatter.getOrganization()
-                }
-            }
+export const appInstMetrics = (data, org) => {
+    data.appinst = {
+        app_key: {
+            organization: org
         }
     }
+
     return { method: APP_INST_METRICS_ENDPOINT, data: data, keys: appMetricsKeys }
 }
 

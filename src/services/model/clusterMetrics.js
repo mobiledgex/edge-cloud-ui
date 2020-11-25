@@ -35,14 +35,9 @@ export const clusterMetricTypeKeys = [
     { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 10, unit: 1, serverRequest: false }
 ]
 
-export const clusterMetrics = (data) => {
-
-    if (!formatter.isAdmin()) {
-        {
-            data.clusterinst = {
-                organization: formatter.getOrganization()
-            }
-        }
+export const clusterMetrics = (data, org) => {
+    data.clusterinst = {
+        organization: org
     }
     return { method: CLUSTER_METRICS_ENDPOINT, data: data, keys: clusterMetricsKeys }
 }

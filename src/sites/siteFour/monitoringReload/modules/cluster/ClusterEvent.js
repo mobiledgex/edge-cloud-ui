@@ -2,7 +2,7 @@ import React from 'react'
 import EventList from '../../list/EventList'
 import * as serverData from '../../../../../services/model/serverData'
 import { orgEvents } from '../../../../../services/model/events'
-import { getOrganization } from '../../../../../services/model/format'
+import { getOrganization, isAdmin } from '../../../../../services/model/format'
 import randomColor from 'randomcolor'
 
 const clusterEventKeys = [
@@ -52,7 +52,7 @@ class MexAppEvent extends React.Component {
     event = async (range) => {
         let mc = await serverData.sendRequest(this, orgEvents({
             match: {
-                orgs: [getOrganization()],
+                orgs: [isAdmin() ? this.props.org : getOrganization()],
                 types: ["event"],
                 tags: { cluster: "*" },
                 names: ["*cluster*", "*Cluster*"],
@@ -69,6 +69,12 @@ class MexAppEvent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState){
+        if(prevProps.org !== this.props.org)
+        {
+            this.setState({eventData: []}, ()=>{
+                this.event(this.props.range)
+            })
+        }
         if(prevProps.range !== this.props.range)
         {
             this.event(this.props.range)
@@ -76,7 +82,9 @@ class MexAppEvent extends React.Component {
     }
 
     componentDidMount() {
-        this.event(this.props.range)
+        if (!isAdmin()) {
+            this.event(this.props.range)
+        }
     }
 }
 

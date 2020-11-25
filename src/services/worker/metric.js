@@ -40,6 +40,7 @@ export const fetchLocation = (parentId, avgValues, metricData, showList) => {
 
 const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
     Object.keys(data.values).map(key => {
+        
         let value = data.values[key][0]
 
         let avgValues = avgData[parentId][region][key]
@@ -74,6 +75,11 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
         else {
             let positionValue = value[metric.position] ? value[metric.position] : 0
             avgValues[metric.field] = [metric.unit ? unit(metric.unit, positionValue) : positionValue]
+        }
+        
+        if(key.includes('mexprometheusappname') || key.includes('envoyapp'))
+        {
+            avgValues['hidden'] = true
         }
 
         avgData[parentId][region][key] = avgValues

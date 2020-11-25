@@ -27,14 +27,9 @@ export const cloudletMetricTypeKeys = [
     { field: 'mem', serverField: 'utilization', subId: 'memUsed', header: 'Memory Usage', position: 8, unit: 1, serverRequest: false },
 ]
 
-export const cloudletMetrics = (data) => {
-
-    if (!formatter.isAdmin()) {
-        {
-            data.cloudlet = {
-                organization: formatter.getOrganization()
-            }
-        }
+export const cloudletMetrics = (data, org) => {
+    data.cloudlet = {
+        organization: org
     }
     return { method: CLOUDLET_METRICS_ENDPOINT, data: data, keys: cloudletMetricsKeys }
 }
