@@ -124,6 +124,11 @@ class MexLineChart extends React.Component {
         let length = keys.length
         for (let i = 0; i < length; i++) {
             let key = keys[i]
+            if(avgDataRegion[key].hidden)
+            {
+                continue
+            }
+            
             let valueData = values[key]
             if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
                 let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'

@@ -3,6 +3,7 @@ import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/model/clientMetrics'
 import { sendRequest } from '../../../../../services/model/serverWorker'
 import { withRouter } from 'react-router-dom'
+import { getOrganization, isAdmin } from '../../../../../services/model/format'
 
 class MexAppClient extends React.Component {
 
@@ -73,29 +74,34 @@ class MexAppClient extends React.Component {
         }
     }
 
-    client = (region, range) => {
-        sendRequest(this, clientMetrics({
-            region: region,
-            selector: "api",
-            starttime: range.starttime,
-            endtime: range.endtime
-        }), this.serverResponse)
-
+    client = (range) => {
+        this.regions.map(region => {
+            sendRequest(this, clientMetrics({
+                region: region,
+                selector: "api",
+                starttime: range.starttime,
+                endtime: range.endtime
+            }, isAdmin() ? this.props.org : getOrganization()), this.serverResponse)
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.range !== this.props.range) {
-            this.regions.map(region => {
-                this.client(region, this.props.range)
+        if(prevProps.org !== this.props.org)
+        {
+            this.setState({stackedData: {}}, ()=>{
+                this.client(this.props.range)
             })
+        }
+        if (prevProps.range !== this.props.range) {
+            this.client(this.props.range)
         }
     }
 
 
     componentDidMount() {
-        this.regions.map(region => {
-            this.client(region, this.props.range)
-        })
+        if (!isAdmin()) {
+            this.client(this.props.range)
+        }
     }
 }
 

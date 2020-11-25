@@ -24,8 +24,8 @@ class AppMexMap extends React.Component {
             showDevices: false,
             mapCenter: MAP_CENTER,
             zoom: DEFAULT_ZOOM,
-            curveColor : 'red',
-            backswitch:false
+            curveColor: 'red',
+            backswitch: false
         }
         this.popup = React.createRef();
         this.ws = undefined
@@ -37,7 +37,7 @@ class AppMexMap extends React.Component {
         let showData = data.keyData.showData
         let main = { location: showData[fields.cloudletLocation] }
         main[showData[fields.cloudletName]] = [data]
-        this.setState({ mapData: { main }, polyline:[[data.location.latitude, data.location.longitude]], curveColor:data.keyData.color, backswitch:true })
+        this.setState({ mapData: { main }, polyline: [[data.location.latitude, data.location.longitude]], curveColor: data.keyData.color, backswitch: true })
         this.sendWSRequest(showAppInstClient(showData))
     }
 
@@ -46,7 +46,7 @@ class AppMexMap extends React.Component {
             this.ws.close()
             this.ws = undefined
         }
-        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch:false })
+        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch: false })
     }
 
     sendWSRequest = (request) => {
@@ -101,18 +101,21 @@ class AppMexMap extends React.Component {
                                 <div style={{ marginBottom: 10 }}></div>
                                 {data[cloudlet].map((item, i) => {
                                     let keyData = item.keyData
-                                    return (
-                                        selected === 0 || keyData.selected ?
-                                            <div key={`${i}_${cloudlet}`} className="map-control-div-marker-popup-label" onClick={() => { this.mapClick(item) }}>
-                                                <code style={{ fontWeight: 400, fontSize: 12 }}>
-                                                    <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
-                                                    {keyData['app']} [{keyData['ver']}]
+                                    let visible = keyData.hidden ? false : true
+                                    if (visible) {
+                                        return (
+                                            selected === 0 || keyData.selected ?
+                                                <div key={`${i}_${cloudlet}`} className="map-control-div-marker-popup-label" onClick={() => { this.mapClick(item) }}>
+                                                    <code style={{ fontWeight: 400, fontSize: 12 }}>
+                                                        <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
+                                                        {keyData['app']} [{keyData['ver']}]
                                                     <code style={{ color: '#74B724' }}>
-                                                        [{keyData['cluster']}]
+                                                            [{keyData['cluster']}]
                                                     </code>
-                                                </code>
-                                            </div> : null
-                                    )
+                                                    </code>
+                                                </div> : null
+                                        )
+                                    }
                                 })} </div> : null
 
                     ))
@@ -148,8 +151,8 @@ class AppMexMap extends React.Component {
                         </React.Fragment>
                     )
                 })}
-                {showDevices && polyline.length > 0 ? 
-                    <MexCurve data={polyline} color={curveColor}/> : null
+                {showDevices && polyline.length > 0 ?
+                    <MexCurve data={polyline} color={curveColor} /> : null
                 }
             </div> : null
     }
@@ -157,7 +160,7 @@ class AppMexMap extends React.Component {
     render() {
         const { mapCenter, zoom, backswitch } = this.state
         return (
-            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch}/>
+            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} />
         )
     }
 }

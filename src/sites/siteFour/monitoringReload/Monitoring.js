@@ -1,6 +1,6 @@
 import React from 'react'
 import * as dateUtil from '../../../utils/date_util'
-import { fields, getUserRole } from '../../../services/model/format'
+import { fields, getOrganization, getUserRole, isAdmin } from '../../../services/model/format'
 import { Card, LinearProgress } from '@material-ui/core'
 import MonitoringList from './list/MonitoringList'
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
@@ -14,7 +14,9 @@ import { WORKER_METRIC } from '../../../services/worker/constant'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions';
-import { sendRequests } from '../../../services/model/serverWorker'
+import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
+import { showOrganizations } from '../../../services/model/organization'
+import sortBy  from 'lodash/sortBy'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -41,7 +43,9 @@ class Monitoring extends React.Component {
             filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(this.defaultMetricParentTypes.metricTypeKeys), summary: constant.summaryList[0], parent: this.defaultMetricParentTypes },
             duration: constant.relativeTimeRanges[0],
             range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
-            minimize: false
+            minimize: false,
+            organizations : [],
+            selectedOrg:undefined
         }
         this.refreshId = undefined;
         this.requestCount = 0
@@ -100,8 +104,16 @@ class Monitoring extends React.Component {
         this.fetchMetricData()
     }
 
+    onOrgChange = (value) => {
+        let selectedOrg = value[fields.organizationName]
+        this.setState({ selectedOrg }, () => {
+            this.defaultDataStructure()
+            this.fetchMetricData()
+        })
+    }
+
     onToolbar = async (action, value) => {
-        if (action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
+        if (action === constant.ACTION_ORG || action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
             switch (action) {
                 case constant.ACTION_REFRESH_RATE:
                     this.onRefreshChange(value)
@@ -117,6 +129,9 @@ class Monitoring extends React.Component {
                     break;
                 case constant.ACTION_MINIMIZE:
                     this.setState(prevState => ({ minimize: !prevState.minimize }))
+                    break;
+                case constant.ACTION_ORG:
+                    this.onOrgChange(value)
                     break;
             }
         }
@@ -154,17 +169,17 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { chartData, avgData, loading, filter, rowSelected, range, duration, minimize } = this.state
+        const { chartData, avgData, loading, filter, rowSelected, range, duration, minimize, organizations, selectedOrg} = this.state
         const chartDataParent = chartData[filter.parent.id]
         const avgDataParent = avgData[filter.parent.id] ? avgData[filter.parent.id] : {}
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar defaultParent={this.defaultMetricParentTypes} regions={this.regions} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
+                    <MonitoringToolbar parent={filter.parent} defaultParent={this.defaultMetricParentTypes} regions={this.regions} organizations={organizations} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
                     <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} minimize={minimize} />
                 </Card>
-                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} />
+                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg}/>
                 <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} />
                 <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} />
             </div>
@@ -218,7 +233,7 @@ class Monitoring extends React.Component {
         let count = this.regions.length
         if (this.regions && this.regions.length > 0) {
             constant.metricParentTypes.map(parent => {
-                if (getUserRole() && getUserRole().includes(parent.role) && parent === this.state.filter.parent) {
+                if (constant.validateRole(parent.role) && parent === this.state.filter.parent) {
                     this.regions.map(region => {
                         parent.metricTypeKeys.map(metric => {
                             if (metric.serverRequest) {
@@ -227,8 +242,8 @@ class Monitoring extends React.Component {
                                 data[fields.starttime] = this.state.range.starttime
                                 data[fields.endtime] = this.state.range.endtime
                                 data[fields.selector] = '*'
-
-                                let metricRequest = parent.request(data)
+                                let org = isAdmin() ? this.state.selectedOrg : getOrganization() 
+                                let metricRequest = parent.request(data, org)
                                 let showRequest = parent.showRequest({ region })
 
                                 this.setState({ loading: true })
@@ -256,7 +271,7 @@ class Monitoring extends React.Component {
         let chartData = {}
         let avgData = {}
         constant.metricParentTypes.map(parent => {
-            if (getUserRole() && getUserRole().includes(parent.role)) {
+            if (constant.validateRole(parent.role)) {
                 chartData[parent.id] = {}
                 avgData[parent.id] = {}
                 this.regions.map((region) => {
@@ -274,9 +289,21 @@ class Monitoring extends React.Component {
         this.setState({ chartData, avgData })
     }
 
+    orgResponse = (mc) => {
+        if (mc && mc.response && mc.response.status === 200) {
+            let organizations = sortBy(mc.response.data, [item => item[fields.organizationName].toLowerCase()], ['asc']);
+            this.setState({organizations})
+        }
+    }
+
     componentDidMount() {
         this.defaultDataStructure()
-        this.fetchMetricData()
+        if (isAdmin()) {
+            sendRequest(this, showOrganizations(), this.orgResponse)
+        }
+        else {
+            this.fetchMetricData()
+        }
     }
 
     componentWillUnmount() {

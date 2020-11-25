@@ -4,6 +4,7 @@ import { showAppInsts  } from '../../../../services/model/appInstance'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys } from '../../../../services/model/cloudletMetrics'
 import { showCloudlets } from '../../../../services/model/cloudlet'
+import { getUserRole } from '../../../../services/model/format'
 
 export const DEVELOPER = mainConstant.DEVELOPER
 export const OPERATOR = mainConstant.OPERATOR
@@ -18,6 +19,7 @@ export const ACTION_TIME_RANGE = 6
 export const ACTION_RELATIVE_TIME = 7
 export const ACTION_REFRESH = 8
 export const ACTION_MINIMIZE = 9
+export const ACTION_ORG = 10
 
 export const PARENT_APP_INST = 'appinst'
 export const PARENT_CLUSTER_INST = 'cluster'
@@ -30,10 +32,24 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = [
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.DEVELOPER], fetchLocation: fetchLocation },
-    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: showCloudlets, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.DEVELOPER] },
-    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.OPERATOR] },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: showCloudlets, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR] },
 ]
+
+export const validateRole = (roles)=>{
+    let valid = false
+    for(let i=0;i<roles.length;i++)
+    {
+        if(getUserRole().includes(roles[i]))
+        {
+            valid = true
+            break;
+        }
+    }
+    return valid
+}
+
 
 export const relativeTimeRanges = [
     { label: 'Last 5 minutes', duration: 5 },
