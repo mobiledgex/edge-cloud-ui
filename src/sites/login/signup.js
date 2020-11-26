@@ -157,8 +157,12 @@ class RegistryUserForm extends React.Component {
             if (form.field === fields.password || form.field === fields.confirmPassword) {
                 form.value = password
             }
+            if(form.field === fields.password)
+            {
+                form.rules.type = 'text'
+            }
         }
-        this.props.handleAlertInfo('success', 'Password generated successfully and copied to the clipboard, make sure to memorize the password')
+        this.props.handleAlertInfo('success', 'Password generated successfully and copied to the clipboard, make sure you copy and paste the password to a secure location')
         this.setState({ forms })
     }
 
@@ -183,7 +187,7 @@ class RegistryUserForm extends React.Component {
                 <br />
                 {consecutive ?
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
-                    <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse and also avoid using recognizable words such as <i>Password, House, car, etc.</i>, use random characters such as <i>ngft3ferd$wiy</i> or click on the generate button to generate a secure password and make sure to memorize the password</p>
+                    <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse. Do not use recognizable words, such as house, car, password, etc. To meet the password strength criteria, use random characters, or click the Generate button to allow the system to generate a secure password for you. Make sure you copy and paste the password to a secure location.</p>
                 }
                 <div style={{ float: 'right' }}><Button onClick={this.generatePassword} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
             </div>
