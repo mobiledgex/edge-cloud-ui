@@ -102,14 +102,14 @@
     height: calc(100vh - 305px);
     overflow: auto;
     overflow-x: hidden;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .grid-charts-minimize {
     height: calc(100vh - 130px);
     overflow: auto;
     overflow-x: hidden;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .grid-charts::-webkit-scrollbar { 
@@ -186,6 +186,7 @@
 .line-chart-header-right{
     float: right;
     display: inline;
+    margin-top: -10px;
 }
 
 canvas#race{position:relative; z-index:999999;}

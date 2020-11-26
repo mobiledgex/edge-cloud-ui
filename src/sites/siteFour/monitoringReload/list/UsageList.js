@@ -8,6 +8,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Box, Collapse, IconButton, Toolbar } from '@material-ui/core';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
+import { time } from '../../../../utils/date_util'
 
 
 
@@ -27,18 +28,22 @@ const MexUsageList = (props) => {
     props.onCellClick(region, value, key)
   }
 
+  const formatDate = (format, value) => {
+    return time(format, value)
+  }
+
   const rowValue = (row, value) => {
-    return value[row.serverField]
+    return row.formatDate ? formatDate(row.formatDate, value[row.serverField]) : value[row.serverField]
   }
 
   const renderToolbar = () => (
-    <Toolbar style={{marginLeft:-15}}>
-      <h3 style={{width:300}}>{header}</h3>
+    <Toolbar style={{ marginLeft: -15 }}>
+      <h3 style={{ width: 300 }}>{header}</h3>
       {
         <div style={{ width: '100%' }}>
           <Box display="flex" justifyContent="flex-end">
             <Box>
-              <IconButton size="small" onClick={() => { setMinimize(!minimize) }}><IndeterminateCheckBoxOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }}/></IconButton></Box>
+              <IconButton size="small" onClick={() => { setMinimize(!minimize) }}><IndeterminateCheckBoxOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} /></IconButton></Box>
           </Box>
         </div>
       }
@@ -55,7 +60,7 @@ const MexUsageList = (props) => {
               <TableHead>
                 <TableRow>
                   {rows.map((row, i) => {
-                    return <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell>
+                    return row.visible ? <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell> : null
                   })}
                 </TableRow>
               </TableHead>
@@ -65,7 +70,8 @@ const MexUsageList = (props) => {
                     return (
                       <TableRow key={i}>
                         {rows.map((row, j) => (
-                          <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell>
+                          row.visible ?
+                            <TableCell key={j}>{rowValue(row, value)}</TableCell> : null
                         ))
                         }
                       </TableRow>)

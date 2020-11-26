@@ -82,7 +82,7 @@ class MexAppEvent extends React.Component {
     }
 
     componentDidMount() {
-        if (!isAdmin()) {
+        if (!isAdmin() || this.props.org) {
             this.event(this.props.range)
         }
     }

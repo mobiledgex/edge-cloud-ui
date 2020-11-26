@@ -99,7 +99,7 @@ class MexAppClient extends React.Component {
 
 
     componentDidMount() {
-        if (!isAdmin()) {
+        if (!isAdmin() || this.props.org) {
             this.client(this.props.range)
         }
     }

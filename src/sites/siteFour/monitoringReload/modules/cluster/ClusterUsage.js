@@ -1,7 +1,7 @@
 import React from 'react'
 import UsageList from '../../list/UsageList'
 import { fields, getOrganization, isAdmin } from '../../../../../services/model/format'
-import { appInstUsageLogs, appUsageKeys } from '../../../../../services/model/appInstUsage'
+import { clusterInstUsageLogs, clusterUsageKeys } from '../../../../../services/model/clusterInstUsage'
 import { sendRequest } from '../../../../../services/model/serverWorker'
 import { withRouter } from 'react-router-dom'
 
@@ -28,7 +28,7 @@ class MexAppUsage extends React.Component {
     render() {
         const { usageData } = this.state
         const { regions, filter } = this.props
-        return <UsageList data={usageData} keys={appUsageKeys} filter={filter} regions={regions} header='App Usage'/>
+        return <UsageList data={usageData} keys={clusterUsageKeys} filter={filter} regions={regions} header='Cluster Instance Usage'/>
     }
 
     serverResponse = (mc) => {
@@ -46,7 +46,7 @@ class MexAppUsage extends React.Component {
 
     event = async (range) => {
         this.regions.map(region => {
-            sendRequest(this, appInstUsageLogs({
+            sendRequest(this, clusterInstUsageLogs({
                 region: region,
                 starttime: range.starttime,
                 endtime: range.endtime

@@ -346,13 +346,18 @@ export const formatUsageData = (response, body, keys) => {
                     series.map(data => {
                         let columns = data.columns
                         let values = data.values
-                        formattedData = values.map(value => {
+                        let i = 0
+                        for (; i < values.length; i++) {
+                            let value = values[i]
+                            if (value.includes('MEXPrometheusAppName')) {
+                                continue
+                            }
                             let data = {}
                             columns.map((column, i) => {
                                 data[column] = value[i]
                             })
-                            return data
-                        })
+                            formattedData.push(data)
+                        }
                     })
                 }
             }
