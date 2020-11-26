@@ -8,6 +8,7 @@ import isEqual from 'lodash/isEqual'
 import * as dateUtil from '../../../../../utils/date_util'
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
+import AppUsage from './AppUsage'
 
 const healthDataStructure = () => {
     let healthData = {}
@@ -63,7 +64,7 @@ class AppMonitoring extends React.Component {
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
-    
+
 
     static getDerivedStateFromProps(props, state) {
         return processData(props.avgData)
@@ -71,14 +72,14 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { chartData, avgData, filter, range, rowSelected, minimize, selectedOrg} = this.props
+        const { chartData, avgData, filter, range, rowSelected, minimize, selectedOrg } = this.props
         return (
             filter.parent.id === 'appinst' ?
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
                     <Grid container spacing={1}>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-                                <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg}/>
+                                <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                             </Card>
                         </Grid>
                         <Grid item xs={6}>
@@ -86,12 +87,16 @@ class AppMonitoring extends React.Component {
                         </Grid>
                         <Grid item xs={3}>
                             <Card style={{ height: '100%', width: '100%' }}>
-                                <AppEvent regions={this.regions}  filter={filter} range={range} org={selectedOrg}/>
-                            </Card> 
+                                <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                            </Card>
                         </Grid>
                     </Grid>
                     <div style={{ marginBottom: 5 }}></div>
-                    <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected}/>
+                    <Card>
+                        <AppUsage regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                    </Card>
+                    <div style={{ marginBottom: 5 }}></div>
+                    <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} />
                 </div> : null
         )
     }
