@@ -1,6 +1,8 @@
 import uuid from 'uuid'
 import { toJson } from '../../utils/json_util'
 import isEqual from 'lodash/isEqual';
+import isArray from 'lodash/isArray';
+import { fi } from 'date-fns/locale';
 
 export const fields = {
     uuid: 'uuid',
@@ -168,7 +170,8 @@ export const fields = {
     receiverAddress: 'receiverAddress',
     otp: 'otp',
     port: 'port',
-    appRevision: 'appRevision'
+    appRevision: 'appRevision',
+    autoProvPolicies:'autoProvPolicies'
 }
 
 export const getUserRole = () => {
