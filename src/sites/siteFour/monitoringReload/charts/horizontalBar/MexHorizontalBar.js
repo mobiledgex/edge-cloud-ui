@@ -4,9 +4,9 @@ import { Icon } from 'semantic-ui-react';
 import './style.css'
 
 const keys = [
-    { color: '#80C684', label: 'Find Cloudlet', id: 'findCloudlet', order:0 },
-    { color: '#4693BC', label: 'Register Client', id: 'registerClient', order:1  },
-    { color: '#FD8D3C', label: 'Verify Location', id: 'verifyLocation', order:2  }
+    { color: '#80C684', label: 'Find Cloudlet', id: 'findCloudlet', order: 0 },
+    { color: '#4693BC', label: 'Register Client', id: 'registerClient', order: 1 },
+    { color: '#FD8D3C', label: 'Verify Location', id: 'verifyLocation', order: 2 }
 ]
 
 const showDataLabel = (e) => {
@@ -48,6 +48,11 @@ const showDataLabel = (e) => {
         });
     });
 }
+
+const plugins = [{
+    beforeDraw: showDataLabel
+}]
+
 const optionsGenerator = (maxValue) => {
     return {
         responsive: true,
@@ -63,7 +68,7 @@ const optionsGenerator = (maxValue) => {
             text: ' '
         },
         scales: {
-            xAxes: [{ stacked: false, display: false, gridLines: false, ticks:{max:maxValue+150} }],
+            xAxes: [{ stacked: false, display: false, gridLines: false, ticks: { max: maxValue + 150 } }],
             yAxes: [
                 {
                     stacked: false,
@@ -73,8 +78,8 @@ const optionsGenerator = (maxValue) => {
         },
         animation: {
             duration: 0,
-            onComplete: showDataLabel,
-            onProgress: showDataLabel
+            // onComplete: showDataLabel,
+            // onProgress: showDataLabel
         }
     }
 }
@@ -115,11 +120,10 @@ class MexHorizontalBar extends React.Component {
         return { datasets, labels }
     }
 
-    chartHeight = (processedData)=>{
+    chartHeight = (processedData) => {
         let labels = processedData.labels
         let length = labels.length
-        if(length === 1)
-        {
+        if (length === 1) {
             processedData.labels.push('')
         }
         return labels.length * 95
@@ -128,20 +132,20 @@ class MexHorizontalBar extends React.Component {
     render() {
         const { chartData, header, filter } = this.props
         const processedData = this.processData(chartData, filter)
-        
+
         return (
             <div mex-test="component-pie-chart" className='horizontal-main' >
                 <div align="left" style={{ marginBottom: 10 }}>
                     <h3>{header}</h3>
                 </div>
-                <div style={{ height: 'calc(32vh - 0px)', overflow: 'auto', width: '23vw'  }}>
-                    <div style={{ height : this.chartHeight(processedData)}}>
-                        <HorizontalBar data={processedData} options={optionsGenerator(this.maxValue)} redraw/>
+                <div style={{ height: 'calc(32vh - 0px)', overflow: 'auto', width: '23vw' }}>
+                    <div style={{ height: this.chartHeight(processedData) }}>
+                        <HorizontalBar data={processedData} options={optionsGenerator(this.maxValue)} plugins={plugins} redraw />
                     </div>
                 </div>
                 <div align="center" className="horizontal-legend">
                     {keys.map((key, i) => {
-                        return <span key={i} style={{ marginRight: 10, display: 'inline', fontSize: 12 }}><Icon name='circle' style={{ color: key.color}} /> {key.label}</span>
+                        return <span key={i} style={{ marginRight: 10, display: 'inline', fontSize: 12 }}><Icon name='circle' style={{ color: key.color }} /> {key.label}</span>
                     })}
                 </div>
             </div>
