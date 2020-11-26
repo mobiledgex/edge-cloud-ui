@@ -82,3 +82,10 @@
 .mex_select_tree_detail:hover {
     background-color: #475266;
 }
+
+.select-tree-output{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width:30vw;
+}

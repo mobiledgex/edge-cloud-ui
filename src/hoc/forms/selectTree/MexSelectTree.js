@@ -296,7 +296,7 @@ export default function MexSelectRadioTree(props) {
             >
                 <Box display="flex">
                     <Box p={1} flexGrow={1} >
-                        {output}
+                        <div className='select-tree-output'>{output}</div>
                     </Box>
                     {form.rules ? form.rules.copy ?
                         <Box p={1}>
