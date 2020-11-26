@@ -327,7 +327,7 @@ class AppReg extends React.Component {
     regionDependentDataUpdate = (region, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.autoPolicyName || form.field === fields.autoProvPolicies) {
+            if (form.field === fields.autoProvPolicies) {
                 if (isInit === undefined || isInit === false) {
                     this.getAutoProvPolicy(region, form, forms)
                 }
@@ -645,16 +645,6 @@ class AppReg extends React.Component {
                                     }
                                 }
                             }
-                            if (data[fields.autoPolicyName]) {
-                                requestData[fields.autoPolicyName] = undefined
-                                for (let i = 0; i < data[fields.autoPolicyName].length; i++) {
-                                    let autoPolicy = data[fields.autoPolicyName][i]
-                                    if (autoPolicy && autoPolicy.parent.includes(region)) {
-                                        requestData[fields.autoPolicyName] = autoPolicy.value
-                                        break;
-                                    }
-                                }
-                            }
                             if (data[fields.autoProvPolicies]) {
                                 requestData[fields.autoProvPolicies] = undefined
                                 for (let i = 0; i < data[fields.autoProvPolicies].length; i++) {
@@ -723,7 +713,6 @@ class AppReg extends React.Component {
                         case fields.privacyPolicyName:
                             form.options = this.privacyPolicyList
                             break;
-                        case fields.autoPolicyName:
                         case fields.autoProvPolicies:
                             form.options = this.autoProvPolicyList
                             break;
@@ -926,10 +915,6 @@ class AppReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
-            if(data[fields.autoPolicyName])
-            {
-                forms[18] = { field: fields.autoPolicyName, label: 'Auto Provisioning Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policy', rules: { required: false }, visible: true, update: true, tip: 'Auto provisioning policy name', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false }
-            }
             this.tlsCount = data[fields.accessPorts] ? (data[fields.accessPorts].match(/tls/g) || []).length : 0;
             this.updateFlowDataList.push(appFlow.portFlow(this.tlsCount))
             this.originalData = cloneDeep(data)
