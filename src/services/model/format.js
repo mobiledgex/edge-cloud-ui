@@ -168,7 +168,8 @@ export const fields = {
     receiverAddress: 'receiverAddress',
     otp: 'otp',
     port: 'port',
-    appRevision: 'appRevision'
+    appRevision: 'appRevision',
+    autoProvPolicies:'autoProvPolicies'
 }
 
 export const getUserRole = () => {
