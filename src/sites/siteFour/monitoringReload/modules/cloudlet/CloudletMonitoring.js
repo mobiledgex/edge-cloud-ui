@@ -39,6 +39,7 @@ class CloudletMonitoring extends React.Component {
         this.state = {
             mapData: {}
         }
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
     static getDerivedStateFromProps(props, state) {

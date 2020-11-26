@@ -3,6 +3,7 @@ import React from 'react'
 import MexChart from '../../charts/MexChart'
 import MexMap from './ClusterMexMap'
 import ClusterEvent from './ClusterEvent'
+import ClusterUsage from './ClusterUsage'
 
 const processData = (avgData) => {
     let mapData = {}
@@ -39,6 +40,7 @@ class ClusterMonitoring extends React.Component {
         this.state = {
             mapData: {}
         }
+        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -66,6 +68,10 @@ class ClusterMonitoring extends React.Component {
                             </Card>
                         </Grid>
                     </Grid>
+                    <div style={{ marginBottom: 5 }}></div>
+                    <Card>
+                        <ClusterUsage regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                    </Card>
                     <div style={{ marginBottom: 5 }}></div>
                     <MexChart chartData={chartData} avgData={avgData} filter={filter} rowSelected={rowSelected} style={{ height: 'calc(100vh - 330px)' }} />
                 </div> : null
