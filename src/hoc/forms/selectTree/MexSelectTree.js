@@ -10,6 +10,7 @@ import { Input, InputAdornment, Box, Tooltip } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import './mexSelectTree.css'
 import { Icon } from 'semantic-ui-react';
+import { FixedSizeList } from 'react-window';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,14 +56,13 @@ const processData = (form, dataList, formArray) => {
                     let childrenList = []
                     dataList.map(data => {
                         if (data[dependentForm.field] === key) {
-                            childrenList.push(i === formArray.length - 1 ? { label: data[form.field] } : data)
+                            childrenList.push(i === formArray.length - 1 ? { label: data[form.showField ? form.showField : form.field] } : data)
                         }
                     })
                     finalList.push({ label: key, children: childrenList })
                 }
             }
-            else
-            {
+            else {
                 let newList = []
                 for (let k = 0; k < finalList.length; k++) {
                     dataList = finalList[k].children
@@ -72,7 +72,7 @@ const processData = (form, dataList, formArray) => {
                         let childrenList = []
                         dataList.map(data => {
                             if (data[dependentForm.field] === key) {
-                                childrenList.push(i === formArray.length - 1 ? { label: data[form.field] } : data)
+                                childrenList.push(i === formArray.length - 1 ? { label: data[form.showField ? form.showField : form.field] } : data)
                             }
                         })
                         newList.push({ label: label + '>' + key, children: childrenList })
@@ -81,7 +81,7 @@ const processData = (form, dataList, formArray) => {
                 finalList = newList
             }
         }
-    } 
+    }
     return finalList
 }
 
@@ -110,8 +110,7 @@ export default function MexSelectRadioTree(props) {
                         temp.splice(0, 1)
                         dependentKey = { form: dependentForm, value: temp }
                     }
-                    else if(Array.isArray(dependentForm.value))
-                    {
+                    else if (Array.isArray(dependentForm.value)) {
                         dependentKey = { form: dependentForm, value: dependentForm.value }
                     }
                     else {
@@ -173,6 +172,42 @@ export default function MexSelectRadioTree(props) {
         props.onChange(form, valuearray)
     };
 
+    const multiClick = (index, child, parent) => {
+        // form.currentSelection = [...form.currentSelection, child.label]
+        let valuearray = form.value ? form.value : []
+        let value = []
+        if (valuearray[index] && valuearray[index].value) {
+            value = valuearray[index].value
+        }
+        if (value.includes(child.label)) {
+            value = value.filter(v => {
+                return v !== child.label
+            })
+        }
+        else {
+            value.push(child.label)
+        }
+        valuearray[index] = { parent: parent.label, value }
+        setValue(valuearray);
+        setOutput(valuearray.map(item => {
+            return item.parent + '>' + item.value + '  '
+        }))
+        props.onChange(form, valuearray)
+    }
+
+    const validateCheck = (index, child)=>{
+        let checked = false
+        let valuearray = value
+        if (valuearray[index]) {
+            let value = valuearray[index].value
+            if(value && value.length > 0)
+            {
+                checked = value.includes(child.label)
+            }
+        }
+        return checked
+    }
+
     const onFilterValue = (e) => {
         filterText = e ? e.target.value.toLowerCase() : filterText
         let newList = []
@@ -222,25 +257,37 @@ export default function MexSelectRadioTree(props) {
         }
     }
 
-    const expandRow = (key)=>
-    {
+    const expandRow = (key) => {
         let groups = cloneDeep(expandGroups)
-        if(groups.includes(key))
-        {
+        if (groups.includes(key)) {
             groups = groups.filter(item => item !== key);
         }
-        else
-        {
+        else {
             groups.push(key)
         }
         setExpandGroups(groups)
+    }
+
+    const renderRow = (virtualProps) => {
+        const { data, index, style } = virtualProps;
+        let parent = data.parent
+        let child = parent.children[index]
+        let i = data.parentIndex
+        return (
+            <div style={style}>
+                {
+                    form.multiple ? <div className={`${value[i] && value[i].value === child.label ? 'mex_select_tree_detail_select' : 'mex_select_tree_detail'}`} onClick={(e) => { multiClick(i, child, parent) }}><Icon style={{ marginTop: 2 }} name={validateCheck(i, child) ? 'check square outline' : 'square outline'}></Icon> <label >{child.label}</label></div> :
+                        <button  className={`${value[i] && value[i].value === child.label ? 'mex_select_tree_detail_select' : 'mex_select_tree_detail'}`} onClick={(e) => { handleChange(i, child, parent) }}>{child.label}</button>
+                }
+            </div>
+        );
     }
 
     return (
         <div className={classes.root}>
             <div
                 id={form.field}
-                style={{backgroundColor:`${form.error ? 'rgba(211, 46, 46, 0.1)' : 'none'}`}}
+                style={{ backgroundColor: `${form.error ? 'rgba(211, 46, 46, 0.1)' : 'none'}` }}
                 className={open ? 'header_active' : 'header'}
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}
@@ -249,7 +296,7 @@ export default function MexSelectRadioTree(props) {
             >
                 <Box display="flex">
                     <Box p={1} flexGrow={1} >
-                        {output}
+                        <div className='select-tree-output'>{output}</div>
                     </Box>
                     {form.rules ? form.rules.copy ?
                         <Box p={1}>
@@ -299,12 +346,23 @@ export default function MexSelectRadioTree(props) {
                             </StyledMenuItem>
                             {list && list.length > 0 ? list.map((parent, i) => {
                                 return (
-                                    <div key={i} style={{margin:10}}>
+                                    <div key={i} style={{ margin: 10 }}>
                                         <button onClick={(e) => { expandRow(parent.label) }} className='mex_select_tree_group'><Icon name={`${expandGroups.includes(parent.label) ? 'chevron down' : 'chevron right'}`} />{parent.label}</button>
-                                        <div style={{maxHeight:100, overflow:'auto'}}>
-                                            {expandGroups.includes(parent.label) && parent.children.map((child, j) => {
-                                                return <button className={`${value[i] && value[i].value === child.label ? 'mex_select_tree_detail_select' : 'mex_select_tree_detail'}`} onClick={(e)=>{handleChange(i, child, parent)}} key={j}>{child.label}</button>
-                                            })}
+                                        <div>
+                                            {expandGroups.includes(parent.label) ? 
+                                            <FixedSizeList height={100} itemSize={25} itemCount={parent.children.length} itemData={{parent, parentIndex:i}}>
+                                                {renderRow}
+                                            </FixedSizeList> : null}
+                                            {/* {expandGroups.includes(parent.label) && parent.children.map((child, j) => {
+                                                return (
+                                                    <div key={j}>
+                                                        {
+                                                            form.multiple ? <div className='mex_select_tree_detail' onClick={(e) => { multiClick(i, child, parent) }}><Icon style={{marginTop:2}} name={validateCheck(i, child) ? 'check square outline' : 'square outline'}></Icon> <label >{child.label}</label></div> :
+                                                                <button className={`${value[i] && value[i].value === child.label ? 'mex_select_tree_detail_select' : 'mex_select_tree_detail'}`} onClick={(e) => { handleChange(i, child, parent) }}>{child.label}</button>
+                                                        }
+                                                    </div>
+                                                )
+                                            })} */}
                                         </div>
                                     </div>
                                 )

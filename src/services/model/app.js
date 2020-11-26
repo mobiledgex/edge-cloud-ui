@@ -1,5 +1,4 @@
 import * as formatter from './format'
-import { TYPE_YAML } from '../../constant';
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
@@ -9,7 +8,7 @@ let fields = formatter.fields
 
 export const configs = [
     { field: fields.kind, serverField: 'kind', label: 'Kind' },
-    { field: fields.config, serverField: 'config', label: 'Config', dataType: TYPE_YAML }
+    { field: fields.config, serverField: 'config', label: 'Config', dataType: constant.TYPE_YAML }
 ]
 
 export const keys = () => ([
@@ -19,7 +18,7 @@ export const keys = () => ([
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: true, filter: true },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
     { field: fields.command, serverField: 'command', label: 'Command' },
-    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: TYPE_YAML },
+    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: constant.TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
@@ -31,6 +30,7 @@ export const keys = () => ([
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster' },
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
+    { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: constant.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs },
@@ -82,6 +82,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.deploymentManifest]) {
             app.deployment_manifest = data[fields.deploymentManifest]
+        }
+        if (data[fields.autoProvPolicies]) {
+            app.auto_prov_policies = data[fields.autoProvPolicies]
         }
         if (data[fields.autoPolicyName]) {
             app.auto_prov_policy = data[fields.autoPolicyName]
@@ -165,6 +168,9 @@ export const updateApp = async (self, data, originalData) => {
     if (!formatter.compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName])) {
         updateFields.push('28')
     }
+    if (!formatter.compareObjects(data[fields.autoProvPolicies], originalData[fields.autoProvPolicies])) {
+        updateFields.push('32')
+    }
     if (!formatter.compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName])) {
         updateFields.push('30')
     }
@@ -200,6 +206,8 @@ const customData = (value) => {
     value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
     value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
+    value[fields.autoProvPolicies] = value[fields.autoPolicyName] ? [value[fields.autoPolicyName]] : value[fields.autoProvPolicies]
+    value[fields.autoPolicyName] = undefined
     if (value[fields.configs]) {
         let configs = value[fields.configs]
         for (let i = 0; i < configs.length; i++) {

@@ -45,15 +45,26 @@ const getDate = (data, item) => {
     )
 }
 
+const getArray = (dataList) => {
+    let value = ''
+    dataList.map((data, i) => {
+        value = value + data
+        value = value + (i !== dataList.length - 1 ? ', ' : '')
+    })
+    return value
+}
+
 const getData = (data, item) => (
-    item.dataType === constant.TYPE_URL ?
-        getURL(data) :
-        item.dataType === constant.TYPE_DATE ?
-            getDate(data, item) :
-            item.dataType === constant.TYPE_JSON ?
-                getHighLighter('json', JSON.stringify(data, null, 1)) :
-                item.dataType === constant.TYPE_YAML ?
-                    getHighLighter('yaml', data.toString()) :
+    item.dataType === constant.TYPE_ARRAY ?
+        getArray(data) :
+        item.dataType === constant.TYPE_URL ?
+            getURL(data) :
+            item.dataType === constant.TYPE_DATE ?
+                getDate(data, item) :
+                item.dataType === constant.TYPE_JSON ?
+                    getHighLighter('json', JSON.stringify(data, null, 1)) :
+                    item.dataType === constant.TYPE_YAML ?
+                        getHighLighter('yaml', data.toString()) :
                     <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</div>
 )
 
