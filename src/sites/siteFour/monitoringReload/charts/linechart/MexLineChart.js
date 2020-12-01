@@ -5,8 +5,8 @@ import { unit } from '../../../../../utils/math_util'
 import isEqual from 'lodash/isEqual';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import uuid from 'uuid'
-import { AppBar, Button, Dialog, Divider, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@material-ui/core';
-
+import { AppBar, Button, Dialog, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 const optionsGenerator = (header, unitId, fullscreen) => {
     return {
         stacked: true,
@@ -69,7 +69,7 @@ const optionsGenerator = (header, unitId, fullscreen) => {
                 }
             }]
         },
-        tooltips: { 
+        tooltips: {
             mode: 'single',
             callbacks: {
                 label: function (tooltipItem, data) {
@@ -124,11 +124,10 @@ class MexLineChart extends React.Component {
         let length = keys.length
         for (let i = 0; i < length; i++) {
             let key = keys[i]
-            if(avgDataRegion[key].hidden)
-            {
+            if (avgDataRegion[key].hidden) {
                 continue
             }
-            
+
             let valueData = values[key]
             if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
                 let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
@@ -181,7 +180,17 @@ class MexLineChart extends React.Component {
 
     renderFullScreen = (fullscreen, chartData, avgDataRegion, rowSelected, globalFilter) => (
         <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
-            <div style={{ padding: 20, height:'100vh' }}>
+            <div>
+                <div style={{ display: 'inline-block', float: 'left' }}>
+                    <h3 style={{ padding: 10 }}> {`${this.header} - ${this.props.data.region}`}</h3>
+                </div>
+                <div style={{ display: 'inline-block', float: 'right' }}>
+                    <IconButton onClick={this.closeFullScreen} style={{ padding: 10 }}>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+            </div>
+            <div style={{ padding: 20, height: '100vh' }}>
                 <Line datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen)} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
             </div>
         </Dialog>
@@ -198,7 +207,7 @@ class MexLineChart extends React.Component {
                     </div>
                     <div className="line-chart-header-right">
                         <IconButton onClick={this.openFullScreen}>
-                            <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }}/>
+                            <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
                         </IconButton>
                     </div>
                 </div>
