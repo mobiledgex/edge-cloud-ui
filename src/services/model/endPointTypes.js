@@ -110,6 +110,7 @@ export const SHOW_ALERT = 'ShowAlert'
 export const ALERT_SHOW_RECEIVER = 'alertreceiver/show'
 export const ALERT_CREATE_RECEIVER = 'alertreceiver/create'
 export const ALERT_DELETE_RECEIVER = 'alertreceiver/delete'
+export const PUBLIC_CONFIG = 'publicconfig'
 
 export function getPath(request) {
     switch (request.method) {
@@ -207,6 +208,7 @@ export function getPath(request) {
         case RESET_PASSWORD:
         case RESET_PASSWORD_REQUEST:
         case CREATE_USER:
+        case PUBLIC_CONFIG:
             return `/api/v1/${request.method}`;
         case SHOW_CLOUDLET_LINKORG:
             return `/api/v1/auth/orgcloudletpool/show`;
