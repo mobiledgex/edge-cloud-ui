@@ -91,10 +91,10 @@ class AppMonitoring extends React.Component {
                             </Card>
                         </Grid>
                     </Grid>
-                    <div style={{ marginBottom: 5 }}></div>
+                    {/* <div style={{ marginBottom: 5 }}></div>
                     <Card>
                         <AppUsage regions={this.regions} filter={filter} range={range} org={selectedOrg} />
-                    </Card>
+                    </Card> */}
                     <div style={{ marginBottom: 5 }}></div>
                     <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} />
                 </div> : null
