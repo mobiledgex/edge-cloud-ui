@@ -13,9 +13,10 @@ import { generate } from 'generate-password'
 import { Button } from "@material-ui/core";
 import { copyData } from '../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
+import { sendRequest } from '../../services/model/serverWorker'
+import { PUBLIC_CONFIG } from '../../services/model/endpoints'
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
-const PasswordMinCrackTimeSec = 30 * 86400
 
 const validateLetterCase = (value) => {
     return /[a-z]/.test(value) && /[A-Z]/.test(value)
@@ -42,9 +43,9 @@ const calculateStrength = (value) => {
     return zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
 }
 
-const calculatePercentage = (score) => {
-    let value = score > PasswordMinCrackTimeSec ? PasswordMinCrackTimeSec : score
-    value = ((value - 0) / (PasswordMinCrackTimeSec - 0)) * (100 - 0) + 0
+const calculatePercentage = (passwordMinCrackTimeSec, score) => {
+    let value = score > passwordMinCrackTimeSec ? passwordMinCrackTimeSec : score
+    value = ((value - 0) / (passwordMinCrackTimeSec - 0)) * (100 - 0) + 0
     return value
 }
 
@@ -100,7 +101,7 @@ class RegistryUserForm extends React.Component {
             currentForm.error = 'Too many consecutive identical characters'
             return false;
         }
-        else if (calculateStrength(value) < PasswordMinCrackTimeSec) {
+        else if (calculateStrength(value) < this.passwordMinCrackTimeSec) {
             currentForm.error = 'Password is weak'
             return false;
         }
@@ -145,10 +146,10 @@ class RegistryUserForm extends React.Component {
         })
     }
 
-    generatePassword = () => {
-        let password = generate({ length: 13, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
-        if (calculateStrength(password) < PasswordMinCrackTimeSec) {
-            password = this.generatePassword()
+    generatePassword = (length) => {
+        let password = generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
+        if (calculateStrength(password) < this.passwordMinCrackTimeSec) {
+            password = this.generatePassword(length+1)
         }
         copyData(password)
         let forms = cloneDeep(this.state.forms)
@@ -157,8 +158,7 @@ class RegistryUserForm extends React.Component {
             if (form.field === fields.password || form.field === fields.confirmPassword) {
                 form.value = password
             }
-            if(form.field === fields.password)
-            {
+            if (form.field === fields.password) {
                 form.rules.type = 'text'
             }
         }
@@ -174,7 +174,7 @@ class RegistryUserForm extends React.Component {
         let digit = validateDigit(value)
         let symbol = validateSymbol(value)
         let consecutive = validateConsecutive(value)
-        let color = score < PasswordMinCrackTimeSec ? '#F5382F' : '#F2F2F2'
+        let color = score < this.passwordMinCrackTimeSec ? '#F5382F' : '#F2F2F2'
         return (
             <div style={{ fontSize: 12 }}>
                 <p>Your password must have :</p>
@@ -183,13 +183,13 @@ class RegistryUserForm extends React.Component {
                 <p style={{ color: digit ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one number</p>
                 <p style={{ color: symbol ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one symbol</p>
                 <p>Strength:</p>
-                <LinearProgress variant="determinate" value={calculatePercentage(score)} style={{ backgroundColor: color }} />
+                <LinearProgress variant="determinate" value={calculatePercentage(this.passwordMinCrackTimeSec, score)} style={{ backgroundColor: color }} />
                 <br />
                 {consecutive ?
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
                     <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse. Do not use recognizable words, such as house, car, password, etc. To meet the password strength criteria, use random characters, or click the Generate button to allow the system to generate a secure password for you. Make sure you copy and paste the password to a secure location.</p>
                 }
-                <div style={{ float: 'right' }}><Button onMouseDown={this.generatePassword} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
+                <div style={{ float: 'right' }}><Button onMouseDown={()=>{this.generatePassword(13)}} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
             </div>
         )
     }
@@ -220,14 +220,24 @@ class RegistryUserForm extends React.Component {
         })
     }
 
+    publicConfigResponse = (mc) => {
+        this.props.handleLoadingSpinner(false)
+        if (mc && mc.response && mc.response.status === 200) {
+            this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
+            this.getFormData()
+        }
+    }
+
     componentDidMount() {
-        this.getFormData()
+        this.props.handleLoadingSpinner(true)
+        sendRequest(this, { method: PUBLIC_CONFIG }, this.publicConfigResponse)
     }
 };
 
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
