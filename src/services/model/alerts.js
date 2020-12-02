@@ -77,7 +77,7 @@ const clusterInstSelector = (data) => {
     if (data[fields.operatorName] || data[fields.cloudletName]) {
         requestData.cloudlet_key = cloudletSelector(data)
     }
-    requestData.organization = data[fields.organizationName]
+    requestData.organization = data[fields.clusterdeveloper] ?  data[fields.clusterdeveloper] : data[fields.organizationName]
     return requestData
 }
 
@@ -100,7 +100,8 @@ const selector = (data) => {
     return requestData
 }
 
-const getKey = (data) => {
+const getKey = (data, isDelete) => {
+    console.log('Rahul1234', data)
     let alert = {}
     alert = {
         name: data[fields.alertname],
@@ -111,6 +112,10 @@ const getKey = (data) => {
     {
         alert['region'] = data[fields.region] 
     }
+    if(data[fields.username])
+    {
+        alert['user'] = data[fields.username]
+    }
     if (data[fields.type] === RECEIVER_TYPE_SLACK) {
         alert['slackchannel'] = data[fields.slackchannel]
         alert['slackwebhook'] = data[fields.slackwebhook]
@@ -118,15 +123,35 @@ const getKey = (data) => {
     else if (data[fields.type] === RECEIVER_TYPE_EMAIL) {
         alert['email'] = data[fields.email]
     }
-    if (data[fields.selector] === 'Cloudlet') {
-        alert['Cloudlet'] = cloudletSelector(data)
-    }
-    else if (data[fields.selector] === 'Cluster') {
-        alert['appinst'] = {}
-        alert['appinst']['cluster_inst_key'] = clusterInstSelector(data)
+
+
+    if (isDelete) {
+        let temp = {}
+        if (data[fields.operatorName] || data[fields.cloudletName]) {
+            alert['Cloudlet'] = cloudletSelector(data)
+        }
+        else {
+            temp[fields.organizationName] = data[fields.appDeveloper]
+            temp[fields.appName] = data[fields.appName]
+            temp[fields.version] = data[fields.version]
+            temp[fields.operatorName] = data[fields.appOperator]
+            temp[fields.cloudletName] = data[fields.appCloudlet]
+            temp[fields.clusterName] = data[fields.clusterName]
+            temp[fields.clusterdeveloper] = data[fields.clusterdeveloper]
+            alert['appinst'] = selector(temp)
+        }
     }
     else {
-        alert['appinst'] = selector(data)
+        if (data[fields.selector] === 'Cloudlet') {
+            alert['Cloudlet'] = cloudletSelector(data)
+        }
+        else if (data[fields.selector] === 'Cluster') {
+            alert['appinst'] = {}
+            alert['appinst']['cluster_inst_key'] = clusterInstSelector(data)
+        }
+        else {
+            alert['appinst'] = selector(data)
+        }
     }
     return alert
 }
@@ -143,7 +168,7 @@ export const createAlertReceiver = async (self, data) => {
 }
 
 export const deleteAlertReceiver = (data) => {
-    let requestData = getKey(data)
+    let requestData = getKey(data, true)
     return { method: ALERT_DELETE_RECEIVER, data: requestData, success: `Alert Receiver ${data[fields.alertname]} deleted successfully` }
 }
 
