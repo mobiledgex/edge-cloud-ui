@@ -9,6 +9,8 @@ import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
+import { ADMIN } from '../../../../constant';
+import { getOrganization } from '../../../../services/model/format';
 let _self = null;
 
 const CON_LIMIT = 25
@@ -158,14 +160,26 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
+            if (this.props.userRole.includes(ADMIN)) {
+                this.initAudit(this.starttime, this.endtime, false)
+            }
+            else {
+                this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
+                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+                if (this._isMounted) {
+                    this.setState({ liveData: [] })
+                }
+                this.initAudit(this.starttime, this.endtime, false)
+            }
+        }
 
         if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
-            if (this.type === this.props.showAuditLogWithOrg.type  && this.type==='audit') {
+            if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'audit') {
                 this.getDataAuditOrg(this.props.showAuditLogWithOrg.org)
             }
-            else if(this.type === this.props.showAuditLogWithOrg.type && this.type==='event')
-            {
-                this.setState({isOpen:true})
+            else if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'event') {
+                this.setState({ isOpen: true })
             }
         }
         if (prevState.isOpen !== this.state.isOpen) {
@@ -196,7 +210,9 @@ class headerGlobalAudit extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.initAudit(this.starttime, this.endtime, false);
+        if (getOrganization()) {
+            this.initAudit(this.starttime, this.endtime, false)
+        }
     }
 
     componentWillUnmount = () => {
@@ -209,7 +225,8 @@ class headerGlobalAudit extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        showAuditLogWithOrg: state.showAuditLog.audit
+        showAuditLogWithOrg: state.showAuditLog.audit,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 }
 const mapDispatchProps = (dispatch) => {
