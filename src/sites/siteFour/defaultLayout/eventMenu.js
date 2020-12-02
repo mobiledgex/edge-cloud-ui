@@ -47,13 +47,13 @@ const EventMenu = () => {
     }
 
     const menuOptions = [
-        { label: 'Audit Log', icon: <BallotOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: auditClick, visible :true },
-        { label: 'Event Log', icon: <EventOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: eventClick, visible :true },
-        { label: 'Billing Log', icon: <TimelineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: billingClick, visible :showBilling() },
+        { label: 'Audit Log', icon: <BallotOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: auditClick, visible: true },
+        { label: 'Event Log', icon: <EventOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: eventClick, visible: true },
+        { label: 'Billing Log', icon: <TimelineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: billingClick, visible: true },
     ]
 
     return (
-        <div style={{ marginTop: '0.4em' }}>
+        showBilling() ? <div style={{ marginTop: '0.4em' }}>
             <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={handleClick}>
                 <EventNoteIcon />
             </IconButton>
@@ -75,7 +75,7 @@ const EventMenu = () => {
             <HeaderGlobalAudit open={event} close={handleClose} type={'event'} />
             <HeaderGlobalAudit open={audit} close={handleClose} type={'audit'} />
             <GlobalBillingLog open={billing} close={handleClose} />
-        </div >
+        </div > : null
     )
 }
 
