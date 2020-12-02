@@ -189,7 +189,7 @@ class RegistryUserForm extends React.Component {
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
                     <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse. Do not use recognizable words, such as house, car, password, etc. To meet the password strength criteria, use random characters, or click the Generate button to allow the system to generate a secure password for you. Make sure you copy and paste the password to a secure location.</p>
                 }
-                <div style={{ float: 'right' }}><Button onClick={this.generatePassword} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
+                <div style={{ float: 'right' }}><Button onMouseDown={this.generatePassword} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
             </div>
         )
     }
