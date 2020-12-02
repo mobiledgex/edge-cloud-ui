@@ -1,4 +1,5 @@
 import { EVENTS_SHOW } from './endPointTypes'
+import { getOrganization } from './format'
 import * as serverData from './serverData'
 
 export const orgEvents = (data) => {
@@ -13,6 +14,7 @@ export const showEvents = async (self, data, showSpinner) => {
 export const showAudits = async (self, data, showSpinner) => {
     let match = data.match ? data.match : {}
     match.types = [data.type]
+    match.orgs = getOrganization() ? [getOrganization()] : undefined
     data.match = match
     let mcRequest = await serverData.sendRequest(self, { method: EVENTS_SHOW, data: data, showSpinner: showSpinner })
     return mcRequest
