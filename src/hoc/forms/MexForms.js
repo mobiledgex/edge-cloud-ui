@@ -139,7 +139,7 @@ const MexForms = (props) => {
                                 values.splice(0, 1)
                             }
                             if (form.value === undefined || form.value.length !== values.length) {
-                                form.error = `${form.label} is mandatory`
+                                form.error = rules.requiredMsg ? rules.requiredMsg : `${form.label} is mandatory`
                                 errorBanner(form)
                                 valid = false;
 
@@ -150,7 +150,7 @@ const MexForms = (props) => {
                         }
                         else {
                             if (form.value === null || form.value === undefined || form.value.length === 0) {
-                                form.error = `${form.label} is mandatory`
+                                form.error = rules.requiredMsg ? rules.requiredMsg : `${form.label} is mandatory`
                                 errorBanner(form)
                                 valid = false;
                             }
