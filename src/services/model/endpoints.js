@@ -86,6 +86,7 @@ export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
 export const EVENTS_FIND = 'events/find'
 export const EVENTS_SHOW = 'events/show'
 export const SHOW_ALERT = 'ShowAlert'
+export const PUBLIC_CONFIG = 'publicconfig'
 
 export const getPath = (request) => {
     switch (request.method) {
@@ -109,6 +110,8 @@ export const getPath = (request) => {
         case SHOW_ROLE:
         case SHOW_CONTROLLER:
             return `/api/v1/auth/${request.method}`
+        case PUBLIC_CONFIG:
+            return `/api/v1/${request.method}`
         default:
             return null;
     }
