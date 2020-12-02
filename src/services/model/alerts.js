@@ -101,7 +101,6 @@ const selector = (data) => {
 }
 
 const getKey = (data, isDelete) => {
-    console.log('Rahul1234', data)
     let alert = {}
     alert = {
         name: data[fields.alertname],
