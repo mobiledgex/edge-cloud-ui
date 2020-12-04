@@ -146,11 +146,16 @@ class RegistryUserForm extends React.Component {
         })
     }
 
-    generatePassword = (length) => {
+    passwordGenerator = (length)=>{
         let password = generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
         if (calculateStrength(password) < this.passwordMinCrackTimeSec) {
-            password = this.generatePassword(length+1)
+            return this.passwordGenerator(length+1)
         }
+        return password
+    }
+
+    generatePassword = (length) => {
+        let password = this.passwordGenerator(length)
         copyData(password)
         let forms = cloneDeep(this.state.forms)
         for (let i = 0; i < forms.length; i++) {
