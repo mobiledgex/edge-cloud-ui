@@ -82,7 +82,7 @@ class RegistryUserForm extends React.Component {
     validatePassword = (currentForm) => {
         let value = currentForm.value
         if (!validateCharacterCount(value)) {
-            currentForm.error = 'Must be at least 10 characters long'
+            currentForm.error = 'Must be at least 13 characters long'
             return false;
         }
         else if (!validateDigit(value)) {
