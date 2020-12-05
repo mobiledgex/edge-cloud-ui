@@ -5,6 +5,9 @@ import { getOrganization, isAdmin } from '../../../../../services/model/format'
 import { sendRequest } from '../../../../../services/model/serverWorker'
 import randomColor from 'randomcolor'
 import { withRouter } from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { IconButton, Tooltip } from '@material-ui/core'
 
 const appEventKeys = [
     { label: 'App', serverField: 'app', summary: false, filter: true },
@@ -27,7 +30,9 @@ class MexAppEvent extends React.Component {
         super(props)
         this.state = {
             eventData: [],
-            colors: []
+            colors: [],
+            showMore: false,
+            loading: false
         }
         this.regions = props.regions
     }
@@ -42,43 +47,66 @@ class MexAppEvent extends React.Component {
         )
     }
 
+    loadMore = () => {
+        let starttime = this.props.range.starttime
+        let eventData = this.state.eventData
+        let endtime = eventData[eventData.length - 1]['timestamp']
+        this.event({ starttime, endtime }, true)
+    }
+
     render() {
-        const { eventData, colors } = this.state
+        const { eventData, colors, showMore, loading } = this.state
         const { filter } = this.props
-        return eventData.length > 0 ? <EventList eventData={eventData} filter={filter} colors={colors} keys={appEventKeys} header={this.header} /> :
-            <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                <div align="left" className="event-list-header">
-                    <h3>Events</h3>
-                </div>
-                <h3 style={{ marginTop: '16vh' }}><b>No Data</b></h3>
+        return (
+            <div>
+                <EventList eventData={eventData} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105}/>
+                {showMore ? <div className='event-list-more' align="center">
+                    {loading ? <CircularProgress size={20}/> :
+                        <Tooltip title='More' onClick={this.loadMore}>
+                            <IconButton>
+                                <ExpandMoreIcon />
+                            </IconButton>
+                        </Tooltip>}
+                </div> : null}
             </div>
+        )
     }
 
     serverResponse = (mc) => {
         if (mc && mc.response && mc.response.data) {
+            let more = mc.request.data.more
             let dataList = mc.response.data
+            let showMore = dataList.length === 10
             let colors = randomColor({ count: dataList.length, })
-            this.setState({ eventData: dataList, colors })
+            if (more) {
+                dataList = [...this.state.eventData, ...dataList]
+                colors = [...this.state.colors, ...colors]
+            }
+            this.setState({ eventData: dataList, colors, showMore, loading: false })
         }
     }
 
-    event = async (range) => {
-        sendRequest(this, orgEvents({
-            match: {
-                orgs: [isAdmin() ? this.props.org : getOrganization()],
-                types: ["event"],
-                tags: { app: "*" },
+    event = async (range, more) => {
+        this.setState({ loading: true }, () => {
+            sendRequest(this, orgEvents({
+                match: {
+                    orgs: [isAdmin() ? this.props.org : getOrganization()],
+                    types: ["event"],
+                    tags: { app: "*" }
+                },
                 starttime: range.starttime,
                 endtime: range.endtime,
-            },
-            limit: 10
-        }), this.serverResponse)
+                more: more,
+                limit: 10
+            }), this.serverResponse)
+        })
     }
 
+
+
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.org !== this.props.org)
-        {
-            this.setState({eventData: []}, ()=>{
+        if (prevProps.org !== this.props.org) {
+            this.setState({ eventData: [] }, () => {
                 this.event(this.props.range)
             })
         }

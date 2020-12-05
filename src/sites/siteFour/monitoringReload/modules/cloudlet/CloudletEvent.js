@@ -1,13 +1,15 @@
 import React from 'react'
 import EventList from '../../list/EventList'
-import * as serverData from '../../../../../services/model/serverData'
 import { orgEvents } from '../../../../../services/model/events'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
+import { sendRequest } from '../../../../../services/model/serverWorker'
 import randomColor from 'randomcolor'
+import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const cloudletEventKeys = [
-    { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter:true },
-    { label: 'Operator', serverField: 'cloudletorg', summary: true, filter:true },
+    { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter: true },
+    { label: 'Operator', serverField: 'cloudletorg', summary: true, filter: true },
     { label: 'Hostname', serverField: 'hostname', summary: true },
     { label: 'Line no', serverField: 'lineno', summary: true },
     { label: 'Span ID', serverField: 'spanid', summary: true },
@@ -20,8 +22,10 @@ class CloudletEvent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            eventData:[],
-            colors:[]
+            eventData: [],
+            colors: [],
+            showMore: false,
+            loading: false
         }
         this.regions = props.regions
     }
@@ -35,46 +39,71 @@ class CloudletEvent extends React.Component {
         )
     }
 
-    render() {
-        const { eventData, colors } = this.state
-        const { filter } = this.props
-        return eventData.length > 0 ? <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header}/> : 
-        <div className="event-list-main" align="center" style={{textAlign:'center', verticalAlign:'middle'}}>
-            <div align="left" className="event-list-header">
-                <h3>Events</h3>
-            </div>
-            <h3 style={{marginTop:'16vh'}}><b>No Data</b></h3>
-        </div>
+    loadMore = () => {
+        let starttime = this.props.range.starttime
+        let eventData = this.state.eventData
+        let endtime = eventData[eventData.length - 1]['timestamp']
+        this.event({ starttime, endtime }, true)
     }
 
-    event = async (range) => {
-        let mc = await serverData.sendRequest(this, orgEvents({
-            match: {
-                orgs: [isAdmin() ? this.props.org : getOrganization()],
-                types: ["event"],
-                tags: { cloudlet: "*" },
-                names: ["*cloudlet*", "*Cloudlet*"],
-                starttime: range.starttime,
-                endtime: range.endtime,
-            },
-            limit: 10
-        }))
+
+    render() {
+        const { eventData, colors, showMore, loading } = this.state
+        const { filter } = this.props
+        return (
+            <div>
+                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} />
+                {showMore ? <div className='event-list-more' align="center">
+                    {loading ? <CircularProgress size={20} /> :
+                        <Tooltip title='More' onClick={this.loadMore}>
+                            <IconButton>
+                                <ExpandMoreIcon />
+                            </IconButton>
+                        </Tooltip>}
+                </div> : null}
+            </div>
+        )
+
+    }
+
+    serverResponse = (mc) => {
         if (mc && mc.response && mc.response.data) {
+            let more = mc.request.data.more
             let dataList = mc.response.data
+            let showMore = dataList.length === 10
             let colors = randomColor({ count: dataList.length, })
-            this.setState({ eventData: dataList, colors })
+            if (more) {
+                dataList = [...this.state.eventData, ...dataList]
+                colors = [...this.state.colors, ...colors]
+            }
+            this.setState({ eventData: dataList, colors, showMore, loading: false })
         }
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.org !== this.props.org)
-        {
-            this.setState({eventData: []}, ()=>{
+    event = async (range, more) => {
+        this.setState({ loading: true }, () => {
+            sendRequest(this, orgEvents({
+                match: {
+                    orgs: [isAdmin() ? this.props.org : getOrganization()],
+                    types: ["event"],
+                    tags: { cloudlet: "*" },
+                    names: ["*cloudlet*", "*Cloudlet*"],
+                },
+                starttime: range.starttime,
+                endtime: range.endtime,
+                more: more,
+                limit: 10
+            }), this.serverResponse)
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.org !== this.props.org) {
+            this.setState({ eventData: [] }, () => {
                 this.event(this.props.range)
             })
         }
-        if(prevProps.range !== this.props.range)
-        {
+        if (prevProps.range !== this.props.range) {
             this.event(this.props.range)
         }
     }

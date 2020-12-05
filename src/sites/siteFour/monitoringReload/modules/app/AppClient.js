@@ -35,7 +35,7 @@ class MexAppClient extends React.Component {
                 <div align="left" className="event-list-header">
                     <h3>Client API Usage Count</h3>
                 </div>
-                <h3 style={{ marginTop: '16vh' }}><b>No Data</b></h3>
+                <h3 style={{ marginTop: '11vh' }}><b>No Data</b></h3>
             </div>
     }
 
