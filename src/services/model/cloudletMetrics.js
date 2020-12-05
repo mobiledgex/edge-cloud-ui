@@ -23,8 +23,8 @@ export const cloudletMetricsListKeys = [
 
 export const cloudletMetricTypeKeys = [
     { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Usage', position: 6, serverRequest: true },
-    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Usage', position: 10, unit: 1, serverRequest: false },
-    { field: 'mem', serverField: 'utilization', subId: 'memUsed', header: 'Memory Usage', position: 8, unit: 1, serverRequest: false },
+    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Usage', position: 10, unit: 4, serverRequest: false },
+    { field: 'mem', serverField: 'utilization', subId: 'memUsed', header: 'Memory Usage', position: 8, unit: 4, serverRequest: false },
 ]
 
 export const cloudletMetrics = (data, org) => {
