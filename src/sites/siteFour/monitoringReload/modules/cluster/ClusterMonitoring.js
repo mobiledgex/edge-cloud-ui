@@ -55,14 +55,14 @@ class ClusterMonitoring extends React.Component {
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
                     <div style={{ height: 400, marginBottom: 10 }}>
                         <Grid container spacing={1}>
-                            <Grid item xs={9}>
+                            <Grid item xs={12}>
                                 <MexMap data={mapData} />
                             </Grid>
-                            <Grid item xs={3}>
+                            {/* <Grid item xs={3}>
                                 <Card style={{ height: 400, width: '100%' }}>
                                     <ClusterEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                                 </Card>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                         {/* <div style={{ marginBottom: 5 }}></div>
                     <Card>

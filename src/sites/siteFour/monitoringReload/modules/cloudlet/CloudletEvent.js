@@ -52,7 +52,7 @@ class CloudletEvent extends React.Component {
         const { filter } = this.props
         return (
             <div>
-                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} />
+                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320}/>
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20} /> :
                         <Tooltip title='More' onClick={this.loadMore}>

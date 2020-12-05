@@ -59,7 +59,7 @@ class MexAppEvent extends React.Component {
         const { filter } = this.props
         return (
             <div>
-                <EventList eventData={eventData} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105}/>
+                <EventList eventData={eventData} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105} itemExpandSize={350}/>
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20}/> :
                         <Tooltip title='More' onClick={this.loadMore}>
