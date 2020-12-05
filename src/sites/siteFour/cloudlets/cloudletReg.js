@@ -515,6 +515,10 @@ class CloudletReg extends React.Component {
                 if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
                     this.setState({ cloudletManifest: cloudletManifest.response.data })
                 }
+                else
+                {
+                    this.props.onClose(true)  
+                }
             }
             else {
                 await this.loadDefaultData(forms, data)
