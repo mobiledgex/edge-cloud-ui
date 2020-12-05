@@ -51,16 +51,19 @@ class MexAppEvent extends React.Component {
     render() {
         const { eventData, colors, showMore, loading } = this.state
         const { filter } = this.props
-        return <div><EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={clusterEventKeys} header={this.header} itemSize={90}/>
-            {showMore ? <div className='event-list-more' align="center">
-                {loading ? <CircularProgress size={20} /> :
-                    <Tooltip title='More' onClick={this.loadMore}>
-                        <IconButton>
-                            <ExpandMoreIcon />
-                        </IconButton>
-                    </Tooltip>}
-            </div> : null}
-        </div>
+        return (
+            <div>
+                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={clusterEventKeys} header={this.header} itemSize={90} />
+                {showMore ? <div className='event-list-more' align="center">
+                    {loading ? <CircularProgress size={20} /> :
+                        <Tooltip title='More' onClick={this.loadMore}>
+                            <IconButton>
+                                <ExpandMoreIcon />
+                            </IconButton>
+                        </Tooltip>}
+                </div> : null}
+            </div>
+        )
     }
 
     serverResponse = (mc) => {

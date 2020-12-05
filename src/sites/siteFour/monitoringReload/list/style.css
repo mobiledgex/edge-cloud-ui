@@ -15,7 +15,6 @@
 }
 
 .event-list-data{
-    height: calc(33vh - 0px);
     overflow: auto;
 }
 

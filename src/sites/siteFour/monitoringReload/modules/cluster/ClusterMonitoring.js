@@ -49,30 +49,26 @@ class ClusterMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { chartData, avgData, filter, rowSelected, range, minimize, selectedOrg} = this.props
+        const { chartData, avgData, filter, rowSelected, range, minimize, selectedOrg } = this.props
         return (
             filter.parent.id === 'cluster' ?
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={3}>
-                            <Card style={{ height: '100%', width: '100%' }}>
-                                {/* <AppClient regions={this.regions} filter={filter} range={range}/> */}
-                            </Card>
+                    <div style={{ height: 400, marginBottom: 10 }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={9}>
+                                <MexMap data={mapData} />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Card style={{ height: 400, width: '100%' }}>
+                                    <ClusterEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                                </Card>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <MexMap data={mapData} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Card style={{ height: '100%', width: '100%' }}>
-                                <ClusterEvent regions={this.regions} filter={filter} range={range}  org={selectedOrg}/>
-                            </Card>
-                        </Grid>
-                    </Grid>
-                    {/* <div style={{ marginBottom: 5 }}></div>
+                        {/* <div style={{ marginBottom: 5 }}></div>
                     <Card>
                         <ClusterUsage regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                     </Card> */}
-                    <div style={{ marginBottom: 5 }}></div>
+                    </div>
                     <MexChart chartData={chartData} avgData={avgData} filter={filter} rowSelected={rowSelected} style={{ height: 'calc(100vh - 330px)' }} />
                 </div> : null
         )

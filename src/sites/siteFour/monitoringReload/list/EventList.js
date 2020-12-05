@@ -89,7 +89,7 @@ class Events extends React.Component {
         const { expand } = this.state
         const { eventData } = this.props
         return (
-            <div className="event-list-main">
+            <div className="event-list-main" id="event-list">
                 <div align="left" className="event-list-header">
                     <h3>Events</h3>
                 </div>
@@ -98,7 +98,7 @@ class Events extends React.Component {
                         <div>
                             <div className='event-list-data'>
                                 <List dense={false} >
-                                    <VariableSizeList height={250} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
+                                    <VariableSizeList height={300} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
                                         ref={ref => (this.list = ref)}>
                                         {this.renderRow}
                                     </VariableSizeList>
@@ -106,7 +106,7 @@ class Events extends React.Component {
                             </div>
                         </div> :
                         <div align="center">
-                            <h3 style={{ marginTop: '16vh' }}><b>No Data</b></h3>
+                            <h3 style={{ marginTop: '11vh' }}><b>No Data</b></h3>
                         </div>
                 }
             </div>
