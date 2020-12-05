@@ -76,26 +76,27 @@ class AppMonitoring extends React.Component {
         return (
             filter.parent.id === 'appinst' ?
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={3}>
-                            <Card style={{ height: '100%', width: '100%' }}>
-                                <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} />
-                            </Card>
+                    <div style={{ height: 400, marginBottom:10 }}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={3}>
+                                <Card style={{ height: 400, width: '100%' }}>
+                                    <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                                </Card>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <MexMap data={mapData} />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Card style={{ height:400, width: '100%' }}>
+                                    <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                                </Card>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <MexMap data={mapData} />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Card style={{ height: '100%', width: '100%' }}>
-                                <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
-                            </Card>
-                        </Grid>
-                    </Grid>
+                    </div>
                     {/* <div style={{ marginBottom: 5 }}></div>
                     <Card>
                         <AppUsage regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                     </Card> */}
-                    <div style={{ marginBottom: 5 }}></div>
                     <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} />
                 </div> : null
         )

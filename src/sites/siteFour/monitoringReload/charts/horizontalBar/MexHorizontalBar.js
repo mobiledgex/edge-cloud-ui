@@ -138,7 +138,7 @@ class MexHorizontalBar extends React.Component {
                 <div align="left" style={{ marginBottom: 10 }}>
                     <h3>{header}</h3>
                 </div>
-                <div style={{ height: 'calc(32vh - 0px)', overflow: 'auto', width: '23vw' }}>
+                <div style={{ height: 330, overflow: 'auto', width: '23vw' }}>
                     <div style={{ height: this.chartHeight(processedData) }}>
                         <HorizontalBar data={processedData} options={optionsGenerator(this.maxValue)} plugins={plugins} redraw />
                     </div>
