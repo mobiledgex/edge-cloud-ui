@@ -42,7 +42,7 @@ class Events extends React.Component {
 
     getItemSize = (index) => {
         let expand = this.state.expand
-        return expand === index ? 350 : this.props.itemSize
+        return expand === index ? this.props.itemExpandSize : this.props.itemSize
     }
 
     renderRow = (virtualProps) => {
