@@ -139,7 +139,9 @@ export const deleteCloudlet = (data) => {
 }
 
 export const getCloudletManifest = async (self, data, showSpinner) => {
-    let requestData = getKey(data)
+    let requestData = {} 
+    requestData.cloudletkey = getCloudletKey(data)
+    requestData.region = data[fields.region]
     let mcRequest =  await serverData.sendRequest(self, {method: GET_CLOUDLET_MANIFEST, data: requestData, showSpinner:showSpinner})
     return mcRequest
 }
