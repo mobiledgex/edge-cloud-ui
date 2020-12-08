@@ -72,7 +72,7 @@ export function renderTitle(props) {
                      color: 'white'
                  }}
             >
-                {convertToClassification(props.currentClassification)} Billing Log
+                {convertToClassification(props.currentClassification)} Usage Log
 
             </div>
 
