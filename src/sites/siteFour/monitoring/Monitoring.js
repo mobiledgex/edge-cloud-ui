@@ -17,6 +17,7 @@ import * as actions from '../../../actions';
 import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
 import { showOrganizations } from '../../../services/model/organization'
 import sortBy  from 'lodash/sortBy'
+import './common/PageMonitoringStyles.css'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
