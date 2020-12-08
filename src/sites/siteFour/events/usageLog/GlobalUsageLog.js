@@ -19,7 +19,7 @@ import * as constant from '../../../../constant'
 import sortBy from 'lodash/sortBy';
 import './style.css'
 
-const BillingLog = lazy(() => import('./BillingLog'));
+const UsageLog = lazy(() => import('./UsageLog'));
 const drawerWidth = 450
 
 const styles = theme => ({
@@ -69,7 +69,7 @@ const styles = theme => ({
         },
     },
 })
-class GlobalBillingLog extends React.Component {
+class GlobalUsageLog extends React.Component {
     constructor(props) {
         super(props);
         this._isMounted = false;
@@ -116,7 +116,7 @@ class GlobalBillingLog extends React.Component {
                         }),
                     }} anchor={'right'} open={isOpen}>
                     <Suspense fallback={<div>loading</div>}>
-                        <BillingLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
+                        <UsageLog close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
                     </Suspense>
                 </Drawer>
             </React.Fragment>
@@ -227,7 +227,7 @@ class GlobalBillingLog extends React.Component {
             }
         }
 
-        //enable interval only when billing log is visible
+        //enable interval only when usage log is visible
         if (preState.isOpen !== this.state.isOpen) {
             if (this._isMounted && this.state.isOpen) {
                 this.startRange = cloneDeep(this.endRange)
@@ -279,4 +279,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(withStyles(styles)(GlobalBillingLog)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(withStyles(styles)(GlobalUsageLog)));
