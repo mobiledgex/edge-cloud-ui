@@ -22,12 +22,9 @@ const canEdit = (action) => {
 }
 
 const getHeight = (props) => {
+    let tableHeight = props.tableHeight
     let height = props.isMap ? 579 : 179
-    var customToolbarEle = document.getElementById('mex_list_view_custom_toolbar')
-    if (customToolbarEle) {
-        height = height + customToolbarEle.clientHeight
-    }
-    return `calc(100vh - ${height}px)`
+    return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
 }
 
 class ListViewer extends React.Component {

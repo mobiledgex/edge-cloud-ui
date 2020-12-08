@@ -3,7 +3,7 @@ import { SHOW_ALERT } from './endpoints'
 import { ALERT_SHOW_RECEIVER, ALERT_DELETE_RECEIVER, ALERT_CREATE_RECEIVER } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK } from '../../constant'
+import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 let fields = formatter.fields
@@ -172,6 +172,26 @@ export const deleteAlertReceiver = (data) => {
 }
 
 export const showAlerts = (data) => {
+    let userRole = formatter.getUserRole()
+    let org = formatter.getOrganization()
+    if(userRole && org)
+    {
+        if(userRole.includes(DEVELOPER))
+        {
+            let labels = {}
+            labels.apporg = org
+            labels.clusterorg = org
+            data.alert = {labels}
+        }
+        else if(userRole.includes(OPERATOR))
+        {
+            let labels = {}
+            labels.cloudletorg = org
+            data.alert = {labels}
+        }
+        
+    }
+
     return { method: SHOW_ALERT, data: data, keys: showAlertKeys() }
 }
 
