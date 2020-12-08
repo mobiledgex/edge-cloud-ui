@@ -10,6 +10,7 @@ import { sendRequest } from '../../../services/model/serverWorker'
 import * as constant from '../../../constant'
 import AlertLocal from './AlertLocal'
 import './style.css'
+import { getOrganization } from '../../../services/model/format';
 
 class AlertGlobal extends React.Component {
 
@@ -86,7 +87,7 @@ class AlertGlobal extends React.Component {
         }
     }
 
-    fetchdata = ()=>{
+    fetchdata = () => {
         this.regions.map(region => {
             sendRequest(this, showAlerts({ region }), this.serverResponse)
         })
@@ -99,14 +100,21 @@ class AlertGlobal extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchdata()
+        if (getOrganization()) {
+            this.fetchdata()
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
-            clearInterval(this.intervalId)
-            this.setState({dataList : {}})
-            this.fetchdata()
+            if (this.props.userRole.includes(constant.ADMIN)) {
+                this.fetchdata()
+            }
+            else {
+                clearInterval(this.intervalId)
+                this.setState({ dataList: {} })
+                this.fetchdata()
+            }
         }
     }
 
