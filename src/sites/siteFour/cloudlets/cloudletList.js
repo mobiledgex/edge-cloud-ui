@@ -11,6 +11,7 @@ import ClouldletReg from './cloudletReg';
 import * as constant from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
+import {Icon, Popup} from 'semantic-ui-react';
 import {HELP_CLOUDLET_LIST} from "../../../tutorial";
 
 class CloudletList extends React.Component {
@@ -61,6 +62,10 @@ class CloudletList extends React.Component {
         return valid
     }
 
+    customStream = (data)=>{
+        return data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== 2
+    }
+
 
     requestInfo = () => {
         return ({
@@ -69,6 +74,7 @@ class CloudletList extends React.Component {
             nameField: fields.cloudletName,
             requestType: [showCloudlets, showCloudletInfos],
             streamType: streamCloudlet,
+            customStream : this.customStream,
             isRegion: true,
             isMap: true,
             sortBy: [fields.region, fields.cloudletName],
@@ -126,6 +132,18 @@ class CloudletList extends React.Component {
         )
     }
 
+    showProgress = (data, isDetailView)=>{
+        let progressRender = null
+        if (!isDetailView && data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== 2) {
+            progressRender = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
+        }
+        else
+        {
+            progressRender = shared.showProgress(data, isDetailView)
+        }
+        return progressRender
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -133,7 +151,7 @@ class CloudletList extends React.Component {
                 key.customizedData = this.getCloudletInfoState
             }
             else if (key.field === fields.state) {
-                key.customizedData = shared.showProgress
+                key.customizedData = this.showProgress
             }
         }
     }
