@@ -1,5 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../../../actions';
 import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -15,7 +17,7 @@ class AlertGlobal extends React.Component {
         super(props)
         this.state = {
             anchorEl: null,
-            dataList: [],
+            dataList: {},
             showDot: false
         }
         this.intervalId = undefined
@@ -65,10 +67,10 @@ class AlertGlobal extends React.Component {
     serverResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let data = mc.response.data
+            let region = mc.request.data.region
             this.setState(prevState => {
                 let dataList = prevState.dataList
-                dataList = data
-                let latestData = dataList[dataList.length - 1]
+                let latestData = data[data.length - 1]
                 let activeAt = localStorage.getItem('LatestAlert')
                 let showDot = false
                 if (activeAt) {
@@ -77,14 +79,14 @@ class AlertGlobal extends React.Component {
                 else {
                     showDot = true
                 }
-
                 localStorage.setItem('LatestAlert', latestData.activeAt)
+                dataList[region] = data
                 return { dataList, showDot }
             })
         }
     }
 
-    componentDidMount() {
+    fetchdata = ()=>{
         this.regions.map(region => {
             sendRequest(this, showAlerts({ region }), this.serverResponse)
         })
@@ -96,6 +98,18 @@ class AlertGlobal extends React.Component {
         }, 60 * 1000);
     }
 
+    componentDidMount() {
+        this.fetchdata()
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
+            clearInterval(this.intervalId)
+            this.setState({dataList : {}})
+            this.fetchdata()
+        }
+    }
+
     componentWillUnmount() {
         if (this.intervalId) {
             clearInterval(this.intervalId)
@@ -103,4 +117,12 @@ class AlertGlobal extends React.Component {
     }
 }
 
-export default withRouter(AlertGlobal)
+
+
+function mapStateToProps(state) {
+    return {
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+    }
+}
+
+export default withRouter(connect(mapStateToProps, null)(AlertGlobal));

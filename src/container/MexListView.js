@@ -299,7 +299,8 @@ class MexListView extends React.Component {
                     groupActionMenu={this.props.groupActionMenu}
                     groupActionClose={this.groupActionClose}
                     dropList={this.state.dropList}
-                    isDropped={this.isDropped} />
+                    isDropped={this.isDropped}
+                    tableHeight = {this.props.tableHeight} />
             </div>)
     }
 
