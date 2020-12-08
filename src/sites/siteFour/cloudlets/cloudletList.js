@@ -134,7 +134,7 @@ class CloudletList extends React.Component {
 
     showProgress = (data, isDetailView)=>{
         let progressRender = null
-        if (!isDetailView && data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== 2) {
+        if (!isDetailView && this.customStream(data)) {
             progressRender = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
         }
         else
