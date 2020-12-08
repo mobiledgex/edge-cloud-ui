@@ -47,7 +47,7 @@ import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
-import PageMonitoringMain from '../monitoring/common/PageMonitoringMain';
+import Monitoring1 from '../monitoring/common/PageMonitoringMain';
 import Monitoring from '../monitoringReload/Monitoring';
 import Alerts from '../alerts/receiver/AlertReceiver';
 
@@ -155,8 +155,7 @@ const options = [
             { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: ['AdminManager', 'DeveloperManager'] },
         ]
     },
-    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <PageMonitoringMain />, roles: ['AdminManager', 'DeveloperManager', 'OperatorManager'] },
-    { label: 'Reload', icon: <TvOutlinedIcon />, pg: 'Reload', pageId: constant.PAGE_MONITORING_RELOAD, page: <Monitoring />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
+    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <Monitoring />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
     { label: 'Alert Receivers', icon: <NotificationsNoneOutlined />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] }
 ]
 

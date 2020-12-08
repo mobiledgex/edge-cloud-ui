@@ -1,11 +1,21 @@
-import {convertToMegaGigaForNumber} from "../sites/siteFour/monitoring/service/PageMonitoringCommonService";
 import randomColor from 'randomcolor'
 
 let moreColors = randomColor({
     count: 500,
 });
 
-
+export const convertToMegaGigaForNumber = (bytes) => {	
+    let marker = 1024; // Change to 1000 if required	
+    let decimal = 0; // Change as required	
+    let kilo = marker; // One Kilobyte is 1024 bytes	
+    let mega = marker * marker; // One MB is 1024 KB	
+    let giga = marker * marker * marker; // One GB is 1024 MB	
+    let tera = marker * marker * marker * marker; // One TB is 1024 GB	
+    if (bytes < kilo) return bytes;	
+    else if (bytes < mega) return (bytes / kilo).toFixed(decimal) + " K";	
+    else if (bytes < giga) return (bytes / mega).toFixed(decimal) + " M";	
+    else return (bytes / giga).toFixed(decimal) + " G";	
+}
 export const CHART_COLOR_LIST = ['#DE0000', '#FF9600', '#FFF600', '#5BCB00', '#0096FF', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 export const CHART_COLOR_LIST2 = ['#65DEF1', '#A8DCD1', '#DCE2C8', '#F96900', '#F17F29', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
 export const CHART_COLOR_LIST3 = ['#008000', '#d7fff1', '#556B2F', '#32CD32', '#8cd790', '#66D9EF', '#E38B9E', '#8591FF', '#BB1924', '#98D259', '#E3A88B', '#D11AC6', '#7DD11A', '#D1521A', '#008CF8', '#521AD1', '#7D0000', '#EB155C', '#EBEE04', '#1CA41F', '#FF0037', '#C092FF', '#999900', '#E8FFAA', '#FFBA99'].concat(moreColors)
