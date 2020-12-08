@@ -149,7 +149,7 @@ class MexCalendar extends React.Component {
                     <TimelineHeaders>
                         <SidebarHeader>
                             {({ getRootProps }) => {
-                                return <div {...getRootProps()} style={{ backgroundColor: '#1E2123', width: 150, padding: 20, borderBottom: '1px solid #BBBBBB' }}>Billing Log</div>
+                                return <div {...getRootProps()} style={{ backgroundColor: '#1E2123', width: 150, padding: 20, borderBottom: '1px solid #BBBBBB' }}>Usage Log</div>
                             }}
                         </SidebarHeader>
                         <DateHeader unit="primaryHeader" style={{ backgroundColor: '#1E2123' }} />
