@@ -3,7 +3,9 @@ import {
     SET_LINE_COLOR,
     SET_MAP_TYLE_LAYER
 } from "../actions/ActionTypes";
-import {DARK_CLOUTLET_ICON_COLOR, DARK_LINE_COLOR} from "../shared/Constants";
+
+export const DARK_LINE_COLOR = '#fffc51'
+export const DARK_CLOUTLET_ICON_COLOR = 'green'
 
 const mapTileList = [
     {

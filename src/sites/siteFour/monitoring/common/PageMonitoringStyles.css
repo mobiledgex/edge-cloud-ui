@@ -1,107 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Ubuntu|Acme|Roboto|Bungee|Barlow+Semi+Condensed|Candal|Encode+Sans+Condensed|Righteous|Karla|Roboto+Condensed&display=swap');
 
 
-.chartIcon {
-    width: 120px;
-    height: 100px;
-}
-
-.dropdown .text {
-    white-space: nowrap;
-    color: white !important;
-}
-
-.ant-select ant-select-enabled {
-    background-color: black;
-}
-
-.ant-select-dropdown-menu-item {
-    background-color: black;
-}
-
-.mon_tr {
-    height: 35px;
-}
-
-.MuiPaper-root {
-    color: #fff;
-    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    background-color: #0c0a0a;
-}
-
-.content_title_wrap {
-    display: flex;
-    width: 100%;
-    height: 32px !important;
-    flex-direction: row;
-    align-items: flex-start;
-    padding-left: 20px;
-}
-
-.content_title_label2 {
-    display: flex;
-    align-items: flex-end;
-    font-size: 25px;
-    justify-content: flex-end;
-    margin-left: 5px;
-}
-
-.table_row {
-    background-color: #00ffcc !important;
-}
-
-
-/*DESC:###################*/
-/*DESC:###################*/
-/*DESC:###################*/
-
-.ant-dropdown-menu-submenu-arrow {
-    display: none;
-}
-
-.gridTableCell:hover {
-    background-color: dimgrey;
-}
-
-tbody:hover {
-    background-color: transparent;
-}
-
-.tooltip001 {
-    font-size: 18px;
-    background-color: transparent;
-    color: white;
-    border: 0px none rgba(255, 255, 255, 0.3);
-    font-weight: bold;
-    font-style: italic;
-}
-
-
-/*dropdown start*/
-.selected {
-    font-weight: normal !important;
-    font-size: 11px !important;
-}
-
-.item {
-    font-weight: normal !important;
-    font-size: 11px !important;
-}
-
-/*dropdown end*/
-
-#button-wrapper {
-    position: absolute;
-    bottom: 0px;
-    width: 20%;
-    border: 1px solid black;
-    background-color: red;
-}
-
-.tooltipclass {
-    z-index: 100;
-}
-
 
 .leaflet-container {
     width: 100%;
@@ -238,115 +137,7 @@ tbody:hover {
 }
 
 
-/*######################################################################*/
-/*#########@todo modal popup style######*/
-/*######################################################################*/
 
-.ant-modal {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 14px;
-    font-variant: tabular-nums;
-    line-height: 1.5;
-    list-style: none;
-    -webkit-font-feature-settings: 'tnum';
-    font-feature-settings: 'tnum';
-    position: relative;
-    width: auto;
-    margin: 0 auto;
-    pointer-events: none;
-}
-
-.ant-modal-wrap {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1200;
-    overflow: auto;
-    outline: 0;
-    -webkit-overflow-scrolling: touch;
-}
-
-.ant-modal-title {
-    margin: 0;
-    color: rgba(0, 0, 0, 0.85);
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 22px;
-    word-wrap: break-word;
-}
-
-.ant-modal-content {
-    position: relative;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 0;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    pointer-events: auto;
-}
-
-.ant-modal-close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 10;
-    padding: 0;
-    color: rgba(0, 0, 0, 0.45);
-    font-weight: 700;
-    line-height: 1;
-    text-decoration: none;
-    background: transparent;
-    border: 0;
-    outline: 0;
-    cursor: pointer;
-    -webkit-transition: color 0.3s;
-    transition: color 0.3s;
-}
-
-.ant-modal-close-x {
-    display: block;
-    width: 56px;
-    height: 56px;
-    font-size: 16px;
-    font-style: normal;
-    line-height: 56px;
-    text-align: center;
-    text-transform: none;
-    text-rendering: auto;
-}
-
-.ant-modal-close:focus,
-.ant-modal-close:hover {
-    color: rgba(0, 0, 0, 0.75);
-    text-decoration: none;
-}
-
-.ant-modal-header {
-    padding: 16px 24px;
-    color: rgba(0, 0, 0, 0.65);
-    background: #fff;
-    border-bottom: 1px solid #e8e8e8;
-    border-radius: 4px 4px 0 0;
-}
-
-.ant-modal-body {
-    box-shadow: 0 4px 50px black;
-}
-
-
-.react-grid-layout {
-    position: relative;
-    -webkit-transition: height 200ms ease;
-    transition: height 200ms ease;
-    background-color: #292c33;
-}
 
 .leaflet-popup-content {
     width: 700px;
@@ -436,21 +227,6 @@ tbody:hover {
     justify-content: center;
 }
 
-.ant-radio-inner {
-    position: relative;
-    top: 0;
-    left: 0;
-    display: block;
-    width: 16px;
-    height: 16px;
-    background-color: #26483300;
-    border-color: #9f9fb1;
-    border-style: solid;
-    border-width: 1px;
-    border-radius: 100px;
-    transition: all 0.3s;
-}
-
 .center002 {
     display: flex;
     align-content: center;
@@ -472,10 +248,6 @@ tbody:hover {
     background-color: rgba(68, 119, 0, 1) !important;
 }
 
-.bubble-chart {
-    margin-left: -100px;
-}
-
 /*.ui.selection.active.dropdown .menu {
     border-color: #96c8da;
     box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
@@ -492,18 +264,6 @@ tbody:hover {
 
 .version_display {
     font-size: 10pt;
-}
-
-/*
-.ui.selection.active.dropdown .menu {
-    border-top: solid 1px rgba(255,255,255,.05) !important;
-    min-width: 300px;
-}
-*/
-
-
-.ant-select-tree li .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
-    background-color: darkslategrey !important;
 }
 
 
@@ -535,10 +295,6 @@ tr td {
     color: white !important;
 }
 
-.ant-select-dropdown-menu-item {
-    /* line-height: 15px !important;*/
-}
-
 .gutterRow {
     display: flex;
     cursor: pointer;
@@ -567,52 +323,12 @@ tr td {
     min-width: 500px !important;
 }
 
-.ant-select-tree-node-content-wrapper .ant-select-tree-node-content-wrapper-normal {
-    color: red;
-}
-
-.ant-select-tree-dropdown .ant-select-dropdown-search .ant-select-search__field {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 4px 7px;
-    border: 1px solid #17171f;
-    border-radius: 4px;
-    outline: none;
-    background-color: rgba(0, 0, 0, 0.6);
-}
-
-.ant-select-tree {
-    background-color: rgba(0, 0, 0, 0.3);
-    border-color: #96c8da;
-    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15);
-}
-
 .tooltipForOperMarker .leaflet-popup-content-wrapper {
     width: 120px;
     border-radius: 0px;
 }
 
 
-/*dropdown-menu*/
-/*dropdown-menu*/
-/*dropdown-menu*/
-.ant-select-dropdown-menu {
-    max-height: 530px;
-    margin-bottom: 0;
-    padding: 4px 0;
-    padding-left: 0;
-    overflow: auto;
-    list-style: none;
-    outline: none;
-}
-
-.ant-select-selection {
-    background-color: #000000 !important;
-}
-
-.ant-select-dropdown-menu-item-active {
-    background-color: #373f4f !important;
-}
 
 
 .oper_popup_div {
@@ -674,45 +390,6 @@ tr td {
 
 .react-ripples {
     width: auto;
-}
-
-.ant-progress-circle .ant-progress-text {
-    font-size: 18px;
-}
-
-
-/*todo: ###############################*/
-/*todo: 켈린더 dateTime picker 관련 style*/
-/*todo: ###############################*/
-
-.ant-calendar-picker-input.ant-input.ant-input-disabled {
-    line-height: 1.5;
-    height: 30px;
-    background-color: #1e2124;
-    margin-top: 10px;
-}
-
-.ant-calendar-picker-input.ant-input {
-    line-height: 1.5;
-    height: 30px;
-    background-color: black;
-    margin-top: 10px;
-}
-
-.ant-calendar {
-    background-color: #17171f;
-    background-clip: padding-box;
-    border: 1px solid #fff;
-    border-radius: 4px;
-    outline: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.ant-tag-blue {
-    color: #1890ff;
-    background: #e6f7ff;
-    font-family: Roboto;
-    border-color: blue;
 }
 
 .tooltip2 {
@@ -790,111 +467,6 @@ tr td {
 
 }
 
-
-.ant-calendar-range-picker-input[disabled] {
-    cursor: not-allowed;
-    color: white !important;
-}
-
-.ant-calendar-range-picker-input {
-    color: white !important;
-}
-
-.ant-calendar {
-    border: 1px solid #1cecff;
-}
-
-.ant-input-disabled {
-    background: #1e1e1e !important;
-}
-
-
-.ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
-    background-color: #3f4338;
-}
-
-.ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
-    color: #3F25BD;
-    background: #f8fced;
-    border-color: #3F25BD;
-    cursor: pointer;
-}
-
-.ant-picker-cell-in-view.ant-picker-cell-in-range::before {
-    background: #2A2C33;
-}
-
-.ant-picker-cell-range-hover-end {
-    background-color: #2A2C33;
-}
-
-.ant-picker-cell-in-range {
-    background-color: #2A2C33;
-}
-
-.ant-picker-cell-inner {
-    /*background-color: #2A2C33;*/
-}
-
-.ant-picker-cell-selected {
-    background-color: #2A2C33;
-
-}
-
-.ant-picker-cell-in-view {
-    color: #ebe9f2;
-}
-
-.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-    color: #fff;
-    font-weight: 600;
-    background-color: #5c5c58;
-}
-
-.ant-select-selection-item {
-    background-color: #23232E;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-}
-
-
-/*todo:####################*/
-/*todo:tresSelectCheckbox*/
-/*todo:####################*/
-.ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner {
-    background-color: lightgrey !important;
-    border-color: lightgrey !important;
-}
-
-.ant-select-tree-checkbox-wrapper:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox:hover .ant-select-tree-checkbox-inner, .ant-select-tree-checkbox-input:focus + .ant-select-tree-checkbox-inner {
-    border-color: lightgrey;
-}
-
-.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
-    background-color: lightgrey;
-}
-
-.ant-select-selection-item {
-    font-size: 8pt;
-    text-overflow: ellipsis;
-    width: 105px;
-    padding: 0 5px;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.ant-select-multiple .ant-select-selection-item {
-
-    background: #17171f;
-    border: 1px solid #17171f;
-
-}
-
-.ant-select-tree-checkbox .ant-select-tree-checkbox-checked {
-    color: red;
-}
-
 .react-grid-layout {
     position: relative;
     transition: height 200ms ease;
@@ -923,71 +495,9 @@ tr td {
     scrollbar-width: thin !important;
 }
 
-.ant-select-selector {
-    height: 30px !important;
-}
-
-.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
-    background-color: #F4F9EF;
-}
-
-
-.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
-    background-color: #F4F9EF !important;
-}
-
-
-.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-    background-color: dimgrey !important;
-}
-
-
-.ant-select-multiple .ant-select-selection-item {
-    background: #242323 !important;
-    border: 1px solid #55616b !important;
-    font-size: 8pt;
-    border-radius: 2px;
-    color: white;
-}
-
-
-.ant-select-disabled.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
-    background: #23232E !important;
-}
-
-
-.ant-select-item-option-content {
-    font-size: 13px !important;
-}
-
 .dropDown {
     font-weight: normal;
     font-family: "Roboto Light";
-}
-
-.ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
-    background-color: #404040 !important;
-}
-
-.ant-select-item .ant-select-item-option {
-    flex: auto;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 9px;
-}
-
-.ant-select-dropdown-menu-item {
-    font-size: 9pt !important;
-}
-
-.ant-tag-blue {
-    background: grey !important;
-    color: lawngreen !important;
-}
-
-.ant-picker-cell-in-view.ant-picker-cell-in-range::before {
-    background: #96bd2b;
 }
 
 .makeTopRightMenuActionButtonDiv {
@@ -1024,23 +534,6 @@ tr td {
     text-align: center;
 }
 
-.ant-picker-range {
-    background-color: #23232E !important;
-}
-
-.ant-progress-text {
-    font-size: 0.6em !important;
-    font-style: normal;
-    line-height: 1;
-    font-weight: 600;
-}
-
-/*
-.ant-select-selection-item {
-    opacity: 0.9;
-    font-size: 15px !important;
-}*/
-
 
 .chartWrapper > canvas {
     position: absolute;
@@ -1049,48 +542,7 @@ tr td {
     pointer-events: none;
 }
 
-/*canvas {
-    height: 190px !important;
-}*/
-.chartWrapper {
-    position: relative;
-    background: transparent;
-}
 
-.chartAreaWrapper {
-    width: 425px;
-    height: 210px;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    background: transparent;
-}
-
-.chartWrapperForBig {
-    position: relative;
-    background: transparent;
-}
-
-.chartAreaWrapperForBig {
-    width: 100%;
-    overflow-x: scroll;
-    background: transparent;
-}
-
-#chartjs-tooltip {
-    line-height: normal;
-    opacity: 1;
-    padding: .3em;
-    pointer-events: none;
-    position: fixed;
-    text-align: center;
-    transform: translate(-50%, 0);
-    transition: all .1s ease;
-}
-
-
-.ant-radio-wrapper {
-    font-size: 12px !important;
-}
 
 .add_item_popup_outer {
     border-width: 1px;

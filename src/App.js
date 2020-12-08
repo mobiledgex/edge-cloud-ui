@@ -12,7 +12,7 @@ import './app.css';
 import './css/index.css';
 import './css/pages/audit.css';
 import './css/pages/cloudletPool.css';
-import './css/pages/monitoring.css';
+// import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
