@@ -158,9 +158,7 @@ class VerticalStepper extends React.Component {
                     valid = true
                 }
             }
-            if (valid) {
-                serverData.sendWSRequest(this, stream(data), this.requestResponse)
-            }
+            return valid
         }
     }
 
@@ -169,8 +167,17 @@ class VerticalStepper extends React.Component {
         if (stream) {
             for (let i = 0; i < this.props.dataList.length; i++) {
                 let data = this.props.dataList[i];
+                let forceStream = false
+                let valid = false
                 if (data[fields.state] !== 5) {
-                    this.sendWSRequest(data)
+                    valid = this.sendWSRequest(data, forceStream)
+                }
+                if(this.props.customStream)
+                {
+                    forceStream = this.props.customStream(data)
+                }
+                if (valid || forceStream) {
+                    serverData.sendWSRequest(this, stream(data), this.requestResponse)
                 }
             }
         }
