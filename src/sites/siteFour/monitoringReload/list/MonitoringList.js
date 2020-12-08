@@ -34,7 +34,6 @@ const MexChartList = (props) => {
   const rowValue = (row, value) => {
     let data = value[row.field]
     if (data && row.isArray) {
-      console.log('Rahul1234', data)
       return data[props.filter.summary.position]
     }
     else {
