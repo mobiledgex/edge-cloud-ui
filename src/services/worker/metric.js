@@ -74,7 +74,10 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
         }
         else {
             let positionValue = value[metric.position] ? value[metric.position] : 0
-            avgValues[metric.field] = [metric.unit ? unit(metric.unit, positionValue) : positionValue]
+            let positionmaxValue = value[metric.position+1] ? value[metric.position+1] : 0
+            let convertedMaxValue = metric.unit ? unit(metric.unit, positionmaxValue) : positionmaxValue
+            let convertedValue = metric.unit ? unit(metric.unit, positionValue) : positionValue
+            avgValues[metric.field] = `${convertedValue} / ${convertedMaxValue}`
         }
         
         if(key.includes('mexprometheusappname') || key.includes('envoyapp'))

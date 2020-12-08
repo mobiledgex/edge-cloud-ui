@@ -16,14 +16,14 @@ export const cloudletMetricsListKeys = [
     { field: 'region', label: 'Region', sortable: true, visible: true },
     { field: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true },
     { field: 'cloudletorg', label: 'Operator', sortable: true, visible: true },
-    { field: 'cpu', label: 'vCpu Usage', sortable: true, visible: true, isArray: true },
-    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
-    { field: 'mem', label: 'Memory Usage', sortable: true, visible: true, isArray: true },
+    { field: 'cpu', label: 'vCpu Usage', sortable: true, visible: true },
+    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true },
+    { field: 'mem', label: 'Memory Usage', sortable: true, visible: true },
 ]
 
 export const cloudletMetricTypeKeys = [
     { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Usage', position: 6, serverRequest: true },
-    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Usage', position: 10, unit: 4, serverRequest: false },
+    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Usage', position: 10, unit: 5, serverRequest: false },
     { field: 'mem', serverField: 'utilization', subId: 'memUsed', header: 'Memory Usage', position: 8, unit: 4, serverRequest: false },
 ]
 
