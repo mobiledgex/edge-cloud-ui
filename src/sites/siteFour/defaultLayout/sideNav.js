@@ -47,8 +47,7 @@ import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
 import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
-import Monitoring1 from '../monitoring/common/PageMonitoringMain';
-import Monitoring from '../monitoringReload/Monitoring';
+import Monitoring from '../monitoring/Monitoring';
 import Alerts from '../alerts/receiver/AlertReceiver';
 
 import { Collapse, Tooltip } from '@material-ui/core';
