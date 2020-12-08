@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, isViewer } from '../../../services/model/format';
+import { fields, isViewer, getUserRole } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
@@ -19,7 +19,8 @@ class OrganizationList extends React.Component {
         super(props);
         this._isMounted = false
         this.state = {
-            currentView: null
+            currentView: null,
+            tableHeight: isViewer() ? undefined : 280
         }
         this.action = '';
         this.data = {}
@@ -45,7 +46,7 @@ class OrganizationList extends React.Component {
 
     customToolbar = () =>
         (
-            isViewer() ? null : <Box display='flex' id="mex_list_view_custom_toolbar">
+            isViewer() ? null : <Box display='flex'>
                 <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
                     <CardHeader
                         avatar={
@@ -145,6 +146,7 @@ class OrganizationList extends React.Component {
                 }
             }
         }
+        this.setState({tableHeight : isViewer() ? undefined : 280})
     }
     /*
         Manage Block
@@ -173,10 +175,11 @@ class OrganizationList extends React.Component {
     }
 
     render() {
+        const {tableHeight} = this.state
         return (
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%', height: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar} />
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight}/>
                 </div>
         )
     }

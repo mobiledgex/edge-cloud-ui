@@ -1,5 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../../../actions';
 import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -84,7 +86,7 @@ class AlertGlobal extends React.Component {
         }
     }
 
-    componentDidMount() {
+    fetchdata = ()=>{
         this.regions.map(region => {
             sendRequest(this, showAlerts({ region }), this.serverResponse)
         })
@@ -96,6 +98,18 @@ class AlertGlobal extends React.Component {
         }, 60 * 1000);
     }
 
+    componentDidMount() {
+        this.fetchdata()
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
+            clearInterval(this.intervalId)
+            this.setState({dataList : []})
+            this.fetchdata()
+        }
+    }
+
     componentWillUnmount() {
         if (this.intervalId) {
             clearInterval(this.intervalId)
@@ -103,4 +117,12 @@ class AlertGlobal extends React.Component {
     }
 }
 
-export default withRouter(AlertGlobal)
+
+
+function mapStateToProps(state) {
+    return {
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+    }
+}
+
+export default withRouter(connect(mapStateToProps, null)(AlertGlobal));
