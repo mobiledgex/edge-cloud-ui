@@ -57,8 +57,7 @@ export const getKey = (data, isCreate) => {
             infraConfig = infraConfig ? infraConfig : {}
             infraConfig.external_network_name = data[fields.infraExternalNetworkName]
         }
-        if(infraConfig)
-        {
+        if (infraConfig) {
             cloudlet.infra_config = infraConfig
         }
 
@@ -69,42 +68,64 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const multiDataRequest = (keys, mcRequestList) => {
-    let cloudletList = [];
-    let cloudletInfoList = [];
-    for (let i = 0; i < mcRequestList.length; i++) {
-        let mcRequest = mcRequestList[i];
-        let request = mcRequest.request;
-        if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
-            cloudletList = mcRequest.response.data
-        }
-        else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
-            cloudletInfoList = mcRequest.response.data
-        }
+export const multiDataRequest = (keys, mcRequestList, specific) => {
+    if (specific) {
+        let newData = mcRequestList.new
+        let oldData = mcRequestList.old
+        newData[fields.uuid] = oldData[fields.uuid]
+        newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
+        newData = customData(newData)
+        return newData
     }
-    if (cloudletList && cloudletList.length > 0) {
-        for (let i = 0; i < cloudletList.length; i++) {
-            let cloudlet = cloudletList[i]
-            for (let j = 0; j < cloudletInfoList.length; j++) {
-                let cloudletInfo = cloudletInfoList[j]
-                if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                    cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? 999 : cloudletInfo[fields.state]
+    else {
+        let cloudletList = [];
+        let cloudletInfoList = [];
+        for (let i = 0; i < mcRequestList.length; i++) {
+            let mcRequest = mcRequestList[i];
+            let request = mcRequest.request;
+            if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
+                cloudletList = mcRequest.response.data
+            }
+            else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
+                cloudletInfoList = mcRequest.response.data
+            }
+        }
+        if (cloudletList && cloudletList.length > 0) {
+            for (let i = 0; i < cloudletList.length; i++) {
+                let cloudlet = cloudletList[i]
+                for (let j = 0; j < cloudletInfoList.length; j++) {
+                    let cloudletInfo = cloudletInfoList[j]
+                    if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
+                        cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? 999 : cloudletInfo[fields.state]
+                    }
                 }
             }
         }
+        return cloudletList;
     }
-    return cloudletList;
 }
 
-export const showCloudlets = (data) => {
+export const showCloudlets = (data, specific) => {
+    let requestData = {}
     let method = SHOW_ORG_CLOUDLET
     if (formatter.isAdmin()) {
         method = SHOW_CLOUDLET;
     }
-    else {
-        data.org = formatter.getOrganization()
+    if (specific) {
+        let cloudlet = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
+        requestData = {
+            uuid: data.uuid,
+            region: data.region,
+            cloudlet
+        }
     }
-    return { method: method, data: data, keys : keys()}
+    else {
+        if (!formatter.isAdmin()) {
+            data.org = formatter.getOrganization()
+        }
+        requestData = data
+    }
+    return { method: method, data: requestData, keys: keys() }
 }
 
 export const showOrgCloudlets = (data) => {
@@ -139,24 +160,24 @@ export const deleteCloudlet = (data) => {
 }
 
 export const getCloudletManifest = async (self, data, showSpinner) => {
-    let requestData = {} 
+    let requestData = {}
     requestData.cloudletkey = getCloudletKey(data)
     requestData.region = data[fields.region]
-    let mcRequest =  await serverData.sendRequest(self, {method: GET_CLOUDLET_MANIFEST, data: requestData, showSpinner:showSpinner})
+    let mcRequest = await serverData.sendRequest(self, { method: GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
     return mcRequest
 }
 
 export const streamCloudlet = (data) => {
-    let requestData = {region : data[fields.region], cloudletkey : getCloudletKey(data)}
+    let requestData = { region: data[fields.region], cloudletkey: getCloudletKey(data) }
     return { uuid: data.uuid, method: STREAM_CLOUDLET, data: requestData }
 }
 
 
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group:true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group:true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
     { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
     { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
@@ -173,11 +194,11 @@ export const keys = () => ([
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
-    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
-    { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name'},
-    { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name'},
-    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView : false},
-    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML},
+    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access' },
+    { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
+    { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
+    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
+    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }

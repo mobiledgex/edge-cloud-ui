@@ -84,62 +84,89 @@ export const getKey = (data, isCreate) => {
   })
 }
 
-export const multiDataRequest = (keys, mcRequestList) => {
-  let appInstList = [];
-  let appList = [];
-  let cloudletInfoList = [];
-  for (let i = 0; i < mcRequestList.length; i++) {
-    let mcRequest = mcRequestList[i];
-    let request = mcRequest.request;
-    if (request.method === SHOW_APP_INST) {
-      appInstList = mcRequest.response.data
-    }
-    else if (request.method === SHOW_APP) {
-      appList = mcRequest.response.data
-    }
-    else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
-      cloudletInfoList = mcRequest.response.data
-    }
+export const multiDataRequest = (keys, mcRequestList, specific) => {
+  if (specific) {
+    let oldData = mcRequestList.old
+    let newData = mcRequestList.new
+    newData[fields.uuid] = oldData[fields.uuid]
+    newData[fields.accessType] = oldData[fields.accessType]
+    newData[fields.autoPolicyName] = oldData[fields.autoPolicyName]
+    newData[fields.deployment] = oldData[fields.deployment]
+    newData[fields.updateAvailable] = oldData[fields.updateAvailable]
+    newData[fields.appRevision] = oldData[fields.appRevision]
+    newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
+    newData = customData(newData)
+    return newData
   }
-  if (appInstList && appInstList.length > 0) {
-    for (let i = 0; i < appInstList.length; i++) {
-      let appInst = appInstList[i]
-      for (let j = 0; j < appList.length; j++) {
-        let app = appList[j]
-        if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
-          appInst[fields.autoPolicyName] = app[fields.autoPolicyName] ? app[fields.autoPolicyName] : 'NA';
-          appInst[fields.deployment] = app[fields.deployment];
-          appInst[fields.accessType] = app[fields.accessType];
-          appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
-          appInst[fields.appRevision] = app[fields.revision]
-          break;
-        }
+  else {
+    let appInstList = [];
+    let appList = [];
+    let cloudletInfoList = [];
+    for (let i = 0; i < mcRequestList.length; i++) {
+      let mcRequest = mcRequestList[i];
+      let request = mcRequest.request;
+      if (request.method === SHOW_APP_INST) {
+        appInstList = mcRequest.response.data
       }
-      for (let j = 0; j < cloudletInfoList.length; j++) {
-        let cloudletInfo = cloudletInfoList[j]
-        if (appInst[fields.cloudletName] === cloudletInfo[fields.cloudletName] && appInst[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-          appInst[fields.cloudletStatus] = cloudletInfo[fields.state]
-        }
+      else if (request.method === SHOW_APP) {
+        appList = mcRequest.response.data
       }
-      appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
+      else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
+        cloudletInfoList = mcRequest.response.data
+      }
     }
+    if (appInstList && appInstList.length > 0) {
+      for (let i = 0; i < appInstList.length; i++) {
+        let appInst = appInstList[i]
+        for (let j = 0; j < appList.length; j++) {
+          let app = appList[j]
+          if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
+            appInst[fields.autoPolicyName] = app[fields.autoPolicyName] ? app[fields.autoPolicyName] : 'NA';
+            appInst[fields.deployment] = app[fields.deployment];
+            appInst[fields.accessType] = app[fields.accessType];
+            appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
+            appInst[fields.appRevision] = app[fields.revision]
+            break;
+          }
+        }
+        for (let j = 0; j < cloudletInfoList.length; j++) {
+          let cloudletInfo = cloudletInfoList[j]
+          if (appInst[fields.cloudletName] === cloudletInfo[fields.cloudletName] && appInst[fields.operatorName] === cloudletInfo[fields.operatorName]) {
+            appInst[fields.cloudletStatus] = cloudletInfo[fields.state]
+          }
+        }
+        appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
+      }
+    }
+    return appInstList;
   }
-  return appInstList;
 }
 
-export const showAppInsts = (data) => {
-  if (!formatter.isAdmin()) {
-    {
-      data.appinst = {
-        key: {
-          app_key: {
-            organization: formatter.getOrganization(),
+export const showAppInsts = (data, isSpecific) => {
+  let requestData = {}
+  if (isSpecific) {
+    let appinst = { key: data.appinstkey }
+    requestData = {
+      uuid: data.uuid,
+      region: data.region,
+      appinst
+    }
+  }
+  else {
+    if (!formatter.isAdmin()) {
+      {
+        data.appinst = {
+          key: {
+            app_key: {
+              organization: formatter.getOrganization(),
+            }
           }
         }
       }
     }
+    requestData = data
   }
-  return { method: SHOW_APP_INST, data: data, keys : keys()}
+  return { method: SHOW_APP_INST, data: requestData, keys: keys() }
 }
 
 export const getAppInstList = async (self, data) => {
