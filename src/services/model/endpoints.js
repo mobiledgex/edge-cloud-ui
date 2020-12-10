@@ -53,7 +53,7 @@ export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
-export const SHOW_ORG_CLOUDLET_INFO = "ShowOrgCloudletInfo";
+export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
 export const SHOW_LOGS = "ShowLogs";
@@ -92,11 +92,11 @@ export const getPath = (request) => {
     switch (request.method) {
         case SHOW_CLOUDLET:
         case SHOW_CLOUDLET_INFO:
-        case SHOW_ORG_CLOUDLET_INFO:
         case SHOW_APP_INST:
         case SHOW_CLUSTER_INST:
         case SHOW_ALERT:
             return `/api/v1/auth/ctrl/${request.method}`;
+        case SHOW_ORG_CLOUDLET_INFO:
         case SHOW_ORG_CLOUDLET:
         case SHOW_ORG:
         case EVENTS_SHOW:

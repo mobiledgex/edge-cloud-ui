@@ -41,6 +41,10 @@ export const showCloudletInfos = (data, specific) => {
     return { method: method, data: requestData, keys: keys }
 }
 
+export const showOrgCloudletInfos = (data) => {
+    return { method: SHOW_ORG_CLOUDLET_INFO, data: data,  keys: keys }
+}
+
 export const getKey = (data) => {
     return ({
         region: data[fields.region],

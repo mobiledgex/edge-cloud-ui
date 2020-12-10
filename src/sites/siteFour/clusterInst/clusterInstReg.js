@@ -12,7 +12,8 @@ import { fields, getOrganization, updateFields } from '../../../services/model/f
 import * as serverData from '../../../services/model/serverData'
 import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
-import { getOrgCloudletList } from '../../../services/model/cloudlet';
+import { showOrgCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
+import { showOrgCloudletInfos } from '../../../services/model/cloudletInfo';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/model/autoScalePolicy';
@@ -24,6 +25,9 @@ import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
 import { SHOW_PRIVACY_POLICY, SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
+import { sendRequests } from '../../../services/model/serverWorker'
+import { SHOW_ORG_CLOUDLET, SHOW_ORG_CLOUDLET_INFO } from '../../../services/model/endpoints';
+
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 class ClusterInstReg extends React.Component {
@@ -52,7 +56,8 @@ class ClusterInstReg extends React.Component {
         this.updateFlowDataList = []
     }
 
-    getCloudletInfo = async (form, forms) => {
+
+    getCloudletInfo = (form, forms) => {
         let region = undefined;
         let organizationName = undefined;
         for (let i = 0; i < forms.length; i++) {
@@ -65,9 +70,18 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (region && organizationName) {
-            this.cloudletList = await getOrgCloudletList(this, { region: region, org: organizationName })
-            this.updateUI(form)
-            this.setState({ forms: forms })
+            let requestList = []
+            let requestData = { region: region, org: organizationName }
+            requestList.push(showOrgCloudlets(requestData))
+            requestList.push(showOrgCloudletInfos(requestData))
+            this.props.handleLoadingSpinner(true)
+            sendRequests(this, requestList).addEventListener('message', event => {
+                let mcList = event.data
+                this.cloudletList = cloudletWithInfo(mcList)
+                this.props.handleLoadingSpinner(false)
+                this.updateUI(form)
+                this.setState({ forms: forms })
+            });
         }
     }
 
@@ -477,7 +491,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', visible: true, update: false, tip: 'IpAccess indicates the type of RootLB that Developer requires for their App' },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }]},
+            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
             { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }], update: true, updateId: ['18'] },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
@@ -528,7 +542,7 @@ class ClusterInstReg extends React.Component {
         this.props.handleViewMode(HELP_CLUSTER_INST_REG)
     }
 };
-
+    
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
