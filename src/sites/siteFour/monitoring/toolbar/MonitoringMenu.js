@@ -1,7 +1,6 @@
 import { Box, Checkbox, IconButton, ListItem, ListItemIcon, ListItemText, Menu, Tooltip } from '@material-ui/core'
 import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
-import { getUserRole } from '../../../../services/model/format'
 import { validateRole } from '../helper/Constant'
 import CheckIcon from '@material-ui/icons/Check';
 import { Icon } from 'semantic-ui-react';
