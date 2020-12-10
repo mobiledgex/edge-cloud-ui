@@ -19,6 +19,7 @@ import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
 import cloneDeep from 'lodash/cloneDeep';
+import {sendRequests} from '../services/model/serverWorker'
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -93,7 +94,7 @@ class MexListView extends React.Component {
             let code = data.code
             let message = data.data.message
             mcRequest.wsObj.close()
-            code === 200 ? this.dataFromServer(this.selectedRegion) : this.props.handleAlertInfo('error', message)
+            code === 200 ? this.specificDataFromServer(mcRequest.request) : this.props.handleAlertInfo('error', message)
         }
         this.props.handleLoadingSpinner(false)
     }
@@ -372,12 +373,58 @@ class MexListView extends React.Component {
         this.setState({ dropList: [item] })
     }
 
+    specificResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            let uuid = mcList[0].request.data.uuid
+            this.setState(prevState => {
+                let dataList = prevState.dataList
+                let newDataList = []
+                for (let i = 0; i < dataList.length; i++) {
+                    let data = dataList[i]
+                    if (data.uuid === uuid) {
+                        let newData = this.props.multiDataRequest(this.requestInfo.keys, { new: mcList, old: data }, true)
+                        if (newData) {
+                            dataList[i] = newData
+                            newDataList.push(newData)
+                        }
+                        else {
+                            dataList.splice(i, 1)
+                        }
+                        break;
+                    }
+                }
+                return { dataList, newDataList }
+            }, () => {
+                this.onFilterValue(this.filterText)
+            })
+        }
+    }
+
+    specificDataFromServer = (request)=>{
+        let uuid  = request.uuid
+        let data = request.data
+        let requestType = this.requestInfo.requestType
+        data.uuid = uuid
+        let requestList = []
+        if(this.requestInfo.id === 'Cloudlets')
+        {
+            requestType.map(request=>{
+                requestList.push(request(data, true))
+            })
+        }
+        else
+        {
+            requestList.push(requestType[0](data, true))
+        }
+        sendRequests(this, requestList, this.specificResponse)
+    }
+
     render() {
         const { resetStream } = this.state
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.dataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
+                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
                 <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
@@ -456,7 +503,7 @@ class MexListView extends React.Component {
 
         }
 
-        let dataList = this.state.dataList
+        let dataList = cloneDeep(this.state.dataList)
         if (mcRequestList && mcRequestList.length > 0 && dataList.length > 0) {
             let requestData = mcRequestList[0].request.data
             if (requestData.region) {
@@ -473,8 +520,8 @@ class MexListView extends React.Component {
 
         if (this._isMounted) {
             this.setState({
-                dataList: Object.assign([], dataList),
-                newDataList: newDataList
+                dataList,
+                newDataList
             })
             this.setState({ filterList: this.onFilterValue(undefined) })
         }

@@ -57,6 +57,7 @@
 
 .mex_select_tree_group{
     background-color: transparent; 
+    color: #9B9B9C;
     border: none; 
     display:block;
 }
@@ -65,6 +66,7 @@
     width:calc(100% - 30px);
     text-align: left;
     background-color: transparent;
+    color: #9B9B9C;
     border: none;
     display: block; 
     margin-left:30px; 
@@ -74,6 +76,7 @@
     width:calc(100% - 30px);
     text-align: left;
     background-color: #2A3242;
+    color: #9B9B9C;
     border: none;
     display: block; 
     margin-left:30px; 
@@ -81,6 +84,7 @@
 
 .mex_select_tree_detail:hover {
     background-color: #475266;
+    color: #FFF;
 }
 
 .select-tree-output{

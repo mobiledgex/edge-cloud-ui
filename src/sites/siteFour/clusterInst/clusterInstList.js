@@ -14,7 +14,7 @@ import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import MexListView from '../../../container/MexListView';
 //reg
 import ClusterInstReg from './clusterInstReg';
-import {HELP_CLUSTER_INST_LIST} from "../../../tutorial";
+import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -25,17 +25,21 @@ class ClusterInstView extends React.Component {
         this.action = '';
         this.data = {};
         this.keys = keys();
+        this._isMounted = false
         this.multiStepperHeader = [{ label: 'Cluster', field: fields.clusterName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
 
     }
 
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        if (this._isMounted) {
+            this.setState({ currentView: null })
+        }
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> })
-
+        if (this._isMounted) {
+            this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> })
+        }
     }
 
     getDeleteActionMessage = (action, data) => {
@@ -57,7 +61,7 @@ class ClusterInstView extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteClusterInst, icon: 'delete', warning: 'delete all the selected Cluster Instances', multiStepperHeader: this.multiStepperHeader, type:'Edit' },
+            { label: 'Delete', onClick: deleteClusterInst, icon: 'delete', warning: 'delete all the selected Cluster Instances', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
         ]
     }
 
@@ -74,8 +78,8 @@ class ClusterInstView extends React.Component {
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : HELP_CLUSTER_INST_LIST,
-            grouping : true
+            viewMode: HELP_CLUSTER_INST_LIST,
+            grouping: true
         })
     }
 
@@ -98,15 +102,21 @@ class ClusterInstView extends React.Component {
     * Customized data block
     * ** */
 
-   componentDidMount() {
+    componentDidMount() {
+        this._isMounted = true
         this.customizedData()
     }
+
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
                 <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

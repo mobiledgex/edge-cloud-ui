@@ -103,7 +103,7 @@ class VerticalStepper extends React.Component {
                         }
                         if (item.steps.length >= 1 && item.steps[0].code === 200) {
                             item.steps.push({ code: CODE_FINISH })
-                            this.props.dataFromServer(this.props.region)
+                            this.props.dataFromServer(request)
                         }
 
                         if (this.props.uuid !== 0) {
