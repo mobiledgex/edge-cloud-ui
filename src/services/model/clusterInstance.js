@@ -35,13 +35,24 @@ export const keys = () => ([
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     if (specific) {
-        let newData = mcRequestList.new
-        let oldData = mcRequestList.old
-        newData[fields.uuid] = oldData[fields.uuid]
-        newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
-        newData[fields.cloudletLocation] = oldData[fields.cloudletLocation];
-        newData = customData(newData)
-        return newData
+        let newList = mcRequestList.new
+        if(newList && newList.length > 0)
+        {
+            let response = newList[0].response
+            if (response && response.status === 200) {
+                let dataList = response.data
+                if (dataList && dataList.length > 0) {
+                    let newData = dataList[0]
+                    let oldData = mcRequestList.old
+                    newData[fields.uuid] = oldData[fields.uuid]
+                    newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
+                    newData[fields.cloudletLocation] = oldData[fields.cloudletLocation];
+                    newData = customData(newData)
+                    return newData
+                }
+            }
+        }
+        return null
     }
     else {
         let cloudletDataList = [];

@@ -70,12 +70,36 @@ export const getKey = (data, isCreate) => {
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     if (specific) {
-        let newData = mcRequestList.new
+        let newList = mcRequestList.new
         let oldData = mcRequestList.old
-        newData[fields.uuid] = oldData[fields.uuid]
-        newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
-        newData = customData(newData)
-        return newData
+        if (newList && newList.length > 0) {
+            let cloudlet = {};
+            let cloudletInfo = {};
+            for (let i = 0; i < newList.length; i++) {
+                let mcRequest = newList[i];
+                let request = mcRequest.request;
+                if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
+                    let dataList = mcRequest.response.data
+                    if (dataList && dataList.length > 0) {
+                        cloudlet = dataList[0]
+                    }
+                    else {
+                        return null
+                    }
+                }
+                else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
+                    let dataList = mcRequest.response.data
+                    if (dataList && dataList.length > 0) {
+                        cloudletInfo = dataList[0]
+                    }
+                }
+            }
+            cloudlet = customData(cloudlet)
+            cloudlet[fields.uuid] = oldData[fields.uuid]
+            cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? 999 : cloudletInfo[fields.state]
+            return cloudlet
+        }
+        return null
     }
     else {
         let cloudletList = [];
@@ -120,10 +144,10 @@ export const showCloudlets = (data, specific) => {
         }
     }
     else {
-        if (!formatter.isAdmin()) {
-            data.org = formatter.getOrganization()
-        }
         requestData = data
+    }
+    if (!formatter.isAdmin()) {
+        requestData.org = formatter.getOrganization()
     }
     return { method: method, data: requestData, keys: keys() }
 }

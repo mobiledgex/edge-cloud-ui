@@ -68,22 +68,24 @@ class AlertGlobal extends React.Component {
     serverResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let data = mc.response.data
-            let region = mc.request.data.region
-            this.setState(prevState => {
-                let dataList = prevState.dataList
-                let latestData = data[data.length - 1]
-                let activeAt = localStorage.getItem('LatestAlert')
-                let showDot = false
-                if (activeAt) {
-                    showDot = latestData.activeAt > activeAt
-                }
-                else {
-                    showDot = true
-                }
-                localStorage.setItem('LatestAlert', latestData.activeAt)
-                dataList[region] = data
-                return { dataList, showDot }
-            })
+            if (data && data.length > 0) {
+                let region = mc.request.data.region
+                this.setState(prevState => {
+                    let dataList = prevState.dataList
+                    let latestData = data[data.length - 1]
+                    let activeAt = localStorage.getItem('LatestAlert')
+                    let showDot = false
+                    if (activeAt) {
+                        showDot = latestData.activeAt > activeAt
+                    }
+                    else {
+                        showDot = true
+                    }
+                    localStorage.setItem('LatestAlert', latestData.activeAt)
+                    dataList[region] = data
+                    return { dataList, showDot }
+                })
+            }
         }
     }
 

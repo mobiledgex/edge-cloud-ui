@@ -18,27 +18,39 @@ const keys = [
     { field: fields.flavors, serverField: 'flavors' },
 ]
 
-export const showCloudletInfos = (data) => {
+export const showCloudletInfos = (data, specific) => {
     let method = SHOW_ORG_CLOUDLET_INFO;
     if (formatter.isAdmin()) {
         method = SHOW_CLOUDLET_INFO;
     }
-    else {
-        data.org = formatter.getOrganization()
+    let requestData = {}
+    if (specific) {
+        let cloudletinfo = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
+        requestData = {
+            uuid: data.uuid,
+            region: data.region,
+            cloudletinfo
+        }
     }
-    return { method: method, data: data }
+    else {
+        requestData = data
+    }
+    if (!formatter.isAdmin()) {
+        requestData.org = formatter.getOrganization()
+    }
+    return { method: method, data: requestData, keys: keys }
 }
 
 export const getKey = (data) => {
-        return ({
-            region: data[fields.region],
-            cloudlet: {
-                key: {
-                    organization: data[fields.operatorName],
-                    name: data[fields.cloudletName]
-                }
+    return ({
+        region: data[fields.region],
+        cloudletinfo: {
+            key: {
+                organization: data[fields.operatorName],
+                name: data[fields.cloudletName]
             }
-        })
+        }
+    })
 }
 
 const customData = (value) => {

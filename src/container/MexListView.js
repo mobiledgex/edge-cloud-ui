@@ -19,7 +19,7 @@ import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
 import cloneDeep from 'lodash/cloneDeep';
-import {sendRequest} from '../services/model/serverWorker'
+import {sendRequest, sendRequests} from '../services/model/serverWorker'
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -373,34 +373,30 @@ class MexListView extends React.Component {
         this.setState({ dropList: [item] })
     }
 
-    specificResponse = (mc) => {
-        if (mc && mc.response && mc.response.status === 200) {
-            let request = mc.request
-            let responseData = mc.response.data
-            let uuid = request.data.uuid
-            
-                this.setState(prevState => {
-                    let dataList = prevState.dataList
-                    let newDataList = []
-                    for (let i = 0; i < dataList.length; i++) {
-                        let data = dataList[i]
-                        if (data.uuid === uuid) {
-                            if (responseData && responseData.length > 0) {
-                                let newData = this.props.multiDataRequest(this.requestInfo.keys, { new: responseData[0], old: data }, true)
-                                dataList[i] = newData
-                                newDataList.push(newData)
-                            }
-                            else
-                            {
-                                dataList.splice(i, 1) 
-                            }
-                            break;
+    specificResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            let uuid = mcList[0].request.data.uuid
+            this.setState(prevState => {
+                let dataList = prevState.dataList
+                let newDataList = []
+                for (let i = 0; i < dataList.length; i++) {
+                    let data = dataList[i]
+                    if (data.uuid === uuid) {
+                        let newData = this.props.multiDataRequest(this.requestInfo.keys, { new: mcList, old: data }, true)
+                        if (newData) {
+                            dataList[i] = newData
+                            newDataList.push(newData)
                         }
+                        else {
+                            dataList.splice(i, 1)
+                        }
+                        break;
                     }
-                    return { dataList, newDataList }
-                }, () => {
-                    this.onFilterValue(this.filterText)
-                })
+                }
+                return { dataList, newDataList }
+            }, () => {
+                this.onFilterValue(this.filterText)
+            })
         }
     }
 
@@ -409,7 +405,18 @@ class MexListView extends React.Component {
         let data = request.data
         let requestType = this.requestInfo.requestType
         data.uuid = uuid
-        sendRequest(this, requestType[0](data, true), this.specificResponse)
+        let requestList = []
+        if(this.requestInfo.id === 'Cloudlets')
+        {
+            requestType.map(request=>{
+                requestList.push(request(data, true))
+            })
+        }
+        else
+        {
+            requestList.push(requestType[0](data, true))
+        }
+        sendRequests(this, requestList, this.specificResponse)
     }
 
     render() {

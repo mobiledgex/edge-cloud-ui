@@ -85,18 +85,29 @@ export const getKey = (data, isCreate) => {
 }
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
+
   if (specific) {
-    let oldData = mcRequestList.old
-    let newData = mcRequestList.new
-    newData[fields.uuid] = oldData[fields.uuid]
-    newData[fields.accessType] = oldData[fields.accessType]
-    newData[fields.autoPolicyName] = oldData[fields.autoPolicyName]
-    newData[fields.deployment] = oldData[fields.deployment]
-    newData[fields.updateAvailable] = oldData[fields.updateAvailable]
-    newData[fields.appRevision] = oldData[fields.appRevision]
-    newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
-    newData = customData(newData)
-    return newData
+    let newList = mcRequestList.new
+    if (newList && newList.length > 0) {
+      let response = newList[0].response
+      if (response && response.status === 200) {
+        let dataList = response.data
+        if (dataList && dataList.length > 0) {
+          let newData = dataList[0]
+          let oldData = mcRequestList.old
+          newData[fields.uuid] = oldData[fields.uuid]
+          newData[fields.accessType] = oldData[fields.accessType]
+          newData[fields.autoPolicyName] = oldData[fields.autoPolicyName]
+          newData[fields.deployment] = oldData[fields.deployment]
+          newData[fields.updateAvailable] = oldData[fields.updateAvailable]
+          newData[fields.appRevision] = oldData[fields.appRevision]
+          newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
+          newData = customData(newData)
+          return newData
+        }
+      }
+    }
+    return null
   }
   else {
     let appInstList = [];
@@ -238,8 +249,7 @@ export const customData = (value) => {
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
   value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
   value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
-  if(userRole && userRole.includes(constant.DEVELOPER) && value[fields.appName] === 'MEXPrometheusAppName')
-  {
+  if (userRole && userRole.includes(constant.DEVELOPER) && value[fields.appName] === 'MEXPrometheusAppName') {
     value = undefined
   }
   return value
