@@ -94,7 +94,7 @@ const selector = (data) => {
         }
         requestData.app_key = app_key
     }
-    if (data[fields.clusterName] || data[fields.cloudletName] || data[fields.operatorName]) {
+    if (data[fields.clusterName] || data[fields.cloudletName] || data[fields.operatorName] || data[fields.clusterdeveloper]) {
         requestData.cluster_inst_key = clusterInstSelector(data)
     }
     return requestData
