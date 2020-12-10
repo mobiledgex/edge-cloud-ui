@@ -460,3 +460,18 @@ export const regions = () => {
     return localStorage.regions ? localStorage.regions.split(",") : [];
 }
 
+export const regionLocation = (region) => {
+    switch (region) {
+        case 'US':
+            return { center: [39, -100], zoom: 4 }
+        case 'EU':
+            return { center: [47, 19], zoom: 4 }
+        case 'KR':
+            return { center: [36, 127], zoom: 4 }
+        case 'JP':
+            return { center: [36, 138], zoom: 5 }
+        default:
+            return { center: [43.4, 51.7], zoom: 2 }
+    }
+}
+

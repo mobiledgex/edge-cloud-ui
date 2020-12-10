@@ -15,6 +15,7 @@ import * as aggregation from '../../utils';
 import './styles.css';
 import { fields } from '../../services/model/format'
 import * as actions from "../../actions";
+import { regionLocation } from "../../constant";
 
 const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03", '#EAAE00']
 const zoomControls = { center: [53, 13], zoom: 3 }
@@ -94,16 +95,6 @@ class ClustersMap extends Component {
         this.dir = 1;
     }
 
-    handleReset = () => {
-        this.setState({
-            mapCenter: (this.props.region === 'US') ? [41, -74] : [53, 13],
-            detailMode: false
-        })
-        if (this.props.onClick) {
-            this.props.onClick()
-        }
-    }
-
     handleRefresh = (event) => {
         if(event) event.stopPropagation();
         this.setState({ mapCenter: this.state.detailMode ? this.state.mapCenter : (this.props.region && this.props.region === 'US') ? [41, -74] : (this.state.mapCenter && this.state.mapCenter.length > 0) ? this.state.mapCenter:[53, 13] })
@@ -137,6 +128,13 @@ class ClustersMap extends Component {
             if (catchLeafLayer.length === 0) {
                 this.handleRefresh(null);
             }
+        }
+    }
+
+    componentDidUpdate(preProps, preState){
+        if (preProps.region !== this.props.region) {
+            const {center, zoom} = regionLocation(this.props.region)
+            this.map.current.leafletElement.setView(center, zoom)
         }
     }
 
@@ -294,7 +292,7 @@ class ClustersMap extends Component {
             }
             if (updateMode) mapCenter = center; 
             locDataOld = nextProps.locData;
-            return { mapCenter: mapCenter ? mapCenter : center, cities: locationData, center: center, zoom: zoom, detailMode: nextProps.mapDetails ? true : false };
+            return {cities: locationData, detailMode: nextProps.mapDetails ? true : false };
         }
         return null;
     }
@@ -430,14 +428,16 @@ class ClustersMap extends Component {
         this.map.current.leafletElement.setZoom(zoom - 1)
     }
 
-    zoomReset = ()=>{
-        let center = this.state.detailMode ? this.state.mapCenter : (this.props.region && this.props.region === 'US') ? [41, -74] : (this.state.mapCenter && this.state.mapCenter.length > 0) ? this.state.mapCenter:[53, 13] 
-        this.map.current.leafletElement.setView(center, zoomControls.zoom)
+    zoomReset = () => {
+        const { center, zoom } = regionLocation(this.props.region)
+        this.map.current.leafletElement.setView(center, zoom)
     }
 
     back = ()=>{
         this.setState({backSwitch:false})
-        this.handleReset()
+        if (this.props.onClick) {
+            this.props.onClick()
+        }
     }
 
     renderMapControl = (backSwitch) => {
@@ -479,7 +479,6 @@ class ClustersMap extends Component {
                     zoomControl={false}
                     boundsOptions={{ padding: [50, 50] }}
                     scrollWheelZoom={true}
-                    viewport={{center: this.state.mapCenter, zoom:zoom}}
                     onClick={this.handleMapClick}
                     ondragend={this.handleMove.bind(this)}
                     onZoomend={this.handleZoom.bind(this)}
