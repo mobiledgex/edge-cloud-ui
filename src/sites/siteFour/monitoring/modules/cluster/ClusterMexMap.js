@@ -97,8 +97,9 @@ class ClusterMexMap extends React.Component {
 
     render() {
         const { mapCenter, zoom } = this.state
+        const { region } = this.props
         return (
-            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} />
+            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} region={region}/>
         )
     }
 }
