@@ -1,8 +1,8 @@
-import React, {Suspense} from 'react';
+import React, { Suspense } from 'react';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA , ICON_BUTTON, formattedData, MAIN_HEADER, HEADER} from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER } from '../../../hoc/forms/MexForms';
 import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
@@ -36,7 +36,7 @@ class CloudletReg extends React.Component {
             activeIndex: 0,
             flowDataList: [],
             flowInstance: undefined,
-            mapCenter: [53,13]
+            region: undefined
         }
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
@@ -95,9 +95,8 @@ class CloudletReg extends React.Component {
                 let cloudlet = {}
                 cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
                 this.setState({ mapData: [cloudlet] })
-                this.setState({ mapCenter: [latitude, longitude] })
             }
-            else if(!currentForm.init) {
+            else if (!currentForm.init) {
                 this.setState({ mapData: [] })
             }
         }
@@ -105,7 +104,10 @@ class CloudletReg extends React.Component {
 
     checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
-        if (form.field === fields.platformType) {
+        if (form.field === fields.region) {
+            this.setState({region: form.value})
+        }
+        else if (form.field === fields.platformType) {
             this.platformTypeValueChange(form, forms, isInit)
         }
         else if (form.field === fields.latitude || form.field === fields.longitude) {
@@ -262,18 +264,18 @@ class CloudletReg extends React.Component {
     }
 
     getGraph = () =>
-    (
-        <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <Suspense fallback={<div></div>}>
-                <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} flowObject={cloudletFLow} />
-            </Suspense>
-        </div>
-    )
+        (
+            <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
+                <Suspense fallback={<div></div>}>
+                    <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} flowObject={cloudletFLow} />
+                </Suspense>
+            </div>
+        )
 
     getMap = () =>
         (
             <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-                <Map locData={this.state.mapData} id={'Cloudlets'} reg='cloudletAndClusterMap' onMapClick={this.onMapClick}  mapCenter={this.state.mapCenter}></Map>
+                <Map locData={this.state.mapData} id={'Cloudlets'} reg='cloudletAndClusterMap' onMapClick={this.onMapClick} region={this.state.region}></Map>
             </div>
         )
 
@@ -309,13 +311,13 @@ class CloudletReg extends React.Component {
             }
         }
     }
-    
+
     cloudletManifestForm = () => {
         let fileName = `${this.cloudletData[fields.cloudletName]}-${this.cloudletData[fields.operatorName]}-pf`
         let cloudletManifest = this.state.cloudletManifest;
         if (cloudletManifest && cloudletManifest['manifest']) {
             return (
-                <CloudletManifest cloudletManifest={cloudletManifest} fileName={fileName} onClose={this.props.onClose}/>
+                <CloudletManifest cloudletManifest={cloudletManifest} fileName={fileName} onClose={this.props.onClose} />
             )
         }
     }
@@ -330,7 +332,7 @@ class CloudletReg extends React.Component {
                             <Grid.Column width={8}>
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                             </Grid.Column>
-                            <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent'}}>
+                            <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                                 <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
                             </Grid.Column>
                         </Grid.Row>
@@ -342,7 +344,7 @@ class CloudletReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false) 
+        this.props.onClose(false)
     }
 
     resetFormValue = (form) => {
@@ -398,7 +400,7 @@ class CloudletReg extends React.Component {
             let multiFormCount = 0
             if (data[fields.envVars]) {
                 let envVarsArray = data[fields.envVars]
-                Object.keys(envVarsArray).map(item=>{
+                Object.keys(envVarsArray).map(item => {
                     let envForms = this.envForm()
                     let key = item
                     let value = envVarsArray[item]
@@ -419,8 +421,8 @@ class CloudletReg extends React.Component {
     }
 
     locationForm = () => ([
-        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update:true, init:true},
-        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update:true, init:true }
+        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: true, init: true },
+        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: true, init: true }
     ])
 
     cloudletManifest = () => {
@@ -440,7 +442,7 @@ class CloudletReg extends React.Component {
     getEnvForm = (form) => {
         return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.envForm(), width: 3, visible: true })
     }
-    
+
     removeMultiForm = (e, form) => {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
@@ -464,9 +466,9 @@ class CloudletReg extends React.Component {
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.' },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.' },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), tip: 'Organization of the cloudlet site' },
-            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update:true, updateId: ['5', '5.1', '5.2'] },
-            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, update:true, updateId: ['6'], tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
-            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update:true, updateId: ['8'], tip: 'Number of dynamic IPs available for dynamic IP support.' },
+            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: true, updateId: ['5', '5.1', '5.2'] },
+            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, update: true, updateId: ['6'], tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
+            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: true, updateId: ['8'], tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
@@ -477,8 +479,8 @@ class CloudletReg extends React.Component {
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
-            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },    
-            { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: true, updateId: ['30'], tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false }         
+            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
+            { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: true, updateId: ['30'], tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false }
         ]
     }
 
@@ -515,9 +517,8 @@ class CloudletReg extends React.Component {
                 if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
                     this.setState({ cloudletManifest: cloudletManifest.response.data })
                 }
-                else
-                {
-                    this.props.onClose(true)  
+                else {
+                    this.props.onClose(true)
                 }
             }
             else {

@@ -89,6 +89,8 @@ class AppMexMap extends React.Component {
         }
     }
 
+    
+
     renderMarkerPopup = (data) => {
         let selected = data['selected'] ? data['selected'] : 0
         return (
@@ -159,8 +161,9 @@ class AppMexMap extends React.Component {
 
     render() {
         const { mapCenter, zoom, backswitch } = this.state
+        const { region } = this.props
         return (
-            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} />
+            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} />
         )
     }
 }

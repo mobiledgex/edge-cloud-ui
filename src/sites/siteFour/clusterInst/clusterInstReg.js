@@ -166,7 +166,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
                 if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms })
+                    this.setState({ forms: forms, mapData: [] })
                 }
                 break;
             }

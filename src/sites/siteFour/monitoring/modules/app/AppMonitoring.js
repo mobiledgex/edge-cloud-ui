@@ -4,8 +4,6 @@ import MexChart from '../../charts/MexChart'
 import { Card, Grid } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
 import { OFFLINE, ONLINE } from '../../../../../constant';
-import isEqual from 'lodash/isEqual'
-import * as dateUtil from '../../../../../utils/date_util'
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
 import AppUsage from './AppUsage'
@@ -84,7 +82,7 @@ class AppMonitoring extends React.Component {
                                 </Card>
                             </Grid>
                             <Grid item xs={6}>
-                                <MexMap data={mapData} />
+                                <MexMap data={mapData} region={filter.region}/>
                             </Grid>
                             <Grid item xs={3}>
                                 <Card style={{ height:400, width: '100%' }}>
