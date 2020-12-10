@@ -19,7 +19,7 @@ const fetchResponse = (worker) => {
         {
             headers: getHeader(worker)
         }).then((response) => {
-            if (response && response.data) {
+            if (response) {
                 self.postMessage(formatData(request, response))
             }
         }).catch((error) => {

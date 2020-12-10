@@ -33,69 +33,103 @@ export const keys = () => ([
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
-export const multiDataRequest = (keys, mcRequestList) => {
-    let cloudletDataList = [];
-    let clusterDataList = [];
-    let cloudletInfoList = [];
-    let dataList = [];
-    for (let i = 0; i < mcRequestList.length; i++) {
-        let mcRequest = mcRequestList[i];
-        if (mcRequest.response) {
-            let method = mcRequest.request.method
-            if (method === SHOW_CLOUDLET || method === SHOW_ORG_CLOUDLET) {
-                cloudletDataList = mcRequest.response.data;
-            }
-            if (method === SHOW_CLUSTER_INST) {
-                clusterDataList = mcRequest.response.data;
-            }
-            if (method === SHOW_CLOUDLET_INFO  || method === SHOW_ORG_CLOUDLET_INFO) {
-                cloudletInfoList = mcRequest.response.data;
-            }
-        }
-    }
-
-    if (clusterDataList && clusterDataList.length > 0) {
-        for (let i = 0; i < clusterDataList.length; i++) {
-            let found = false
-            let clusterData = clusterDataList[i]
-            for (let j = 0; j < cloudletDataList.length; j++) {
-                let cloudletData = cloudletDataList[j]
-                if (clusterData[fields.cloudletName] === cloudletData[fields.cloudletName]) {
-                    found = true;
-                    clusterData[fields.cloudletLocation] = cloudletData[fields.cloudletLocation];
-                    break;
+export const multiDataRequest = (keys, mcRequestList, specific) => {
+    if (specific) {
+        let newList = mcRequestList.new
+        if(newList && newList.length > 0)
+        {
+            let response = newList[0].response
+            if (response && response.status === 200) {
+                let dataList = response.data
+                if (dataList && dataList.length > 0) {
+                    let newData = dataList[0]
+                    let oldData = mcRequestList.old
+                    newData[fields.uuid] = oldData[fields.uuid]
+                    newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
+                    newData[fields.cloudletLocation] = oldData[fields.cloudletLocation];
+                    newData = customData(newData)
+                    return newData
                 }
             }
-            //Filter cluster if cloudlet not found
-            if (found) {
-                for (let j = 0; j < cloudletInfoList.length; j++) {
-                    let cloudletInfo = cloudletInfoList[j]
-                    if (clusterData[fields.cloudletName] === cloudletInfo[fields.cloudletName] && clusterData[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                        clusterData[fields.cloudletStatus] = cloudletInfo[fields.state]
+        }
+        return null
+    }
+    else {
+        let cloudletDataList = [];
+        let clusterDataList = [];
+        let cloudletInfoList = [];
+        let dataList = [];
+        for (let i = 0; i < mcRequestList.length; i++) {
+            let mcRequest = mcRequestList[i];
+            if (mcRequest.response) {
+                let method = mcRequest.request.method
+                if (method === SHOW_CLOUDLET || method === SHOW_ORG_CLOUDLET) {
+                    cloudletDataList = mcRequest.response.data;
+                }
+                if (method === SHOW_CLUSTER_INST) {
+                    clusterDataList = mcRequest.response.data;
+                }
+                if (method === SHOW_CLOUDLET_INFO || method === SHOW_ORG_CLOUDLET_INFO) {
+                    cloudletInfoList = mcRequest.response.data;
+                }
+            }
+        }
+
+        if (clusterDataList && clusterDataList.length > 0) {
+            for (let i = 0; i < clusterDataList.length; i++) {
+                let found = false
+                let clusterData = clusterDataList[i]
+                for (let j = 0; j < cloudletDataList.length; j++) {
+                    let cloudletData = cloudletDataList[j]
+                    if (clusterData[fields.cloudletName] === cloudletData[fields.cloudletName]) {
+                        found = true;
+                        clusterData[fields.cloudletLocation] = cloudletData[fields.cloudletLocation];
+                        break;
                     }
                 }
-                clusterData[fields.cloudletStatus] = clusterData[fields.cloudletStatus] ? clusterData[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
-                dataList.push(clusterData)
-            }
-        }
-    }
-    return dataList;
-}
-
-export const showClusterInsts = (data) => {
-    if (!formatter.isAdmin()) {
-        {
-            data.clusterinst = {
-                key: {
-                    organization: formatter.getOrganization()
+                //Filter cluster if cloudlet not found
+                if (found) {
+                    for (let j = 0; j < cloudletInfoList.length; j++) {
+                        let cloudletInfo = cloudletInfoList[j]
+                        if (clusterData[fields.cloudletName] === cloudletInfo[fields.cloudletName] && clusterData[fields.operatorName] === cloudletInfo[fields.operatorName]) {
+                            clusterData[fields.cloudletStatus] = cloudletInfo[fields.state]
+                        }
+                    }
+                    clusterData[fields.cloudletStatus] = clusterData[fields.cloudletStatus] ? clusterData[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
+                    dataList.push(clusterData)
                 }
             }
         }
+        return dataList;
     }
-    return { method: SHOW_CLUSTER_INST, data: data, keys : keys()}
 }
 
-export const clusterInstanceKey = (data)=>{
+export const showClusterInsts = (data, isSpecific) => {
+    let requestData = {}
+    if (isSpecific) {
+        let clusterinst = { key: data.clusterinstkey ? data.clusterinstkey : data.clusterinst.key }
+        requestData = {
+            uuid: data.uuid,
+            region: data.region,
+            clusterinst
+        }
+    }
+    else {
+        if (!formatter.isAdmin()) {
+            {
+                data.clusterinst = {
+                    key: {
+                        organization: formatter.getOrganization()
+                    }
+                }
+            }
+        }
+        requestData = data
+    }
+    return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
+}
+
+export const clusterInstanceKey = (data) => {
     return {
         cluster_key: { name: data[fields.clusterName] },
         cloudlet_key: { organization: data[fields.operatorName], name: data[fields.cloudletName] },
@@ -167,7 +201,7 @@ export const deleteClusterInst = (data) => {
 }
 
 export const streamClusterInst = (data) => {
-    let requestData = {region:data[fields.region], clusterinstkey : clusterInstanceKey(data)}
+    let requestData = { region: data[fields.region], clusterinstkey: clusterInstanceKey(data) }
     return { uuid: data.uuid, method: STREAM_CLUSTER_INST, data: requestData }
 }
 

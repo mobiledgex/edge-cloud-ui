@@ -11,8 +11,8 @@ import ClouldletReg from './cloudletReg';
 import * as constant from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
-import {Icon, Popup} from 'semantic-ui-react';
-import {HELP_CLOUDLET_LIST} from "../../../tutorial";
+import { Icon, Popup } from 'semantic-ui-react';
+import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 
 class CloudletList extends React.Component {
     constructor(props) {
@@ -20,49 +20,52 @@ class CloudletList extends React.Component {
         this.state = {
             currentView: null
         }
+        this._isMounted = false;
         this.action = '';
         this.data = {};
         this.keys = keys();
     }
 
-    onRegClose = (isEdited)=>
-    {
-        this.setState({ currentView: null })
+    onRegClose = (isEdited) => {
+        if (this._isMounted) {
+            this.setState({ currentView: null })
+        }
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose}/> });
+        if (this._isMounted) {
+            this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+        }
     }
 
     onCloudletManifest = (action, data) => {
-        this.setState({ currentView: <ClouldletReg data={data} isManifest={true} onClose={this.onRegClose}/> });
+        if (this._isMounted) {
+            this.setState({ currentView: <ClouldletReg data={data} isManifest={true} onClose={this.onRegClose} /> });
+        }
     }
-    
-    onCloudletManifestVisible = (data) =>
-    {
+
+    onCloudletManifestVisible = (data) => {
         return data[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
     }
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type:'Edit' },
-            { label: 'Delete', onClick: deleteCloudlet, ws: true, type:'Edit' },
-            { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest}
+            { label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { label: 'Delete', onClick: deleteCloudlet, ws: true, type: 'Edit' },
+            { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
         ]
     }
 
-    canAdd = ()=>
-    {
-        let  valid  = false
+    canAdd = () => {
+        let valid = false
         let role = getUserRole();
-        if(role === constant.ADMIN_MANAGER || role === constant.OPERATOR_MANAGER || role === constant.OPERATOR_CONTRIBUTOR)
-        {
+        if (role === constant.ADMIN_MANAGER || role === constant.OPERATOR_MANAGER || role === constant.OPERATOR_CONTRIBUTOR) {
             valid = true
         }
         return valid
     }
 
-    customStream = (data)=>{
+    customStream = (data) => {
         return data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== 2
     }
 
@@ -74,14 +77,14 @@ class CloudletList extends React.Component {
             nameField: fields.cloudletName,
             requestType: [showCloudlets, showCloudletInfos],
             streamType: streamCloudlet,
-            customStream : this.customStream,
+            customStream: this.customStream,
             isRegion: true,
             isMap: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd() ? this.onAdd : undefined,
-            viewMode : HELP_CLOUDLET_LIST,
-            grouping : true
+            viewMode: HELP_CLOUDLET_LIST,
+            grouping: true
         })
     }
 
@@ -132,13 +135,12 @@ class CloudletList extends React.Component {
         )
     }
 
-    showProgress = (data, isDetailView)=>{
+    showProgress = (data, isDetailView) => {
         let progressRender = null
         if (!isDetailView && this.customStream(data)) {
             progressRender = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
         }
-        else
-        {
+        else {
             progressRender = shared.showProgress(data, isDetailView)
         }
         return progressRender
@@ -160,7 +162,8 @@ class CloudletList extends React.Component {
     * Customized data block
     * ** */
 
-   componentDidMount() {
+    componentDidMount() {
+        this._isMounted = true
         this.customizedData()
     }
 
@@ -169,6 +172,10 @@ class CloudletList extends React.Component {
             this.state.currentView ? this.state.currentView :
                 <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
         )
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 
