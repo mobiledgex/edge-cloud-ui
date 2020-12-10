@@ -156,7 +156,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
 export const showAppInsts = (data, isSpecific) => {
   let requestData = {}
   if (isSpecific) {
-    let appinst = { key: data.appinstkey }
+    let appinst = { key: data.appinstkey ? data.appinstkey : data.appinst.key }
     requestData = {
       uuid: data.uuid,
       region: data.region,
