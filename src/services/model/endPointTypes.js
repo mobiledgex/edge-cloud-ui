@@ -76,7 +76,7 @@ export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
-export const SHOW_ORG_CLOUDLET_INFO = "ShowOrgCloudletInfo";
+export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
 export const SHOW_LOGS = "ShowLogs";
@@ -128,6 +128,7 @@ export function getPath(request) {
         case ALERT_DELETE_RECEIVER:   
         case SHOW_ORG:
         case SHOW_ORG_CLOUDLET:
+        case SHOW_ORG_CLOUDLET_INFO:
         case SHOW_ROLE:
         case SHOW_CONTROLLER:
             return `/api/v1/auth/${request.method}`
@@ -216,8 +217,6 @@ export function getPath(request) {
             return `/api/v1/auth/orgcloudletpool/create`;
         case DELETE_LINK_POOL_ORG:
             return `/api/v1/auth/orgcloudletpool/delete`;
-        case SHOW_ORG_CLOUDLET_INFO:
-            return `/api/v1/auth/orgcloudletinfo/show`;
         default:
             return null;
     }

@@ -68,6 +68,37 @@ export const getKey = (data, isCreate) => {
     })
 }
 
+export const cloudletWithInfo = (mcList) => {
+    let cloudletInfoList = []
+    let cloudletList = []
+    if (mcList && mcList.length > 0) {
+        mcList.map(mc => {
+            let request = mc.request
+            if (request.method === SHOW_ORG_CLOUDLET) {
+                cloudletList = mc.response.data
+            }
+            else if (request.method === SHOW_ORG_CLOUDLET_INFO) {
+                cloudletInfoList = mc.response.data
+            }
+        })
+
+        if (cloudletList && cloudletList.length > 0) {
+            cloudletList = cloudletList.filter(cloudlet => {
+                let valid = false
+                for (let j = 0; j < cloudletInfoList.length; j++) {
+                    let cloudletInfo = cloudletInfoList[j]
+                    if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
+                        valid = cloudletInfo[fields.state] !== 4
+                        break;
+                    }
+                }
+                return valid
+            })
+        }
+    }
+    return cloudletList
+}
+
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     if (specific) {
         let newList = mcRequestList.new
@@ -129,6 +160,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
     }
 }
 
+
 export const showCloudlets = (data, specific) => {
     let requestData = {}
     let method = SHOW_ORG_CLOUDLET
@@ -153,7 +185,7 @@ export const showCloudlets = (data, specific) => {
 }
 
 export const showOrgCloudlets = (data) => {
-    return { method: SHOW_ORG_CLOUDLET, data: data }
+    return { method: SHOW_ORG_CLOUDLET, data: data,  keys: keys() }
 }
 
 export const createCloudlet = (self, data, callback) => {
