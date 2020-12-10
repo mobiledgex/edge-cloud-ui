@@ -54,19 +54,23 @@ const getArray = (dataList) => {
     return value
 }
 
-const getData = (data, item) => (
-    item.dataType === constant.TYPE_ARRAY ?
-        getArray(data) :
-        item.dataType === constant.TYPE_URL ?
-            getURL(data) :
-            item.dataType === constant.TYPE_DATE ?
-                getDate(data, item) :
-                item.dataType === constant.TYPE_JSON ?
-                    getHighLighter('json', JSON.stringify(data, null, 1)) :
-                    item.dataType === constant.TYPE_YAML ?
-                        getHighLighter('yaml', data.toString()) :
-                    <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</div>
-)
+const getData = (data, item) => {
+    if (data) {
+        return (
+            item.dataType === constant.TYPE_ARRAY ?
+                getArray(data) :
+                item.dataType === constant.TYPE_URL ?
+                    getURL(data) :
+                    item.dataType === constant.TYPE_DATE ?
+                        getDate(data, item) :
+                        item.dataType === constant.TYPE_JSON ?
+                            getHighLighter('json', JSON.stringify(data, null, 1)) :
+                            item.dataType === constant.TYPE_YAML ?
+                                getHighLighter('yaml', data.toString()) :
+                                <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</div>
+        )
+    }
+}
 
 
 const subView = (keys, dataList) => {
