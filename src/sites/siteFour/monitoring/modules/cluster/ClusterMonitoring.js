@@ -56,7 +56,7 @@ class ClusterMonitoring extends React.Component {
                     <div style={{ height: 400, marginBottom: 10 }}>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
-                                <MexMap data={mapData} />
+                                <MexMap data={mapData}  region={filter.region}/>
                             </Grid>
                             {/* <Grid item xs={3}>
                                 <Card style={{ height: 400, width: '100%' }}>

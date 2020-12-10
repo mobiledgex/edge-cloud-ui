@@ -4,6 +4,7 @@ import Control from 'react-leaflet-control';
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon } from "semantic-ui-react";
 import { Tooltip } from "@material-ui/core";
+import { regionLocation } from "../../../../constant";
 
 export const DEFAULT_ZOOM = 2
 export const MAP_CENTER = [43.4, 51.7]
@@ -82,6 +83,20 @@ class MexMap extends React.Component {
                 </Map>
             </div>
         )
+    }
+
+    componentDidUpdate(preProps, preState) {
+        if (preProps.region !== this.props.region) {
+            if(this.props.region.length > 1)
+            {
+                this.map.current.leafletElement.setView(MAP_CENTER, DEFAULT_ZOOM)
+            }
+            else
+            {
+                const {center, zoom} = regionLocation(this.props.region[0])
+                this.map.current.leafletElement.setView(center, zoom)
+            }
+        }
     }
 
     componentDidMount() {
