@@ -1,7 +1,6 @@
 
 import * as formatter from './format'
 import { CLUSTER_METRICS_ENDPOINT } from './endPointTypes'
-import { convertByteToMegaGigaByte } from '../../utils/math_util'
 
 let fields = formatter.fields;
 

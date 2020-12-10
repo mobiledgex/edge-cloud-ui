@@ -177,7 +177,7 @@ class Monitoring extends React.Component {
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar parent={filter.parent} defaultParent={this.defaultMetricParentTypes} regions={this.regions} organizations={organizations} metricTypeKeys={this.defaultMetricParentTypes.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
+                    <MonitoringToolbar parent={filter.parent} defaultParent={this.defaultMetricParentTypes} regions={this.regions} organizations={organizations} metricTypeKeys={filter.parent.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
                     <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} minimize={minimize} />
                 </Card>
                 <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg}/>
