@@ -1,13 +1,13 @@
 import React from 'react'
 import { isViewer } from '../services/model/format';
-import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box } from '@material-ui/core'
-import { Dropdown } from 'semantic-ui-react';
+import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box, Menu, ListItem, ListItemText } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { Dustbin } from '../hoc/listView/mex_dnd/Dustbin';
+import { Icon } from 'semantic-ui-react';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -53,9 +53,10 @@ const MexToolbar = (props) => {
     let requestInfo = props.requestInfo
 
     const [search, setSearch] = React.useState('')
-    const [region, setRegion] = React.useState(REGION_ALL)
+    const [region, setRegion] = React.useState({ key: 'ALL', value: REGION_ALL, text: 'ALL' })
     const [map, setMap] = React.useState(true)
     const [focused, setFocused] = React.useState(false)
+    const [anchorRegionEL, setAnchorRegionEL] = React.useState(null)
 
     /*Search Block*/
     const handleSearch = (e) => {
@@ -64,7 +65,7 @@ const MexToolbar = (props) => {
     }
 
     const searchForm = () => (
-        <Box order={3} style={{marginTop:`${focused ? '0px' : '4px'}`}}>
+        <Box order={3} style={{ marginTop: `${focused ? '0px' : '4px'}` }}>
             <Input
                 onFocus={() => {
                     setFocused(true)
@@ -116,18 +117,31 @@ const MexToolbar = (props) => {
 
     const onRegionChange = (value) => {
         setRegion(value)
-        props.onAction(ACTION_REGION, value)
+        setAnchorRegionEL(null)
+        props.onAction(ACTION_REGION, value.value)
     }
 
     const regionForm = () => (
         requestInfo.isRegion ?
-            <Box order={2} p ={1} style={{marginTop:4, marginRight:12}}>
+            <Box order={2} p={1} style={{ marginTop: 4, marginRight: 12 }}>
                 <strong>Region:&nbsp;&nbsp;</strong>
-                <Dropdown
-                    options={getRegions()}
-                    defaultValue={region}
-                    onChange={(e, { value }) => { onRegionChange(value) }}
-                />
+                <div style={{display:'inline', cursor:'pointer'}} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorRegionEL(e.currentTarget) }}>
+                    <strong style={{fontSize:12, marginRight:5}}>{region.text}</strong><Icon name='chevron down' size='small'/>
+                </div>
+                <Menu
+                    id="toolbar-region"
+                    anchorEl={anchorRegionEL}
+                    onClose={() => { setAnchorRegionEL(null) }}
+                    keepMounted
+                    style={{ maxHeight: 400 }}
+                    open={Boolean(anchorRegionEL)}
+                >
+                    {getRegions().map((item, i) => {
+                        return <ListItem key={i} role={undefined} dense button onClick={() => { onRegionChange(item) }}>
+                            <ListItemText id={1} primary={item.text} />
+                        </ListItem>
+                    })}
+                </Menu>
             </Box> : null
     )
     /*Region Block*/
@@ -168,7 +182,7 @@ const MexToolbar = (props) => {
     )
 
     const dustBin = () => (
-        props.requestInfo.grouping ? <Box order={1} style={{marginTop:5}}><Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /></Box> : null
+        props.requestInfo.grouping ? <Box order={1} style={{ marginTop: 5 }}><Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /></Box> : null
     )
 
     return (
