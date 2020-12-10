@@ -1,6 +1,5 @@
 import React from 'react'
-import { Toolbar, Input, InputAdornment, Switch, makeStyles, Box, Menu, ListItem, ListItemIcon, Checkbox, ListItemText, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles';
+import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search';
 import InsertChartIcon from '@material-ui/icons/InsertChart';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
