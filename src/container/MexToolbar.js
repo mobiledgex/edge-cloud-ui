@@ -124,7 +124,7 @@ const MexToolbar = (props) => {
     const regionForm = () => (
         requestInfo.isRegion ?
             <Box order={2} p={1} style={{ marginTop: 4, marginRight: 12 }}>
-                <strong>Region:&nbsp;&nbsp;</strong>
+                <strong style={{marginRight:5}}>Region:</strong>
                 <div style={{display:'inline', cursor:'pointer'}} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorRegionEL(e.currentTarget) }}>
                     <strong style={{fontSize:12, marginRight:5}}>{region.text}</strong><Icon name='chevron down' size='small'/>
                 </div>
