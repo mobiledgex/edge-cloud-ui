@@ -92,6 +92,7 @@ export const getPath = (request) => {
     switch (request.method) {
         case SHOW_CLOUDLET:
         case SHOW_CLOUDLET_INFO:
+        case SHOW_ORG_CLOUDLET_INFO:
         case SHOW_APP_INST:
         case SHOW_CLUSTER_INST:
         case SHOW_ALERT:
