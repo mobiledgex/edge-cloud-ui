@@ -80,7 +80,7 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
             avgValues[metric.field] = `${convertedValue} / ${convertedMaxValue}`
         }
         
-        if(key.includes('mexprometheusappname') || key.includes('envoyapp'))
+        if(key.includes('mexprometheusappname') || key.includes('envoy'))
         {
             avgValues['hidden'] = true
         }
