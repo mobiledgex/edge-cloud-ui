@@ -5,6 +5,8 @@ import isEqual from 'lodash/isEqual';
 import * as d3 from 'd3';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Control from 'react-leaflet-control';
+import { Tooltip as MTooltip } from "@material-ui/core";
 
 import L from 'leaflet';
 //redux
@@ -69,6 +71,7 @@ let mapTileList = [
 class ClustersMap extends Component {
     constructor() {
         super()
+        this.map = React.createRef();
         this.state = {
             center: zoomControls.center,
             zoom: zoomControls.zoom,
@@ -85,6 +88,7 @@ class ClustersMap extends Component {
             currentPos: null,
             anchorEl: null,
             selectedIndex: 0,
+            backSwitch : false
         }
         this.handleMapClick = this.handleMapClick.bind(this);
         this.dir = 1;
@@ -108,6 +112,7 @@ class ClustersMap extends Component {
 
 
     handleCityClick = (city) => {
+        this.setState({backSwitch:true})
         if (!this.props.onMapClick) {
             this.setState({
                 mapCenter: city.coordinates,
@@ -410,34 +415,56 @@ class ClustersMap extends Component {
         const {lat, lng} = event.target.getCenter();
         this.setState({ mapCenter: [lat, lng]});
     }
+    
     handleZoom = (event) => {
         this.setState({zoom: event.target.getZoom()});
     }
 
-    attachControll = () => {
+    zoomIn = ()=>{
+        let zoom = this.map.current.leafletElement.getZoom()
+        this.map.current.leafletElement.setZoom(zoom + 1)
+    }
+
+    zoomOut = ()=>{
+        let zoom = this.map.current.leafletElement.getZoom()
+        this.map.current.leafletElement.setZoom(zoom - 1)
+    }
+
+    zoomReset = ()=>{
+        let center = this.state.detailMode ? this.state.mapCenter : (this.props.region && this.props.region === 'US') ? [41, -74] : (this.state.mapCenter && this.state.mapCenter.length > 0) ? this.state.mapCenter:[53, 13] 
+        this.map.current.leafletElement.setView(center, zoomControls.zoom)
+    }
+
+    back = ()=>{
+        this.setState({backSwitch:false})
+        this.handleReset()
+    }
+
+    renderMapControl = (backSwitch) => {
+        let controllers = [
+            { label: 'Zoom In', icon: 'add', onClick: () => { this.zoomIn() }, visible:true },
+            { label: 'Zoom Out', icon: 'minus', onClick: () => { this.zoomOut() }, visible:true },
+            { label: 'Zoom Reset', icon: 'redo', onClick: () => { this.zoomReset() }, visible:true },
+            { label: 'Back', icon: 'compress', onClick: () => { this.back() }, visible:backSwitch }
+        ]
         return (
-            <div className="leaflet-top leaflet-left" style={{ top: 79, position: 'absolute' }}>
-                <div className="zoom-inout-reset-clusterMap leaflet-control" style={{ left: 0, top: 0, position: 'absolute' }}>
-                    <Button id="mapZoomCtl" size='small' icon 
-                    onMouseOver={() => capture = false}
-                    onMouseLeave={() => capture = true}
-                    onClick={this.handleRefresh}>
-                        <Icon name='redo' />
-                    </Button>
-                </div>
-                {this.state.detailMode &&
-                    <div className="zoom-inout-reset-clusterMap leaflet-control" style={{ left: 0, top: 35, position: 'absolute' }}>
-                        <Button id="mapZoomCtl" size='large' icon onClick={() => this.handleReset()}>
-                            <Icon name='compress' />
-                        </Button>
-                    </div>
-                }
-            </div>
+            <Control position="topleft" className="map-control">
+                {controllers.map((controller, key) => (
+                    controller.visible ? <div key={key} className="map-control-div">
+                        <MTooltip title={controller.label}>
+                            <div
+                                onClick={controller.onClick}>
+                                <Icon name={controller.icon} className="map-control-div-icon" />
+                            </div>
+                        </MTooltip>
+                    </div> : null
+                ))}
+            </Control>
         )
     }
 
     render() {
-        const { zoom } = this.state;
+        const { zoom, backSwitch } = this.state;
         return (
             <div className="commom-listView-map">
                 <Map
@@ -449,7 +476,7 @@ class ClustersMap extends Component {
                     style={{ width: '100%', height: '100%' }}
                     easeLinearity={2}
                     dragging={true}
-                    zoomControl={true}
+                    zoomControl={false}
                     boundsOptions={{ padding: [50, 50] }}
                     scrollWheelZoom={true}
                     viewport={{center: this.state.mapCenter, zoom:zoom}}
@@ -463,7 +490,7 @@ class ClustersMap extends Component {
                         url={this.props.currentTyleLayer}
                         minZoom={3}
                     />
-                    {this.attachControll()}
+                    {this.renderMapControl(backSwitch)}
                     <div style={{ position: 'absolute', bottom: 5, right: 5 }}>
                         <Button className='map_theme_button leaflet-control' aria-controls="map_theme" aria-haspopup="true" onClick={this.handleThemeClick}>
                             {mapTileList[selectedIndex].name}
