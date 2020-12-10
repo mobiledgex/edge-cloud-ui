@@ -19,7 +19,7 @@ import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
 import cloneDeep from 'lodash/cloneDeep';
-import {sendRequest, sendRequests} from '../services/model/serverWorker'
+import {sendRequests} from '../services/model/serverWorker'
 
 class MexListView extends React.Component {
     constructor(props) {
