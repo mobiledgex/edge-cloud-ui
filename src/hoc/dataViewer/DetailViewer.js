@@ -68,7 +68,6 @@ const getData = (data, item) => {
                             item.dataType === constant.TYPE_YAML ?
                                 getHighLighter('yaml', data.toString()) :
                                 <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</div>
-
         )
     }
 }
