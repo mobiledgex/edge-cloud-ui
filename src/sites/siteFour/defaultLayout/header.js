@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import HeaderGlobalMini from '../../../container/headerGlobalMini';
+import UserMenu from '../userSetting/userMenu';
 import EventMenu from './eventMenu'
 import HelpMenu from './helpMenu'
 import LanguageIcon from '@material-ui/icons/Language';
@@ -172,7 +172,7 @@ export default function Header(props) {
                     <HelpMenu viewMode={props.viewMode} helpClick={props.helpClick}/>
                     <MexVirtualSelect open={openPreferences} close={() => { setOpenPreferences(false) }} data={timezones()} header={'Select Timezone'} />
                     <AlertReceiver/>
-                    <HeaderGlobalMini email={props.email} data={props.data} />
+                    <UserMenu email={props.email} data={props.data} />
                 </div>
             </Toolbar>
         </AppBar>

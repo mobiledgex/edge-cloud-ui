@@ -1,24 +1,23 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serverData from '../services/model/serverData';
-import PopProfileViewer from '../container/popProfileViewer';
+import * as actions from '../../../actions';
+import * as serverData from '../../../services/model/serverData';
+import Profile from './profile';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
-let _self = null;
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
+
 class headerGlobalMini extends React.Component {
     constructor(props) {
         super(props);
-        _self = this;
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
-            email: store ? store.email : 'Administrator',
             openProfile: false,
             anchorEl: null,
-            userInfo: { info: [] }
+            userInfo: {}
         }
     }
 
@@ -26,42 +25,13 @@ class headerGlobalMini extends React.Component {
         this.props.handleLogout()
         this.props.history.push({
             pathname: path,
-            userInfo: { info: null }
+            userInfo: {}
         });
 
     }
 
-    getCurrentUser = async () => {
-        let mcRequest = await serverData.currentUser(_self);
-        if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            _self.setState({ tokenState: 'live' })
-            _self.setState({ userInfo: mcRequest.response.data })
-        }
-    }
-
-    componentDidMount() {
-        this.getCurrentUser()
-    }
-
-    profileView() {
-        this.onMenuClose();
-        this.getCurrentUser()
-        this.setState({ openProfile: true })
-    }
-
-    closeProfile = (mode) => {
-        if (mode === 'verify') {
-            _self.props.handleClickLogin(mode)
-        } else {
-
-        }
-        this.setState({ openProfile: false })
-    }
-
-    onMenuClose = () => {
-        this.setState({
-            anchorEl: null
-        })
+    renderProfile = async () => {
+        this.setState({ anchorEl: null, openProfile: true })
     }
     
     handleClick = (event) => {
@@ -73,7 +43,7 @@ class headerGlobalMini extends React.Component {
     }
 
     render() {
-        const { anchorEl } = this.state
+        const { anchorEl, openProfile, userInfo} = this.state
         return (
             <div style={{ marginTop: '0.4em' }}>
                 <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={this.handleClick}>
@@ -86,27 +56,37 @@ class headerGlobalMini extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={() => this.profileView()}>
+                    <MenuItem onClick={() => this.renderProfile()}>
                         <PersonOutlineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Profile" />
+                    </MenuItem>
+                    <MenuItem>
+                        <LockOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
+                        <ListItemText primary="Change Password" />
                     </MenuItem>
                     <MenuItem onClick={() => this.logout('/logout')}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Logout" />
                     </MenuItem>
                 </Menu>
-                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
+                <Profile data={userInfo} open={openProfile} close={()=>{this.setState({openProfile:false})}} currentUser={this.currentUser}/>
             </div >
         )
     }
-}
 
-function mapStateToProps(state) {
-    return {
-        user: state.user,
-        userInfo: state.userInfo ? state.userInfo : null,
+    currentUser = async ()=>{
+        let mc = await serverData.currentUser(this);
+        if (mc && mc.response && mc.response.data) {
+            this.setState({userInfo: mc.response.data})
+        }
+    }
+
+    componentDidMount() {
+        this.currentUser()
     }
 }
+
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -114,4 +94,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(headerGlobalMini));
+export default withRouter(connect(null, mapDispatchProps)(headerGlobalMini));

@@ -36,6 +36,7 @@ export const SHOW_SELF = "showself";
 export const LOGIN = "login";
 export const SETTING_LOCK = "SettingLock";
 export const CURRENT_USER = "current";
+export const UPDATE_USER = "user/update"
 export const VERIFY_EMAIL = "verifyemail";
 export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
@@ -111,6 +112,7 @@ export const getPath = (request) => {
         case CLUSTER_INST_USAGE_ENDPOINT:
         case SHOW_ROLE:
         case SHOW_CONTROLLER:
+        case UPDATE_USER:
             return `/api/v1/auth/${request.method}`
         case PUBLIC_CONFIG:
             return `/api/v1/${request.method}`

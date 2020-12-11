@@ -8,7 +8,7 @@ import { LOCAL_STRAGE_KEY } from '../../constant'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from './signup';
-import MexOTPRegistration from './MexOTPRegistration';
+import MexOTPRegistration from './otp/MexOTPRegistration';
 import MexOTPValidation from './MexOTPValidation';
 import RegistryResetForm from '../../components/reduxForm/resetPassword';
 import PublicIP from 'public-ip';
@@ -527,7 +527,7 @@ class Login extends Component {
     }
 
     otpRegistration = () => (
-        <MexOTPRegistration onComplete={this.onOTPComplete} data={this.state.totp} />
+        <MexOTPRegistration onComplete={this.onOTPComplete} data={this.state.totp} showDone={true}/>
     )
 
 

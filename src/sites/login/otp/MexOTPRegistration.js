@@ -1,7 +1,7 @@
 import { Button } from '@material-ui/core'
 import React from 'react'
 import { Grid, Image } from 'semantic-ui-react'
-
+import './style.css'
 class MexOTP extends React.Component {
 
     constructor(props) {
@@ -25,10 +25,11 @@ class MexOTP extends React.Component {
 
     render() {
         const { textcode } = this.state
+        const { showDone } = this.props
         return (
             <Grid>
                 <Grid.Row>
-                    <span className='title'>Scan this barcode with your app</span>
+                    <h4 className='title'>Scan this barcode with your app</h4>
                 </Grid.Row>
                 <Grid.Row>
                     <span style={{ textAlign: 'left', color: '#FFFFFF' }}>
@@ -42,9 +43,9 @@ class MexOTP extends React.Component {
                             <Image src={`data:image/png;base64,${this.TOTPQRImage}`} />}
                     </div>
                 </Grid.Row>
-                <Grid.Row>
+                {showDone ? <Grid.Row>
                     <Button size='small' variant="outlined" onClick={this.onDone} style={{ marginLeft: 10, color: '#93E019', borderColor: '#93E019' }}>Done</Button>
-                </Grid.Row>
+                </Grid.Row> : null}
             </Grid>
         )
     }
