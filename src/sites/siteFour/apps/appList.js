@@ -46,7 +46,7 @@ class AppList extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteApp, icon: 'delete', warning: 'delete all the selected Apps', type: 'Edit' },
+            { label: 'Delete', onClick: deleteApp, icon: 'delete', warning: 'delete all the selected apps', type: 'Edit' },
         ]
     }
     /***Action Block */

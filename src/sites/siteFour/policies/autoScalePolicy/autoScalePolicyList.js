@@ -37,6 +37,12 @@ class AutoScalePolicy extends React.Component {
         ]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteAutoScalePolicy, icon: 'delete', warning: 'delete all the selected policies', type: 'Edit' },
+        ]
+    }
+
     requestInfo = () => {
         return ({
             headerLabel: 'Auto Scale Policy',
@@ -46,6 +52,7 @@ class AutoScalePolicy extends React.Component {
             sortBy: [fields.region, fields.autoScalePolicyName],
             keys: this.keys,
             onAdd: this.onAdd,
+            selection:true,
             viewMode : HELP_POLICY_LIST
         })
     }
@@ -54,7 +61,7 @@ class AutoScalePolicy extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
         )
     }
 };

@@ -48,6 +48,12 @@ class PrivacyPolicy extends React.Component {
         ]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deletePrivacyPolicy, icon: 'delete', warning: 'delete all the selected policies', type: 'Edit' },
+        ]
+    }
+
     requestInfo = () => {
         return ({
             headerLabel: 'Privacy Policy',
@@ -56,6 +62,7 @@ class PrivacyPolicy extends React.Component {
             nameField: fields.privacyPolicyName,
             sortBy: [fields.region, fields.privacyPolicyName],
             keys: this.keys,
+            selection:true,
             onAdd: this.onAdd,
             viewMode : HELP_POLICY_LIST
         })
@@ -65,7 +72,7 @@ class PrivacyPolicy extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()}  multiDataRequest={multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()}  multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
         )
     }
 };
