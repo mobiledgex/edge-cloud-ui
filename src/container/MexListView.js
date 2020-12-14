@@ -10,10 +10,11 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as constant from '../constant'
 
-import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_CLEAR } from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH } from './MexToolbar';
 import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream from '../hoc/stepper/mexMessageStream';
+import MexMessageMultiNorm from '../hoc/stepper/mexMessageMultiNormal';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
@@ -38,7 +39,8 @@ class MexListView extends React.Component {
             dialogMessageInfo: {},
             uuid: 0,
             dropList: [],
-            resetStream: false
+            resetStream: false,
+            deleteMultiple:[]
         };
         this.filterText = ''
         this.requestCount = 0;
@@ -147,11 +149,34 @@ class MexListView extends React.Component {
         }
     }
 
-    onDeleteMultiple = (action, data) => {
-        this.props.handleLoadingSpinner(true)
-        serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
+    onDeleteMulClose = ()=>{
+        this.setState({deleteMultiple:[]})
     }
 
+    onDeleteMultiple = async (action, data) => {
+        let filterList = this.state.filterList
+        let dataList = this.state.dataList
+        if (action.ws) {
+            this.props.handleLoadingSpinner(true)
+            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
+        }
+        else {
+            let mcRequest = await serverData.sendRequest(this, action.onClick(data))
+            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                this.setState(prevState=>{
+                    let deleteMultiple = prevState.deleteMultiple
+                    deleteMultiple.push(mcRequest.request.success)
+                    return {deleteMultiple}
+                })
+                filterList.splice(filterList.indexOf(data), 1)
+                dataList.splice(dataList.indexOf(data), 1)
+                if (this._isMounted) {
+                    this.setState({ dataList: dataList, filterList: filterList })
+                }
+            }
+        }
+    }
+    
     onUpdate = async (action, data, forceRefresh) => {
         if (forceRefresh || data[fields.updateAvailable]) {
             this.props.handleLoadingSpinner(true)
@@ -421,7 +446,7 @@ class MexListView extends React.Component {
     }
 
     render() {
-        const { resetStream } = this.state
+        const { resetStream, deleteMultiple } = this.state
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
@@ -430,6 +455,7 @@ class MexListView extends React.Component {
                 <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
+                <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose}/>
             </Card>
         );
 

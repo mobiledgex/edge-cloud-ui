@@ -43,6 +43,12 @@ class AppList extends React.Component {
             { label: 'Create Instance', onClick: this.onLaunch, type:'Edit' }
         ]
     }
+
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteApp, icon: 'delete', warning: 'delete all the selected Apps', type: 'Edit' },
+        ]
+    }
     /***Action Block */
     requestInfo = () => {
         return ({
@@ -55,6 +61,7 @@ class AppList extends React.Component {
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode : HELP_APP_LIST,
+            selection:true,
             grouping : true
         })
     }
@@ -62,7 +69,7 @@ class AppList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
         )
     }
 

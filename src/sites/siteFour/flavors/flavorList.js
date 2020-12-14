@@ -35,6 +35,12 @@ class FlavorList extends React.Component {
         ]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteFlavor, icon: 'delete', warning: 'delete all the selected Flavor', type: 'Edit' },
+        ]
+    }
+
     /*Action menu block*/
 
     requestInfo = () => {
@@ -45,6 +51,7 @@ class FlavorList extends React.Component {
             isRegion:true,
             requestType: [showFlavors],
             sortBy: [fields.region, fields.flavorName],
+            selection:true,
             keys: this.keys,
             onAdd: isAdmin() ? this.onAdd : undefined,
             viewMode : HELP_FLAVOR_LIST
@@ -54,7 +61,7 @@ class FlavorList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
         )
     }
 };

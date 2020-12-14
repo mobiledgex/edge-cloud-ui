@@ -1,6 +1,9 @@
 import React from 'react'
 import { makeStyles, Tooltip, IconButton, Typography, Toolbar } from '@material-ui/core';
-import MaterialIcon from 'material-icons-react';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import RefreshOutlinedIcon from '@material-ui/icons/RefreshOutlined';
+import ArrowUpwardOutlinedIcon from '@material-ui/icons/ArrowUpwardOutlined';
+import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
 import clsx from 'clsx';
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -17,6 +20,24 @@ const useToolbarStyles = makeStyles((theme) => ({
         flex: '1 1 100%',
     },
 }));
+
+const ICON_DELETE = 'delete'
+const ICON_UPGRADE = 'upgrade'
+const ICON_REFRESH = 'refresh'
+
+const icons = (icon) =>{
+    let color = 'white'
+    switch(icon)
+    {
+        case ICON_DELETE:
+            return <DeleteSweepOutlinedIcon style={{color}}/>
+        case ICON_UPGRADE:
+            return <ArrowUpwardOutlinedIcon style={{color, border:'0.13em solid white', borderRadius:50, fontSize:16, marginTop:1}}/>
+        case ICON_REFRESH:
+            return <RefreshOutlinedIcon style={{color}}/>
+
+    }
+}
 
 const ListToolbar = (props)=>
 {
@@ -37,7 +58,7 @@ const ListToolbar = (props)=>
                         return (
                             <Tooltip key={i} title={actionMenu.label}>
                                 <IconButton aria-label={actionMenu.label} onClick={() => { props.groupActionClose(actionMenu) }}>
-                                    <MaterialIcon icon={actionMenu.icon} color={'white'} />
+                                    {icons(actionMenu.icon)}
                                 </IconButton>
                             </Tooltip>)
                     }) : null
