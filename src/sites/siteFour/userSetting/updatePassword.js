@@ -235,7 +235,7 @@ class UpdatePassword extends React.Component {
                         <LockOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Change Password" />
                     </MenuItem>
-                        <Dialog open={open} onClose={this.handleClose} aria-labelledby="update_password" disableEscapeKeyDown={true}>
+                        <Dialog open={open} onClose={this.handleClose} aria-labelledby="update_password" disableEscapeKeyDown={true} disableBackdropClick={true}>
                             {loading ? <LinearProgress /> : null}
                             <DialogTitle id="update_password">
                                 <div style={{ float: "left", display: 'inline-block' }}>
@@ -275,7 +275,7 @@ class UpdatePassword extends React.Component {
         if (this.props.dialog) {
             let cStyle = cloneDeep(style)
             cStyle.right = 0
-            forms.push({ label: 'Close', formType: BUTTON, onClick: this.handleClose, style: cStyle })
+            forms.push({ label: 'Cancel', formType: BUTTON, onClick: this.handleClose, style: cStyle })
         }
         this.setState({
             forms: forms

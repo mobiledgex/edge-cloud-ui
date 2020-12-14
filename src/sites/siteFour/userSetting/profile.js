@@ -156,7 +156,7 @@ class Profile extends React.Component {
                     <PersonOutlineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Profile" />
                 </MenuItem>
-                <Dialog open={open} onClose={this.handleClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                <Dialog open={open} onClose={this.handleClose} aria-labelledby="profile" disableEscapeKeyDown={true} disableBackdropClick={true}>
                     {loading ? <LinearProgress /> : null}
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
