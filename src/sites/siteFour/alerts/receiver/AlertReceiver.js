@@ -47,6 +47,12 @@ class AlertList extends React.Component {
         ]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteAlertReceiver, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
+        ]
+    }
+
     requestInfo = () => {
         return ({
             id: 'Alerts',
@@ -54,6 +60,7 @@ class AlertList extends React.Component {
             nameField: fields.alertname,
             requestType: [showAlertReceiver],
             sortBy: [fields.alertname],
+            selection:true,
             keys: this.keys,
             onAdd: this.onAdd,
             grouping: false
@@ -133,7 +140,7 @@ class AlertList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
         )
     }
 };

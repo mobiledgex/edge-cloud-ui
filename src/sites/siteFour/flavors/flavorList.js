@@ -37,7 +37,7 @@ class FlavorList extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteFlavor, icon: 'delete', warning: 'delete all the selected Flavor', type: 'Edit' },
+            { label: 'Delete', onClick: deleteFlavor, icon: 'delete', warning: 'delete all the selected flavors', type: 'Edit' },
         ]
     }
 

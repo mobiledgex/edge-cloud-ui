@@ -34,7 +34,7 @@ const DialogTitle = withStyles(styles)((props) => {
 const MexMessageMultiNorm = (props) => {
     const {data} = props
     return (
-        <Dialog onClose={props.close} aria-labelledby="simple-dialog-title" open={data.length > 0} disableEscapeKeyDown={true} PaperProps={{style:{
+        <Dialog onClose={props.close} aria-labelledby="simple-dialog-title" open={data.length > 0} disableEscapeKeyDown={true} disableBackdropClick={true} PaperProps={{style:{
             minWidth:250
         }}}>
             <DialogTitle id="title" onClose={props.close}>Delete</DialogTitle>
@@ -42,7 +42,7 @@ const MexMessageMultiNorm = (props) => {
                 {data.map((mul, i) => {
                     return (
                         <ListItem key={i}>
-                            <ListItemText primary={mul} />
+                            <ListItemText primary={mul.message} />
                         </ListItem>
                     )
                 })}

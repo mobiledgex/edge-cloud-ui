@@ -37,6 +37,12 @@ class AccountList extends React.Component {
             { label: 'Delete', visible:this.deleteVisible, onClick: deleteAccount, type:'Edit' }
         ]
     }
+
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteAccount, icon: 'delete', warning: 'delete all the selected user\'s account', type: 'Edit' },
+        ]
+    }
     /*Action menu block*/
 
     requestInfo = () => {
@@ -44,6 +50,7 @@ class AccountList extends React.Component {
             id: 'accounts',
             headerLabel: 'Accounts',
             nameField: fields.username,
+            selection:true,
             requestType: [showAccounts],
             sortBy: [fields.username],
             keys: this.keys,
@@ -150,7 +157,7 @@ class AccountList extends React.Component {
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%', height:'100%' }}>
                     <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} refreshToggle={this.state.refreshViewToggle} />
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
                 </div>
         )
     }
