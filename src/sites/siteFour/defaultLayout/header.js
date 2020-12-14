@@ -127,7 +127,7 @@ export default function Header(props) {
                                             <strong>{process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'version 0.0.0'}</strong>
                                         </p>
                                         <p>
-                                            <a href="https://mobiledgex.com/" target="_blank">www.mobiledgex.com</a>
+                                            <a href="https://mobiledgex.com/" target="_blank" style={{color:'#69A228'}}>www.mobiledgex.com</a>
                                         </p>
                                     </ListItemText>
                                 </ListItem>
