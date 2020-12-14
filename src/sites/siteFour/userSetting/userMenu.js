@@ -4,18 +4,16 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
 import Profile from './profile';
+import UpdatePassword from './updatePassword';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 
 class headerGlobalMini extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            openProfile: false,
             anchorEl: null,
             userInfo: {}
         }
@@ -29,10 +27,6 @@ class headerGlobalMini extends React.Component {
         });
 
     }
-
-    renderProfile = async () => {
-        this.setState({ anchorEl: null, openProfile: true })
-    }
     
     handleClick = (event) => {
         this.setState({ anchorEl: event.currentTarget });
@@ -43,7 +37,7 @@ class headerGlobalMini extends React.Component {
     }
 
     render() {
-        const { anchorEl, openProfile, userInfo} = this.state
+        const { anchorEl, userInfo} = this.state
         return (
             <div style={{ marginTop: '0.4em' }}>
                 <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={this.handleClick}>
@@ -56,20 +50,13 @@ class headerGlobalMini extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={() => this.renderProfile()}>
-                        <PersonOutlineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
-                        <ListItemText primary="Profile" />
-                    </MenuItem>
-                    <MenuItem>
-                        <LockOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
-                        <ListItemText primary="Change Password" />
-                    </MenuItem>
+                    <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose}/>
+                    <UpdatePassword close={this.handleClose} dialog={true}/>
                     <MenuItem onClick={() => this.logout('/logout')}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Logout" />
                     </MenuItem>
                 </Menu>
-                <Profile data={userInfo} open={openProfile} close={()=>{this.setState({openProfile:false})}} currentUser={this.currentUser}/>
             </div >
         )
     }

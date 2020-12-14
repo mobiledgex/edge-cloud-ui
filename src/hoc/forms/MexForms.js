@@ -164,7 +164,7 @@ const MexForms = (props) => {
             }
         }
         if (valid && form.dataValidateFunc) {
-            valid = form.dataValidateFunc(form)
+            valid = form.dataValidateFunc(form, forms)
             errorBanner(form)
         }
         return valid

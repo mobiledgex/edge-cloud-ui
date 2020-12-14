@@ -15,7 +15,6 @@ class EntranceGlobe extends Component {
 
         this.state = {
             signup: false,
-            loginFlag:undefined,
             mexAlertMessage: undefined
         }
         self = this;
@@ -51,13 +50,9 @@ class EntranceGlobe extends Component {
     }
 
     handleClickLogin(mode) {
-        self.setState({ signup: mode === 'signup', loginFlag: mode})
-        setTimeout(() => {
-            this.setState({loginFlag:undefined})
-        }, 10);
-        setTimeout(() => {
+        self.setState({ signup: mode === 'signup'}, ()=>{
             self.props.handleChangeLoginMode(mode)
-        }, 500);
+        })
     }
 
     onSignUp = ()=>
@@ -77,7 +72,7 @@ class EntranceGlobe extends Component {
                     <div className='login_head' >
                         <div className='intro_login'>
                             <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200} alt="MobiledgeX"/>
-                            <Login location={this.props.location} history={this.props.history} signup={this.state.signup} loginFlag={this.state.loginFlag} onSignUp={this.onSignUp}></Login>
+                            <Login location={this.props.location} history={this.props.history} signup={this.state.signup} onSignUp={this.onSignUp}></Login>
                         </div>
                     </div>
                 </div>

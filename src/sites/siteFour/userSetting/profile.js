@@ -2,15 +2,16 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, Switch, Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
 import { FORMAT_FULL_DATE_TIME, time } from '../../../utils/date_util'
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
+import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import * as dateUtil from '../../../utils/date_util'
 import { withStyles } from '@material-ui/styles';
-import {updateUser} from '../../../services/model/serverWorker'
+import { updateUser } from '../../../services/model/serverWorker'
 import MexOTPRegistration from '../../login/otp/MexOTPRegistration'
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -52,24 +53,28 @@ const CustomSwitch = withStyles({
 class Profile extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
-            isOTP : false,
-            OTPData : undefined,
-            loading:false
+            open: false,
+            isOTP: false,
+            OTPData: undefined,
+            loading: false
         }
     }
 
-    
+
 
     makeUTC = (date) => {
         return time(FORMAT_FULL_DATE_TIME, date)
     }
 
-
+    handleOpen = ()=>{
+        this.setState({open:true})
+        this.props.close()
+    }
 
     handleClose = () => {
-        this.props.close()
+        this.setState({open:false})
     }
 
 
@@ -118,28 +123,26 @@ class Profile extends React.Component {
         )
     }
 
-    onOTPChange = ()=>{
-        this.setState(prevState=>{
+    onOTPChange = () => {
+        this.setState(prevState => {
             let isOTP = !prevState.isOTP
-            return {isOTP}
+            return { isOTP }
         })
     }
 
-    updateResponse = (mc)=>{
-        if(mc && mc.response && mc.response.status === 200)
-        {
+    updateResponse = (mc) => {
+        if (mc && mc.response && mc.response.status === 200) {
             let responseData = mc.response.data
-            let OTPData = this.state.isOTP ? {responseData} : undefined
+            let OTPData = this.state.isOTP ? { responseData } : undefined
             this.props.currentUser()
-            this.setState({OTPData})
+            this.setState({ OTPData })
         }
-        else
-        {
-            this.setState({loading:false})
+        else {
+            this.setState({ loading: false })
         }
     }
 
-    updateProfile = ()=>{
+    updateProfile = () => {
         let isOTP = this.state.isOTP
         if (isOTP !== this.props.data['EnableTOTP']) {
             this.setState({ loading: true })
@@ -148,63 +151,64 @@ class Profile extends React.Component {
     }
 
     render() {
-        const { data, open } = this.props
-        const { isOTP, OTPData, loading } = this.state
+        const { data } = this.props
+        const { open, isOTP, OTPData, loading } = this.state
         return (
-            <Dialog open={open} onClose={this.handleClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
-                {loading ? <LinearProgress/> : null}
-                <DialogTitle id="profile">
-                    <div style={{ float: "left", display: 'inline-block' }}>
-                        <h3>Profile</h3>
-                    </div>
-                    <div style={{ float: "right", display: 'inline-block', marginTop: -10 }}>
-                        {this.renderEmail(data)}
-                        {this.renderOTP(data)}
-                        {this.renderLock(data)}
-                    </div>
-                </DialogTitle>
-                <List>
-                    {
-                        keys.map((key, i) => {
-                            return key.visible ? this.renderRow(i, key, data) : null
-                        })
-                    }
-                    <ListItem>
-                        <div style={{ minWidth: 200, marginRight: 10 }}>
-                            <h5>Enable 2FA Auth</h5>
+            <React.Fragment>
+                <MenuItem onClick={this.handleOpen}>
+                    <PersonOutlineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
+                    <ListItemText primary="Profile" />
+                </MenuItem>
+                <Dialog open={open} onClose={this.handleClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                    {loading ? <LinearProgress /> : null}
+                    <DialogTitle id="profile">
+                        <div style={{ float: "left", display: 'inline-block' }}>
+                            <h3>Profile</h3>
                         </div>
-                        <div>
-                            <CustomSwitch size="small" checked={isOTP} onChange={this.onOTPChange}/>
+                        <div style={{ float: "right", display: 'inline-block', marginTop: -8 }}>
+                            {this.renderEmail(data)}
+                            {this.renderOTP(data)}
+                            {this.renderLock(data)}
                         </div>
-                    </ListItem>
-                    <ListItem>
-                        {OTPData ? <MexOTPRegistration data={OTPData}/> : null}
-                    </ListItem>
-                </List>
-                <DialogActions>
-                    <Button onClick={this.updateProfile} color="primary">
-                        Update
-                    </Button>
-                    <Button onClick={this.handleClose} color="primary">
-                        Close
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                    </DialogTitle>
+                    <List style={{marginLeft:10}}>
+                        {
+                            keys.map((key, i) => {
+                                return key.visible ? this.renderRow(i, key, data) : null
+                            })
+                        }
+                        <ListItem>
+                            <div style={{ minWidth: 200, marginRight: 10 }}>
+                                <h5>Enable 2FA Auth</h5>
+                            </div>
+                            <div>
+                                <CustomSwitch size="small" checked={isOTP} onChange={this.onOTPChange} />
+                            </div>
+                        </ListItem>
+                        <ListItem>
+                            {OTPData ? <MexOTPRegistration data={OTPData} /> : null}
+                        </ListItem>
+                    </List>
+                    <DialogActions>
+                        <Button onClick={this.updateProfile} style={{backgroundColor: 'rgba(118, 255, 3, 0.7)'}} size='small'>
+                            Update
+                        </Button>
+                        <Button onClick={this.handleClose} style={{backgroundColor: 'rgba(118, 255, 3, 0.7)'}} size='small'>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </React.Fragment>
         )
     }
 
     componentDidUpdate(preProps, preState) {
         if (preProps.data !== this.props.data) {
-            this.setState({ isOTP: this.props.data['EnableTOTP'], loading:false })
+            this.setState({ isOTP: this.props.data['EnableTOTP'], loading: false })
         }
     }
 }
 
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleLogout: () => { dispatch(actions.userLogout()) }
-    };
-};
 
-export default withRouter(connect(null, mapDispatchProps)(Profile));
+export default Profile;
 
