@@ -72,7 +72,7 @@ class AutoProvPolicy extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteFlavor, icon: 'delete', warning: 'delete all the selected Policies', type: 'Edit' },
+            { label: 'Delete', onClick: deleteAutoProvPolicy, icon: 'delete', warning: 'delete all the selected policies', type: 'Edit' },
         ]
     }
 

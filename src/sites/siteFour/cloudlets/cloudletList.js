@@ -59,7 +59,7 @@ class CloudletList extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteCloudlet, icon: 'delete', ws: true, warning: 'delete all the selected Cloudlets', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
+            { label: 'Delete', onClick: deleteCloudlet, icon: 'delete', ws: true, warning: 'delete all the selected cloudlets', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
         ]
     }
 
