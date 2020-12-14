@@ -61,7 +61,7 @@ class ClusterInstView extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteClusterInst, icon: 'delete', warning: 'delete all the selected Cluster Instances', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
+            { label: 'Delete', onClick: deleteClusterInst, icon: 'delete', ws: true, warning: 'delete all the selected Cluster Instances', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
         ]
     }
 

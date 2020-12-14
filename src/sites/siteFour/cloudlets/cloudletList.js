@@ -24,6 +24,7 @@ class CloudletList extends React.Component {
         this.action = '';
         this.data = {};
         this.keys = keys();
+        this.multiStepperHeader = [{ label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
     }
 
     onRegClose = (isEdited) => {
@@ -56,6 +57,13 @@ class CloudletList extends React.Component {
         ]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteCloudlet, icon: 'delete', ws: true, warning: 'delete all the selected Cloudlet', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
+        ]
+    }
+
+
     canAdd = () => {
         let valid = false
         let role = getUserRole();
@@ -80,6 +88,7 @@ class CloudletList extends React.Component {
             customStream: this.customStream,
             isRegion: true,
             isMap: true,
+            selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd() ? this.onAdd : undefined,
@@ -170,7 +179,7 @@ class CloudletList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest}  groupActionMenu={this.groupActionMenu}/>
         )
     }
 
