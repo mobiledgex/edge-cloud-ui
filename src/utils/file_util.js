@@ -35,6 +35,7 @@ export const copyData = (data) => {
     textField.innerText = data
     document.body.appendChild(textField)
     textField.select()
+    textField.focus()
     document.execCommand('copy')
     textField.remove()
 }

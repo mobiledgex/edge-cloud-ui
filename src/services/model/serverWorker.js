@@ -1,6 +1,7 @@
 import AlertWorker from '../worker/mex.worker.js'
 import { WORKER_SERVER } from '../worker/constant.js'
 import { checkExpiry } from './serviceMC'
+import { NEW_PASSWORD, RESET_PASSWORD, UPDATE_USER } from './endpoints.js'
 
 const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -25,6 +26,23 @@ const responseListener = (self, worker, callback) => {
         else {
             callback(event.data)
         }
+    });
+}
+
+export const updateUser = (self, data, callback)=>{
+    let request = {method : UPDATE_USER, data : data}
+    sendRequest(self, request, callback)
+}
+
+export const updatePwd = (self, data, callback)=>{
+    let request = {method : NEW_PASSWORD, data : data}
+    sendRequest(self, request, callback)
+}
+
+export const resetPwd = (self, data, callback)=>{
+    let request = {method : RESET_PASSWORD, data : data}
+    sendRequest(self, request).addEventListener('message', event => {    
+        callback(event.data)
     });
 }
 

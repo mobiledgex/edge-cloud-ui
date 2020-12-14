@@ -8,9 +8,9 @@ import { LOCAL_STRAGE_KEY } from '../../constant'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
 import RegistryUserForm from './signup';
-import MexOTPRegistration from './MexOTPRegistration';
+import MexOTPRegistration from './otp/MexOTPRegistration';
 import MexOTPValidation from './MexOTPValidation';
-import RegistryResetForm from '../../components/reduxForm/resetPassword';
+import ResetPasswordForm from '../siteFour/userSetting/updatePassword';
 import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
 import ReCAPTCHA from "react-google-recaptcha";
@@ -74,33 +74,31 @@ const FormForgotPass = (props) => (
         </Grid.Row>
     </Grid>
 )
-const ForgotMessage = (props) => (
-    <Grid className="signUpBD">
-        <Grid.Row>
-            <span className='title'>Reset your password</span>
-        </Grid.Row>
-        <Grid.Row>
-            <span className="login-text">Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.</span>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid.Column>
-                <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onBlur={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Log In</Button>
-            </Grid.Column>
-        </Grid.Row>
+const ForgotMessage = (props) => {
+    return (
+        <Grid className="signUpBD">
+            <Grid.Row>
+                <span className='title'>Reset your password</span>
+            </Grid.Row>
+            <Grid.Row>
+                <span className="login-text">Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.</span>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column>
+                    <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onBlur={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Log In</Button>
+                </Grid.Column>
+            </Grid.Row>
 
-    </Grid>
-)
+        </Grid>
+    )
+}
 const ResetPassword = (props) => (
     <Grid className="signUpBD">
         <Grid.Row>
             <span className='title'>Reset your password</span>
         </Grid.Row>
-        <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')} />
-        <Grid.Row>
-            <span>
-                By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Privacy Policy</a>.
-            </span>
-        </Grid.Row>
+        <ResetPasswordForm onReset={props.onReset} location={props.location} />
+        <br />
     </Grid>
 
 )
@@ -187,8 +185,6 @@ class Login extends Component {
             loginMode: 'login',
             successMsg: 'Success create new account',
             loginDanger: '',
-            forgotPass: false,
-            forgotMessage: false,
             created: false,
             resultMsg: '',
             captchaValidated: false,
@@ -217,57 +213,41 @@ class Login extends Component {
 
     }
 
-    resetPassword = async (password) => {
-        let token = this.props.location.search
-        token = token.substring(token.indexOf('token=') + 6)
-        let mcRequest = await serverData.resetPassword(self, { token: token, password: password })
-        if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            this.props.history.push({ pathname: '/logout' })
-            this.props.handleAlertInfo('success', mcRequest.response.data.message)
-            setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
-        }
-        else if (mcRequest && mcRequest.error) {
-            this.props.history.push({ pathname: '/logout' })
-            this.props.handleAlertInfo('error', mcRequest.error.response.data.message)
-            self.props.handleChangeLoginMode('login');
-        }
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (nextProps.values) {
-            if (nextProps.submitSucceeded) {
-                this.setState({ email: nextProps.values.email, username: nextProps.values.username })
-                if (nextProps.loginMode === 'resetPass') {
-                    this.resetPassword(nextProps.values.password)
+    static getDerivedStateFromProps(props, state) {
+        if (props.loginMode !== state.loginMode) {
+            if (props.loginMode === 'login') {
+                if (state.errorCreate) {
+                    return { successCreate: false, errorCreate: false, loginOTP: undefined, totp: undefined };
+                } else {
+                    return { successCreate: false, loginMode: 'login', loginOTP: undefined, totp: undefined };
                 }
-            }
 
+            } else if (props.loginMode === 'signup') {
+                return { successCreate: false, loginMode: 'signup', errorCreate: false, captchaValidated: false, loginOTP: undefined, totp: undefined };
+            } else if (props.loginMode === 'forgot') {
+                return { successCreate: false, loginMode: 'forgot', loginOTP: undefined, totp: undefined };
+            } else if (props.loginMode === 'forgotMessage') {
+                return { successCreate: false, loginMode: 'forgotMessage', loginOTP: undefined, totp: undefined };
+            } else if (props.loginMode === 'verify') {
+                return { successCreate: false, loginMode: 'verify', loginOTP: undefined, totp: undefined };
+            } else if (props.loginMode === 'resetPass') {
+                return { successCreate: false, loginMode: 'resetPass', loginOTP: undefined, totp: undefined };
+            }
+            else {
+                return null
+            }
         }
-
-        if (nextProps.loginMode === 'login' || nextProps.loginFlag === 'login') {
-            if (this.state.errorCreate) {
-                setTimeout(() => self.setState({ successCreate: false, errorCreate: false, forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined }), 1000);
-            } else {
-                this.setState({ successCreate: false, loginMode: 'login', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
-            }
-
-        } else if (nextProps.loginMode === 'signup') {
-            this.setState({ successCreate: false, loginMode: 'signup', forgotMessage: false, forgotPass: false, errorCreate: false, captchaValidated: false, loginOTP: undefined, totp: undefined });
-        } else if (nextProps.loginMode === 'forgot') {
-            this.setState({ successCreate: false, loginMode: 'forgot', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
-        } else if (nextProps.loginMode === 'verify') {
-            this.setState({ successCreate: false, loginMode: 'verify', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
-        } else if (nextProps.loginMode === 'resetPass') {
-            this.setState({ successCreate: false, loginMode: 'resetPass', forgotMessage: false, forgotPass: false, loginOTP: undefined, totp: undefined });
-        } else if (nextProps.loginMode === 'signuped' && nextProps.createSuccess) {
-            let email = nextProps.userInfo && nextProps.userInfo.email;
+        else if (props.loginMode === 'signuped' && props.createSuccess) {
+            let email = props.userInfo && props.userInfo.email;
             let msgTxt = `Welcome to the Edge! Thank you for signing up.
-                            To login to your account, you must first validate your email address.
-                            A verification email has been sent to ${email}. Click on the verification link in the email to verify your account. 
-                            All the new accounts are locked by default. Please contact support@mobiledgex.com to unlock it`
-            this.setState({ successCreate: true, loginMode: 'signuped', successMsg: 'Account created', resultMsg: msgTxt })
+                        To login to your account, you must first validate your email address.
+                        A verification email has been sent to ${email}. Click on the verification link in the email to verify your account. 
+                        All the new accounts are locked by default. Please contact support@mobiledgex.com to unlock it`
+            return { successCreate: true, loginMode: 'signuped', successMsg: 'Account created', resultMsg: msgTxt }
         }
-
+        else {
+            return null
+        }
     }
 
     receiveClientIp = async () => {
@@ -329,14 +309,14 @@ class Login extends Component {
         }
     }
 
-    onFocusHandle(value) {
+    onFocusHandle = (value) => {
         self.setState({ focused: value })
     }
 
-    onSignOut() {
+    onSignOut = () => {
         this.props.requestLogout();
     }
-    onConfirm() {
+    onConfirm = () => {
         this.props.requestLogin(this.props.target, { uid: this.uid.value, pwd: this.pwd.value }); // ajax 요청
 
     }
@@ -344,12 +324,12 @@ class Login extends Component {
         this.setState({ [name]: value })
     }
 
-    onProgress(value) {
+    onProgress = (value) => {
         this.props.handleLoadingSpinner(value)
     }
 
-    returnSignin() {
-        setTimeout(() => self.setState({ forgotPass: false, forgotMessage: false, loginMode: 'login' }), 1000)
+    returnSignin = () => {
+        this.props.handleChangeLoginMode('login')
     }
 
     getControllers = async (token) => {
@@ -403,8 +383,8 @@ class Login extends Component {
         }
     }
 
-    handleClickLogin(mode) {
-        self.setState({ loginMode: mode })
+    handleClickLogin = (mode) => {
+        this.props.handleChangeLoginMode(mode)
     }
 
     onSendEmail = async (mode) => {
@@ -412,7 +392,8 @@ class Login extends Component {
             let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/#/verify` })
             if (valid) {
                 self.props.handleAlertInfo('success', 'We have e-mailed your verification link')
-                self.setState({ loginMode: 'signup', forgotMessage: true })
+                this.handleClickLogin('forgotMessage')
+
             }
         } else if (mode === 'back') {
 
@@ -429,7 +410,7 @@ class Login extends Component {
             let valid = await serverData.resetPasswordRequest(self, data)
             if (valid) {
                 self.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
-                self.setState({ loginMode: 'forgotMessage', forgotMessage: true })
+                this.handleClickLogin('forgotMessage')
             }
         }
     }
@@ -527,10 +508,14 @@ class Login extends Component {
     }
 
     otpRegistration = () => (
-        <MexOTPRegistration onComplete={this.onOTPComplete} data={this.state.totp} />
+        <MexOTPRegistration onComplete={this.onOTPComplete} data={this.state.totp} showDone={true} />
     )
 
 
+    onReset = () => {
+        this.props.history.push({ pathname: '/logout' })
+        this.props.handleChangeLoginMode('login');
+    }
 
     render() {
         return (
@@ -540,9 +525,9 @@ class Login extends Component {
                         this.state.totp ? this.otpRegistration() :
                             this.props.signup ? this.signUpForm() :
                                 (this.state.loginMode === 'forgot') ?
-                                    <FormForgotPass self={this} message={this.state.forgotMessage} />
+                                    <FormForgotPass self={this} />
                                     : (this.state.loginMode === 'resetPass') ?
-                                        <ResetPassword self={this} />
+                                        <ResetPassword self={this} onReset={this.onReset} location={this.props.location} />
                                         : (this.state.loginMode === 'forgotMessage') ?
                                             <ForgotMessage self={this} />
                                             : (this.state.loginMode === 'verify') ?
