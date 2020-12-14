@@ -1,7 +1,6 @@
 import { Button } from '@material-ui/core'
 import React from 'react'
 import { Grid, Image } from 'semantic-ui-react'
-import './style.css'
 class MexOTP extends React.Component {
 
     constructor(props) {
