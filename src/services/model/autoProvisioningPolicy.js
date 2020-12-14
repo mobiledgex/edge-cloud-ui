@@ -137,6 +137,9 @@ export const multiDataRequest = (keys, mcRequestList) => {
         if (autoProv[fields.autoPolicyName] === app[fields.autoPolicyName]) {
           apps.push(app[fields.appName])
         }
+        else if (app[fields.autoProvPolicies] && app[fields.autoProvPolicies].includes(autoProv[fields.autoPolicyName])) {
+          apps.push(app[fields.appName])
+        }
       }
       if (apps.length > 0) {
         autoProv[fields.apps] = apps
