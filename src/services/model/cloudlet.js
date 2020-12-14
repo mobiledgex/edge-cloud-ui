@@ -256,7 +256,7 @@ export const keys = () => ([
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
