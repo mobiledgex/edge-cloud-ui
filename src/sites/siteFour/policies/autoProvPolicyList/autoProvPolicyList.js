@@ -42,22 +42,32 @@ class AutoProvPolicy extends React.Component {
         return data[fields.cloudletCount] > 0
     }
 
-    onDelete = (data, success, errorInfo)=>
-    {
-        if(!success, errorInfo)
-        {
+    onDelete = (data, success, errorInfo) => {
+        if (!success, errorInfo) {
             if (errorInfo.message === 'Policy in use by App') {
-                this.props.handleAlertInfo('error', `Policy in use by App${data[fields.apps].length > 1 ? 's' : ''} ${data[fields.apps]}`)
+                let appInfo = ''
+                let length = 0
+                if (data[fields.apps]) {
+                    let apps = data[fields.apps]
+                    length = apps.length
+                    apps.map((app, i) => {
+                        appInfo = appInfo + app
+                        if (i !== length - 1) {
+                            appInfo = appInfo + ', '
+                        }
+                    })
+                }
+                this.props.handleAlertInfo('error', `Policy in use by App${length > 1 ? 's' : ''} ${appInfo}`)
             }
         }
     }
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type:'Edit' },
-            { label: 'Add Cloudlet', onClick: this.onAddCloudlet, type:'Edit' },
-            { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet, type:'Edit' },
-            { label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type:'Edit' }]
+            { label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { label: 'Add Cloudlet', onClick: this.onAddCloudlet, type: 'Edit' },
+            { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet, type: 'Edit' },
+            { label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type: 'Edit' }]
     }
 
     requestInfo = () => {
