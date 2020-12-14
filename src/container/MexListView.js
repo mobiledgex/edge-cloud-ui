@@ -161,7 +161,6 @@ class MexListView extends React.Component {
             serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
         }
         else {
-            let valid = false
             let mcRequest = await serverData.sendRequest(this, action.onClick(data))
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 this.setState(prevState=>{
@@ -174,7 +173,6 @@ class MexListView extends React.Component {
                 if (this._isMounted) {
                     this.setState({ dataList: dataList, filterList: filterList })
                 }
-                valid = true;
             }
         }
     }
