@@ -139,7 +139,6 @@ class ListViewer extends React.Component {
 
     groupActionClose = (action) => {
         this.props.groupActionClose(action, this.props.selected)
-        this.props.setSelected([])
     }
 
     isDropped = (item) => {

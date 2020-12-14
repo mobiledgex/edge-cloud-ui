@@ -184,6 +184,7 @@ class MexListView extends React.Component {
         this.setState({ dialogMessageInfo: {} })
         if (valid) {
             if (isMultiple) {
+                this.setState({selected:[]})
                 data.map(item => {
                     switch (action.label) {
                         case 'Upgrade':
