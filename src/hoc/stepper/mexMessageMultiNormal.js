@@ -1,6 +1,5 @@
 import React from 'react'
-import { Button, Dialog, IconButton, List, ListItem, ListItemText } from '@material-ui/core';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import { Button, Dialog, IconButton, List, ListItem, ListItemText, DialogTitle as MuiDialogTitle } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/styles';
 import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
