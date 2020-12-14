@@ -32,7 +32,7 @@ class MexOTP extends React.Component {
                     <h4 className='title'>Scan this barcode with your app</h4>
                 </Grid.Row>
                 <Grid.Row>
-                    <span style={{ textAlign: 'left', color: '#FFFFFF' }}>
+                    <span style={{ textAlign: 'left', color: '#FFFFFF', fontSize:14 }}>
                         {textcode ? <div>Enter this code into the app</div> :
                             <div>Scan the image below with the two-factor authentication app on your phone. If you can't use a barcode, <button className='otp-registration-link' onClick={this.loadTextCode}>enter this text code instead.</button></div>}
                     </span>

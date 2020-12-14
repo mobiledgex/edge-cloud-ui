@@ -1,8 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import * as actions from '../../../actions';
-import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
 import { FORMAT_FULL_DATE_TIME, time } from '../../../utils/date_util'
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
@@ -163,7 +160,7 @@ class Profile extends React.Component {
                     {loading ? <LinearProgress /> : null}
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3>Profile</h3>
+                            <h3 style={{fontWeight:700}}>Profile</h3>
                         </div>
                         <div style={{ float: "right", display: 'inline-block', marginTop: -8 }}>
                             {this.renderEmail(data)}
@@ -185,9 +182,10 @@ class Profile extends React.Component {
                                 <CustomSwitch size="small" checked={isOTP} onChange={this.onOTPChange} />
                             </div>
                         </ListItem>
-                        <ListItem>
-                            {OTPData ? <MexOTPRegistration data={OTPData} /> : null}
-                        </ListItem>
+                        {OTPData ?
+                            <ListItem>
+                                <MexOTPRegistration data={OTPData} />
+                            </ListItem> : null}
                     </List>
                     <DialogActions>
                         <Button onClick={this.updateProfile} style={{backgroundColor: 'rgba(118, 255, 3, 0.7)'}} size='small'>

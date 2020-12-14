@@ -10,3 +10,11 @@
 .otp-registration-link:hover {
     color: #FFF;
 }
+
+.title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    vertical-align: middle;
+}
