@@ -73,3 +73,22 @@ h6 {
     color: white;
     font-weight: 500;
 }
+
+.otp-registration-link {
+    color: #93E019;
+    background-color: transparent;
+    border: none;
+    display: inline;
+    cursor: pointer;
+}
+
+.otp-registration-link:hover {
+    color: #FFF;
+}
+
+.title {
+    text-align: center;
+    font-size: 18px;
+    width: 100%;
+    vertical-align: middle;
+}

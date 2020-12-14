@@ -8,9 +8,9 @@ import MenuList from '@material-ui/core/MenuList';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Input, InputAdornment, Box, Tooltip } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import './mexSelectTree.css'
 import { Icon } from 'semantic-ui-react';
 import { FixedSizeList } from 'react-window';
+import './mexSelectTree.css'
 
 const useStyles = makeStyles((theme) => ({
     root: {
