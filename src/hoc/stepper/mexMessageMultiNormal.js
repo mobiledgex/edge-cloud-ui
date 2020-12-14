@@ -36,7 +36,6 @@ const MexMessageMultiNorm = (props) => {
     const {data} = props
     return (
         <Dialog onClose={props.close} aria-labelledby="simple-dialog-title" open={data.length > 0} disableEscapeKeyDown={true} PaperProps={{style:{
-            backgroundColor:'#616161',
             minWidth:250
         }}}>
             <DialogTitle id="title" onClose={props.close}>Delete</DialogTitle>

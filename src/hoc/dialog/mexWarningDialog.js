@@ -24,7 +24,7 @@ const MexMessageDialog = (props) => {
     return (
         message ?
             <Dialog open={message.length > 0}>
-                <DialogContent style={{ background: '#616161', width: 500 }}>
+                <DialogContent style={{  width: 500 }}>
                     <Typography style={{ color: '#FFF' }}>
                         {message}
                     </Typography>
@@ -33,7 +33,7 @@ const MexMessageDialog = (props) => {
                             {props.messageInfo.action.dialogNote(props.messageInfo.data)}
                         </Typography> : null}
                 </DialogContent>
-                <DialogActions style={{ background: '#616161' }}>
+                <DialogActions>
                     <Button onClick={() => { props.onClick(false) }} style={{color:'#D3D3D3'}}>
                         NO
                     </Button>
