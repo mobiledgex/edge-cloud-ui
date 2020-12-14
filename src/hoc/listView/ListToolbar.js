@@ -32,7 +32,7 @@ const icons = (icon) =>{
         case ICON_DELETE:
             return <DeleteSweepOutlinedIcon style={{color}}/>
         case ICON_UPGRADE:
-            return <ArrowUpwardOutlinedIcon style={{color, border:'0.09em solid white', borderRadius:50}}/>
+            return <ArrowUpwardOutlinedIcon style={{color, border:'0.13em solid white', borderRadius:50, fontSize:16, marginTop:1}}/>
         case ICON_REFRESH:
             return <RefreshOutlinedIcon style={{color}}/>
 
