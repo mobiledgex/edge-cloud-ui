@@ -31,6 +31,12 @@ class UserList extends React.Component {
             { label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type:'Edit' }
         ]
     }
+
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteUser, icon: 'delete', warning: 'remove selected user\'s from assigned organization', type: 'Edit' },
+        ]
+    }
     /*Action menu block*/
 
     requestInfo = () => {
@@ -40,6 +46,7 @@ class UserList extends React.Component {
             nameField: fields.username,
             requestType: [showUsers],
             sortBy: [fields.username],
+            selection:true,
             keys: this.keys,
             viewMode: HELP_USER_ROLES,
             grouping : true
@@ -99,7 +106,7 @@ class UserList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
         )
     }
 };

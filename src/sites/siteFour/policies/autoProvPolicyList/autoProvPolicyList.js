@@ -70,6 +70,12 @@ class AutoProvPolicy extends React.Component {
             { label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type: 'Edit' }]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteFlavor, icon: 'delete', warning: 'delete all the selected Policies', type: 'Edit' },
+        ]
+    }
+
     requestInfo = () => {
         return ({
             headerLabel: 'Auto Provisioning Policy',
@@ -77,6 +83,7 @@ class AutoProvPolicy extends React.Component {
             requestType: [showAutoProvPolicies, showApps],
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
+            selection:true,
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode: HELP_POLICY_LIST
@@ -86,7 +93,7 @@ class AutoProvPolicy extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
         )
     }
 };

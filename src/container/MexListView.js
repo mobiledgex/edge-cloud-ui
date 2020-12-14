@@ -149,13 +149,22 @@ class MexListView extends React.Component {
         }
     }
 
-    onDeleteMulClose = ()=>{
-        this.setState({deleteMultiple:[]})
+    onDeleteMulClose = () => {
+        if (this._isMounted) {
+            this.setState(prevState => {
+                let filterList = prevState.filterList
+                let dataList = prevState.dataList
+                let deleteMultiple = prevState.deleteMultiple
+                deleteMultiple.map(mul => {
+                    filterList.splice(filterList.indexOf(mul.data), 1)
+                    dataList.splice(dataList.indexOf(mul.data), 1)
+                })
+                return { dataList, filterList, deleteMultiple: [] }
+            })
+        }
     }
 
     onDeleteMultiple = async (action, data) => {
-        let filterList = this.state.filterList
-        let dataList = this.state.dataList
         if (action.ws) {
             this.props.handleLoadingSpinner(true)
             serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
@@ -165,14 +174,9 @@ class MexListView extends React.Component {
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 this.setState(prevState=>{
                     let deleteMultiple = prevState.deleteMultiple
-                    deleteMultiple.push(mcRequest.request.success)
+                    deleteMultiple.push({data:data, message: mcRequest.request.success})
                     return {deleteMultiple}
                 })
-                filterList.splice(filterList.indexOf(data), 1)
-                dataList.splice(dataList.indexOf(data), 1)
-                if (this._isMounted) {
-                    this.setState({ dataList: dataList, filterList: filterList })
-                }
             }
         }
     }
