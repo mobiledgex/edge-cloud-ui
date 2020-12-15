@@ -194,7 +194,8 @@ class FlavorReg extends React.Component {
                 case fields.operatorName:
                     form.rules.required = currentForm.value === 'Cloudlet'
                     form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
-                    form.value = undefined
+                    form.value = currentForm.value === 'Cloudlet' ? getOrganization() : undefined
+                    form.rules.disabled = currentForm.value === 'Cloudlet' && getOrganization()
                     break;
             }
         }
