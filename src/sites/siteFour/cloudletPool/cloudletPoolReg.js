@@ -166,8 +166,9 @@ class CloudletPoolReg extends React.Component {
         else {
             this.organizationList = selectedDatas;
         }
+        let isDelete = this.action === constant.DELETE_ORGANIZATION
         if (this.organizationList.length > 0) {
-            let label = this.action === constant.DELETE_ORGANIZATION ? 'Unlink' : 'Link'
+            let label = isDelete ? 'Unlink' : 'Link'
             let step = [
                 { label: `${label} Organizations`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
@@ -187,7 +188,8 @@ class CloudletPoolReg extends React.Component {
             this.props.handleViewMode(HELP_CLOUDLET_POOL_REG_3)
         }
         else {
-            this.props.handleAlertInfo('error', 'No organizations to unlink')
+            console.log('Rahul1234', )
+            this.props.handleAlertInfo('error', `No organizations to ${isDelete ? 'unlink' : 'link'}`)
             this.props.onClose(false)
         }
     }
