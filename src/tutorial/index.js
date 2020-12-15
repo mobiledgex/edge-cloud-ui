@@ -21,6 +21,7 @@ export const HELP_CLOUDLET_POOL_REG_1 = 'CloudletPoolReg_1'
 export const HELP_CLOUDLET_POOL_REG_2 = 'CloudletPoolReg_2'
 export const HELP_CLOUDLET_POOL_REG_3 = 'CloudletPoolReg_3'
 export const HELP_POLICY_LIST = 'policyList'
+export const HELP_SCALE_POLICY = 'autoscalepolicy'
 export const HELP_AUTO_PROV_REG_1 = 'autoProvReg_1'
 export const HELP_AUTO_PROV_REG_2 = 'autoProvReg_2'
 export const HELP_PRIVACY_POLICY_REG = 'privacyPolicyReg'
@@ -85,6 +86,27 @@ export const monitoring = (type, isDoc) => {
         else {
             return null
         }
+    }
+}
+
+const autoScalePolicy = (type, isDoc) =>{
+    if (isDoc) {
+        if (getUserRole().includes(constant.DEVELOPER)) {
+            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-scale-policy'
+        }
+    }
+    else
+    {
+        return [
+            {
+                element: '.createAppInst0',
+                intro: 'This is Auto Scale Policy page'
+            },
+            {
+                element: '.buttonCreate',
+                intro: 'Click “+” button to add new policy.'
+            }
+        ]
     }
 }
 
@@ -794,6 +816,8 @@ export const tutor = (type, isDoc) => {
         case HELP_ORG_REG_2:
         case HELP_ORG_REG_3:
             return org(type, isDoc)
+        case HELP_SCALE_POLICY:
+            return autoScalePolicy(type, isDoc)
         case HELP_POLICY_LIST:
         case HELP_AUTO_PROV_REG_1:
         case HELP_AUTO_PROV_REG_2:
