@@ -178,7 +178,7 @@ const policy = (type, isDoc) => {
 
 const org = (type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (getUserRole() === undefined || getUserRole().includes(constant.DEVELOPER)) {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/org-users'
         }
     }
@@ -306,7 +306,9 @@ const org = (type, isDoc) => {
 }
 const cloudletPool = (type, isDoc) => {
     if (isDoc) {
-        return null
+        if (getUserRole().includes(constant.OPERATOR)) {
+            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#create-cloudlet-pool'
+        }
     }
     else {
         switch (type) {
@@ -392,8 +394,7 @@ const flavor = (type, isDoc) => {
                         }
                     ]
                 }
-                else
-                {
+                else {
                     return null
                 }
             case HELP_FLAVOR_REG:
