@@ -159,45 +159,47 @@ const privacyPolicy = (type, isDoc) => {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#privacy-policy'
         }
     }
-    switch (type) {
-        case HELP_PRIVACY_POLICY:
-            return [
-                {
-                    element: '.createAppInst0',
-                    intro: 'This is Privacy Policy page'
-                },
-                {
-                    element: '.buttonCreate',
-                    intro: 'Click “+” button to add new policy.'
-                },
-            ]
-        case HELP_PRIVACY_POLICY_REG:
-            return [
-                {
-                    element: '.formRow-1',
-                    intro: 'Select Region.',
-                },
-                {
-                    element: '.formRow-2',
-                    intro: 'Select Organization.',
-                },
-                {
-                    element: '.formRow-3',
-                    intro: 'Enter Privacy Policy Name.',
-                },
-                {
-                    element: '.formRow-4',
-                    intro: 'Check for Full Isolation.',
-                },
-                {
-                    element: '.formHeader-5',
-                    intro: 'Enter Outbound Security Rules.',
-                },
-                {
-                    element: '.formButton-6',
-                    intro: 'Click this button to create Policy.'
-                },
-            ]
+    else {
+        switch (type) {
+            case HELP_PRIVACY_POLICY:
+                return [
+                    {
+                        element: '.createAppInst0',
+                        intro: 'This is Privacy Policy page'
+                    },
+                    {
+                        element: '.buttonCreate',
+                        intro: 'Click “+” button to add new policy.'
+                    },
+                ]
+            case HELP_PRIVACY_POLICY_REG:
+                return [
+                    {
+                        element: '.formRow-1',
+                        intro: 'Select Region.',
+                    },
+                    {
+                        element: '.formRow-2',
+                        intro: 'Select Organization.',
+                    },
+                    {
+                        element: '.formRow-3',
+                        intro: 'Enter Privacy Policy Name.',
+                    },
+                    {
+                        element: '.formRow-4',
+                        intro: 'Check for Full Isolation.',
+                    },
+                    {
+                        element: '.formHeader-5',
+                        intro: 'Enter Outbound Security Rules.',
+                    },
+                    {
+                        element: '.formButton-6',
+                        intro: 'Click this button to create Policy.'
+                    },
+                ]
+        }
     }
 }
 

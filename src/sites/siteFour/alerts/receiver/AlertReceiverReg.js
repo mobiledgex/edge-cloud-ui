@@ -109,7 +109,7 @@ class FlavorReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.operatorName || form.field === fields.cloudletName || form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
-                form.value = undefined
+                form.value = getOrganization() && getUserRole() === constant.OPERATOR ? getOrganization() : undefined
                 this.updateUI(form)
             }
         }
@@ -195,7 +195,7 @@ class FlavorReg extends React.Component {
                     form.rules.required = currentForm.value === 'Cloudlet'
                     form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
                     form.value = currentForm.value === 'Cloudlet' ? getOrganization() : undefined
-                    form.rules.disabled = currentForm.value === 'Cloudlet' && getOrganization()
+                    form.rules.disabled = currentForm.value === 'Cloudlet' && getOrganization() !== undefined
                     break;
             }
         }
@@ -391,6 +391,36 @@ class FlavorReg extends React.Component {
         )
     }
 
+    checkOrgExist = ()=>{
+        if (getUserRole() && getUserRole().includes(constant.OPERATOR) && getOrganization()) {
+            let exist = false
+            for (let i = 0; i < this.cloudletList.length; i++) {
+                let cloudlet = this.cloudletList[i]
+                if(cloudlet[fields.operatorName] === getOrganization())
+                {
+                    exist = true
+                    break;
+                }
+            }
+            if (!exist) {
+                let cloudlet = {}
+                cloudlet[fields.operatorName] = getOrganization()
+                this.cloudletList.push(cloudlet)
+
+                let forms = cloneDeep(this.state.forms)
+                for(let i=0;i<forms.length;i++)
+                {
+                    let form = forms[i]
+                    if(form.field === fields.region || form.field === fields.cloudletName)
+                    {
+                        form.rules.disabled = true
+                    }
+                }
+                this.setState({forms})
+            }
+        }
+    }
+
     serverResponse = (mcList) => {
         mcList.map(mc => {
             if (mc && mc.response && mc.response.status === 200) {
@@ -398,6 +428,8 @@ class FlavorReg extends React.Component {
                 let data = mc.response.data
                 if (request.method === endpoints.SHOW_CLOUDLET || request.method === endpoints.SHOW_ORG_CLOUDLET) {
                     this.cloudletList = [...this.cloudletList, ...data]
+                    this.checkOrgExist()
+                    
                 }
                 else if (request.method === endpoints.SHOW_APP_INST) {
                     this.appInstList = [...this.appInstList, ...data]
