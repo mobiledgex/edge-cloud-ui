@@ -26,6 +26,7 @@ export const HELP_AUTO_PROV_REG_2 = 'autoProvReg_2'
 export const HELP_PRIVACY_POLICY_REG = 'privacyPolicyReg'
 export const HELP_MONITORING = 'monitoringAdmin'
 export const HELP_USER_ROLES = 'userRoles'
+export const HELP_ALERTS = 'alerts'
 
 export const userRoles = (type, isDoc) => {
     if (isDoc) {
@@ -758,6 +759,14 @@ const cloudlet = (type, isDoc) => {
     }
 }
 
+const alerts = (type, isDoc) => {
+    if (isDoc) {
+        if (getUserRole().includes(constant.DEVELOPER)) {
+            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/monitoring#alerts'
+        }
+    }
+}
+
 export const tutor = (type, isDoc) => {
     switch (type) {
         case HELP_CLOUDLET_LIST:
@@ -794,5 +803,7 @@ export const tutor = (type, isDoc) => {
             return monitoring(type, isDoc)
         case HELP_USER_ROLES:
             return userRoles(type, isDoc)
+        case HELP_ALERTS:
+            return alerts(type, isDoc)
     }
 }
