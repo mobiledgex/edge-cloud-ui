@@ -10,7 +10,9 @@ let fields = formatter.fields
 export const showAlertKeys = () => (
     [
         { field: fields.region, label: 'Region', serverField: 'labels#OS#region', sortable: true, visible: true, summary: false },
-        { field: fields.alertname, serverField: 'labels#OS#alertname', label: 'Alert Name', sortable: true, visible: true, summary: false },
+        { field: fields.alertname, serverField: 'labels#OS#alertname', label: 'Alert Name', sortable: true, visible: true, summary: true },
+        { field: fields.description, serverField: 'annotations#OS#description', label: 'Description', sortable: true, visible: true, filter: true },
+        { field: fields.title, serverField: 'annotations#OS#title', label: 'Receiver Name', sortable: true, visible: true, filter: true },
         { field: fields.appName, serverField: 'labels#OS#app', label: 'App Instance', sortable: true, visible: true, summary: false },
         { field: fields.appDeveloper, serverField: 'labels#OS#apporg', label: 'App Developer', sortable: true, visible: false, summary: false },
         { field: fields.version, serverField: 'labels#OS#appver', label: 'App Version', sortable: true, visible: false, summary: false },
