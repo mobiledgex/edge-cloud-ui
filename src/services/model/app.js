@@ -203,7 +203,10 @@ const customData = (value) => {
     value[fields.imageType] = constant.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
-    value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
+    if(value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES)
+    {
+        value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
+    }
     value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
     value[fields.autoProvPolicies] = value[fields.autoPolicyName] ? [value[fields.autoPolicyName]] : value[fields.autoProvPolicies]
