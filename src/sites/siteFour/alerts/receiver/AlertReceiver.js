@@ -13,6 +13,7 @@ import WarningOutlineIcon from '@material-ui/icons/WarningOutlined';
 import InfoOutlineIcon from '@material-ui/icons/InfoOutlined';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Icon } from 'semantic-ui-react';
+import { HELP_ALERTS } from '../../../../tutorial';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
@@ -61,6 +62,7 @@ class AlertList extends React.Component {
             requestType: [showAlertReceiver],
             sortBy: [fields.alertname],
             selection:true,
+            viewMode: HELP_ALERTS,
             keys: this.keys,
             onAdd: this.onAdd,
             grouping: false

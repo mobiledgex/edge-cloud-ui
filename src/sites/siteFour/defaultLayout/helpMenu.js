@@ -3,9 +3,7 @@ import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import EmojiPeopleOutlinedIcon from '@material-ui/icons/EmojiPeopleOutlined';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
-import * as constant from '../../../constant'
 import { tutor } from '../../../tutorial'
-import { getUserRole } from '../../../services/model/format';
 
 const HelpMenu = (props) => {
 
