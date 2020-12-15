@@ -93,6 +93,7 @@ export const monitoring = (type, isDoc) => {
 
 const autoScalePolicy = (type, isDoc) => {
     if (isDoc) {
+        console.log('Rahul1234', getUserRole())
         if (getUserRole().includes(constant.DEVELOPER)) {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-scale-policy'
         }
@@ -204,63 +205,85 @@ const privacyPolicy = (type, isDoc) => {
 const policy = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies'
+            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-provisioning-policy'
         }
     }
-    switch (type) {
-        case HELP_POLICY_LIST:
-            return [
-                {
-                    element: '.createAppInst0',
-                    intro: 'This is Policy page'
-                },
-                {
-                    element: '.buttonCreate',
-                    intro: 'Click “+” button to add new policy.'
-                },
-                {
-                    element: '.buttonActions',
-                    intro: 'Click this button to perform "Add Cloudlets", "Delete Cloudlets" and "Delete".'
-                }
-            ]
-        case HELP_AUTO_PROV_REG_1:
-            return [
-                {
-                    element: '.formRow-1',
-                    intro: 'Select Region.'
-                },
-                {
-                    element: '.formRow-2',
-                    intro: 'Select Organization.'
-                },
-                {
-                    element: '.formRow-3',
-                    intro: 'Enter Auto Provisioning Policy Name.'
-                },
-                {
-                    element: '.formRow-4',
-                    intro: 'Enter Deploy Request Count.'
-                },
-                {
-                    element: '.formRow-5',
-                    intro: 'Enter Deploy Interval Count (s).'
-                },
-                {
-                    element: '.formButton-6',
-                    intro: 'Click this button to create Policy.'
-                },
-            ]
-        case HELP_AUTO_PROV_REG_2:
-            return [
-                {
-                    element: '.formRow-4',
-                    intro: 'Select Cloudlets.'
-                },
-                {
-                    element: '.formButton-5',
-                    intro: 'Click this button to add Cloudlets.'
-                },
-            ]
+    else {
+        switch (type) {
+            case HELP_POLICY_LIST:
+                return [
+                    {
+                        element: '.createAppInst0',
+                        intro: 'This is Policy page'
+                    },
+                    {
+                        element: '.buttonCreate',
+                        intro: 'Click “+” button to add new policy.'
+                    },
+                    {
+                        element: '.buttonActions',
+                        intro: 'Click this button to perform "Add Cloudlets", "Delete Cloudlets" and "Delete".'
+                    }
+                ]
+            case HELP_AUTO_PROV_REG_1:
+                return [
+                    {
+                        element: '.formRow-1',
+                        intro: 'Select Region.'
+                    },
+                    {
+                        element: '.formRow-2',
+                        intro: 'Select Organization.'
+                    },
+                    {
+                        element: '.formRow-3',
+                        intro: 'Enter Auto Provisioning Policy Name.'
+                    },
+                    {
+                        element: '.formRow-4',
+                        intro: 'Enter Undeploy Request Count'
+                    },
+                    {
+                        element: '.formRow-5',
+                        intro: 'Enter Deploy Interval Count (s).'
+                    },
+                    {
+                        element: '.formRow-6',
+                        intro: 'Enter Deploy Interval Count (s)'
+                    },
+                    {
+                        element: '.formRow-7',
+                        intro: 'Enter Undeploy Interval Count (s)'
+                    },
+                    {
+                        element: '.formRow-8',
+                        intro: 'Select Cloudlets'
+                    },
+                    {
+                        element: '.formRow-9',
+                        intro: 'Enter Min Active Instances (Required for HA) *'
+                    },
+                    {
+                        element: '.formRow-10',
+                        intro: 'Enter Max Instances'
+                    },
+                    {
+                        element: '.formButton-11',
+                        intro: 'Click this button to create Policy.'
+                    },
+                ]
+            case HELP_AUTO_PROV_REG_2:
+                return [
+                    {
+                        element: '.formRow-4',
+                        intro: 'Select Cloudlets.'
+                    },
+                    {
+                        element: '.formButton-5',
+                        intro: 'Click this button to add Cloudlets.'
+                    },
+                ]
+        }
     }
 }
 
