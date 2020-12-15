@@ -55,7 +55,7 @@ const getArray = (dataList) => {
 }
 
 const getData = (data, item) => {
-    if (data) {
+    if (data !== undefined) {
         return (
             item.dataType === constant.TYPE_ARRAY ?
                 getArray(data) :
