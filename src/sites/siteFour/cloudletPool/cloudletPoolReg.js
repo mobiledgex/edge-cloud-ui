@@ -188,7 +188,6 @@ class CloudletPoolReg extends React.Component {
             this.props.handleViewMode(HELP_CLOUDLET_POOL_REG_3)
         }
         else {
-            console.log('Rahul1234', )
             this.props.handleAlertInfo('error', `No organizations to ${isDelete ? 'unlink' : 'link'}`)
             this.props.onClose(false)
         }
