@@ -58,15 +58,15 @@ class AlertLocal extends React.Component {
 
     header = (data) => {
         return (
-            <div>
+            <div style={{width:500}}>
                 <h4><b>{data[fields.alertname]}</b>{this.renderState(data)}</h4>
                 <div style={{ marginTop: 5 }}></div>
                 <Chip component="div" variant="outlined" size="small" label={`Region: ${data[fields.region]}`} style={{ marginBottom: 5, marginRight: 5 }} />
-                <Chip component="div" variant="outlined" size="small" label={`Developer: ${data[fields.appDeveloper]}`} style={{ marginBottom: 5, marginRight: 5 }} />
-                <Chip variant="outlined" size="small" label={`App: ${data[fields.appName]} [${data[fields.version]}]`} style={{ marginBottom: 5, marginRight: 5 }} />
-                <Chip variant="outlined" size="small" label={`Cluster: ${data[fields.clusterName]}`} style={{ marginBottom: 5, marginRight: 5 }} />
-                <Chip variant="outlined" size="small" label={`Cloudlet: ${data[fields.cloudletName]}`} style={{ marginBottom: 5, marginRight: 5 }} />
-                <Chip variant="outlined" size="small" label={`Operator: ${data[fields.operatorName]}`} style={{ marginBottom: 5, marginRight: 5 }} />
+                {data[fields.appDeveloper] ? <Chip component="div" variant="outlined" size="small" label={`Developer: ${data[fields.appDeveloper]}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
+                {data[fields.appName] ? <Chip variant="outlined" size="small" label={`App: ${data[fields.appName]} [${data[fields.version] ? data[fields.version] : 'NA'}]`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
+                {data[fields.clusterName] ? <Chip variant="outlined" size="small" label={`Cluster: ${data[fields.clusterName]}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
+                {data[fields.cloudletName] ? <Chip variant="outlined" size="small" label={`Cloudlet: ${data[fields.cloudletName]}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
+                {data[fields.operatorName] ? <Chip variant="outlined" size="small" label={`Operator: ${data[fields.operatorName]}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
             </div>
         )
     }
