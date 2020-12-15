@@ -102,7 +102,8 @@ class AlertGlobal extends React.Component {
     }
 
     componentDidMount() {
-        if (getOrganization()) {
+        let userRole = this.props.userRole
+        if (getOrganization() || (userRole && userRole.includes(constant.ADMIN))) {
             this.fetchdata()
         }
     }
