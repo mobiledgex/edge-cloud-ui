@@ -193,7 +193,7 @@ const org = (type, isDoc) => {
                         },
                         {
                             element: '.buttonCreate',
-                            intro: '<span>Click “+” button to create new organization.</span>',
+                            intro: '<span>Click “Create Organization to Run Apps on Telco Edge (Developers) / Create Organization to Host Telco Edge (Operators)” button to create new organization.</span>',
                         },
                         {
                             element: '.buttonActions',
@@ -214,7 +214,7 @@ const org = (type, isDoc) => {
                         },
                         {
                             element: '.buttonCreate',
-                            intro: '<span>Click “+” button to create new organization.</span>',
+                            intro: '<span>Click “Create Organization to Run Apps on Telco Edge (Developers) / Create Organization to Host Telco Edge (Operators)” button to create new organization.</span>',
                         },
                         {
                             element: '.buttonManage',
