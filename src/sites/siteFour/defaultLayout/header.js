@@ -20,6 +20,7 @@ import { getMexTimezone } from '../../../utils/sharedPreferences_util';
 import { timezones } from '../../../utils/date_util'
 import MiniClockComponent from "./MiniClockComponent";
 import AlertReceiver from '../alerts/AlertGlobal'
+import { getUserRole } from '../../../services/model/format';
 
 const drawerWidth = 250;
 
@@ -83,6 +84,10 @@ export default function Header(props) {
     const handleDialogClose = () => {
         setOpen(false);
     };
+
+    const visible = () => {
+        return getUserRole() !== undefined
+    }
 
     return (
 
@@ -171,7 +176,7 @@ export default function Header(props) {
                     <EventMenu/>
                     <HelpMenu viewMode={props.viewMode} helpClick={props.helpClick}/>
                     <MexVirtualSelect open={openPreferences} close={() => { setOpenPreferences(false) }} data={timezones()} header={'Select Timezone'} />
-                    <AlertReceiver/>
+                    {visible() ? <AlertReceiver/> : null}
                     <UserMenu email={props.email} data={props.data} />
                 </div>
             </Toolbar>
