@@ -21,7 +21,9 @@ export const HELP_CLOUDLET_POOL_REG_1 = 'CloudletPoolReg_1'
 export const HELP_CLOUDLET_POOL_REG_2 = 'CloudletPoolReg_2'
 export const HELP_CLOUDLET_POOL_REG_3 = 'CloudletPoolReg_3'
 export const HELP_POLICY_LIST = 'policyList'
+export const HELP_PRIVACY_POLICY = 'privacypolicy'
 export const HELP_SCALE_POLICY = 'autoscalepolicy'
+export const HELP_SCALE_POLICY_REG = 'autoscalepolicyreg'
 export const HELP_AUTO_PROV_REG_1 = 'autoProvReg_1'
 export const HELP_AUTO_PROV_REG_2 = 'autoProvReg_2'
 export const HELP_PRIVACY_POLICY_REG = 'privacyPolicyReg'
@@ -89,24 +91,113 @@ export const monitoring = (type, isDoc) => {
     }
 }
 
-const autoScalePolicy = (type, isDoc) =>{
+const autoScalePolicy = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-scale-policy'
         }
     }
-    else
-    {
-        return [
-            {
-                element: '.createAppInst0',
-                intro: 'This is Auto Scale Policy page'
-            },
-            {
-                element: '.buttonCreate',
-                intro: 'Click “+” button to add new policy.'
-            }
-        ]
+    else {
+        switch (type) {
+            case HELP_SCALE_POLICY:
+                return [
+                    {
+                        element: '.createAppInst0',
+                        intro: 'This is Auto Scale Policy page'
+                    },
+                    {
+                        element: '.buttonCreate',
+                        intro: 'Click “+” button to add new policy.'
+                    }
+                ]
+            case HELP_SCALE_POLICY_REG:
+                return [
+                    {
+                        element: '.formRow-1',
+                        intro: 'Select Region.'
+                    },
+                    {
+                        element: '.formRow-2',
+                        intro: 'Select Organization.'
+                    },
+                    {
+                        element: '.formRow-3',
+                        intro: 'Enter Auto Scale Policy Name.'
+                    },
+                    {
+                        element: '.formRow-4',
+                        intro: 'Enter Minimum Nodes.'
+                    },
+                    {
+                        element: '.formRow-5',
+                        intro: 'Enter Maximum Nodes'
+                    },
+                    {
+                        element: '.formRow-6',
+                        intro: 'Enter Scale Down CPU Threshold'
+                    },
+                    {
+                        element: '.formRow-7',
+                        intro: 'Enter Scale Up CPU Threshold'
+                    },
+                    {
+                        element: '.formRow-8',
+                        intro: 'Enter Trigger Time'
+                    },
+                    {
+                        element: '.formButton-9',
+                        intro: 'Click this button to create Policy.'
+                    },
+                ]
+        }
+    }
+}
+
+const privacyPolicy = (type, isDoc) => {
+    if (isDoc) {
+        if (getUserRole().includes(constant.DEVELOPER)) {
+            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#privacy-policy'
+        }
+    }
+    switch (type) {
+        case HELP_PRIVACY_POLICY:
+            return [
+                {
+                    element: '.createAppInst0',
+                    intro: 'This is Privacy Policy page'
+                },
+                {
+                    element: '.buttonCreate',
+                    intro: 'Click “+” button to add new policy.'
+                },
+            ]
+        case HELP_PRIVACY_POLICY_REG:
+            return [
+                {
+                    element: '.formRow-1',
+                    intro: 'Select Region.',
+                },
+                {
+                    element: '.formRow-2',
+                    intro: 'Select Organization.',
+                },
+                {
+                    element: '.formRow-3',
+                    intro: 'Enter Privacy Policy Name.',
+                },
+                {
+                    element: '.formRow-4',
+                    intro: 'Check for Full Isolation.',
+                },
+                {
+                    element: '.formHeader-5',
+                    intro: 'Enter Outbound Security Rules.',
+                },
+                {
+                    element: '.formButton-6',
+                    intro: 'Click this button to create Policy.'
+                },
+            ]
     }
 }
 
@@ -170,32 +261,6 @@ const policy = (type, isDoc) => {
                     intro: 'Click this button to add Cloudlets.'
                 },
             ]
-        case HELP_PRIVACY_POLICY_REG: [
-            {
-                element: '.formRow-1',
-                intro: 'Select Region.',
-            },
-            {
-                element: '.formRow-2',
-                intro: 'Select Organization.',
-            },
-            {
-                element: '.formRow-3',
-                intro: 'Enter Privacy Policy Name.',
-            },
-            {
-                element: '.formRow-4',
-                intro: 'Check for Full Isolation.',
-            },
-            {
-                element: '.formHeader-5',
-                intro: 'Enter Outbound Security Rules.',
-            },
-            {
-                element: '.formButton-6',
-                intro: 'Click this button to create Policy.'
-            },
-        ]
     }
 }
 
@@ -817,12 +882,15 @@ export const tutor = (type, isDoc) => {
         case HELP_ORG_REG_3:
             return org(type, isDoc)
         case HELP_SCALE_POLICY:
+        case HELP_SCALE_POLICY_REG:
             return autoScalePolicy(type, isDoc)
         case HELP_POLICY_LIST:
         case HELP_AUTO_PROV_REG_1:
         case HELP_AUTO_PROV_REG_2:
-        case HELP_PRIVACY_POLICY_REG:
             return policy(type, isDoc)
+        case HELP_PRIVACY_POLICY:
+        case HELP_PRIVACY_POLICY_REG:
+            return privacyPolicy(type, isDoc)
         case HELP_MONITORING:
             return monitoring(type, isDoc)
         case HELP_USER_ROLES:
