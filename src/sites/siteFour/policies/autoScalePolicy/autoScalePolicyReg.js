@@ -10,7 +10,7 @@ import {fields, getOrganization} from '../../../../services/model/format';
 import {getOrganizationList} from '../../../../services/model/organization';
 import {updateAutoScalePolicy, createAutoScalePolicy} from '../../../../services/model/autoScalePolicy';
 import * as serverData from '../../../../services/model/serverData';
-import {HELP_PRIVACY_POLICY_REG} from "../../../../tutorial";
+import {HELP_SCALE_POLICY_REG} from "../../../../tutorial";
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -211,7 +211,7 @@ class AutoScalePolicyReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( HELP_PRIVACY_POLICY_REG )
+        this.props.handleViewMode( HELP_SCALE_POLICY_REG )
     }
 };
 
