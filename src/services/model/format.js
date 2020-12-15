@@ -169,7 +169,9 @@ export const fields = {
     otp: 'otp',
     port: 'port',
     appRevision: 'appRevision',
-    autoProvPolicies:'autoProvPolicies'
+    autoProvPolicies:'autoProvPolicies',
+    title:'title',
+    description:'description'
 }
 
 export const getUserRole = () => {
