@@ -93,7 +93,6 @@ export const monitoring = (type, isDoc) => {
 
 const autoScalePolicy = (type, isDoc) => {
     if (isDoc) {
-        console.log('Rahul1234', getUserRole())
         if (getUserRole().includes(constant.DEVELOPER)) {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-scale-policy'
         }
