@@ -255,7 +255,8 @@ class GlobalUsageLog extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        if (getOrganization()) {
+        let userRole = this.props.userRole
+        if (getOrganization() || (userRole && userRole.includes(constant.ADMIN))) {
             this.eventLogData(this.startRange, this.endRange)
         }
     }

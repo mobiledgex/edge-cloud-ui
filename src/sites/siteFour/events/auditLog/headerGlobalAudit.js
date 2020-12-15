@@ -210,7 +210,8 @@ class headerGlobalAudit extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        if (getOrganization()) {
+        let userRole = this.props.userRole
+        if (getOrganization() || (userRole && userRole.includes(ADMIN))) {
             this.initAudit(this.starttime, this.endtime, false)
         }
     }
