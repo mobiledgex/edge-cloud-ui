@@ -1,7 +1,6 @@
 import { getUserRole } from "../services/model/format"
 
 import * as constant from '../constant'
-import { alertMsg } from "../actions"
 
 export const HELP_ORG_LIST = 'OrgList'
 export const HELP_ORG_REG_1 = 'OrgREG_1'
