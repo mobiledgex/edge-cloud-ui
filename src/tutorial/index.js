@@ -33,7 +33,12 @@ export const HELP_ALERTS = 'alerts'
 
 export const userRoles = (type, isDoc) => {
     if (isDoc) {
-        return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/org-users#view-users'
+        if (getUserRole().includes(constant.DEVELOPER)) {
+            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/org-users#view-users'
+        }
+        else if (getUserRole().includes(constant.OPERATOR)) {
+            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#users-and-roles'
+        }
     }
 }
 
@@ -99,7 +104,12 @@ export const monitoring = (type, isDoc) => {
 const autoScalePolicy = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-scale-policy'
+            switch (type) {
+                case HELP_SCALE_POLICY:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-scale-policy'
+                case HELP_SCALE_POLICY_REG:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-an-auto-scale-policy'
+            }
         }
     }
     else {
@@ -161,7 +171,12 @@ const autoScalePolicy = (type, isDoc) => {
 const privacyPolicy = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#privacy-policy'
+            switch (type) {
+                case HELP_PRIVACY_POLICY:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#privacy-policy'
+                case HELP_PRIVACY_POLICY_REG:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-a-privacy-policy'
+            }
         }
     }
     else {
@@ -211,7 +226,13 @@ const privacyPolicy = (type, isDoc) => {
 const policy = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-provisioning-policy'
+            switch (type) {
+                case HELP_POLICY_LIST:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-provisioning-policy'
+                case HELP_AUTO_PROV_REG_1:
+                case HELP_AUTO_PROV_REG_2:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-an-auto-provision-policy'
+            }
         }
     }
     else {
@@ -297,6 +318,9 @@ const org = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole() === undefined || getUserRole().includes(constant.DEVELOPER)) {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/org-users'
+        }
+        else if (getUserRole().includes(constant.OPERATOR)) {
+            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#create-an-organization-and-manage-users'
         }
     }
     else {
@@ -555,7 +579,12 @@ const flavor = (type, isDoc) => {
 const appInst = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-instances'
+            switch (type) {
+                case HELP_APP_INST_LIST:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-instances'
+                case HELP_APP_INST_REG:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-instances#to-provision-your-application'
+            }
         }
     }
     else {
@@ -629,7 +658,12 @@ const appInst = (type, isDoc) => {
 const app = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-definition'
+            switch (type) {
+                case HELP_APP_LIST:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-definition'
+                case HELP_APP_REG:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-definition#to-specify-your-application-definition'
+            }
         }
     }
     else {
@@ -721,7 +755,12 @@ const app = (type, isDoc) => {
 const clusterInst = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/clusters'
+            switch (type) {
+                case HELP_CLUSTER_INST_LIST:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/clusters'
+                case HELP_CLUSTER_INST_REG:
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/clusters#to-create-a-cluster-instance'
+            }
         }
     }
     else {
@@ -802,6 +841,14 @@ const cloudlet = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/cloudlets'
+        }
+        else if (getUserRole().includes(constant.OPERATOR)) {
+            switch (type) {
+                case HELP_CLOUDLET_LIST:
+                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#direct-vs-restricted-access'
+                case HELP_CLOUDLET_REG:
+                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#to-create-and-deploy-cloudlets-using-direct-access'
+            }
         }
     }
     else {
