@@ -108,8 +108,13 @@ class FlavorReg extends React.Component {
     regionValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.operatorName || form.field === fields.cloudletName || form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
-                form.value = getOrganization() && getUserRole() === constant.OPERATOR ? getOrganization() : undefined
+            if (form.field === fields.cloudletName || form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
+                form.value = undefined
+                this.updateUI(form)
+            }
+            else if(form.field === fields.operatorName)
+            {
+                form.value = getOrganization() && getUserRole() && getUserRole().includes(constant.OPERATOR) ? getOrganization() : undefined
                 this.updateUI(form)
             }
         }
@@ -403,17 +408,20 @@ class FlavorReg extends React.Component {
                 }
             }
             if (!exist) {
-                let cloudlet = {}
-                cloudlet[fields.operatorName] = getOrganization()
-                this.cloudletList.push(cloudlet)
-
+                this.regions.map(region=>{
+                    let cloudlet = {}
+                    cloudlet[fields.operatorName] = getOrganization()
+                    cloudlet[fields.region] = region
+                    this.cloudletList.push(cloudlet)
+                })
                 let forms = cloneDeep(this.state.forms)
                 for(let i=0;i<forms.length;i++)
                 {
                     let form = forms[i]
-                    if(form.field === fields.region || form.field === fields.cloudletName)
+                    if(form.field === fields.cloudletName)
                     {
                         form.rules.disabled = true
+                        break;
                     }
                 }
                 this.setState({forms})
