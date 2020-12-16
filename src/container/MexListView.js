@@ -156,8 +156,10 @@ class MexListView extends React.Component {
                 let dataList = prevState.dataList
                 let deleteMultiple = prevState.deleteMultiple
                 deleteMultiple.map(mul => {
-                    filterList.splice(filterList.indexOf(mul.data), 1)
-                    dataList.splice(dataList.indexOf(mul.data), 1)
+                    if (mul.code === 200) {
+                        filterList.splice(filterList.indexOf(mul.data), 1)
+                        dataList.splice(dataList.indexOf(mul.data), 1)
+                    }
                 })
                 return { dataList, filterList, deleteMultiple: [] }
             })
@@ -171,16 +173,25 @@ class MexListView extends React.Component {
         }
         else {
             let mcRequest = await serverData.sendRequest(this, action.onClick(data))
+            let message = ''
+            let code = 404
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.setState(prevState=>{
-                    let deleteMultiple = prevState.deleteMultiple
-                    deleteMultiple.push({data:data, message: mcRequest.request.success})
-                    return {deleteMultiple}
-                })
+                code = mcRequest.response.status
+                message = mcRequest.request.success
             }
+            else if (mcRequest && mcRequest.error && mcRequest.error.response) {
+                code = mcRequest.error.response.status
+                message = mcRequest.error.response.data.message
+            }
+            this.setState(prevState => {
+                let deleteMultiple = prevState.deleteMultiple
+                deleteMultiple.push({ data, message, code })
+                return { deleteMultiple }
+            })
         }
     }
-    
+
+
     onUpdate = async (action, data, forceRefresh) => {
         if (forceRefresh || data[fields.updateAvailable]) {
             this.props.handleLoadingSpinner(true)
