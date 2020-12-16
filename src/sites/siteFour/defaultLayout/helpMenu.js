@@ -45,13 +45,13 @@ const HelpMenu = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={tutorialClick} disabled={!(props.viewMode && tutor(props.viewMode))}>
+                {/* <MenuItem onClick={tutorialClick} disabled={!(props.viewMode && tutor(props.viewMode))}>
                     <EmojiPeopleOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Tutorial" />
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem onClick={docClick} disabled={!(props.viewMode && tutor(props.viewMode, true))}>
                     <DescriptionOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
-                    <ListItemText primary="Doc" />
+                    <ListItemText primary="Guide" />
                 </MenuItem>
             </Menu>
         </div >
