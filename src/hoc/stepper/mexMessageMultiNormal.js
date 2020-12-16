@@ -3,7 +3,8 @@ import { Button, Dialog, IconButton, List, ListItem, ListItemText, DialogTitle a
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/styles';
 import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
-
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import CheckCircleOutlinedIcon from '@material-ui/icons/CheckCircleOutlined';
 const styles = (theme) => ({
     root: {
       margin: 0,
@@ -42,6 +43,7 @@ const MexMessageMultiNorm = (props) => {
                 {data.map((mul, i) => {
                     return (
                         <ListItem key={i}>
+                            {mul.code === 200 ? <CheckCircleOutlinedIcon style={{marginRight:10, color:'#388e3c'}}/> : <CancelOutlinedIcon style={{marginRight:10, color:'#b71c1c'}}/>}
                             <ListItemText primary={mul.message} />
                         </ListItem>
                     )

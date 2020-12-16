@@ -48,6 +48,12 @@ class ClouldetPoolList extends React.Component {
         ]
     }
 
+    groupActionMenu = () => {
+        return [
+            { label: 'Delete', onClick: deleteCloudletPool, icon: 'delete', warning: 'delete all the selected cloudlet pool', type: 'Edit' },
+        ]
+    }
+
     /*Action menu block*/
 
     requestInfo = () => {
@@ -58,6 +64,7 @@ class ClouldetPoolList extends React.Component {
             requestType: [showCloudletPools, showCloudletLinkOrg],
             isRegion: true,
             sortBy: [fields.poolName],
+            selection:true,
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode : HELP_CLOUDLET_POOL_LIST
@@ -67,7 +74,7 @@ class ClouldetPoolList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
         )
     }
 };
