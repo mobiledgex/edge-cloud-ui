@@ -39,7 +39,12 @@ export const userRoles = (type, isDoc) => {
 
 export const monitoring = (type, isDoc) => {
     if (isDoc) {
-        return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/monitoring'
+        if (getUserRole().includes(constant.DEVELOPER)) {
+            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/monitoring'
+        }
+        else if (getUserRole().includes(constant.OPERATOR)) {
+            return 'https://operators.mobiledgex.com/operator-monitoring-and-metrics'
+        }
     }
     else {
         if (getUserRole().includes(constant.ADMIN)) {

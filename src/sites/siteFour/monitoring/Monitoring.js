@@ -18,6 +18,7 @@ import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
 import { showOrganizations } from '../../../services/model/organization'
 import sortBy  from 'lodash/sortBy'
 import './common/PageMonitoringStyles.css'
+import { HELP_MONITORING } from '../../../tutorial'
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -298,6 +299,7 @@ class Monitoring extends React.Component {
     }
 
     componentDidMount() {
+        this.props.handleViewMode(HELP_MONITORING)
         this.defaultDataStructure()
         if (isAdmin()) {
             sendRequest(this, showOrganizations(), this.orgResponse)
@@ -316,7 +318,8 @@ class Monitoring extends React.Component {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };
 };
 
