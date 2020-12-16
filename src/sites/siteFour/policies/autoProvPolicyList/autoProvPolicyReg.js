@@ -80,26 +80,30 @@ class AutoProvPolicyReg extends React.Component {
 
     minActiveInstancesValueChange = (currentForm, forms, isInit) => {
         let currentValue = currentForm.value
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.deployClientCount) {
-                form.rules.required = !(currentValue && currentValue.length > 0)
-                break;
+        if (!isInit) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                if (form.field === fields.deployClientCount) {
+                    form.rules.required = !(currentValue && currentValue.length > 0)
+                    break;
+                }
             }
+            this.setState({ forms: forms })
         }
-        this.setState({ forms: forms })
     }
 
     deployClientCountValueChange = (currentForm, forms, isInit) => {
         let currentValue = currentForm.value
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.minActiveInstances) {
-                form.rules.required = !(currentValue && currentValue.length > 0)
-                break;
+        if (!isInit) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                if (form.field === fields.minActiveInstances) {
+                    form.rules.required = !(currentValue && currentValue.length > 0)
+                    break;
+                }
             }
+            this.setState({ forms: forms })
         }
-        this.setState({ forms: forms })
     }
 
     checkForms = (form, forms, isInit, data) => {
@@ -393,6 +397,14 @@ class AutoProvPolicyReg extends React.Component {
                     }
                     else {
                         form.value = data[form.field]
+                        if(form.field === fields.minActiveInstances)
+                        {
+                            form.rules.required = data[fields.deployClientCount] === undefined || data[fields.deployClientCount].length === 0
+                        }
+                        else if(form.field === fields.deployClientCount)
+                        {
+                            form.rules.required = data[fields.minActiveInstances] === undefined || data[fields.minActiveInstances].length === 0
+                        }
                         this.checkForms(form, forms, true)
                     }
                 }
