@@ -109,6 +109,7 @@ class FlavorReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.cloudletName || form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
+                form.value = undefined
                 this.updateUI(form)
             }
             else if(form.field === fields.operatorName)
