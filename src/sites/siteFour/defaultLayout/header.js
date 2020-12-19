@@ -9,16 +9,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import UserMenu from '../userSetting/userMenu';
 import EventMenu from './eventMenu'
 import HelpMenu from './helpMenu'
-import LanguageIcon from '@material-ui/icons/Language';
 import BusinessIcon from '@material-ui/icons/Business';
-import AccessTimeIcon from '@material-ui/icons/AccessTime'
-
 import { Button, Image } from 'semantic-ui-react';
 import { Dialog, DialogActions, List, ListItem, ListItemText, Menu, MenuItem } from '@material-ui/core';
-import MexVirtualSelect from './mexVirtualSelect'
-import { getMexTimezone } from '../../../utils/sharedPreferences_util';
+import MexTimezone from './timezone/MexTimezone'
 import { timezones } from '../../../utils/date_util'
-import MiniClockComponent from "./MiniClockComponent";
 import AlertReceiver from '../alerts/AlertGlobal'
 import { getUserRole } from '../../../services/model/format';
 
@@ -61,7 +56,6 @@ export default function Header(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [open, setOpen] = React.useState(false);
-    const [openPreferences, setOpenPreferences] = React.useState(false);
 
     const handleClickListItem = (event) => {
         setAnchorEl(event.currentTarget);
@@ -73,11 +67,6 @@ export default function Header(props) {
 
     const onAbout = () => {
         setOpen(true);
-        setAnchorEl(null);
-    };
-
-    const onPref = () => {
-        setOpenPreferences(true);
         setAnchorEl(null);
     };
 
@@ -159,13 +148,7 @@ export default function Header(props) {
                 </IconButton>
                 <div className={classes.grow} />
                 <div className={classes.sectionDesktop}>
-                    <IconButton style={{ backgroundColor: 'transparent', }} aria-label="timezone" color="inherit">
-                        <AccessTimeIcon fontSize='default' />
-                        <MiniClockComponent />
-                    </IconButton>
-                    <IconButton style={{ backgroundColor: 'transparent' }} onClick={() => { onPref() }} aria-label="timezone" color="inherit">
-                        <LanguageIcon fontSize='default' /> &nbsp;<h5>{getMexTimezone()}</h5>
-                    </IconButton>
+                    <MexTimezone data={timezones()} header={'Select Timezone'} />
                     {localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
                         <IconButton disabled={true} className="orgName">
                             <BusinessIcon fontSize='default' />&nbsp;
@@ -175,7 +158,6 @@ export default function Header(props) {
                         </IconButton> : null}
                     <EventMenu/>
                     <HelpMenu viewMode={props.viewMode} helpClick={props.helpClick}/>
-                    <MexVirtualSelect open={openPreferences} close={() => { setOpenPreferences(false) }} data={timezones()} header={'Select Timezone'} />
                     {visible() ? <AlertReceiver/> : null}
                     <UserMenu email={props.email} data={props.data} />
                 </div>
