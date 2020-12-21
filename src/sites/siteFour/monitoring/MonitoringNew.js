@@ -9,6 +9,7 @@ import * as constant from './helper/Constant'
 import * as dateUtil from '../../../utils/date_util'
 import { getUserRole, isAdmin } from '../../../services/model/format';
 
+import MexWorker from '../../../services/worker/mex.worker.js'
 import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
 
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
@@ -17,7 +18,7 @@ import './style.css'
 import { HELP_MONITORING } from '../../../tutorial';
 
 const defaultParent = () => {
-    return constant.newmetricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
+    return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
 }
 
 const timeRangeInMin = (range) => {
@@ -76,6 +77,7 @@ class Monitoring extends React.Component {
                             requestList = showRequests.map(showRequest => {
                                 return showRequest({ region })
                             })
+                            this.setState({ loading: true })
                             sendRequests(this, requestList).addEventListener('message', event => {
                                 count = count - 1
                                 if (count === 0) {
@@ -85,7 +87,7 @@ class Monitoring extends React.Component {
                                     this.props.handleAlertInfo(event.data.message)
                                 }
                                 else {
-                                    this.processShowResponse(parent, region, event.data)
+                                    this.showResponse(parent, region, event.data)
                                 }
                             });
                         })
