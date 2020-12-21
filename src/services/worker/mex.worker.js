@@ -2,6 +2,7 @@
 import { fetch } from './server'
 import { format as metric } from './metric'
 import { format as role } from './role'
+import { format as show } from './monitoring/show'
 import * as constant from './constant'
 
 self.addEventListener("message", processWorker);
@@ -17,6 +18,9 @@ function processWorker(event) {
             break;
         case constant.WORKER_ROLE:
             role(worker)
+            break;
+        case constant.WORKER_MONITORING_SHOW:
+            show(worker)
             break;
     }
 }
