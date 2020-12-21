@@ -37,6 +37,12 @@ export const metricParentTypes = [
     { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR] },
 ]
 
+export const newmetricParentTypes = [
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: showAppInsts, request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: showCloudlets, request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: showCloudlets, request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR] },
+]
+
 export const validateRole = (roles)=>{
     let valid = false
     for(let i=0;i<roles.length;i++)

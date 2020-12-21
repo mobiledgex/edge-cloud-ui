@@ -10,7 +10,7 @@ import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import './style.css'
 import MexWorker from '../../../services/worker/mex.worker.js'
-import { WORKER_METRIC } from '../../../services/worker/constant'
+import { WORKER_METRIC, WORKER_MONITORING_SHOW } from '../../../services/worker/constant'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions';
@@ -178,7 +178,7 @@ class Monitoring extends React.Component {
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar parent={filter.parent} defaultParent={this.defaultMetricParentTypes} regions={this.regions} organizations={organizations} metricTypeKeys={filter.parent.metricTypeKeys} onChange={this.onToolbar} range={range} duration={duration} />
+                    <MonitoringToolbar filter={filter} regions={this.regions} organizations={organizations} onChange={this.onToolbar} range={range} duration={duration} />
                     <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} minimize={minimize} />
                 </Card>
                 <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg}/>
@@ -231,38 +231,73 @@ class Monitoring extends React.Component {
         }
     }
 
+    processShowResponse = (parent, region, mcList) => {
+        const worker = new MexWorker();
+        let avgData = this.state.avgData
+        let parentId = parent.id
+        worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData })
+        worker.addEventListener('message', event => {
+            let avgData = event.data.avgData
+            this.setState(prevState => {
+                let preAvgData = prevState.avgData
+                preAvgData[parentId][region] = avgData[parentId][region]
+                return { preAvgData }
+            }, ()=>{
+                console.log('Rahul1234', this.state.avgData)
+            })
+        });
+    }
+
     fetchMetricData = () => {
         let count = this.regions.length
         if (this.regions && this.regions.length > 0) {
             constant.metricParentTypes.map(parent => {
                 if (constant.validateRole(parent.role) && parent === this.state.filter.parent) {
                     this.regions.map(region => {
-                        parent.metricTypeKeys.map(metric => {
-                            if (metric.serverRequest) {
-                                let data = {}
-                                data[fields.region] = region
-                                data[fields.starttime] = this.state.range.starttime
-                                data[fields.endtime] = this.state.range.endtime
-                                data[fields.selector] = '*'
-                                let org = isAdmin() ? this.state.selectedOrg : getOrganization() 
-                                let metricRequest = parent.request(data, org)
-                                let showRequest = parent.showRequest({ region })
-
-                                this.setState({ loading: true })
-                                sendRequests(this, [metricRequest, showRequest]).addEventListener('message', event => {
-                                    count = count - 1
-                                    if (count === 0) {
-                                        this.setState({ loading: false })
-                                    }
-                                    if (event.data.status && event.data.status !== 200) {
-                                        this.props.handleAlertInfo(event.data.message)
-                                    }
-                                    else {
-                                        this.serverRequest(parent, metric.serverField, event.data, region)
-                                    }
-                                });
-                            }
+                        let showRequests = parent.showRequest
+                        
+                        let requestList = []
+                        requestList = showRequests.map(showRequest=>{
+                            return showRequest({region})
                         })
+                        sendRequests(this, requestList).addEventListener('message', event => {
+                            count = count - 1
+                            if (count === 0) {
+                                this.setState({ loading: false })
+                            }
+                            if (event.data.status && event.data.status !== 200) {
+                                this.props.handleAlertInfo(event.data.message)
+                            }
+                            else {
+                                this.processShowResponse(parent, region, event.data)
+                            }
+                        });
+                        // parent.metricTypeKeys.map(metric => {
+                        //     if (metric.serverRequest) {
+                        //         let data = {}
+                        //         data[fields.region] = region
+                        //         data[fields.starttime] = this.state.range.starttime
+                        //         data[fields.endtime] = this.state.range.endtime
+                        //         data[fields.selector] = '*'
+                        //         let org = isAdmin() ? this.state.selectedOrg : getOrganization() 
+                        //         let metricRequest = parent.request(data, org)
+                        //         let showRequest = parent.showRequest({ region })
+
+                        //         this.setState({ loading: true })
+                        //         sendRequests(this, [metricRequest, showRequest]).addEventListener('message', event => {
+                        //             count = count - 1
+                        //             if (count === 0) {
+                        //                 this.setState({ loading: false })
+                        //             }
+                        //             if (event.data.status && event.data.status !== 200) {
+                        //                 this.props.handleAlertInfo(event.data.message)
+                        //             }
+                        //             else {
+                        //                 this.serverRequest(parent, metric.serverField, event.data, region)
+                        //             }
+                        //         });
+                        //     }
+                        // })
                     })
                 }
             })
