@@ -16,6 +16,8 @@ import MonitoringToolbar from './toolbar/MonitoringToolbar'
 
 import './style.css'
 import { HELP_MONITORING } from '../../../tutorial';
+import { WORKER_MONITORING_SHOW } from '../../../services/worker/constant';
+import MonitoringList from './list/MonitoringList'
 
 const defaultParent = () => {
     return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
@@ -35,11 +37,17 @@ class Monitoring extends React.Component {
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.state = {
             loading: false,
+            minimize: false,
             duration: constant.relativeTimeRanges[0],
             range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
             organizations: [],
-            filter: { region: this.regions, search: '', parent: defaultParent() }
+            filter: { region: this.regions, search: '', parent: defaultParent() },
+            avgData: {}
         }
+    }
+
+    onCellClick = (region, value, key) => {
+
     }
 
     onToolbar = async (action, value) => {
@@ -47,20 +55,35 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { loading, filter, range, duration, organizations } = this.state
+        const { loading, minimize, filter, range, duration, organizations, avgData} = this.state
+        const avgDataParent = avgData[filter.parent.id] ? avgData[filter.parent.id] : {}
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
+                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />\
+                    <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} minimize={minimize} />
                 </Card>
 
             </div>
         )
     }
 
-    showResponse = (parent, region, mcList)=>{
-        console.log('Rahul1234', mcList)
+    showResponse = (parent, region, mcList) => {
+        const worker = new MexWorker();
+        let avgData = this.state.avgData
+        let parentId = parent.id
+        worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData })
+        worker.addEventListener('message', event => {
+            let avgData = event.data.avgData
+            this.setState(prevState => {
+                let preAvgData = prevState.avgData
+                preAvgData[parentId][region] = avgData[parentId][region]
+                return { preAvgData }
+            }, () => {
+                console.log('Rahul1234', this.state.avgData)
+            })
+        });
     }
 
     fetchShowData = () => {
@@ -104,8 +127,23 @@ class Monitoring extends React.Component {
         }
     }
 
+    defaultStructure = () => {
+        let avgData = {}
+        constant.metricParentTypes.map(parent => {
+            let parentId = parent.id
+            if (constant.validateRole(parent.role)) {
+                avgData[parentId] = {}
+                this.regions.map((region) => {
+                    avgData[parentId][region] = {}
+                })
+            }
+        })
+        this.setState({ avgData })
+    }
+
     componentDidMount() {
         this.props.handleViewMode(HELP_MONITORING)
+        this.defaultStructure()
         if (isAdmin()) {
             sendRequest(this, showOrganizations(), this.orgResponse)
         }
@@ -115,7 +153,7 @@ class Monitoring extends React.Component {
     }
 
     componentWillUnmount() {
-        
+
     }
 }
 
