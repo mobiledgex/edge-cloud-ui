@@ -63,7 +63,7 @@ class CloudletMonitoring extends React.Component {
                                 <CloudletEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                             </Card>
                         </GridListTile> : null}
-                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} />
+                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg}/>
                     </GridList>
                 </div> : null
         )

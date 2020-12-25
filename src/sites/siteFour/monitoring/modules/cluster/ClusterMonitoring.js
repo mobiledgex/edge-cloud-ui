@@ -57,7 +57,7 @@ class ClusterMonitoring extends React.Component {
                             <GridListTile cols={4}>
                                 <MexMap data={mapData} region={filter.region} />
                             </GridListTile> : null}
-                            <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range}/>
+                            <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg}/>
                     </GridList> 
                 </div> : null
         )

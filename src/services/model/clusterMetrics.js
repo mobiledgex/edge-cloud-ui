@@ -19,11 +19,11 @@ export const clusterMetricsListKeys = [
     { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true  },
     { field: fields.operatorName, label: 'Operator', sortable: true, visible: true, groupBy: true  },
     { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
-    // { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
-    // { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
-    // { field: 'mem', label: 'Memory', sortable: true, visible: true, isArray: true },
-    // { field: 'sent', label: 'Network Sent', sortable: true, visible: true, isArray: true },
-    // { field: 'received', label: 'Network Received', sortable: true, visible: true, isArray: true }
+    { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
+    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
+    { field: 'mem', label: 'Memory', sortable: true, visible: true, isArray: true },
+    { field: 'sent', label: 'Network Sent', sortable: true, visible: true, isArray: true },
+    { field: 'received', label: 'Network Received', sortable: true, visible: true, isArray: true }
 ]
 
 export const clusterMetricTypeKeys = [

@@ -100,11 +100,11 @@ class MexMetric extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // if (prevProps.org !== this.props.org) {
-        //     this.setState({ eventData: [] }, () => {
-        //         this.event(this.props.range)
-        //     })
-        // }
+        if (prevProps.org !== this.props.org) {
+            this.setState({ eventData: [] }, () => {
+                this.event(this.props.range)
+            })
+        }
         if (prevProps.range !== this.props.range) {
             this.fetchMetricData(this.props.range)
         }
