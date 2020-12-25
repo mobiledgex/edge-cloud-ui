@@ -1,24 +1,33 @@
 import React from 'react'
-import * as dateUtil from '../../../utils/date_util'
-import { fields, getOrganization, getUserRole, isAdmin } from '../../../services/model/format'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom';
+import * as actions from '../../../actions';
+
 import { Card, LinearProgress } from '@material-ui/core'
-import MonitoringList from './list/MonitoringList'
-import MonitoringToolbar from './toolbar/MonitoringToolbar'
+
 import * as constant from './helper/Constant'
+import * as dateUtil from '../../../utils/date_util'
+import { getUserRole, isAdmin } from '../../../services/model/format';
+
+import MexWorker from '../../../services/worker/mex.worker.js'
+import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
+
+import MonitoringToolbar from './toolbar/MonitoringToolbar'
+
+import { HELP_MONITORING } from '../../../tutorial';
+import { WORKER_MONITORING_SHOW } from '../../../services/worker/constant';
+
+import MonitoringList from './list/MonitoringList'
 import AppInstMonitoring from './modules/app/AppMonitoring'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
-import './style.css'
-import MexWorker from '../../../services/worker/mex.worker.js'
-import { WORKER_METRIC, WORKER_MONITORING_SHOW } from '../../../services/worker/constant'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import * as actions from '../../../actions';
-import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
-import { showOrganizations } from '../../../services/model/organization'
-import sortBy  from 'lodash/sortBy'
+
 import './common/PageMonitoringStyles.css'
-import { HELP_MONITORING } from '../../../tutorial'
+import './style.css'
+
+const defaultParent = () => {
+    return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
+}
 
 const fetchMetricTypeField = (metricTypeKeys) => {
     return metricTypeKeys.map(metricType => { return metricType.field })
@@ -36,34 +45,29 @@ class Monitoring extends React.Component {
     constructor(props) {
         super(props)
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        this.defaultMetricParentTypes = constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
+        let parent = defaultParent()
         this.state = {
             loading: false,
-            chartData: {},
-            avgData: {},
-            rowSelected: 0,
-            filter: { region: this.regions, search: '', metricType: fetchMetricTypeField(this.defaultMetricParentTypes.metricTypeKeys), summary: constant.summaryList[0], parent: this.defaultMetricParentTypes },
+            minimize: false,
             duration: constant.relativeTimeRanges[0],
             range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
-            minimize: false,
-            organizations : [],
-            selectedOrg:undefined
+            organizations: [],
+            filter: { region: this.regions, search: '', parent, metricType: fetchMetricTypeField(parent.metricTypeKeys), summary: constant.summaryList[0] },
+            avgData: {},
+            rowSelected: 0,
+            selectedOrg:undefined,
+            showLoaded:false
         }
-        this.refreshId = undefined;
-        this.requestCount = 0
-    }
-
-    validateRegionFilter = (region) => {
-        let regionFilter = this.state.filter[fields.region]
-        return regionFilter.includes(region)
     }
 
     onCellClick = (region, value, key) => {
-        let avgData = this.state.avgData
-        let rowSelected = this.state.rowSelected
-        avgData[this.state.filter.parent.id][region][key]['selected'] = !value['selected']
-        rowSelected = avgData[this.state.filter.parent.id][region][key]['selected'] ? rowSelected + 1 : rowSelected - 1
-        this.setState({ avgData, rowSelected })
+        this.setState(prevState=>{
+            let avgData = prevState.avgData
+            let rowSelected = prevState.rowSelected
+            avgData[region][key]['selected'] = !value['selected']
+            rowSelected = avgData[region][key]['selected'] ? rowSelected + 1 : rowSelected - 1
+            return { avgData, rowSelected }
+        })
     }
 
     onRefreshChange = (value) => {
@@ -73,10 +77,7 @@ class Monitoring extends React.Component {
         }
         if (interval > 0) {
             this.refreshId = setInterval(() => {
-                this.setState({ range: timeRangeInMin(this.state.duration.duration) }, () => {
-
-                    this.fetchMetricData()
-                })
+                this.setState({ range: timeRangeInMin(this.state.duration.duration) })
             }, interval * 1000);
         }
     }
@@ -85,32 +86,25 @@ class Monitoring extends React.Component {
         if (this.refreshId) {
             clearInterval(this.refreshId)
         }
-        this.setState({ range: value }, () => {
-            this.fetchMetricData()
-        })
+        this.setState({ range: value })
     }
 
     onRelativeTime = (duration) => {
-        this.setState({ duration, range: timeRangeInMin(duration.duration) }, () => {
-            this.fetchMetricData()
-        })
+        this.setState({ duration, range: timeRangeInMin(duration.duration) })
     }
 
     onRefresh = () => {
-        this.setState({ range: timeRangeInMin(this.state.duration.duration) }, () => {
-            this.fetchMetricData()
-        })
+        this.setState({ range: timeRangeInMin(this.state.duration.duration) })
     }
 
     onParentChange = () => {
-        this.fetchMetricData()
+        this.fetchShowData()
     }
 
     onOrgChange = (value) => {
         let selectedOrg = value[fields.organizationName]
         this.setState({ selectedOrg }, () => {
             this.defaultDataStructure()
-            this.fetchMetricData()
         })
     }
 
@@ -166,188 +160,111 @@ class Monitoring extends React.Component {
         }
     }
 
-    onAction = (data) => {
-        this.setState({ rowSelected: data })
+    updateAvgData = (avgData)=>{
+        this.setState({avgData})
     }
 
     render() {
-        const { chartData, avgData, loading, filter, rowSelected, range, duration, minimize, organizations, selectedOrg} = this.state
-        const chartDataParent = chartData[filter.parent.id]
-        const avgDataParent = avgData[filter.parent.id] ? avgData[filter.parent.id] : {}
+        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, selectedOrg, showLoaded } = this.state
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar filter={filter} regions={this.regions} organizations={organizations} onChange={this.onToolbar} range={range} duration={duration} />
-                    <MonitoringList data={avgDataParent} filter={filter} onCellClick={this.onCellClick} onAction={this.onAction} minimize={minimize} />
+                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
                 </Card>
-                <AppInstMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg}/>
-                <ClusterMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                <CloudletMonitoring chartData={chartDataParent} avgData={avgDataParent} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-            </div>
+                {showLoaded ? <React.Fragment>
+                    <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} />
+                    <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                    <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                    <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                </React.Fragment> : null}
 
+            </div>
         )
     }
 
-    metricKeyGenerator = (parentTypeId, region, metric) => {
-        return `${parentTypeId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
-    }
-
-    processMetricData = (parent, serverField, region, metricDataList, showList) => {
-        const worker = new MexWorker();
-        let avgData = this.state.avgData
-        worker.postMessage({ type: WORKER_METRIC, metric: metricDataList, show: showList, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys, avgData: avgData })
-        worker.addEventListener('message', event => {
-            let chartData = event.data.chartData
-            let avgData = event.data.avgData
-            this.setState(prevState => {
-                let preChartData = prevState.chartData
-                let preAvgData = prevState.avgData
-                preChartData[parent.id][region] = chartData[parent.id][region]
-                preAvgData[parent.id][region] = avgData[parent.id][region]
-                return { preChartData, preAvgData }
-            })
-        });
-    }
-
-    serverRequest = (parent, serverField, mcRequestList, region) => {
-        let showList = []
-        let metricData = {}
-        if (mcRequestList && mcRequestList.length > 0) {
-            mcRequestList.map(mcRequest => {
-                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                    let request = mcRequest.request
-                    let method = request.method
-                    let data = mcRequest.response.data
-                    if (method === parent.request({}).method) {
-                        metricData = data
-                    }
-                    else if (method === parent.showRequest({}).method) {
-                        showList = data
-                    }
-                }
-            })
-            this.processMetricData(parent, serverField, region, metricData, showList)
-        }
-    }
-
-    processShowResponse = (parent, region, mcList) => {
+    showResponse = (parent, region, mcList) => {
         const worker = new MexWorker();
         let avgData = this.state.avgData
         let parentId = parent.id
-        worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData })
+        worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData, metricListKeys:parent.metricListKeys})
         worker.addEventListener('message', event => {
             let avgData = event.data.avgData
             this.setState(prevState => {
                 let preAvgData = prevState.avgData
-                preAvgData[parentId][region] = avgData[parentId][region]
+                preAvgData[region] = avgData[region]
                 return { preAvgData }
-            }, ()=>{
-                console.log('Rahul1234', this.state.avgData)
             })
         });
     }
 
-    fetchMetricData = () => {
-        let count = this.regions.length
+    fetchShowData = () => {
+        const { filter } = this.state
         if (this.regions && this.regions.length > 0) {
-            constant.metricParentTypes.map(parent => {
-                if (constant.validateRole(parent.role) && parent === this.state.filter.parent) {
-                    this.regions.map(region => {
-                        let showRequests = parent.showRequest
-                        
-                        let requestList = []
-                        requestList = showRequests.map(showRequest=>{
-                            return showRequest({region})
+            {
+                let count = this.regions.length
+                constant.metricParentTypes.map(parent => {
+                    let parentId = parent.id
+                    if (constant.validateRole(parent.role) && parentId === filter.parent.id) {
+                        this.regions.map(region => {
+                            let showRequests = parent.showRequest
+                            let requestList = []
+                            requestList = showRequests.map(showRequest => {
+                                return showRequest({ region })
+                            })
+                            this.setState({ loading: true })
+                            sendRequests(this, requestList).addEventListener('message', event => {
+                                count = count - 1
+                                if (count === 0) {
+                                    this.setState({ loading: false, showLoaded:true })
+                                }
+                                if (event.data.status && event.data.status !== 200) {
+                                    this.props.handleAlertInfo(event.data.message)
+                                }
+                                else {
+                                    this.showResponse(parent, region, event.data)
+                                }
+                            });
                         })
-                        sendRequests(this, requestList).addEventListener('message', event => {
-                            count = count - 1
-                            if (count === 0) {
-                                this.setState({ loading: false })
-                            }
-                            if (event.data.status && event.data.status !== 200) {
-                                this.props.handleAlertInfo(event.data.message)
-                            }
-                            else {
-                                this.processShowResponse(parent, region, event.data)
-                            }
-                        });
-                        // parent.metricTypeKeys.map(metric => {
-                        //     if (metric.serverRequest) {
-                        //         let data = {}
-                        //         data[fields.region] = region
-                        //         data[fields.starttime] = this.state.range.starttime
-                        //         data[fields.endtime] = this.state.range.endtime
-                        //         data[fields.selector] = '*'
-                        //         let org = isAdmin() ? this.state.selectedOrg : getOrganization() 
-                        //         let metricRequest = parent.request(data, org)
-                        //         let showRequest = parent.showRequest({ region })
-
-                        //         this.setState({ loading: true })
-                        //         sendRequests(this, [metricRequest, showRequest]).addEventListener('message', event => {
-                        //             count = count - 1
-                        //             if (count === 0) {
-                        //                 this.setState({ loading: false })
-                        //             }
-                        //             if (event.data.status && event.data.status !== 200) {
-                        //                 this.props.handleAlertInfo(event.data.message)
-                        //             }
-                        //             else {
-                        //                 this.serverRequest(parent, metric.serverField, event.data, region)
-                        //             }
-                        //         });
-                        //     }
-                        // })
-                    })
-                }
-            })
-        }
-    }
-
-    defaultDataStructure = () => {
-        let chartData = {}
-        let avgData = {}
-        constant.metricParentTypes.map(parent => {
-            if (constant.validateRole(parent.role)) {
-                chartData[parent.id] = {}
-                avgData[parent.id] = {}
-                this.regions.map((region) => {
-                    chartData[parent.id][region] = {}
-                    avgData[parent.id][region] = {}
-                    parent.metricTypeKeys.map(metric => {
-                        let metricData = {}
-                        metricData[fields.region] = region
-                        metricData[fields.metric] = metric
-                        chartData[parent.id][region][this.metricKeyGenerator(parent.id, region, metric)] = metricData
-                    })
+                    }
                 })
             }
-        })
-        this.setState({ chartData, avgData })
+        }
     }
 
     orgResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let organizations = sortBy(mc.response.data, [item => item[fields.organizationName].toLowerCase()], ['asc']);
-            this.setState({organizations})
+            this.setState({ organizations })
         }
+    }
+
+    defaultStructure = () => {
+        let avgData = {}
+        constant.metricParentTypes.map(parent => {
+            let parentId = parent.id
+            if (constant.validateRole(parent.role) && parentId === this.state.filter.parent.id) {
+                this.regions.map((region) => {
+                    avgData[region] = {}
+                })
+            }
+        })
+        this.setState({ avgData })
     }
 
     componentDidMount() {
         this.props.handleViewMode(HELP_MONITORING)
-        this.defaultDataStructure()
+        this.defaultStructure()
         if (isAdmin()) {
             sendRequest(this, showOrganizations(), this.orgResponse)
         }
         else {
-            this.fetchMetricData()
+            this.fetchShowData()
         }
     }
 
     componentWillUnmount() {
-        if (this.refreshId) {
-            clearInterval(this.refreshId)
-        }
+
     }
 }
 

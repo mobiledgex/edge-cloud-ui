@@ -7,6 +7,7 @@ import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import { unit } from '../../utils/math_util'
 import { fields } from '../model/format'
+import cloneDeep from 'lodash/cloneDeep';
 
 const metricKeyGenerator = (parentId, region, metric) => {
     return `${parentId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
@@ -39,72 +40,56 @@ export const fetchLocation = (parentId, avgValues, metricData, showList) => {
 }
 
 const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
-    Object.keys(data.values).map(key => {
-        
-        let value = data.values[key][0]
+    let chartData = {}
+    chartData = cloneDeep(data)
+    chartData['values'] = {}
+    let avgDataRegion = avgData[region]
+    Object.keys(avgDataRegion).map(key => {
 
-        let avgValues = avgData[parentId][region][key]
-        if (avgValues === undefined) {
-            avgValues = {}
-            data.columns.map((column, i) => {
-                avgValues[column.serverField] = value[i]
-            })
-            avgValues['color'] = randomColor({
-                count: 1,
-            })[0]
+        let value = data['values'][key]
+        let avgValues = avgDataRegion[key]
+        if (value && avgValues) {
+            chartData['values'][key] = value
+            if (parentId === 'appinst' || parentId === 'cluster') {
+                let avg = meanBy(data.values[key], v => (v[metric.position]))
+                let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
+                let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
 
-            avgValues['selected'] = false
-            avgValues = fetchLocation(parentId, avgValues, value, showList)
-        }
-
-        if (parentId === 'appinst' || parentId === 'cluster') {
-            let avg = meanBy(data.values[key], v => (v[metric.position]))
-            let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
-            let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
-
-            if (metric.field === 'connections') {
-                avg = avg ? avg : 0
-                max = max ? max : 0
-                min = min ? min : 0
+                if (metric.field === 'connections') {
+                    avg = avg ? avg : 0
+                    max = max ? max : 0
+                    min = min ? min : 0
+                }
+                let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
+                let maxUnit = metric.unit ? unit(metric.unit, max) : max
+                let minUnit = metric.unit ? unit(metric.unit, min) : min
+                avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
             }
-            let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
-            let maxUnit = metric.unit ? unit(metric.unit, max) : max
-            let minUnit = metric.unit ? unit(metric.unit, min) : min
-            avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
+            else {
+                let latestData = value[0]
+                let positionValue = latestData[metric.position] ? latestData[metric.position] : 0
+                let positionmaxValue = latestData[metric.position + 1] ? latestData[metric.position + 1] : 0
+                let convertedMaxValue = metric.unit ? unit(metric.unit, positionmaxValue) : positionmaxValue
+                let convertedValue = metric.unit ? unit(metric.unit, positionValue) : positionValue
+                avgValues[metric.field] = `${convertedValue} / ${convertedMaxValue}`
+            }
         }
-        else {
-            let positionValue = value[metric.position] ? value[metric.position] : 0
-            let positionmaxValue = value[metric.position+1] ? value[metric.position+1] : 0
-            let convertedMaxValue = metric.unit ? unit(metric.unit, positionmaxValue) : positionmaxValue
-            let convertedValue = metric.unit ? unit(metric.unit, positionValue) : positionValue
-            avgValues[metric.field] = `${convertedValue} / ${convertedMaxValue}`
-        }
-        
-        if(key.includes('mexprometheusappname') || key.includes('envoy'))
-        {
-            avgValues['hidden'] = true
-        }
-
-        avgData[parentId][region][key] = avgValues
     })
+    return chartData
 }
 
 const processData = (data) => {
-    let metricDataList = data.metric
+    let metricList = data.metric
     let showList = data.show
     let parentId = data.parentId
     let region = data.region
     let metricTypeKeys = data.metricTypeKeys
-    let chartData = {}
-    chartData[parentId] = chartData[parentId] ? chartData[parentId] : {}
-    chartData[parentId][region] = chartData[parentId][region] ? chartData[parentId][region] : {}
-
     let avgData = data.avgData
-    avgData[parentId] = avgData[parentId] ? avgData[parentId] : {}
-    avgData[parentId][region] = avgData[parentId][region] ? avgData[parentId][region] : {}
 
-    if (metricDataList && metricDataList.length > 0) {
-        metricDataList.map(metricData => {
+    let chartData = {}
+    chartData[region] = chartData[region] ? chartData[region] : {}
+    if (metricList && metricList.length > 0) {
+        metricList.map(metricData => {
             let key = Object.keys(metricData)[0]
             metricTypeKeys.map(metric => {
                 let objectId = `${parentId}-${metric.serverField}`
@@ -116,8 +101,7 @@ const processData = (data) => {
                         newData.values = metricData[objectId].values
                         newData.columns = metricData[objectId].columns
                         let metricKey = metricKeyGenerator(parentId, region, metric)
-                        chartData[parentId][region][metricKey] = newData
-                        avgCalculator(avgData, parentId, newData, region, metric, showList)
+                        chartData[region][metricKey] = avgCalculator(avgData, parentId, newData, region, metric, showList)
                     }
                 }
             })

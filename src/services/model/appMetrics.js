@@ -1,29 +1,44 @@
 
 import * as formatter from './format'
 import { APP_INST_METRICS_ENDPOINT } from './endPointTypes'
+import { healthCheck } from '../../constant'
 
 let fields = formatter.fields;
 
 export const appMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
-    { label: 'Region', serverField: 'region', visible: true, groupBy: true },
-    { label: 'App', serverField: 'app', visible: true, groupBy: true, filter: true },
-    { label: 'Version', serverField: 'ver', visible: true, groupBy: true },
-    { label: 'Cluster', serverField: 'cluster', visible: true, groupBy: true },
-    { label: 'Cluster Developer', serverField: 'clusterorg', visible: true, groupBy: true },
-    { label: 'Cloudlet', serverField: 'cloudlet', visible: true, groupBy: true },
-    { label: 'Operator', serverField: 'cloudletorg', visible: true, groupBy: true },
-    { label: 'App Developer', serverField: 'apporg', visible: false, groupBy: true }
+    { label: 'Region', field: fields.region, serverField: 'region', visible: true, groupBy: true },
+    { label: 'App', field: fields.appName, serverField: 'app', visible: true, groupBy: true, filter: true },
+    { label: 'Version', field: fields.version, serverField: 'ver', visible: true, groupBy: true },
+    { label: 'Cluster', field: fields.clusterName, serverField: 'cluster', visible: true, groupBy: true },
+    { label: 'Cluster Developer', field: fields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: true },
+    { label: 'Cloudlet', field: fields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: true },
+    { label: 'Operator', field: fields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: true }
 ]
 
+export const customData = (id, data) => {
+    switch (id) {
+        case fields.healthCheck:
+            return healthCheck(data[fields.healthCheck])
+        case fields.cloudletName:
+            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
+        case fields.clusterName:
+            return `${data[fields.clusterName]} [${data[fields.clusterdeveloper]}]`
+        case fields.appName:
+            return `${data[fields.appName]} [${data[fields.version]}]`
+    }
+}
+
 export const appMetricsListKeys = [
-    { field: 'region', label: 'Region', sortable: true, visible: true },
-    { field: 'app', label: 'App', sortable: true, visible: false },
-    { field: 'ver', label: 'Version', sortable: true, visible: false },
-    { field: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true },
-    { field: 'cloudletorg', label: 'Operator', sortable: true, visible: true },
-    { field: 'cluster', label: 'Cluster', sortable: true, visible: true },
-    // { field: 'clusterorg', label: 'Cluster Developer', sortable: true, visible: false },
+    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true },
+    { field: fields.appName, label: 'App', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.version, label: 'Version', sortable: true, visible: false, groupBy: true },
+    { field: fields.clusterName, label: 'Cluster', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.clusterdeveloper, label: 'Cluster Developer', sortable: true, visible: false, groupBy: true },
+    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.operatorName, label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
+    { field: fields.healthCheck, label: 'Health Check', sortable: false, visible: true, groupBy: false, customData: true },
     { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
     { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
     { field: 'mem', label: 'Memory', sortable: true, visible: true, isArray: true },
@@ -41,6 +56,9 @@ export const appInstMetricTypeKeys = [
     { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 13, unit: 1, serverRequest: false },
     { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 14, unit: 1, serverRequest: false },
     { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 16, unit: 3, serverRequest: false },
+    { field: 'map', header: 'Map', serverRequest: false },
+    { field: 'event', header: 'Event', serverRequest: false },
+    { field: 'client', header: 'Client Usage', serverRequest: false },
 ]
 
 export const appActions = [

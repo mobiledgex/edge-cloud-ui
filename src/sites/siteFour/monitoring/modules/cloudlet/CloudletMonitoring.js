@@ -1,8 +1,9 @@
 import React from 'react'
-import MexChart from '../../charts/MexChart'
-import { Card, Grid } from '@material-ui/core'
+import { Card, GridList, GridListTile } from '@material-ui/core'
+import { fields } from '../../../../../services/model/format'
 import MexMap from './CloudletMexMap'
 import CloudletEvent from './CloudletEvent'
+import MexMetric from '../../common/MexMetric'
 
 const processData = (avgData) => {
     let mapData = {}
@@ -11,14 +12,14 @@ const processData = (avgData) => {
         let avgDataRegion = avgData[region]
         Object.keys(avgDataRegion).map(key => {
             let keyData = avgDataRegion[key]
-            if (keyData.location) {
-                let location = keyData.location
-                let key = `${location.latitude}_${location.longitude}`
+            if (keyData[fields.cloudletLocation]) {
+                let cloudletLocation = keyData[fields.cloudletLocation]
+                let key = `${cloudletLocation.latitude}_${cloudletLocation.longitude}`
                 let cloudletKey = keyData.cloudlet
-                let data = { location, keyData: keyData }
+                let data = { cloudletLocation, keyData: keyData }
                 selected += (keyData.selected ? 1 : 0)
                 let mapDataLocation = mapData[key]
-                mapDataLocation = mapDataLocation ? mapDataLocation : { location }
+                mapDataLocation = mapDataLocation ? mapDataLocation : { cloudletLocation }
                 mapDataLocation.selected = selected
                 if (mapDataLocation[cloudletKey]) {
                     mapDataLocation[cloudletKey].push(data)
@@ -32,7 +33,6 @@ const processData = (avgData) => {
     })
     return { mapData }
 }
-
 class CloudletMonitoring extends React.Component {
     constructor(props) {
         super()
@@ -46,28 +46,30 @@ class CloudletMonitoring extends React.Component {
         return processData(props.avgData)
     }
 
+    
+
     render() {
         const { mapData } = this.state
-        const { chartData, avgData, filter, rowSelected, range, minimize, selectedOrg } = this.props
+        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData } = this.props
         return (
             filter.parent.id === 'cloudlet' ?
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
-                    <div style={{ height: 400, marginBottom: 10 }}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={9}>
-                                <MexMap data={mapData}  region={filter.region}/>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Card style={{ height: 400, width: '100%' }}>
-                                    <CloudletEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
-                                </Card>
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <div style={{ marginBottom: 5 }}></div>
-                    <MexChart chartData={chartData} avgData={avgData} filter={filter} rowSelected={rowSelected} style={{ height: 'calc(100vh - 330px)' }} />
+                    <GridList cols={4} cellHeight={300}>
+                        {filter.metricType.includes('map') ? <GridListTile cols={3}>
+                            <MexMap data={mapData} region={filter.region} />
+                        </GridListTile> : null}
+                        {filter.metricType.includes('event') ? <GridListTile cols={1}>
+                            <Card style={{ height: 300 }}>
+                                <CloudletEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                            </Card>
+                        </GridListTile> : null}
+                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} />
+                    </GridList>
                 </div> : null
         )
+    }
+
+    componentDidMount() {
     }
 }
 export default CloudletMonitoring

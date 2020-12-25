@@ -39,7 +39,7 @@ class ClusterMexMap extends React.Component {
             <Popup className="map-control-div-marker-popup" ref={this.popup}>
                 {
                     Object.keys(data).map(cloudlet => (
-                        cloudlet !== 'location' && cloudlet !== 'selected' ?
+                        cloudlet !== 'cloudletLocation' && cloudlet !== 'selected' ?
                             <div key={cloudlet}>
                                 {data[cloudlet].map((item, i) => {
                                     let keyData = item.keyData
@@ -48,7 +48,7 @@ class ClusterMexMap extends React.Component {
                                             <div key={`${i}_${cloudlet}`} className="map-control-div-marker-popup-label" >
                                                 <code style={{ fontWeight: 400, fontSize: 12 }}>
                                                     <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
-                                                    {keyData['cloudlet']}
+                                                    {keyData[fields.cloudletName]}
                                                 </code>
                                             </div> : null
                                     )
@@ -67,7 +67,7 @@ class ClusterMexMap extends React.Component {
         return data ?
             <div>
                 {Object.keys(data).map((key, i) => {
-                    let location = data[key][fields.location]
+                    let location = data[key][fields.cloudletLocation]
                     let lat = location[fields.latitude]
                     let lon = location[fields.longitude]
                     return (

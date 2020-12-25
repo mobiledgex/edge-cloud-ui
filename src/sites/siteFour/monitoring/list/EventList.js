@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@material-ui/core'
+import { Collapse, Divider, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@material-ui/core'
 import * as dateUtil from '../../../../utils/date_util'
 import './style.css'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -106,7 +106,7 @@ class Events extends React.Component {
                             </div>
                         </div> :
                         <div align="center">
-                            <h3 style={{ marginTop: '11vh' }}><b>No Data</b></h3>
+                            <h3 style={{ marginTop: '8vh' }}><b>No Data</b></h3>
                         </div>
                 }
             </div>
