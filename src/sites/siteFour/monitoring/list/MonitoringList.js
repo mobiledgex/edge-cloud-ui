@@ -57,12 +57,13 @@ const MexChartList = (props) => {
           <TableBody>
             {Object.keys(data).map(region => {
               let values = data[region]
-              return validateRegionFilter(region) ?
+              let valueKeys = Object.keys(values)
+              return validateRegionFilter(region) && valueKeys.length > 0 ?
                 <React.Fragment key={region}>
                   <TableRow>
                     <TableCell colSpan={'100%'}><b>{`Region: ${region}`}</b></TableCell>
                   </TableRow>
-                  {Object.keys(values).map((key, i) => {
+                  {valueKeys.map((key, i) => {
                     let value = values[key]
                     let visible = value.hidden ? false : true
                     if (visible) {

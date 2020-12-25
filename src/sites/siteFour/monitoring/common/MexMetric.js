@@ -63,12 +63,12 @@ class MexMetric extends React.Component {
                     data[fields.starttime] = this.props.range.starttime
                     data[fields.endtime] = this.props.range.endtime
                     data[fields.selector] = '*'
-                    let org = isAdmin() ? this.props.selectedOrg : getOrganization()
+                    let org = isAdmin() ? this.props.org : getOrganization()
                     let metricRequest = parent.request(data, org)
 
                     sendRequest(this, metricRequest).addEventListener('message', event => {
                         if (event.data.status && event.data.status !== 200) {
-                            this.props.handleAlertInfo(event.data.message)
+                            // this.props.handleAlertInfo(event.data.message)
                         }
                         else {
                             this.metricResponse(parent, region, event.data)
@@ -102,7 +102,7 @@ class MexMetric extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.org !== this.props.org) {
             this.setState({ eventData: [] }, () => {
-                this.event(this.props.range)
+                this.fetchMetricData(this.props.range)
             })
         }
         if (prevProps.range !== this.props.range) {

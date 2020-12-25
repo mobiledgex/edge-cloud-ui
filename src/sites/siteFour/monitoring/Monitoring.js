@@ -7,7 +7,7 @@ import { Card, LinearProgress } from '@material-ui/core'
 
 import * as constant from './helper/Constant'
 import * as dateUtil from '../../../utils/date_util'
-import { getUserRole, isAdmin } from '../../../services/model/format';
+import { fields, getUserRole, isAdmin, getOrganization } from '../../../services/model/format';
 
 import MexWorker from '../../../services/worker/mex.worker.js'
 import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
@@ -24,6 +24,9 @@ import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 
 import './common/PageMonitoringStyles.css'
 import './style.css'
+import { showOrganizations } from '../../../services/model/organization';
+
+import sortBy from 'lodash/sortBy'
 
 const defaultParent = () => {
     return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
@@ -55,13 +58,13 @@ class Monitoring extends React.Component {
             filter: { region: this.regions, search: '', parent, metricType: fetchMetricTypeField(parent.metricTypeKeys), summary: constant.summaryList[0] },
             avgData: {},
             rowSelected: 0,
-            selectedOrg:undefined,
-            showLoaded:false
+            selectedOrg: undefined,
+            showLoaded: false
         }
     }
 
     onCellClick = (region, value, key) => {
-        this.setState(prevState=>{
+        this.setState(prevState => {
             let avgData = prevState.avgData
             let rowSelected = prevState.rowSelected
             avgData[region][key]['selected'] = !value['selected']
@@ -104,7 +107,8 @@ class Monitoring extends React.Component {
     onOrgChange = (value) => {
         let selectedOrg = value[fields.organizationName]
         this.setState({ selectedOrg }, () => {
-            this.defaultDataStructure()
+            this.defaultStructure()
+            this.fetchShowData()
         })
     }
 
@@ -160,8 +164,8 @@ class Monitoring extends React.Component {
         }
     }
 
-    updateAvgData = (avgData)=>{
-        this.setState({avgData})
+    updateAvgData = (avgData) => {
+        this.setState({ avgData })
     }
 
     render() {
@@ -187,7 +191,7 @@ class Monitoring extends React.Component {
         const worker = new MexWorker();
         let avgData = this.state.avgData
         let parentId = parent.id
-        worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData, metricListKeys:parent.metricListKeys})
+        worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData, metricListKeys: parent.metricListKeys })
         worker.addEventListener('message', event => {
             let avgData = event.data.avgData
             this.setState(prevState => {
@@ -210,13 +214,13 @@ class Monitoring extends React.Component {
                             let showRequests = parent.showRequest
                             let requestList = []
                             requestList = showRequests.map(showRequest => {
-                                return showRequest({ region })
+                                return showRequest({ region, org: isAdmin() ? this.state.selectedOrg : getOrganization() })
                             })
                             this.setState({ loading: true })
                             sendRequests(this, requestList).addEventListener('message', event => {
                                 count = count - 1
                                 if (count === 0) {
-                                    this.setState({ loading: false, showLoaded:true })
+                                    this.setState({ loading: false, showLoaded: true })
                                 }
                                 if (event.data.status && event.data.status !== 200) {
                                     this.props.handleAlertInfo(event.data.message)

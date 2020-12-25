@@ -1,4 +1,3 @@
-import { Card, GridListTile } from '@material-ui/core'
 import React from 'react'
 import { fields } from '../../../../services/model/format'
 import LineChart from './linechart/MexLineChart'
@@ -19,7 +18,7 @@ class MexChart extends React.Component {
                             Object.keys(chartDataRegion).map((key, i) => {
                                 let metricTypeData = chartDataRegion[key]
                                 return metricTypeData.values && filter.metricType.includes(metricTypeData.metric.field) ?
-                                    <LineChart id={key} rowSelected={rowSelected} data={metricTypeData} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} />
+                                    <LineChart key={`${region}_${key}`} id={key} rowSelected={rowSelected} data={metricTypeData} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} />
                                     :
                                     null
                             })

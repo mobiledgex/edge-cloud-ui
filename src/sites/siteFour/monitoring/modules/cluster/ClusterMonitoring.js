@@ -48,7 +48,7 @@ class ClusterMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { chartData, avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData } = this.props
+        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData } = this.props
         return (
             filter.parent.id === 'cluster' ?
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
