@@ -1,3 +1,4 @@
+import { Skeleton } from '@material-ui/lab'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 
@@ -5,6 +6,7 @@ import { fields, getOrganization, isAdmin } from '../../../../services/model/for
 import { sendRequest } from '../../../../services/model/serverWorker'
 import { WORKER_METRIC } from '../../../../services/worker/constant'
 import MexWorker from '../../../../services/worker/mex.worker.js'
+import GraphicEqOutlinedIcon from '@material-ui/icons/GraphicEqOutlined';
 
 import MexChart from '../charts/MexChart'
 
@@ -14,16 +16,20 @@ class MexMetric extends React.Component {
         super(props)
         this.state = {
             chartData: {},
-            dataLoaded:false
+            dataLoaded: false
         }
         this.regions = this.props.regions
     }
 
     render() {
-        const {chartData, dataLoaded}= this.state
-        const {avgData, filter, rowSelected, style} = this.props
+        const { chartData, dataLoaded } = this.state
+        const { avgData, filter, rowSelected, style } = this.props
         return (
-            dataLoaded ? <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} style={style}/> : null
+            dataLoaded ? <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} style={style} /> :
+                <React.Fragment>
+                    <Skeleton variant="rect" style={{ height: '53vh', width: '100%' }} />
+                </React.Fragment>
+
         )
     }
 
@@ -45,8 +51,8 @@ class MexMetric extends React.Component {
                         let preChartData = prevState.chartData
                         preChartData[region] = chartData[region]
                         return { preChartData }
-                    }, ()=>{
-                        this.setState({dataLoaded:true})
+                    }, () => {
+                        this.setState({ dataLoaded: true })
                     })
                 });
             }
@@ -54,27 +60,29 @@ class MexMetric extends React.Component {
     }
 
     fetchMetricData = () => {
-        let parent = this.props.filter.parent
-        this.regions.map(region => {
-            parent.metricTypeKeys.map(metric => {
-                if (metric.serverRequest) {
-                    let data = {}
-                    data[fields.region] = region
-                    data[fields.starttime] = this.props.range.starttime
-                    data[fields.endtime] = this.props.range.endtime
-                    data[fields.selector] = '*'
-                    let org = isAdmin() ? this.props.org : getOrganization()
-                    let metricRequest = parent.request(data, org)
+        this.setState({ chartData: this.metricStructure(), dataLoaded: false }, () => {
+            let parent = this.props.filter.parent
+            this.regions.map(region => {
+                parent.metricTypeKeys.map(metric => {
+                    if (metric.serverRequest) {
+                        let data = {}
+                        data[fields.region] = region
+                        data[fields.starttime] = this.props.range.starttime
+                        data[fields.endtime] = this.props.range.endtime
+                        data[fields.selector] = '*'
+                        let org = isAdmin() ? this.props.org : getOrganization()
+                        let metricRequest = parent.request(data, org)
 
-                    sendRequest(this, metricRequest).addEventListener('message', event => {
-                        if (event.data.status && event.data.status !== 200) {
-                            // this.props.handleAlertInfo(event.data.message)
-                        }
-                        else {
-                            this.metricResponse(parent, region, event.data)
-                        }
-                    });
-                }
+                        sendRequest(this, metricRequest).addEventListener('message', event => {
+                            if (event.data.status && event.data.status !== 200) {
+                                // this.props.handleAlertInfo(event.data.message)
+                            }
+                            else {
+                                this.metricResponse(parent, region, event.data)
+                            }
+                        });
+                    }
+                })
             })
         })
     }
@@ -91,11 +99,10 @@ class MexMetric extends React.Component {
                 chartData[region][this.metricKeyGenerator(parent.id, region, metric)] = metricData
             })
         })
-        this.setState({ chartData })
+        return chartData
     }
 
     componentDidMount() {
-        this.metricStructure()
         this.fetchMetricData()
     }
 

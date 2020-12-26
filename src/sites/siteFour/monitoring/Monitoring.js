@@ -19,8 +19,11 @@ import { WORKER_MONITORING_SHOW } from '../../../services/worker/constant';
 
 import MonitoringList from './list/MonitoringList'
 import AppInstMonitoring from './modules/app/AppMonitoring'
+import AppSkeleton from './modules/app/AppSkeleton'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
+import ClusterSkeleton from './modules/cluster/ClusterSkeleton'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
+import CloudletSkeleton from './modules/cloudlet/CloudletSkeleton'
 
 import './common/PageMonitoringStyles.css'
 import './style.css'
@@ -181,7 +184,12 @@ class Monitoring extends React.Component {
                     <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
                     <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
                     <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                </React.Fragment> : null}
+                </React.Fragment> :
+                    <React.Fragment>
+                        <AppSkeleton filter={filter} />
+                        <ClusterSkeleton filter={filter} />
+                        <CloudletSkeleton filter={filter}/>
+                    </React.Fragment>}
 
             </div>
         )
