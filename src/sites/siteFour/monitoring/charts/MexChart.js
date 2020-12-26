@@ -7,10 +7,9 @@ class MexChart extends React.Component {
     }
     render() {
         const { chartData, avgData, filter, rowSelected, style } = this.props
-        let xs = filter.region.length > 1
         return (
             <React.Fragment>
-                {/* {filter[fields.region].map(region => {
+                {filter[fields.region].map(region => {
                     if (avgData[region]) {
                         let chartDataRegion = chartData[region]
                         let avgDataRegion = avgData[region] ? avgData[region] : {}
@@ -24,7 +23,7 @@ class MexChart extends React.Component {
                             })
                         )
                     }
-                })} */}
+                })}
             </React.Fragment>
         )
     }
