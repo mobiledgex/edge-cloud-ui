@@ -139,7 +139,7 @@ const MexToolbar = (props) => {
     )
 
     const showSummary = () => {
-        return props.parent.id !== constant.PARENT_CLOUDLET
+        return props.filter.parent.id !== constant.PARENT_CLOUDLET
     }
 
     const showOrg = () => {
@@ -154,9 +154,9 @@ const MexToolbar = (props) => {
                     <Box display="flex" justifyContent="flex-end">
                         {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true}/> : null}
                         <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
-                        <MonitoringMenu order={3} data={constant.metricParentTypes} labelKey='label' onChange={onMetricParentTypeChange} default={props.defaultParent} />
+                        <MonitoringMenu order={3} data={constant.metricParentTypes} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
                         <MonitoringMenu order={4} data={props.regions} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
-                        <MonitoringMenu order={5} data={props.metricTypeKeys} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Metric Type' />
+                        <MonitoringMenu order={5} data={props.filter.parent.metricTypeKeys} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Metric Type' />
                         {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
                         {renderRefresh(7)}
                         {searchForm(8)}

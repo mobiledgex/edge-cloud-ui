@@ -2,6 +2,9 @@
 import * as React from 'react';
 import { Component } from 'react';
 import * as date_util from '../../../../utils/date_util'
+import AccessTimeOutlined from '@material-ui/icons/AccessTimeOutlined'
+import { Icon } from 'semantic-ui-react';
+import { IconButton } from '@material-ui/core';
 export default class MiniClockComponent extends Component {
     constructor(props) {
         super(props);
@@ -30,11 +33,15 @@ export default class MiniClockComponent extends Component {
     render() {
         return (
             <p style={{
-                color: '#d3d3d3',
-                fontSize:11,
-                width:80
+                color: '#FFF',
+                fontSize: 13,
+                marginTop:5,
+                width: 110
             }}>
-                {this.state.time}
+                <IconButton style={{backgroundColor:'transparent'}}>
+                    <AccessTimeOutlined />
+                    <span style={{ fontSize: 13, marginLeft:5 }}>{this.state.time}</span>
+                </IconButton>
             </p>
         );
     }

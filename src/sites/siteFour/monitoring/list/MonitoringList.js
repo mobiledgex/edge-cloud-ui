@@ -32,12 +32,13 @@ const MexChartList = (props) => {
   }
 
   const rowValue = (row, value) => {
+    let customData = props.filter.parent.customData
     let data = value[row.field]
     if (data && row.isArray) {
       return data[props.filter.summary.position]
     }
     else {
-      return data ? data : '-'
+      return data ? row.customData ? customData(row.field, value) : data : '-'
     }
   }
 
@@ -49,30 +50,35 @@ const MexChartList = (props) => {
             <TableRow>
               <TableCell style={{ backgroundColor: '#292c33' }}></TableCell>
               {rows.map((row, i) => {
-                return <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell>
+                return row.visible ? <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell> : null
               })}
             </TableRow>
           </TableHead>
           <TableBody>
             {Object.keys(data).map(region => {
               let values = data[region]
-              return validateRegionFilter(region) ?
-                Object.keys(values).map((key, i) => {
-                  let value = values[key]
-                  let visible = value.hidden ? false : true
-                  if (visible) {
-                    return (key.includes(props.filter.search) ?
-                      <TableRow key={i}>
-                        <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
-                        {rows.map((row, j) => (
-                          <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell>
-                        ))
-                        }
-                      </TableRow> : null)
-                  }
-                }) : null
+              let valueKeys = Object.keys(values)
+              return validateRegionFilter(region) && valueKeys.length > 0 ?
+                <React.Fragment key={region}>
+                  <TableRow>
+                    <TableCell colSpan={'100%'}><b>{`Region: ${region}`}</b></TableCell>
+                  </TableRow>
+                  {valueKeys.map((key, i) => {
+                    let value = values[key]
+                    let visible = value.hidden ? false : true
+                    if (visible) {
+                      return (key.includes(props.filter.search) ?
+                        <TableRow key={i}>
+                          <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
+                          {rows.map((row, j) => (
+                            row.visible ? <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell> : null
+                          ))
+                          }
+                        </TableRow> : null)
+                    }
+                  })}
+                </React.Fragment> : null
             })}
-
           </TableBody>
         </Table>
       </TableContainer>

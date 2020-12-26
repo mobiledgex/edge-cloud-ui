@@ -7,7 +7,7 @@ import { Tooltip } from "@material-ui/core";
 import { regionLocation } from "../../../../constant";
 
 export const DEFAULT_ZOOM = 2
-export const MAP_CENTER = [43.4, 51.7]
+export const MAP_CENTER = [3.2, 23.53]
 
 class MexMap extends React.Component {
 

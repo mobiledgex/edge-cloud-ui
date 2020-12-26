@@ -5,7 +5,7 @@ import { unit } from '../../../../../utils/math_util'
 import isEqual from 'lodash/isEqual';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import uuid from 'uuid'
-import { AppBar, Button, Dialog, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, Toolbar, Typography } from '@material-ui/core';
+import { Card, Dialog, GridListTile, IconButton} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 const optionsGenerator = (header, unitId, fullscreen) => {
     return {
@@ -178,45 +178,54 @@ class MexLineChart extends React.Component {
         this.setState({ fullscreen: true })
     }
 
-    renderFullScreen = (fullscreen, chartData, avgDataRegion, rowSelected, globalFilter) => (
-        <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
-            <div>
-                <div style={{ display: 'inline-block', float: 'left' }}>
-                    <h3 style={{ padding: 10 }}> {`${this.header} - ${this.props.data.region}`}</h3>
-                </div>
-                <div style={{ display: 'inline-block', float: 'right' }}>
-                    <IconButton onClick={this.closeFullScreen} style={{ padding: 10 }}>
-                        <CloseIcon />
-                    </IconButton>
-                </div>
-            </div>
-            <div style={{ padding: 20, height: '100vh' }}>
-                <Line datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen)} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
-            </div>
-        </Dialog>
-    )
-
-    render() {
-        const { fullscreen, chartData } = this.state
-        const { avgDataRegion, rowSelected, globalFilter, id } = this.props
+    renderFullScreen = (fullscreen, chartData, avgDataRegion, rowSelected, globalFilter) => {
+        let datasets = this.formatData(chartData, avgDataRegion, globalFilter, rowSelected)
         return (
-            <div mex-test="component-line-chart">
-                <div className="line-chart-header">
-                    <div className="line-chart-header-left">
-                        <h3>{`${this.header} - ${this.props.data.region}`}</h3>
+            <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
+                <div>
+                    <div style={{ display: 'inline-block', float: 'left' }}>
+                        <h3 style={{ padding: 10 }}> {`${this.header} - ${this.props.data.region}`}</h3>
                     </div>
-                    <div className="line-chart-header-right">
-                        <IconButton onClick={this.openFullScreen}>
-                            <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
+                    <div style={{ display: 'inline-block', float: 'right' }}>
+                        <IconButton onClick={this.closeFullScreen} style={{ padding: 10 }}>
+                            <CloseIcon />
                         </IconButton>
                     </div>
                 </div>
-                <br />
-                <div style={{ padding: 20, width: '100%' }}>
-                    <Line datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets: this.formatData(chartData, avgDataRegion, globalFilter, rowSelected) }} height={200} />
+                <div style={{ padding: 20, height: '100vh' }}>
+                    <Line datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen)} data={{ datasets }} height={200} />
                 </div>
-                {this.renderFullScreen(fullscreen, chartData, avgDataRegion, rowSelected, globalFilter)}
-            </div>
+            </Dialog>
+        )
+    }
+
+    render() {
+        const { fullscreen, chartData } = this.state
+        const { avgDataRegion, rowSelected, globalFilter, id, style } = this.props
+        let datasets = this.formatData(chartData, avgDataRegion, globalFilter, rowSelected)
+        return (
+            datasets.length > 0 ?
+                <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
+                    <Card style={{ height: 300 }}>
+                        <div style={{ padding: 5, marginTop: 5, marginRight: 10 }}>
+                            <div className="line-chart-header">
+                                <div className="line-chart-header-left">
+                                    <h3>{`${this.header} - ${this.props.data.region}`}</h3>
+                                </div>
+                                <div className="line-chart-header-right">
+                                    <IconButton onClick={this.openFullScreen}>
+                                        <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
+                                    </IconButton>
+                                </div>
+                            </div>
+                            <br />
+                            <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
+                                <Line datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} />
+                            </div>
+                            {this.renderFullScreen(fullscreen, chartData, avgDataRegion, rowSelected, globalFilter)}
+                        </div>
+                    </Card>
+                </GridListTile> : null
         )
     }
 }

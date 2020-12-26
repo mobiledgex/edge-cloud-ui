@@ -329,6 +329,7 @@ export const groupByCompare = (dataList, columns, region) => {
                 key = key + '_'
             }
         }
+        key = key.toLowerCase()
         if (!accumulator[key]) {
             accumulator[key] = [];
         }

@@ -2,7 +2,7 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { FixedSizeList } from 'react-window';
-import { Input, InputAdornment, Grid, makeStyles, Popover } from '@material-ui/core';
+import { Input, InputAdornment, Grid, makeStyles, Popover, Tooltip, IconButton } from '@material-ui/core';
 import { setMexTimezone } from '../../../../utils/sharedPreferences_util'
 import SearchIcon from '@material-ui/icons/Search';
 import cloneDeep from 'lodash/cloneDeep';
@@ -71,21 +71,11 @@ export default function MexTimezone(props) {
 
     const renderView = () => {
         return (
-            <Grid container spacing={1}>
-                <Grid item>
-                    <AccessTimeOutlined className={classes.img} />
-                </Grid>
-                <Grid item xs={12} sm container>
-                    <Grid item xs container direction="column">
-                        <Grid item xs>
-                            <div style={{ marginTop: 8, color: 'white', fontSize: 13 }}>
-                                {getMexTimezone()}
-                                <MiniClockComponent />
-                            </div>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
+            <div style={{ color: 'white', fontSize: 13, marginTop:4}}>
+                <Tooltip title={<strong style={{fontSize:13}}>{getMexTimezone()}</strong>}>
+                    <div><MiniClockComponent /></div>
+                </Tooltip>
+            </div>
         )
     }
 

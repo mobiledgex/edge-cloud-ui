@@ -150,7 +150,7 @@ export default function Header(props) {
                 <div className={classes.sectionDesktop}>
                     <MexTimezone data={timezones()} header={'Select Timezone'} />
                     {localStorage.selectRole === 'AdminManager' || localStorage.selectOrg ?
-                        <IconButton disabled={true} className="orgName">
+                        <IconButton disabled={true} style={{marginTop:3}}>
                             <BusinessIcon fontSize='default' />&nbsp;
                             <h5>
                                 {localStorage.selectRole === 'AdminManager' ? "Mexadmin" : localStorage.selectOrg}

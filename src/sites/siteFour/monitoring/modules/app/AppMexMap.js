@@ -32,13 +32,14 @@ class AppMexMap extends React.Component {
     }
 
     mapClick = (data) => {
-        this.setState({ mapCenter: [data.location.latitude, data.location.longitude], zoom: 7 })
+        let location = data[fields.cloudletLocation]
+        this.setState({ mapCenter: [location.latitude, location.longitude], zoom: 7 })
         this.popup.current.leafletElement.options.leaflet.map.closePopup();
-        let showData = data.keyData.showData
-        let main = { location: showData[fields.cloudletLocation] }
-        main[showData[fields.cloudletName]] = [data]
-        this.setState({ mapData: { main }, polyline: [[data.location.latitude, data.location.longitude]], curveColor: data.keyData.color, backswitch: true })
-        this.sendWSRequest(showAppInstClient(showData))
+        let keyData = data.keyData
+        let main = { cloudletLocation: keyData[fields.cloudletLocation] }
+        main[keyData[fields.cloudletName]] = [data]
+        this.setState({ mapData: { main }, polyline: [[location.latitude, location.longitude]], curveColor: data.keyData.color, backswitch: true })
+        this.sendWSRequest(showAppInstClient(keyData))
     }
 
     resetMap = () => {
@@ -60,7 +61,7 @@ class AppMexMap extends React.Component {
             let response = JSON.parse(evt.data);
             if (response.code === 200) {
                 let requestData = response.data
-                let location = requestData.location
+                let location = requestData[fields.cloudletLocation]
                 let uniqueId = requestData.client_key.unique_id
                 let mapData = cloneDeep(this.state.mapData)
                 let polyline = cloneDeep(this.state.polyline)
@@ -97,7 +98,7 @@ class AppMexMap extends React.Component {
             <Popup className="map-control-div-marker-popup" ref={this.popup}>
                 {
                     Object.keys(data).map(cloudlet => (
-                        cloudlet !== 'location' && cloudlet !== 'selected' ?
+                        cloudlet !== fields.cloudletLocation && cloudlet !== 'selected' ?
                             <div key={cloudlet}>
                                 <strong style={{ textTransform: 'uppercase', fontSize: 14 }}>{cloudlet}</strong>
                                 <div style={{ marginBottom: 10 }}></div>
@@ -110,9 +111,9 @@ class AppMexMap extends React.Component {
                                                 <div key={`${i}_${cloudlet}`} className="map-control-div-marker-popup-label" onClick={() => { this.mapClick(item) }}>
                                                     <code style={{ fontWeight: 400, fontSize: 12 }}>
                                                         <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
-                                                        {keyData['app']} [{keyData['ver']}]
+                                                        {keyData[fields.appName]} [{keyData[fields.version]}]
                                                     <code style={{ color: '#74B724' }}>
-                                                            [{keyData['cluster']}]
+                                                            [{keyData[fields.clusterName]}]
                                                     </code>
                                                     </code>
                                                 </div> : null
@@ -129,11 +130,10 @@ class AppMexMap extends React.Component {
     renderMarker = () => {
         const { showDevices, mapData, polyline, curveColor } = this.state
         let data = showDevices ? mapData : this.props.data
-
         return data ?
             <div>
                 {Object.keys(data).map((key, i) => {
-                    let location = data[key][fields.location]
+                    let location = data[key][fields.cloudletLocation]
                     let lat = location[fields.latitude]
                     let lon = location[fields.longitude]
                     return (
