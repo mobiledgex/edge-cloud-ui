@@ -97,18 +97,39 @@
 }
 
 .grid-charts {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 298px);
     overflow: auto;
     overflow-x: hidden;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 .grid-charts-minimize {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 127px);
     overflow: auto;
     overflow-x: hidden;
-    margin-top: 5px;
+    margin-top: 4px;
 }
+
+.grid-charts-minimize::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.grid-charts-minimize{
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+  }
 
 .grid-charts::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
@@ -185,6 +206,10 @@
     float: right;
     display: inline;
     margin-top: -10px;
+}
+
+.line-skeleton{
+    height: 55vh;
 }
 
 canvas#race{position:relative; z-index:999999;}

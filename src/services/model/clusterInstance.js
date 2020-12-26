@@ -36,8 +36,7 @@ export const keys = () => ([
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     if (specific) {
         let newList = mcRequestList.new
-        if(newList && newList.length > 0)
-        {
+        if (newList && newList.length > 0) {
             let response = newList[0].response
             if (response && response.status === 200) {
                 let dataList = response.data
@@ -126,6 +125,13 @@ export const showClusterInsts = (data, isSpecific) => {
         }
         requestData = data
     }
+    return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
+}
+
+export const showOrgClusterInsts = (data) => {
+    let requestData = {}
+    requestData.region = data.region
+    requestData.clusterinst = { key: { organization: data.org } }
     return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
 }
 

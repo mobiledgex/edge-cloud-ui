@@ -180,6 +180,13 @@ export const showAppInsts = (data, isSpecific) => {
   return { method: SHOW_APP_INST, data: requestData, keys: keys() }
 }
 
+export const showOrgAppInsts = (data) =>{
+  let requestData = {}
+  requestData.region = data.region
+  requestData.appinst = { key: { app_key: { organization: data.org } } }
+  return { method: SHOW_APP_INST, data: requestData, keys: keys() }
+}
+
 export const getAppInstList = async (self, data) => {
   return await serverData.showDataFromServer(self, showAppInsts(data))
 }

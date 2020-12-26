@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@material-ui/core'
+import { Collapse, Divider, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@material-ui/core'
 import * as dateUtil from '../../../../utils/date_util'
 import './style.css'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -22,18 +22,6 @@ class Events extends React.Component {
     expandMenu = (id) => {
         this.list.resetAfterIndex(0);
         this.setState(prevState => ({ expand: prevState.expand === id ? -1 : id }))
-    }
-
-
-    searchFilterValid = (mtags, filter) => {
-        let search = filter.search
-        let valid = []
-        this.props.keys.map(key => {
-            if (key.filter && mtags[key.serverField]) {
-                valid.push(mtags[key.serverField].toLowerCase().includes(search.toLowerCase()))
-            }
-        })
-        return valid.includes(true)
     }
 
     showEventLog = () => {
@@ -55,7 +43,6 @@ class Events extends React.Component {
 
         return (
             <div style={style}>
-                {this.searchFilterValid(mtags, filter) ?
                     <React.Fragment>
                         <ListItem onClick={() => this.expandMenu(index)}>
                             <ListItemIcon>
@@ -80,14 +67,14 @@ class Events extends React.Component {
                             </List>
                         </Collapse>
                         <Divider component="li" />
-                    </React.Fragment> : null}
+                    </React.Fragment>
             </div>
         );
     }
 
     render() {
         const { expand } = this.state
-        const { eventData } = this.props
+        const { eventData, showMore } = this.props
         return (
             <div className="event-list-main" id="event-list">
                 <div align="left" className="event-list-header">
@@ -98,7 +85,7 @@ class Events extends React.Component {
                         <div>
                             <div className='event-list-data'>
                                 <List dense={false} >
-                                    <VariableSizeList height={300} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
+                                    <VariableSizeList height={showMore ? 200 : 250} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
                                         ref={ref => (this.list = ref)}>
                                         {this.renderRow}
                                     </VariableSizeList>
@@ -106,7 +93,7 @@ class Events extends React.Component {
                             </div>
                         </div> :
                         <div align="center">
-                            <h3 style={{ marginTop: '11vh' }}><b>No Data</b></h3>
+                            <h3 style={{ marginTop: '8vh' }}><b>No Data</b></h3>
                         </div>
                 }
             </div>

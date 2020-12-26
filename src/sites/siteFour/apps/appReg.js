@@ -121,7 +121,7 @@ class AppReg extends React.Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: true, width: 14, visible: true },
+        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: true, width: 14, visible: true, init:true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
@@ -430,19 +430,24 @@ class AppReg extends React.Component {
     }
 
     deploymentManifestChange = (currentForm, forms, isInit) => {
-        let manifest = currentForm.value
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
-            if (form.field === fields.imagePath) {
-                let imagePath = form.value
-                if ((manifest && manifest.length > 0) && (imagePath && imagePath.length > 0) && !this.imagePathTyped) {
-                    this.props.handleAlertInfo('warning', 'Please verify if imagepath is valid, as it was auto generated')
-                }
-                break;
-            }
+        if (currentForm.value && currentForm.value.length > 0) {
+            currentForm.init = false
         }
-        if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+        if (!currentForm.init) {
+            let manifest = currentForm.value
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.field === fields.imagePath) {
+                    let imagePath = form.value
+                    if ((manifest && manifest.length > 0) && (imagePath && imagePath.length > 0) && !this.imagePathTyped) {
+                        this.props.handleAlertInfo('warning', 'Please verify if imagepath is valid, as it was auto generated')
+                    }
+                    break;
+                }
+            }
+            if (isInit === undefined || isInit === false) {
+                this.setState({ forms: forms })
+            }
         }
     }
 

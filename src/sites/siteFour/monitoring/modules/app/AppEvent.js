@@ -10,13 +10,14 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { IconButton, Tooltip } from '@material-ui/core'
 
 const appEventKeys = [
-    { label: 'App', serverField: 'app', summary: false, filter: true },
-    { label: 'App Developer', serverField: 'apporg', summary: false, filter: true },
-    { label: 'Version', serverField: 'appver', summary: false },
-    { label: 'Cluster', serverField: 'cluster', summary: false, filter: true },
-    { label: 'Cluster Developer', serverField: 'clusterorg', summary: false, filter: true },
-    { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter: true },
-    { label: 'Operator', serverField: 'cloudletorg', summary: true, filter: true },
+    { label: 'Name', serverField: 'name', summary: false, filter: true },
+    { label: 'App', serverField: 'app', summary: false, filter: true, mtags: true },
+    { label: 'App Developer', serverField: 'apporg', summary: false, filter: true, mtags: true },
+    { label: 'Version', serverField: 'appver', summary: false, mtags: true },
+    { label: 'Cluster', serverField: 'cluster', summary: false, filter: true, mtags: true },
+    { label: 'Cluster Developer', serverField: 'clusterorg', summary: false, filter: true, mtags: true },
+    { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter: true, mtags: true },
+    { label: 'Operator', serverField: 'cloudletorg', summary: true, filter: true, mtags: true },
     { label: 'Hostname', serverField: 'hostname', summary: true },
     { label: 'Line no', serverField: 'lineno', summary: true },
     { label: 'Span ID', serverField: 'spanid', summary: true },
@@ -54,12 +55,27 @@ class MexAppEvent extends React.Component {
         this.event({ starttime, endtime }, true)
     }
 
+    filterData = (filter, dataList)=>{
+        let search = filter.search
+        let valid = []
+        return dataList.filter(data=>{
+            let mtags = data.mtags
+            appEventKeys.map(key=>{
+                let filterData = key.mtags ? mtags[key.serverField] : data[key.serverField]
+                if (key.filter && filterData) {
+                    valid.push(filterData.toLowerCase().includes(search.toLowerCase()))
+                } 
+            })
+            return valid.includes(true)
+        })
+    }
+
     render() {
         const { eventData, colors, showMore, loading } = this.state
         const { filter } = this.props
         return (
             <div>
-                <EventList eventData={eventData} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105} itemExpandSize={350}/>
+                <EventList eventData={this.filterData(filter, eventData)} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105} itemExpandSize={350} showMore={showMore}/>
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20}/> :
                         <Tooltip title='More' onClick={this.loadMore}>
@@ -82,6 +98,7 @@ class MexAppEvent extends React.Component {
                 dataList = [...this.state.eventData, ...dataList]
                 colors = [...this.state.colors, ...colors]
             }
+            
             this.setState({ eventData: dataList, colors, showMore, loading: false })
         }
     }
