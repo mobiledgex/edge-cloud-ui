@@ -12,7 +12,7 @@ class CloudletSkeleton extends React.Component {
         const { filter } = this.props
         return (
             filter.parent.id === 'cloudlet' ?
-                <div className='grid-charts-minimize'>
+                <div className='grid-charts'>
                     <GridList cols={4} cellHeight={300}>
                         <GridListTile cols={3}>
                             <Skeleton variant='rect' height={300} />
@@ -22,7 +22,7 @@ class CloudletSkeleton extends React.Component {
                         </GridListTile>
                     </GridList>
                     <div style={{ margin: 5 }}></div>
-                    <Skeleton variant="rect" style={{ height: '66vh', width: '100%' }} />
+                    <Skeleton variant="rect" style={{ height: '56vh', width: '100%' }} />
                 </div> : null
         )
     }

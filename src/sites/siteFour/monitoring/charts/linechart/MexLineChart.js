@@ -206,8 +206,8 @@ class MexLineChart extends React.Component {
         return (
             datasets.length > 0 ?
                 <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
-                    <Card style={{ margin: 2, height: 300 }}>
-                        <div style={{ padding: 5, marginTop: 10, marginRight: 10 }}>
+                    <Card style={{ height: 300 }}>
+                        <div style={{ padding: 5, marginTop: 5, marginRight: 10 }}>
                             <div className="line-chart-header">
                                 <div className="line-chart-header-left">
                                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>

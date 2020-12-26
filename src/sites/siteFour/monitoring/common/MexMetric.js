@@ -27,7 +27,7 @@ class MexMetric extends React.Component {
         return (
             dataLoaded ? <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} style={style} /> :
                 <React.Fragment>
-                    <Skeleton variant="rect" style={{ height: '53vh', width: '100%' }} />
+                    <Skeleton variant="rect" style={{ height: '59vh', width: '100%' }} />
                 </React.Fragment>
 
         )

@@ -30,6 +30,7 @@ import './style.css'
 import { showOrganizations } from '../../../services/model/organization';
 
 import sortBy from 'lodash/sortBy'
+import { Skeleton } from '@material-ui/lab';
 
 const defaultParent = () => {
     return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
@@ -179,6 +180,7 @@ class Monitoring extends React.Component {
                     {loading ? <LinearProgress /> : null}
                     <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
                 </Card>
+                <div style={{margin:1}}></div>
                 {showLoaded ? <React.Fragment>
                     <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} />
                     <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
@@ -186,6 +188,7 @@ class Monitoring extends React.Component {
                     <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
                 </React.Fragment> :
                     <React.Fragment>
+                        <Skeleton variant="rect" height={170}/>
                         <AppSkeleton filter={filter} />
                         <ClusterSkeleton filter={filter} />
                         <CloudletSkeleton filter={filter}/>
