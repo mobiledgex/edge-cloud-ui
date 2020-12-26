@@ -1,8 +1,8 @@
 import * as mainConstant from '../../../../constant'
 import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData } from '../../../../services/model/appMetrics'
-import { showOrgAppInsts  } from '../../../../services/model/appInstance'
+import { showOrgAppInsts } from '../../../../services/model/appInstance'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
-import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys } from '../../../../services/model/cloudletMetrics'
+import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData } from '../../../../services/model/cloudletMetrics'
 import { showOrgCloudlets } from '../../../../services/model/cloudlet'
 import { getUserRole } from '../../../../services/model/format'
 import { showOrgClusterInsts } from '../../../../services/model/clusterInstance'
@@ -27,23 +27,21 @@ export const PARENT_CLUSTER_INST = 'cluster'
 export const PARENT_CLOUDLET = 'cloudlet'
 
 export const summaryList = [
-    { label: 'Avg', field: 'avg', position: 0, metricType : [PARENT_APP_INST, PARENT_CLUSTER_INST] },
-    { label: 'Min', field: 'min', position: 1, metricType : [PARENT_APP_INST, PARENT_CLUSTER_INST]  },
-    { label: 'Max', field: 'max', position: 2, metricType : [PARENT_APP_INST, PARENT_CLUSTER_INST]  },
+    { label: 'Avg', field: 'avg', position: 0, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
+    { label: 'Min', field: 'min', position: 1, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
+    { label: 'Max', field: 'max', position: 2, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
 ]
 
 export const metricParentTypes = [
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData:appCustomData },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
     { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
-    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR] },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData },
 ]
 
-export const validateRole = (roles)=>{
+export const validateRole = (roles) => {
     let valid = false
-    for(let i=0;i<roles.length;i++)
-    {
-        if(getUserRole().includes(roles[i]))
-        {
+    for (let i = 0; i < roles.length; i++) {
+        if (getUserRole().includes(roles[i])) {
             valid = true
             break;
         }

@@ -1,9 +1,15 @@
-
 import * as formatter from './format'
 import { CLOUDLET_METRICS_ENDPOINT } from './endPointTypes'
-import { convertByteToMegaGigaByte } from '../../utils/math_util'
 
 let fields = formatter.fields;
+
+export const customData = (id, data) => {
+    switch (id) {
+        case fields.cloudletName:
+            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
+
+    }
+}
 
 export const cloudletMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
@@ -13,9 +19,9 @@ export const cloudletMetricsKeys = [
 ]
 
 export const cloudletMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: true, groupBy: true  },
-    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true  },
-    { field: fields.operatorName, label: 'Operator', sortable: true, visible: true, groupBy: true  },
+    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true  },
+    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData:true  },
+    { field: fields.operatorName, label: 'Operator', sortable: true, visible: false, groupBy: true  },
     { field: fields.cloudletLocation, label: 'Location', visible: false  },
     { field: 'cpu', label: 'vCpu Usage', sortable: true, visible: true },
     { field: 'disk', label: 'Disk Usage', sortable: true, visible: true },

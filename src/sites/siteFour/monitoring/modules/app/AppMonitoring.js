@@ -87,7 +87,7 @@ class AppMonitoring extends React.Component {
                         {filter.metricType.includes('event') ?
                             <GridListTile cols={1}>
                                 <Card style={{ height: 300 }}>
-                                    <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                                    <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} avgData={avgData}/>
                                 </Card>
                             </GridListTile> : null}
                         <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />

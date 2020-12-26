@@ -24,18 +24,6 @@ class Events extends React.Component {
         this.setState(prevState => ({ expand: prevState.expand === id ? -1 : id }))
     }
 
-
-    searchFilterValid = (mtags, filter) => {
-        let search = filter.search
-        let valid = []
-        this.props.keys.map(key => {
-            if (key.filter && mtags[key.serverField]) {
-                valid.push(mtags[key.serverField].toLowerCase().includes(search.toLowerCase()))
-            }
-        })
-        return valid.includes(true)
-    }
-
     showEventLog = () => {
         this.props.handleShowAuditLog({ type: 'event' })
     }
@@ -55,7 +43,6 @@ class Events extends React.Component {
 
         return (
             <div style={style}>
-                {this.searchFilterValid(mtags, filter) ?
                     <React.Fragment>
                         <ListItem onClick={() => this.expandMenu(index)}>
                             <ListItemIcon>
@@ -80,14 +67,14 @@ class Events extends React.Component {
                             </List>
                         </Collapse>
                         <Divider component="li" />
-                    </React.Fragment> : null}
+                    </React.Fragment>
             </div>
         );
     }
 
     render() {
         const { expand } = this.state
-        const { eventData } = this.props
+        const { eventData, showMore } = this.props
         return (
             <div className="event-list-main" id="event-list">
                 <div align="left" className="event-list-header">
@@ -98,7 +85,7 @@ class Events extends React.Component {
                         <div>
                             <div className='event-list-data'>
                                 <List dense={false} >
-                                    <VariableSizeList height={300} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
+                                    <VariableSizeList height={showMore ? 200 : 250} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
                                         ref={ref => (this.list = ref)}>
                                         {this.renderRow}
                                     </VariableSizeList>
