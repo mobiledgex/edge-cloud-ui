@@ -36,7 +36,7 @@ export default class MiniClockComponent extends Component {
                 color: '#FFF',
                 fontSize: 13,
                 marginTop:5,
-                width: 110
+                width: 120
             }}>
                 <IconButton style={{backgroundColor:'transparent'}}>
                     <AccessTimeOutlined />
