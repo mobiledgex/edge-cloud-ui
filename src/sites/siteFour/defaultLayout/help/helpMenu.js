@@ -1,13 +1,16 @@
 import React from 'react'
 import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
-import EmojiPeopleOutlinedIcon from '@material-ui/icons/EmojiPeopleOutlined';
+import NewReleasesIcon from '@material-ui/icons/NewReleases';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
-import { tutor } from '../../../tutorial'
+import WhatsNew from './whatsnew'
+import { tutor } from '../../../../tutorial'
+import './style.css'
 
 const HelpMenu = (props) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [openNew, setOpenNew] = React.useState(false);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -33,6 +36,11 @@ const HelpMenu = (props) => {
         }
     };
 
+    const newClick = () => {
+        setAnchorEl(null);
+        setOpenNew(true);
+    };
+
     return (
         <div style={{ marginTop: '0.4em' }}>
             <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={handleClick}>
@@ -53,7 +61,12 @@ const HelpMenu = (props) => {
                     <DescriptionOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Guide" />
                 </MenuItem>
+                <MenuItem onClick={newClick}>
+                    <NewReleasesIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
+                    <ListItemText primary="What's new" />
+                </MenuItem>
             </Menu>
+            <WhatsNew open={openNew} close={()=>{setOpenNew(false)}}/>
         </div >
     )
 }
