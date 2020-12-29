@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import UserMenu from '../userSetting/userMenu';
 import EventMenu from './eventMenu'
-import HelpMenu from './helpMenu'
+import HelpMenu from './help/helpMenu'
 import BusinessIcon from '@material-ui/icons/Business';
 import { Button, Image } from 'semantic-ui-react';
 import { Dialog, DialogActions, List, ListItem, ListItemText, Menu, MenuItem } from '@material-ui/core';
