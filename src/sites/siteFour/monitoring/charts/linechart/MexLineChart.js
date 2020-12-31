@@ -2,21 +2,65 @@ import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
 import { unit } from '../../../../../utils/math_util'
-import isEqual from 'lodash/isEqual';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import uuid from 'uuid'
-import { Card, Dialog, GridListTile, IconButton} from '@material-ui/core';
+import { Card, Dialog, GridListTile, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { LTTB } from 'downsample';
+
+
+const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
+    let datasets = []
+    const values = rawData ? rawData.values : {}
+    let keys = Object.keys(values)
+    let length = keys.length
+    for (let i = 0; i < length; i++) {
+        let key = keys[i]
+        if (avgDataRegion[key].hidden) {
+            continue
+        }
+
+        let valueData = values[key]
+        if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
+            let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
+            let data = valueData.map(value => {
+                return { x: dateUtil.timeInMilli(value[0]), y: value[rawData.metric.position] }
+            })
+            datasets.push({
+                label: valueData[0][2],
+                fill: false,
+                lineTension: 0.5,
+                backgroundColor: color,
+                borderColor: color,
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderWidth: 2,
+                borderJoinStyle: 'miter',
+                pointBorderColor: color,
+                pointBackgroundColor: color,
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: color,
+                pointHoverBorderColor: color,
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: LTTB(data , 50)
+            })
+        }
+    }
+    return datasets
+}
 const optionsGenerator = (header, unitId, fullscreen) => {
     return {
         stacked: true,
         bezierCurve: true,
-        animation: {
-            duration: 1
-        },
+        animation: false,
         datasetStrokeWidth: 1,
         pointDotStrokeWidth: 2,
         responsive: true,
+        spanGaps: true,
         maintainAspectRatio: false,
         legend: {
             position: "top",
@@ -27,12 +71,10 @@ const optionsGenerator = (header, unitId, fullscreen) => {
         },
         elements: {
             line: {
-                tension: 0 // disables bezier curves
-            }
-        },
-        animation: {
-            onComplete() {
-                this.options.animation.onComplete = null
+                tension: 0, // disables bezier curves
+                fill: false,
+                stepped: false,
+                borderDash: []
             }
         },
         scales: {
@@ -86,7 +128,7 @@ class MexLineChart extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            chartData: {},
+            datasets: [],
             fullscreen: false
         }
         this.metric = props.data.metric
@@ -117,55 +159,13 @@ class MexLineChart extends React.Component {
         return metricLabel
     }
 
-    formatData = (chartData, avgDataRegion, globalFilter, rowSelected) => {
-        let datasets = []
-        const values = chartData ? chartData.values : {}
-        let keys = Object.keys(values)
-        let length = keys.length
-        for (let i = 0; i < length; i++) {
-            let key = keys[i]
-            if (avgDataRegion[key].hidden) {
-                continue
-            }
 
-            let valueData = values[key]
-            if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
-                let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
-                let data = valueData.map(value => {
-                    return { x: dateUtil.time(dateUtil.FORMAT_FULL_TIME, value[0]), y: value[this.position] }
-                })
-                datasets.push({
-                    label: valueData[0][2],
-                    fill: false,
-                    lineTension: 0.5,
-                    backgroundColor: color,
-                    borderColor: color,
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderWidth: 2,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: color,
-                    pointBackgroundColor: color,
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: color,
-                    pointHoverBorderColor: color,
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: data
-                })
-            }
-        }
-        return datasets
-    }
 
     static getDerivedStateFromProps(props, state) {
         let propsValues = props.data.values
-        let stateValues = state.chartData.values
-        if (propsValues && !isEqual(stateValues, propsValues)) {
-            return { chartData: props.data }
+        if (propsValues) {
+            const { data, avgDataRegion, globalFilter, rowSelected } = props
+            return { datasets: formatData(data, avgDataRegion, globalFilter, rowSelected) }
         }
         return null
     }
@@ -178,8 +178,7 @@ class MexLineChart extends React.Component {
         this.setState({ fullscreen: true })
     }
 
-    renderFullScreen = (fullscreen, chartData, avgDataRegion, rowSelected, globalFilter) => {
-        let datasets = this.formatData(chartData, avgDataRegion, globalFilter, rowSelected)
+    renderFullScreen = (fullscreen, datasets) => {
         return (
             <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
                 <div>
@@ -200,9 +199,8 @@ class MexLineChart extends React.Component {
     }
 
     render() {
-        const { fullscreen, chartData } = this.state
-        const { avgDataRegion, rowSelected, globalFilter, id, style } = this.props
-        let datasets = this.formatData(chartData, avgDataRegion, globalFilter, rowSelected)
+        const { fullscreen, datasets } = this.state
+        const { id, style } = this.props
         return (
             datasets.length > 0 ?
                 <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
@@ -222,7 +220,7 @@ class MexLineChart extends React.Component {
                             <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
                                 <Line datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} />
                             </div>
-                            {this.renderFullScreen(fullscreen, chartData, avgDataRegion, rowSelected, globalFilter)}
+                            {this.renderFullScreen(fullscreen, datasets)}
                         </div>
                     </Card>
                 </GridListTile> : null
