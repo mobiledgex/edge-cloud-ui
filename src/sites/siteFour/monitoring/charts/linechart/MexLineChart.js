@@ -140,6 +140,7 @@ class MexLineChart extends React.Component {
         this.tags = props.tags
         this.tagFormats = props.tagFormats
         this.options = optionsGenerator(this.header, this.unit, false)
+        this.canvasObject = React.createRef()
     }
 
     formatLabel = (value) => {
@@ -165,11 +166,13 @@ class MexLineChart extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         let propsValues = props.data.values
-        let stateValues = state.datasets.values
-        if (propsValues && !isEqual(stateValues, propsValues)) {
+        if (propsValues && !state.fullscreen) {
             const { data, avgDataRegion, globalFilter, rowSelected } = props
             let datasets = formatData(data, avgDataRegion, globalFilter, rowSelected)
-            return { datasets }
+            if(!isEqual(state.datasets, datasets))
+            {
+                return { datasets }
+            }
         }
         return null
     }
@@ -221,14 +224,42 @@ class MexLineChart extends React.Component {
                                 </div>
                             </div>
                             <br />
-                            <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
-                                <Line datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} />
+                            <div style={{ padding: 20, width: '100%', marginTop: 20 }} ref={this.canvasObject}>
                             </div>
                             {this.renderFullScreen(fullscreen, datasets)}
                         </div>
                     </Card>
                 </GridListTile> : null
         )
+    }
+
+    renderChart = () => {
+        let node = this.canvasObject.current
+        if (node) {
+            let canvasElement = document.createElement('canvas')
+            if (canvasElement.transferControlToOffscreen) {
+                let canvas = canvasElement.transferControlToOffscreen()
+                canvas.width = node.clientWidth - 30
+                const config = { type: "line", data: { datasets: this.state.datasets } };
+                this.worker.postMessage({ canvas, config, unitId: this.unit, header: this.header }, [canvas]);
+
+                while (node.firstChild) {
+                    node.removeChild(node.lastChild);
+                }
+                node.appendChild(canvasElement)
+            }
+        }
+    }
+
+    componentDidUpdate(preProps, preState) {
+        if (this.state.fullscreen === preState.fullscreen) {
+            this.renderChart()
+        }
+    }
+
+    componentDidMount() {
+        this.worker = new Worker('/js/charts/line.js');
+        this.renderChart()
     }
 }
 
