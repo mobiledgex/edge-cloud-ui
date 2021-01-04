@@ -12,6 +12,7 @@ import { showAppInstClient } from '../../../../../services/model/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
 
 import MexCurve from '../../mexmap/utils/MexCurve'
+import { Dialog } from '@material-ui/core';
 
 
 class AppMexMap extends React.Component {
@@ -25,7 +26,8 @@ class AppMexMap extends React.Component {
             mapCenter: MAP_CENTER,
             zoom: DEFAULT_ZOOM,
             curveColor: 'red',
-            backswitch: false
+            backswitch: false,
+            openMap:false,
         }
         this.popup = React.createRef();
         this.ws = undefined
@@ -34,11 +36,11 @@ class AppMexMap extends React.Component {
     mapClick = (data) => {
         let location = data[fields.cloudletLocation]
         this.setState({ mapCenter: [location.latitude, location.longitude], zoom: 7 })
-        this.popup.current.leafletElement.options.leaflet.map.closePopup();
-        let keyData = data.keyData
+        //this.popup.current.leafletElement.options.leaflet.map.closePopup();
+        let keyData = data
         let main = { cloudletLocation: keyData[fields.cloudletLocation] }
         main[keyData[fields.cloudletName]] = [data]
-        this.setState({ mapData: { main }, polyline: [[location.latitude, location.longitude]], curveColor: data.keyData.color, backswitch: true })
+        this.setState({ mapData: { main }, polyline: [[location.latitude, location.longitude]], curveColor: keyData.color, backswitch: true })
         this.sendWSRequest(showAppInstClient(keyData))
     }
 
@@ -60,9 +62,9 @@ class AppMexMap extends React.Component {
         this.ws.onmessage = evt => {
             let response = JSON.parse(evt.data);
             if (response.code === 200) {
-                let requestData = response.data
-                let location = requestData[fields.cloudletLocation]
-                let uniqueId = requestData.client_key.unique_id
+                let responseData = response.data
+                let location = responseData[fields.location]
+                let uniqueId = responseData.client_key.unique_id
                 let mapData = cloneDeep(this.state.mapData)
                 let polyline = cloneDeep(this.state.polyline)
                 let key = `${location.latitude}_${location.longitude}`
@@ -78,7 +80,7 @@ class AppMexMap extends React.Component {
                 }
                 else {
                     polyline.push([location.latitude, location.longitude])
-                    data = { location, label: 1, devices: [uniqueId] }
+                    data = { cloudletLocation : location, label: 1, devices: [uniqueId] }
                 }
                 mapData[key] = data
                 this.setState({ mapData, polyline })
@@ -90,38 +92,40 @@ class AppMexMap extends React.Component {
         }
     }
 
-    
+
 
     renderMarkerPopup = (data) => {
         let selected = data['selected'] ? data['selected'] : 0
         return (
             <Popup className="map-control-div-marker-popup" ref={this.popup}>
                 {
-                    Object.keys(data).map(cloudlet => (
-                        cloudlet !== fields.cloudletLocation && cloudlet !== 'selected' ?
-                            <div key={cloudlet}>
-                                <strong style={{ textTransform: 'uppercase', fontSize: 14 }}>{cloudlet}</strong>
-                                <div style={{ marginBottom: 10 }}></div>
-                                {data[cloudlet].map((item, i) => {
-                                    let keyData = item.keyData
-                                    let visible = keyData.hidden ? false : true
-                                    if (visible) {
-                                        return (
-                                            selected === 0 || keyData.selected ?
-                                                <div key={`${i}_${cloudlet}`} className="map-control-div-marker-popup-label" onClick={() => { this.mapClick(item) }}>
-                                                    <code style={{ fontWeight: 400, fontSize: 12 }}>
-                                                        <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
-                                                        {keyData[fields.appName]} [{keyData[fields.version]}]
+                    Object.keys(data).map(cloudlet => {
+                        return (
+                            cloudlet !== fields.cloudletLocation && cloudlet !== 'selected' && (data.selected === 0 || data[cloudlet].selected) ?
+                                <div key={cloudlet}>
+                                    <strong style={{ textTransform: 'uppercase', fontSize: 14 }}>{cloudlet}</strong>
+                                    <div style={{ marginBottom: 10 }}></div>
+                                    {data[cloudlet].map((item, i) => {
+                                        let keyData = item.keyData
+                                        let visible = keyData.hidden ? false : true
+                                        if (visible) {
+                                            return (
+                                                selected === 0 || keyData.selected ?
+                                                    <div key={`${i}_${cloudlet}`} className="map-control-div-marker-popup-label">
+                                                        <code style={{ fontWeight: 400, fontSize: 12 }}>
+                                                            <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
+                                                            {keyData[fields.appName]} [{keyData[fields.version]}]
                                                     <code style={{ color: '#74B724' }}>
-                                                            [{keyData[fields.clusterName]}]
+                                                                [{keyData[fields.clusterName]}]
                                                     </code>
-                                                    </code>
-                                                </div> : null
-                                        )
-                                    }
-                                })} </div> : null
+                                                        </code>
+                                                    </div> : null
+                                            )
+                                        }
+                                    })} </div> : null
 
-                    ))
+                        )
+                    })
                 }
             </Popup>
         )
@@ -129,29 +133,34 @@ class AppMexMap extends React.Component {
 
     renderMarker = () => {
         const { showDevices, mapData, polyline, curveColor } = this.state
+        console.log('Rahul1234', mapData)
         let data = showDevices ? mapData : this.props.data
         return data ?
             <div>
                 {Object.keys(data).map((key, i) => {
-                    let location = data[key][fields.cloudletLocation]
-                    let lat = location[fields.latitude]
-                    let lon = location[fields.longitude]
-                    return (
-                        <React.Fragment key={key}>
-                            {
-                                showDevices ?
-                                    key === 'main' ?
+                    if (key !== 'selected') {
+                        let location = data[key][fields.cloudletLocation]
+                        let lat = location[fields.latitude]
+                        let lon = location[fields.longitude]
+                        return (
+                            data.selected === 0 || data[key].selected ? 
+                            <React.Fragment key={key}>
+                                {
+                                    showDevices ?
+                                        key === 'main' ?
+                                            
+                                            <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                                {this.renderMarkerPopup(data[key])}
+                                            </Marker> :
+                                            <MexCircleMarker coords={{ lat: lat, lng: lon }} label={data[key]['label']} /> :
                                         <Marker icon={cloudGreenIcon} position={[lat, lon]}>
                                             {this.renderMarkerPopup(data[key])}
-                                        </Marker> :
-                                        <MexCircleMarker coords={{ lat: lat, lng: lon }} label={data[key]['label']} /> :
-                                    <Marker icon={cloudGreenIcon} position={[lat, lon]}>
-                                        {this.renderMarkerPopup(data[key])}
-                                    </Marker>
-                            }
+                                        </Marker>
+                                }
 
-                        </React.Fragment>
-                    )
+                            </React.Fragment> : null
+                        )
+                    }
                 })}
                 {showDevices && polyline.length > 0 ?
                     <MexCurve data={polyline} color={curveColor} /> : null
@@ -159,12 +168,28 @@ class AppMexMap extends React.Component {
             </div> : null
     }
 
+    closeMap = ()=>{
+        this.setState({openMap:false})
+    }
+
     render() {
-        const { mapCenter, zoom, backswitch } = this.state
+        const { mapCenter, zoom, backswitch, openMap } = this.state
         const { region } = this.props
         return (
-            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} />
+            <React.Fragment>
+                <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} />
+                {/* <Dialog fullScreen open={openMap} onClose={this.closeMap}>
+                    <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} />
+                </Dialog> */}
+            </React.Fragment>
         )
+    }
+
+    componentDidUpdate(preProps, preState) {
+        let listAction = this.props.listAction
+        if (listAction.action !== undefined && listAction.action !== preProps.listAction.action) {
+            this.mapClick(listAction.data)
+        }
     }
 }
 

@@ -10,6 +10,7 @@ export const appMetricsKeys = [
     { label: 'Region', field: fields.region, serverField: 'region', visible: true, groupBy: true },
     { label: 'App', field: fields.appName, serverField: 'app', visible: true, groupBy: true, filter: true },
     { label: 'Version', field: fields.version, serverField: 'ver', visible: true, groupBy: true },
+    { label: 'App Developer', field: fields.organizationName, serverField: 'apporg', visible: true, groupBy: true },
     { label: 'Cluster', field: fields.clusterName, serverField: 'cluster', visible: true, groupBy: true },
     { label: 'Cluster Developer', field: fields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: true },
     { label: 'Cloudlet', field: fields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: true },
@@ -32,6 +33,7 @@ export const customData = (id, data) => {
 export const appMetricsListKeys = [
     { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true },
     { field: fields.appName, label: 'App', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.organizationName, label: 'App Developer', sortable: true, visible: true, groupBy: true, customData: true },
     { field: fields.version, label: 'Version', sortable: true, visible: false, groupBy: true },
     { field: fields.clusterName, label: 'Cluster', sortable: true, visible: true, groupBy: true, customData: true },
     { field: fields.clusterdeveloper, label: 'Cluster Developer', sortable: true, visible: false, groupBy: true },

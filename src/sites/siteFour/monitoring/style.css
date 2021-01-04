@@ -93,11 +93,11 @@
 
 .map-control-div-marker-popup-label {
     margin-bottom: 10px;
-    cursor: pointer;
+    cursor: not-allowed;
 }
 
 .grid-charts {
-    height: calc(100vh - 298px);
+    height: calc(100vh - 342px);
     overflow: auto;
     overflow-x: hidden;
     margin-top: 4px;

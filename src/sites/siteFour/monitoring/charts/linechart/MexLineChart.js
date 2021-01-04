@@ -16,38 +16,40 @@ const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
     let length = keys.length
     for (let i = 0; i < length; i++) {
         let key = keys[i]
-        if (avgDataRegion[key].hidden) {
-            continue
-        }
+        if (avgDataRegion[key]) {
+            if (avgDataRegion[key].hidden) {
+                continue
+            }
 
-        let valueData = values[key]
-        if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
-            let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
-            let data = valueData.map(value => {
-                return { x: dateUtil.timeInMilli(value[0]), y: value[rawData.metric.position] }
-            })
-            datasets.push({
-                label: valueData[0][2],
-                fill: false,
-                lineTension: 0.5,
-                backgroundColor: color,
-                borderColor: color,
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderWidth: 2,
-                borderJoinStyle: 'miter',
-                pointBorderColor: color,
-                pointBackgroundColor: color,
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: color,
-                pointHoverBorderColor: color,
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: LTTB(data , 50)
-            })
+            let valueData = values[key]
+            if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
+                let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
+                let data = valueData.map(value => {
+                    return { x: dateUtil.timeInMilli(value[0]), y: value[rawData.metric.position] }
+                })
+                datasets.push({
+                    label: valueData[0][2],
+                    fill: false,
+                    lineTension: 0.5,
+                    backgroundColor: color,
+                    borderColor: color,
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderWidth: 2,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: color,
+                    pointBackgroundColor: color,
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: color,
+                    pointHoverBorderColor: color,
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: LTTB(data, 50)
+                })
+            }
         }
     }
     return datasets

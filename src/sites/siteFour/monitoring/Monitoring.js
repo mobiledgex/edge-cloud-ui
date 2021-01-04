@@ -63,8 +63,10 @@ class Monitoring extends React.Component {
             avgData: {},
             rowSelected: 0,
             selectedOrg: undefined,
-            showLoaded: false
+            showLoaded: false,
+            listAction : {}
         }
+        this.selectedRow = undefined
     }
 
     onCellClick = (region, value, key) => {
@@ -73,8 +75,13 @@ class Monitoring extends React.Component {
             let rowSelected = prevState.rowSelected
             avgData[region][key]['selected'] = !value['selected']
             rowSelected = avgData[region][key]['selected'] ? rowSelected + 1 : rowSelected - 1
-            return { avgData, rowSelected }
+            this.selectedRow = avgData[region][key]
+            return { avgData, rowSelected}
         })
+    }
+
+    onToolbarClick = (action) =>{
+        this.setState({listAction:{action:action, data:this.selectedRow}})
     }
 
     onRefreshChange = (value) => {
@@ -173,7 +180,7 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, selectedOrg, showLoaded } = this.state
+        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, selectedOrg, showLoaded, listAction } = this.state
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
@@ -182,8 +189,8 @@ class Monitoring extends React.Component {
                 </Card>
                 <div style={{margin:1}}></div>
                 {showLoaded ? <React.Fragment>
-                    <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} />
-                    <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                    <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onToolbarClick}/>
+                    <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction}/>
                     <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
                     <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
                 </React.Fragment> :
