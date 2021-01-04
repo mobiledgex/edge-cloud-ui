@@ -38,7 +38,7 @@ class AppMexMap extends React.Component {
         this.setState({ mapCenter: [location.latitude, location.longitude], zoom: 7 })
         //this.popup.current.leafletElement.options.leaflet.map.closePopup();
         let keyData = data
-        let main = { cloudletLocation: keyData[fields.cloudletLocation] }
+        let main = { cloudletLocation: keyData[fields.cloudletLocation], selected:1 }
         main[keyData[fields.cloudletName]] = [data]
         this.setState({ mapData: { main }, polyline: [[location.latitude, location.longitude]], curveColor: keyData.color, backswitch: true })
         this.sendWSRequest(showAppInstClient(keyData))
