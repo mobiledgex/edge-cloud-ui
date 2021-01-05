@@ -26,6 +26,9 @@ export const PARENT_APP_INST = 'appinst'
 export const PARENT_CLUSTER_INST = 'cluster'
 export const PARENT_CLOUDLET = 'cloudlet'
 
+export const LIST_TOOLBAR_TRACK_DEVICES = 0
+export const LIST_TOOLBAR_TERMINAL = 1
+
 export const summaryList = [
     { label: 'Avg', field: 'avg', position: 0, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
     { label: 'Min', field: 'min', position: 1, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
@@ -73,3 +76,7 @@ export const refreshRates = [
     { label: '2h', duration: 7200 },
     { label: '1d', duration: 86400 }
 ]
+
+export const mapGridHeight = (minimize, selected)=>{
+    return minimize ? 'calc(100vh - 127px)' : selected === 1 ? 'calc(100vh - 342px)' : 'calc(100vh - 295px)'
+}

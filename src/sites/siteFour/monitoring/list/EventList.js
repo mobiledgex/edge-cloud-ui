@@ -85,7 +85,7 @@ class Events extends React.Component {
                         <div>
                             <div className='event-list-data'>
                                 <List dense={false} >
-                                    <VariableSizeList height={showMore ? 200 : 250} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
+                                    <VariableSizeList height={showMore ? 200 : 240} itemSize={this.getItemSize} itemCount={eventData.length} itemData={{ expand }}
                                         ref={ref => (this.list = ref)}>
                                         {this.renderRow}
                                     </VariableSizeList>

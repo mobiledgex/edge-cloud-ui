@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,16 +7,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Icon } from 'semantic-ui-react';
-import { Collapse } from '@material-ui/core';
+import { Collapse  } from '@material-ui/core';
+import ListToolbar from './MonitoringListToolbar'
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
+
 
 const MexChartList = (props) => {
-  const classes = useStyles();
 
   const data = props.data
   const rows = props.filter.parent.metricListKeys
@@ -42,8 +37,13 @@ const MexChartList = (props) => {
     }
   }
 
+  const onToolbar = (action)=>{
+    props.onToolbarClick(action)
+  }
+  
   return (
     <Collapse in={!props.minimize}>
+      {props.rowSelected === 1 && props.filter.parent.id === 'appinst' ? <ListToolbar click={onToolbar}/> : null}
       <TableContainer component={Paper} style={{ height: 170, overflow: 'auto' }}>
         <Table aria-label="mex chart list" stickyHeader size={'small'}>
           <TableHead>
@@ -68,7 +68,7 @@ const MexChartList = (props) => {
                     let visible = value.hidden ? false : true
                     if (visible) {
                       return (key.includes(props.filter.search) ?
-                        <TableRow key={i}>
+                        <TableRow key={i} style={{backgroundColor:value.selected ? `${value.color}1A` : `transparent`}}>
                           <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
                           {rows.map((row, j) => (
                             row.visible ? <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell> : null

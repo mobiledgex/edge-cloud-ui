@@ -59,6 +59,12 @@
     border-radius: 3px;
 }
 
+.mex-map-full{
+    width:100%;
+    height: 100vh;
+    border-radius: 3px;
+}
+
 .map-control {
     background-color: rgba(128,128,128,.3);
     border-radius: 3px;
@@ -93,7 +99,7 @@
 
 .map-control-div-marker-popup-label {
     margin-bottom: 10px;
-    cursor: pointer;
+    cursor: not-allowed;
 }
 
 .grid-charts {
@@ -102,34 +108,6 @@
     overflow-x: hidden;
     margin-top: 4px;
 }
-
-.grid-charts-minimize {
-    height: calc(100vh - 127px);
-    overflow: auto;
-    overflow-x: hidden;
-    margin-top: 4px;
-}
-
-.grid-charts-minimize::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
-}
-
-.grid-charts-minimize{
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-  
-    &::-webkit-scrollbar {
-      width: 1px;
-    }
-  
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-  
-    &::-webkit-scrollbar-thumb {
-      background-color: transparent;
-    }
-  }
 
 .grid-charts::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
