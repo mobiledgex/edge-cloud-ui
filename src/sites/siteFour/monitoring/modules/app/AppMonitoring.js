@@ -6,6 +6,7 @@ import { OFFLINE, ONLINE } from '../../../../../constant';
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
 import MexMetric from '../../common/MexMetric'
+import { mapGridHeight } from '../../helper/Constant';
 
 const healthDataStructure = () => {
     let healthData = {}
@@ -71,10 +72,11 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, range, rowSelected, minimize, selectedOrg, updateAvgData } = this.props
+        const { avgData, filter, range, rowSelected, minimize, selectedOrg, updateAvgData, onListToolbarClear } = this.props
+        let selected = mapData.selected
         return (
             filter.parent.id === 'appinst' ?
-                <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
+                <div className={'grid-charts'} style={{height : mapGridHeight(minimize, selected)}}>
                     <GridList cols={4} cellHeight={300}>
                         {filter.metricType.includes('client') ?
                             <GridListTile cols={1}>
@@ -84,7 +86,7 @@ class AppMonitoring extends React.Component {
                             </GridListTile> : null}
                         {filter.metricType.includes('map') ?
                             <GridListTile cols={2}>
-                                <MexMap data={mapData} region={filter.region} listAction={this.props.listAction} avgData={avgData}/>
+                                <MexMap data={mapData} region={filter.region} listAction={this.props.listAction} avgData={avgData} onListToolbarClear={onListToolbarClear}/>
                             </GridListTile> : null}
                         {filter.metricType.includes('event') ?
                             <GridListTile cols={1}>

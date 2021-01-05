@@ -40,10 +40,10 @@ const MexChartList = (props) => {
   const onToolbar = (action)=>{
     props.onToolbarClick(action)
   }
-
+  
   return (
     <Collapse in={!props.minimize}>
-      {props.rowSelected === 1 ? <ListToolbar click={onToolbar}/> : null}
+      {props.rowSelected === 1 && props.filter.parent.id === 'appinst' ? <ListToolbar click={onToolbar}/> : null}
       <TableContainer component={Paper} style={{ height: 170, overflow: 'auto' }}>
         <Table aria-label="mex chart list" stickyHeader size={'small'}>
           <TableHead>

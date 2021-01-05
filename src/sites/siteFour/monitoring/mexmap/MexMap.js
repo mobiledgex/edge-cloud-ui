@@ -36,7 +36,7 @@ class MexMap extends React.Component {
             { label: 'Zoom In', icon: 'add', onClick: () => { this.zoomIn() }, visible:true },
             { label: 'Zoom Out', icon: 'minus', onClick: () => { this.zoomOut() }, visible:true },
             { label: 'Zoom Reset', icon: 'redo', onClick: () => { this.zoomReset() }, visible:true },
-            { label: 'Back', icon: 'compress', onClick: () => { this.props.back() }, visible:backswitch }
+            { label: 'Close', icon: 'close', onClick: () => { this.props.back() }, visible:backswitch }
         ]
         return (
             <Control position="topleft" className="map-control">

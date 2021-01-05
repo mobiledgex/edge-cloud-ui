@@ -4,7 +4,7 @@ import { Marker, Popup } from "react-leaflet";
 import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../mexmap/MexMap'
 import MexCircleMarker from '../../mexmap/utils/MexCircleMarker'
 import { fields } from '../../../../../services/model/format';
-import { cloudGreenIcon } from "../../mexmap/MapProperties";
+import { cloudGreenIcon, mobileIcon } from "../../mexmap/MapProperties";
 import { mcURL } from '../../../../../services/model/serviceMC'
 import { getPath } from '../../../../../services/model/endPointTypes'
 import * as serverData from '../../../../../services/model/serverData'
@@ -48,7 +48,9 @@ class AppMexMap extends React.Component {
             this.ws.close()
             this.ws = undefined
         }
-        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch: false })
+        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch: false },()=>{
+            this.props.onListToolbarClear()
+        })
     }
 
     sendWSRequest = (request) => {
@@ -87,7 +89,7 @@ class AppMexMap extends React.Component {
         }
 
         this.ws.onclose = evt => {
-            this.resetMap()
+           
         }
     }
 
@@ -130,6 +132,8 @@ class AppMexMap extends React.Component {
         )
     }
 
+   
+
     renderDeviceMarker = () => {
         const { showDevices, mapData, polyline, curveColor } = this.state
         return mapData ?
@@ -138,15 +142,14 @@ class AppMexMap extends React.Component {
                     let location = mapData[key][fields.cloudletLocation]
                     let lat = location[fields.latitude]
                     let lon = location[fields.longitude]
-
                     return (
                         <React.Fragment key={key}>
                             {
                                 key === 'main' ?
-                                    <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                    <Marker icon={mobileIcon} position={[lat, lon]}>
                                         {this.renderMarkerPopup(mapData[key])}
                                     </Marker> :
-                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label']} />
+                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label'] } popupData={mapData[key].devices}/>
                             }
                         </React.Fragment>
                     )
@@ -186,7 +189,7 @@ class AppMexMap extends React.Component {
         return (
             <React.Fragment>
                 {showDevices ?
-                    <Dialog fullScreen open={showDevices} onClose={this.resetMap}>
+                    <Dialog fullScreen open={showDevices} onClose={this.resetMap} disableEscapeKeyDown={true}>
                         <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region}  fullscreen={showDevices} />
                     </Dialog> :
                     <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region}/>
