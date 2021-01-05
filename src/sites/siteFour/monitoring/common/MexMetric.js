@@ -24,6 +24,7 @@ class MexMetric extends React.Component {
     render() {
         const { chartData, dataLoaded } = this.state
         const { avgData, filter, rowSelected, style } = this.props
+
         return (
             dataLoaded ? <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} style={style} /> :
                 <React.Fragment>

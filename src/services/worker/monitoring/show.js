@@ -15,7 +15,7 @@ const fetchAppInstData = (showList, keys) => {
     for(let i=0;i<showList.length;i++)
     {
         let show = showList[i]
-        if (show[fields.appName] === 'MEXPrometheusAppName' || show[fields.appName] === 'NFSAutoProvision') {
+        if (show[fields.appName] === 'MEXPrometheusAppName' || show[fields.appName] === 'NFSAutoProvision' || Object.keys(show.cloudletLocation).length === 0) {
             continue;
         }
 
