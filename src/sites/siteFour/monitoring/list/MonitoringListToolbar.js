@@ -38,12 +38,11 @@ const ListToolbar = (props) => {
                     <PhoneIphoneRoundedIcon />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Terminal">
+            {/* <Tooltip title="Terminal">
                 <IconButton onClick={()=>{props.click(LIST_TOOLBAR_TERMINAL)}}>
                     <CodeOutlinedIcon />
                 </IconButton>
-            </Tooltip>
-
+            </Tooltip> */}
         </Toolbar>
     )
 }
