@@ -86,8 +86,6 @@ class Monitoring extends React.Component {
             case constant.LIST_TOOLBAR_TRACK_DEVICES:
                 this.setState({ listAction: { action: action, data: this.selectedRow } })
                 break;
-            case constant.LIST_TOOLBAR_TERMINAL:
-                console.log('Rahul1234', this.selectedRow)
         }
       
     }
