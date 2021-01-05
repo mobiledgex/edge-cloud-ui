@@ -55,9 +55,9 @@ class MexMap extends React.Component {
     }
 
     render() {
-        const { renderMarker, mapCenter, zoom, backswitch } = this.props
+        const { renderMarker, mapCenter, zoom, backswitch, fullscreen } = this.props
         return (
-            <div className="mex-map" mex-test="component-map">
+            <div className={fullscreen ? 'mex-map-full' : 'mex-map'} mex-test="component-map">
                 <Map
                     ref={this.map}
                     center={mapCenter}

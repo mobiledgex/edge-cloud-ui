@@ -68,7 +68,7 @@ const MexChartList = (props) => {
                     let visible = value.hidden ? false : true
                     if (visible) {
                       return (key.includes(props.filter.search) ?
-                        <TableRow key={i} style={{backgroundColor:value.selected ? `${value.color}0C` : `transparent`}}>
+                        <TableRow key={i} style={{backgroundColor:value.selected ? `${value.color}1A` : `transparent`}}>
                           <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
                           {rows.map((row, j) => (
                             row.visible ? <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell> : null
