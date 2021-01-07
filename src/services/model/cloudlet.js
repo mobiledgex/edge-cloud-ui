@@ -4,6 +4,7 @@ import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
+import { REVOKE_ACCESS_KEY } from './endpoints'
 
 const fields = formatter.fields;
 
@@ -223,6 +224,14 @@ export const getCloudletManifest = async (self, data, showSpinner) => {
     requestData.cloudletkey = getCloudletKey(data)
     requestData.region = data[fields.region]
     let mcRequest = await serverData.sendRequest(self, { method: GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
+    return mcRequest
+}
+
+export const revokeAccessKey = async (self, data, showSpinner) => {
+    let requestData = {}
+    requestData.cloudletkey = getCloudletKey(data)
+    requestData.region = data[fields.region]
+    let mcRequest = await serverData.sendRequest(self, { method: REVOKE_ACCESS_KEY, data: requestData, showSpinner: showSpinner })
     return mcRequest
 }
 
