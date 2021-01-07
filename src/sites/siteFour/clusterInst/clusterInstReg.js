@@ -15,7 +15,6 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { showOrgCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
 import { showOrgCloudletInfos } from '../../../services/model/cloudletInfo';
 import { getFlavorList } from '../../../services/model/flavor';
-import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/model/autoScalePolicy';
 //Map
 import Map from "../../../hoc/maps/MexMap"
@@ -24,9 +23,8 @@ import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
-import { SHOW_PRIVACY_POLICY, SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
+import { SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
 import { sendRequests } from '../../../services/model/serverWorker'
-import { SHOW_ORG_CLOUDLET, SHOW_ORG_CLOUDLET_INFO } from '../../../services/model/endpoints';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
@@ -50,7 +48,6 @@ class ClusterInstReg extends React.Component {
         this.organizationList = []
         this.cloudletList = []
         this.flavorList = []
-        this.privacyPolicyList = []
         this.autoScalePolicyList = []
         this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
         this.updateFlowDataList = []
@@ -93,14 +90,6 @@ class ClusterInstReg extends React.Component {
         this.setState({ forms: forms })
     }
 
-    getPrivacyPolicy = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
-        }
-        this.updateUI(form)
-        this.setState({ forms: forms })
-    }
-
     getAutoScalePolicy = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
             this.autoScalePolicyList = [...this.autoScalePolicyList, ...await getAutoScalePolicyList(this, { region: region })]
@@ -125,11 +114,6 @@ class ClusterInstReg extends React.Component {
                     this.getFlavorInfo(region, form, forms)
                 }
             }
-            else if (form.field === fields.privacyPolicyName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getPrivacyPolicy(region, form, forms)
-                }
-            }
             else if (form.field === fields.autoScalePolicyName) {
                 if (isInit === undefined || isInit === false) {
                     this.getAutoScalePolicy(region, form, forms)
@@ -148,10 +132,6 @@ class ClusterInstReg extends React.Component {
                 if (isInit === undefined || isInit === false) {
                     this.getCloudletInfo(form, forms)
                 }
-            }
-            else if (form.field === fields.privacyPolicyName) {
-                this.updateUI(form)
-                this.setState({ forms: forms })
             }
             else if (form.field === fields.autoScalePolicyName) {
                 this.updateUI(form)
@@ -186,19 +166,6 @@ class ClusterInstReg extends React.Component {
             }
             else if (form.field === fields.autoScalePolicyName) {
                 form.visible = currentForm.value !== constant.DEPLOYMENT_TYPE_DOCKER
-            }
-        }
-        if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
-        }
-    }
-
-    ipAccessValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
-            if (form.field === fields.privacyPolicyName) {
-                form.value = undefined
-                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -251,7 +218,6 @@ class ClusterInstReg extends React.Component {
             flowDataList.push(clusterFlow.ipAccessFlow({}))
         }
         else if (form.field === fields.ipAccess) {
-            this.ipAccessValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(clusterFlow.ipAccessFlow(finalData))
         }
@@ -420,9 +386,6 @@ class ClusterInstReg extends React.Component {
                         case fields.deployment:
                             form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES]
                             break;
-                        case fields.privacyPolicyName:
-                            form.options = this.privacyPolicyList
-                            break;
                         case fields.autoScalePolicyName:
                             form.options = this.autoScalePolicyList
                             break;
@@ -461,9 +424,6 @@ class ClusterInstReg extends React.Component {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                 requestTypeList.push(showAutoScalePolicies({ region: data[fields.region] }))
             }
-            if (data[fields.ipAccess] === constant.IP_ACCESS_DEDICATED) {
-                requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
-            }
 
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
             if (mcRequestList && mcRequestList.length > 0) {
@@ -472,9 +432,6 @@ class ClusterInstReg extends React.Component {
                     let request = mcRequest.request;
                     if (request.method === SHOW_AUTO_SCALE_POLICY) {
                         this.autoScalePolicyList = mcRequest.response.data
-                    }
-                    else if (request.method === SHOW_PRIVACY_POLICY) {
-                        this.privacyPolicyList = mcRequest.response.data
                     }
                 }
             }
@@ -491,7 +448,6 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', visible: true, update: false, tip: 'IpAccess indicates the type of RootLB that Developer requires for their App' },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }] },
             { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }], update: true, updateId: ['18'] },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },

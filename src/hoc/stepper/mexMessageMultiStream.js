@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Dialog, DialogContent, Divider, Grid, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography, IconButton } from '@material-ui/core';
+import { Dialog, DialogContent, Divider, Grid, Accordion, AccordionSummary, AccordionDetails, Typography, IconButton } from '@material-ui/core';
 import { Stepper, Step, StepLabel, CircularProgress } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import Check from "@material-ui/icons/Check";
@@ -111,14 +111,14 @@ const MultiStream = (props) => {
 
 
     const getSummary = (data) => (
-        <ExpansionPanelSummary
+        <AccordionSummary
             style={{ backgroundColor: '#24252b', color: 'white', wordBreak: 'break-word' }}
             expandIcon={<ExpandMoreIcon style={{ color: 'white' }} />}
             aria-controls="panel1a-content"
             id="panel1a-header"
         >
             <Typography>{data}</Typography>
-        </ExpansionPanelSummary>
+        </AccordionSummary>
     )
     const getDataSummary = (steps) => {
         let step = steps[steps.length - 1]
@@ -130,14 +130,14 @@ const MultiStream = (props) => {
         let data = item.data
         let labels = item.labels
         return (
-            <ExpansionPanelDetails style={{ backgroundColor: '#24252b', color: 'white' }}>
+            <AccordionDetails style={{ backgroundColor: '#24252b', color: 'white' }}>
                 <div ref={body} style={{ backgroundColor: '#24252b', overflowY: 'auto', maxHeight: 400 }}>
                     {labels.map((info, i) => {
                         if (i > 0)
                             return <p key={i}><b>{info.label}</b>&nbsp;-&nbsp;{data[info.field]}</p>
                     })}
                 </div>
-            </ExpansionPanelDetails>
+            </AccordionDetails>
         )
     }
 
@@ -160,7 +160,7 @@ const MultiStream = (props) => {
 
     const getDetails = (item) => {
         return (
-            <ExpansionPanelDetails style={{ backgroundColor: '#24252b', color: 'white' }}>
+            <AccordionDetails style={{ backgroundColor: '#24252b', color: 'white' }}>
                 <div ref={body} style={{ backgroundColor: '#24252b', overflowY: 'auto', maxHeight: 400 }}>
                     <Stepper className={classes.stepper} activeStep={item.steps[item.steps.length - 1].code === CODE_FINISH ? item.steps.length : item.steps.length - 1} orientation="vertical">
                         {item.steps.map((step, index) => {
@@ -177,7 +177,7 @@ const MultiStream = (props) => {
                         })}
                     </Stepper>
                 </div>
-            </ExpansionPanelDetails>
+            </AccordionDetails>
         )
     }
     return (
@@ -206,19 +206,19 @@ const MultiStream = (props) => {
                                         <Grid container spacing={2} style={{ padding: 10 }}>
                                             <Grid item xs={3}>
                                                 {item.labels.length > 1 ?
-                                                    <ExpansionPanel>
+                                                    <Accordion>
                                                         {getSummary(item.data[item.labels[0].field])}
                                                         {getHeaderDetails(item)}
-                                                    </ExpansionPanel> :
+                                                    </Accordion> :
                                                     <h4 style={{ padding: '13px 0', color: '#DDDD' }}>{item.data[item.labels[0].field]}</h4>}
                                             </Grid>
                                             <Grid item xs={9}>
                                                 {
 
-                                                    <ExpansionPanel>
+                                                    <Accordion>
                                                         {getDataSummary(item.steps)}
                                                         {getDetails(item)}
-                                                    </ExpansionPanel>
+                                                    </Accordion>
                                                 }
                                             </Grid>
                                         </Grid>

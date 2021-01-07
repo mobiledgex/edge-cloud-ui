@@ -31,7 +31,7 @@ export const fields = {
     type: 'type',
     address: 'address',
     phone: 'phone',
-    privacyPolicyName: 'privacyPolicyName',
+    trustPolicyName: 'trustPolicyName',
     outboundSecurityRules: 'outboundSecurityRules',
     protocol: 'protocol',
     portRangeMin: 'portRangeMin',
@@ -70,7 +70,7 @@ export const fields = {
     imageType: 'imageType',
     imagePath: 'imagePath',
     defaultFlavorName: 'defaultFlavorName',
-    defaultPrivacyPolicy: 'defaultPrivacyPolicy',
+    defaultTrustPolicy: 'defaultTrustPolicy',
     ports: 'ports',
     authPublicKey: 'authPublicKey',
     scaleWithCluster: 'scaleWithCluster',
@@ -171,7 +171,8 @@ export const fields = {
     appRevision: 'appRevision',
     autoProvPolicies:'autoProvPolicies',
     title:'title',
-    description:'description'
+    description:'description',
+    trusted:'trusted'
 }
 
 export const getUserRole = () => {

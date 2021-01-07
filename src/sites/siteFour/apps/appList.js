@@ -8,7 +8,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
-import {HELP_APP_LIST} from "../../../tutorial";
+import { HELP_APP_LIST } from "../../../tutorial";
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -20,27 +20,26 @@ class AppList extends React.Component {
         this.keys = keys()
     }
 
-    onRegClose = (isEdited)=>
-    {
+    onRegClose = (isEdited) => {
         this.setState({ currentView: null })
     }
 
-    onAdd = (action , data) => {
-        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose}/> });
+    onAdd = (action, data) => {
+        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> });
     }
 
     /***Action Block */
 
 
     onLaunch = (action, data) => {
-        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose}/> });
+        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose} /> });
     }
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type:'Edit' },
-            { label: 'Delete', onClick: deleteApp, type:'Edit' },
-            { label: 'Create Instance', onClick: this.onLaunch, type:'Edit' }
+            { label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { label: 'Delete', onClick: deleteApp, type: 'Edit' },
+            { label: 'Create Instance', onClick: this.onLaunch, type: 'Edit' }
         ]
     }
 
@@ -60,16 +59,16 @@ class AppList extends React.Component {
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
-            viewMode : HELP_APP_LIST,
-            selection:true,
-            grouping : true
+            viewMode: HELP_APP_LIST,
+            selection: true,
+            grouping: true
         })
     }
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
         )
     }
 
@@ -80,6 +79,9 @@ class AppList extends React.Component {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
             if (key.field === fields.scaleWithCluster) {
+                key.customizedData = constant.showYesNo
+            }
+            else if (key.field === fields.trusted) {
                 key.customizedData = constant.showYesNo
             }
         }

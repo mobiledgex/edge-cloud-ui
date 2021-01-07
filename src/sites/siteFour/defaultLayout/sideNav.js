@@ -45,7 +45,7 @@ import SiteFourPageApps from '../apps/appList';
 import SiteFourPageAppInst from '../appInst/appInstList';
 import SiteFourPageClusterInst from '../clusterInst/clusterInstList';
 import AutoProvPolicy from '../policies/autoProvPolicyList/autoProvPolicyList';
-import PrivacyPolicy from '../policies/privacyPolicy/privacyPolicyList';
+import TrustPolicy from '../policies/trustPolicy/trustPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
 import Monitoring from '../monitoring/Monitoring';
 import Alerts from '../alerts/receiver/AlertReceiver';
@@ -150,7 +150,7 @@ const options = [
     {
         label: 'Policies', icon: <TrackChangesIcon />, roles: ['AdminManager', 'DeveloperManager'], subOptions: [
             { label: 'Auto Provisioning Policy', icon: <GroupWorkIcon />, pg: 8, pageId: constant.PAGE_AUTO_PROVISIONING_POLICY, page: <AutoProvPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
-            { label: 'Privacy Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_PRIVACY_POLICY, page: <PrivacyPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
+            { label: 'Trust Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_TRUST_POLICY, page: <TrustPolicy />, roles: ['AdminManager', 'DeveloperManager'] },
             { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: ['AdminManager', 'DeveloperManager'] },
         ]
     },
