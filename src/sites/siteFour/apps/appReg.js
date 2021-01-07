@@ -13,7 +13,6 @@ import { fields, getOrganization } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
 import { getOrganizationList } from '../../../services/model/organization';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
-import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
 import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
 import { createApp, updateApp } from '../../../services/model/app';
 import { refreshAllAppInst } from '../../../services/model/appInstance';
@@ -23,7 +22,7 @@ import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
-import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
+import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 class AppReg extends React.Component {
@@ -39,7 +38,6 @@ class AppReg extends React.Component {
         this.regions = cloneDeep(localStorage.regions ? localStorage.regions.split(",") : [])
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.flavorList = []
-        this.privacyPolicyList = []
         this.autoProvPolicyList = []
         this.requestedRegionList = []
         this.appInstanceList = []
@@ -281,15 +279,6 @@ class AppReg extends React.Component {
         this.setState({ forms: forms })
     }
 
-    getPrivacyPolicy = async (region, form, forms) => {
-        if (region && !this.requestedRegionList.includes(region)) {
-            let newList = await getPrivacyPolicyList(this, { region: region })
-            this.privacyPolicyList = [...this.privacyPolicyList, ...newList]
-        }
-        this.updateUI(form)
-        this.setState({ forms: forms })
-    }
-
     getAutoProvPolicy = async (region, form, forms) => {
         if (region && !this.requestedRegionList.includes(region)) {
             let newList = await getAutoProvPolicyList(this, { region: region })
@@ -335,11 +324,6 @@ class AppReg extends React.Component {
             else if (form.field === fields.flavorName) {
                 if (isInit === undefined || isInit === false) {
                     this.getFlavorInfo(region, form, forms)
-                }
-            }
-            else if (form.field === fields.privacyPolicyName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getPrivacyPolicy(region, form, forms)
                 }
             }
         }
@@ -640,16 +624,6 @@ class AppReg extends React.Component {
                                     break;
                                 }
                             }
-                            if (data[fields.privacyPolicyName]) {
-                                requestData[fields.privacyPolicyName] = undefined
-                                for (let i = 0; i < data[fields.privacyPolicyName].length; i++) {
-                                    let privacyPolicy = data[fields.privacyPolicyName][i]
-                                    if (privacyPolicy && privacyPolicy.parent.includes(region)) {
-                                        requestData[fields.privacyPolicyName] = privacyPolicy.value
-                                        break;
-                                    }
-                                }
-                            }
                             if (data[fields.autoProvPolicies]) {
                                 requestData[fields.autoProvPolicies] = undefined
                                 for (let i = 0; i < data[fields.autoProvPolicies].length; i++) {
@@ -715,9 +689,6 @@ class AppReg extends React.Component {
                         case fields.flavorName:
                             form.options = this.flavorList
                             break;
-                        case fields.privacyPolicyName:
-                            form.options = this.privacyPolicyList
-                            break;
                         case fields.autoProvPolicies:
                             form.options = this.autoProvPolicyList
                             break;
@@ -744,8 +715,7 @@ class AppReg extends React.Component {
 
             requestTypeList.push(showFlavors({ region: data[fields.region] }))
             requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
-            requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
-
+            
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {
@@ -756,9 +726,6 @@ class AppReg extends React.Component {
                     }
                     else if (request.method === SHOW_AUTO_PROV_POLICY) {
                         this.autoProvPolicyList = mcRequest.response.data
-                    }
-                    else if (request.method === SHOW_PRIVACY_POLICY) {
-                        this.privacyPolicyList = mcRequest.response.data
                     }
                 }
             }
@@ -876,13 +843,13 @@ class AppReg extends React.Component {
             { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'public key used for authentication', advance: false },
-            { field: fields.privacyPolicyName, label: 'Default Privacy Policy', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: true, update: true, tip: 'Privacy policy when creating auto cluster', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
             { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: true, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
             { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service', advance: false },
             { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: true, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
+            { field: fields.trusted, label: 'Trusted', formType: CHECKBOX, visible: true, value: false, update: true, advance: false, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
         ]
     }
 

@@ -32,7 +32,7 @@ export const keys = () => ([
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
     { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: constant.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
-    { field: fields.privacyPolicyName, serverField: 'default_privacy_policy', label: 'Default Privacy Policy' },
+    { field: fields.trusted, serverField: 'trusted', label: 'Deploy On Trusted Cloudlet' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
@@ -89,8 +89,8 @@ export const getKey = (data, isCreate) => {
         if (data[fields.autoPolicyName]) {
             app.auto_prov_policy = data[fields.autoPolicyName]
         }
-        if (data[fields.privacyPolicyName]) {
-            app.default_privacy_policy = data[fields.privacyPolicyName]
+        if (data[fields.trusted]) {
+            app.trusted = data[fields.trusted]
         }
         if (data[fields.accessType]) {
             app.access_type = constant.accessType(data[fields.accessType])
@@ -171,8 +171,8 @@ export const updateApp = async (self, data, originalData) => {
     if (!formatter.compareObjects(data[fields.autoProvPolicies], originalData[fields.autoProvPolicies])) {
         updateFields.push('32')
     }
-    if (!formatter.compareObjects(data[fields.privacyPolicyName], originalData[fields.privacyPolicyName])) {
-        updateFields.push('30')
+    if (!formatter.compareObjects(data[fields.trusted], originalData[fields.trusted])) {
+        updateFields.push('37')
     }
     if (!formatter.compareObjects(data[fields.templateDelimiter], originalData[fields.templateDelimiter])) {
         updateFields.push('33')
@@ -199,6 +199,7 @@ export const deleteApp = (data) => {
 
 
 const customData = (value) => {
+    value[fields.trusted] = value[fields.trusted] ? constant.YES : constant.NO
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'

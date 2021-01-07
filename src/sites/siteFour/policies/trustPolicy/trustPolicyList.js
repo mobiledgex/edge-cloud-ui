@@ -5,11 +5,11 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 
-import PrivacyPolicyReg from './privacyPolicyReg'
-import { keys, fields, showPrivacyPolicies, deletePrivacyPolicy, multiDataRequest } from '../../../../services/model/privacyPolicy';
+import TrustPolicyReg from './trustPolicyReg'
+import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/model/trustPolicy';
 import { showApps } from '../../../../services/model/app';
-import {HELP_PRIVACY_POLICY} from "../../../../tutorial";
-class PrivacyPolicy extends React.Component {
+import {HELP_TRUST_POLICY} from "../../../../tutorial";
+class TrustPolicy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,11 +24,11 @@ class PrivacyPolicy extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <PrivacyPolicyReg onClose={this.onRegClose} /> });
+        this.setState({ currentView: <TrustPolicyReg onClose={this.onRegClose} /> });
     }
 
     onUpdate = (action, data) => {
-        this.setState({ currentView: <PrivacyPolicyReg data={data} action='Update' onClose={this.onRegClose}/> })
+        this.setState({ currentView: <TrustPolicyReg data={data} action='Update' onClose={this.onRegClose}/> })
     }
 
     onDelete = (data, success, errorInfo)=>
@@ -44,27 +44,27 @@ class PrivacyPolicy extends React.Component {
     actionMenu = () => {
         return [
             { label: 'Update', onClick: this.onUpdate, type:'Edit' },
-            { label: 'Delete', onClick: deletePrivacyPolicy, onFinish: this.onDelete, type:'Edit' }
+            { label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type:'Edit' }
         ]
     }
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deletePrivacyPolicy, icon: 'delete', warning: 'delete all the selected policies', type: 'Edit' },
+            { label: 'Delete', onClick: deleteTrustPolicy, icon: 'delete', warning: 'delete all the selected policies', type: 'Edit' },
         ]
     }
 
     requestInfo = () => {
         return ({
-            headerLabel: 'Privacy Policy',
-            requestType: [showPrivacyPolicies, showApps],
+            headerLabel: 'Trust Policy',
+            requestType: [showTrustPolicies, showApps],
             isRegion: true,
-            nameField: fields.privacyPolicyName,
-            sortBy: [fields.region, fields.privacyPolicyName],
+            nameField: fields.trustPolicyName,
+            sortBy: [fields.region, fields.trustPolicyName],
             keys: this.keys,
             selection:true,
             onAdd: this.onAdd,
-            viewMode : HELP_PRIVACY_POLICY
+            viewMode : HELP_TRUST_POLICY
         })
     }
 
@@ -84,4 +84,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(PrivacyPolicy));
+export default withRouter(connect(null, mapDispatchProps)(TrustPolicy));

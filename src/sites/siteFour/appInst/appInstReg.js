@@ -11,7 +11,6 @@ import { fields, getOrganization } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
 import { getOrgCloudletList, showOrgCloudlets } from '../../../services/model/cloudlet';
-import { getPrivacyPolicyList, showPrivacyPolicies } from '../../../services/model/privacyPolicy';
 import { getClusterInstList, showClusterInsts } from '../../../services/model/clusterInstance';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAppList } from '../../../services/model/app';
@@ -23,7 +22,8 @@ import { HELP_APP_INST_REG } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from 'semantic-ui-react';
-import { SHOW_ORG_CLOUDLET, SHOW_CLUSTER_INST, SHOW_FLAVOR, SHOW_PRIVACY_POLICY } from '../../../services/model/endPointTypes';
+import { SHOW_ORG_CLOUDLET, SHOW_CLUSTER_INST, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
+
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 class ClusterInstReg extends React.Component {
@@ -42,7 +42,6 @@ class ClusterInstReg extends React.Component {
         this.organizationList = []
         this.cloudletList = []
         this.clusterInstList = []
-        this.privacyPolicyList = []
         this.flavorList = []
         this.appList = []
         this.updateFlowDataList = []
@@ -99,14 +98,6 @@ class ClusterInstReg extends React.Component {
         this.updateForm(forms)
     }
 
-    getPrivacyPolicyInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.privacyPolicyList = [...this.privacyPolicyList, ...await getPrivacyPolicyList(this, { region: region })]
-        }
-        this.updateUI(form)
-        this.updateForm(forms)
-    }
-
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -130,7 +121,6 @@ class ClusterInstReg extends React.Component {
             else if (form.field === fields.ipAccess) {
                 form.visible = currentForm.value
                 form.value = currentForm.value ? form.value : undefined
-                this.ipAccessValueChange(form, forms, true)
             }
             else if (form.field === fields.sharedVolumeSize) {
                 form.visible = currentForm.value ? true : false
@@ -141,21 +131,6 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    ipAccessValueChange = (currentForm, forms, isInit, data) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.privacyPolicyName) {
-                form.visible = currentForm.value === constant.IP_ACCESS_DEDICATED ? true : false
-                if (data) {
-                    form.visible = data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : form.visible
-                }
-                form.value = undefined
-            }
-        }
-        if (isInit === undefined || isInit === false) {
-            this.updateForm(forms)
-        }
-    }
 
     appNameValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
@@ -225,6 +200,13 @@ class ClusterInstReg extends React.Component {
                             return form
                         }
                     }
+                    else if (form.field === fields.operatorName) {
+                        this.cloudletList = this.cloudletList.filter(cloudlet => {
+                            return app[fields.trusted] === constant.YES ? cloudlet[fields.trustPolicyName] !== undefined : cloudlet[fields.trustPolicyName] === undefined
+                        })
+                        this.updateUI(form)
+                        return form
+                    }
                     else {
                         return form
                     }
@@ -287,11 +269,6 @@ class ClusterInstReg extends React.Component {
             else if (form.field === fields.appName) {
                 if (isInit === undefined || isInit === false) {
                     this.getAppInfo(region, form, forms)
-                }
-            }
-            else if (form.field === fields.privacyPolicyName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getPrivacyPolicyInfo(region, form, forms)
                 }
             }
         }
@@ -364,12 +341,11 @@ class ClusterInstReg extends React.Component {
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 5, field: fields.operatorName }] },
+            { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }] },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false, update: true },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false },
-            { field: fields.privacyPolicyName, label: 'Privacy Policy', formType: SELECT, placeholder: 'Select Privacy Policy', rules: { required: false }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }] },
             { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false }
         ]
@@ -399,7 +375,6 @@ class ClusterInstReg extends React.Component {
             this.versionValueChange(form, forms, isInit, flowDataList)
         }
         else if (form.field === fields.ipAccess) {
-            this.ipAccessValueChange(form, forms, isInit, data)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(appFlow.clusterFlow(finalData))
         }
@@ -535,9 +510,6 @@ class ClusterInstReg extends React.Component {
                         case fields.appName:
                             form.options = this.appList
                             break;
-                        case fields.privacyPolicyName:
-                            form.options = this.privacyPolicyList
-                            break;
                         case fields.version:
                             form.options = this.appList
                             break;
@@ -626,26 +598,24 @@ class ClusterInstReg extends React.Component {
             app[fields.version] = data[fields.version]
             app[fields.deployment] = data[fields.deployment]
             app[fields.accessType] = data[fields.accessType]
+            app[fields.trusted] = data[fields.trusted]
             this.appList = [app];
 
-            requestTypeList.push(showPrivacyPolicies({ region: data[fields.region] }))
-
-            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
-            if (mcRequestList && mcRequestList.length > 0) {
-                for (let i = 0; i < mcRequestList.length; i++) {
-                    let mcRequest = mcRequestList[i];
-                    let request = mcRequest.request;
-                    if (request.method === SHOW_ORG_CLOUDLET) {
-                        this.cloudletList = mcRequest.response.data
-                    }
-                    else if (request.method === SHOW_CLUSTER_INST) {
-                        this.clusterInstList = mcRequest.response.data
-                    }
-                    else if (request.method === SHOW_FLAVOR) {
-                        this.flavorList = mcRequest.response.data
-                    }
-                    else if (request.method === SHOW_PRIVACY_POLICY) {
-                        this.privacyPolicyList = mcRequest.response.data
+            if (requestTypeList.length > 0) {
+                let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+                if (mcRequestList && mcRequestList.length > 0) {
+                    for (let i = 0; i < mcRequestList.length; i++) {
+                        let mcRequest = mcRequestList[i];
+                        let request = mcRequest.request;
+                        if (request.method === SHOW_ORG_CLOUDLET) {
+                            this.cloudletList = mcRequest.response.data
+                        }
+                        else if (request.method === SHOW_CLUSTER_INST) {
+                            this.clusterInstList = mcRequest.response.data
+                        }
+                        else if (request.method === SHOW_FLAVOR) {
+                            this.flavorList = mcRequest.response.data
+                        }
                     }
                 }
             }

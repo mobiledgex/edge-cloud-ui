@@ -6,26 +6,29 @@ import MexForms, { MAIN_HEADER, HEADER } from '../../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import uuid from 'uuid';
-import {fields, getOrganization} from '../../../../services/model/format';
+import { fields, getOrganization } from '../../../../services/model/format';
 //model
-import {getOrganizationList} from '../../../../services/model/organization';
-import {updatePrivacyPolicy, createPrivacyPolicy} from '../../../../services/model/privacyPolicy';
+import { getOrganizationList } from '../../../../services/model/organization';
+import { updateTrustPolicy, createTrustPolicy } from '../../../../services/model/trustPolicy';
 import * as serverData from '../../../../services/model/serverData';
-import {HELP_PRIVACY_POLICY_REG} from "../../../../tutorial";
-class AutoProvPolicyReg extends React.Component {
+import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
+import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
+
+class TrustPolicyReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            forms: []
+            forms: [],
+            stepsArray: [],
         }
+        this._isMounted = false
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
         this.cloudletList = []
         this.isUpdate = this.props.action === 'Update'
     }
 
-    validateRemoteCIDR=(form)=>
-    {
+    validateRemoteCIDR = (form) => {
         if (form.value && form.value.length > 0) {
             if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(form.value)) {
                 form.error = 'Remote CIDR format is invalid (must be between 0.0.0.0/0 to 255.255.255.255/32)'
@@ -34,25 +37,22 @@ class AutoProvPolicyReg extends React.Component {
         }
         form.error = undefined;
         return true;
-        
+
     }
 
-    validatePortRange=(form)=>
-    {
+    validatePortRange = (form) => {
         if (form.value && form.value.length > 0) {
             let value = parseInt(form.value)
-            if(value < 1 || value > 65535)
-            {
-                form.error = 'Invalid Port Range (must be between 1-65535)' 
-                return false; 
+            if (value < 1 || value > 65535) {
+                form.error = 'Invalid Port Range (must be between 1-65535)'
+                return false;
             }
         }
         form.error = undefined;
         return true;
     }
 
-    protocolValueChange(currentForm)
-    {
+    protocolValueChange(currentForm) {
         let parentForm = currentForm.parent.form
         let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
@@ -60,22 +60,21 @@ class AutoProvPolicyReg extends React.Component {
             if (form.uuid === parentForm.uuid) {
                 for (let j = 0; j < form.forms.length; j++) {
                     let outBoundRulesForm = form.forms[j]
-                    if (currentForm.value === 'icmp' && (outBoundRulesForm.field === fields.portRangeMin || outBoundRulesForm.field === fields.portRangeMax))
-                        {
-                            outBoundRulesForm.visible = false;
-                        }
-                        else
-                        {
-                            outBoundRulesForm.visible = true; 
-                        }
+                    if (currentForm.value === 'icmp' && (outBoundRulesForm.field === fields.portRangeMin || outBoundRulesForm.field === fields.portRangeMax)) {
+                        outBoundRulesForm.visible = false;
                     }
-                    break;
+                    else {
+                        outBoundRulesForm.visible = true;
+                    }
                 }
+                break;
             }
-
+        }
+        if (this._isMounted) {
             this.setState({
                 forms: forms
             })
+        }
     }
 
     onValueChange = (currentForm) => {
@@ -87,25 +86,23 @@ class AutoProvPolicyReg extends React.Component {
                     form.visible = !currentForm.value;
                 }
             }
-            this.setState({
-                forms: forms
-            })
+            if (this._isMounted) {
+                this.setState({
+                    forms: forms
+                })
+            }
         }
 
-        if(currentForm.field === fields.protocol)
-        {
+        if (currentForm.field === fields.protocol) {
             this.protocolValueChange(currentForm)
         }
     }
 
-    getOutboundRulesCount = ()=>
-    {
+    getOutboundRulesCount = () => {
         let count = 0;
         let forms = this.state.forms;
-        for(let i=0; i<forms.length;i++)
-        {
-            if(forms[i].field === fields.outboundSecurityRules)
-            {
+        for (let i = 0; i < forms.length; i++) {
+            if (forms[i].field === fields.outboundSecurityRules) {
                 count++;
             }
         }
@@ -117,13 +114,14 @@ class AutoProvPolicyReg extends React.Component {
             if (form.parent) {
                 let updateForms = Object.assign([], this.state.forms)
                 updateForms.splice(form.parent.id, 1);
-                this.setState({
-                    forms: updateForms
-                })
+                if (this._isMounted) {
+                    this.setState({
+                        forms: updateForms
+                    })
+                }
             }
         }
-        else
-        {
+        else {
             this.props.handleAlertInfo('error', 'Enable Full Isolation to disable all rules')
         }
     }
@@ -136,37 +134,35 @@ class AutoProvPolicyReg extends React.Component {
         { icon: 'delete', formType: 'IconButton', visible: true, style: { color: 'white', top: 15 }, width: 1, onClick: this.removeRulesForm }
     ])
 
-    getOutboundSecurityForm = (outBoundRules)=>(
-        { uuid: uuid(), field: fields.outboundSecurityRules, formType: 'MultiForm', forms: outBoundRules, width:3, visible: true }
+    getOutboundSecurityForm = (outBoundRules) => (
+        { uuid: uuid(), field: fields.outboundSecurityRules, formType: 'MultiForm', forms: outBoundRules, width: 3, visible: true }
     )
 
     getForms = () => ([
-        { label: `${this.isUpdate ? 'Update' : 'Create'} Privacy Policy`, formType: MAIN_HEADER, visible: true },
+        { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
         { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region' },
         { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
-        { field: fields.privacyPolicyName, label: 'Privacy Policy Name', formType: 'Input', placeholder: 'Enter Privacy Policy Name', rules: { required: true }, visible: true },
+        { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: 'Input', placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: 'Checkbox', visible: true, value: false },
         { label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true },
     ])
 
     addRulesForm = (e, form) => {
-        this.setState(prevState => ({ forms: [...prevState.forms, this.getOutboundSecurityForm(this.getOutBoundRules())] }))
+        if (this._isMounted) {
+            this.setState(prevState => ({ forms: [...prevState.forms, this.getOutboundSecurityForm(this.getOutBoundRules())] }))
+        }
     }
-    
+
     /***
      * Map values from form to field
      * ***/
-    formattedData = ()=>
-    {
+    formattedData = () => {
         let data = {};
         let forms = this.state.forms;
-        for(let i=0;i<forms.length;i++)
-        {
+        for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if(form.field)
-            {
-                if(form.forms)
-                {
+            if (form.field) {
+                if (form.forms) {
                     data[form.uuid] = {};
                     let subForms = form.forms
                     for (let j = 0; j < subForms.length; j++) {
@@ -175,8 +171,7 @@ class AutoProvPolicyReg extends React.Component {
                     }
 
                 }
-                else
-                {
+                else {
                     data[form.field] = form.value;
                 }
             }
@@ -184,8 +179,22 @@ class AutoProvPolicyReg extends React.Component {
         return data
     }
 
+    onUpdateResponse = (mcRequest) => {
+        this.props.handleLoadingSpinner(false)
+        if (mcRequest) {
+            let responseData = undefined;
+            let request = mcRequest.request;
+            if (mcRequest.response && mcRequest.response.data) {
+                responseData = mcRequest.response.data;
+            }
+            let labels = [{ label: 'Trust Policy', field: fields.trustPolicyName }]
+            if (this._isMounted) {
+                this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+            }
+        }
+    }
+
     onCreate = async (data) => {
-        //let data = this.formattedData()
         if (data) {
             let outboundSecurityRules = [];
             if (!data[fields.fullIsolation]) {
@@ -206,27 +215,42 @@ class AutoProvPolicyReg extends React.Component {
                     }
                 }
             }
-            if(outboundSecurityRules.length > 0)
-            {
+            if (outboundSecurityRules.length > 0) {
                 data[fields.outboundSecurityRules] = outboundSecurityRules;
             }
-            let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updatePrivacyPolicy(data) : createPrivacyPolicy(data))
-            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                let msg = this.isUpdate ? 'updated' : 'created'
-                let policyName = mcRequest.request.data.privacypolicy.key.name;
-                this.props.handleAlertInfo('success', `Privacy Policy ${policyName} ${msg} successfully`)
-                this.props.onClose(true)
+            if (this.isUpdate) {
+                this.props.handleLoadingSpinner(true)
+                updateTrustPolicy(this, data, this.onUpdateResponse)
+            }
+            else {
+                let mcRequest = await serverData.sendRequest(this, createTrustPolicy(data))
+                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                    let policyName = mcRequest.request.data.trustpolicy.key.name;
+                    this.props.handleAlertInfo('success', `Trust Policy ${policyName} created successfully`)
+                    this.props.onClose(true)
+                }
             }
         }
     }
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
-            forms: this.state.forms
-        })
+        if (this._isMounted) {
+            this.setState({
+                forms: this.state.forms
+            })
+        }
     }
-    
+
+    stepperClose = () => {
+        if (this._isMounted) {
+            this.setState({
+                stepsArray: []
+            })
+        }
+        this.props.onClose(true)
+    }
+
 
     render() {
         return (
@@ -238,6 +262,7 @@ class AutoProvPolicyReg extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
         )
     }
@@ -246,12 +271,12 @@ class AutoProvPolicyReg extends React.Component {
         this.props.onClose(false)
     }
 
-   
+
 
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
-        if (field === fields.organizationName || field === fields.region || field === fields.privacyPolicyName) {
+        if (field === fields.organizationName || field === fields.region || field === fields.trustPolicyName) {
             rules.disabled = true;
         }
     }
@@ -274,19 +299,21 @@ class AutoProvPolicyReg extends React.Component {
                 }
                 if (data) {
 
-                    if(form.field === fields.fullIsolation)
-                    {
+                    if (form.field === fields.fullIsolation) {
                         form.value = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? false : true
                     }
-                    else
-                    {
-                        form.value = data[form.field]
+                    else {
+                        if (form.field === fields.organizationName) {
+                            form.value = data[fields.operatorName]
+                        }
+                        else {
+                            form.value = data[form.field]
+                        }
                     }
                     this.disableFields(form)
                 }
             }
-            else if(form.label)
-            {
+            else if (form.label) {
                 if (data) {
                     if (form.label === 'Outbound Security Rules') {
                         form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? true : false
@@ -300,12 +327,12 @@ class AutoProvPolicyReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.getForms();
         forms.push(
-            { label: `${this.isUpdate ? 'Update' : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate : true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
 
         if (data) {
             let organization = {}
-            organization[fields.organizationName] = data[fields.organizationName]
+            organization[fields.organizationName] = data[fields.operatorName]
             this.organizationList = [organization]
 
             this.loadData(forms, data)
@@ -317,8 +344,7 @@ class AutoProvPolicyReg extends React.Component {
                     for (let j = 0; j < outboundRules.length; j++) {
                         let outboundRule = outboundRules[j];
                         outboundRule.value = OutboundSecurityRule[outboundRule.field]
-                        if(outboundRule.field === fields.protocol)
-                        {
+                        if (outboundRule.field === fields.protocol) {
                             isICMP = outboundRule.value === 'icmp' ? true : false;
                         }
                         if ((outboundRule.field === fields.portRangeMin || outboundRule.field === fields.portRangeMax) && isICMP) {
@@ -342,8 +368,13 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data)
-        this.props.handleViewMode( HELP_PRIVACY_POLICY_REG )
+        this.props.handleViewMode(HELP_TRUST_POLICY_REG)
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 
@@ -355,4 +386,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AutoProvPolicyReg));
+export default withRouter(connect(null, mapDispatchProps)(TrustPolicyReg));
