@@ -552,16 +552,10 @@ class CloudletReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
-            if (this.props.isManifest) {
+            if (this.props.manifestData) {
                 this.setState({ showCloudletManifest: true })
-                let cloudletManifest = await getCloudletManifest(this, data)
-                this.cloudletData = data
-                if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
-                    this.setState({ cloudletManifest: cloudletManifest.response.data })
-                }
-                else {
-                    this.props.onClose(true)
-                }
+                this.cloudletData = data   
+                this.setState({ cloudletManifest: this.props.manifestData })
             }
             else {
                 await this.loadDefaultData(forms, data)

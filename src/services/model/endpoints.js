@@ -89,6 +89,7 @@ export const EVENTS_FIND = 'events/find'
 export const EVENTS_SHOW = 'events/show'
 export const SHOW_ALERT = 'ShowAlert'
 export const PUBLIC_CONFIG = 'publicconfig'
+export const REVOKE_ACCESS_KEY = 'RevokeAccessKey'
 
 export const getPath = (request) => {
     switch (request.method) {
@@ -97,6 +98,7 @@ export const getPath = (request) => {
         case SHOW_APP_INST:
         case SHOW_CLUSTER_INST:
         case SHOW_ALERT:
+        case REVOKE_ACCESS_KEY:
             return `/api/v1/auth/ctrl/${request.method}`;
         case SHOW_ORG_CLOUDLET_INFO:
         case SHOW_ORG_CLOUDLET:

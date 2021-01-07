@@ -21,6 +21,8 @@ const DialogActions = withStyles(theme => ({
 
 const MexMessageDialog = (props) => {
     let message = props.messageInfo.message;
+    let action = props.messageInfo.action;
+    let data = props.messageInfo.data;
     return (
         message ?
             <Dialog open={message.length > 0}>
@@ -28,16 +30,16 @@ const MexMessageDialog = (props) => {
                     <Typography style={{ color: '#FFF' }}>
                         {message}
                     </Typography>
-                    {props.messageInfo.action.dialogNote ?
+                    {action && action.dialogNote ?
                         <Typography style={{ color: '#FFC107', marginTop: 20, fontSize: 13 }}>
-                            {props.messageInfo.action.dialogNote(props.messageInfo.data)}
+                            {action.dialogNote(props.messageInfo.data)}
                         </Typography> : null}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => { props.onClick(false) }} style={{color:'#D3D3D3'}}>
                         NO
                     </Button>
-                    <Button onClick={() => { props.onClick(true) }} style={{color:'#76ff03'}}>
+                    <Button onClick={() => { props.onClick(true, data) }} style={{color:'#76ff03'}}>
                         YES
                     </Button>
                 </DialogActions>
