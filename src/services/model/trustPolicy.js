@@ -2,6 +2,7 @@ import uuid from 'uuid'
 import * as formatter from './format'
 import * as serverData from './serverData'
 import { SHOW_TRUST_POLICY, UPDATE_TRUST_POLICY, CREATE_TRUST_POLICY, DELETE_TRUST_POLICY, SHOW_APP } from './endPointTypes'
+import { SHOW_CLOUDLET } from './endpoints';
 export const fields = formatter.fields;
 
 export const outboundSecurityRulesKeys = [
@@ -27,7 +28,7 @@ const getKey = (data) => {
   return {
     region: data[fields.region],
     trustpolicy: {
-      key: { organization: data[fields.organizationName], name: data[fields.trustPolicyName] },
+      key: { organization: data[fields.operatorName] ? data[fields.operatorName] : data[fields.organizationName], name: data[fields.trustPolicyName] },
       outbound_security_rules: data[fields.outboundSecurityRules]
     }
   }
@@ -51,12 +52,6 @@ export const getTrustPolicyList = async (self, data) => {
   return await serverData.showDataFromServer(self, showTrustPolicies(data))
 }
 
-// export const updateTrustPolicy = (data) => {
-//   let requestData = getKey(data)
-//   requestData.trustpolicy.fields = ['3', '3.1', '3.2', '3.3', '3.4']
-//   return { method: UPDATE_TRUST_POLICY, data: requestData }
-// }
-
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
   requestData.trustpolicy.fields = ['3', '3.1', '3.2', '3.3', '3.4']
@@ -77,29 +72,29 @@ export const deleteTrustPolicy = (data) => {
 
 export const multiDataRequest = (keys, mcRequestList) => {
   let trustPolicyList = [];
-  let appList = [];
+  let cloudletList = [];
   for (let i = 0; i < mcRequestList.length; i++) {
     let mcRequest = mcRequestList[i];
     let request = mcRequest.request;
     if (request.method === SHOW_TRUST_POLICY) {
       trustPolicyList = mcRequest.response.data
     }
-    else if (request.method === SHOW_APP) {
-      appList = mcRequest.response.data
+    else if (request.method === SHOW_CLOUDLET) {
+      cloudletList = mcRequest.response.data
     }
   }
   if (trustPolicyList && trustPolicyList.length > 0) {
     for (let i = 0; i < trustPolicyList.length; i++) {
       let trustPolicy = trustPolicyList[i]
-      let apps = []
-      for (let j = 0; j < appList.length; j++) {
-        let app = appList[j]
-        if (trustPolicy[fields.trustPolicyName] === app[fields.trustPolicyName]) {
-          apps.push(app[fields.appName])
+      let cloudlets = []
+      for (let j = 0; j < cloudletList.length; j++) {
+        let cloudlet = cloudletList[j]
+        if (trustPolicy[fields.trustPolicyName] === cloudlet[fields.trustPolicyName]) {
+          cloudlets.push(cloudlet[fields.cloudletName])
         }
       }
-      if (apps.length > 0) {
-        trustPolicy[fields.apps] = apps
+      if (cloudlets.length > 0) {
+        trustPolicy[fields.cloudlets] = cloudlets
       }
     }
   }

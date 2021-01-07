@@ -54,6 +54,7 @@ export const getKey = (data, isCreate) => {
 
     if (isCreate) {
         app.scale_with_cluster = data[fields.scaleWithCluster]
+        app.trusted = data[fields.trusted]
         app.deployment = data[fields.deployment]
         app.image_type = constant.imageType(data[fields.imageType])
         if (data[fields.imagePath]) {
@@ -88,9 +89,6 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.autoPolicyName]) {
             app.auto_prov_policy = data[fields.autoPolicyName]
-        }
-        if (data[fields.trusted]) {
-            app.trusted = data[fields.trusted]
         }
         if (data[fields.accessType]) {
             app.access_type = constant.accessType(data[fields.accessType])
@@ -199,7 +197,7 @@ export const deleteApp = (data) => {
 
 
 const customData = (value) => {
-    value[fields.trusted] = value[fields.trusted] ? constant.YES : constant.NO
+    value[fields.trusted] = value[fields.trusted] ? value[fields.trusted] : false
     value[fields.accessType] = constant.accessType(value[fields.accessType])
     value[fields.imageType] = constant.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'

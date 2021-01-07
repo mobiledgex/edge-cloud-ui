@@ -7,7 +7,7 @@ import * as actions from '../../../../actions';
 
 import TrustPolicyReg from './trustPolicyReg'
 import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/model/trustPolicy';
-import { showApps } from '../../../../services/model/app';
+import { showCloudlets } from '../../../../services/model/cloudlet';
 import {HELP_TRUST_POLICY} from "../../../../tutorial";
 class TrustPolicy extends React.Component {
     constructor(props) {
@@ -35,8 +35,10 @@ class TrustPolicy extends React.Component {
     {
         if(!success, errorInfo)
         {
-            if (errorInfo.message === 'Policy in use by App') {
-                this.props.handleAlertInfo('error', `Policy in use by App${data[fields.apps].length > 1 ? 's' : ''} ${data[fields.apps]}`)
+            if (errorInfo.message === 'Policy in use by Cloudlet') {
+                this.props.handleAlertInfo('error', `Policy in use by Cloudlet${data[fields.cloudlets].length > 1 ? 's' : ''} ${data[fields.cloudlets].map(cloudlet=>{
+                    return ' ' + cloudlet
+                })}`)
             }
         }
     }
@@ -57,7 +59,7 @@ class TrustPolicy extends React.Component {
     requestInfo = () => {
         return ({
             headerLabel: 'Trust Policy',
-            requestType: [showTrustPolicies, showApps],
+            requestType: [showTrustPolicies, showCloudlets],
             isRegion: true,
             nameField: fields.trustPolicyName,
             sortBy: [fields.region, fields.trustPolicyName],
