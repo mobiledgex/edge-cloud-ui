@@ -16,7 +16,7 @@ import * as ClientMetrics from './clientMetrics';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
 import * as AutoProvPolicy from './autoProvisioningPolicy';
-import * as PrivacyPolicy from './privacyPolicy';
+import * as TrustPolicy from './trustPolicy';
 import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
@@ -87,10 +87,10 @@ export const UPDATE_AUTO_PROV_POLICY = "UpdateAutoProvPolicy";
 export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
 export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
 export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
-export const SHOW_PRIVACY_POLICY = "ShowPrivacyPolicy";
-export const UPDATE_PRIVACY_POLICY = "UpdatePrivacyPolicy";
-export const CREATE_PRIVACY_POLICY = "CreatePrivacyPolicy";
-export const DELETE_PRIVACY_POLICY = "DeletePrivacyPolicy";
+export const SHOW_TRUST_POLICY = "ShowTrustPolicy";
+export const UPDATE_TRUST_POLICY = "UpdateTrustPolicy";
+export const CREATE_TRUST_POLICY = "CreateTrustPolicy";
+export const DELETE_TRUST_POLICY = "DeleteTrustPolicy";
 export const GET_CLOUDLET_MANIFEST = "GetCloudletManifest";
 export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
 export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
@@ -188,10 +188,10 @@ export function getPath(request) {
         case DELETE_AUTO_PROV_POLICY:
         case ADD_AUTO_PROV_POLICY_CLOUDLET:
         case REMOVE_AUTO_PROV_POLICY_CLOUDLET:
-        case SHOW_PRIVACY_POLICY:
-        case UPDATE_PRIVACY_POLICY:
-        case CREATE_PRIVACY_POLICY:
-        case DELETE_PRIVACY_POLICY:
+        case SHOW_TRUST_POLICY:
+        case UPDATE_TRUST_POLICY:
+        case CREATE_TRUST_POLICY:
+        case DELETE_TRUST_POLICY:
         case SHOW_AUTO_SCALE_POLICY:
         case CREATE_AUTO_SCALE_POLICY:
         case UPDATE_AUTO_SCALE_POLICY:
@@ -257,8 +257,8 @@ export function formatData(request, response) {
         case SHOW_AUTO_PROV_POLICY:
             data = AutoProvPolicy.getData(response, request.data)
             break;
-        case SHOW_PRIVACY_POLICY:
-            data = PrivacyPolicy.getData(response, request.data)
+        case SHOW_TRUST_POLICY:
+            data = TrustPolicy.getData(response, request.data)
             break;
         case SHOW_AUTO_SCALE_POLICY:
             data = AutoScalePolicy.getData(response, request.data)

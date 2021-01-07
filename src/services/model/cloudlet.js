@@ -40,6 +40,9 @@ export const getKey = (data, isCreate) => {
         if (data[fields.envVars]) {
             cloudlet.env_var = data[fields.envVars]
         }
+        if (data[fields.trustPolicyName]) {
+            cloudlet.trust_policy = data[fields.trustPolicyName]
+        }
 
         if (data[fields.maintenanceState]) {
             cloudlet.maintenance_state = constant.MaintenanceState(data[fields.maintenanceState])
@@ -254,6 +257,7 @@ export const keys = () => ([
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
+    { field: fields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },

@@ -25,6 +25,7 @@ class AppInstList extends React.Component {
             openTerminal: false,
             stepsArray: []
         }
+        this._isMounted = false;
         this.action = '';
         this.data = {};
         this.keys = keys();
@@ -32,11 +33,15 @@ class AppInstList extends React.Component {
     }
 
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        if (this._isMounted) {
+            this.setState({ currentView: null })
+        }
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
+        if (this._isMounted) {
+            this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
+        }
 
     }
 
@@ -60,7 +65,9 @@ class AppInstList extends React.Component {
     }
 
     onTerminal = (action, data) => {
-        this.setState({ terminalData: data, openTerminal: true })
+        if (this._isMounted) {
+            this.setState({ terminalData: data, openTerminal: true })
+        }
     }
 
     onPowerStateVisible = (data) => {
@@ -135,7 +142,7 @@ class AppInstList extends React.Component {
         return (
             isDetailView ? data :
                 data[fields.updateAvailable] ?
-                    <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br/><br/><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
+                    <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br /><br /><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
                         <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{data[fields.region]}  </label>
                     </Tooltip> :
                     <label>{data[fields.region]}</label>
@@ -190,7 +197,12 @@ class AppInstList extends React.Component {
      * ** */
 
     componentDidMount() {
+        this._isMounted = true
         this.customizedData()
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 
     render() {

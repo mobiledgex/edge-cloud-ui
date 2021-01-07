@@ -21,12 +21,12 @@ export const HELP_CLOUDLET_POOL_REG_1 = 'CloudletPoolReg_1'
 export const HELP_CLOUDLET_POOL_REG_2 = 'CloudletPoolReg_2'
 export const HELP_CLOUDLET_POOL_REG_3 = 'CloudletPoolReg_3'
 export const HELP_POLICY_LIST = 'policyList'
-export const HELP_PRIVACY_POLICY = 'privacypolicy'
+export const HELP_TRUST_POLICY = 'trustpolicy'
 export const HELP_SCALE_POLICY = 'autoscalepolicy'
 export const HELP_SCALE_POLICY_REG = 'autoscalepolicyreg'
 export const HELP_AUTO_PROV_REG_1 = 'autoProvReg_1'
 export const HELP_AUTO_PROV_REG_2 = 'autoProvReg_2'
-export const HELP_PRIVACY_POLICY_REG = 'privacyPolicyReg'
+export const HELP_TRUST_POLICY_REG = 'trustPolicyReg'
 export const HELP_MONITORING = 'monitoringAdmin'
 export const HELP_USER_ROLES = 'userRoles'
 export const HELP_ALERTS = 'alerts'
@@ -168,31 +168,31 @@ const autoScalePolicy = (type, isDoc) => {
     }
 }
 
-const privacyPolicy = (type, isDoc) => {
+const trustPolicy = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
-                case HELP_PRIVACY_POLICY:
+                case HELP_TRUST_POLICY:
                     return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#privacy-policy'
-                case HELP_PRIVACY_POLICY_REG:
+                case HELP_TRUST_POLICY_REG:
                     return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-a-privacy-policy'
             }
         }
     }
     else {
         switch (type) {
-            case HELP_PRIVACY_POLICY:
+            case HELP_TRUST_POLICY:
                 return [
                     {
                         element: '.createAppInst0',
-                        intro: 'This is Privacy Policy page'
+                        intro: 'This is Trust Policy page'
                     },
                     {
                         element: '.buttonCreate',
                         intro: 'Click “+” button to add new policy.'
                     },
                 ]
-            case HELP_PRIVACY_POLICY_REG:
+            case HELP_TRUST_POLICY_REG:
                 return [
                     {
                         element: '.formRow-1',
@@ -204,7 +204,7 @@ const privacyPolicy = (type, isDoc) => {
                     },
                     {
                         element: '.formRow-3',
-                        intro: 'Enter Privacy Policy Name.',
+                        intro: 'Enter Trust Policy Name.',
                     },
                     {
                         element: '.formRow-4',
@@ -964,9 +964,9 @@ export const tutor = (type, isDoc) => {
         case HELP_AUTO_PROV_REG_1:
         case HELP_AUTO_PROV_REG_2:
             return policy(type, isDoc)
-        case HELP_PRIVACY_POLICY:
-        case HELP_PRIVACY_POLICY_REG:
-            return privacyPolicy(type, isDoc)
+        case HELP_TRUST_POLICY:
+        case HELP_TRUST_POLICY_REG:
+            return trustPolicy(type, isDoc)
         case HELP_MONITORING:
             return monitoring(type, isDoc)
         case HELP_USER_ROLES:

@@ -18,7 +18,6 @@ export const keys = () => ([
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true },
-  { field: fields.privacyPolicyName, serverField: 'privacy_policy', label: 'Privacy Policy', visible: false },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
@@ -56,9 +55,6 @@ export const getKey = (data, isCreate) => {
   appinst.key = getAppInstanceKey(data)
 
   if (isCreate) {
-    if (data[fields.privacyPolicyName]) {
-      appinst.privacy_policy = data[fields.privacyPolicyName]
-    }
 
     if (data[fields.configs]) {
       appinst.configs = data[fields.configs]
@@ -135,6 +131,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             appInst[fields.autoPolicyName] = app[fields.autoPolicyName] ? app[fields.autoPolicyName] : 'NA';
             appInst[fields.deployment] = app[fields.deployment];
             appInst[fields.accessType] = app[fields.accessType];
+            appInst[fields.trusted] = app[fields.trusted];
             appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
             appInst[fields.appRevision] = app[fields.revision]
             break;
