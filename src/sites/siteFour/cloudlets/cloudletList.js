@@ -1,6 +1,7 @@
 import React from 'react';
 import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
+import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 
@@ -13,12 +14,15 @@ import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
+import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null
+            currentView: null,
+            dialogMessageInfo:{}
         }
         this._isMounted = false;
         this.action = '';
@@ -39,10 +43,27 @@ class CloudletList extends React.Component {
         }
     }
 
-    onCloudletManifest = (action, data) => {
-        if (this._isMounted) {
-            this.setState({ currentView: <ClouldletReg data={data} isManifest={true} onClose={this.onRegClose} /> });
+    onCloudletManifest = async (action, data) => {
+        let cloudletManifest = await getCloudletManifest(this, data)
+        if (cloudletManifest) {
+            if (cloudletManifest.response && cloudletManifest.response.data) {
+                if (this._isMounted) {
+                    this.setState({ currentView: <ClouldletReg data={data} manifestData={cloudletManifest.response.data} onClose={this.onRegClose} /> });
+                }
+            }
+            else if (cloudletManifest.error && cloudletManifest.error.response) {
+                let response = cloudletManifest.error.response
+                if (response.data && response.data.message) {
+                    let message = response.data.message
+                    if (message === 'Cloudlet has access key registered, please revoke the current access key first so a new one can be generated for the manifest') {
+                        let message= 'Cloudlet has access key registered, click on yes if you would like to revoke the current access key, so a new one can be generated for the manifest'
+                        this.setState({ dialogMessageInfo: { message, data:data } })
+                    }
+                }
+
+            }
         }
+
     }
 
     onCloudletManifestVisible = (data) => {
@@ -176,10 +197,25 @@ class CloudletList extends React.Component {
         this.customizedData()
     }
 
+    onDialogClose = async (valid, data)=>{
+        this.setState({ dialogMessageInfo: {} })
+        if(valid)
+        {
+            let mc = await revokeAccessKey(this, data)
+            if(mc && mc.response && mc.response.status === 200)
+            {
+                this.onCloudletManifest(undefined, data)
+            }
+        }
+    }
+
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest}  groupActionMenu={this.groupActionMenu}/>
+                <React.Fragment>
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose}/>
+                </React.Fragment>
         )
     }
 
@@ -188,4 +224,10 @@ class CloudletList extends React.Component {
     }
 };
 
-export default withRouter(connect(null, null)(CloudletList));
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+    };
+};
+
+export default withRouter(connect(null, mapDispatchProps)(CloudletList));

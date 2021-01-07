@@ -111,6 +111,7 @@ export const ALERT_SHOW_RECEIVER = 'alertreceiver/show'
 export const ALERT_CREATE_RECEIVER = 'alertreceiver/create'
 export const ALERT_DELETE_RECEIVER = 'alertreceiver/delete'
 export const PUBLIC_CONFIG = 'publicconfig'
+export const REVOKE_ACCESS_KEY = 'RevokeAccessKey'
 
 export function getPath(request) {
     switch (request.method) {
@@ -202,6 +203,7 @@ export function getPath(request) {
         case GET_CLOUDLET_MANIFEST:
         case SHOW_APP_INST_CLIENT:
         case SHOW_ALERT:
+        case REVOKE_ACCESS_KEY:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
