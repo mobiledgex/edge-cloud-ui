@@ -173,9 +173,9 @@ const trustPolicy = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
                 case HELP_TRUST_POLICY:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#trust-policy'
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#privacy-policy'
                 case HELP_TRUST_POLICY_REG:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-a-trust-policy'
+                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-a-privacy-policy'
             }
         }
     }
