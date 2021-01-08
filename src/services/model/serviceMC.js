@@ -133,7 +133,7 @@ export function sendWSRequest(request, callback) {
         sockets.map((item, i) => {
             if (item.uuid === request.uuid) {
                 if (item.isClosed === false && evt.code === 1000) {
-                    callback({ request: request, wsObj: ws })
+                    callback({ request: request, wsObj: ws, close:true })
                 }
                 sockets.splice(i, 1)
             }

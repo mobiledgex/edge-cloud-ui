@@ -16,12 +16,24 @@ export const getKey = (data, isCreate) => {
     let cloudlet = {}
     cloudlet.key = getCloudletKey(data)
     if (isCreate) {
-        cloudlet.location = data[fields.cloudletLocation]
-        cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])
-        cloudlet.physical_name = data[fields.physicalName]
-        cloudlet.ip_support = constant.IPSupport(data[fields.ipSupport])
-        cloudlet.platform_type = constant.PlatformType(data[fields.platformType])
-        cloudlet.infra_api_access = constant.infraApiAccess(data[fields.infraApiAccess])
+        if (data[fields.cloudletLocation]) {
+            cloudlet.location = data[fields.cloudletLocation]
+        }
+        if (data[fields.numDynamicIPs]) {
+            cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])
+        }
+        if (data[fields.physicalName]) {
+            cloudlet.physical_name = data[fields.physicalName]
+        }
+        if (data[fields.ipSupport]) {
+            cloudlet.ip_support = constant.IPSupport(data[fields.ipSupport])
+        }
+        if (data[fields.platformType]) {
+            cloudlet.platform_type = constant.PlatformType(data[fields.platformType])
+        }
+        if (data[fields.infraApiAccess]) {
+            cloudlet.infra_api_access = constant.infraApiAccess(data[fields.infraApiAccess])
+        }
         let accessvars = {}
         if (data[fields.openRCData]) {
             accessvars.OPENRC_DATA = data[fields.openRCData]
@@ -189,7 +201,7 @@ export const showCloudlets = (data, specific) => {
 }
 
 export const showOrgCloudlets = (data) => {
-    return { method: SHOW_ORG_CLOUDLET, data: data,  keys: keys() }
+    return { method: SHOW_ORG_CLOUDLET, data: data, keys: keys() }
 }
 
 export const createCloudlet = (self, data, callback) => {
@@ -257,7 +269,7 @@ export const keys = () => ([
     { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
-    { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON, detailView: false  },
+    { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON, detailView: false },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },

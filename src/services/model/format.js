@@ -436,3 +436,26 @@ export const updateFields = (self, forms, data, orgData) => {
     }
     return updateFields
 }
+
+export const updateFieldData = (self, forms, data, orgData) => {
+    let updateData = {}
+    let updateFields = []
+    for (let i = 0; i < forms.length; i++) {
+        let form = forms[i]
+        if(form.key)
+        {
+            updateData[form.field] = data[form.field] 
+        }
+        else if (form.update && form.updateId) {
+            if (!compareObjects(data[form.field], orgData[form.field])) {
+                updateData[form.field] = data[form.field]
+                updateFields = [...updateFields, ...form.updateId]
+            }
+        }
+    }
+    if (updateFields.length === 0) {
+        self.props.handleAlertInfo('error', 'Nothing to update')
+    }
+    updateData.fields = updateFields
+    return updateData
+}
