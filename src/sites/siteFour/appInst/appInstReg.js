@@ -148,10 +148,7 @@ class ClusterInstReg extends React.Component {
     updateIPAccess = (form, data) => {
         if (data) {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                form.visible = true
-                form.rules.disabled = true
-                form.value = constant.IP_ACCESS_DEDICATED
-                form.options = [constant.IP_ACCESS_DEDICATED]
+                form.visible = false
             }
             else {
                 form.options = data[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
