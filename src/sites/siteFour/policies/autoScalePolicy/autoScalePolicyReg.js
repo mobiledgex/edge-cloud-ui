@@ -5,12 +5,12 @@ import MexForms, { MAIN_HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import {fields, getOrganization} from '../../../../services/model/format';
+import { fields, getOrganization, updateFieldData } from '../../../../services/model/format';
 //model
-import {getOrganizationList} from '../../../../services/model/organization';
-import {updateAutoScalePolicy, createAutoScalePolicy} from '../../../../services/model/autoScalePolicy';
+import { getOrganizationList } from '../../../../services/model/organization';
+import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import * as serverData from '../../../../services/model/serverData';
-import {HELP_SCALE_POLICY_REG} from "../../../../tutorial";
+import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -18,22 +18,19 @@ class AutoScalePolicyReg extends React.Component {
         this.state = {
             forms: []
         }
-        this.isUpdate  = this.props.action === 'Update'
+        this.isUpdate = this.props.action === 'Update'
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
     }
 
-    validateNodes=(currentForm)=>
-    {
+    validateNodes = (currentForm) => {
         if (currentForm.value && currentForm.value.length > 0) {
             let value = parseInt(currentForm.value)
-            if(value <= 0)
-            {
-                currentForm.error = 'Node must be greater than 0' 
-                return false; 
+            if (value <= 0) {
+                currentForm.error = 'Node must be greater than 0'
+                return false;
             }
-            else if(currentForm.field === fields.maximumNodes)
-            {
+            else if (currentForm.field === fields.maximumNodes) {
                 let forms = this.state.forms
                 for (let i = 0; i < forms.length; i++) {
                     let form = forms[i]
@@ -52,17 +49,14 @@ class AutoScalePolicyReg extends React.Component {
         return true;
     }
 
-    validateScaleThreshold=(currentForm)=>
-    {
+    validateScaleThreshold = (currentForm) => {
         if (currentForm.value && currentForm.value.length > 0) {
             let value = parseInt(currentForm.value)
-            if(value <= 0 || value > 100)
-            {
-                currentForm.error = 'Scale threshold must be between 1 and 100' 
-                return false; 
+            if (value <= 0 || value > 100) {
+                currentForm.error = 'Scale threshold must be between 1 and 100'
+                return false;
             }
-            else if(currentForm.field === fields.scaleUpCPUThreshold)
-            {
+            else if (currentForm.field === fields.scaleUpCPUThreshold) {
                 let forms = this.state.forms
                 for (let i = 0; i < forms.length; i++) {
                     let form = forms[i]
@@ -83,7 +77,7 @@ class AutoScalePolicyReg extends React.Component {
 
 
     checkForms = (form, forms, isInit) => {
-       
+
     }
 
     onValueChange = (form) => {
@@ -91,23 +85,32 @@ class AutoScalePolicyReg extends React.Component {
         this.checkForms(form, forms)
     }
 
-    
+
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy' },
-        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the Organization that this policy belongs to' },
-        { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: 'Input', placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name' },
-        { field: fields.minimumNodes, label: 'Minimum Nodes', formType: 'Input', placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: true, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
-        { field: fields.maximumNodes, label: 'Maximum Nodes', formType: 'Input', placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: true, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
-        { field: fields.scaleDownCPUThreshold, label: 'Scale Down CPU Threshold', formType: 'Input', placeholder: 'Enter Scale Down CPU Threshold', rules: { type: 'number', required: true, onBlur: true }, unit: '%', visible: true, update: true, dataValidateFunc: this.validateScaleThreshold, tip: 'Scale down cpu threshold (percentage 1 to 100)' },
-        { field: fields.scaleUpCPUThreshold, label: 'Scale Up CPU Threshold', formType: 'Input', placeholder: 'Enter Scale Up CPU Threshold', rules: { type: 'number', required: true, onBlur: true }, unit: '%', visible: true, update: true, dataValidateFunc: this.validateScaleThreshold, tip: 'Scale up cpu threshold (percentage 1 to 100)' },
-        { field: fields.triggerTime, label: 'Trigger Time', formType: 'Input', placeholder: 'Enter Trigger Time In Seconds', rules: { type: 'number', required: true }, unit: 'sec', visible: true, update: true, tip: 'The time that the sampled CPU threshold must be continuously met before triggering the auto-scale action. This is to prevent possible anomalies of CPU activity (or lack thereof) from triggering unwanted scale up/down actions, in the event that the anomaly activity occurs right when the CPU usage is sampled' },
+        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
+        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
+        { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: 'Input', placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
+        { field: fields.minimumNodes, label: 'Minimum Nodes', formType: 'Input', placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
+        { field: fields.maximumNodes, label: 'Maximum Nodes', formType: 'Input', placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['4'] }, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
+        { field: fields.scaleDownCPUThreshold, label: 'Scale Down CPU Threshold', formType: 'Input', placeholder: 'Enter Scale Down CPU Threshold', rules: { type: 'number', required: true, onBlur: true }, unit: '%', visible: true, update: { id: ['6'] }, dataValidateFunc: this.validateScaleThreshold, tip: 'Scale down cpu threshold (percentage 1 to 100)' },
+        { field: fields.scaleUpCPUThreshold, label: 'Scale Up CPU Threshold', formType: 'Input', placeholder: 'Enter Scale Up CPU Threshold', rules: { type: 'number', required: true, onBlur: true }, unit: '%', visible: true, update: { id: ['5'] }, dataValidateFunc: this.validateScaleThreshold, tip: 'Scale up cpu threshold (percentage 1 to 100)' },
+        { field: fields.triggerTime, label: 'Trigger Time', formType: 'Input', placeholder: 'Enter Trigger Time In Seconds', rules: { type: 'number', required: true }, unit: 'sec', visible: true, update: { id: ['7'] }, tip: 'The time that the sampled CPU threshold must be continuously met before triggering the auto-scale action. This is to prevent possible anomalies of CPU activity (or lack thereof) from triggering unwanted scale up/down actions, in the event that the anomaly activity occurs right when the CPU usage is sampled' },
     ])
 
-    
+
     onCreate = async (data) => {
         if (data) {
-            let mcRequest = await serverData.sendRequest(this, this.isUpdate ? updateAutoScalePolicy(data) : createAutoScalePolicy(data))
+            let mcRequest = undefined
+            if (this.isUpdate) {
+                let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
+                if (updateData.fields.length > 0) {
+                    mcRequest = await serverData.sendRequest(this, updateAutoScalePolicy(updateData))
+                }
+            }
+            else {
+                mcRequest = await serverData.sendRequest(this, createAutoScalePolicy(data))
+            }
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 let msg = this.isUpdate ? 'updated' : 'created'
                 this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
@@ -122,7 +125,7 @@ class AutoScalePolicyReg extends React.Component {
             forms: this.state.forms
         })
     }
-    
+
 
     render() {
         return (
@@ -130,7 +133,7 @@ class AutoScalePolicyReg extends React.Component {
                 <Grid style={{ display: 'flex' }}>
                     <Grid.Row>
                         <Grid.Column width={16}>
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -142,7 +145,7 @@ class AutoScalePolicyReg extends React.Component {
         this.props.onClose(false)
     }
 
-   
+
 
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
@@ -173,8 +176,7 @@ class AutoScalePolicyReg extends React.Component {
                     this.disableFields(form)
                 }
             }
-            else if(form.label)
-            {
+            else if (form.label) {
                 if (data) {
                     if (form.label === 'Outbound Security Rules') {
                         form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? true : false
@@ -188,7 +190,7 @@ class AutoScalePolicyReg extends React.Component {
     getFormData = async (data) => {
         let forms = this.getForms();
         forms.push(
-            { label: `${this.isUpdate ? 'Update' : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate : true },
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
 
         if (data) {
@@ -211,7 +213,7 @@ class AutoScalePolicyReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data)
-        this.props.handleViewMode( HELP_SCALE_POLICY_REG )
+        this.props.handleViewMode(HELP_SCALE_POLICY_REG)
     }
 };
 

@@ -94,7 +94,7 @@ const MexForms = (props) => {
         let rules = form.rules ? form.rules : {};
         let disabled = rules.disabled ? rules.disabled : false;
         if (props.isUpdate) {
-            disabled = form.update ? disabled : true;
+            disabled = form.update && (form.update.id || form.update.edit) ? disabled : true;
         }
         rules.disabled = disabled;
         form.rules = rules;

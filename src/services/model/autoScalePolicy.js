@@ -37,6 +37,9 @@ const getKey = (data, isCreate) => {
     if (data[fields.triggerTime]) {
       autoScalePolicy.trigger_time_sec = parseInt(data[fields.triggerTime])
     }
+    if (data[fields.fields]) {
+      autoScalePolicy.fields = data[fields.fields]
+    }
   }
 
   return {
@@ -65,7 +68,6 @@ export const getAutoScalePolicyList = async (self, data) => {
 
 export const updateAutoScalePolicy = (data) => {
   let requestData = getKey(data, true)
-  requestData.autoscalepolicy.fields = ['3', '4', '5', '6', '7']
   return { method: UPDATE_AUTO_SCALE_POLICY, data: requestData }
 }
 

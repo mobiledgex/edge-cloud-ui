@@ -7,7 +7,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, CHECKBOX, ICON_BUTTON, TEXT_ARE
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, getOrganization } from '../../../services/model/format';
+import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
 import { getOrgCloudletList, showOrgCloudlets } from '../../../services/model/cloudlet';
@@ -188,20 +188,22 @@ class ClusterInstReg extends React.Component {
                         form.value = undefined
                         return form
                     }
-                    else if (form.label === 'Configs') {
+                    else if (form.field === fields.configs) {
                         form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
                         return form
                     }
-                    else if (form.field === fields.configs) {
+                    else if (form.field === fields.configmulti) {
                         if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                             return form
                         }
                     }
                     else if (form.field === fields.operatorName) {
-                        this.cloudletList = this.cloudletList.filter(cloudlet => {
-                            return app[fields.trusted] ? cloudlet[fields.trustPolicyName] !== undefined : cloudlet[fields.trustPolicyName] === undefined
-                        })
-                        this.updateUI(form)
+                        if (!app[fields.trusted]) {
+                            this.cloudletList = this.cloudletList.filter(cloudlet => {
+                                return cloudlet[fields.trustPolicyName] === undefined
+                            })
+                            this.updateUI(form)
+                        }
                         return form
                     }
                     else {
@@ -223,12 +225,12 @@ class ClusterInstReg extends React.Component {
                         this.autoClusterValueChange(form, forms, true)
                         return form
                     }
-                    else if (form.field === fields.clusterName || form.label === 'Configs') {
+                    else if (form.field === fields.clusterName || form.field === fields.configs) {
                         form.visible = false
                         form.value = undefined
                         return form
                     }
-                    else if (form.field === fields.configs) {
+                    else if (form.field === fields.configmulti) {
                         //remove all configs
                     }
                     else {
@@ -315,13 +317,13 @@ class ClusterInstReg extends React.Component {
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 2 }, width: 9, visible: true, update: true },
-        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['envVarsYaml', 'helmCustomizationYaml'], update: true },
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 2 }, width: 9, visible: true, update: { edit: true } },
+        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['envVarsYaml', 'helmCustomizationYaml'], update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeConfigForm }
     ])
 
     getConfigForm = (form) => (
-        { uuid: uuid(), field: fields.configs, formType: 'MultiForm', forms: form, width: 3, visible: true }
+        { uuid: uuid(), field: fields.configmulti, formType: 'MultiForm', forms: form, width: 3, visible: true }
     )
 
     addConfigs = () => {
@@ -333,18 +335,18 @@ class ClusterInstReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} App Instances`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }] },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }] },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
+            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true } },
+            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
+            { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }], update: { key: true } },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false, update: true },
+            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false, update: { edit: true } },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', rules: { required: false }, visible: false },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false },
-            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }] },
-            { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, update: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false }
+            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }], update: { key: true } },
+            { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false, update: { id: ['27', '27.1', '27.2'] } }
         ]
     }
 
@@ -433,9 +435,12 @@ class ClusterInstReg extends React.Component {
                 data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
             }
             if (this.props.isUpdate) {
-                this.props.handleLoadingSpinner(true)
-                data[fields.clusterdeveloper] = this.clusterInstList[0][fields.clusterdeveloper]
-                updateAppInst(this, data, this.onCreateResponse)
+                let updateData = updateFieldData(this, forms, data, this.props.data)
+                if (updateData.fields.length > 0) {
+                    this.props.handleLoadingSpinner(true)
+                    updateData[fields.clusterdeveloper] = this.clusterInstList[0][fields.clusterdeveloper]
+                    updateAppInst(this, updateData, this.onCreateResponse)
+                }
             }
             else if (cloudlets && cloudlets.length > 0) {
                 for (let i = 0; i < cloudlets.length; i++) {

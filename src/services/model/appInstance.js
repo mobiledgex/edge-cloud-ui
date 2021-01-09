@@ -72,6 +72,10 @@ export const getKey = (data, isCreate) => {
       appinst.flavor = { name: data[fields.flavorName] }
     }
 
+    if (data[fields.fields]) {
+      appinst.fields = data[fields.fields]
+    }
+
   }
 
   return ({
@@ -177,7 +181,7 @@ export const showAppInsts = (data, isSpecific) => {
   return { method: SHOW_APP_INST, data: requestData, keys: keys() }
 }
 
-export const showOrgAppInsts = (data) =>{
+export const showOrgAppInsts = (data) => {
   let requestData = {}
   requestData.region = data.region
   requestData.appinst = { key: { app_key: { organization: data.org } } }
@@ -197,8 +201,6 @@ export const createAppInst = (self, data, callback) => {
 
 export const updateAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
-  let updateFields = ["27", '27.1', '27.2']
-  requestData.appinst.fields = updateFields
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }

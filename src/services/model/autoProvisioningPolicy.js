@@ -42,13 +42,12 @@ const getAutoProvCloudletKey = (data, isCreate) => {
   })
 }
 
-const getCloudletList = (data) => {
-  let cloudlets = data[fields.cloudlets]
+const getCloudletList = (cloudlets) => {
   let cloudletList = undefined
   if (cloudlets && cloudlets.length > 0) {
     cloudletList = []
     for (let i = 0; i < cloudlets.length; i++) {
-      cloudletList.push({ key: getCloudletKey(JSON.parse(cloudlets[i])) })
+      cloudletList.push({ key: getCloudletKey(cloudlets[i]) })
     }
   }
   return cloudletList
@@ -65,7 +64,7 @@ const getAutoProvKey = (data, isCreate) => {
     autoProvPolicy.min_active_instances = data[fields.minActiveInstances] ? parseInt(data[fields.minActiveInstances]) : undefined
     autoProvPolicy.max_instances = data[fields.maxInstances] ? parseInt(data[fields.maxInstances]) : undefined
     autoProvPolicy.fields = data[fields.fields] ? data[fields.fields] : undefined
-    autoProvPolicy.cloudlets = getCloudletList(data)
+    autoProvPolicy.cloudlets = data[fields.cloudlets] ? getCloudletList(data[fields.cloudlets]) : undefined
   }
   return ({
     region: data[fields.region],

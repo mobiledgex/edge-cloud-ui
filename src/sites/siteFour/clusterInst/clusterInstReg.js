@@ -7,7 +7,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, getOrganization, updateFields } from '../../../services/model/format';
+import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import * as serverData from '../../../services/model/serverData'
 import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
@@ -262,11 +262,10 @@ class ClusterInstReg extends React.Component {
             let forms = this.state.forms
             let cloudlets = data[fields.cloudletName];
             if (this.props.isUpdate) {
-                let updateFieldList = updateFields(this, forms, data, this.props.data)
-                if (updateFieldList.length > 0) {
+                let updateData = updateFieldData(this, forms, data, this.props.data)
+                if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
-                    data[fields.fields] = updateFieldList
-                    updateClusterInst(this, data, this.onCreateResponse)
+                    updateClusterInst(this, updateData, this.onCreateResponse)
                 }
 
             }
@@ -288,24 +287,24 @@ class ClusterInstReg extends React.Component {
      * Tab block
      */
     getMap = () =>
-        (
-            <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-                <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' region={this.state.region}></Map>
-            </div>
-        )
+    (
+        <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
+            <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' region={this.state.region}></Map>
+        </div>
+    )
 
     saveFlowInstance = (data) => {
         this.setState({ flowInstance: data })
     }
 
     getGraph = () =>
-        (
-            <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-                <Suspense fallback={<div></div>}>
-                    <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} flowObject={clusterFlow} />
-                </Suspense>
-            </div>
-        )
+    (
+        <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
+            <Suspense fallback={<div></div>}>
+                <MexFlow flowDataList={this.state.flowDataList} saveFlowInstance={this.saveFlowInstance} flowInstance={this.state.flowInstance} flowObject={clusterFlow} />
+            </Suspense>
+        </div>
+    )
 
     getPanes = () => ([
         { label: 'Cloudlet Locations', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
@@ -441,17 +440,17 @@ class ClusterInstReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Cluster Instances`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true },
-            { field: fields.clusterName, label: 'Cluster Name', formType: INPUT, placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }] },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+            { field: fields.clusterName, label: 'Cluster Name', formType: INPUT, placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
+            { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }], update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', visible: true, update: false, tip: 'IpAccess indicates the type of RootLB that Developer requires for their App' },
-            { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }], update: true, updateId: ['18'] },
+            { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }], update: { id: ['18'] } },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
-            { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, update: true, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
-            { field: fields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: true, updateId: ['14'], tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
+            { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
+            { field: fields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: { id: ['14'] }, tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: INPUT, placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: false, tip: 'Size of an optional shared volume to be mounted on the master' },
             { field: fields.reservable, label: 'Reservable', formType: CHECKBOX, visible: true, roles: ['AdminManager'], value: false, update: false, tip: 'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
         ]
@@ -498,7 +497,7 @@ class ClusterInstReg extends React.Component {
         this.props.handleViewMode(HELP_CLUSTER_INST_REG)
     }
 };
-    
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },

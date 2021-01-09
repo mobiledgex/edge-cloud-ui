@@ -8,7 +8,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, CHECKBOX, TEXT_AREA, ICO
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, getOrganization } from '../../../services/model/format';
+import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import * as serverData from '../../../services/model/serverData'
 import { getOrganizationList } from '../../../services/model/organization';
@@ -119,7 +119,7 @@ class AppReg extends React.Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: true, width: 14, visible: true, init:true },
+        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true, init: true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
@@ -127,11 +127,11 @@ class AppReg extends React.Component {
     /**Deployment manifest block */
 
     portForm = () => ([
-        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: true, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: true },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: true },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
+        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: { edit: true } },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: { id: ['34'] } },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     getPortForm = (form) => {
@@ -145,17 +145,17 @@ class AppReg extends React.Component {
     ])
 
     getAnnotationForm = (form) => {
-        return ({ uuid: uuid(), field: fields.annotations, formType: MULTI_FORM, forms: form ? form : this.annotationForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.annotationmulti, formType: MULTI_FORM, forms: form ? form : this.annotationForm(), width: 3, visible: true })
     }
 
     multiPortForm = () => ([
-        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: true, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: true },
-        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: true },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: true },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: true }
+        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: { edit: true } },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: { edit: true } },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     getMultiPortForm = (form) => {
@@ -163,13 +163,13 @@ class AppReg extends React.Component {
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true, update: true },
-        { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 4, visible: true, options: this.configOptions, update: true },
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true, update: { edit: true } },
+        { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 4, visible: true, options: this.configOptions, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
 
     getConfigForm = (form) => {
-        return ({ uuid: uuid(), field: fields.configs, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.configmulti, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -242,21 +242,21 @@ class AppReg extends React.Component {
                 this.accessTypeChange(form, forms, isInit)
                 return form
             }
-            else if (form.label === 'Configs') {
+            else if (form.field === fields.configs) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
                 this.configOptions = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
                 return form
             }
-            else if (form.label === 'Annotations') {
+            else if (form.field === fields.annotations) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? true : false
                 return form
             }
-            else if (form.field === fields.annotations) {
+            else if (form.field === fields.annotationmulti) {
                 if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM) {
                     return form
                 }
             }
-            else if (form.field === fields.configs) {
+            else if (form.field === fields.configmulti) {
                 if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                     return form
                 }
@@ -591,18 +591,20 @@ class AppReg extends React.Component {
                     }
                     if (this.isUpdate) {
                         let autoProvPolicies = data[fields.autoProvPolicies]
-                        if(autoProvPolicies && autoProvPolicies.length > 0)
-                        {
+                        if (autoProvPolicies && autoProvPolicies.length > 0) {
                             data[fields.autoProvPolicies] = data[fields.autoProvPolicies][0].value
                         }
-                        let mcRequest = await updateApp(this, data, this.originalData)
-                        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                            this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
-                            if (data[fields.refreshAppInst]) {
-                                serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
-                            }
-                            else {
-                                this.props.onClose(true)
+                        let updateData = updateFieldData(this, forms, data, this.originalData)
+                        if (updateData.fields.length > 0) {
+                            let mcRequest = await updateApp(this, updateData)
+                            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                                this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
+                                if (data[fields.refreshAppInst]) {
+                                    serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                                }
+                                else {
+                                    this.props.onClose(true)
+                                }
                             }
                         }
                     }
@@ -715,7 +717,7 @@ class AppReg extends React.Component {
 
             requestTypeList.push(showFlavors({ region: data[fields.region] }))
             requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
-            
+
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {
@@ -827,29 +829,29 @@ class AppReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of' },
-            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, init: true },
-            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', init: true },
+            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers', update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
+            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, init: true, update: { key: true } },
+            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', init: true, update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
-            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: true, tip: 'URI of where image resides' },
-            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: true, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
-            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: true, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, update: true, tip: 'Upgrade App Instances running in the cloudlets' },
-            { label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
-            { label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
-            { label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, update: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, tip: 'Customization files passed through to implementing services' },
+            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
+            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
+            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
+            { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
+            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
+            { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
-            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: true, tip: 'public key used for authentication', advance: false },
-            { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: true, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
-            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: true, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
-            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: true, tip: 'Android package name used to match the App name from the Android package', advance: false },
-            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: true, advance: false, tip: 'Option to run App on all nodes of the cluster' },
-            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: true, tip: 'Command that the container runs to start service', advance: false },
-            { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: true, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
-            { field: fields.trusted, label: 'Trusted', formType: CHECKBOX, visible: true, value: false, update: true, advance: false, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
+            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
+            { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
+            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: { id: ['25'] }, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
+            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: { id: ['18'] }, tip: 'Android package name used to match the App name from the Android package', advance: false },
+            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
+            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
+            { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
+            { field: fields.trusted, label: 'Trusted', formType: CHECKBOX, visible: true, value: false, update: { id: ['37'] }, advance: false, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
         ]
     }
 
