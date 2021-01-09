@@ -6,7 +6,7 @@ import MexForms, { MAIN_HEADER, HEADER } from '../../../../hoc/forms/MexForms';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import uuid from 'uuid';
-import { fields, getOrganization } from '../../../../services/model/format';
+import { fields, getOrganization, updateFieldData } from '../../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../../services/model/organization';
 import { updateTrustPolicy, createTrustPolicy } from '../../../../services/model/trustPolicy';
@@ -82,7 +82,7 @@ class TrustPolicyReg extends React.Component {
             let forms = this.state.forms;
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
-                if (form.label === 'Outbound Security Rules' || form.field === fields.outboundSecurityRules) {
+                if (form.field === fields.outboundSecurityRules || form.field === fields.outboundSecurityRuleMulti) {
                     form.visible = !currentForm.value;
                 }
             }
@@ -102,7 +102,7 @@ class TrustPolicyReg extends React.Component {
         let count = 0;
         let forms = this.state.forms;
         for (let i = 0; i < forms.length; i++) {
-            if (forms[i].field === fields.outboundSecurityRules) {
+            if (forms[i].field === fields.outboundSecurityRuleMulti) {
                 count++;
             }
         }
@@ -127,24 +127,24 @@ class TrustPolicyReg extends React.Component {
     }
 
     getOutBoundRules = () => ([
-        { field: fields.protocol, label: 'Protocol', formType: 'Select', rules: { required: true, type: 'number', allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp', 'icmp'], serverField: 'protocol' },
-        { field: fields.portRangeMin, label: 'Port Range Min', formType: 'Input', rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_min', dataValidateFunc: this.validatePortRange },
-        { field: fields.portRangeMax, label: 'Port Range Max', formType: 'Input', rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_max', dataValidateFunc: this.validatePortRange },
-        { field: fields.remoteCIDR, label: 'Remote CIDR', formType: 'Input', rules: { required: true }, width: 3, visible: true, serverField: 'remote_cidr', dataValidateFunc: this.validateRemoteCIDR },
+        { field: fields.protocol, label: 'Protocol', formType: 'Select', rules: { required: true, type: 'number', allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp', 'icmp'], serverField: 'protocol', update: { edit: true } },
+        { field: fields.portRangeMin, label: 'Port Range Min', formType: 'Input', rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_min', dataValidateFunc: this.validatePortRange, update: { edit: true } },
+        { field: fields.portRangeMax, label: 'Port Range Max', formType: 'Input', rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_max', dataValidateFunc: this.validatePortRange, update: { edit: true } },
+        { field: fields.remoteCIDR, label: 'Remote CIDR', formType: 'Input', rules: { required: true }, width: 3, visible: true, serverField: 'remote_cidr', dataValidateFunc: this.validateRemoteCIDR, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, style: { color: 'white', top: 15 }, width: 1, onClick: this.removeRulesForm }
     ])
 
     getOutboundSecurityForm = (outBoundRules) => (
-        { uuid: uuid(), field: fields.outboundSecurityRules, formType: 'MultiForm', forms: outBoundRules, width: 3, visible: true }
+        { uuid: uuid(), field: fields.outboundSecurityRuleMulti, formType: 'MultiForm', forms: outBoundRules, width: 3, visible: true }
     )
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region' },
-        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true },
-        { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: 'Input', placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true },
+        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
+        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, update: { key: true } },
+        { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: 'Input', placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: 'Checkbox', visible: true, value: false },
-        { label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true },
+        { field: fields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { id: ['3', '3.1', '3.2', '3.3', '3.4'] } },
     ])
 
     addRulesForm = (e, form) => {
@@ -196,10 +196,11 @@ class TrustPolicyReg extends React.Component {
 
     onCreate = async (data) => {
         if (data) {
+            let forms = this.state.forms
             let outboundSecurityRules = [];
             if (!data[fields.fullIsolation]) {
-                for (let i = 0; i < this.state.forms.length; i++) {
-                    let form = this.state.forms[i];
+                for (let i = 0; i < forms.length; i++) {
+                    let form = forms[i];
                     if (form.uuid) {
                         let uuid = form.uuid;
                         let outboundSecurityRule = data[uuid]
@@ -219,8 +220,11 @@ class TrustPolicyReg extends React.Component {
                 data[fields.outboundSecurityRules] = outboundSecurityRules;
             }
             if (this.isUpdate) {
-                this.props.handleLoadingSpinner(true)
-                updateTrustPolicy(this, data, this.onUpdateResponse)
+                let updateData = updateFieldData(this, forms, data, this.props.data)
+                if (updateData.fields.length > 0) {
+                    this.props.handleLoadingSpinner(true)
+                    updateTrustPolicy(this, updateData, this.onUpdateResponse)
+                }
             }
             else {
                 let mcRequest = await serverData.sendRequest(this, createTrustPolicy(data))
@@ -258,7 +262,7 @@ class TrustPolicyReg extends React.Component {
                 <Grid style={{ display: 'flex' }}>
                     <Grid.Row>
                         <Grid.Column width={16}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -315,7 +319,7 @@ class TrustPolicyReg extends React.Component {
             }
             else if (form.label) {
                 if (data) {
-                    if (form.label === 'Outbound Security Rules') {
+                    if (form.field === fields.outboundSecurityRules) {
                         form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? true : false
                     }
                 }

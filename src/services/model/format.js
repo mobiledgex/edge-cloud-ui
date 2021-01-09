@@ -33,6 +33,7 @@ export const fields = {
     phone: 'phone',
     trustPolicyName: 'trustPolicyName',
     outboundSecurityRules: 'outboundSecurityRules',
+    outboundSecurityRuleMulti: 'outboundSecurityRuleMulti',
     protocol: 'protocol',
     portRangeMin: 'portRangeMin',
     portRangeMax: 'portRangeMax',
@@ -109,9 +110,11 @@ export const fields = {
     containerVersion: 'containerVersion',
     vmImageVersion: 'vmImageVersion',
     configs: 'configs',
+    configmulti:'configmulti',
     config: 'config',
     kind: 'kind',
     annotations: 'annotations',
+    annotationmulti:'annotationmulti',
     key: 'key',
     value: 'value',
     publicImages: 'publicImages',
@@ -421,35 +424,23 @@ export const compareObjects = (newData, oldData, ignoreCase) => {
     }
 }
 
-export const updateFields = (self, forms, data, orgData) => {
-    let updateFields = []
-    for (let i = 0; i < forms.length; i++) {
-        let form = forms[i]
-        if (form.update && form.updateId) {
-            if (!compareObjects(data[form.field], orgData[form.field])) {
-                updateFields = [...updateFields, ...form.updateId]
-            }
-        }
-    }
-    if (updateFields.length === 0) {
-        self.props.handleAlertInfo('error', 'Nothing to update')
-    }
-    return updateFields
-}
-
 export const updateFieldData = (self, forms, data, orgData) => {
     let updateData = {}
     let updateFields = []
     for (let i = 0; i < forms.length; i++) {
         let form = forms[i]
-        if(form.key)
-        {
-            updateData[form.field] = data[form.field] 
-        }
-        else if (form.update && form.updateId) {
-            if (!compareObjects(data[form.field], orgData[form.field])) {
+        if (form.update) {
+            let update = form.update
+            if (update.key) {
                 updateData[form.field] = data[form.field]
-                updateFields = [...updateFields, ...form.updateId]
+            }
+            else if (update.id) {
+                let updateId = update.id
+                let ignoreCase = update.ignoreCase ? update.ignoreCase : false
+                if (!compareObjects(data[form.field], orgData[form.field], ignoreCase)) {
+                    updateData[form.field] = data[form.field]
+                    updateFields = [...updateFields, ...updateId]
+                }
             }
         }
     }

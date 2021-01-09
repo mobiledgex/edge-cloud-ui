@@ -69,7 +69,7 @@ export const getKey = (data, isCreate) => {
         if (data[fields.annotations]) {
             app.annotations = data[fields.annotations]
         }
-        app.delete_ports = []
+        
         app.default_flavor = { name: data[fields.flavorName] }
         app.auth_public_key = data[fields.authPublicKey]
         if (data[fields.officialFQDN]) {
@@ -102,6 +102,10 @@ export const getKey = (data, isCreate) => {
         if (data[fields.templateDelimiter]) {
             app.template_delimiter = data[fields.templateDelimiter]
         }
+
+        if (data[fields.fields]) {
+            app.fields = data[fields.fields]
+        }
     }
     return ({
         region: data[fields.region],
@@ -131,63 +135,10 @@ export const createApp = (data) => {
     return { method: CREATE_APP, data: requestData }
 }
 
-export const updateApp = async (self, data, originalData) => {
-    let updateFields = []
-    if (!formatter.compareObjects(data[fields.imagePath], originalData[fields.imagePath])) {
-        updateFields.push('4')
-    }
-    if (!formatter.compareObjects(data[fields.accessPorts], originalData[fields.accessPorts], true)) {
-        updateFields.push('7')
-    }
-    if (!formatter.compareObjects(data[fields.flavorName], originalData[fields.flavorName])) {
-        updateFields.push('9.1')
-    }
-    if (!formatter.compareObjects(data[fields.authPublicKey], originalData[fields.authPublicKey])) {
-        updateFields.push('12')
-    }
-    if (!formatter.compareObjects(data[fields.command], originalData[fields.command])) {
-        updateFields.push('13')
-    }
-    if (!formatter.compareObjects(data[fields.deploymentManifest], originalData[fields.deploymentManifest])) {
-        updateFields.push('16')
-    }
-    if (!formatter.compareObjects(data[fields.androidPackageName], originalData[fields.androidPackageName])) {
-        updateFields.push('18')
-    }
-    if (!formatter.compareObjects(data[fields.configs], originalData[fields.configs])) {
-        updateFields.push('21', '21.1', '21.2')
-    }
-    if (!formatter.compareObjects(data[fields.scaleWithCluster], originalData[fields.scaleWithCluster])) {
-        updateFields.push('22')
-    }
-    if (!formatter.compareObjects(data[fields.officialFQDN], originalData[fields.officialFQDN])) {
-        updateFields.push('25')
-    }
-    if (!formatter.compareObjects(data[fields.autoPolicyName], originalData[fields.autoPolicyName])) {
-        updateFields.push('28')
-    }
-    if (!formatter.compareObjects(data[fields.autoProvPolicies], originalData[fields.autoProvPolicies])) {
-        updateFields.push('32')
-    }
-    if (!formatter.compareObjects(data[fields.trusted], originalData[fields.trusted])) {
-        updateFields.push('37')
-    }
-    if (!formatter.compareObjects(data[fields.templateDelimiter], originalData[fields.templateDelimiter])) {
-        updateFields.push('33')
-    }
-    if (!formatter.compareObjects(data[fields.skipHCPorts], originalData[fields.skipHCPorts], true)) {
-        updateFields.push('34')
-    }
-    if (updateFields.length > 0) {
-        let requestData = getKey(data, true)
-        requestData.app.fields = updateFields
-        let request = { method: UPDATE_APP, data: requestData }
-        return await serverData.sendRequest(self, request)
-    }
-    else
-    {
-        return self.props.handleAlertInfo('error', 'Nothing to update')
-    }
+export const updateApp = async (self, data) => {
+    let requestData = getKey(data, true)
+    let request = { method: UPDATE_APP, data: requestData }
+    return await serverData.sendRequest(self, request)
 }
 
 export const deleteApp = (data) => {
