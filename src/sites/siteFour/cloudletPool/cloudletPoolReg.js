@@ -7,7 +7,7 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
-import { fields, getOrganization, updateFields } from '../../../services/model/format';
+import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/model/organization';
 import { showOrganizations } from '../../../services/model/organization';
@@ -174,7 +174,7 @@ class CloudletPoolReg extends React.Component {
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
-                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true},
+                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true },
                 { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
@@ -214,10 +214,9 @@ class CloudletPoolReg extends React.Component {
         let data = this.formattedData()
         let mcRequest = undefined
         if (this.isUpdate) {
-            let updateFieldList = updateFields(this, forms, data, this.props.data)
-            if (updateFieldList.length > 0) {
-                data[fields.fields] = updateFieldList
-                mcRequest = await serverData.sendRequest(this, updateCloudletPool(data))
+            let updateData = updateFieldData(this, forms, data, this.props.data)
+            if (updateData.fields.length > 0) {
+                mcRequest = await serverData.sendRequest(this, updateCloudletPool(updateData))
             }
         }
         else {
@@ -260,7 +259,7 @@ class CloudletPoolReg extends React.Component {
                                     ))
                                 }
                             </Step.Group>}
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms}  isUpdate={this.isUpdate}/>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </Item>
                 </div>
             </div>
@@ -297,7 +296,7 @@ class CloudletPoolReg extends React.Component {
                             form.options = this.getCloudletData(this.cloudletList, fields.cloudletName)
                             break;
                         case fields.organizations:
-                            form.options = this.getOrganizationData(this.organizationList, fields.organizationName) 
+                            form.options = this.getOrganizationData(this.organizationList, fields.organizationName)
                             break;
                         default:
                             form.options = undefined;
@@ -338,18 +337,16 @@ class CloudletPoolReg extends React.Component {
             }
         }
 
-        if(this.action === constant.ADD_ORGANIZATION || this.action === constant.DELETE_ORGANIZATION)
-        {
+        if (this.action === constant.ADD_ORGANIZATION || this.action === constant.DELETE_ORGANIZATION) {
             this.selectOrganization(data, false)
         }
-        else
-        {
+        else {
             let forms = [
                 { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet Pool`, formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true },
-                { field: fields.poolName, label: 'Pool Name', formType: INPUT, placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true },
-                { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization() },
-                { field: fields.cloudlets, label: 'Cloudlets', formType: DUALLIST, update: true, updateId: ['3'], rules: { required: false }, visible: true },
+                { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+                { field: fields.poolName, label: 'Pool Name', formType: INPUT, placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true, update: { key: true } },
+                { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), update: { key: true } },
+                { field: fields.cloudlets, label: 'Cloudlets', formType: DUALLIST, update: { id: ['3'] }, rules: { required: false }, visible: true },
                 { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreate, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
@@ -361,11 +358,11 @@ class CloudletPoolReg extends React.Component {
                     form.value = data[form.field]
                 }
             }
-    
+
             this.setState({
                 forms: forms
             })
-        }   
+        }
     }
 
     componentDidMount() {

@@ -7,13 +7,14 @@ import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEA
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import * as serverData from '../../../../services/model/serverData';
-import { fields, getOrganization, updateFields } from '../../../../services/model/format';
+import { fields, getOrganization, updateFieldData } from '../../../../services/model/format';
 
 import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
-import { getOrgCloudletList } from '../../../../services/model/cloudlet';
+import { getCloudletKey, getOrgCloudletList } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
-import {HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1} from "../../../../tutorial";
+import { HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1 } from "../../../../tutorial";
+import isEqual from 'lodash/isEqual'
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
@@ -43,13 +44,11 @@ class AutoProvPolicyReg extends React.Component {
         let organization = undefined;
         for (let i = 0; i < form.dependentData.length; i++) {
             let dependentForm = forms[form.dependentData[i].index]
-            if(dependentForm.field === fields.region)
-            {
+            if (dependentForm.field === fields.region) {
                 region = dependentForm.value
             }
-            else if(dependentForm.field === fields.organizationName)
-            {
-                organization = dependentForm.value 
+            else if (dependentForm.field === fields.organizationName) {
+                organization = dependentForm.value
             }
         }
         if (region && organization && !this.isUpdate) {
@@ -178,10 +177,9 @@ class AutoProvPolicyReg extends React.Component {
             this.setState({
                 forms: forms
             })
-            this.props.handleViewMode( HELP_AUTO_PROV_REG_2 );
+            this.props.handleViewMode(HELP_AUTO_PROV_REG_2);
         }
-        else
-        {
+        else {
             this.props.handleAlertInfo('error', 'No Cloudlets present')
             this.props.onClose(true)
         }
@@ -207,17 +205,31 @@ class AutoProvPolicyReg extends React.Component {
         }
     }
 
+    getCloudletList = (data) => {
+        let cloudlets = data[fields.cloudlets]
+        let cloudletList = undefined
+        if (cloudlets && cloudlets.length > 0) {
+          cloudletList = []
+          for (let i = 0; i < cloudlets.length; i++) {
+            cloudletList.push(JSON.parse(cloudlets[i]))
+          }
+        }
+        return cloudletList
+      }
+
     onCreateAutoProvPolicy = async (data) => {
         if (data[fields.deployClientCount] || data[fields.minActiveInstances]) {
-            let requestType = createAutoProvPolicy
+            let mcRequest = undefined
+            data[fields.cloudlets]= this.getCloudletList(data)
             if (this.isUpdate) {
-                let updateFieldList = updateFields(this, this.state.forms, data, this.props.data)
-                if (updateFieldList.length > 0) {
-                    data[fields.fields] = updateFieldList
-                    requestType = updateAutoProvPolicy
+                let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
+                if (updateData.fields.length > 0) {
+                    mcRequest = await serverData.sendRequest(this, updateAutoProvPolicy(updateData))
                 }
             }
-            let mcRequest = await serverData.sendRequest(this, requestType(data))
+            else {
+                mcRequest = await serverData.sendRequest(this, createAutoProvPolicy(data))
+            }
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
                 this.props.onClose(true)
@@ -305,32 +317,26 @@ class AutoProvPolicyReg extends React.Component {
         }
     }
 
-    validatedeployClientCount = (form)=>
-    {
+    validatedeployClientCount = (form) => {
         if (form.value && form.value.length > 0) {
             let value = parseInt(form.value)
-            if(value <= 0)
-            {
-                form.error = 'Deploy Request Count must be greater than zero' 
-                return false; 
+            if (value <= 0) {
+                form.error = 'Deploy Request Count must be greater than zero'
+                return false;
             }
         }
         form.error = undefined;
         return true;
     }
 
-    validateMinInst = (currentForm)=>
-    {
+    validateMinInst = (currentForm) => {
         let forms = this.state.forms
         if (currentForm.value && currentForm.value.length > 0) {
             let value = parseInt(currentForm.value)
-            for(let i=0;i<forms.length;i++)
-            {
+            for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if(form.field === fields.cloudlets)
-                {
-                    if(!form.value || (value > form.value.length))
-                    {
+                if (form.field === fields.cloudlets) {
+                    if (!form.value || (value > form.value.length)) {
                         currentForm.error = 'Minimum active instances cannot be greater the number of Cloudlets'
                         return false
                     }
@@ -342,18 +348,14 @@ class AutoProvPolicyReg extends React.Component {
         return true;
     }
 
-    validateMaxInst = (currentForm)=>
-    {
+    validateMaxInst = (currentForm) => {
         let forms = this.state.forms
         if (currentForm.value && currentForm.value.length > 0) {
             let value = parseInt(currentForm.value)
-            for(let i=0;i<forms.length;i++)
-            {
+            for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if(form.field === fields.minActiveInstances)
-                {
-                    if(value < parseInt(form.value))
-                    {
+                if (form.field === fields.minActiveInstances) {
+                    if (value < parseInt(form.value)) {
                         currentForm.error = 'Maximum active instances cannot be lesser than minimum instances'
                         return false
                     }
@@ -368,16 +370,16 @@ class AutoProvPolicyReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Provisioning Policy`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true },
-            { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to' },
-            { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true, tip: 'Policy name' },
-            { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: true, onBlur:true, requiredMsg:'Either Deploy Request Count or Min Active Instances is mandatory' }, visible: true, update: true, dataValidateFunc: this.validatedeployClientCount, updateId: ['3'], tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
-            { field: fields.undeployClientCount, label: 'Undeploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: true, updateId: ['8'], tip: 'Number of active clients for the undeploy interval below which trigers undeployment, 0 (default) disables auto undeploy' },
-            { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: true, updateId: ['4'], tip: 'Number of intervals to check before triggering deployment' },
-            { field: fields.undeployIntervalCount, label: 'Undeploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: true, updateId: ['9'], tip: 'Number of intervals to check before triggering undeployment' },
-            { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: false }, visible: true, update: true, updateId: ['5', '5.1', '5.1.1', '5.1.2'], dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { field: fields.minActiveInstances, label: 'Min Active Instances (Required for HA)', formType: 'Input', rules: { type: 'number', required: true, onBlur:true, requiredMsg:'Either Min Active Instances or Deploy Request Count is mandatory'  }, visible: true, updateId: ['6'], update: true, dataValidateFunc: this.validateMinInst, tip: 'Minimum number of active instances for High-Availability' },
-            { field: fields.maxInstances, label: 'Max Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, updateId: ['7'], update: true, dataValidateFunc: this.validateMaxInst, tip: 'Maximum number of instances (active or not)' },
+            { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to', update: { key: true } },
+            { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
+            { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: true, onBlur: true, requiredMsg: 'Either Deploy Request Count or Min Active Instances is mandatory' }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validatedeployClientCount, tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
+            { field: fields.undeployClientCount, label: 'Undeploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: { id: ['8'] }, tip: 'Number of active clients for the undeploy interval below which trigers undeployment, 0 (default) disables auto undeploy' },
+            { field: fields.deployIntervalCount, label: 'Deploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: { id: ['4'] }, tip: 'Number of intervals to check before triggering deployment' },
+            { field: fields.undeployIntervalCount, label: 'Undeploy Interval Count (s)', formType: 'Input', rules: { type: 'number' }, visible: true, update: { id: ['9'] }, tip: 'Number of intervals to check before triggering undeployment' },
+            { field: fields.cloudlets, label: 'Cloudlets', formType: 'DualList', rules: { required: false }, visible: true, update: { id: ['5', '5.1', '5.1.1', '5.1.2'] }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
+            { field: fields.minActiveInstances, label: 'Min Active Instances (Required for HA)', formType: 'Input', rules: { type: 'number', required: true, onBlur: true, requiredMsg: 'Either Min Active Instances or Deploy Request Count is mandatory' }, visible: true, update: { id: ['6'] }, dataValidateFunc: this.validateMinInst, tip: 'Minimum number of active instances for High-Availability' },
+            { field: fields.maxInstances, label: 'Max Instances', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: { id: ['7'] }, dataValidateFunc: this.validateMaxInst, tip: 'Maximum number of instances (active or not)' },
         ]
     }
 
@@ -397,12 +399,10 @@ class AutoProvPolicyReg extends React.Component {
                     }
                     else {
                         form.value = data[form.field]
-                        if(form.field === fields.minActiveInstances)
-                        {
+                        if (form.field === fields.minActiveInstances) {
                             form.rules.required = data[fields.deployClientCount] === undefined || data[fields.deployClientCount].length === 0
                         }
-                        else if(form.field === fields.deployClientCount)
-                        {
+                        else if (form.field === fields.deployClientCount) {
                             form.rules.required = data[fields.minActiveInstances] === undefined || data[fields.minActiveInstances].length === 0
                         }
                         this.checkForms(form, forms, true)
@@ -426,9 +426,8 @@ class AutoProvPolicyReg extends React.Component {
         if (data) {
             await this.loadDefaultData(data)
         }
-        else
-        {
-            this.organizationList = await getOrganizationList(this);  
+        else {
+            this.organizationList = await getOrganizationList(this);
         }
 
         if (this.props.action === constant.ADD_CLOUDLET || this.props.action === constant.DELETE_CLOUDLET) {
@@ -451,7 +450,7 @@ class AutoProvPolicyReg extends React.Component {
 
     componentDidMount() {
         this.getFormData(this.props.data);
-        this.props.handleViewMode( HELP_AUTO_PROV_REG_1 )
+        this.props.handleViewMode(HELP_AUTO_PROV_REG_1)
     }
 };
 

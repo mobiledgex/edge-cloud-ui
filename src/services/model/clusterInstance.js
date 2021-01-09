@@ -145,7 +145,7 @@ export const clusterInstanceKey = (data) => {
 export const clusterKey = (data, isCreate) => {
     let clusterinst = {}
     clusterinst.key = clusterInstanceKey(data)
-    clusterinst.flavor = { name: data[fields.flavorName] }
+
     if (isCreate) {
         clusterinst.deployment = data[fields.deployment]
         if (data[fields.ipAccess]) {
@@ -166,6 +166,9 @@ export const clusterKey = (data, isCreate) => {
         }
         if (data[fields.autoScalePolicyName]) {
             clusterinst.auto_scale_policy = data[fields.autoScalePolicyName]
+        }
+        if (data[fields.flavorName]) {
+            clusterinst.flavor = { name: data[fields.flavorName] }
         }
         if (data[fields.fields]) {
             clusterinst.fields = data[fields.fields]
