@@ -198,10 +198,12 @@ class ClusterInstReg extends React.Component {
                         }
                     }
                     else if (form.field === fields.operatorName) {
-                        this.cloudletList = this.cloudletList.filter(cloudlet => {
-                            return app[fields.trusted] ? cloudlet[fields.trustPolicyName] !== undefined : cloudlet[fields.trustPolicyName] === undefined
-                        })
-                        this.updateUI(form)
+                        if (!app[fields.trusted]) {
+                            this.cloudletList = this.cloudletList.filter(cloudlet => {
+                                return cloudlet[fields.trustPolicyName] === undefined
+                            })
+                            this.updateUI(form)
+                        }
                         return form
                     }
                     else {
