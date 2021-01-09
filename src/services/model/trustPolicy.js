@@ -13,9 +13,9 @@ export const outboundSecurityRulesKeys = [
 ]
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
-  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter:true },
-  { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter:true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
+  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true },
+  { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true },
   { field: fields.outboundSecurityRulesCount, label: 'Rules Count', sortable: true, visible: true },
   {
     field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
@@ -25,12 +25,17 @@ export const keys = () => ([
 ])
 
 const getKey = (data) => {
+  let trustpolicy = {}
+  trustpolicy.key = { organization: data[fields.operatorName] ? data[fields.operatorName] : data[fields.organizationName], name: data[fields.trustPolicyName] }
+  if (data[fields.outboundSecurityRules]) {
+    trustpolicy.outbound_security_rules = data[fields.outboundSecurityRules]
+  }
+  if (data[fields.fields]) {
+    trustpolicy.fields = data[fields.fields]
+  }
   return {
     region: data[fields.region],
-    trustpolicy: {
-      key: { organization: data[fields.operatorName] ? data[fields.operatorName] : data[fields.organizationName], name: data[fields.trustPolicyName] },
-      outbound_security_rules: data[fields.outboundSecurityRules]
-    }
+    trustpolicy: trustpolicy
   }
 }
 
@@ -54,7 +59,6 @@ export const getTrustPolicyList = async (self, data) => {
 
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
-  requestData.trustpolicy.fields = ['3', '3.1', '3.2', '3.3', '3.4']
   let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_TRUST_POLICY, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }

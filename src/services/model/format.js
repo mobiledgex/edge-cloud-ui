@@ -33,6 +33,7 @@ export const fields = {
     phone: 'phone',
     trustPolicyName: 'trustPolicyName',
     outboundSecurityRules: 'outboundSecurityRules',
+    outboundSecurityRuleMulti: 'outboundSecurityRuleMulti',
     protocol: 'protocol',
     portRangeMin: 'portRangeMin',
     portRangeMax: 'portRangeMax',
