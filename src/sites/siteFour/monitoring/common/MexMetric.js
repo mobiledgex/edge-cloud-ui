@@ -23,10 +23,10 @@ class MexMetric extends React.Component {
 
     render() {
         const { chartData, dataLoaded } = this.state
-        const { avgData, filter, rowSelected, style } = this.props
+        const { avgData, filter, rowSelected, style, range } = this.props
 
         return (
-            dataLoaded ? <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} style={style} /> :
+            dataLoaded ? <MexChart chartData={chartData} avgData={avgData} filter={filter} regions={this.regions} rowSelected={rowSelected} style={style} range={range} /> :
                 <React.Fragment>
                     <Skeleton variant="rect" style={{ height: '59vh', width: '100%' }} />
                 </React.Fragment>

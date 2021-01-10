@@ -6,7 +6,7 @@ class MexChart extends React.Component {
         super()
     }
     render() {
-        const { chartData, avgData, filter, rowSelected, style } = this.props
+        const { chartData, avgData, filter, rowSelected, style, range } = this.props
         return (
             <React.Fragment>
                 {filter[fields.region].map(region => {
@@ -17,7 +17,7 @@ class MexChart extends React.Component {
                             Object.keys(chartDataRegion).map((key, i) => {
                                 let metricTypeData = chartDataRegion[key]
                                 return metricTypeData.values && filter.metricType.includes(metricTypeData.metric.field) ?
-                                    <LineChart key={`${region}_${key}`} id={key} rowSelected={rowSelected} data={metricTypeData} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} />
+                                    <LineChart key={`${region}_${key}`} id={key} rowSelected={rowSelected} data={metricTypeData} avgDataRegion={avgDataRegion} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} range={range} />
                                     :
                                     null
                             })
