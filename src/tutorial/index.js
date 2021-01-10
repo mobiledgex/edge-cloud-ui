@@ -845,7 +845,7 @@ const cloudlet = (type, isDoc) => {
         else if (getUserRole().includes(constant.OPERATOR)) {
             switch (type) {
                 case HELP_CLOUDLET_LIST:
-                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#direct-vs-restricted-access'
+                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#resource-management-and-workflow'
                 case HELP_CLOUDLET_REG:
                     return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#to-create-and-deploy-cloudlets-using-direct-access'
             }
