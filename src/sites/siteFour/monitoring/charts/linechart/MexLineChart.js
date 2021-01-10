@@ -7,6 +7,7 @@ import uuid from 'uuid'
 import { Card, Dialog, GridListTile, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { LTTB } from 'downsample';
+import moment from 'moment'
 
 
 const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
@@ -54,7 +55,7 @@ const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
     }
     return datasets
 }
-const optionsGenerator = (header, unitId, fullscreen) => {
+const optionsGenerator = (header, unitId, fullscreen, range) => {
     return {
         stacked: true,
         bezierCurve: true,
@@ -83,21 +84,23 @@ const optionsGenerator = (header, unitId, fullscreen) => {
             xAxes: [{
                 type: "time",
                 time: {
-                    format: dateUtil.FORMAT_FULL_TIME,
+                    parse: dateUtil.FORMAT_FULL_TIME,
                     tooltipFormat: 'MM/DD/YYYY HH:mm:ss',
                     displayFormats: {
                         millisecond: 'HH:mm:ss.SSS',
                         second: 'HH:mm:ss',
                         minute: 'HH:mm',
-                        hour: 'HH'
-                    }
+                        hour: 'HH:mm'
+                    },
                 },
                 scaleLabel: {
                     display: false,
                     labelString: 'Date'
                 },
                 ticks: {
-                    maxTicksLimit: fullscreen ? 15 : 5
+                    maxTicksLimit: fullscreen ? 15 : 5,
+                    max: dateUtil.timeInMilli(range.endtime),
+                    min: dateUtil.timeInMilli(range.starttime)  
                 }
             }],
             yAxes: [{
@@ -139,7 +142,8 @@ class MexLineChart extends React.Component {
         this.position = this.metric ? this.metric.position : 0
         this.tags = props.tags
         this.tagFormats = props.tagFormats
-        this.options = optionsGenerator(this.header, this.unit, false)
+        this.range = props.range
+        this.options = optionsGenerator(this.header, this.unit, false, this.range)
     }
 
     formatLabel = (value) => {
@@ -194,7 +198,7 @@ class MexLineChart extends React.Component {
                     </div>
                 </div>
                 <div style={{ padding: 20, height: '100vh' }}>
-                    <Line datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen)} data={{ datasets }} height={200} />
+                    <Line datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
                 </div>
             </Dialog>
         )
