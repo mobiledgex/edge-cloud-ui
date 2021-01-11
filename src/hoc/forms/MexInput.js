@@ -9,16 +9,19 @@ const MexInput = (props) => {
     let rules = form.rules
     const [value, setValue] = React.useState(props.form.value ? props.form.value : '')
 
-    const onValueChange = (value) => {
-        setValue(value)
-        if (rules && rules.onBlur !== true) {
-            props.onChange(form, value)
+    const onValueChange = (inp) => {
+        form.hasChanged = inp !== value
+        if (form.hasChanged) {
+            setValue(inp)
+            if (rules && rules.onBlur !== true) {
+                props.onChange(form, inp)
+            }
         }
     }
 
-    const onBlurChange = (value) => {
-        if (rules && rules.onBlur) {
-            props.onChange(form, value)
+    const onBlurChange = (inp) => {
+        if (rules && rules.onBlur && form.hasChanged) {
+            props.onChange(form, inp)
         }
     }
 
@@ -33,10 +36,10 @@ const MexInput = (props) => {
                 onBlur={(e) => onBlurChange(e.target.value)}
                 type={form.rules ? form.rules.type : 'text'}
                 required={form.required ? form.rules.required : false}
-                autoComplete = {form.autocomplete ? form.autocomplete : 'on'}
+                autoComplete={form.autocomplete ? form.autocomplete : 'on'}
                 disabled={props.disabled}
                 value={value}
-                style={form.style ? form.style : form.error ? { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor:'rgba(211, 46, 46, 0.1)'} : { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor:'rgba(22, 24, 29, 0.5)' }}
+                style={form.style ? form.style : form.error ? { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor: 'rgba(211, 46, 46, 0.1)' } : { width: form.unit ? 'calc(100% - 45px)' : '100%', backgroundColor: 'rgba(22, 24, 29, 0.5)' }}
             />
         </div >
     )

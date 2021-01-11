@@ -93,12 +93,11 @@ class CloudletReg extends React.Component {
                 }
             }
             if (latitude && longitude) {
-                currentForm.init = false
                 let cloudlet = {}
                 cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
                 this.setState({ mapData: [cloudlet] })
             }
-            else if (!currentForm.init) {
+            else {
                 this.setState({ mapData: [] })
             }
         }
@@ -284,11 +283,9 @@ class CloudletReg extends React.Component {
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
                     if (childForm.field === fields.latitude) {
-                        childForm.init = false
                         childForm.value = location.lat
                     }
                     else if (childForm.field === fields.longitude) {
-                        childForm.init = false
                         childForm.value = location.long
                     }
                 }
@@ -475,8 +472,8 @@ class CloudletReg extends React.Component {
     }
 
     locationForm = () => ([
-        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true }, init: true },
-        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true }, init: true }
+        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
+        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
     ])
 
     cloudletManifest = () => {
