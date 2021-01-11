@@ -6,15 +6,18 @@ const MexTextArea = (props) => {
     let rules = form.rules
     const [value, setValue] = React.useState(props.form.value ? props.form.value : '')
 
-    const onValueChange = (value) => {
-        setValue(value)
-        if (rules === undefined || (rules && !rules.onBlur)) {
-            props.onChange(form, value)
+    const onValueChange = (inp) => {
+        form.hasChanged = inp !== value
+        if (form.hasChanged) {
+            setValue(inp)
+            if (rules === undefined || (rules && !rules.onBlur)) {
+                props.onChange(form, inp)
+            }
         }
     }
 
     const onBlurChange = (value) => {
-        if (rules && rules.onBlur) {
+        if (rules && rules.onBlur && form.hasChanged) {
             props.onChange(form, value)
         }
     }
@@ -22,7 +25,7 @@ const MexTextArea = (props) => {
     const getForm = () => (
         <TextArea
             id={form.field}
-            rows = {rules ? rules.rows : 5}
+            rows={rules ? rules.rows : 5}
             icon={form.error ? <Icon color='red' name='times circle outline' /> : null}
             label={props.label ? props.label : null}
             placeholder={form.placeholder ? form.placeholder : null}
@@ -32,7 +35,7 @@ const MexTextArea = (props) => {
             disabled={props.disabled}
             onBlur={(e) => onBlurChange(e.target.value)}
             value={value}
-            style={form.style ? form.style : {backgroundColor:`${form.error ? 'rgba(211, 46, 46, 0.1)' : '#18191E'}`, color:'#939396'}}
+            style={form.style ? form.style : { backgroundColor: `${form.error ? 'rgba(211, 46, 46, 0.1)' : '#18191E'}`, color: '#939396' }}
         />
     )
     return (
