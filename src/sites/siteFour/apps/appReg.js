@@ -119,7 +119,7 @@ class AppReg extends React.Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true, init: true },
+        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
@@ -360,20 +360,15 @@ class AppReg extends React.Component {
     }
 
     versionValueChange = (currentForm, forms, isInit) => {
-        if (currentForm.value) {
-            currentForm.init = false
-        }
-        if (!currentForm.init) {
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i];
-                if (form.field === fields.imagePath) {
-                    this.updateImagePath(forms, form)
-                }
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.imagePath) {
+                this.updateImagePath(forms, form)
             }
-            this.setState({
-                forms: forms
-            })
         }
+        this.setState({
+            forms: forms
+        })
     }
 
     accessTypeChange = (currentForm, forms, isInit) => {
@@ -414,24 +409,19 @@ class AppReg extends React.Component {
     }
 
     deploymentManifestChange = (currentForm, forms, isInit) => {
-        if (currentForm.value && currentForm.value.length > 0) {
-            currentForm.init = false
-        }
-        if (!currentForm.init) {
-            let manifest = currentForm.value
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i];
-                if (form.field === fields.imagePath) {
-                    let imagePath = form.value
-                    if ((manifest && manifest.length > 0) && (imagePath && imagePath.length > 0) && !this.imagePathTyped) {
-                        this.props.handleAlertInfo('warning', 'Please verify if imagepath is valid, as it was auto generated')
-                    }
-                    break;
+        let manifest = currentForm.value
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.field === fields.imagePath) {
+                let imagePath = form.value
+                if ((manifest && manifest.length > 0) && (imagePath && imagePath.length > 0) && !this.imagePathTyped) {
+                    this.props.handleAlertInfo('warning', 'Please verify if imagepath is valid, as it was auto generated')
                 }
+                break;
             }
-            if (isInit === undefined || isInit === false) {
-                this.setState({ forms: forms })
-            }
+        }
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
         }
     }
 
@@ -831,8 +821,8 @@ class AppReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers', update: { key: true } },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
-            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, init: true, update: { key: true } },
-            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', init: true, update: { key: true } },
+            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
+            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
