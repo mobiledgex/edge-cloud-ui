@@ -18,10 +18,12 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import { Grid } from 'semantic-ui-react';
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
-import { getTrustPolicyList } from '../../../services/model/trustPolicy';
+import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
+import * as serverData from '../../../services/model/serverData'
+import { SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
 
 class CloudletReg extends React.Component {
     constructor(props) {
@@ -435,16 +437,25 @@ class CloudletReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
+            let requestTypeList = []
+
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
             this.setState({ mapData: [data] })
 
-            let trustPolicy = {}
-            trustPolicy[fields.trustPolicyName] = data[fields.trustPolicyName]
-            trustPolicy[fields.region] = data[fields.region]
-            trustPolicy[fields.operatorName] = data[fields.operatorName]
-            this.trustPolicyList = [trustPolicy]
+            requestTypeList.push(showTrustPolicies({ region: data[fields.region] }))
+
+            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            if (mcRequestList && mcRequestList.length > 0) {
+                for (let i = 0; i < mcRequestList.length; i++) {
+                    let mcRequest = mcRequestList[i];
+                    let request = mcRequest.request;
+                    if (request.method === SHOW_TRUST_POLICY) {
+                        this.trustPolicyList = mcRequest.response.data
+                    }
+                }
+            }
 
             data[fields.maintenanceState] = undefined
 
@@ -529,7 +540,7 @@ class CloudletReg extends React.Component {
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
-            { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false },
+            { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false }
