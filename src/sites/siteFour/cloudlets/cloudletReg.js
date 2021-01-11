@@ -20,10 +20,11 @@ import { Grid } from 'semantic-ui-react';
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
 
-const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
 import * as serverData from '../../../services/model/serverData'
 import { SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
+
+const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
+const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
 
 class CloudletReg extends React.Component {
     constructor(props) {
