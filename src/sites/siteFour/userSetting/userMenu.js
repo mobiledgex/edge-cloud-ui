@@ -5,6 +5,7 @@ import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
 import Profile from './profile';
 import UpdatePassword from './updatePassword';
+// import Preferences from './preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
@@ -52,6 +53,7 @@ class headerGlobalMini extends React.Component {
                 >
                     <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose}/>
                     <UpdatePassword close={this.handleClose} dialog={true}/>
+                    {/* <Preferences close={this.handleClose} /> */}
                     <MenuItem onClick={() => this.logout('/logout')}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Logout" />

@@ -47,12 +47,15 @@ export const resetPwd = (self, data, callback)=>{
 }
 
 export const sendRequest = (self, request, callback) => {
-    const worker = new AlertWorker();
-    worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token: getToken(self) });
-    if (callback) {
-        responseListener(self, worker, callback)
+    let token = getToken(self)
+    if (token) {
+        const worker = new AlertWorker();
+        worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token});
+        if (callback) {
+            responseListener(self, worker, callback)
+        }
+        return worker
     }
-    return worker
 }
 
 export const sendRequests = (self, requestList, callback) => {

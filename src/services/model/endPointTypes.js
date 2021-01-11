@@ -64,6 +64,7 @@ export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
 export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
 export const CREATE_USER = "usercreate";
+export const UPDATE_USER = "user/update"
 export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
@@ -132,6 +133,7 @@ export function getPath(request) {
         case SHOW_ORG_CLOUDLET_INFO:
         case SHOW_ROLE:
         case SHOW_CONTROLLER:
+        case UPDATE_USER:
             return `/api/v1/auth/${request.method}`
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
