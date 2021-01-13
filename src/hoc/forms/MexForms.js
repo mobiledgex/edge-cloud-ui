@@ -203,9 +203,9 @@ const MexForms = (props) => {
                 <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                 form.formType === POPUP_INPUT ?
                     <MexPopupInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                form.formType === TEXT_AREA ?
-                    <MexTextArea form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                    null
+                    form.formType === TEXT_AREA ?
+                        <MexTextArea form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                        null
         )
     }
 
@@ -300,7 +300,7 @@ const MexForms = (props) => {
                                 form.formType === SELECT ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === CHECKBOX ?
-                                        <MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /> :
+                                        <MexCheckbox horizontal={true} form={form} onChange={onValueSelect}/> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
                                             loadButton(form, i) :
                                             null
@@ -312,7 +312,7 @@ const MexForms = (props) => {
 
     const showTip = (form) => {
         return (
-            <Tooltip title={form.tip.split('\n').map((info, i) => { return <strong key={i}>{info}<br /></strong> })} aria-label="tip">
+            <Tooltip title={<ul style={{listStyleType:'none', padding:0}}>{form.tip.split('\n').map((info, i) => { return <li key={i} style={{fontSize:13,marginTop:5}}>{info}</li> })}</ul>} aria-label="tip" style={{marginTop:7}}>
                 {getIcon('help')}
             </Tooltip>
         )
@@ -347,12 +347,12 @@ const MexForms = (props) => {
         return (
             form.field ?
                 <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-' + index}>
-                    <Grid.Column width={4} className='detail_item'>
+                    <Grid.Column width={props.headerWidth ? props.headerWidth : 4} className='detail_item'>
                         {form.labelIcon ?
-                            <IconButton disabled={true}>{form.labelIcon}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></IconButton> :
-                            <div style={form.labelStyle}>{form.label}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></div>}
+                            <IconButton disabled={true}>{form.labelIcon}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></IconButton> :
+                            <div style={form.labelStyle ?  form.labelStyle  : {marginTop:7}}>{form.label}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
-                    <Grid.Column width={11}>
+                    <Grid.Column width={props.headerWidth ? 16 - props.headerWidth - 1 : 11}>
                         {
                             form.forms ?
                                 <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid> :

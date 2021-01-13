@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { withRouter } from 'react-router-dom';
-import { Item, Step, Grid, Card, Form, Header, Button } from 'semantic-ui-react';
+import { Item, Step, Card, Form, Button } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, INPUT, CHECKBOX, MAIN_HEADER } from '../../../hoc/forms/MexForms';
 import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer'
@@ -14,7 +14,7 @@ import { fields } from '../../../services/model/format';
 import { keys, createOrganization, updateOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
 import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1 } from "../../../tutorial";
-import { List } from "@material-ui/core";
+import { Grid, List } from "@material-ui/core";
 
 const stepData = [
     {
@@ -149,7 +149,7 @@ class OrganizationReg extends React.Component {
     }
 
     makeCardContent = (item, i, type) => (
-        <Grid.Row key={i}>
+        <Grid container key={i}>
             <Card style={{ backgroundColor: '#18191E' }}>
                 <Card.Content>
                     <h4 style={{ color: '#A3A3A5', border: 'none', fontWeight: 700 }}>{type} {item['header']}</h4>
@@ -159,7 +159,7 @@ class OrganizationReg extends React.Component {
                 </Card.Content>
             </Card>
             <br />
-        </Grid.Row>
+        </Grid>
     )
 
 
@@ -251,8 +251,8 @@ class OrganizationReg extends React.Component {
         this.organizationInfo[fields.publicImages] = this.organizationInfo[fields.publicImages] ? constant.YES : constant.NO
         return (
             <Fragment>
-                <Grid>
-                    <Grid.Column width={11}>
+                <Grid container>
+                    <Grid item xs={10}>
                         <Form>
                             <br />
                             <MexDetailViewer detailData={this.organizationInfo} keys={keys()} />
@@ -261,9 +261,9 @@ class OrganizationReg extends React.Component {
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organizations</Button>
                             </Form.Group>
                         </Form>
-                    </Grid.Column>
-                    <Grid.Column width={5}>
-                    </Grid.Column>
+                    </Grid>
+                    <Grid item xs={2}>
+                    </Grid>
                 </Grid>
             </Fragment>
         )
@@ -287,21 +287,20 @@ class OrganizationReg extends React.Component {
                                     ))
                                 }
                             </Step.Group>
+                            <br/>
                         </div>}
                     {this.state.step === 2 ?
                         this.getStep3() :
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column width={this.state.step === 1 ? 12 : 16}>
-                                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                                </Grid.Column>
-                                {this.state.step === 1 ?
-                                    <Grid.Column width={4}>
-                                        {items.map((item, i) => (
-                                            this.makeCardContent(item, i, this.type)
-                                        ))}
-                                    </Grid.Column> : null}
-                            </Grid.Row>
+                        <Grid container>
+                            <Grid item xs={this.state.step === 1 ? 10 : 12}>
+                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                            </Grid>
+                            {this.state.step === 1 ?
+                                <Grid item xs={2}>
+                                    {items.map((item, i) => (
+                                        this.makeCardContent(item, i, this.type)
+                                    ))}
+                                </Grid> : null}
                         </Grid>}
                 </Item>
             </div>

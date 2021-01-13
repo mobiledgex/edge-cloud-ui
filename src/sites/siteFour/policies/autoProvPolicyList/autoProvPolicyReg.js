@@ -1,7 +1,6 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import { Grid } from 'semantic-ui-react';
 import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
@@ -11,10 +10,10 @@ import { fields, getOrganization, updateFieldData } from '../../../../services/m
 
 import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
-import { getCloudletKey, getOrgCloudletList } from '../../../../services/model/cloudlet';
+import { getOrgCloudletList } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
 import { HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1 } from "../../../../tutorial";
-import isEqual from 'lodash/isEqual'
+import { Grid } from '@material-ui/core';
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
@@ -209,18 +208,18 @@ class AutoProvPolicyReg extends React.Component {
         let cloudlets = data[fields.cloudlets]
         let cloudletList = undefined
         if (cloudlets && cloudlets.length > 0) {
-          cloudletList = []
-          for (let i = 0; i < cloudlets.length; i++) {
-            cloudletList.push(JSON.parse(cloudlets[i]))
-          }
+            cloudletList = []
+            for (let i = 0; i < cloudlets.length; i++) {
+                cloudletList.push(JSON.parse(cloudlets[i]))
+            }
         }
         return cloudletList
-      }
+    }
 
     onCreateAutoProvPolicy = async (data) => {
         if (data[fields.deployClientCount] || data[fields.minActiveInstances]) {
             let mcRequest = undefined
-            data[fields.cloudlets]= this.getCloudletList(data)
+            data[fields.cloudlets] = this.getCloudletList(data)
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
@@ -269,12 +268,10 @@ class AutoProvPolicyReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <Grid style={{ display: 'flex' }}>
-                    <Grid.Row>
-                        <Grid.Column width={16}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </Grid.Column>
-                    </Grid.Row>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    </Grid>
                 </Grid>
             </div>
         )

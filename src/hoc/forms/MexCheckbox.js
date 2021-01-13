@@ -1,7 +1,7 @@
 import React from 'react'
-import { Form } from 'semantic-ui-react';
 import { Switch } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+
 const MexCheckbox = (props) => {
   let form = props.form
   let style = form.style
@@ -36,19 +36,12 @@ const MexCheckbox = (props) => {
 
   const getMaterialCheckBox = () =>
     (
-      <CustomSwitch onChange={(e) => onChange(e.target.checked)} value={value} checked={value} />
+      <CustomSwitch onChange={(e) => onChange(e.target.checked)} value={value} checked={value} disabled={form.rules && form.rules.disabled}/>
     )
 
-  const getForm = () => (
-    <Form.Checkbox toggle onChange={(e, { checked }) => onChange(checked)} checked={value} disabled={form.rules && form.rules.disabled} style={form.style} />
-  )
   return (
     form ?
-      props.horizontal ?
-        <div>
-          {getMaterialCheckBox()}
-        </div> :
-        getForm()
+        getMaterialCheckBox()
       : null
   )
 }

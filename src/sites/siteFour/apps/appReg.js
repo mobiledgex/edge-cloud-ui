@@ -21,8 +21,8 @@ import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
-import { Grid } from 'semantic-ui-react';
 import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
+import { Grid } from '@material-ui/core';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 class AppReg extends React.Component {
@@ -916,17 +916,15 @@ class AppReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <Grid style={{ display: 'flex' }}>
-                    <Grid.Row>
-                        <Grid.Column width={this.state.showGraph ? 9 : 16}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </Grid.Column>
-                        {this.state.showGraph ? <Grid.Column width={7} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
-                            <Suspense fallback={<div></div>}>
-                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
-                            </Suspense>
-                        </Grid.Column> : null}
-                    </Grid.Row>
+                <Grid container>
+                    <Grid item xs={this.state.showGraph ? 7 : 12}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    </Grid>
+                    {this.state.showGraph ? <Grid  item xs={5} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                        <Suspense fallback={<div></div>}>
+                            <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
+                        </Suspense>
+                    </Grid> : null}
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>

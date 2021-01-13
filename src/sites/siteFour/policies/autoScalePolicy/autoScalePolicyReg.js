@@ -1,6 +1,5 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Grid } from 'semantic-ui-react';
 import MexForms, { MAIN_HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
@@ -11,6 +10,7 @@ import { getOrganizationList } from '../../../../services/model/organization';
 import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import * as serverData from '../../../../services/model/serverData';
 import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
+import { Grid } from '@material-ui/core';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -130,12 +130,10 @@ class AutoScalePolicyReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <Grid style={{ display: 'flex' }}>
-                    <Grid.Row>
-                        <Grid.Column width={16}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
-                        </Grid.Column>
-                    </Grid.Row>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                    </Grid>
                 </Grid>
             </div>
         )

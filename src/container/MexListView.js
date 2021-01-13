@@ -21,7 +21,10 @@ import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
 import cloneDeep from 'lodash/cloneDeep';
 import {sendRequests} from '../services/model/serverWorker'
+import {preferences} from '../helper/ls'
+import { PREF_MAP, PREF_PREFIX_SEARCH } from '../sites/siteFour/userSetting/preferences/datatablePref';
 
+const prefs = preferences()
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
@@ -35,14 +38,14 @@ class MexListView extends React.Component {
             isDetail: false,
             multiStepsArray: [],
             selected: [],
-            showMap: true,
+            showMap: prefs[PREF_MAP] !== undefined ? prefs[PREF_MAP] : true,
             dialogMessageInfo: {},
             uuid: 0,
             dropList: [],
             resetStream: false,
             deleteMultiple:[]
         };
-        this.filterText = ''
+        this.filterText = prefs[PREF_PREFIX_SEARCH] ? prefs[PREF_PREFIX_SEARCH].toLowerCase() : ''
         this.requestCount = 0;
         this.requestInfo = this.props.requestInfo
         this.keys = this.requestInfo.keys;
@@ -378,7 +381,7 @@ class MexListView extends React.Component {
     onFilterValue = (value) => {
         this.mapDetails = null
         if (value !== undefined && value.length >= 0) {
-            this.filterText = value.toLowerCase()
+            this.filterText = (prefs[PREF_PREFIX_SEARCH] ? prefs[PREF_PREFIX_SEARCH].toLowerCase() : '') + value.toLowerCase()
         }
 
         let dataList = cloneDeep(this.state.dataList)
@@ -461,13 +464,13 @@ class MexListView extends React.Component {
     }
 
     render() {
-        const { resetStream, deleteMultiple } = this.state
+        const { resetStream, deleteMultiple, showMap } = this.state
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} />
+                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose}/>
