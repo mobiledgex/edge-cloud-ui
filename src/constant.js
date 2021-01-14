@@ -4,6 +4,10 @@ import { time } from './utils/date_util'
 export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
 export const LS_USER_META_DATA = 'usermetadata'
 
+export const AUTO_ALERT = 'AutoAlert'
+export const ADD = 'Add'
+export const UPDATE = 'Update'
+
 export const TYPE_JSON = 'JSON'
 export const TYPE_STRING = 'String'
 export const TYPE_YAML = 'YAML'

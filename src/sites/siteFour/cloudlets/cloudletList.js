@@ -16,13 +16,16 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
+import { preferences } from '../../../helper/ls';
+import { alertPrefValid } from '../userSetting/preferences/constant';
+import { createAutoAlert } from '../../../services/model/alerts';
 
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null,
-            dialogMessageInfo:{}
+            dialogMessageInfo: {}
         }
         this._isMounted = false;
         this.action = '';
@@ -31,7 +34,10 @@ class CloudletList extends React.Component {
         this.multiStepperHeader = [{ label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
     }
 
-    onRegClose = (isEdited) => {
+    onRegClose = (isEdited, type, data) => {
+        if (isEdited && type === constant.ADD && alertPrefValid()) {
+            this.setState({ dialogMessageInfo: { message: `Create alert for ${data[fields.cloudletName]} cloudlet`, data, type: constant.AUTO_ALERT } })
+        }
         if (this._isMounted) {
             this.setState({ currentView: null })
         }
@@ -56,8 +62,8 @@ class CloudletList extends React.Component {
                 if (response.data && response.data.message) {
                     let message = response.data.message
                     if (message === 'Cloudlet has access key registered, please revoke the current access key first so a new one can be generated for the manifest') {
-                        let message= 'Cloudlet has access key registered, click on yes if you would like to revoke the current access key, so a new one can be generated for the manifest'
-                        this.setState({ dialogMessageInfo: { message, data:data } })
+                        let message = 'Cloudlet has access key registered, click on yes if you would like to revoke the current access key, so a new one can be generated for the manifest'
+                        this.setState({ dialogMessageInfo: { message, data: data } })
                     }
                 }
 
@@ -197,14 +203,17 @@ class CloudletList extends React.Component {
         this.customizedData()
     }
 
-    onDialogClose = async (valid, data)=>{
+    onDialogClose = async (valid, data, type) => {
         this.setState({ dialogMessageInfo: {} })
-        if(valid)
-        {
-            let mc = await revokeAccessKey(this, data)
-            if(mc && mc.response && mc.response.status === 200)
-            {
-                this.onCloudletManifest(undefined, data)
+        if (valid) {
+            if (type === constant.AUTO_ALERT) {
+                data = createAutoAlert(this, data, data[fields.cloudletName], 'Cloudlet')
+            }
+            else {
+                let mc = await revokeAccessKey(this, data)
+                if (mc && mc.response && mc.response.status === 200) {
+                    this.onCloudletManifest(undefined, data)
+                }
             }
         }
     }
@@ -214,7 +223,7 @@ class CloudletList extends React.Component {
             this.state.currentView ? this.state.currentView :
                 <React.Fragment>
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
-                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose}/>
+                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 </React.Fragment>
         )
     }
@@ -226,6 +235,7 @@ class CloudletList extends React.Component {
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };

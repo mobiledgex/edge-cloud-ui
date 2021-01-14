@@ -203,17 +203,16 @@ class CloudletReg extends React.Component {
                 if (mcRequest.response && mcRequest.response.data) {
                     responseData = mcRequest.response.data;
                 }
-                let orgData = request.orgData;
-                let isRestricted = orgData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
+                this.cloudletData = request.orgData;
+                let isRestricted = this.cloudletData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
 
                 let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
                 if (!this.isUpdate && isRestricted) {
                     this.restricted = true
                     if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
                         responseData.data.message = 'Cloudlet configured successfully, please wait requesting cloudlet manifest to bring up Platform VM(s) for cloudlet service'
-                        this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
-                        let cloudletManifest = await getCloudletManifest(this, orgData, false)
-                        this.cloudletData = orgData
+                        this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, this.cloudletData, responseData) })
+                        let cloudletManifest = await getCloudletManifest(this, this.cloudletData, false)
                         if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
                             this.setState({ cloudletManifest: cloudletManifest.response.data, showCloudletManifest: true, stepsArray: [] })
                         }
@@ -222,13 +221,13 @@ class CloudletReg extends React.Component {
                         let isRequestFailed = responseData ? responseData.code !== 200 : false
                         if (responseData || isRequestFailed) {
                             this.canCloseStepper = isRequestFailed
-                            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+                            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, this.cloudletData, responseData) })
                         }
                     }
                 }
                 else {
                     if (responseData) { this.canCloseStepper = responseData.code === 200 }
-                    this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+                    this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, this.cloudletData, responseData) })
                 }
             }
         }
@@ -350,7 +349,8 @@ class CloudletReg extends React.Component {
                 stepsArray: []
             })
             if (this.canCloseStepper) {
-                this.props.onClose(true)
+                let type = this.isUpdate ? constant.UPDATE : constant.ADD
+                this.props.onClose(true, type, this.cloudletData)
             }
         }
     }

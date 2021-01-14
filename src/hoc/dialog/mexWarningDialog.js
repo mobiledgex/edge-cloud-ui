@@ -23,6 +23,7 @@ const MexMessageDialog = (props) => {
     let message = props.messageInfo.message;
     let action = props.messageInfo.action;
     let data = props.messageInfo.data;
+    let type = props.messageInfo.type;
     return (
         message ?
             <Dialog open={message.length > 0}>
@@ -39,7 +40,7 @@ const MexMessageDialog = (props) => {
                     <Button onClick={() => { props.onClick(false) }} style={{color:'#D3D3D3'}}>
                         NO
                     </Button>
-                    <Button onClick={() => { props.onClick(true, data) }} style={{color:'#76ff03'}}>
+                    <Button onClick={() => { props.onClick(true, data, type) }} style={{color:'#76ff03'}}>
                         YES
                     </Button>
                 </DialogActions>

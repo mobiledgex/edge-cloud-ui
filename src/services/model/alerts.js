@@ -5,6 +5,7 @@ import * as serverData from './serverData'
 import * as formatter from './format'
 import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
+import { preferences } from '../../helper/ls'
 
 let fields = formatter.fields
 export const showAlertKeys = () => (
@@ -57,7 +58,7 @@ export const showAlertReceiverKeys = () => (
     ]
 )
 
-const cloudletSelector = (data) => {
+export const cloudletSelector = (data) => {
     let clouldet_key = {}
     if (data[fields.operatorName] || data[fields.cloudletName]) {
         if (data[fields.cloudletName]) {
@@ -166,6 +167,17 @@ export const createAlertReceiver = async (self, data) => {
     let requestData = getKey(data)
     let request = { method: ALERT_CREATE_RECEIVER, data: requestData }
     return await serverData.sendRequest(self, request)
+}
+
+export const createAutoAlert = async (self, data, alertName, selector) => {
+    data= {...data, ...preferences()}
+    data[fields.alertname] = `autoalert${alertName.replace(/-/g, '')}`
+    data[fields.selector] = selector
+    let mc = await createAlertReceiver(self, data)
+    if (mc && mc.response && mc.response.status === 200) {
+        self.props.handleAlertInfo('success', mc.response.data.message)
+    }
+    return data
 }
 
 export const deleteAlertReceiver = (data) => {
