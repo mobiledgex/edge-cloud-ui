@@ -49,11 +49,7 @@ export const sendRequest = (self, request, callback) => {
     let token = getToken(self)
     if (token) {
         const worker = new AlertWorker();
-<<<<<<< HEAD
-        worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token});
-=======
         worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token });
->>>>>>> 6f6f80a3629620d037cafbb6f361eb48ca63c5a1
         if (callback) {
             responseListener(self, worker, callback)
         }
