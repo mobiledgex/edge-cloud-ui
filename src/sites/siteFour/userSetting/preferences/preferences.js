@@ -144,9 +144,11 @@ class Preferences extends React.Component {
     }
 
     componentDidMount() {
-        let data = JSON.parse(localStorage.getItem(LS_USER_META_DATA))
-        this.setState({ data: data })
-
+        let data = localStorage.getItem(LS_USER_META_DATA)
+        if (data) {
+            data = JSON.parse(data)
+            this.setState({ data: data })
+        }
     }
 }
 

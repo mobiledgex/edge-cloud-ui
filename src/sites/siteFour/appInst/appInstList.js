@@ -15,6 +15,9 @@ import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog, Tooltip } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
+import { alertPrefValid } from '../userSetting/preferences/constant';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
+import { createAutoAlert } from '../../../services/model/alerts';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -23,7 +26,8 @@ class AppInstList extends React.Component {
             currentView: null,
             terminalData: [],
             openTerminal: false,
-            stepsArray: []
+            stepsArray: [],
+            dialogMessageInfo:{}
         }
         this._isMounted = false;
         this.action = '';
@@ -32,8 +36,11 @@ class AppInstList extends React.Component {
         this.multiStepperHeader = [{ label: 'App', field: fields.appName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }, { label: 'Cluster', field: fields.clusterName }]
     }
 
-    onRegClose = (isEdited) => {
+    onRegClose = (isEdited, type, data) => {
         if (this._isMounted) {
+            if (data && isEdited && type === constant.ADD && alertPrefValid()) {
+                this.setState({ dialogMessageInfo: { message: `Create alert for ${data[fields.appName]} app`, data, type: constant.AUTO_ALERT } })
+            }
             this.setState({ currentView: null })
         }
     }
@@ -192,6 +199,15 @@ class AppInstList extends React.Component {
         }
     }
 
+    onDialogClose = async (valid, data, type) => {
+        this.setState({ dialogMessageInfo: {} })
+        if (valid) {
+            if (type === constant.AUTO_ALERT) {
+                data = createAutoAlert(this, data, data[fields.appName], 'App Instance')
+            }
+        }
+    }
+
     /**
      * Customized data block
      * ** */
@@ -215,6 +231,7 @@ class AppInstList extends React.Component {
                             this.setState({ openTerminal: false })
                         }} />
                     </Dialog>
+                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 </div>
         )
     }
@@ -222,6 +239,7 @@ class AppInstList extends React.Component {
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };

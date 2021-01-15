@@ -16,7 +16,6 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import { preferences } from '../../../helper/ls';
 import { alertPrefValid } from '../userSetting/preferences/constant';
 import { createAutoAlert } from '../../../services/model/alerts';
 
@@ -35,10 +34,10 @@ class CloudletList extends React.Component {
     }
 
     onRegClose = (isEdited, type, data) => {
-        if (isEdited && type === constant.ADD && alertPrefValid()) {
-            this.setState({ dialogMessageInfo: { message: `Create alert for ${data[fields.cloudletName]} cloudlet`, data, type: constant.AUTO_ALERT } })
-        }
         if (this._isMounted) {
+            if (isEdited && type === constant.ADD && alertPrefValid()) {
+                this.setState({ dialogMessageInfo: { message: `Create alert for ${data[fields.cloudletName]} cloudlet`, data, type: constant.AUTO_ALERT } })
+            }
             this.setState({ currentView: null })
         }
     }

@@ -51,6 +51,7 @@ class ClusterInstReg extends React.Component {
         this.autoScalePolicyList = []
         this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
         this.updateFlowDataList = []
+        this.clusterInstData = undefined
     }
 
 
@@ -252,6 +253,10 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 responseData = mcRequest.response.data;
             }
+            if(responseData && responseData.code === 200)
+            {
+                this.clusterInstData = request.orgData
+            }
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
             this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
@@ -325,7 +330,8 @@ class ClusterInstReg extends React.Component {
         this.setState({
             stepsArray: []
         })
-        this.props.onClose(true)
+        let type = this.isUpdate ? constant.UPDATE : constant.ADD
+        this.props.onClose(true, type, this.clusterInstData)
     }
 
 

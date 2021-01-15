@@ -45,6 +45,7 @@ class ClusterInstReg extends React.Component {
         this.flavorList = []
         this.appList = []
         this.updateFlowDataList = []
+        this.appInstData = undefined
         //To avoid refecthing data from server
     }
 
@@ -404,6 +405,11 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 responseData = mcRequest.response.data;
             }
+
+            if(responseData && responseData.code === 200)
+            {
+                this.appInstData = request.orgData
+            }
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
             if (this._isMounted) {
                 this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
@@ -460,15 +466,6 @@ class ClusterInstReg extends React.Component {
                 forms: this.state.forms
             })
         }
-    }
-
-    stepperClose = () => {
-        if (this._isMounted) {
-            this.setState({
-                stepsArray: []
-            })
-        }
-        this.props.onClose(true)
     }
 
     onAddCancel = () => {
@@ -666,7 +663,8 @@ class ClusterInstReg extends React.Component {
                 stepsArray: []
             })
         }
-        this.props.onClose(true)
+        let type = this.isUpdate ? constant.UPDATE : constant.ADD
+        this.props.onClose(true, type, this.appInstData)
     }
 
     render() {

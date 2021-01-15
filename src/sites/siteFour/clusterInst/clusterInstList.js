@@ -15,12 +15,16 @@ import MexListView from '../../../container/MexListView';
 //reg
 import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
+import { alertPrefValid } from '../userSetting/preferences/constant';
+import { createAutoAlert } from '../../../services/model/alerts';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null
+            currentView: null,
+            dialogMessageInfo: {}
         }
         this.action = '';
         this.data = {};
@@ -28,6 +32,15 @@ class ClusterInstView extends React.Component {
         this._isMounted = false
         this.multiStepperHeader = [{ label: 'Cluster', field: fields.clusterName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
 
+    }
+
+    onRegClose = (isEdited, type, data) => {
+        if (this._isMounted) {
+            if (data && isEdited && type === constant.ADD && alertPrefValid()) {
+                this.setState({ dialogMessageInfo: { message: `Create alert for ${data[fields.appName]} cluster instance`, data, type: constant.AUTO_ALERT } })
+            }
+            this.setState({ currentView: null })
+        }
     }
 
     onRegClose = (isEdited) => {
@@ -83,6 +96,15 @@ class ClusterInstView extends React.Component {
         })
     }
 
+    onDialogClose = async (valid, data, type) => {
+        this.setState({ dialogMessageInfo: {} })
+        if (valid) {
+            if (type === constant.AUTO_ALERT) {
+                data = createAutoAlert(this, data, data[fields.clusterName], 'Cluster')
+            }
+        }
+    }
+
     /**
    * Customized data block
    **/
@@ -111,7 +133,10 @@ class ClusterInstView extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <React.Fragment>
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
+                </React.Fragment>
         )
     }
 
