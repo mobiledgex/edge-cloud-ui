@@ -35,8 +35,13 @@ class TrustPolicy extends React.Component {
     {
         if(!success, errorInfo)
         {
+            let cloudlets = []
+            if(data[fields.cloudlets])
+            {
+                cloudlets = data[fields.cloudlets]
+            }
             if (errorInfo.message === 'Policy in use by Cloudlet') {
-                this.props.handleAlertInfo('error', `Policy in use by Cloudlet${data[fields.cloudlets].length > 1 ? 's' : ''} ${data[fields.cloudlets].map(cloudlet=>{
+                this.props.handleAlertInfo('error', `Policy in use by Cloudlet${cloudlets.length > 1 ? 's' : ''} ${cloudlets.map(cloudlet=>{
                     return ' ' + cloudlet
                 })}`)
             }
