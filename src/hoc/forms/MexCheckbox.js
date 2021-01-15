@@ -4,11 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const MexCheckbox = (props) => {
   let form = props.form
-  let style = form.style
 
-  const getColor = () => {
-    return style ? style.color : null
-  }
   const [value, setValue] = React.useState(props.form.value ? props.form.value : false)
 
   const onChange = (checked) => {
@@ -18,7 +14,7 @@ const MexCheckbox = (props) => {
 
   const CustomSwitch = withStyles({
     switchBase: {
-      color: '#D32F2F',
+      color: '#ab2424',
       '&$checked': {
         color: '#388E3C',
       },
@@ -29,19 +25,20 @@ const MexCheckbox = (props) => {
     checked: {},
     track: {
       borderRadius: 26 / 2,
-      backgroundColor: '#D32F2F',
+      backgroundColor: '#ab2424',
       opacity: 1,
     },
   })(Switch);
 
   const getMaterialCheckBox = () =>
-    (
-      <CustomSwitch onChange={(e) => onChange(e.target.checked)} value={value} checked={value} disabled={form.rules && form.rules.disabled}/>
-    )
+  (
+    <CustomSwitch onChange={(e) => onChange(e.target.checked)} value={value} checked={value} disabled={form.rules && form.rules.disabled} />
+  )
+
 
   return (
     form ?
-        getMaterialCheckBox()
+      getMaterialCheckBox()
       : null
   )
 }

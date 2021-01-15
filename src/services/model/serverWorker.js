@@ -18,8 +18,7 @@ const getToken = (self) => {
 const responseListener = (self, worker, callback) => {
     worker.addEventListener('message', event => {
         if (event.data.status && event.data.status !== 200) {
-            if(checkExpiry(self, event.data.message))
-            {
+            if (checkExpiry(self, event.data.message)) {
                 callback(event.data)
             }
         }
@@ -29,19 +28,19 @@ const responseListener = (self, worker, callback) => {
     });
 }
 
-export const updateUser = (self, data, callback)=>{
-    let request = {method : UPDATE_USER, data : data}
+export const updateUser = (self, data, callback) => {
+    let request = { method: UPDATE_USER, data: data }
     sendRequest(self, request, callback)
 }
 
-export const updatePwd = (self, data, callback)=>{
-    let request = {method : NEW_PASSWORD, data : data}
+export const updatePwd = (self, data, callback) => {
+    let request = { method: NEW_PASSWORD, data: data }
     sendRequest(self, request, callback)
 }
 
-export const resetPwd = (self, data, callback)=>{
-    let request = {method : RESET_PASSWORD, data : data}
-    sendRequest(self, request).addEventListener('message', event => {    
+export const resetPwd = (self, data, callback) => {
+    let request = { method: RESET_PASSWORD, data: data }
+    sendRequest(self, request).addEventListener('message', event => {
         callback(event.data)
     });
 }
@@ -50,7 +49,11 @@ export const sendRequest = (self, request, callback) => {
     let token = getToken(self)
     if (token) {
         const worker = new AlertWorker();
+<<<<<<< HEAD
         worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token});
+=======
+        worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token });
+>>>>>>> 6f6f80a3629620d037cafbb6f361eb48ca63c5a1
         if (callback) {
             responseListener(self, worker, callback)
         }
