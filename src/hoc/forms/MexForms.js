@@ -312,7 +312,7 @@ const MexForms = (props) => {
 
     const showTip = (form) => {
         return (
-            <Tooltip title={form.tip.split('\n').map((info, i) => { return <strong key={i}>{info}<br /></strong> })} aria-label="tip">
+            <Tooltip title={<ul style={{listStyleType:'none', padding:0}}>{form.tip.split('\n').map((info, i) => { return <li key={i} style={{fontSize:13,marginTop:5}}>{info}</li> })}</ul>} aria-label="tip" style={{marginTop:7}}>
                 {getIcon('help')}
             </Tooltip>
         )
