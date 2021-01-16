@@ -10,7 +10,6 @@ import { fields, getOrganization, getUserRole } from '../../../../services/model
 import { createAlertReceiver } from '../../../../services/model/alerts';
 import { currentUser } from '../../../../services/model/serverData';
 import { sendRequests } from '../../../../services/model/serverWorker'
-import { Grid } from 'semantic-ui-react';
 import * as constant from '../../../../constant'
 import * as endpoints from '../../../../services/model/endpoints'
 import { showOrganizations } from '../../../../services/model/organization';
@@ -19,7 +18,7 @@ import { showAppInsts } from '../../../../services/model/appInstance';
 import { showClusterInsts } from '../../../../services/model/clusterInstance';
 import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
-import { LinearProgress } from '@material-ui/core'
+import { Grid, LinearProgress } from '@material-ui/core'
 
 const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK]
 const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]
@@ -53,7 +52,7 @@ class FlavorReg extends React.Component {
     }
 
     slackForm = () => ([
-        { field: fields.slackchannel, label: 'Slack Channel', formType: INPUT, placeholder: 'Enter Slack Channel to be Receiving the Alert', rules: { required: true }, width: 8, visible: true},
+        { field: fields.slackchannel, label: 'Slack Channel', formType: INPUT, placeholder: 'Enter Slack Channel to be Receiving the Alert', rules: { required: true }, width: 8, visible: true },
         { field: fields.slackwebhook, label: 'Slack URL', formType: INPUT, placeholder: 'Enter Slack Webhook URL', rules: { required: true }, width: 8, visible: true }
     ])
 
@@ -112,8 +111,7 @@ class FlavorReg extends React.Component {
                 form.value = undefined
                 this.updateUI(form)
             }
-            else if(form.field === fields.operatorName)
-            {
+            else if (form.field === fields.operatorName) {
                 form.value = getOrganization() && getUserRole() && getUserRole().includes(constant.OPERATOR) ? getOrganization() : undefined
                 this.updateUI(form)
             }
@@ -385,46 +383,41 @@ class FlavorReg extends React.Component {
             <div>
                 {loading ? <LinearProgress /> : null}
                 <div className="round_panel">
-                    <Grid style={{ display: 'flex' }}>
-                        <Grid.Row>
-                            <Grid.Column width={16}>
-                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                            </Grid.Column>
-                        </Grid.Row>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </Grid>
                     </Grid>
                 </div></div>
         )
     }
 
-    checkOrgExist = ()=>{
+    checkOrgExist = () => {
         if (getUserRole() && getUserRole().includes(constant.OPERATOR) && getOrganization()) {
             let exist = false
             for (let i = 0; i < this.cloudletList.length; i++) {
                 let cloudlet = this.cloudletList[i]
-                if(cloudlet[fields.operatorName] === getOrganization())
-                {
+                if (cloudlet[fields.operatorName] === getOrganization()) {
                     exist = true
                     break;
                 }
             }
             if (!exist) {
-                this.regions.map(region=>{
+                this.regions.map(region => {
                     let cloudlet = {}
                     cloudlet[fields.operatorName] = getOrganization()
                     cloudlet[fields.region] = region
                     this.cloudletList.push(cloudlet)
                 })
                 let forms = cloneDeep(this.state.forms)
-                for(let i=0;i<forms.length;i++)
-                {
+                for (let i = 0; i < forms.length; i++) {
                     let form = forms[i]
-                    if(form.field === fields.cloudletName)
-                    {
+                    if (form.field === fields.cloudletName) {
                         form.rules.disabled = true
                         break;
                     }
                 }
-                this.setState({forms})
+                this.setState({ forms })
             }
         }
     }
@@ -437,7 +430,7 @@ class FlavorReg extends React.Component {
                 if (request.method === endpoints.SHOW_CLOUDLET || request.method === endpoints.SHOW_ORG_CLOUDLET) {
                     this.cloudletList = [...this.cloudletList, ...data]
                     this.checkOrgExist()
-                    
+
                 }
                 else if (request.method === endpoints.SHOW_APP_INST) {
                     this.appInstList = [...this.appInstList, ...data]
