@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../../services/model/format';
+import { fields, getUserRole } from '../../../../services/model/format';
 import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../services/model/alerts';
 import Reg from './AlertReceiverReg';
 import * as constant from '../../../../constant'
@@ -54,6 +54,15 @@ class AlertList extends React.Component {
         ]
     }
 
+    canAdd = () => {
+        let valid = false
+        let role = getUserRole();
+        if (role === constant.ADMIN_MANAGER || role === constant.OPERATOR_MANAGER || role === constant.OPERATOR_CONTRIBUTOR) {
+            valid = true
+        }
+        return valid
+    }
+
     requestInfo = () => {
         return ({
             id: 'Alerts',
@@ -64,7 +73,7 @@ class AlertList extends React.Component {
             selection:true,
             viewMode: HELP_ALERTS,
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd: this.canAdd() ? this.onAdd : undefined,
             grouping: false
         })
     }

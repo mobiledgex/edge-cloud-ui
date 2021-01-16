@@ -1,6 +1,5 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Grid } from 'semantic-ui-react';
 import MexForms, { MAIN_HEADER, HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
@@ -13,6 +12,7 @@ import { updateTrustPolicy, createTrustPolicy } from '../../../../services/model
 import * as serverData from '../../../../services/model/serverData';
 import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
+import { Grid } from '@material-ui/core';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -259,12 +259,10 @@ class TrustPolicyReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <Grid style={{ display: 'flex' }}>
-                    <Grid.Row>
-                        <Grid.Column width={16}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </Grid.Column>
-                    </Grid.Row>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    </Grid>
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
