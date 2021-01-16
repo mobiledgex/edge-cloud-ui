@@ -260,9 +260,9 @@ class TrustPolicyReg extends React.Component {
         return (
             <div className="round_panel">
                 <Grid container>
-                        <Grid item xs={12}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </Grid>
+                    <Grid item xs={12}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    </Grid>
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>

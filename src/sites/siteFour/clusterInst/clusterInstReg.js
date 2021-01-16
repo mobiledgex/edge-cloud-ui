@@ -339,13 +339,13 @@ class ClusterInstReg extends React.Component {
         return (
             <div className="round_panel">
                 <Grid container>
-                        <Grid xs={6} item>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </Grid>
-                        <Grid xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }} item>
-                            <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
-                        </Grid>
+                    <Grid item xs={6}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </Grid>
+                    <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                        <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
+                    </Grid>
+                </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
         )

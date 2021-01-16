@@ -374,7 +374,7 @@ class CloudletReg extends React.Component {
                             <Grid item xs={6}>
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                             </Grid>
-                            <Grid item  xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                            <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                                 <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
                             </Grid>
                     </Grid>

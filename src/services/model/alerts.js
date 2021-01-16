@@ -3,7 +3,7 @@ import { SHOW_ALERT } from './endpoints'
 import { ALERT_SHOW_RECEIVER, ALERT_DELETE_RECEIVER, ALERT_CREATE_RECEIVER } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR } from '../../constant'
+import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { preferences } from '../../helper/ls'
 
@@ -34,8 +34,8 @@ export const showAlertKeys = () => (
 )
 
 export const showAlertReceiverKeys = () => (
-    [   
-        { field: fields.region, serverField: 'Region', label: 'Region', visible: false, filter:true },
+    [
+        { field: fields.region, serverField: 'Region', label: 'Region', visible: false, filter: true },
         { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter: true },
         { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true, filter: true },
         { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter: true },
@@ -54,7 +54,7 @@ export const showAlertReceiverKeys = () => (
         { field: fields.appCloudlet, serverField: 'AppInst#OS#cluster_inst_key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: false },
         { field: fields.operatorName, serverField: 'Cloudlet#OS#organization', label: 'Operator', sortable: true, visible: false },
         { field: fields.cloudletName, serverField: 'Cloudlet#OS#name', label: 'Cloudlet', sortable: true, visible: false },
-        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR] }
     ]
 )
 
@@ -80,7 +80,7 @@ const clusterInstSelector = (data) => {
     if (data[fields.operatorName] || data[fields.cloudletName]) {
         requestData.cloudlet_key = cloudletSelector(data)
     }
-    requestData.organization = data[fields.clusterdeveloper] ?  data[fields.clusterdeveloper] : data[fields.organizationName]
+    requestData.organization = data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
     return requestData
 }
 
@@ -110,12 +110,10 @@ const getKey = (data, isDelete) => {
         type: data[fields.type].toLowerCase(),
         severity: data[fields.severity].toLowerCase()
     }
-    if(data[fields.region])
-    {
-        alert['region'] = data[fields.region] 
+    if (data[fields.region]) {
+        alert['region'] = data[fields.region]
     }
-    if(data[fields.username])
-    {
+    if (data[fields.username]) {
         alert['user'] = data[fields.username]
     }
     if (data[fields.type] === RECEIVER_TYPE_SLACK) {
@@ -188,22 +186,19 @@ export const deleteAlertReceiver = (data) => {
 export const showAlerts = (data) => {
     let userRole = formatter.getUserRole()
     let org = formatter.getOrganization()
-    if(userRole && org)
-    {
-        if(userRole.includes(DEVELOPER))
-        {
+    if (userRole && org) {
+        if (userRole.includes(DEVELOPER)) {
             let labels = {}
             labels.apporg = org
             labels.clusterorg = org
-            data.alert = {labels}
+            data.alert = { labels }
         }
-        else if(userRole.includes(OPERATOR))
-        {
+        else if (userRole.includes(OPERATOR)) {
             let labels = {}
             labels.cloudletorg = org
-            data.alert = {labels}
+            data.alert = { labels }
         }
-        
+
     }
 
     return { method: SHOW_ALERT, data: data, keys: showAlertKeys() }
