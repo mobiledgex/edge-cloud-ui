@@ -102,27 +102,28 @@ class ClusterInstReg extends React.Component {
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
         this.setState({ region: region })
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.operatorName) {
-                this.operatorValueChange(form, forms, isInit)
-                if (isInit === undefined || isInit === false) {
-                    this.getCloudletInfo(form, forms)
+        if (region) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                if (form.field === fields.operatorName) {
+                    this.operatorValueChange(form, forms, isInit)
+                    if (isInit === undefined || isInit === false) {
+                        this.getCloudletInfo(form, forms)
+                    }
+                }
+                else if (form.field === fields.flavorName) {
+                    if (isInit === undefined || isInit === false) {
+                        this.getFlavorInfo(region, form, forms)
+                    }
+                }
+                else if (form.field === fields.autoScalePolicyName) {
+                    if (isInit === undefined || isInit === false) {
+                        this.getAutoScalePolicy(region, form, forms)
+                    }
                 }
             }
-            else if (form.field === fields.flavorName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getFlavorInfo(region, form, forms)
-                }
-            }
-            else if (form.field === fields.autoScalePolicyName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getAutoScalePolicy(region, form, forms)
-                }
-            }
+            this.requestedRegionList.push(region);
         }
-        this.requestedRegionList.push(region);
-
     }
 
     organizationValueChange = (currentForm, forms, isInit) => {

@@ -117,16 +117,17 @@ class CloudletReg extends React.Component {
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
         this.setState({ region: region })
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.trustPolicyName) {
-                if (isInit === undefined || isInit === false) {
-                    this.getTrustPolicy(region, form, forms)
+        if (region) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                if (form.field === fields.trustPolicyName) {
+                    if (isInit === undefined || isInit === false) {
+                        this.getTrustPolicy(region, form, forms)
+                    }
                 }
             }
+            this.requestedRegionList.push(region);
         }
-        this.requestedRegionList.push(region);
-
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
