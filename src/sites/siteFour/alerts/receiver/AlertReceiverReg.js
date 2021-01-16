@@ -388,7 +388,8 @@ class FlavorReg extends React.Component {
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </Grid>
                     </Grid>
-                </div></div>
+                </div>
+            </div>
         )
     }
 
