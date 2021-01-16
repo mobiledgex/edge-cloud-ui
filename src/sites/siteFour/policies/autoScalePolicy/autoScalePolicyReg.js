@@ -131,7 +131,7 @@ class AutoScalePolicyReg extends React.Component {
         return (
             <div className="round_panel">
                 <Grid container>
-                    <Grid xs={12}>
+                    <Grid item xs={12}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
                     </Grid>
                 </Grid>
