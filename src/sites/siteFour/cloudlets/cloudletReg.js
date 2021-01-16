@@ -16,12 +16,12 @@ import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../se
 import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
-import { Grid } from 'semantic-ui-react';
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
 
 import * as serverData from '../../../services/model/serverData'
 import { SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
+import { Grid } from '@material-ui/core';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
@@ -370,15 +370,13 @@ class CloudletReg extends React.Component {
             <div className="round_panel">
                 {this.state.showCloudletManifest ?
                     this.state.cloudletManifest ? this.cloudletManifestForm() : null :
-                    <Grid style={{ display: 'flex' }}>
-                        <Grid.Row>
-                            <Grid.Column width={8}>
+                    <Grid container>
+                            <Grid item xs={6}>
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                            </Grid.Column>
-                            <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                            </Grid>
+                            <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                                 <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
-                            </Grid.Column>
-                        </Grid.Row>
+                            </Grid>
                     </Grid>
                 }
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />

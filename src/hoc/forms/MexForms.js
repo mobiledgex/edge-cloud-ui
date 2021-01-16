@@ -383,7 +383,7 @@ const MexForms = (props) => {
             <div>
                 {error ? <div><Alert severity="error">{error}</Alert>
                     {props.style ? null : <div><br /><br /></div>}</div> : null}
-                <Form style={props.style ? props.style : { overflow: 'auto', height: `${error ? 83 : 93}vh` }}>
+                <Form style={props.style ? props.style : { overflow: 'auto', height: `${error ? 83 : 94}vh` }}>
                     <Form.Group widths="equal" style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10, alignContent: 'space-around' }}>
                         <Grid columns={2}>
                             {forms.map((form, i) => {

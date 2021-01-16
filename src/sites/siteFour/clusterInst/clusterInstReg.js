@@ -22,9 +22,9 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
-import { Grid } from 'semantic-ui-react';
 import { SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
 import { sendRequests } from '../../../services/model/serverWorker'
+import { Grid } from '@material-ui/core';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
@@ -332,15 +332,13 @@ class ClusterInstReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <Grid style={{ display: 'flex' }}>
-                    <Grid.Row>
-                        <Grid.Column width={8}>
-                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                        </Grid.Column>
-                        <Grid.Column width={8} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
-                            <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
-                        </Grid.Column>
-                    </Grid.Row>
+                <Grid container>
+                    <Grid item xs={6}>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    </Grid>
+                    <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                        <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
+                    </Grid>
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div>
