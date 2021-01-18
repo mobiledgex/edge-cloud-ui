@@ -300,7 +300,7 @@ const MexForms = (props) => {
                                 form.formType === SELECT ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === CHECKBOX ?
-                                        <MexCheckbox horizontal={true} form={form} onChange={onValueSelect}/> :
+                                        <div style={{marginTop:5}}><MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /></div> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
                                             loadButton(form, i) :
                                             null

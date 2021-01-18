@@ -152,7 +152,7 @@ const MexToolbar = (props) => {
             {
                 <div style={{ width: '100%' }}>
                     <Box display="flex" justifyContent="flex-end">
-                        {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true}/> : null}
+                        {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true} search={true}/> : null}
                         <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
                         <MonitoringMenu order={3} data={constant.metricParentTypes} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
                         <MonitoringMenu order={4} data={props.regions} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
