@@ -19,6 +19,7 @@ class SearchFilter extends React.Component {
 
     onClear = () => {
         this.setState({ filterText: '' })
+        this.props.onFilter('', true)
     }
 
     render() {
