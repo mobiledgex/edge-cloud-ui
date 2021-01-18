@@ -53,7 +53,7 @@ class AppReg extends React.Component {
     validateRemoteIP = (form) => {
         if (form.value && form.value.length > 0) {
             if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(form.value)) {
-                form.error = 'Remote CIDR format is invalid (must be between 0.0.0.0 to 255.255.255.255)'
+                form.error = 'Remote IP format is invalid (must be between 0.0.0.0 to 255.255.255.255)'
                 return false;
             }
         }
@@ -198,10 +198,10 @@ class AppReg extends React.Component {
     }
 
     outboundConnectionsForm = () => ([
-        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
-        { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 5, onClick: this.removeMultiForm }
+        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
 
     getOutboundConnectionsForm = (form) => {
@@ -477,7 +477,6 @@ class AppReg extends React.Component {
                 return form
             }
         })
-        console.log('Rahul1234', forms)
         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
         }
@@ -850,7 +849,7 @@ class AppReg extends React.Component {
                             portForm.value = !skipHCPort
                         }
                     }
-                    forms.splice(13 + multiFormCount, 0, this.getPortForm(portForms))
+                    forms.splice(14 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
@@ -872,7 +871,7 @@ class AppReg extends React.Component {
                             annotationForm.value = value
                         }
                     }
-                    forms.splice(14 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    forms.splice(15 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
                     multiFormCount += 1
                 }
             }
@@ -890,7 +889,7 @@ class AppReg extends React.Component {
                             configForm.value = config[fields.config]
                         }
                     }
-                    forms.splice(15 + multiFormCount, 0, this.getConfigForm(configForms))
+                    forms.splice(16 + multiFormCount, 0, this.getConfigForm(configForms))
                     multiFormCount += 1
                 }
             }
@@ -911,7 +910,7 @@ class AppReg extends React.Component {
                             outboundConnectionsForm.value = requiredOutboundConnection['port']
                         }
                     }
-                    forms.splice(16 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                    forms.splice(17 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
                     multiFormCount += 1
                 }
             }
@@ -932,6 +931,7 @@ class AppReg extends React.Component {
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: CHECKBOX, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
+            { field: fields.trusted, label: 'Trusted', formType: CHECKBOX, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
             { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
             { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
@@ -944,7 +944,6 @@ class AppReg extends React.Component {
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: CHECKBOX, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
             { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
-            { field: fields.trusted, label: 'Trusted', formType: CHECKBOX, visible: true, value: false, update: { id: ['37'] }, advance: false, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
         ]
     }
 
@@ -1020,10 +1019,10 @@ class AppReg extends React.Component {
         return (
             <div className="round_panel">
                 <Grid container>
-                    <Grid item xs={this.state.showGraph ? 7 : 12}>
+                    <Grid item xs={this.state.showGraph ? 6 : 12}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </Grid>
-                    {this.state.showGraph ? <Grid  item xs={5} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                    {this.state.showGraph ? <Grid  item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                         <Suspense fallback={<div></div>}>
                             <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                         </Suspense>
