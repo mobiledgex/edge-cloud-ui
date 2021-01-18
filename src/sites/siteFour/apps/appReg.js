@@ -50,6 +50,30 @@ class AppReg extends React.Component {
         this.imagePathTyped = false
     }
 
+    validateRemoteIP = (form) => {
+        if (form.value && form.value.length > 0) {
+            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(form.value)) {
+                form.error = 'Remote CIDR format is invalid (must be between 0.0.0.0 to 255.255.255.255)'
+                return false;
+            }
+        }
+        form.error = undefined;
+        return true;
+
+    }
+
+    validateOCPortRange = (form) => {
+        if (form.value && form.value.length > 0) {
+            let value = parseInt(form.value)
+            if (value < 1 || value > 65535) {
+                form.error = 'Invalid Port Range (must be between 1-65535)'
+                return false;
+            }
+        }
+        form.error = undefined;
+        return true;
+    }
+
     validatePortRange = (currentForm) => {
         let forms = currentForm.parent.form.forms
         let protocol = undefined
@@ -171,6 +195,17 @@ class AppReg extends React.Component {
 
     getConfigForm = (form) => {
         return ({ uuid: uuid(), field: fields.configmulti, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
+    }
+
+    outboundConnectionsForm = () => ([
+        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 5, onClick: this.removeMultiForm }
+    ])
+
+    getOutboundConnectionsForm = (form) => {
+        return ({ uuid: uuid(), field: fields.requiredOutboundConnectionmulti, formType: MULTI_FORM, forms: form ? form : this.outboundConnectionsForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -426,6 +461,28 @@ class AppReg extends React.Component {
         }
     }
 
+    trustedChange = (currentForm, forms, isInit)=>{
+        forms = forms.filter((form) => {
+            if (form.field === fields.requiredOutboundConnections) {
+                form.visible = currentForm.value
+                return form
+            }
+            else if (form.field === fields.requiredOutboundConnectionmulti) {
+                if (currentForm.value) {
+                    return form
+                }
+            }
+            else
+            {
+                return form
+            }
+        })
+        console.log('Rahul1234', forms)
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms: forms })
+        }
+    }
+
     checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
@@ -463,6 +520,9 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.deploymentManifest) {
             this.deploymentManifestChange(form, forms, isInit)
+        }
+        else if (form.field === fields.trusted) {
+            this.trustedChange(form, forms, isInit)
         }
         if (flowDataList.length > 0) {
             if (isInit) {
@@ -526,6 +586,7 @@ class AppReg extends React.Component {
             let ports = ''
             let skipHCPorts = ''
             let annotations = ''
+            let requiredOutboundConnections = []
             let configs = []
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
@@ -563,6 +624,14 @@ class AppReg extends React.Component {
                         else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
                             configs.push(multiFormData)
                         }
+                        else if (multiFormData[fields.ocPort] && multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP])
+                        {
+                            let requiredOutboundConnection = {}
+                            requiredOutboundConnection.remote_ip = multiFormData[fields.ocRemoteIP]
+                            requiredOutboundConnection.port = parseInt(multiFormData[fields.ocPort])
+                            requiredOutboundConnection.protocol = multiFormData[fields.ocProtocol]
+                            requiredOutboundConnections.push(requiredOutboundConnection)
+                        }
                     }
                     data[uuid] = undefined
                 }
@@ -580,12 +649,23 @@ class AppReg extends React.Component {
                     if (configs.length > 0) {
                         data[fields.configs] = configs
                     }
+                    if (requiredOutboundConnections.length > 0) {
+                        data[fields.requiredOutboundConnections] = requiredOutboundConnections
+                    }
                     if (this.isUpdate) {
                         let autoProvPolicies = data[fields.autoProvPolicies]
                         if (autoProvPolicies && autoProvPolicies.length > 0) {
                             data[fields.autoProvPolicies] = data[fields.autoProvPolicies][0].value
                         }
                         let updateData = updateFieldData(this, forms, data, this.originalData)
+                        if(updateData[fields.trusted] !== undefined)
+                        {
+                            let roc = this.originalData[fields.requiredOutboundConnection]
+                            if(!updateData[fields.trusted] && roc && roc.length > 0)
+                            {
+                                updateData[fields.fields].push("38", "38.1", "38.2", "38.4")
+                            }
+                        }
                         if (updateData.fields.length > 0) {
                             let mcRequest = await updateApp(this, updateData)
                             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
@@ -814,6 +894,27 @@ class AppReg extends React.Component {
                     multiFormCount += 1
                 }
             }
+            if (data[fields.requiredOutboundConnections]) {
+                let requiredOutboundConnections = data[fields.requiredOutboundConnections]
+                for (let i = 0; i < requiredOutboundConnections.length; i++) {
+                    let requiredOutboundConnection = requiredOutboundConnections[i]
+                    let outboundConnectionsForms = this.outboundConnectionsForm()
+                    for (let j = 0; j < outboundConnectionsForms.length; j++) {
+                        let outboundConnectionsForm = outboundConnectionsForms[j];
+                        if (outboundConnectionsForm.field === fields.ocProtocol) {
+                            outboundConnectionsForm.value = requiredOutboundConnection['protocol']
+                        }
+                        else if (outboundConnectionsForm.field === fields.ocRemoteIP) {
+                            outboundConnectionsForm.value = requiredOutboundConnection['remote_ip']
+                        }
+                        else if (outboundConnectionsForm.field === fields.ocPort) {
+                            outboundConnectionsForm.value = requiredOutboundConnection['port']
+                        }
+                    }
+                    forms.splice(16 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                    multiFormCount += 1
+                }
+            }
         }
     }
 
@@ -834,6 +935,7 @@ class AppReg extends React.Component {
             { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443' },
             { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
+            { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
             { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },

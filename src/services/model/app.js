@@ -35,6 +35,7 @@ export const keys = () => ([
     { field: fields.trusted, serverField: 'trusted', label: 'Deploy On Trusted Cloudlet' },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
+    { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: constant.TYPE_JSON },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
@@ -68,6 +69,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.annotations]) {
             app.annotations = data[fields.annotations]
+        }
+        if (data[fields.requiredOutboundConnections]) {
+            app.required_outbound_connections = data[fields.requiredOutboundConnections]
         }
         
         app.default_flavor = { name: data[fields.flavorName] }
