@@ -21,10 +21,8 @@ import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
 import cloneDeep from 'lodash/cloneDeep';
 import {sendRequests} from '../services/model/serverWorker'
-import {preferences} from '../helper/ls'
-import { PREF_MAP, PREF_PREFIX_SEARCH } from '../sites/siteFour/userSetting/preferences/datatablePref';
+import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
 
-const prefs = preferences()
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
@@ -38,14 +36,14 @@ class MexListView extends React.Component {
             isDetail: false,
             multiStepsArray: [],
             selected: [],
-            showMap: prefs[PREF_MAP] !== undefined ? prefs[PREF_MAP] : true,
+            showMap: showMapPref(),
             dialogMessageInfo: {},
             uuid: 0,
             dropList: [],
             resetStream: false,
             deleteMultiple:[]
         };
-        this.filterText = prefs[PREF_PREFIX_SEARCH] ? prefs[PREF_PREFIX_SEARCH].toLowerCase() : ''
+        this.filterText = prefixSearchPref()
         this.requestCount = 0;
         this.requestInfo = this.props.requestInfo
         this.keys = this.requestInfo.keys;
@@ -381,7 +379,7 @@ class MexListView extends React.Component {
     onFilterValue = (value) => {
         this.mapDetails = null
         if (value !== undefined && value.length >= 0) {
-            this.filterText = (prefs[PREF_PREFIX_SEARCH] ? prefs[PREF_PREFIX_SEARCH].toLowerCase() : '') + value.toLowerCase()
+            this.filterText = prefixSearchPref() + value.toLowerCase()
         }
 
         let dataList = cloneDeep(this.state.dataList)

@@ -1,6 +1,7 @@
 import React from 'react'
-import MexForms, { CHECKBOX, INPUT } from '../../../../hoc/forms/MexForms'
-import { PREF_MAP, PREF_PREFIX_SEARCH } from '../../../../utils/sharedPreferences_util'
+import MexForms, { SELECT } from '../../../../hoc/forms/MexForms'
+import { timezoneName, timezones } from '../../../../utils/date_util'
+import { PREF_TIMEZONE } from '../../../../utils/sharedPreferences_util'
 
 class DatatablePreferences extends React.Component {
     constructor(props) {
@@ -13,12 +14,9 @@ class DatatablePreferences extends React.Component {
 
     forms = () => (
         [
-            { field: PREF_MAP, label: 'Map', value: false, formType: CHECKBOX, visible:true, tip: 'Show map by default' },
-            { field: PREF_PREFIX_SEARCH, label: 'Prefix Search', formType: INPUT, visible:true, rules:{onBlur:true}, placeholder:'Prefix search with default value', tip: 'Default prefix added to the search'}
+            { field: PREF_TIMEZONE, label: 'Timezone', formType: SELECT, visible: true, placeholder: 'Select Timezone', tip: 'Override browser timezone', options: timezones() }
         ]
     )
-
-
 
     checkForms = (form, forms, isInit) => {
 
@@ -45,7 +43,12 @@ class DatatablePreferences extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             this.checkForms(form, forms, true)
-            form.value = data[form.field]
+            if (form.field === PREF_TIMEZONE) {
+                form.value = data[form.field] ? data[form.field] : timezoneName()
+            }
+            else {
+                form.value = data[form.field]
+            }
         }
         this.setState({ forms })
     }

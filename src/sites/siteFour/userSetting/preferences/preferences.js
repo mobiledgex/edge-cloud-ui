@@ -11,19 +11,20 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Gri
 
 import AlerReceiverPref from './alertReceiverPref'
 import DatatablePref from './datatablePref'
+import TimezonePref from './timezonePref'
 
 import cloneDeep from 'lodash/cloneDeep'
+import { getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
 
 export const PREF_ALERT_RECEIVERS = 'AlertReceivers'
 export const PREF_DATATABLE = 'Datatable'
-
-
+export const PREF_TIMEZONE = 'Timezone'
 
 const preferencesList = [
     { id: PREF_DATATABLE, label: 'Data Table' },
     { id: PREF_ALERT_RECEIVERS, label: 'Alert Receivers' },
+    { id: PREF_TIMEZONE, label: 'Timezone' },
 ]
-
 class Preferences extends React.Component {
     constructor(props) {
         super(props)
@@ -82,18 +83,36 @@ class Preferences extends React.Component {
         })
     }
 
-    prefView = (id) => {
-        let data = cloneDeep(this.state.data)
-        switch (id) {
-            case PREF_ALERT_RECEIVERS:
-                return <AlerReceiverPref data={data} update={this.updateData}/>
-            case PREF_DATATABLE:
-                return <DatatablePref data={data} update={this.updateData}/>
+    getOrgData = (data)=>{
+        if(getUserRole() && !isAdmin())
+        {
+            data = data[getOrganization()]
         }
+        return data
+    }
+
+    updateOrgData = (update) => {
+        this.setState(prevState => {
+            let data = prevState.data
+            data[getOrganization()] = update
+            return { data }
+        })
     }
 
     updateData = (data) => {
         this.setState({ data })
+    }
+
+    prefView = (id) => {
+        let data = cloneDeep(this.state.data)
+        switch (id) {
+            case PREF_ALERT_RECEIVERS:
+                return <AlerReceiverPref data={isAdmin() ? data : this.getOrgData(data)} update={isAdmin() ? this.updateData : this.updateOrgData}/>
+            case PREF_DATATABLE:
+                return <DatatablePref data={data} update={this.updateData}/>
+            case PREF_TIMEZONE:
+                return <TimezonePref data={data} update={this.updateData}/>
+        }
     }
 
     render() {
@@ -145,10 +164,13 @@ class Preferences extends React.Component {
 
     componentDidMount() {
         let data = localStorage.getItem(LS_USER_META_DATA)
-        if (data) {
-            data = JSON.parse(data)
-            this.setState({ data: data })
+        data = data ? JSON.parse(data) : {}
+        if(!isAdmin())
+        {
+            let org = getOrganization()
+            data[org] = data[org] ? data[org] : {}
         }
+        this.setState({ data: data })
     }
 }
 

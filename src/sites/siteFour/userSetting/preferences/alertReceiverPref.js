@@ -2,10 +2,6 @@ import React from 'react'
 import MexForms, { INPUT, SELECT } from '../../../../hoc/forms/MexForms'
 import { RECEIVER_TYPE_EMAIL, RECEIVER_TYPE_SLACK } from '../../../../constant';
 import { fields } from '../../../../services/model/format';
-
-
-
-
 class AlertReceiverPreferences extends React.Component {
     constructor(props) {
         super(props)
@@ -66,7 +62,9 @@ class AlertReceiverPreferences extends React.Component {
         let data = this.props.data
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            form.value = data[form.field]
+            if (data) {
+                form.value = data[form.field]
+            }
             this.checkForms(form, forms, true)
         }
         this.setState({ forms })

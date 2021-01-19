@@ -5,7 +5,7 @@ import * as serverData from './serverData'
 import * as formatter from './format'
 import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { preferences } from '../../helper/ls'
+import { orgUserMetaDataLS } from '../../helper/ls'
 
 let fields = formatter.fields
 export const showAlertKeys = () => (
@@ -168,7 +168,7 @@ export const createAlertReceiver = async (self, data) => {
 }
 
 export const createAutoAlert = async (self, data, alertName, selector) => {
-    data= {...data, ...preferences()}
+    data= {...data, ...orgUserMetaDataLS()}
     data[fields.alertname] = `autoalert${alertName.replace(/-/g, '')}`
     data[fields.selector] = selector
     let mc = await createAlertReceiver(self, data)
