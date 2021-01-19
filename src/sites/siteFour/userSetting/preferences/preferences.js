@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../../actions';
+import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
 import CloseIcon from '@material-ui/icons/Close';
 import { LS_USER_META_DATA } from '../../../../constant';
@@ -15,6 +16,8 @@ import TimezonePref from './timezonePref'
 
 import cloneDeep from 'lodash/cloneDeep'
 import { getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
+import { getUserMetaData } from '../../../../helper/ls';
+import { timezonePref } from '../../../../utils/sharedPreferences_util';
 
 export const PREF_ALERT_RECEIVERS = 'AlertReceivers'
 export const PREF_DATATABLE = 'Datatable'
@@ -23,7 +26,7 @@ export const PREF_TIMEZONE = 'Timezone'
 const preferencesList = [
     { id: PREF_DATATABLE, label: 'Data Table' },
     { id: PREF_ALERT_RECEIVERS, label: 'Alert Receivers' },
-    { id: PREF_TIMEZONE, label: 'Timezone' },
+    { id: PREF_TIMEZONE, label: 'Date & Time' },
 ]
 class Preferences extends React.Component {
     constructor(props) {
@@ -34,6 +37,7 @@ class Preferences extends React.Component {
             loading: false,
             header: 0
         }
+        this.isTimezoneChanged = false
     }
 
     handleOpen = () => {
@@ -68,16 +72,29 @@ class Preferences extends React.Component {
         }
     }
 
+    onTimezoneChangeEvent = (value) => {	
+        var event = new Event('MexTimezoneChangeEvent');	   
+        moment.tz.setDefault(timezonePref())	
+        window.dispatchEvent(event);	
+    } 
+
     onSaveResponse = (mc) => {
         this.setState({ loading: false })
         if (mc && mc.response && mc.response.status === 200) {
+            if(this.isTimezoneChanged)
+            {
+                this.onTimezoneChangeEvent()
+            }
             this.props.handleAlertInfo('success', 'Update Successful')
         }
     }
 
     onSave = () => {
         this.setState({ loading: true }, () => {
-            let data = JSON.stringify(this.state.data)
+            let data = this.state.data
+            let oldData = getUserMetaData()
+            this.isTimezoneChanged = data[PREF_TIMEZONE] !== undefined && oldData[PREF_TIMEZONE] !== data[PREF_TIMEZONE]
+            data = JSON.stringify(data)
             localStorage.setItem(LS_USER_META_DATA, data)
             updateUser(this, { Metadata: data }, this.onSaveResponse)
         })
