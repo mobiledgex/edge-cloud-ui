@@ -15,7 +15,7 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
 import { createApp, updateApp } from '../../../services/model/app';
-import { refreshAllAppInst } from '../../../services/model/appInstance';
+import { refreshAllAppInst, showAppInsts } from '../../../services/model/appInstance';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
@@ -23,7 +23,7 @@ import { uploadData } from '../../../utils/file_util'
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
-
+import { SHOW_APP_INST } from '../../../services/model/endpoints';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 class AppReg extends React.Component {
@@ -48,6 +48,7 @@ class AppReg extends React.Component {
         this.tlsCount = 0
         this.updateFlowDataList = []
         this.imagePathTyped = false
+        this.appInstExist = false
     }
 
     validateRemoteIP = (form) => {
@@ -390,9 +391,9 @@ class AppReg extends React.Component {
                 this.updateImagePath(forms, form)
             }
         }
-        this.setState({
-            forms: forms
-        })
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms })
+        }
     }
 
     versionValueChange = (currentForm, forms, isInit) => {
@@ -402,9 +403,9 @@ class AppReg extends React.Component {
                 this.updateImagePath(forms, form)
             }
         }
-        this.setState({
-            forms: forms
-        })
+        if (isInit === undefined || isInit === false) {
+            this.setState({ forms })
+        }
     }
 
     accessTypeChange = (currentForm, forms, isInit) => {
@@ -461,7 +462,7 @@ class AppReg extends React.Component {
         }
     }
 
-    trustedChange = (currentForm, forms, isInit)=>{
+    trustedChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
             if (form.field === fields.requiredOutboundConnections) {
                 form.visible = currentForm.value
@@ -472,8 +473,7 @@ class AppReg extends React.Component {
                     return form
                 }
             }
-            else
-            {
+            else {
                 return form
             }
         })
@@ -623,8 +623,7 @@ class AppReg extends React.Component {
                         else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
                             configs.push(multiFormData)
                         }
-                        else if (multiFormData[fields.ocPort] && multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP])
-                        {
+                        else if (multiFormData[fields.ocPort] && multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP]) {
                             let requiredOutboundConnection = {}
                             requiredOutboundConnection.remote_ip = multiFormData[fields.ocRemoteIP]
                             requiredOutboundConnection.port = parseInt(multiFormData[fields.ocPort])
@@ -657,11 +656,9 @@ class AppReg extends React.Component {
                             data[fields.autoProvPolicies] = data[fields.autoProvPolicies][0].value
                         }
                         let updateData = updateFieldData(this, forms, data, this.originalData)
-                        if(updateData[fields.trusted] !== undefined)
-                        {
+                        if (updateData[fields.trusted] !== undefined) {
                             let roc = this.originalData[fields.requiredOutboundConnection]
-                            if(!updateData[fields.trusted] && roc && roc.length > 0)
-                            {
+                            if (!updateData[fields.trusted] && roc && roc.length > 0) {
                                 updateData[fields.fields].push("38", "38.1", "38.2", "38.4")
                             }
                         }
@@ -785,6 +782,7 @@ class AppReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
 
+            requestTypeList.push(showAppInsts({ region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }))
             requestTypeList.push(showFlavors({ region: data[fields.region] }))
             requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
 
@@ -798,6 +796,9 @@ class AppReg extends React.Component {
                     }
                     else if (request.method === SHOW_AUTO_PROV_POLICY) {
                         this.autoProvPolicyList = mcRequest.response.data
+                    }
+                    else if (request.method === SHOW_APP_INST) {
+                        this.appInstExist = mcRequest.response.data.length > 0
                     }
                 }
             }
@@ -952,8 +953,9 @@ class AppReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
+
                 if (form.field === fields.refreshAppInst) {
-                    form.visible = data[fields.deployment] !== constant.DEPLOYMENT_TYPE_VM
+                    form.visible = this.appInstExist && (data[fields.deployment] !== constant.DEPLOYMENT_TYPE_VM)
                 }
                 if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
@@ -972,6 +974,15 @@ class AppReg extends React.Component {
                         form.value = data[form.field]
                     }
                     this.checkForms(form, forms, true, data)
+                }
+
+                if (this.appInstExist === false) {
+                    if (form.field == fields.deployment) {
+                        form.update = { id: ['15'] }
+                    }
+                    if (form.field == fields.accessType) {
+                        form.update = { id: ['29'] }
+                    }
                 }
             }
         }
@@ -1022,7 +1033,7 @@ class AppReg extends React.Component {
                     <Grid item xs={this.state.showGraph ? 6 : 12}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </Grid>
-                    {this.state.showGraph ? <Grid  item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                    {this.state.showGraph ? <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                         <Suspense fallback={<div></div>}>
                             <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                         </Suspense>
