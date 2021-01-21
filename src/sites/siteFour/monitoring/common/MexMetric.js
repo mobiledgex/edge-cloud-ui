@@ -6,7 +6,6 @@ import { fields, getOrganization, isAdmin } from '../../../../services/model/for
 import { sendAuthRequest } from '../../../../services/model/serverWorker'
 import { WORKER_METRIC } from '../../../../services/worker/constant'
 import MexWorker from '../../../../services/worker/mex.worker.js'
-import GraphicEqOutlinedIcon from '@material-ui/icons/GraphicEqOutlined';
 
 import MexChart from '../charts/MexChart'
 
