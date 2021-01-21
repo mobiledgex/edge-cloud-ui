@@ -226,6 +226,7 @@ class RegistryUserForm extends React.Component {
     }
 
     publicConfigResponse = (mc) => {
+        
         this.props.handleLoadingSpinner(false)
         if (mc && mc.response && mc.response.status === 200) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
