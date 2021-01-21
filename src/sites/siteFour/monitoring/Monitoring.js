@@ -10,7 +10,7 @@ import * as dateUtil from '../../../utils/date_util'
 import { fields, getUserRole, isAdmin, getOrganization } from '../../../services/model/format';
 
 import MexWorker from '../../../services/worker/mex.worker.js'
-import { sendRequest, sendRequests } from '../../../services/model/serverWorker'
+import { sendAuthRequest, sendRequests } from '../../../services/model/serverWorker'
 
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
 
@@ -289,7 +289,7 @@ class Monitoring extends React.Component {
         this.props.handleViewMode(HELP_MONITORING)
         this.defaultStructure()
         if (isAdmin()) {
-            sendRequest(this, showOrganizations(), this.orgResponse)
+            sendAuthRequest(this, showOrganizations(), this.orgResponse)
         }
         else {
             this.fetchShowData()

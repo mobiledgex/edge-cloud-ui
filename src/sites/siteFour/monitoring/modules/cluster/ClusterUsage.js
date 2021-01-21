@@ -2,7 +2,7 @@ import React from 'react'
 import UsageList from '../../list/UsageList'
 import { fields, getOrganization, isAdmin } from '../../../../../services/model/format'
 import { clusterInstUsageLogs, clusterUsageKeys } from '../../../../../services/model/clusterInstUsage'
-import { sendRequest } from '../../../../../services/model/serverWorker'
+import { sendAuthRequest } from '../../../../../services/model/serverWorker'
 import { withRouter } from 'react-router-dom'
 
 class MexAppUsage extends React.Component {
@@ -46,7 +46,7 @@ class MexAppUsage extends React.Component {
 
     event = async (range) => {
         this.regions.map(region => {
-            sendRequest(this, clusterInstUsageLogs({
+            sendAuthRequest(this, clusterInstUsageLogs({
                 region: region,
                 starttime: range.starttime,
                 endtime: range.endtime

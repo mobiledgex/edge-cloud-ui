@@ -7,8 +7,6 @@ import uuid from 'uuid'
 import { Card, Dialog, GridListTile, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { LTTB } from 'downsample';
-import moment from 'moment'
-
 
 const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
     let datasets = []
@@ -184,7 +182,7 @@ class MexLineChart extends React.Component {
         this.setState({ fullscreen: true })
     }
 
-    renderFullScreen = (fullscreen, datasets) => {
+    renderFullScreen = (id, fullscreen, datasets) => {
         return (
             <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
                 <div>
@@ -198,7 +196,7 @@ class MexLineChart extends React.Component {
                     </div>
                 </div>
                 <div style={{ padding: 20, height: '100vh' }}>
-                    <Line datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
+                    <Line id={`${id}-fs`} datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
                 </div>
             </Dialog>
         )
@@ -206,7 +204,11 @@ class MexLineChart extends React.Component {
 
     render() {
         const { fullscreen, datasets } = this.state
-        const { id, style } = this.props
+        const { style } = this.props
+
+        let id = this.props.id
+        id = id.toLowerCase()
+
         return (
             datasets.length > 0 ?
                 <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
@@ -224,9 +226,9 @@ class MexLineChart extends React.Component {
                             </div>
                             <br />
                             <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
-                                <Line datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} />
+                                <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} />
                             </div>
-                            {this.renderFullScreen(fullscreen, datasets)}
+                            {this.renderFullScreen(id, fullscreen, datasets)}
                         </div>
                     </Card>
                 </GridListTile> : null

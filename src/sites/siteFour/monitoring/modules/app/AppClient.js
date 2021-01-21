@@ -1,7 +1,7 @@
 import React from 'react'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/model/clientMetrics'
-import { sendRequest } from '../../../../../services/model/serverWorker'
+import { sendAuthRequest } from '../../../../../services/model/serverWorker'
 import { withRouter } from 'react-router-dom'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
 
@@ -76,7 +76,7 @@ class MexAppClient extends React.Component {
 
     client = (range) => {
         this.regions.map(region => {
-            sendRequest(this, clientMetrics({
+            sendAuthRequest(this, clientMetrics({
                 region: region,
                 selector: "api",
                 starttime: range.starttime,

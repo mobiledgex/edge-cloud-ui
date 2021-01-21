@@ -9,7 +9,7 @@ import * as actions from '../../actions';
 import { GridLoader } from "react-spinners";
 import SideNav from './defaultLayout/sideNav'
 import MexWorker from '../../services/worker/mex.worker.js'
-import { sendRequest } from '../../services/model/serverWorker';
+import { sendAuthRequest } from '../../services/model/serverWorker';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
@@ -54,7 +54,7 @@ class SiteFour extends React.Component {
     }
 
     userRoleInfo = () => {
-        sendRequest(this, { method: SHOW_ROLE }, this.roleResponse)
+        sendAuthRequest(this, { method: SHOW_ROLE }, this.roleResponse)
     }
 
     helpClick = (currentStep) => {
