@@ -7,7 +7,7 @@ import { Drawer } from '@material-ui/core';
 import { clusterEventLogs } from '../../../../services/model/clusterEvent'
 import { appInstEventLogs } from '../../../../services/model/appInstEvent'
 import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
-import { sendRequest, sendRequests } from '../../../../services/model/serverWorker'
+import { sendAuthRequest, sendRequests } from '../../../../services/model/serverWorker'
 import { showOrganizations } from '../../../../services/model/organization'
 
 import { fields, getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
@@ -215,7 +215,7 @@ class GlobalUsageLog extends React.Component {
     componentDidUpdate(prePros, preState) {
         if (this.props.userRole && prePros.userRole !== this.props.userRole) {
             if (this.props.userRole.includes(constant.ADMIN)) {
-                sendRequest(this, showOrganizations(), this.orgResponse)
+                sendAuthRequest(this, showOrganizations(), this.orgResponse)
             }
             else {
                 this.endRange = dateUtil.currentUTCTime()

@@ -2,7 +2,7 @@ import React from 'react'
 import UsageList from '../../list/UsageList'
 import { fields, getOrganization, isAdmin } from '../../../../../services/model/format'
 import { appInstUsageLogs, appUsageKeys } from '../../../../../services/model/appInstUsage'
-import { sendRequest } from '../../../../../services/model/serverWorker'
+import { sendAuthRequest } from '../../../../../services/model/serverWorker'
 import { withRouter } from 'react-router-dom'
 
 class MexAppUsage extends React.Component {
@@ -46,7 +46,7 @@ class MexAppUsage extends React.Component {
 
     event = async (range) => {
         this.regions.map(region => {
-            sendRequest(this, appInstUsageLogs({
+            sendAuthRequest(this, appInstUsageLogs({
                 region: region,
                 starttime: range.starttime,
                 endtime: range.endtime

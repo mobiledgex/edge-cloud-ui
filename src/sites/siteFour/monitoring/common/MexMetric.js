@@ -3,10 +3,9 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 
 import { fields, getOrganization, isAdmin } from '../../../../services/model/format'
-import { sendRequest } from '../../../../services/model/serverWorker'
+import { sendAuthRequest } from '../../../../services/model/serverWorker'
 import { WORKER_METRIC } from '../../../../services/worker/constant'
 import MexWorker from '../../../../services/worker/mex.worker.js'
-import GraphicEqOutlinedIcon from '@material-ui/icons/GraphicEqOutlined';
 
 import MexChart from '../charts/MexChart'
 
@@ -74,7 +73,7 @@ class MexMetric extends React.Component {
                         let org = isAdmin() ? this.props.org : getOrganization()
                         let metricRequest = parent.request(data, org)
 
-                        sendRequest(this, metricRequest).addEventListener('message', event => {
+                        sendAuthRequest(this, metricRequest).addEventListener('message', event => {
                             if (event.data.status && event.data.status !== 200) {
                                 // this.props.handleAlertInfo(event.data.message)
                             }

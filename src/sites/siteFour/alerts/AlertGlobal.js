@@ -6,7 +6,7 @@ import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts } from '../../../services/model/alerts'
-import { sendRequest } from '../../../services/model/serverWorker'
+import { sendAuthRequest } from '../../../services/model/serverWorker'
 import * as constant from '../../../constant'
 import AlertLocal from './AlertLocal'
 import './style.css'
@@ -91,12 +91,12 @@ class AlertGlobal extends React.Component {
 
     fetchdata = () => {
         this.regions.map(region => {
-            sendRequest(this, showAlerts({ region }), this.serverResponse)
+            sendAuthRequest(this, showAlerts({ region }), this.serverResponse)
         })
 
         this.intervalId = setInterval(() => {
             this.regions.map(region => {
-                sendRequest(this, showAlerts({ region }), this.serverResponse)
+                sendAuthRequest(this, showAlerts({ region }), this.serverResponse)
             })
         }, 60 * 1000);
     }

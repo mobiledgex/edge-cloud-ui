@@ -2,7 +2,7 @@ import React from 'react'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/model/events'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
-import { sendRequest } from '../../../../../services/model/serverWorker'
+import { sendAuthRequest } from '../../../../../services/model/serverWorker'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -82,7 +82,7 @@ class MexAppEvent extends React.Component {
 
     event = async (range, more) => {
         this.setState({ loading: true }, () => {
-            sendRequest(this, orgEvents({
+            sendAuthRequest(this, orgEvents({
                 match: {
                     orgs: [isAdmin() ? this.props.org : getOrganization()],
                     types: ["event"],
