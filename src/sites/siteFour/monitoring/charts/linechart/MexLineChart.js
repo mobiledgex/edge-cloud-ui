@@ -8,7 +8,6 @@ import { Card, Dialog, GridListTile, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { LTTB } from 'downsample';
 import Chart from 'chart.js'
-import { CollectionsOutlined } from '@material-ui/icons';
 
 
 const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
@@ -145,8 +144,6 @@ class MexLineChart extends React.Component {
         this.tagFormats = props.tagFormats
         this.range = props.range
         this.options = optionsGenerator(this.header, this.unit, false, this.range)
-        this.lineChartRef = React.createRef()
-        this.myChart = undefined
     }
 
     formatLabel = (value) => {
@@ -187,7 +184,7 @@ class MexLineChart extends React.Component {
         this.setState({ fullscreen: true })
     }
 
-    renderFullScreen = (fullscreen, datasets) => {
+    renderFullScreen = (id, fullscreen, datasets) => {
         return (
             <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
                 <div>
@@ -201,7 +198,7 @@ class MexLineChart extends React.Component {
                     </div>
                 </div>
                 <div style={{ padding: 20, height: '100vh' }}>
-                    <Line id={uuid()} datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
+                    <Line id={`${id}-fs`} datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
                 </div>
             </Dialog>
         )
@@ -209,7 +206,11 @@ class MexLineChart extends React.Component {
 
     render() {
         const { fullscreen, datasets } = this.state
-        const { id, style } = this.props
+        const { style } = this.props
+
+        let id = this.props.id
+        id = id.toLowerCase()
+        
         return (
             datasets.length > 0 ?
                 <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
@@ -227,38 +228,13 @@ class MexLineChart extends React.Component {
                             </div>
                             <br />
                             <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
-                                <canvas id={id} ref={this.lineChartRef}/>
-                                {/* <Line ref={this.demoRef} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} /> */}
+                                <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} />
                             </div>
-                            {this.renderFullScreen(fullscreen, datasets)}
+                            {this.renderFullScreen(id, fullscreen, datasets)}
                         </div>
                     </Card>
                 </GridListTile> : null
         )
-    }
-    
-    initChartData = ()=>{
-        let datasets = this.state.datasets
-        if (datasets.length > 0) {
-            if(this.myChart)
-            {
-                this.myChart.destroy()
-            }
-            this.myChart = new Chart(this.lineChartRef.current, {
-                type: 'line',
-                data: { datasets: this.state.datasets },
-                options: this.options
-            })
-        }
-    }
-
-    componentDidUpdate(preProps, preState) {
-        this.initChartData()
-    }
-
-    componentDidMount()
-    {
-        this.initChartData()
     }
 }
 
