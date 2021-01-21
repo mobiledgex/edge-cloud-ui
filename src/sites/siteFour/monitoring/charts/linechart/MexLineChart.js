@@ -7,8 +7,6 @@ import uuid from 'uuid'
 import { Card, Dialog, GridListTile, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { LTTB } from 'downsample';
-import Chart from 'chart.js'
-
 
 const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
     let datasets = []
@@ -210,7 +208,7 @@ class MexLineChart extends React.Component {
 
         let id = this.props.id
         id = id.toLowerCase()
-        
+
         return (
             datasets.length > 0 ?
                 <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
