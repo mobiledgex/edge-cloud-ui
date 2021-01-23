@@ -5,14 +5,14 @@ import { SHOW_FLAVOR, CREATE_FLAVOR, DELETE_FLAVOR } from './endPointTypes'
 
 let fields = formatter.fields
 
-export const keys = () =>([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
-    { field: fields.flavorName, serverField: 'key#OS#name', label: 'Flavor Name', sortable: true, visible: true, filter:true },
+export const keys = () => ([
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.flavorName, serverField: 'key#OS#name', label: 'Flavor Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.ram, serverField: 'ram', label: 'RAM Size(MB)', sortable: true, visible: true },
     { field: fields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', sortable: true, visible: true },
     { field: fields.disk, serverField: 'disk', label: 'Disk Space(GB)', sortable: true, visible: true },
     { field: fields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'Number of GPUs', sortable: true, visible: true },
-    { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles:['AdminManager']}
+    { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager'] }
 ])
 
 export const getKey = (data, isCreate) => {
@@ -58,5 +58,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData)
+    return formatter.formatData(response, body, keys(), customData, true)
 }

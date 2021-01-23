@@ -1,6 +1,6 @@
-import uuid from 'uuid'
 import { toJson } from '../../utils/json_util'
 import isEqual from 'lodash/isEqual';
+import uuid from 'uuid'
 
 export const fields = {
     uuid: 'uuid',
@@ -246,7 +246,16 @@ const map = (value, currentObject, keys) => {
     return value
 }
 
-
+export const generateUUID = (keys, data)=>{
+    let key = ''
+    keys.map(item=>{
+        if(item.key)
+        {
+            key = key + data[item.field]
+        }
+    })
+    return key
+}
 
 export const formatData = (response, body, keys, customData, isUnique) => {
     let values = [];
@@ -258,8 +267,8 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
                     let value = {}
                     map(value, data, keys)
-                    if (isUnique) { value.uuid = uuid() }
                     if (body) { value.region = body.region }
+                    value.uuid = (isUnique) ? generateUUID(keys, value) : uuid()
                     let newValue = customData ? customData(value) : value
                     if (newValue) {
                         values.push(newValue)
@@ -283,7 +292,7 @@ export const formatAlertData = (response, body, keys, customData, isUnique) => {
                 let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
                 let value = {}
                 map(value, data, keys)
-                if (isUnique) { value.uuid = uuid() }
+                value.uuid = (isUnique) ? generateUUID(keys, value) : uuid()
                 let newValue = customData ? customData(value) : value
                 if (newValue) {
                     values.push(newValue)

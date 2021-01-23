@@ -4,9 +4,9 @@ import { SHOW_AUTO_SCALE_POLICY, UPDATE_AUTO_SCALE_POLICY, CREATE_AUTO_SCALE_POL
 export const fields = formatter.fields;
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
-  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter:true },
-  { field: fields.autoScalePolicyName, serverField: 'key#OS#name', label: 'Auto Scale Policy', sortable: true, visible: true, filter:true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true, key:true },
+  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter:true, key:true },
+  { field: fields.autoScalePolicyName, serverField: 'key#OS#name', label: 'Auto Scale Policy', sortable: true, visible: true, filter:true, key:true },
   { field: fields.minimumNodes, serverField: 'min_nodes', label: 'Minimun Nodes', visible: true },
   { field: fields.maximumNodes, serverField: 'max_nodes', label: 'Maximum Nodes', visible: true},
   { field: fields.scaleDownCPUThreshold, serverField: 'scale_down_cpu_thresh', label: 'Scale Down CPU Threshold (%)'},
@@ -87,6 +87,6 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys(), customData)
+  return formatter.formatData(response, body, keys(), customData, true)
 }
 

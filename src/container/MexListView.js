@@ -20,7 +20,7 @@ import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import Map from "../hoc/maps/MexMap";
 import { roundOff } from '../utils/math_util';
 import cloneDeep from 'lodash/cloneDeep';
-import {sendRequests} from '../services/model/serverWorker'
+import { sendRequests } from '../services/model/serverWorker'
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -40,7 +40,7 @@ class MexListView extends React.Component {
             uuid: 0,
             dropList: [],
             resetStream: false,
-            deleteMultiple:[]
+            deleteMultiple: []
         };
         this.filterText = ''
         this.requestCount = 0;
@@ -224,19 +224,21 @@ class MexListView extends React.Component {
         this.setState({ dialogMessageInfo: {} })
         if (valid) {
             if (isMultiple) {
-                this.setState({selected:[]})
-                data.map(item => {
-                    switch (action.label) {
-                        case 'Upgrade':
-                            this.onUpdate(action, item)
-                            break;
-                        case 'Refresh':
-                            this.onUpdate(action, item, true)
-                            break;
-                        case 'Delete':
-                            this.onDeleteMultiple(action, item)
-                            break;
+                this.setState({ selected: [] })
+                this.state.filterList.map(item => {
+                    if (data.includes(item.uuid)) {
+                        switch (action.label) {
+                            case 'Upgrade':
+                                this.onUpdate(action, item)
+                                break;
+                            case 'Refresh':
+                                this.onUpdate(action, item, true)
+                                break;
+                            case 'Delete':
+                                this.onDeleteMultiple(action, item)
+                                break;
 
+                        }
                     }
                 })
             }
@@ -342,7 +344,7 @@ class MexListView extends React.Component {
                     groupActionClose={this.groupActionClose}
                     dropList={this.state.dropList}
                     isDropped={this.isDropped}
-                    tableHeight = {this.props.tableHeight} />
+                    tableHeight={this.props.tableHeight} />
             </div>)
     }
 
@@ -441,20 +443,18 @@ class MexListView extends React.Component {
         }
     }
 
-    specificDataFromServer = (request)=>{
-        let uuid  = request.uuid
+    specificDataFromServer = (request) => {
+        let uuid = request.uuid
         let data = request.data
         let requestType = this.requestInfo.requestType
         data.uuid = uuid
         let requestList = []
-        if(this.requestInfo.id === 'Cloudlets')
-        {
-            requestType.map(request=>{
+        if (this.requestInfo.id === 'Cloudlets') {
+            requestType.map(request => {
                 requestList.push(request(data, true))
             })
         }
-        else
-        {
+        else {
             requestList.push(requestType[0](data, true))
         }
         sendRequests(this, requestList, this.specificResponse)
@@ -470,7 +470,7 @@ class MexListView extends React.Component {
                 <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
-                <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose}/>
+                <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
             </Card>
         );
 

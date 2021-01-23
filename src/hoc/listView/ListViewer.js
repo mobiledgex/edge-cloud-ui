@@ -127,11 +127,15 @@ class ListViewer extends React.Component {
 
     handleSelectAllClick = (e) => {
         if (e.target.checked) {
-            const newSelecteds = this.props.dataList
-            this.props.setSelected(newSelecteds);
-            return;
+            let selectall = []
+            selectall = this.props.dataList.map(data => {
+                return data.uuid
+            })
+            this.props.setSelected(selectall);
         }
-        this.props.setSelected([]);
+        else {
+            this.props.setSelected([]);
+        }
     };
 
     setSelectedRow = (header, row) => {

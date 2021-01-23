@@ -26,26 +26,23 @@ const ListBody = (props) => {
     }
 
     const handleClick = (event, row) => {
-        const selectedIndex = props.selected.indexOf(row);
+        const exist = props.selected.includes(row.uuid);
         let newSelected = [];
 
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(props.selected, row);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(props.selected.slice(1));
-        } else if (selectedIndex === props.selected.length - 1) {
-            newSelected = newSelected.concat(props.selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                props.selected.slice(0, selectedIndex),
-                props.selected.slice(selectedIndex + 1),
-            );
+        if(exist)
+        {
+            newSelected = props.selected.filter(select=>{
+                return select !== row.uuid
+            })
         }
-
+        else
+        {
+            newSelected = [...props.selected, row.uuid]
+        }
         props.setSelected(newSelected);
     };
 
-    const isSelected = (name) => props.selected.indexOf(name) !== -1;
+    const isSelected = (id) => props.selected.includes(id);
 
     const actionView = (item) => {
         return (
@@ -56,7 +53,7 @@ const ListBody = (props) => {
     }
 
     const getRowData = (row, index) => {
-        const isItemSelected = isSelected(row);
+        const isItemSelected = isSelected(row.uuid);
         const labelId = `enhanced-table-checkbox-${index}`;
 
         return (
