@@ -1,5 +1,4 @@
 import axios from 'axios';
-import uuid from 'uuid';
 import * as EP from './endPointTypes'
 
 
@@ -30,11 +29,6 @@ export const mcURL = (isWebSocket) => {
 
 const getHttpURL = (request) => {
     return mcURL(false) + EP.getPath(request)
-}
-
-
-export function generateUniqueId() {
-    return uuid();
 }
 
 function getHeader(request) {

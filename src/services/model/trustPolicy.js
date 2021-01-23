@@ -1,4 +1,3 @@
-import uuid from 'uuid'
 import * as formatter from './format'
 import * as serverData from './serverData'
 import { SHOW_TRUST_POLICY, UPDATE_TRUST_POLICY, CREATE_TRUST_POLICY, DELETE_TRUST_POLICY, SHOW_APP } from './endPointTypes'
@@ -13,9 +12,9 @@ export const outboundSecurityRulesKeys = [
 ]
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
-  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true },
-  { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
+  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true, key:true },
+  { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true, key:true },
   { field: fields.outboundSecurityRulesCount, label: 'Rules Count', sortable: true, visible: true },
   {
     field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
@@ -59,7 +58,7 @@ export const getTrustPolicyList = async (self, data) => {
 
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
-  let request = { uuid: data.uuid ? data.uuid : uuid(), method: UPDATE_TRUST_POLICY, data: requestData }
+  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(data), method: UPDATE_TRUST_POLICY, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
@@ -112,6 +111,6 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys(), customData)
+  return formatter.formatData(response, body, keys(), customData, true)
 }
 

@@ -1,5 +1,4 @@
 import * as formatter from './format'
-import uuid from 'uuid'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
@@ -213,7 +212,7 @@ export const createCloudlet = (self, data, callback) => {
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
-    data.uuid = data.uuid ? data.uuid : uuid()
+    data.uuid = data.uuid ? data.uuid : formatter.generateUUID(data)
     let request = { uuid: data.uuid, method: UPDATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
@@ -255,9 +254,9 @@ export const streamCloudlet = (data) => {
 
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true },
-    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key:true },
+    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true, key:true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key:true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
     { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
     { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
