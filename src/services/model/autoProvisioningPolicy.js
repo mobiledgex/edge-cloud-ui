@@ -7,9 +7,9 @@ import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, UPDATE_AUTO_PROV_POLICY
 let fields = formatter.fields
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true },
-  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true },
-  { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter: true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
+  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true, key:true },
+  { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter: true, key:true },
   { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Request Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
   { field: fields.undeployClientCount, serverField: 'undeploy_client_count', label: 'UnDeploy Request Count', sortable: true, visible: false, dataType: 'Integer', defaultValue: 0 },
@@ -160,5 +160,5 @@ const customData = (value) => {
  * Format server data to required local data format based on keys object
  * **/
 export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys(), customData)
+  return formatter.formatData(response, body, keys(), customData, true)
 }

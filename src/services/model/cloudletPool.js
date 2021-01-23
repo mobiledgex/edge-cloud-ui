@@ -6,9 +6,9 @@ import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 const fields = formatter.fields;
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true },
-    { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter:true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true, key:true },
+    { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter:true, key:true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, key:true },
     { field: fields.cloudletCount, label: 'Number of  Clouldlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
@@ -103,5 +103,5 @@ const customData = (value) => {
 }
 
 export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData)
+    return formatter.formatData(response, body, keys(), customData, true)
 }
