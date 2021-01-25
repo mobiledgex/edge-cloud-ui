@@ -352,18 +352,6 @@ class OrganizationReg extends React.Component {
         }
     }
 
-    validatePhone = (form) => {
-        if (!/^\+?(?:[0-9] ?){6,14}[0-9]$/.test(form.value) && !/^\d{3}-\d{3}-\d{4}$/.test(form.value)) {
-            form.error = 'Phone should only contain "+" and 7~15 digits.'
-            return false;
-        }
-        else {
-            form.error = undefined
-            return true;
-        }
-
-    }
-
     step2 = (data) => {
         return [
             { label: 'Add User', formType: MAIN_HEADER, visible: true },
@@ -380,7 +368,7 @@ class OrganizationReg extends React.Component {
             { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined }, visible: true },
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: { edit: true } },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: this.validatePhone },
+            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: constant.validatePhone },
             { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value: false, update: { edit: true }, roles: [constant.ADMIN_MANAGER] }
         ]
     }

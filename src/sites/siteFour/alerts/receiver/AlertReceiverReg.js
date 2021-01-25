@@ -19,6 +19,7 @@ import { showClusterInsts } from '../../../../services/model/clusterInstance';
 import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
+import { resetFormValue } from '../../../../hoc/forms/helper/constant';
 
 const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK]
 const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]
@@ -287,19 +288,9 @@ class FlavorReg extends React.Component {
         this.props.onClose(false)
     }
 
-    resetFormValue = (form) => {
-        let rules = form.rules
-        if (rules) {
-            let disabled = rules.disabled ? rules.disabled : false
-            if (!disabled) {
-                form.value = undefined;
-            }
-        }
-    }
-
     updateUI(form) {
         if (form) {
-            this.resetFormValue(form)
+            resetFormValue(form)
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {

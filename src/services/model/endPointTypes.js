@@ -22,6 +22,7 @@ import * as CloudletPool from './cloudletPool';
 import * as CloudletLinkOrg from './cloudletLinkOrg';
 import * as AppInstClient from './appInstClient';
 import * as Alerts from './alerts';
+import * as BillingOrg from './billingOrg';
 import * as Events from './events';
 
 export const SHOW_ORG = "org/show";
@@ -112,6 +113,12 @@ export const ALERT_CREATE_RECEIVER = 'alertreceiver/create'
 export const ALERT_DELETE_RECEIVER = 'alertreceiver/delete'
 export const PUBLIC_CONFIG = 'publicconfig'
 export const REVOKE_ACCESS_KEY = 'RevokeAccessKey'
+export const SHOW_BILLING_ORG = 'billingorg/show'
+export const CREATE_BILLING_ORG = 'billingorg/create'
+export const UPDATE_BILLING_ORG = 'billingorg/update'
+export const BILLING_ORG_ADD_CHILD = 'billingorg/addchild'
+export const BILLING_ORG_REMOVE_CHILD = 'billingorg/removechild'
+export const DELETE_BILLING_ORG = 'billingorg/delete'
 
 export function getPath(request) {
     switch (request.method) {
@@ -132,6 +139,12 @@ export function getPath(request) {
         case SHOW_ORG_CLOUDLET_INFO:
         case SHOW_ROLE:
         case SHOW_CONTROLLER:
+        case SHOW_BILLING_ORG:
+        case CREATE_BILLING_ORG:
+        case UPDATE_BILLING_ORG:
+        case DELETE_BILLING_ORG:
+        case BILLING_ORG_ADD_CHILD:
+        case BILLING_ORG_REMOVE_CHILD:
             return `/api/v1/auth/${request.method}`
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
@@ -297,6 +310,9 @@ export function formatData(request, response) {
             break;
         case ALERT_SHOW_RECEIVER:
             data = Alerts.getData(response, request.data)
+            break;
+        case SHOW_BILLING_ORG:
+            data = BillingOrg.getData(response, request.data)
             break;
         case EVENTS_SHOW:
         case EVENTS_FIND:

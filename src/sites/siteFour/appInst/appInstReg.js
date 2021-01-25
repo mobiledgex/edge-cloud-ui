@@ -674,12 +674,15 @@ class ClusterInstReg extends React.Component {
 
     render() {
         return (
-            <div className="round_panel">
+            <div>
                 <Grid container>
                     <Grid item xs={this.state.showGraph ? 6 : 12}>
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        <div className="round_panel">
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </div>
                     </Grid>
-                    {this.state.showGraph ? <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                    {this.state.showGraph ? 
+                    <Grid item xs={6} >
                         <Suspense fallback={<div></div>}>
                             <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                         </Suspense>

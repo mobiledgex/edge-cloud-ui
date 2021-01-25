@@ -244,7 +244,6 @@ class CloudletPoolReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                <div className="grid_table" >
                     <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                         {this.props.action ? null :
                             <Step.Group stackable='tablet' style={{ width: '100%' }}>
@@ -261,7 +260,6 @@ class CloudletPoolReg extends React.Component {
                             </Step.Group>}
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </Item>
-                </div>
             </div>
         )
     }
