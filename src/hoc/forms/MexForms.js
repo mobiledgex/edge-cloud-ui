@@ -380,11 +380,14 @@ const MexForms = (props) => {
 
     return (
         forms ?
-            <div>
-                {error ? <div><Alert severity="error">{error}</Alert>
-                    {props.style ? null : <div><br /><br /></div>}</div> : null}
-                <Form style={props.style ? props.style : { overflow: 'auto', height: `${error ? 83 : 94}vh` }}>
-                    <Form.Group widths="equal" style={{ flexDirection: 'column', marginLeft: 10, marginRight: 10, alignContent: 'space-around' }}>
+            <div style={props.style ?  {} : {paddingTop:`${error ? 60 : 10}px`, backgroundColor: '#292c33'}}>
+                {error ?
+                    <div style={props.style ? props.style : {position:'absolute', zIndex:999, left:270, right:30, top:60}}>
+                        <Alert severity="error">{error}</Alert>
+                        {props.style ? null : <div><br /><br /></div>}
+                    </div> : null}
+                <Form>
+                    <Form.Group widths="equal" style={{ flexDirection: 'column', alignContent: 'space-around' }}>
                         <Grid columns={2}>
                             {forms.map((form, i) => {
                                 initValidateRules(form);
@@ -405,7 +408,7 @@ const MexForms = (props) => {
                             })}
                         </Grid>
                     </Form.Group>
-                    <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{ flexDirection: 'row', marginLeft: 10, marginRight: 10 }}>
+                    <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline>
                         <Form.Group inline>
                             {forms.map((form, i) => {
                                 return (form.formType === BUTTON ?

@@ -122,6 +122,12 @@ export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
 export const PAGE_MONITORING = 'Monitoring'
 export const PAGE_MONITORING_RELOAD = 'Reload'
 export const PAGE_ALERTS = 'AlertReceivers'
+export const PAGE_BILLING_ORG = 'BillingOrg'
+
+export const BILLING_TYPE_SELF = 'Self'
+export const BILLING_TYPE_PARENT = 'Parent'
+export const BILLING_ADD_CHILD = 'AddChild'
+export const BILLING_REMOVE_CHILD = 'RemoveChild'
 
 const dataFormatter = (type, value) => {
     switch (type) {
@@ -472,6 +478,17 @@ export const regionLocation = (region) => {
             return { center: [36, 138], zoom: 5 }
         default:
             return { center: [43.4, 51.7], zoom: 2 }
+    }
+}
+
+export const validatePhone = (form) => {
+    if (!/^\+?(?:[0-9] ?){6,14}[0-9]$/.test(form.value) && !/^\d{3}-\d{3}-\d{4}$/.test(form.value)) {
+        form.error = 'Phone should only contain "+" and 7~15 digits.'
+        return false;
+    }
+    else {
+        form.error = undefined
+        return true;
     }
 }
 

@@ -996,10 +996,10 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .round_panel {
     background-color: #292c33;
-    padding: 0.5em;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
+    height: calc(100vh - 59px);
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .ui.header.panel_title {
     height: 1.643em;

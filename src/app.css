@@ -92,3 +92,31 @@ h6 {
     width: 100%;
     vertical-align: middle;
 }
+
+.side-nav-list {
+    background-color: #292c33; 
+    overflow: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 52px);
+}
+
+.side-nav-list::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.side-nav-list{
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+  }
