@@ -368,16 +368,18 @@ class CloudletReg extends React.Component {
 
     render() {
         return (
-            <div className="round_panel">
+            <div>
                 {this.state.showCloudletManifest ?
                     this.state.cloudletManifest ? this.cloudletManifestForm() : null :
                     <Grid container>
-                            <Grid item xs={6}>
+                        <Grid item xs={6}>
+                            <div className="round_panel">
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                            </Grid>
-                            <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
-                                <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
-                            </Grid>
+                            </div>
+                        </Grid>
+                        <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                            <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
+                        </Grid>
                     </Grid>
                 }
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />

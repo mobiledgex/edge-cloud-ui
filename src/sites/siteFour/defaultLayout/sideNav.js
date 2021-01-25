@@ -34,6 +34,7 @@ import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import TrackChangesIcon from '@material-ui/icons/TrackChanges';
 import LandscapeOutlinedIcon from '@material-ui/icons/LandscapeOutlined';
 import NotificationsNoneOutlined from '@material-ui/icons/NotificationsNoneOutlined';
+import PaymentOutlinedIcon from '@material-ui/icons/PaymentOutlined';
 
 import SiteFourPageOrganization from '../organization/organizationList';
 import SiteFourPageAccount from '../accounts/accountList';
@@ -49,6 +50,7 @@ import TrustPolicy from '../policies/trustPolicy/trustPolicyList';
 import AutoScalePolicy from '../policies/autoScalePolicy/autoScalePolicyList';
 import Monitoring from '../monitoring/Monitoring';
 import Alerts from '../alerts/receiver/AlertReceiver';
+import BillingOrg from '../billingOrg/BillingOrgList';
 
 import { Collapse, Tooltip } from '@material-ui/core';
 import { Image } from 'semantic-ui-react';
@@ -103,7 +105,9 @@ const useStyles = theme => ({
     content: {
         flexGrow: 1,
         overflowX: 'auto',
-        margin: 5,
+        marginLeft: 5,
+        marginRight: 5,
+        marginBottom:3,
         marginTop: 53 /* header height(48) + margin(5) */
     },
 });
@@ -155,7 +159,8 @@ const options = [
         ]
     },
     { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <Monitoring />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Alert Receivers', icon: <NotificationsNoneOutlined />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] }
+    { label: 'Alert Receivers', icon: <NotificationsNoneOutlined />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
+    { label: 'Billing', icon: <PaymentOutlinedIcon />, pg: 'BillingOrg', pageId: constant.PAGE_BILLING_ORG, page: <BillingOrg />, roles: [constant.ADMIN_MANAGER] }
 ]
 
 class SideNav extends React.Component {
@@ -347,14 +352,14 @@ class SideNav extends React.Component {
                             {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                         </IconButton>
                     </div>
-                    <List style={{ backgroundColor: '#292c33', height: '100%' }}>
+                    <List className='side-nav-list'>
                         {this.roleInfo(open)}
                         {this.menuList(expand)}
                     </List>
                 </Drawer>
                 <main className={classes.content}>
                     <DndProvider backend={HTML5Backend}>
-                        <div className='contents_body' style={{ marginTop: 6, height: 'calc(100% - 6px)' }}>
+                        <div className='contents_body' style={{ marginTop: 3, height: 'calc(100% - 3px)' }}>
                             {page}
                         </div>
                     </DndProvider>

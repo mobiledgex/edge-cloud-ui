@@ -219,6 +219,9 @@ class UpdatePassword extends React.Component {
         if (this.props.close) {
             this.props.close()
         }
+        if (this.passwordMinCrackTimeSec) {
+            this.getFormData()
+        }
     }
 
     renderPasswordForm = () => (
