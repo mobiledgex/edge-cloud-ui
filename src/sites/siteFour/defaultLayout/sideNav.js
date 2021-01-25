@@ -160,7 +160,7 @@ const options = [
     },
     { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <Monitoring />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
     { label: 'Alert Receivers', icon: <NotificationsNoneOutlined />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Billing', icon: <PaymentOutlinedIcon />, pg: 'BillingOrg', pageId: constant.PAGE_BILLING_ORG, page: <BillingOrg />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER] }
+    { label: 'Billing', icon: <PaymentOutlinedIcon />, pg: 'BillingOrg', pageId: constant.PAGE_BILLING_ORG, page: <BillingOrg />, roles: [constant.ADMIN_MANAGER] }
 ]
 
 class SideNav extends React.Component {

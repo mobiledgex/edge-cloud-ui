@@ -29,24 +29,24 @@ class BillingOrgReg extends React.Component {
     formKeys = () => {
         return [
             { label: 'Create Billing Org', formType: MAIN_HEADER, visible: true },
-            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Select Type', rules: { required: true }, visible: true, tip: 'Receiver type - email, or slack' },
-            { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { required: true }, visible: false, tip: 'Billing group' },
+            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Select Type', rules: { required: true }, visible: true, tip: 'Billing type self or group' },
+            { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { required: true }, visible: false, tip: 'Billing group name' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, visible: false, value: getOrganization() },
-            { field: fields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
-            { field: fields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
-            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: true, tip: 'Email address receiving the alert (by default email associated with the account)' },
-            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false }, visible: true, update: { edit: true } },
-            { field: fields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false }, visible: true, tip: 'Unique name of this receiver' },
-            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false }, visible: true, tip: 'Unique name of this receiver' },
-            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false }, visible: true, tip: 'Unique name of this receiver' },
-            { field: fields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false }, visible: true, tip: 'Unique name of this receiver' },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: false }, visible: true, update: { edit: true } },
+            { field: fields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, visible: true, tip: 'First name' },
+            { field: fields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, visible: true, tip: 'Last name' },
+            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: true, tip: 'Email address' },
+            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false }, visible: true, tip: 'Address' },
+            { field: fields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false }, visible: true, tip: 'Country' },
+            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false }, visible: true, tip: 'State' },
+            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false }, visible: true, tip: 'City' },
+            { field: fields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false }, visible: true, tip: 'Postal code' },
+            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: false }, visible: true, tip: 'Phone number' },
         ]
     }
 
     formChildKeys = () => {
         return [
-            { label: 'Add Child', formType: MAIN_HEADER, visible: true },
+            { label: `${this.actionId === BILLING_ADD_CHILD ? 'Add Child' : 'Remove Child'}`, formType: MAIN_HEADER, visible: true },
             { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { disabled: true }, visible: true, tip: 'Billing group' },
             { field: fields.organizations, label: 'Organization', formType: DUALLIST, placeholder: 'Select Organization', visible: true },
         ]
