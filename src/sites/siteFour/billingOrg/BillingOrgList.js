@@ -8,7 +8,7 @@ import MexListView from '../../../container/MexListView';
 import { fields } from '../../../services/model/format';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../services/model/billingOrg';
 import Reg from './BillingOrgReg';
-import {validateRole, operatorRoles, BILLING_REMOVE_CHILD, BILLING_TYPE_PARENT, BILLING_ADD_CHILD} from '../../../constant'
+import {validateRole, operatorRoles, BILLING_REMOVE_CHILD, BILLING_TYPE_PARENT, BILLING_ADD_CHILD, PAGE_BILLING_ORG} from '../../../constant'
 import { HELP_ALERTS } from '../../../tutorial';
 class BillingOrg extends React.Component {
     constructor(props) {
@@ -60,7 +60,7 @@ class BillingOrg extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_BILLING_ORG,
+            id: PAGE_BILLING_ORG,
             headerLabel: 'Billing Org',
             nameField: fields.name,
             requestType: [showBillingOrg],
