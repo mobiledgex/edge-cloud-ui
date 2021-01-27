@@ -380,9 +380,9 @@ const MexForms = (props) => {
 
     return (
         forms ?
-            <div style={props.style ?  {} : {paddingTop:`${error ? 60 : 10}px`, backgroundColor: '#292c33'}}>
+            <div style={props.style ? {} : { paddingTop: `${error ? 60 : 10}px`, backgroundColor: '#292c33' }}>
                 {error ?
-                    <div style={props.style ? props.style : {position:'absolute', zIndex:999, left:270, right:30, top:60}}>
+                    <div style={props.style ? props.style : { position: 'absolute', zIndex: 999, left: 270, right: 30, top: 60 }}>
                         <Alert severity="error">{error}</Alert>
                         {props.style ? null : <div><br /><br /></div>}
                     </div> : null}
@@ -390,21 +390,23 @@ const MexForms = (props) => {
                     <Form.Group widths="equal" style={{ flexDirection: 'column', alignContent: 'space-around' }}>
                         <Grid columns={2}>
                             {forms.map((form, i) => {
-                                initValidateRules(form);
-                                checkRole(form)
-                                return (
-                                    (form.advance === undefined || form.advance === true) && form.visible ?
-                                        form.formType === MAIN_HEADER ?
-                                            loadMainHeader(i, form) :
-                                            form.formType === HEADER ?
-                                                loadHeader(i, form) :
-                                                form.formType === MULTI_FORM ?
-                                                    form.forms ?
-                                                        <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
-                                                        : null :
-                                                    loadForms(i, form) :
-                                        null
-                                )
+                                if (form.formType) {
+                                    initValidateRules(form);
+                                    checkRole(form)
+                                    return (
+                                        (form.advance === undefined || form.advance === true) && form.visible ?
+                                            form.formType === MAIN_HEADER ?
+                                                loadMainHeader(i, form) :
+                                                form.formType === HEADER ?
+                                                    loadHeader(i, form) :
+                                                    form.formType === MULTI_FORM ?
+                                                        form.forms ?
+                                                            <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                            : null :
+                                                        loadForms(i, form) :
+                                            null
+                                    )
+                                }
                             })}
                         </Grid>
                     </Form.Group>
