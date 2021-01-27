@@ -4,10 +4,10 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields, getUserRole } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
 import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../services/model/alerts';
 import Reg from './AlertReceiverReg';
-import * as constant from '../../../../constant'
+import { validateRole, operatorRoles } from '../../../../constant'
 import { Chip } from '@material-ui/core';
 import WarningOutlineIcon from '@material-ui/icons/WarningOutlined';
 import InfoOutlineIcon from '@material-ui/icons/InfoOutlined';
@@ -33,14 +33,6 @@ class AlertList extends React.Component {
         this.setState({ currentView: <Reg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
-    onCloudletManifest = (action, data) => {
-        this.setState({ currentView: <Reg data={data} isManifest={true} onClose={this.onRegClose} /> });
-    }
-
-    onCloudletManifestVisible = (data) => {
-        return data[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
-    }
-
     actionMenu = () => {
         return [
             // { label: 'Update', onClick: this.onAdd, type: 'Edit' },
@@ -54,15 +46,6 @@ class AlertList extends React.Component {
         ]
     }
 
-    canAdd = () => {
-        let valid = false
-        let role = getUserRole();
-        if (role === constant.ADMIN_MANAGER || role === constant.OPERATOR_MANAGER || role === constant.OPERATOR_CONTRIBUTOR) {
-            valid = true
-        }
-        return valid
-    }
-
     requestInfo = () => {
         return ({
             id: 'Alerts',
@@ -70,10 +53,10 @@ class AlertList extends React.Component {
             nameField: fields.alertname,
             requestType: [showAlertReceiver],
             sortBy: [fields.alertname],
-            selection:true,
+            selection: true,
             viewMode: HELP_ALERTS,
             keys: this.keys,
-            onAdd: this.canAdd() ? this.onAdd : undefined,
+            onAdd: validateRole(operatorRoles) ? this.onAdd : undefined,
             grouping: false
         })
     }
@@ -103,12 +86,12 @@ class AlertList extends React.Component {
 
         return (
             isDetailView ? label :
-            <Chip
-                size="small" 
-                icon={icon}
-                label={label}
-                style={{ backgroundColor: color, width:80}}
-            />
+                <Chip
+                    size="small"
+                    icon={icon}
+                    label={label}
+                    style={{ backgroundColor: color, width: 80 }}
+                />
         )
     }
 
@@ -127,7 +110,7 @@ class AlertList extends React.Component {
 
         return (
             isDetailView ? ids[1] :
-            <div><Icon name={icon} size="large"/>&nbsp;{label}</div>
+                <div><Icon name={icon} size="large" />&nbsp;{label}</div>
         )
     }
 
@@ -151,7 +134,7 @@ class AlertList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
         )
     }
 };

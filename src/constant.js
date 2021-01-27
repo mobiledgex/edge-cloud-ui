@@ -1,4 +1,4 @@
-import { fields } from "./services/model/format"
+import { fields, getUserRole } from "./services/model/format"
 import { time } from './utils/date_util'
 
 export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
@@ -63,6 +63,7 @@ export const MAINTENANCE_STATE_UNDER_MAINTENANCE = 'Under Maintenance'
 export const INFRA_API_ACCESS_DIRECT = 'Direct'
 export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
 
+export const ALL = 'ALL'
 export const ADMIN = 'Admin'
 export const OPERATOR = 'Operator'
 export const DEVELOPER = 'Developer'
@@ -490,5 +491,23 @@ export const validatePhone = (form) => {
         form.error = undefined
         return true;
     }
+}
+
+export const operatorRoles = [ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR]
+
+export const validateRole = (roles) => {
+    let valid = true
+    if (roles) {
+        valid = false
+        for(let role of roles)
+        {
+            if(getUserRole().includes(role))
+            {
+                valid = true
+                break;
+            }
+        }
+    }
+    return valid
 }
 

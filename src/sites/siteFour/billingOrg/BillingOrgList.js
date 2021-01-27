@@ -5,12 +5,11 @@ import * as actions from '../../../actions';
 import { connect } from 'react-redux';
 
 import MexListView from '../../../container/MexListView';
-import { fields, getUserRole } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../services/model/billingOrg';
 import Reg from './BillingOrgReg';
-import * as constant from '../../../constant'
+import {validateRole, operatorRoles, BILLING_REMOVE_CHILD, BILLING_TYPE_PARENT, BILLING_ADD_CHILD} from '../../../constant'
 import { HELP_ALERTS } from '../../../tutorial';
-
 class BillingOrg extends React.Component {
     constructor(props) {
         super(props);
@@ -29,7 +28,7 @@ class BillingOrg extends React.Component {
     onReg = (action, data) => {
         let valid = true
         let actionId = action ? action.id : undefined
-        if (actionId === constant.BILLING_REMOVE_CHILD && data[fields.children] === undefined) {
+        if (actionId === BILLING_REMOVE_CHILD && data[fields.children] === undefined) {
             valid = false
         }
         if (valid) {
@@ -41,14 +40,14 @@ class BillingOrg extends React.Component {
     }
 
     orgActionVisible = (data) => {
-        return data[fields.type] === constant.BILLING_TYPE_PARENT.toLowerCase()
+        return data[fields.type] === BILLING_TYPE_PARENT.toLowerCase()
     }
 
     actionMenu = () => {
         return [
             // { label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { id: constant.BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
-            { id: constant.BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
+            { id: BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
+            { id: BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
             { label: 'Delete', onClick: deleteBillingOrg, type: 'Edit' }
         ]
     }
@@ -57,15 +56,6 @@ class BillingOrg extends React.Component {
         return [
             { label: 'Delete', onClick: deleteBillingOrg, icon: 'delete', warning: 'delete all the selected billing org', type: 'Edit' },
         ]
-    }
-
-    canAdd = () => {
-        let valid = false
-        let role = getUserRole();
-        if (role === constant.ADMIN_MANAGER || role === constant.OPERATOR_MANAGER || role === constant.OPERATOR_CONTRIBUTOR) {
-            valid = true
-        }
-        return valid
     }
 
     requestInfo = () => {
@@ -78,7 +68,7 @@ class BillingOrg extends React.Component {
             selection: true,
             viewMode: HELP_ALERTS,
             keys: this.keys,
-            onAdd: this.canAdd() ? this.onReg : undefined,
+            onAdd: validateRole(operatorRoles) ? this.onReg : undefined,
             grouping: false
         })
     }
