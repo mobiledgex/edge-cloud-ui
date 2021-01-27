@@ -35,6 +35,7 @@ class AppReg extends React.Component {
             showGraph: false,
             flowDataList: []
         }
+        this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = cloneDeep(localStorage.regions ? localStorage.regions.split(",") : [])
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
@@ -199,8 +200,8 @@ class AppReg extends React.Component {
     }
 
     outboundConnectionsForm = () => ([
+        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
         { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
@@ -482,6 +483,27 @@ class AppReg extends React.Component {
         }
     }
 
+    ocProtcolValueChange = (currentForm, forms, isInit) => {
+        let parentForm = currentForm.parent.form
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i];
+            if (form.uuid === parentForm.uuid) {
+                for (let outboundConnectionForm of form.forms) {
+                    if (outboundConnectionForm.field === fields.ocPort) {
+                        outboundConnectionForm.visible = !(currentForm.value === 'icmp')
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        if (this._isMounted && (isInit === undefined || isInit === false)) {
+            this.setState({
+                forms: forms
+            })
+        }
+    }
+
     checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
@@ -505,6 +527,10 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.protocol) {
             this.protcolValueChange(form, forms, isInit)
+        }
+        else if(form.field === fields.ocProtocol)
+        {
+            this.ocProtcolValueChange(form, forms, isInit) 
         }
         else if (form.field === fields.tls) {
             this.tlsValueChange(form, forms, isInit)
@@ -781,8 +807,7 @@ class AppReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-
-            requestTypeList.push(showAppInsts({ region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }))
+            requestTypeList.push(showAppInsts({ region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
             requestTypeList.push(showFlavors({ region: data[fields.region] }))
             requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
 
@@ -1046,8 +1071,14 @@ class AppReg extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data)
         this.props.handleViewMode(HELP_APP_REG)
+    }
+
+    componentWillUnmount()
+    {
+        this._isMounted = false
     }
 
 };
