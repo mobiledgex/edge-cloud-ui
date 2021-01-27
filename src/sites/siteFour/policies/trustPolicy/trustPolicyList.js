@@ -8,7 +8,9 @@ import * as actions from '../../../../actions';
 import TrustPolicyReg from './trustPolicyReg'
 import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/model/trustPolicy';
 import { showCloudlets } from '../../../../services/model/cloudlet';
-import {HELP_TRUST_POLICY} from "../../../../tutorial";
+import { HELP_TRUST_POLICY } from "../../../../tutorial";
+import { validateRole, operatorRoles } from '../../../../constant';
+
 class TrustPolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -18,8 +20,7 @@ class TrustPolicy extends React.Component {
         this.keys = keys();
     }
 
-    onRegClose = (isEdited)=>
-    {
+    onRegClose = (isEdited) => {
         this.setState({ currentView: null })
     }
 
@@ -28,20 +29,17 @@ class TrustPolicy extends React.Component {
     }
 
     onUpdate = (action, data) => {
-        this.setState({ currentView: <TrustPolicyReg data={data} action='Update' onClose={this.onRegClose}/> })
+        this.setState({ currentView: <TrustPolicyReg data={data} action='Update' onClose={this.onRegClose} /> })
     }
 
-    onDelete = (data, success, errorInfo)=>
-    {
-        if(!success, errorInfo)
-        {
+    onDelete = (data, success, errorInfo) => {
+        if (!success, errorInfo) {
             let cloudlets = []
-            if(data[fields.cloudlets])
-            {
+            if (data[fields.cloudlets]) {
                 cloudlets = data[fields.cloudlets]
             }
             if (errorInfo.message === 'Policy in use by Cloudlet') {
-                this.props.handleAlertInfo('error', `Policy in use by Cloudlet${cloudlets.length > 1 ? 's' : ''} ${cloudlets.map(cloudlet=>{
+                this.props.handleAlertInfo('error', `Policy in use by Cloudlet${cloudlets.length > 1 ? 's' : ''} ${cloudlets.map(cloudlet => {
                     return ' ' + cloudlet
                 })}`)
             }
@@ -50,8 +48,8 @@ class TrustPolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onUpdate, type:'Edit' },
-            { label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type:'Edit' }
+            { label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
@@ -69,9 +67,9 @@ class TrustPolicy extends React.Component {
             nameField: fields.trustPolicyName,
             sortBy: [fields.region, fields.trustPolicyName],
             keys: this.keys,
-            selection:true,
-            onAdd: this.onAdd,
-            viewMode : HELP_TRUST_POLICY
+            selection: true,
+            onAdd: validateRole(operatorRoles) ? this.onAdd : undefined,
+            viewMode: HELP_TRUST_POLICY
         })
     }
 
@@ -79,7 +77,7 @@ class TrustPolicy extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()}  multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 };

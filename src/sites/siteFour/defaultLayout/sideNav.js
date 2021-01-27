@@ -107,7 +107,7 @@ const useStyles = theme => ({
         overflowX: 'auto',
         marginLeft: 5,
         marginRight: 5,
-        marginBottom:3,
+        marginBottom: 3,
         marginTop: 53 /* header height(48) + margin(5) */
     },
 });
@@ -141,26 +141,26 @@ const setNavState = (flag) => {
 }
 
 const options = [
-    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: [constant.ADMIN_MANAGER] },
+    { label: 'Organizations', icon: <SupervisorAccountOutlinedIcon />, pg: 0, pageId: constant.PAGE_ORGANIZATIONS, page: <SiteFourPageOrganization /> },
+    { label: 'Users & Roles', icon: <AssignmentIndOutlinedIcon />, pg: 1, pageId: constant.PAGE_USER_ROLES, page: <SiteFourPageUser /> },
+    { label: 'Accounts', icon: <DvrOutlinedIcon />, pg: 101, pageId: constant.PAGE_ACCOUNTS, page: <SiteFourPageAccount />, roles: [constant.ADMIN] },
     { divider: true },
-    { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, pageId: constant.PAGE_CLOUDLETS, page: <SiteFourPageCloudlet />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, pageId: constant.PAGE_CLOUDLET_POOLS, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN_MANAGER, constant.OPERATOR_MANAGER, constant.OPERATOR_CONTRIBUTOR] },
-    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, pageId: constant.PAGE_FLAVORS, page: <SiteFourPageFlavor />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER] },
-    { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, pageId: constant.PAGE_CLUSTER_INSTANCES, page: <SiteFourPageClusterInst />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER] },
-    { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, pageId: constant.PAGE_APPS, page: <SiteFourPageApps />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER] },
-    { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, pageId: constant.PAGE_APP_INSTANCES, page: <SiteFourPageAppInst />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER] },
+    { label: 'Cloudlets', icon: <CloudQueueOutlinedIcon />, pg: 2, pageId: constant.PAGE_CLOUDLETS, page: <SiteFourPageCloudlet /> },
+    { label: 'Cloudlet Pools', icon: <CloudCircleOutlinedIcon />, pg: 7, pageId: constant.PAGE_CLOUDLET_POOLS, page: <SiteFourPageCloudletPool />, roles: [constant.ADMIN, constant.OPERATOR] },
+    { label: 'Flavors', icon: <FreeBreakfastOutlinedIcon />, pg: 3, pageId: constant.PAGE_FLAVORS, page: <SiteFourPageFlavor />, roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'Cluster Instances', icon: <StorageOutlinedIcon />, pg: 4, pageId: constant.PAGE_CLUSTER_INSTANCES, page: <SiteFourPageClusterInst />, roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'Apps', icon: <AppsOutlinedIcon />, pg: 5, pageId: constant.PAGE_APPS, page: <SiteFourPageApps />, roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'App Instances', icon: <GamesOutlinedIcon />, pg: 6, pageId: constant.PAGE_APP_INSTANCES, page: <SiteFourPageAppInst />, roles: [constant.ADMIN, constant.DEVELOPER] },
     {
-        label: 'Policies', icon: <TrackChangesIcon />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER], subOptions: [
-            { label: 'Auto Provisioning Policy', icon: <GroupWorkIcon />, pg: 8, pageId: constant.PAGE_AUTO_PROVISIONING_POLICY, page: <AutoProvPolicy />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER] },
+        label: 'Policies', icon: <TrackChangesIcon />, subOptions: [
+            { label: 'Auto Provisioning Policy', icon: <GroupWorkIcon />, pg: 8, pageId: constant.PAGE_AUTO_PROVISIONING_POLICY, page: <AutoProvPolicy />, roles: [constant.ADMIN, constant.DEVELOPER] },
             { label: 'Trust Policy', icon: <PolicyIcon />, pg: 9, pageId: constant.PAGE_TRUST_POLICY, page: <TrustPolicy /> },
-            { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER] },
+            { label: 'Auto Scale Policy', icon: <LandscapeOutlinedIcon />, pg: 10, pageId: constant.PAGE_AUTO_SCALE_POLICY, page: <AutoScalePolicy />, roles: [constant.ADMIN, constant.DEVELOPER] },
         ]
     },
-    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <Monitoring />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Alert Receivers', icon: <NotificationsNoneOutlined />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts />, roles: [constant.ADMIN_MANAGER, constant.DEVELOPER_MANAGER, constant.OPERATOR_MANAGER] },
-    { label: 'Billing', icon: <PaymentOutlinedIcon />, pg: 'BillingOrg', pageId: constant.PAGE_BILLING_ORG, page: <BillingOrg />, roles: [constant.ADMIN_MANAGER] }
+    { label: 'Monitoring', icon: <TvOutlinedIcon />, pg: 'Monitoring', pageId: constant.PAGE_MONITORING, page: <Monitoring /> },
+    { label: 'Alert Receivers', icon: <NotificationsNoneOutlined />, pg: 'AlertReceivers', pageId: constant.PAGE_ALERTS, page: <Alerts /> },
+    { label: 'Billing', icon: <PaymentOutlinedIcon />, pg: 'BillingOrg', pageId: constant.PAGE_BILLING_ORG, page: <BillingOrg />, roles: [constant.ADMIN] }
 ]
 
 class SideNav extends React.Component {
@@ -216,7 +216,6 @@ class SideNav extends React.Component {
             </ListItem>
         )
     }
-
 
     roleInfo = (open) => {
         return (
@@ -277,32 +276,20 @@ class SideNav extends React.Component {
         )
     }
 
-    getRoleInfo = (role) => {
-        switch (role) {
-            case 'DeveloperViewer':
-            case 'DeveloperContributor':
-                return 'DeveloperManager'
-            case 'OperatorViewer':
-            case 'OperatorContributor':
-                return 'OperatorManager'
-            default:
-                return role
-        }
-    }
-
     menuList = (expand) => {
         if (getUserRole()) {
             return options.map((option, i) => (
                 option.divider ?
                     <Divider key={i} /> :
-                    option.roles && option.roles.includes(this.getRoleInfo(getUserRole())) ?
+                    constant.validateRole(option.roles) ?
                         <div key={i}>
                             {this.showOptionForm(i, option)}
                             {option.subOptions ?
                                 <Collapse in={expand === option.label} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {option.subOptions.map((subOption, j) => (
-                                            this.showOptionForm(j, subOption)
+                                            constant.validateRole(subOption.roles) ?
+                                            this.showOptionForm(j, subOption) : null
                                         ))}
 
                                     </List>
@@ -371,9 +358,8 @@ class SideNav extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.redirectPage && prevProps.redirectPage !== this.props.redirectPage) {
-            options.map(option=>{
-                if(option.pageId === this.props.redirectPage)
-                {
+            options.map(option => {
+                if (option.pageId === this.props.redirectPage) {
                     this.onOptionClick(option)
                 }
             })

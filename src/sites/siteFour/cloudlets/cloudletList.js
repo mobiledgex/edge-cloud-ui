@@ -5,18 +5,17 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 
-import { fields, getUserRole } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
-import * as constant from '../../../constant'
+import {validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED} from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -67,7 +66,7 @@ class CloudletList extends React.Component {
     }
 
     onCloudletManifestVisible = (data) => {
-        return data[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
+        return data[fields.infraApiAccess] === INFRA_API_ACCESS_RESTRICTED
     }
 
     actionMenu = () => {
@@ -82,16 +81,6 @@ class CloudletList extends React.Component {
         return [
             { label: 'Delete', onClick: deleteCloudlet, icon: 'delete', ws: true, warning: 'delete all the selected cloudlets', multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
         ]
-    }
-
-
-    canAdd = () => {
-        let valid = false
-        let role = getUserRole();
-        if (role === constant.ADMIN_MANAGER || role === constant.OPERATOR_MANAGER || role === constant.OPERATOR_CONTRIBUTOR) {
-            valid = true
-        }
-        return valid
     }
 
     customStream = (data) => {
@@ -112,7 +101,7 @@ class CloudletList extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: this.canAdd() ? this.onAdd : undefined,
+            onAdd: validateRole(operatorRoles) ? this.onAdd : undefined,
             viewMode: HELP_CLOUDLET_LIST,
             grouping: true
         })
