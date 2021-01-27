@@ -9,7 +9,6 @@ import { fields } from '../../../services/model/format';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../services/model/billingOrg';
 import Reg from './BillingOrgReg';
 import {validateRole, operatorRoles, BILLING_REMOVE_CHILD, BILLING_TYPE_PARENT, BILLING_ADD_CHILD, PAGE_BILLING_ORG} from '../../../constant'
-import { HELP_ALERTS } from '../../../tutorial';
 class BillingOrg extends React.Component {
     constructor(props) {
         super(props);
@@ -66,7 +65,6 @@ class BillingOrg extends React.Component {
             requestType: [showBillingOrg],
             sortBy: [fields.name],
             selection: true,
-            viewMode: HELP_ALERTS,
             keys: this.keys,
             onAdd: validateRole(operatorRoles) ? this.onReg : undefined,
             grouping: false
