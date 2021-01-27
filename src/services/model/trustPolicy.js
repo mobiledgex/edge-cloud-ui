@@ -58,7 +58,7 @@ export const getTrustPolicyList = async (self, data) => {
 
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
-  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(data), method: UPDATE_TRUST_POLICY, data: requestData }
+  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: UPDATE_TRUST_POLICY, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 

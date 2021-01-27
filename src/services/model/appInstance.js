@@ -200,7 +200,7 @@ export const createAppInst = (self, data, callback) => {
 
 export const updateAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
-  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(data), method: UPDATE_APP_INST, data: requestData }
+  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: UPDATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 

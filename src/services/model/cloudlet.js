@@ -212,7 +212,7 @@ export const createCloudlet = (self, data, callback) => {
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
-    data.uuid = data.uuid ? data.uuid : formatter.generateUUID(data)
+    data.uuid = data.uuid ? data.uuid : formatter.generateUUID(keys(), data)
     let request = { uuid: data.uuid, method: UPDATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
