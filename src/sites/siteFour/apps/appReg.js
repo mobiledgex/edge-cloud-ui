@@ -649,10 +649,13 @@ class AppReg extends React.Component {
                         else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
                             configs.push(multiFormData)
                         }
-                        else if (multiFormData[fields.ocPort] && multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP]) {
+                        else if ((multiFormData[fields.ocPort] && multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP]) || (multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP])) {
                             let requiredOutboundConnection = {}
                             requiredOutboundConnection.remote_ip = multiFormData[fields.ocRemoteIP]
-                            requiredOutboundConnection.port = parseInt(multiFormData[fields.ocPort])
+                            if(multiFormData[fields.ocPort])
+                            {
+                                requiredOutboundConnection.port = parseInt(multiFormData[fields.ocPort])
+                            }
                             requiredOutboundConnection.protocol = multiFormData[fields.ocProtocol]
                             requiredOutboundConnections.push(requiredOutboundConnection)
                         }
