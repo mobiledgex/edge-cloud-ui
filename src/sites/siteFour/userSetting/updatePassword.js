@@ -225,7 +225,7 @@ class UpdatePassword extends React.Component {
     }
 
     renderPasswordForm = () => (
-        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ height: '100%' }} />
+        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop:5}} />
     )
 
     render() {
