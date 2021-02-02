@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { showAudits } from '../../../../services/model/events'
-import PopDetailViewer from '../../../../container/popDetailViewer';
 import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'
@@ -22,9 +21,7 @@ class headerGlobalAudit extends React.Component {
         this.state = {
             historyList: [],
             liveData: [],
-            rawViewData: [],
             isOrg: false,
-            openDetail: false,
             isOpen: false,
             loading: false,
             historyLoading: false,
@@ -114,19 +111,6 @@ class headerGlobalAudit extends React.Component {
         }
     }
 
-    onPopupDetail = (rawViewData) => {
-        if (this._isMounted) {
-            this.setState({
-                rawViewData: rawViewData,
-                openDetail: true
-            })
-        }
-    }
-
-    closeDetail = () => {
-        this.setState({ openDetail: false })
-    }
-
     handleClose = () => {
         this.props.close()
         this.setState({ isOpen: false });
@@ -145,18 +129,12 @@ class headerGlobalAudit extends React.Component {
     }
 
     render() {
-        const { selectedDate, historyList, liveData, isOpen, rawViewData, openDetail, loading, historyLoading, isOrg } = this.state
+        const { selectedDate, historyList, liveData, isOpen, loading, historyLoading, isOrg } = this.state
         return (
             <React.Fragment>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog type={this.type} isOrg={isOrg} dataList={liveData} historyList={historyList} detailView={this.onPopupDetail} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
+                    <HeaderAuditLog type={this.type} isOrg={isOrg} dataList={liveData} historyList={historyList} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
                 </Drawer>
-                <PopDetailViewer
-                    rawViewData={rawViewData}
-                    dimmer={false}
-                    open={openDetail}
-                    close={this.closeDetail}
-                />
             </React.Fragment>
         )
     }

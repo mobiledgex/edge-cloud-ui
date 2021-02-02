@@ -1,14 +1,12 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogTitle as MuiDialogTitle, Chip, Card } from "@material-ui/core";
+import { Dialog, DialogContent, DialogTitle as MuiDialogTitle, Card, Button } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
 import cloneDeep from 'lodash/cloneDeep'
 import { withStyles } from '@material-ui/styles';
-import {syntaxHighLighter} from '../hoc/highLighter/highLighter';
-import Paper from '@material-ui/core/Paper';
+import { syntaxHighLighter } from '../../../../hoc/highLighter/highLighter';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import TableRow from "@material-ui/core/TableRow";
 
 const jsonParse = (data) => {
     try {
@@ -19,6 +17,20 @@ const jsonParse = (data) => {
     }
 }
 
+const parseMultiJsonObject = (response)=>{
+    let resList = response.split('\n')
+    let formattedList = []
+    resList.map(res => {
+        try {
+            formattedList.push(JSON.parse(res))
+        }
+        catch (e) {
+
+        }
+    })
+    return formattedList
+}
+
 const jsonView = (data, position) => {
     let jsonObj = cloneDeep(data)
     if (jsonObj.request) {
@@ -26,7 +38,13 @@ const jsonView = (data, position) => {
     }
 
     if (jsonObj.response) {
-        jsonObj.response = jsonParse(jsonObj.response)
+        let response = jsonObj.response
+        if (response.includes('\"') && response.includes('\n')) {
+            jsonObj.response = parseMultiJsonObject(response)
+        }
+        else {
+            jsonObj.response = jsonParse(jsonObj.response)
+        }
     }
 
     if (position === 1) {
@@ -75,67 +93,55 @@ const StyledTabs = withStyles((theme) => ({
     },
 }))(Tabs);
 
-let _self = null;
-export default class PopDetailViewer extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            open: false,
-            viewIndex: 0
-        }
-        _self = this;
+const AuditDetailView = (props) => {
+    const [viewIndex, setViewIndex] = React.useState(0)
+    const [rawData, setRawData] = React.useState(undefined)
+
+    const handleClose = () => {
+        setViewIndex(0)
+        setRawData(undefined)
     }
 
-    componentDidMount() {
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        if (props.open) {
-            return { open: props.open}
-        }
-        return null
-    }
-
-    close(mode) {
-        this.setState({ open: false })
-        this.props.close && this.props.close(mode)
-    }
-
-    handleClose = () => {
-        this.setState({ open: false });
-        this.props.close();
-    }
-
-    expansionPanelView = (position, data) => {
+    const expansionPanelView = (position, data) => {
         return (
-            <Card className="audit_popup_panel">
+            <Card >
                 {(data) ? jsonView(data, position) : null}
             </Card>
         )
     }
 
-    getChipStyle = (position)=>
-    {
-        let color = this.state.viewIndex === position ? '#77BD06' :'#6F7074';
-        return {backgroundColor: color, marginRight:5, fontSize:15}
-    }
-
-    handleChangeTab = (event, newValue) => {
-        this.setState({viewIndex: newValue});
+    const handleChangeTab = (e, newValue) => {
+        setViewIndex(newValue);
     };
 
-    render() {
-        return (
+    const setAllView = (mtags) => {
+        if (mtags && mtags['traceid']) {
+            return mtags
+        }
+        return {}
+    }
+
+    const viewDetail = (data) => {
+        let rawData = (data.mtags) ? setAllView(data.mtags) : {};
+        setRawData(rawData)
+    }
+
+    return (
+        <React.Fragment>
+            <Button onClick={() => { viewDetail(props.data) }}>
+                VIEW DETAIL
+            </Button>
             <Dialog
-                className="audit_popup"
-                open={this.state.open}
-                onClose={this.handleClose}
+                fullWidth={true}
+                maxWidth={'lg'}
+                open={rawData !== undefined}
+                onClose={handleClose}
                 aria-labelledby="draggable-dialog-title"
             >
-                <DialogTitle onClose={this.handleClose}>
+                <DialogTitle onClose={handleClose}>
                     <StyledTabs
-                        value={this.state.viewIndex}
-                        onChange={this.handleChangeTab}
+                        value={viewIndex}
+                        onChange={handleChangeTab}
                         indicatorColor="primary"
                         textColor="primary"
                     >
@@ -145,9 +151,11 @@ export default class PopDetailViewer extends React.Component {
                     </StyledTabs>
                 </DialogTitle>
                 <DialogContent>
-                    {this.expansionPanelView(this.state.viewIndex, this.props.rawViewData)}
+                    {expansionPanelView(viewIndex, rawData)}
                 </DialogContent>
             </Dialog>
-        )
-    }
+        </React.Fragment>
+    )
 }
+
+export default AuditDetailView

@@ -1,14 +1,15 @@
 import React from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider, Chip, IconButton } from '@material-ui/core';
+import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider, Chip } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { Step, StepLabel, Stepper, Button } from '@material-ui/core';
+import { Step, StepLabel, Stepper } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import SearchIcon from '@material-ui/icons/SearchRounded';
 import HistoryLog from './HistoryLog';
+import ViewDetails from './ViewDetails';
 import ClearAllOutlinedIcon from '@material-ui/icons/ClearAllOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -76,22 +77,14 @@ class HeaderAuditLog extends React.Component {
         super(props);
         this.state = {
             expanded: (-1),
-            dayData: [],
             dataList: [],
             filterList: [],
             filterExpand: false,
             filterText: '',
             isOrg: false,
-            showFilterData:false
+            showFilterData: false
         }
         this.type = this.props.type
-    }
-
-    setAllView = (mtags, sId) => {
-        if (mtags && mtags['traceid']) {
-            return mtags
-        }
-        return {}
     }
 
 
@@ -99,16 +92,11 @@ class HeaderAuditLog extends React.Component {
         return (
             <div>
                 <div className='audit_timeline_Step'
-                    style={{ backgroundColor: data.status ? (data.status === '200') ? '#388e3c' : '#b71c1c' : '#9d9d9d'}}
+                    style={{ backgroundColor: data.status ? (data.status === '200') ? '#388e3c' : '#b71c1c' : '#9d9d9d' }}
                 >
                 </div>
             </div>
         )
-    }
-
-    onClickViewDetail = (data) => {
-        let rawViewData = (data.mtags) ? this.setAllView(data.mtags) : {};
-        this.props.detailView(rawViewData)
     }
 
     handleExpandedChange = (index, traceid) => (event, newExpanded) => {
@@ -118,15 +106,15 @@ class HeaderAuditLog extends React.Component {
 
     eventHeader = (data) => {
         let mtags = data.mtags
-        return ( 
+        return (
             <div>
                 <h4><b>{data['name']}</b><span className='audit_timeline_traceID'>{dateUtil.time(dateUtil.FORMAT_FULL_TIME_12_A, data.timestamp)}</span></h4>
-                <div style={{marginTop:5}}></div>
-                {mtags['appver'] ? <Chip variant="outlined" size="small" label={`App: ${mtags['app']} [${mtags['appver']}] -  ${mtags['apporg']}`}  style={{marginBottom:5, marginRight:5}}/> : null}
-                {mtags['cluster'] ? <Chip variant="outlined" size="small" label={`Cluster: ${mtags['cluster']} - ${mtags['clusterorg']}`}  style={{marginBottom:5, marginRight:5}}/> : null}
-                {mtags['cloudlet'] ? <Chip variant="outlined" size="small" label={`Cloudlet: ${mtags['cloudlet']} - ${mtags['cloudletorg']}`}  style={{marginBottom:5, marginRight:5}}/> : null}
-                <br/>
-                <br/>
+                <div style={{ marginTop: 5 }}></div>
+                {mtags['appver'] ? <Chip variant="outlined" size="small" label={`App: ${mtags['app']} [${mtags['appver']}] -  ${mtags['apporg']}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
+                {mtags['cluster'] ? <Chip variant="outlined" size="small" label={`Cluster: ${mtags['cluster']} - ${mtags['clusterorg']}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
+                {mtags['cloudlet'] ? <Chip variant="outlined" size="small" label={`Cloudlet: ${mtags['cloudlet']} - ${mtags['cloudletorg']}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
+                <br />
+                <br />
             </div>
         )
     }
@@ -171,11 +159,10 @@ class HeaderAuditLog extends React.Component {
                             : null
                     )
                 })}
-                {this.type === 'audit' ? <div className='audit_timeline_detail_button'>
-                    <Button onClick={() => this.onClickViewDetail(data)}>
-                        VIEW DETAIL
-                </Button>
-                </div> : null}
+                {this.type === 'audit' ?
+                    <div className='audit_timeline_detail_button'>
+                        <ViewDetails data={data} />
+                    </div> : null}
             </AccordionDetails>)
     }
 
@@ -225,11 +212,11 @@ class HeaderAuditLog extends React.Component {
         let keys = getKeys(this.type)
         let filterList = dataList.filter(data => {
             let mtags = data.mtags
-            let valid = keys.map(key=>{
+            let valid = keys.map(key => {
                 let dataValue = key.mtags ? mtags[key.field] : data[key.field]
                 if (key.filter) {
                     filterCount = + 1
-                    let tempData = dataValue ? dataValue: ''
+                    let tempData = dataValue ? dataValue : ''
                     return tempData.toLowerCase().includes(filterText)
                 }
             })
@@ -245,53 +232,55 @@ class HeaderAuditLog extends React.Component {
         this.setState({ filterText: '' }, () => { this.onFilterValue() })
     }
 
-    onHideFilter = (flag)=>{
-        this.setState({showFilterData:flag})
+    onHideFilter = (flag) => {
+        this.setState({ showFilterData: flag })
     }
 
     render() {
         const { filterList, filterExpand, filterText, isOrg, showFilterData } = this.state
         return (
-            <div className='audit_container'>
-                <div>
-                    <HistoryLog isOrg={isOrg} onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} onSelectedDate={this.props.onSelectedDate} onHideFilter={this.onHideFilter}/>
-                </div>
-                {showFilterData || !filterExpand ? <React.Fragment>
-                    <Input
-                        size="small"
-                        fullWidth
-                        style={{ padding: '0 14px 0 14px' }}
-                        value={filterText}
-                        startAdornment={
-                            <InputAdornment style={{ fontSize: 17 }} position="start">
-                                <SearchIcon />
-                            </InputAdornment>
-                        }
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <ClearAllOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
-                            </InputAdornment>
-                        }
-                        onChange={this.onFilterValue}
-                        placeholder={'Search'} />
-                    {!this.isOrg && this.props.loading && !filterExpand ? <LinearProgress /> : null}
-                    {!this.isOrg && this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
-                    <Divider />
-                    {this.state.isOrg ? null : <div align={'right'}><h4 style={{ padding: '10px 10px 0px 0px' }}><b>{this.props.selectedDate}</b></h4></div>}
-                    <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
-                        {
-                            filterList && filterList.length > 0 ?
-                                <Stepper className='audit_timeline_container' activeStep={filterList.length} orientation="vertical">
-                                    {filterList.map((data, index) => {
-                                        return (
-                                            this.renderStepper(data, index)
-                                        )
-                                    })}
-                                </Stepper> : null
-                        }
+            <React.Fragment>
+                <div className='audit_container'>
+                    <div>
+                        <HistoryLog isOrg={isOrg} onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} onSelectedDate={this.props.onSelectedDate} onHideFilter={this.onHideFilter} />
                     </div>
-                </React.Fragment> : null}
-            </div>
+                    {showFilterData || !filterExpand ? <React.Fragment>
+                        <Input
+                            size="small"
+                            fullWidth
+                            style={{ padding: '0 14px 0 14px' }}
+                            value={filterText}
+                            startAdornment={
+                                <InputAdornment style={{ fontSize: 17 }} position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            }
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <ClearAllOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
+                                </InputAdornment>
+                            }
+                            onChange={this.onFilterValue}
+                            placeholder={'Search'} />
+                        {!this.isOrg && this.props.loading && !filterExpand ? <LinearProgress /> : null}
+                        {!this.isOrg && this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
+                        <Divider />
+                        {this.state.isOrg ? null : <div align={'right'}><h4 style={{ padding: '10px 10px 0px 0px' }}><b>{this.props.selectedDate}</b></h4></div>}
+                        <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
+                            {
+                                filterList && filterList.length > 0 ?
+                                    <Stepper className='audit_timeline_container' activeStep={filterList.length} orientation="vertical">
+                                        {filterList.map((data, index) => {
+                                            return (
+                                                this.renderStepper(data, index)
+                                            )
+                                        })}
+                                    </Stepper> : null
+                            }
+                        </div>
+                    </React.Fragment> : null}
+                </div>
+            </React.Fragment>
         )
     }
 
