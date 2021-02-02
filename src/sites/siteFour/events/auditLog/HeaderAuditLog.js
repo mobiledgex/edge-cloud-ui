@@ -1,5 +1,5 @@
 import React from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider, Chip } from '@material-ui/core';
+import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider, Chip, IconButton } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -75,7 +75,8 @@ class HeaderAuditLog extends React.Component {
             filterList: [],
             filterExpand: false,
             filterText: '',
-            isOrg: false
+            isOrg: false,
+            showFilterData:false
         }
         this.type = this.props.type
     }
@@ -187,7 +188,7 @@ class HeaderAuditLog extends React.Component {
     }
 
     onFilter = (filter) => {
-        this.props.onLoadData(filter.starttime, filter.endtime, filter.limit)
+        this.props.onLoadData(filter.starttime, filter.endtime, filter.limit, filter.tags)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -240,46 +241,52 @@ class HeaderAuditLog extends React.Component {
         this.setState({ filterText: '' }, () => { this.onFilterValue() })
     }
 
+    onHideFilter = (flag)=>{
+        this.setState({showFilterData:flag})
+    }
+
     render() {
-        const { filterList, filterExpand, filterText, isOrg } = this.state
+        const { filterList, filterExpand, filterText, isOrg, showFilterData } = this.state
         return (
             <div className='audit_container'>
                 <div>
-                    <HistoryLog isOrg={isOrg} onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} onSelectedDate={this.props.onSelectedDate} />
+                    <HistoryLog isOrg={isOrg} onFilter={this.onFilter} onClose={this.props.close} onExpand={this.onFilterExpand} onSelectedDate={this.props.onSelectedDate} onHideFilter={this.onHideFilter}/>
                 </div>
-                <Input
-                    size="small"
-                    fullWidth
-                    style={{ padding: '0 14px 0 14px' }}
-                    value={filterText}
-                    startAdornment={
-                        <InputAdornment style={{ fontSize: 17 }} position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    }
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <ClearAllOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
-                        </InputAdornment>
-                    }
-                    onChange={this.onFilterValue}
-                    placeholder={'Search'} />
-                {!this.isOrg && this.props.loading && !filterExpand ? <LinearProgress /> : null}
-                {!this.isOrg && this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
-                <Divider />
-                {this.state.isOrg ? null : <div align={'right'}><h4 style={{ padding: '10px 10px 0px 0px' }}><b>{this.props.selectedDate}</b></h4></div>}
-                <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
-                    {
-                        filterList && filterList.length > 0 ?
-                            <Stepper className='audit_timeline_container' activeStep={filterList.length} orientation="vertical">
-                                {filterList.map((data, index) => {
-                                    return (
-                                        this.renderStepper(data, index)
-                                    )
-                                })}
-                            </Stepper> : null
-                    }
-                </div>
+                {showFilterData || !filterExpand ? <React.Fragment>
+                    <Input
+                        size="small"
+                        fullWidth
+                        style={{ padding: '0 14px 0 14px' }}
+                        value={filterText}
+                        startAdornment={
+                            <InputAdornment style={{ fontSize: 17 }} position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        }
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <ClearAllOutlinedIcon style={{ fontSize: 17 }} onClick={this.onFilterClear} />
+                            </InputAdornment>
+                        }
+                        onChange={this.onFilterValue}
+                        placeholder={'Search'} />
+                    {!this.isOrg && this.props.loading && !filterExpand ? <LinearProgress /> : null}
+                    {!this.isOrg && this.props.historyLoading && filterExpand ? <LinearProgress /> : null}
+                    <Divider />
+                    {this.state.isOrg ? null : <div align={'right'}><h4 style={{ padding: '10px 10px 0px 0px' }}><b>{this.props.selectedDate}</b></h4></div>}
+                    <div className={`${filterExpand ? 'audit_timeline_vertical_expand' : 'audit_timeline_vertical'}`}>
+                        {
+                            filterList && filterList.length > 0 ?
+                                <Stepper className='audit_timeline_container' activeStep={filterList.length} orientation="vertical">
+                                    {filterList.map((data, index) => {
+                                        return (
+                                            this.renderStepper(data, index)
+                                        )
+                                    })}
+                                </Stepper> : null
+                        }
+                    </div>
+                </React.Fragment> : null}
             </div>
         )
     }

@@ -73,12 +73,13 @@ class headerGlobalAudit extends React.Component {
         this.getDataAudit(this.starttime, endtime)
     }
 
-    getDataAudit = async (starttime, endtime, limit, isLive, orgTime) => {
+    getDataAudit = async (starttime, endtime, limit, tags, isLive, orgTime) => {
         if (this._isMounted) {
             isLive ? this.setState({ loading: true }) : this.setState({ historyLoading: true })
         }
         limit = limit ? limit : CON_LIMIT
-        let mcRequest = await showAudits(_self, { starttime: starttime, endtime: endtime, limit: parseInt(limit), type: this.type }, false)
+        let match = {tags}
+        let mcRequest = await showAudits(_self, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false)
         if (this._isMounted) {
             this.setState({ historyLoading: false, loading: false, limit: 25 })
         }
@@ -131,8 +132,9 @@ class headerGlobalAudit extends React.Component {
         this.setState({ isOpen: false });
     }
 
-    loadData = (starttime, endtime, limit) => {
-        this.getDataAudit(starttime, endtime, limit)
+    loadData = (starttime, endtime, limit, tags) => {
+        this.setState({historyList:[]})
+        this.getDataAudit(starttime, endtime, limit, tags)
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -196,14 +198,14 @@ class headerGlobalAudit extends React.Component {
     }
 
     initAudit = (starttime, endtime, enableInterval) => {
-        this.getDataAudit(starttime, endtime, CON_LIMIT, true);
+        this.getDataAudit(starttime, endtime, CON_LIMIT, {}, true);
         if (enableInterval) {
             this.intervalId = setInterval(() => {
                 let dataList = this.state.liveData
                 let orgTime = dataList.length > 0 ? dataList[0].starttime : undefined
                 this.starttime = cloneDeep(this.endtime)
                 this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
-                this.getDataAudit(this.starttime, this.endtime, CON_LIMIT, true, orgTime)
+                this.getDataAudit(this.starttime, this.endtime, CON_LIMIT, {}, true, orgTime)
             }, 10 * 2000);
         }
     }
