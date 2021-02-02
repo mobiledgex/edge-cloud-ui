@@ -49,7 +49,15 @@ const auditKeys = [
 
 const eventKeys = [
     { label: 'Start Time', field: 'timestamp', formatData: formatDate, detail: true },
+    { label: 'Host Name', field: 'hostname', mtags: true, detail: true },
+    { label: 'Line No', field: 'lineno', mtags: true, detail: true },
+    { label: 'Node', field: 'node', mtags: true, detail: true },
+    { label: 'Node Region', field: 'noderegion', mtags: true, detail: true },
+    { label: 'Node Type', field: 'nodetype', mtags: true, detail: true },
     { label: 'Trace ID', field: 'traceid', mtags: true, detail: true },
+    { label: 'Span ID', field: 'spanid', mtags: true, detail: true },
+    { label: 'Duration', field: 'duration', mtags: true, detail: true },
+    { label: 'State', field: 'state', mtags: true, detail: true },
     { label: 'Name', field: 'name', filter: true, detail: false },
     { label: 'App', field: 'app', mtags: true, filter: true, detail: false },
     { label: 'Version', field: 'appver', mtags: true, filter: true, detail: false },
@@ -57,8 +65,6 @@ const eventKeys = [
     { label: 'Cloudlet', field: 'cloudlet', mtags: true, filter: true, detail: false },
     { label: 'Operator', field: 'cloudletorg', mtags: true, filter: true, detail: false },
     { label: 'Cluster', field: 'cluster', mtags: true, filter: true, detail: false },
-    { label: 'Duration', field: 'duration', mtags: true, detail: true },
-    { label: 'State', field: 'state', mtags: true, detail: true }
 ]
 
 const getKeys = (type) => {
@@ -114,13 +120,11 @@ class HeaderAuditLog extends React.Component {
         let mtags = data.mtags
         return ( 
             <div>
-                <h4><b>{data['name']}</b></h4>
-                <div className='audit_timeline_traceID'><span>{dateUtil.time(dateUtil.FORMAT_FULL_TIME_12_A, data.timestamp)}</span></div>
+                <h4><b>{data['name']}</b><span className='audit_timeline_traceID'>{dateUtil.time(dateUtil.FORMAT_FULL_TIME_12_A, data.timestamp)}</span></h4>
                 <div style={{marginTop:5}}></div>
-                <Chip component="div" variant="outlined" size="small" label={`Developer: ${mtags['apporg']}`} style={{marginBottom:5, marginRight:5}}/>
-                <Chip variant="outlined" size="small" label={`App: ${mtags['app']} [${mtags['appver']}]`}  style={{marginBottom:5, marginRight:5}}/>
-                <Chip variant="outlined" size="small" label={`Cluster: ${mtags['cluster']}`}  style={{marginBottom:5, marginRight:5}}/>
-                <Chip variant="outlined" size="small" label={`Cloudlet: ${mtags['cloudlet']}`}  style={{marginBottom:5, marginRight:5}}/>
+                {mtags['appver'] ? <Chip variant="outlined" size="small" label={`App: ${mtags['app']} [${mtags['appver']}] -  ${mtags['apporg']}`}  style={{marginBottom:5, marginRight:5}}/> : null}
+                {mtags['cluster'] ? <Chip variant="outlined" size="small" label={`Cluster: ${mtags['cluster']} - ${mtags['clusterorg']}`}  style={{marginBottom:5, marginRight:5}}/> : null}
+                {mtags['cloudlet'] ? <Chip variant="outlined" size="small" label={`Cloudlet: ${mtags['cloudlet']} - ${mtags['cloudletorg']}`}  style={{marginBottom:5, marginRight:5}}/> : null}
                 <br/>
                 <br/>
             </div>
