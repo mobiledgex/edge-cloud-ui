@@ -1,9 +1,13 @@
 import React from 'react'
 import { Switch } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  root: props => props,
+})
 const MexCheckbox = (props) => {
   let form = props.form
-
+  const classes = useStyles(form.style);
   const [value, setValue] = React.useState(props.form.value ? props.form.value : false)
 
   const onChange = (checked) => {
@@ -31,7 +35,7 @@ const MexCheckbox = (props) => {
 
   const getMaterialCheckBox = () =>
   (
-    <CustomSwitch onChange={(e) => onChange(e.target.checked)} value={value} checked={value} disabled={form.rules && form.rules.disabled} />
+    <CustomSwitch className={classes.root} onChange={(e) => onChange(e.target.checked)} value={value} checked={value} disabled={form.rules && form.rules.disabled} />
   )
 
 
