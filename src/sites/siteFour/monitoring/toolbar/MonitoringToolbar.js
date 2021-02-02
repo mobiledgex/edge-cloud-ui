@@ -9,6 +9,7 @@ import MonitoringMenu from './MonitoringMenu'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { fields, isAdmin } from '../../../../services/model/format';
 
 const useStyles = makeStyles((theme) => ({
@@ -156,7 +157,7 @@ const MexToolbar = (props) => {
                         <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
                         <MonitoringMenu order={3} data={constant.metricParentTypes} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
                         <MonitoringMenu order={4} data={props.regions} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
-                        <MonitoringMenu order={5} data={props.filter.parent.metricTypeKeys} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<InsertChartIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Metric Type' />
+                        <MonitoringMenu order={5} data={props.filter.parent.metricTypeKeys} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Visibility' />
                         {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
                         {renderRefresh(7)}
                         {searchForm(8)}
