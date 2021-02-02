@@ -46,6 +46,7 @@ class ClusterInstReg extends React.Component {
         this.flavorList = []
         this.appList = []
         this.updateFlowDataList = []
+        this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
         //To avoid refecthing data from server
     }
 
@@ -190,7 +191,8 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                     else if (form.field === fields.configs) {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ||  app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES
+                        this.configOptions = app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_HELM_CUST]
                         return form
                     }
                     else if (form.field === fields.configmulti) {
@@ -321,7 +323,7 @@ class ClusterInstReg extends React.Component {
 
     configForm = () => ([
         { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 2 }, width: 9, visible: true, update: { edit: true } },
-        { field: fields.kind, label: 'Kind', formType: SELECT, rules: { required: true }, width: 4, visible: true, options: ['envVarsYaml', 'helmCustomizationYaml'], update: { edit: true } },
+        { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 4, visible: true, options: this.configOptions, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeConfigForm }
     ])
 
