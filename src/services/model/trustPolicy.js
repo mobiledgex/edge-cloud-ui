@@ -40,15 +40,6 @@ const getKey = (data) => {
 
 
 export const showTrustPolicies = (data) => {
-  if (!formatter.isAdmin()) {
-    {
-      data.trustpolicy = {
-        key: {
-          organization: formatter.getOrganization()
-        }
-      }
-    }
-  }
   return { method: SHOW_TRUST_POLICY, data: data }
 }
 
