@@ -281,7 +281,7 @@ class AppReg extends React.Component {
                 return form
             }
             else if (form.field === fields.configs) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES
                 this.configOptions = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_HELM_CUST]
                 return form
             }
