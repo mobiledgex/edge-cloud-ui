@@ -78,8 +78,8 @@ export const DEVELOPER_MANAGER = 'DeveloperManager'
 export const DEVELOPER_CONTRIBUTOR = 'DeveloperContributor'
 export const DEVELOPER_VIEWER = 'DeveloperViewer'
 
-export const CONFIG_ENV_VAR = 'Environment Variables'
-export const CONFIG_HELM_CUST = 'Helm Customization'
+export const CONFIG_ENV_VAR = 'Environment Variables Yaml'
+export const CONFIG_HELM_CUST = 'Helm Customization Yaml'
 
 export const CRM_OVERRIDE_NO_OVERRIDE = 0
 export const CRM_OVERRIDE_IGNORE_CRM_ERRORS = 1
