@@ -10,7 +10,6 @@ import { updateUser } from '../../../../services/model/user'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 
-import AlerReceiverPref from './alertReceiverPref'
 import DatatablePref from './datatablePref'
 import TimezonePref from './timezonePref'
 
@@ -19,13 +18,11 @@ import { getOrganization, getUserRole, isAdmin } from '../../../../services/mode
 import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 
-export const PREF_ALERT_RECEIVERS = 'AlertReceivers'
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_TIMEZONE = 'Timezone'
 
 const preferencesList = [
     { id: PREF_DATATABLE, label: 'Data Table' },
-    { id: PREF_ALERT_RECEIVERS, label: 'Alert Receivers' },
     { id: PREF_TIMEZONE, label: 'Date & Time' },
 ]
 class Preferences extends React.Component {
@@ -123,8 +120,6 @@ class Preferences extends React.Component {
     prefView = (id) => {
         let data = cloneDeep(this.state.data)
         switch (id) {
-            case PREF_ALERT_RECEIVERS:
-                return <AlerReceiverPref data={isAdmin() ? data : this.getOrgData(data)} update={isAdmin() ? this.updateData : this.updateOrgData}/>
             case PREF_DATATABLE:
                 return <DatatablePref data={data} update={this.updateData}/>
             case PREF_TIMEZONE:

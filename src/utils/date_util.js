@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import {getMexTimezone} from './sharedPreferences_util'
+import {timezonePref} from './sharedPreferences_util'
 import momentTimezone from "moment-timezone";
 
 export const FORMAT_FULL_DATE = 'YYYY-MM-DD'
@@ -37,7 +37,7 @@ export const currentTimeInMilli = () =>
 
 export const timeInMilli = (date) =>
 {
-    return moment.tz(date, getMexTimezone()).valueOf()
+    return moment.tz(date, timezonePref()).valueOf()
 }
 
 export const convertToUnix = (date) =>
@@ -47,7 +47,7 @@ export const convertToUnix = (date) =>
 
 export const convertToTimezone = (date)=>
 {
-    return date ? moment.tz(date, getMexTimezone()) : moment.tz(getMexTimezone())
+    return date ? moment.tz(date, timezonePref()) : moment.tz(timezonePref())
 }
 
 export const time = (format, date) => {
@@ -113,5 +113,3 @@ export const endOfDay = (value) => {
 export const endOfMonth = (value) => {
     return value ? moment().endOf(value, 'month') : moment().endOf('month')
 }
-
-

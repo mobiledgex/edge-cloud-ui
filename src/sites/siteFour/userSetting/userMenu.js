@@ -5,10 +5,11 @@ import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
 import Profile from './profile';
 import UpdatePassword from './updatePassword';
+import Preferences from './preferences/preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-
+import { LS_USER_META_DATA } from '../../../constant';
 
 class headerGlobalMini extends React.Component {
     constructor(props) {
@@ -51,6 +52,7 @@ class headerGlobalMini extends React.Component {
                     onClose={this.handleClose}
                 >
                     <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose}/>
+                    <Preferences close={this.handleClose} />
                     <UpdatePassword close={this.handleClose} dialog={true}/>
                     <MenuItem onClick={() => this.logout('/logout')}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
@@ -64,7 +66,9 @@ class headerGlobalMini extends React.Component {
     currentUser = async ()=>{
         let mc = await serverData.currentUser(this);
         if (mc && mc.response && mc.response.data) {
-            this.setState({userInfo: mc.response.data})
+            this.setState({userInfo: mc.response.data},()=>{
+                localStorage.setItem(LS_USER_META_DATA, this.state.userInfo.Metadata)
+            })
         }
     }
 
