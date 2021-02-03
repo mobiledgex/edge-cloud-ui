@@ -12,7 +12,7 @@ export const timezonePref = () => {
 
 export const showMapPref = () => {
     let data = getUserMetaData()
-    return data[PREF_MAP] ? data[PREF_MAP] : true
+    return data[PREF_MAP] !== undefined ? data[PREF_MAP] : true
 }
 
 export const prefixSearchPref = () => {
