@@ -31,13 +31,17 @@ import { showOrganizations } from '../../../services/model/organization';
 
 import sortBy from 'lodash/sortBy'
 import { Skeleton } from '@material-ui/lab';
+import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 
 const defaultParent = () => {
     return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
 }
 
-const fetchMetricTypeField = (metricTypeKeys) => {
-    return metricTypeKeys.map(metricType => { return metricType.field })
+const defaultMetricType = (parent) => {
+    let id = parent.id
+    let metricTypeKeys = parent.metricTypeKeys
+    let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
+    return monitoringPref(pref) ?  monitoringPref(pref).map(type => { return type.toLowerCase() }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
 
 const timeRangeInMin = (range) => {
@@ -46,6 +50,10 @@ const timeRangeInMin = (range) => {
     starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
     endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
     return { starttime, endtime }
+}
+
+const defaultRegion = (regions)=>{
+    return monitoringPref(PREF_M_REGION) ? monitoringPref(PREF_M_REGION) : regions
 }
 
 class Monitoring extends React.Component {
@@ -59,7 +67,7 @@ class Monitoring extends React.Component {
             duration: constant.relativeTimeRanges[0],
             range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
             organizations: [],
-            filter: { region: this.regions, search: '', parent, metricType: fetchMetricTypeField(parent.metricTypeKeys), summary: constant.summaryList[0] },
+            filter: { region: defaultRegion(this.regions), search: '', parent, metricType: defaultMetricType(parent), summary: constant.summaryList[0] },
             avgData: {},
             rowSelected: 0,
             selectedOrg: undefined,
@@ -81,13 +89,12 @@ class Monitoring extends React.Component {
     }
 
     onListToolbarClick = (action) => {
-        switch(action)
-        {
+        switch (action) {
             case constant.LIST_TOOLBAR_TRACK_DEVICES:
                 this.setState({ listAction: { action: action, data: this.selectedRow } })
                 break;
         }
-      
+
     }
 
     onListToolbarClear = () => {
@@ -166,6 +173,7 @@ class Monitoring extends React.Component {
                         break;
                     case constant.ACTION_METRIC_PARENT_TYPE:
                         filter.parent = value
+                        filter.metricType = defaultMetricType(value)
                         break;
                     case constant.ACTION_METRIC_TYPE:
                         filter.metricType = value
@@ -198,20 +206,21 @@ class Monitoring extends React.Component {
                     {loading ? <LinearProgress /> : null}
                     <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
                 </Card>
-                <div style={{ margin: 1 }}></div>
-                {showLoaded ? <React.Fragment>
-                    <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
-                    <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear}/>
-                    <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                    <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                </React.Fragment> :
-                    <React.Fragment>
-                        <Skeleton variant="rect" height={170} />
-                        <AppSkeleton filter={filter} />
-                        <ClusterSkeleton filter={filter} />
-                        <CloudletSkeleton filter={filter} />
-                    </React.Fragment>}
-
+                <React.Fragment>
+                    <div style={{ margin: 1 }}></div>
+                    {showLoaded ? <React.Fragment>
+                        <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
+                        <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} />
+                        <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                    </React.Fragment> :
+                        <React.Fragment>
+                            <Skeleton variant="rect" height={170} />
+                            <AppSkeleton filter={filter} />
+                            <ClusterSkeleton filter={filter} />
+                            <CloudletSkeleton filter={filter} />
+                        </React.Fragment>}
+                </React.Fragment>
             </div>
         )
     }

@@ -30,6 +30,7 @@ export const DUALLIST = 'DualList'
 export const INPUT = 'Input'
 export const POPUP_INPUT = 'PopupInput'
 export const CHECKBOX = 'Checkbox'
+export const CHECKBOX_ARRAY = 'CheckboxArray'
 export const ICON_BUTTON = 'IconButton'
 export const TEXT_AREA = 'TextArea'
 export const BUTTON = 'Button'
@@ -350,7 +351,7 @@ const MexForms = (props) => {
                     <Grid.Column width={4} className='detail_item'>
                         {form.labelIcon ?
                             <IconButton disabled={true}>{form.labelIcon}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></IconButton> :
-                            <div style={form.labelStyle}>{form.label}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></div>}
+                            <div style={form.labelStyle ? form.labelStyle : {marginTop:8}}>{form.label}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {

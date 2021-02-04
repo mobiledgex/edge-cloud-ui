@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Login from './login';
-import { LOCAL_STRAGE_KEY } from '../../constant';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { PAGE_ORGANIZATIONS } from '../../constant';
+import { LOCAL_STRAGE_KEY, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
 import { GridLoader } from "react-spinners";
 import MexAlert from '../../hoc/alert/AlertDialog';
 import './style.css'
@@ -23,6 +22,7 @@ class EntranceGlobe extends Component {
     componentDidMount() {
         if (this.props.match.path === '/logout') {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
+            localStorage.removeItem(LS_USER_META_DATA);
         }
         else if (this.props.match.path === '/passwordreset') {
             this.props.handleChangeLoginMode('resetPass')

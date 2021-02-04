@@ -1,6 +1,6 @@
 import { Box, Checkbox, IconButton, ListItem, ListItemIcon, ListItemText, Menu, Tooltip } from '@material-ui/core'
 import cloneDeep from 'lodash/cloneDeep'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { validateRole } from '../helper/Constant'
 import CheckIcon from '@material-ui/icons/Check';
 import { Icon } from 'semantic-ui-react';
@@ -13,7 +13,11 @@ const fetchArray = (props) => {
 const MonitoringMenu = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [filterText, setFilterText] = React.useState('')
-    const [value, setValue] = React.useState(props.disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (props.multiple ? fetchArray(props) : props.data[0])))
+    const [value, setValue] = React.useState([])
+
+    useEffect(() => {
+        setValue(props.disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (props.multiple ? fetchArray(props) : props.data[0])))
+    }, [props.default, props.value, props.disableDefault, props.data])
 
     const onChange = (data) => {
         if (props.multiple) {

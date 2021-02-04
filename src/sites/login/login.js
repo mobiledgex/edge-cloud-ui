@@ -4,9 +4,10 @@ import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY } from '../../constant'
+import { LOCAL_STRAGE_KEY, LS_USER_META_DATA } from '../../constant'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
+import * as serviceMC from '../../services/model/serviceMC';
 import RegistryUserForm from './signup';
 import MexOTPRegistration from './otp/MexOTPRegistration';
 import MexOTPValidation from './MexOTPValidation';
@@ -14,6 +15,7 @@ import ResetPasswordForm from '../siteFour/userSetting/updatePassword';
 import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
 import ReCAPTCHA from "react-google-recaptcha";
+import { CURRENT_USER } from '../../services/model/endpoints';
 
 const host = window.location.host;
 let self = null;
@@ -352,17 +354,27 @@ class Login extends Component {
         }
     }
 
+    fetchInitDataBeforeLogin = async (username, data) => {
+        if (data.token) {
+            let mc = await serviceMC.sendSyncRequest(this, { method: CURRENT_USER, token: data.token })
+            if (mc && mc.response && mc.response.status === 200) {
+                localStorage.setItem(LS_USER_META_DATA, mc.response.data.Metadata)
+                self.params['userToken'] = data.token
+                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
+                this.getControllers(data.token)
+                this.validateUserName(username)
+                this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
+            }
+        }
+    }
+
     requestToken = async (self) => {
         let username = self.state.username
         let mcRequest = await serverData.login(self, { username: username, password: self.state.password })
         if (mcRequest && mcRequest.response) {
             let response = mcRequest.response;
-            if (response.data.token) {
-                self.params['userToken'] = response.data.token
-                this.getControllers(response.data.token)
-                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                this.validateUserName(username)
-                this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
+            if (response.data) {
+                this.fetchInitDataBeforeLogin(username, response.data)
             }
         }
         else if (mcRequest && mcRequest.error) {
