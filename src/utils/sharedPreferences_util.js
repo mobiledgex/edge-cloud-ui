@@ -3,6 +3,9 @@ import { getUserMetaData } from '../helper/ls'
 
 export const PREF_TIMEZONE = 'Timezone'
 export const PREF_MAP = 'Map'
+export const PREF_M_CLOUDLET_VISIBILITY = 'MCloudletVisibility'
+export const PREF_M_CLUSTER_VISIBILITY = 'MClusterVisibility'
+export const PREF_M_APP_VISIBILITY = 'MAppVisibility'
 export const PREF_PREFIX_SEARCH = 'PrefixSearch'
 
 export const timezonePref = () => {
@@ -16,6 +19,11 @@ export const showMapPref = () => {
 }
 
 export const prefixSearchPref = () => {
+    let data = getUserMetaData()
+    return data[PREF_PREFIX_SEARCH] ? data[PREF_PREFIX_SEARCH].toLowerCase() : ''
+}
+
+export const monitoringVisibiltyPref = (type) => {
     let data = getUserMetaData()
     return data[PREF_PREFIX_SEARCH] ? data[PREF_PREFIX_SEARCH].toLowerCase() : ''
 }

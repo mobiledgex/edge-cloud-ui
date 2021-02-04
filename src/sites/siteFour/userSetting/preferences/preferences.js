@@ -12,6 +12,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Gri
 
 import DatatablePref from './datatablePref'
 import TimezonePref from './timezonePref'
+import MonitoringPref from './monitoringPref'
 
 import cloneDeep from 'lodash/cloneDeep'
 import { getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
@@ -19,10 +20,12 @@ import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 
 export const PREF_DATATABLE = 'Datatable'
+export const PREF_MONITORING = 'Monitoring'
 export const PREF_TIMEZONE = 'Timezone'
 
 const preferencesList = [
     { id: PREF_DATATABLE, label: 'Data Table' },
+    { id: PREF_MONITORING, label: 'Monitoring' },
     { id: PREF_TIMEZONE, label: 'Date & Time' },
 ]
 class Preferences extends React.Component {
@@ -121,9 +124,11 @@ class Preferences extends React.Component {
         let data = cloneDeep(this.state.data)
         switch (id) {
             case PREF_DATATABLE:
-                return <DatatablePref data={data} update={this.updateData}/>
+                return <DatatablePref data={data} update={this.updateData} />
+            case PREF_MONITORING:
+                return <MonitoringPref data={data} update={this.updateData} />
             case PREF_TIMEZONE:
-                return <TimezonePref data={data} update={this.updateData}/>
+                return <TimezonePref data={data} update={this.updateData} />
         }
     }
 
