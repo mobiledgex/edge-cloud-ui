@@ -35,6 +35,13 @@ const defaultState = () => {
         help: false
     }
 }
+
+const auditHelp = [
+    <p>By default audit/event log provides current logs with default limit of 25 which is refreshed at a fixed interval</p>,
+    <p>Click on <FilterListRoundedIcon style={{ verticalAlign: -6 }} />  icon to fetch specific data</p>,
+    <p>If startime is greater than endtime, starttime date will be changed to previous day</p>,
+    <p>Maximum 24 hours data can be fetched</p>
+]
 class MaterialUIPickers extends React.Component {
 
     constructor(props) {
@@ -171,7 +178,7 @@ class MaterialUIPickers extends React.Component {
                         </div>}
                         <div onClick={(e) => { e.stopPropagation() }} align={'center'} style={{ width: '100%', height: 50 }}>
                             <div style={{ position: 'absolute', right: 0, top: 2 }}>
-                                <Help />
+                                <Help data={auditHelp}/>
                                 <IconButton onClick={this.onClose}>
                                     <CloseIcon fontSize={'small'} />
                                 </IconButton>

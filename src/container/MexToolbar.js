@@ -54,7 +54,7 @@ const MexToolbar = (props) => {
 
     const [search, setSearch] = React.useState('')
     const [region, setRegion] = React.useState({ key: 'ALL', value: REGION_ALL, text: 'ALL' })
-    const [map, setMap] = React.useState(true)
+    const [map, setMap] = React.useState(props.showMap)
     const [focused, setFocused] = React.useState(false)
     const [anchorRegionEL, setAnchorRegionEL] = React.useState(null)
 

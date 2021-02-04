@@ -43,7 +43,7 @@ export const appMetricsListKeys = [
     { field: fields.healthCheck, label: 'Health Check', sortable: false, visible: true, groupBy: false, customData: true },
     { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
     { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
-    { field: 'mem', label: 'Memory', sortable: true, visible: true, isArray: true },
+    { field: 'memory', label: 'Memory', sortable: true, visible: true, isArray: true },
     { field: 'sent', label: 'Network Sent', sortable: true, visible: true, isArray: true },
     { field: 'received', label: 'Network Received', sortable: true, visible: true, isArray: true },
     { field: 'connections', label: 'Active Connections', sortable: true, visible: true, isArray: true },
@@ -53,7 +53,7 @@ export const appMetricsListKeys = [
 
 export const appInstMetricTypeKeys = [
     { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: 2, serverRequest: true },
-    { field: 'mem', serverField: 'mem', header: 'Memory', position: 11, unit: 1, serverRequest: false },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 11, unit: 1, serverRequest: false },
     { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 12, unit: 1, serverRequest: false },
     { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 13, unit: 1, serverRequest: false },
     { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 14, unit: 1, serverRequest: false },
