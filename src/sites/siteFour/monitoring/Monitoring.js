@@ -206,7 +206,7 @@ class Monitoring extends React.Component {
                     {loading ? <LinearProgress /> : null}
                     <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
                 </Card>
-                {selectedOrg ? <React.Fragment>
+                <React.Fragment>
                     <div style={{ margin: 1 }}></div>
                     {showLoaded ? <React.Fragment>
                         <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
@@ -220,7 +220,7 @@ class Monitoring extends React.Component {
                             <ClusterSkeleton filter={filter} />
                             <CloudletSkeleton filter={filter} />
                         </React.Fragment>}
-                </React.Fragment> : null}
+                </React.Fragment>
             </div>
         )
     }

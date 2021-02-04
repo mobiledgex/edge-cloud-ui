@@ -5,6 +5,7 @@ import * as actions from '../../../../actions';
 import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
 import CloseIcon from '@material-ui/icons/Close';
+import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
 import { LS_USER_META_DATA } from '../../../../constant';
 import { updateUser } from '../../../../services/model/user'
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -18,6 +19,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
 import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
+import Help from '../../events/auditLog/Help'
 
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'
@@ -28,6 +30,11 @@ const preferencesList = [
     { id: PREF_MONITORING, label: 'Monitoring' },
     { id: PREF_TIMEZONE, label: 'Date & Time' },
 ]
+
+const prefHelp = [
+    <p>Reload console to apply changes</p>
+]
+
 class Preferences extends React.Component {
     constructor(props) {
         super(props)
@@ -85,7 +92,8 @@ class Preferences extends React.Component {
             {
                 this.onTimezoneChangeEvent()
             }
-            this.props.handleAlertInfo('success', 'Update Successful')
+            this.setState({open:false, header:0})
+            this.props.handleAlertInfo('success', 'Preferences saved, please reload page to apply changes')
         }
     }
 
@@ -147,6 +155,7 @@ class Preferences extends React.Component {
                             <h3 style={{ fontWeight: 700 }}>Preferences</h3>
                         </div>
                         <div style={{ float: "right", display: 'inline-block', marginTop: -8 }}>
+                            <Help data={prefHelp}/>
                             <IconButton onClick={this.handleClose}>
                                 <CloseIcon />
                             </IconButton>
