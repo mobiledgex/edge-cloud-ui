@@ -1,8 +1,10 @@
 import {timezoneName } from './date_util'
 import { getUserMetaData } from '../helper/ls'
+import { PREF_MONITORING } from '../sites/siteFour/userSetting/preferences/preferences'
 
 export const PREF_TIMEZONE = 'Timezone'
 export const PREF_MAP = 'Map'
+export const PREF_M_REGION = 'MRegion'
 export const PREF_M_CLOUDLET_VISIBILITY = 'MCloudletVisibility'
 export const PREF_M_CLUSTER_VISIBILITY = 'MClusterVisibility'
 export const PREF_M_APP_VISIBILITY = 'MAppVisibility'
@@ -23,7 +25,7 @@ export const prefixSearchPref = () => {
     return data[PREF_PREFIX_SEARCH] ? data[PREF_PREFIX_SEARCH].toLowerCase() : ''
 }
 
-export const monitoringVisibiltyPref = (type) => {
+export const monitoringPref = (type) => {
     let data = getUserMetaData()
-    return data[PREF_PREFIX_SEARCH] ? data[PREF_PREFIX_SEARCH].toLowerCase() : ''
+    return data[PREF_MONITORING] ? data[PREF_MONITORING][type] : undefined
 }

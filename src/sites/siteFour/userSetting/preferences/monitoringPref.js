@@ -6,22 +6,15 @@ import { CHECKBOX_ARRAY } from '../../../../hoc/forms/MexForms'
 import { withStyles } from '@material-ui/styles';
 import { PREF_MONITORING } from './preferences';
 import CheckBoxArray from '../../../../hoc/forms/CheckBoxArray'
+import { PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
 
 const cloudletVisibility = ['CPU', 'Memory', 'Disk', 'Map', 'Event']
 const clusterVisibility = ['CPU', 'Memory', 'Disk', 'Sent', 'Received', 'Map']
-const appInstVisibility = ['CPU', 'Memory', 'Disk', 'Sent', 'Received', 'Active', 'Map', 'Event', 'Client']
+const appInstVisibility = ['CPU', 'Memory', 'Disk', 'Sent', 'Received', 'Connections', 'Map', 'Event', 'Client']
 
-const cloudletForms = [
-    { field: 'cloudletVisibility', label: 'Visibility', formType: CHECKBOX_ARRAY, value: cloudletVisibility, options: cloudletVisibility },
-]
 
-const clusterForms = [
-    { field: 'clusterVisibility', label: 'Visibility', formType: CHECKBOX_ARRAY, value: clusterVisibility, options: clusterVisibility },
-]
 
-const appInstForms = [
-    { field: 'appInstVisibility', label: 'Visibility', formType: CHECKBOX_ARRAY, value: appInstVisibility, options: appInstVisibility },
-]
+
 
 const Accordion = withStyles({
     root: {
@@ -50,12 +43,23 @@ class MonitoringPreferences extends React.Component {
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
+    cloudletForms = () => ([
+        { field: PREF_M_CLOUDLET_VISIBILITY, label: 'Visibility', formType: CHECKBOX_ARRAY, value: cloudletVisibility, options: cloudletVisibility },
+    ])
+
+    clusterForms = () => ([
+        { field: PREF_M_CLUSTER_VISIBILITY, label: 'Visibility', formType: CHECKBOX_ARRAY, value: clusterVisibility, options: clusterVisibility },
+    ])
+    
+    appInstForms = () => ([
+        { field: PREF_M_APP_VISIBILITY, label: 'Visibility', formType: CHECKBOX_ARRAY, value: appInstVisibility, options: appInstVisibility },
+    ])
 
     forms = () => ([
-        { field: 'region', label: 'Region', formType: CHECKBOX_ARRAY, value: this.regions, expanded: true, options: this.regions },
-        { label: 'Cloudlet', forms: cloudletForms },
-        { label: 'Cluster', forms: clusterForms },
-        { label: 'App Instances', forms: appInstForms }
+        { field: PREF_M_REGION, label: 'Region', formType: CHECKBOX_ARRAY, value: this.regions, expanded: true, options: this.regions },
+        { label: 'Cloudlet', forms: this.cloudletForms() },
+        { label: 'Cluster', forms: this.clusterForms() },
+        { label: 'App Instances', forms: this.appInstForms() }
     ])
 
     onValueChange = (index, form, option) => {
