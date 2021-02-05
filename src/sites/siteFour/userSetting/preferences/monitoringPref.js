@@ -130,7 +130,7 @@ class MonitoringPreferences extends React.Component {
                     this.loadDefaultData(form.forms, data)
                 }
                 else {
-                    form.value = data[form.field] ? data[form.field] : form.value
+                    form.value = data[form.field] !== undefined ? data[form.field] : form.value
                 }
             }
         }
@@ -138,7 +138,7 @@ class MonitoringPreferences extends React.Component {
 
     componentDidMount() {
         let forms = this.forms()
-        let data = this.props.data[PREF_MONITORING]
+        let data = this.props.data ? this.props.data[PREF_MONITORING] : undefined
         this.loadDefaultData(forms, data)
         this.setState({ forms })
     }

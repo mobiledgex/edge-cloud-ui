@@ -1,5 +1,5 @@
 import {timezoneName } from './date_util'
-import { getUserMetaData } from '../helper/ls'
+import { getUserMetaData, orgUserMetaDataLS } from '../helper/ls'
 import { PREF_MONITORING } from '../sites/siteFour/userSetting/preferences/preferences'
 
 export const PREF_TIMEZONE = 'Timezone'
@@ -26,6 +26,6 @@ export const prefixSearchPref = () => {
 }
 
 export const monitoringPref = (type) => {
-    let data = getUserMetaData()
+    let data = orgUserMetaDataLS()
     return data[PREF_MONITORING] ? data[PREF_MONITORING][type] : undefined
 }

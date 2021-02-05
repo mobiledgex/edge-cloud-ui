@@ -12,8 +12,8 @@ class DatatablePreferences extends React.Component {
 
     forms = () => (
         [
-            { field: PREF_MAP, label: 'Map', value: false, formType: CHECKBOX, visible:true, tip: 'Show map by default' },
-            { field: PREF_PREFIX_SEARCH, label: 'Prefix Search', formType: INPUT, visible:true, rules:{onBlur:true}, placeholder:'Prefix search with default value', tip: 'Default prefix added to the search'}
+            { field: PREF_MAP, label: 'Map', value: true, formType: CHECKBOX, visible: true, tip: 'Show map by default' },
+            { field: PREF_PREFIX_SEARCH, label: 'Prefix Search', formType: INPUT, visible: true, rules: { onBlur: true }, placeholder: 'Prefix search with default value', tip: 'Default prefix added to the search' }
         ]
     )
 
@@ -32,19 +32,24 @@ class DatatablePreferences extends React.Component {
     render() {
         const { forms } = this.state
         return (
-            <MexForms headerWidth={5} forms={forms} onValueChange={this.onValueChange} style={{ height: 400, width: 600 }} />
+            <div style={{ paddingLeft: 15 }}>
+                <MexForms headerWidth={5} forms={forms} onValueChange={this.onValueChange} style={{ height: 400, width: 600 }} />
+            </div>
         )
     }
 
     componentDidMount() {
         let forms = this.forms()
         let data = this.props.data
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.checkForms(form, forms, true)
-            form.value = data[form.field]
+        if (data) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                this.checkForms(form, forms, true)
+                form.value = data[form.field] !== undefined ? data[form.field] : form.value
+            }
         }
         this.setState({ forms })
+
     }
 }
 

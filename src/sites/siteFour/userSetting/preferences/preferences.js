@@ -20,15 +20,18 @@ import { getOrganization, getUserRole, isAdmin } from '../../../../services/mode
 import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import Help from '../../events/auditLog/Help'
+import { HEADER } from '../../../../hoc/forms/MexForms';
 
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'
 export const PREF_TIMEZONE = 'Timezone'
 
 const preferencesList = [
+    { id: HEADER, label: 'General'},
     { id: PREF_DATATABLE, label: 'Data Table' },
-    { id: PREF_MONITORING, label: 'Monitoring' },
     { id: PREF_TIMEZONE, label: 'Date & Time' },
+    { id: HEADER, label: 'Organization'},
+    { id: PREF_MONITORING, label: 'Monitoring' },
 ]
 
 const prefHelp = [
@@ -42,7 +45,7 @@ class Preferences extends React.Component {
             open: false,
             data: {},
             loading: false,
-            header: 0
+            header: 1
         }
         this.isTimezoneChanged = false
     }
@@ -92,7 +95,7 @@ class Preferences extends React.Component {
             {
                 this.onTimezoneChangeEvent()
             }
-            this.setState({open:false, header:0})
+            this.setState({open:false, header:1})
             this.props.handleAlertInfo('success', 'Preferences saved, please reload page to apply changes')
         }
     }
@@ -133,10 +136,10 @@ class Preferences extends React.Component {
         switch (id) {
             case PREF_DATATABLE:
                 return <DatatablePref data={data} update={this.updateData} />
-            case PREF_MONITORING:
-                return <MonitoringPref data={data} update={this.updateData} />
             case PREF_TIMEZONE:
                 return <TimezonePref data={data} update={this.updateData} />
+            case PREF_MONITORING:
+                return <MonitoringPref data={isAdmin() ? data : this.getOrgData(data)} update={isAdmin() ? this.updateData : this.updateOrgData} />
         }
     }
 
@@ -167,11 +170,14 @@ class Preferences extends React.Component {
                             <Grid xs={3} item>
                                 <List dense={true}>
                                     {preferencesList.map((parent, i) => (
-                                        <ListItem key={i}>
-                                            <ListItem button onClick={() => { this.setState({ header: i }) }} style={{ backgroundColor: header === i ? '#388E3C' : 'transparent', borderRadius: 5 }}>
+                                        parent.id === HEADER ?
+                                            getOrganization() ? <div key={i} align="left" style={{ marginTop: `${i > 0 ? '15px' : '0px'}` }}>
+                                                <strong style={{ color: '#888888', marginBottom: 10 }}><b>{parent.label}</b></strong>
+                                            </div> : null
+                                            :
+                                            <ListItem key={i} button onClick={() => { this.setState({ header: i }) }} style={{ backgroundColor: header === i ? '#388E3C' : 'transparent', borderRadius: 5, marginTop: 2 }}>
                                                 <ListItemText primary={parent.label} />
                                             </ListItem>
-                                        </ListItem>
                                     ))}
                                 </List>
                             </Grid>
