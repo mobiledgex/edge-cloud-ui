@@ -936,6 +936,7 @@ class AppReg extends React.Component {
                             outboundConnectionsForm.value = requiredOutboundConnection['remote_ip']
                         }
                         else if (outboundConnectionsForm.field === fields.ocPort) {
+                            outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
                             outboundConnectionsForm.value = requiredOutboundConnection['port']
                         }
                     }
