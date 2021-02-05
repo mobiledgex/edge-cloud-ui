@@ -33,7 +33,9 @@ class DatatablePreferences extends React.Component {
     render() {
         const { forms } = this.state
         return (
-            <MexForms headerWidth={5} forms={forms} onValueChange={this.onValueChange} style={{ height: 400, width: 600 }} />
+            <div style={{ paddingLeft: 15 }}>
+                <MexForms headerWidth={5} forms={forms} onValueChange={this.onValueChange} style={{ height: 400, width: 600 }} />
+            </div>
         )
     }
 
