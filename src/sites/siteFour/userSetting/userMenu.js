@@ -10,6 +10,7 @@ import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined'
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import { LS_USER_META_DATA } from '../../../constant';
+import { getOrganization, isAdmin } from '../../../services/model/format';
 
 class headerGlobalMini extends React.Component {
     constructor(props) {
@@ -52,7 +53,7 @@ class headerGlobalMini extends React.Component {
                     onClose={this.handleClose}
                 >
                     <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose}/>
-                    <Preferences close={this.handleClose} />
+                    {isAdmin() || getOrganization() ? <Preferences close={this.handleClose} /> : null}
                     <UpdatePassword close={this.handleClose} dialog={true}/>
                     <MenuItem onClick={() => this.logout('/logout')}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
