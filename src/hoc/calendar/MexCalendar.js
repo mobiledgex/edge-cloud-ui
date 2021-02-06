@@ -49,13 +49,18 @@ class MexCalendar extends React.Component {
         this.setState({ visibleTimeStart: startRange, visibleTimeEnd: endRange })
     }
 
-    itemRenderer = ({ item, timelineContext, itemContext, getItemProps, getResizeProps }) => {
-        const { left: leftResizeProps, right: rightResizeProps } = getResizeProps();
+    itemRenderer = ({
+        item,
+        itemContext,
+        getItemProps,
+        getResizeProps
+    }) => {
+        const { left: leftResizeProps, right: rightResizeProps } = getResizeProps()
         const backgroundColor = itemContext.selected ? (itemContext.dragging ? "red" : item.selectedBgColor) : item.bgColor;
         return (
-            <div
-                style={{ height: 20 }}
-                {...getItemProps({
+            <div {...getItemProps(
+                {
+                    ...item.itemProps,
                     style: {
                         backgroundColor,
                         color: '#FFF',
@@ -63,29 +68,20 @@ class MexCalendar extends React.Component {
                         border: 'none',
                         borderLeftWidth: itemContext.selected ? 3 : 1,
                         borderRightWidth: itemContext.selected ? 3 : 1
-                    },
-                    onMouseDown: () => {
-                        console.log("on item click", item);
                     }
-                })}
-            >
-                {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : null}
+                })}>
+                {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : ''}
 
                 <div
-                    style={{
-                        height: itemContext.dimensions.height,
-                        overflow: "hidden",
-                        paddingLeft: 3,
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap"
-                    }}
+                    className="rct-item-content"
+                    style={{ maxHeight: `${itemContext.dimensions.height}` }}
                 >
                     {itemContext.title}
                 </div>
 
-                {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : null}
+                {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : ''}
             </div>
-        );
+        )
     }
 
     onPrevClick = () => {
