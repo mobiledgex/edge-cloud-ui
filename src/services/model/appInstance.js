@@ -17,12 +17,15 @@ export const keys = () => ([
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key:true },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key:true },
+  { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false},
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
+  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access' },
+  { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
   { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false },
@@ -240,8 +243,10 @@ export const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
   value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
+  value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
   value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
+  value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
   if (userRole && userRole.includes(constant.DEVELOPER) && value[fields.appName] === 'MEXPrometheusAppName') {
     value = undefined
   }
