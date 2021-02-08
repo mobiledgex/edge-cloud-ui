@@ -12,7 +12,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import './style.css'
-import moment from 'moment'
 
 const keys = {
     groupIdKey: "id",
@@ -46,7 +45,28 @@ class MexCalendar extends React.Component {
     }
 
     handleTimeChangeSecond = (visibleTimeStart, visibleTimeEnd, updateScrollCanvas) => {
-        this.setState({ visibleTimeStart, visibleTimeEnd, scrolling: true })
+        let length = String(visibleTimeEnd - visibleTimeStart).length
+        let type = 'hour'
+        if(length > 10)
+        {
+            type = 'year'
+        }
+        else if(length > 8)
+        {
+            type = 'month'
+        }
+        else if(length > 7)
+        {
+            type = 'day'
+        }
+        
+        this.setState(prevState=>{
+            let calendarDates = prevState.calendarDates
+            calendarDates.map(calendar=>{
+                calendar.select  = calendar.type === type
+            })
+            return { visibleTimeStart, visibleTimeEnd, scrolling: true, calendarDates }
+        })
     };
 
     onReset = () => {

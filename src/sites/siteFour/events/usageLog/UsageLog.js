@@ -33,7 +33,7 @@ const colorType = (value) => {
     }
 }
 
-const auditHelp = [
+const usageHelp = [
     <code>Default view is day</code>,
     <code>Click <RefreshIcon/> icon to reset the calendar to current date based on view</code>,
     <code>Click on <i>Year, Month, Day or Hour</i> to change calendar view</code>,
@@ -245,7 +245,7 @@ class EventLog extends React.Component {
                             })}
                         </Tabs>
                         <div style={{ position: 'absolute', right: 0, top: 2 }}>
-                            <Help data={auditHelp} style={{ color: '#76ff03' }}/>
+                            <Help data={usageHelp} style={{ color: '#76ff03' }}/>
                             <IconButton  onClick={this.props.close}>
                                 <CloseIcon style={{ color: '#76ff03' }} />
                             </IconButton>
