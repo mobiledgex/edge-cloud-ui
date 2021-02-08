@@ -4,10 +4,7 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 const Help = (props) => {
 
-    const handleClick = (e) => {
-        setAnchorEl(e.currentTarget);
-    };
-
+    
     const renderHelp = () => {
         return (
             <div>
@@ -25,8 +22,8 @@ const Help = (props) => {
     return (
         <React.Fragment>
             <Tooltip title={renderHelp()}>
-                <IconButton onClick={handleClick}>
-                    <InfoOutlinedIcon fontSize={'small'} />
+                <IconButton>
+                    <InfoOutlinedIcon fontSize={'small'} style={props.style}/>
                 </IconButton>
             </Tooltip>
         </React.Fragment>

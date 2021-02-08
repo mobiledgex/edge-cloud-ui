@@ -5,13 +5,14 @@ import Timeline, {
     DateHeader
 } from 'react-calendar-timeline'
 import "react-calendar-timeline/lib/Timeline.css";
-import { Divider, IconButton } from '@material-ui/core'
+import { Button, ButtonGroup, Divider, IconButton } from '@material-ui/core'
 import '../../../node_modules/react-calendar-timeline/lib/Timeline.css'
 import * as dateUtil from '../../utils/date_util'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import './style.css'
+import moment from 'moment'
 
 const keys = {
     groupIdKey: "id",
@@ -26,6 +27,8 @@ const keys = {
     groupLabelKey: "title"
 };
 
+const calendarDateList = () => ([{ label: 'Month', type: 'year', select: false }, { label: 'Day', type: 'month', select: false }, { label: 'Hour', type: 'day', select: true }, { label: 'Minute', type: 'hour', select: false }])
+
 
 const endRange = dateUtil.endOfDay().valueOf()
 const startRange = dateUtil.startOfDay().valueOf()
@@ -37,6 +40,7 @@ class MexCalendar extends React.Component {
         this.state = {
             visibleTimeStart: startRange,
             visibleTimeEnd: endRange,
+            calendarDates:calendarDateList(),
             scrolling: true
         }
     }
@@ -46,7 +50,7 @@ class MexCalendar extends React.Component {
     };
 
     onReset = () => {
-        this.setState({ visibleTimeStart: startRange, visibleTimeEnd: endRange })
+        this.setState({ visibleTimeStart: startRange, visibleTimeEnd: endRange, calendarDates:calendarDateList() })
     }
 
     itemRenderer = ({
@@ -104,11 +108,32 @@ class MexCalendar extends React.Component {
         }));
     };
 
+    onCustomClick = (index, type)=> {
+        let time = this.state.visibleTimeStart
+        this.setState(prevState => {
+            let calendarDates = prevState.calendarDates
+            calendarDates.map((calendarDate, i) => {
+                calendarDate.select = index == i
+            })
+            return {
+                visibleTimeStart: dateUtil.startOf(type, time).valueOf(),
+                visibleTimeEnd: dateUtil.endOf(type, time).valueOf(),
+                //used to apply animation effect if scroll is programmatic
+                scrolling: false,
+                calendarDates
+            }
+        });
+
+    }
+
+    
+
     render() {
         const { dataList, groupList } = this.props
+        const {calendarDates} = this.state
         return (
-            <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', padding: 10 }}>
-                <div style={{ marginBottom: 10 }}>
+            <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', paddingTop: 10 }}>
+                <div>
                     <IconButton onClick={this.onPrevClick}>
                         <ArrowBackIosIcon fontSize='small' style={{ color: '#76ff03' }} />
                     </IconButton>
@@ -119,7 +144,16 @@ class MexCalendar extends React.Component {
                         <RefreshIcon fontSize='small' style={{ color: '#76ff03' }} />
                     </IconButton>
                     {this.props.customRender()}
-                    <Divider/>
+                    <div style={{ display:'inline', marginLeft: 20 }}>
+                        <ButtonGroup>
+                            {calendarDates.map((calendarDate, i) => (
+                                <Button key={i} onClick={() => { this.onCustomClick(i, calendarDate.type) }} style={{backgroundColor:`${calendarDate.select ? '#4CAF50' : 'transparent'}`}}>
+                                    {calendarDate.label}
+                                </Button>
+                            ))}
+                        </ButtonGroup>
+                    </div>
+                    <Divider />
                 </div>
                 {dataList.length > 0 ? <Timeline
                     scrollRef={el => (this.scrollRef = el)}
@@ -151,8 +185,8 @@ class MexCalendar extends React.Component {
                         <DateHeader unit="primaryHeader" style={{ backgroundColor: '#1E2123' }} />
                         <DateHeader />
                     </TimelineHeaders>
-                </Timeline> : 
-                    <div align="center" style={{marginTop:'20%'}}>
+                </Timeline> :
+                    <div align="center" style={{ marginTop: '20%' }}>
                         <h3>No Data</h3>
                     </div>
                 }

@@ -8,10 +8,12 @@ import { Paper, Tabs, Tab, IconButton, LinearProgress, Divider } from '@material
 import * as dateUtil from '../../../../utils/date_util'
 import uuid from 'uuid'
 import CloseIcon from '@material-ui/icons/Close';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import MexCalendar from '../../../../hoc/calendar/MexCalendar'
 import { fields, isAdmin } from '../../../../services/model/format';
 import MexSelect from '../../../../hoc/forms/MexSelect'
 import { FixedSizeList } from 'react-window';
+import Help from '../auditLog/Help'
 
 const colorType = (value) => {
     switch (value) {
@@ -30,6 +32,13 @@ const colorType = (value) => {
             return undefined
     }
 }
+
+const auditHelp = [
+    <code>Default view is day</code>,
+    <code>Click <RefreshIcon/> icon to reset the calendar to current date based on view</code>,
+    <code>Click on <i>Year, Month, Day or Hour</i> to change calendar view</code>,
+    <code>User can also click on displayed date mentioned next to the usagelog column to change the calendar view from hour to day to month to year and viceversa, where top row emulates hour to year and bottom row emulates year to hour </code>
+]   
 
 //format data whic is supported by react-calendar-timline
 const formatCalendarData = (dataList, columns) => {
@@ -235,8 +244,9 @@ class EventLog extends React.Component {
                                 return <Tab key={i} label={eventType} />
                             })}
                         </Tabs>
-                        <div style={{ position: 'absolute', right: 0, top: 2 }} onClick={this.props.close}>
-                            <IconButton>
+                        <div style={{ position: 'absolute', right: 0, top: 2 }}>
+                            <Help data={auditHelp} style={{ color: '#76ff03' }}/>
+                            <IconButton  onClick={this.props.close}>
                                 <CloseIcon style={{ color: '#76ff03' }} />
                             </IconButton>
                         </div>
