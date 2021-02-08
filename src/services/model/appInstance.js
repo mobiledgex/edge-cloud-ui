@@ -17,6 +17,7 @@ export const keys = () => ([
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key:true },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key:true },
+  { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false},
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
@@ -57,14 +58,6 @@ export const getKey = (data, isCreate) => {
 
     if (data[fields.configs]) {
       appinst.configs = data[fields.configs]
-    }
-
-    if (data[fields.ipAccess]) {
-      appinst.auto_cluster_ip_access = constant.IPAccessLabel(data[fields.ipAccess])
-    }
-
-    if (data[fields.sharedVolumeSize]) {
-      appinst.shared_volume_size = parseInt(data[fields.sharedVolumeSize])
     }
 
     if (data[fields.flavorName]) {

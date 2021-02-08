@@ -120,10 +120,6 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
             }
-            else if (form.field === fields.sharedVolumeSize || form.field === fields.ipAccess) {
-                form.visible = currentForm.value === false
-                form.value = undefined
-            }
         }
         if (isInit === undefined || isInit === false) {
             this.updateForm(forms)
@@ -142,19 +138,6 @@ class ClusterInstReg extends React.Component {
         if (isInit === undefined || isInit === false) {
             this.updateForm(forms)
         }
-    }
-
-    updateIPAccess = (form, data) => {
-        if (data) {
-            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                form.visible = false
-            }
-            else {
-                form.options = data[fields.accessType] === constant.ACCESS_TYPE_LOAD_BALANCER ? [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED] : [constant.IP_ACCESS_DEDICATED]
-                form.value = undefined
-            }
-        }
-        return form
     }
 
     versionValueChange = (currentForm, forms, isInit, flowDataList) => {
@@ -178,9 +161,6 @@ class ClusterInstReg extends React.Component {
                         form.value = false
                         this.autoClusterValueChange(form, forms, isInit)
                         return form
-                    }
-                    else if (form.field === fields.ipAccess) {
-                        return this.updateIPAccess(form, app)
                     }
                     else if (form.field === fields.clusterName) {
                         form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
@@ -345,8 +325,6 @@ class ClusterInstReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }], update: { key: true } },
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: CHECKBOX, visible: false, value: false, update: { edit: true } },
-            { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', rules: { required: false }, visible: false },
-            { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: 'Input', placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }], update: { key: true } },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false, update: { id: ['27', '27.1', '27.2'] } }
         ]
@@ -374,10 +352,6 @@ class ClusterInstReg extends React.Component {
         }
         else if (form.field === fields.version) {
             this.versionValueChange(form, forms, isInit, flowDataList)
-        }
-        else if (form.field === fields.ipAccess) {
-            let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(appFlow.clusterFlow(finalData))
         }
         if (flowDataList.length > 0) {
             if (isInit) {
@@ -516,9 +490,6 @@ class ClusterInstReg extends React.Component {
                             break;
                         case fields.version:
                             form.options = this.appList
-                            break;
-                        case fields.ipAccess:
-                            form = this.updateIPAccess(form, data)
                             break;
                         default:
                             form.options = undefined;
