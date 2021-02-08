@@ -6,6 +6,7 @@ export const fields = {
     uuid: 'uuid',
     region: 'region',
     clusterName: 'clusterName',
+    realclustername:'realclustername',
     organizationName: 'organizationName',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
