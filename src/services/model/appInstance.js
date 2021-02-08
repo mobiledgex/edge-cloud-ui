@@ -23,8 +23,6 @@ export const keys = () => ([
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
-  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access' },
-  { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
   { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
   { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false },
@@ -57,14 +55,6 @@ export const getKey = (data, isCreate) => {
 
     if (data[fields.configs]) {
       appinst.configs = data[fields.configs]
-    }
-
-    if (data[fields.ipAccess]) {
-      appinst.auto_cluster_ip_access = constant.IPAccessLabel(data[fields.ipAccess])
-    }
-
-    if (data[fields.sharedVolumeSize]) {
-      appinst.shared_volume_size = parseInt(data[fields.sharedVolumeSize])
     }
 
     if (data[fields.flavorName]) {
@@ -250,10 +240,8 @@ export const customData = (value) => {
   value[fields.liveness] = constant.liveness(value[fields.liveness])
   value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
   value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
-  value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
   value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
-  value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
   if (userRole && userRole.includes(constant.DEVELOPER) && value[fields.appName] === 'MEXPrometheusAppName') {
     value = undefined
   }
