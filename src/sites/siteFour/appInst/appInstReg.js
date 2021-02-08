@@ -120,12 +120,9 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value ? true : false
                 form.error = currentForm.value ? undefined : form.error
             }
-            else if (form.field === fields.ipAccess) {
-                form.visible = currentForm.value
-                form.value = currentForm.value ? form.value : undefined
-            }
-            else if (form.field === fields.sharedVolumeSize) {
-                form.visible = currentForm.value ? true : false
+            else if (form.field === fields.sharedVolumeSize || form.field === fields.ipAccess) {
+                form.visible = currentForm.value === false
+                form.value = undefined
             }
         }
         if (isInit === undefined || isInit === false) {
