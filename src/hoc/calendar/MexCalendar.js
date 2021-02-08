@@ -5,7 +5,7 @@ import Timeline, {
     DateHeader
 } from 'react-calendar-timeline'
 import "react-calendar-timeline/lib/Timeline.css";
-import { Button, ButtonGroup, Divider, IconButton } from '@material-ui/core'
+import { Button, ButtonGroup, Divider, IconButton, Tooltip } from '@material-ui/core'
 import '../../../node_modules/react-calendar-timeline/lib/Timeline.css'
 import * as dateUtil from '../../utils/date_util'
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -154,17 +154,23 @@ class MexCalendar extends React.Component {
         return (
             <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', paddingTop: 10 }}>
                 <div>
-                    <IconButton onClick={this.onPrevClick}>
-                        <ArrowBackIosIcon fontSize='small' style={{ color: '#76ff03' }} />
-                    </IconButton>
-                    <IconButton aria-label="refresh" onClick={this.onNextClick}>
-                        <ArrowForwardIosIcon fontSize='small' style={{ color: '#76ff03' }} />
-                    </IconButton>
-                    <IconButton aria-label="refresh" onClick={this.onReset}>
-                        <RefreshIcon fontSize='small' style={{ color: '#76ff03' }} />
-                    </IconButton>
+                    <Tooltip title={<strong style={{ fontSize: 13 }}>Previous</strong>}>
+                        <IconButton onClick={this.onPrevClick}>
+                            <ArrowBackIosIcon fontSize='small' style={{ color: '#76ff03' }} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={<strong style={{ fontSize: 13 }}>Next</strong>}>
+                        <IconButton aria-label="refresh" onClick={this.onNextClick}>
+                            <ArrowForwardIosIcon fontSize='small' style={{ color: '#76ff03' }} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={<strong style={{ fontSize: 13 }}>Reset</strong>}>
+                        <IconButton aria-label="refresh" onClick={this.onReset}>
+                            <RefreshIcon fontSize='small' style={{ color: '#76ff03' }} />
+                        </IconButton>
+                    </Tooltip>
                     {this.props.customRender()}
-                    <div style={{ display:'inline', marginLeft: 20 }}>
+                    <div style={{ display: 'inline', marginLeft: 20 }}>
                         <ButtonGroup>
                             {calendarDates.map((calendarDate, i) => (
                                 <Button key={i} onClick={() => { this.onCustomClick(i, calendarDate.type) }} style={{backgroundColor:`${calendarDate.select ? '#4CAF50' : 'transparent'}`}}>
