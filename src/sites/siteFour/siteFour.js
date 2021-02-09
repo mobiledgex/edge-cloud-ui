@@ -2,7 +2,6 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
-import { Steps } from 'intro.js-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -26,13 +25,7 @@ class SiteFour extends React.Component {
         this.state = {
             email: store ? store.email : 'Administrator',
             role: '',
-            stepsEnabled: false,
-            initialStep: 0,
-            steps: [],
-            enable: false,
-            hideNext: true,
             userRole: null,
-            selectRole: '',
             mexAlertMessage: undefined
         };
     }
@@ -57,14 +50,6 @@ class SiteFour extends React.Component {
         sendAuthRequest(this, { method: SHOW_ROLE }, this.roleResponse)
     }
 
-    helpClick = (currentStep) => {
-        this.setState({ steps: currentStep, stepsEnabled: true, enable: true })
-    }
-
-    onExit() {
-        _self.setState({ stepsEnabled: false })
-    }
-
     static getDerivedStateFromProps(props, state) {
         let alertInfo = props.alertInfo
         if (alertInfo !== state.mexAlertMessage && props.alertInfo.mode && alertInfo.msg) {
@@ -75,19 +60,9 @@ class SiteFour extends React.Component {
     }
 
     render() {
-        const { stepsEnabled, initialStep, steps, email, loadData } = this.state;
+        const { email, loadData } = this.state;
         return (
             <div className='view_body'>
-                {steps ?
-                    <Steps
-                        enabled={stepsEnabled}
-                        steps={steps}
-                        initialStep={initialStep}
-                        onExit={_self.onExit}
-                        showButtons={true}
-                        options={{ hideNext: false }}
-                        ref={steps => (_self.steps = steps)}
-                    /> : null}
                 {(_self.props.loadingSpinner == true) ?
                     <div className="loadingBox" style={{ zIndex: 9999 }}>
                         <GridLoader
@@ -98,7 +73,7 @@ class SiteFour extends React.Component {
                         />
                     </div> : null}
                 <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={email}
-                    data={_self.props.userInfo.info} helpClick={this.helpClick} viewMode={_self.props.viewMode}
+                    data={_self.props.userInfo.info} viewMode={_self.props.viewMode}
                     userRole={this.state.userRole} />
 
                 {this.state.mexAlertMessage ?

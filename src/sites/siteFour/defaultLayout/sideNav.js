@@ -308,7 +308,7 @@ class SideNav extends React.Component {
     }
 
     render() {
-        const { classes, isShowHeader, email, data, viewMode, helpClick } = this.props;
+        const { classes, isShowHeader, email, data, viewMode } = this.props;
         const { open, expand, page, openLegend } = this.state;
         return (
             <div className={classes.root}>
@@ -316,7 +316,7 @@ class SideNav extends React.Component {
                     <React.Fragment>
                         <CssBaseline />
                         <MexHeader handleDrawerOpen={this.handleDrawerOpen} open={open} email={email} data={data}
-                            helpClick={helpClick} viewMode={viewMode} />
+                            viewMode={viewMode} />
                     </React.Fragment>
                 }
                 <Drawer
