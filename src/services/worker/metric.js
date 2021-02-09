@@ -86,7 +86,8 @@ const processData = (data) => {
     let metricTypeKeys = data.metricTypeKeys
     let avgData = data.avgData
 
-    let chartData = {}
+    let chartData = data.chartData
+    console.log('Rahul1234', chartData)
     chartData[region] = chartData[region] ? chartData[region] : {}
     if (metricList && metricList.length > 0) {
         metricList.map(metricData => {

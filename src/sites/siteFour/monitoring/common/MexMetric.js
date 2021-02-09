@@ -42,7 +42,7 @@ class MexMetric extends React.Component {
             let metric = mc.response.data
             if (metric && metric.length > 0) {
                 const worker = new MexWorker();
-                worker.postMessage({ type: WORKER_METRIC, metric, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys, avgData: this.props.avgData })
+                worker.postMessage({ type: WORKER_METRIC, metric, parentId: parent.id, region: region, metricTypeKeys: parent.metricTypeKeys, avgData: this.props.avgData, chartData:this.state.chartData })
                 worker.addEventListener('message', event => {
                     let chartData = event.data.chartData
                     let avgData = event.data.avgData
@@ -69,7 +69,7 @@ class MexMetric extends React.Component {
                         data[fields.region] = region
                         data[fields.starttime] = this.props.range.starttime
                         data[fields.endtime] = this.props.range.endtime
-                        data[fields.selector] = '*'
+                        data[fields.selector] = metric.serverField
                         let org = isAdmin() ? this.props.org : getOrganization()
                         let metricRequest = parent.request(data, org)
 
