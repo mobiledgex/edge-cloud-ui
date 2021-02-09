@@ -192,7 +192,7 @@ export const createClusterInst = (self, data, callback) => {
 
 export const updateClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
-    let request = { uuid: data.uuid ? data.uuid : generateUUID(data), method: UPDATE_CLUSTER_INST, data: requestData }
+    let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: UPDATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
